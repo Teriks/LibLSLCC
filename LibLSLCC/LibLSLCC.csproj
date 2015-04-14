@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19F2CAF5-7C57-4A11-8AA3-DFD58F7AE289}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LibLSLCC</RootNamespace>
+    <AssemblyName>LibLSLCC</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>6c90bac5</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr4.Runtime">
+      <HintPath>.\Antlr4.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
+    <Compile Include="CodeValidator\Components\LSLCustomValidatorServiceProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryDataRootAttribute.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetsAttributeParser.cs" />
+    <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
+    <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
+    <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
+    <Compile Include="CodeValidator\LSLCodeValidator.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLBinaryOperationSignature.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLExpressionValidator.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLMainLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLStringPreProcessor.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxErrorListener.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxWarningListener.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\LSLValidatorServiceProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultStringPreProcessor.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\LSLDefaultExpressionValidator.cs" />
+    <Compile Include="CodeValidator\Components\LSLXMLLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultSyntaxErrorListener.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultSyntaxWarningListener.cs" />
+    <Compile Include="CodeValidator\Enums\LSLCodeScopeNodeType.cs" />
+    <Compile Include="CodeValidator\Enums\LSLType.cs" />
+    <Compile Include="CodeValidator\Enums\LSLExpressionType.cs" />
+    <Compile Include="CodeValidator\Enums\LSLRotationComponent.cs" />
+    <Compile Include="CodeValidator\Enums\LSLVariableScope.cs" />
+    <Compile Include="CodeValidator\Enums\LSLVectorComponent.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLCodeValidatorInternalError.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLEventSignature.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLFunctionSignature.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryConstantSignature.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryEventSignature.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryFunctionSignature.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureRegex.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLEventSignatureRegex.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLParameter.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLParsedEventHandlerSignature.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLPreDefinedFunctionSignature.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultValidatorServiceProvider.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLBinaryExpressionNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLExpressionListNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLExprNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLFloatLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLFunctionCallNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLHexLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLIntegerLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLListLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLParenthesizedExpressionNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLPostfixOperationNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLPrefixOperationNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLReadOnlyExprNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLRotationLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLStringLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLTupleAccessorNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLTypecastExprNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLVariableNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLVectorLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLBinaryExpressionNode.cs" />
+    <Compile Include="CodeValidator\Enums\LSLBinaryOperationType.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLDummyExpr.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLExpressionListNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLExprNodeExtensions.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLFloatLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLFunctionCallNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLHexLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLIntegerLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLListLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLConstantLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLParenthesizedExpressionNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLPostfixOperationNode.cs" />
+    <Compile Include="CodeValidator\Enums\LSLPostfixOperationType.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLPrefixOperationNode.cs" />
+    <Compile Include="CodeValidator\Enums\LSLPrefixOperationType.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLRotationLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLStringLiteralNode.cs" />
+    <Compile Include="CodeValidator\Enums\LSLTupleComponent.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLTypecastExprNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLVariableNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLVecRotAccessorNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLVectorLiteralNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ILSLSyntaxTreeNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLDoLoopNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLForLoopNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLWhileLoopNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\LoopNodes\LSLDoLoopNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\LoopNodes\LSLForLoopNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\LoopNodes\LSLWhileLoopNode.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLSourceCodeRange.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLCodeScopeNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLCompilationUnitNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLEventHandlerNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLFunctionDeclarationNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLStateScopeNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ScopeNodes\LSLCodeScopeNode.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLCodeSegment.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ScopeNodes\LSLCompilationUnitNode.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLConstantJumpDescription.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLDeadCodeSegment.cs" />
+    <Compile Include="CodeValidator\Enums\LSLDeadCodeType.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ScopeNodes\LSLEventHandlerNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ScopeNodes\LSLFunctionDeclarationNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\ScopeNodes\LSLStateScopeNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLBranchStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLCodeStatement.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLReturnPathNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLControlStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLElseIfStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLElseStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLExpressionStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLIfStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLJumpStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLLabelStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLParameterListNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLParameterNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLReturnStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLSemiColonStatement.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLStateChangeStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLVariableDeclarationNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLCodeStatementError.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLControlStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLElseIfStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLElseStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLExpressionStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLIfStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLJumpStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLLabelStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLParameterListNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLParameterNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLReturnStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLSemiColonStatement.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLStateChangeStatementNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLVariableDeclarationNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodeVisitor\LSLDefaultValidatorNodeVisitor.cs" />
+    <Compile Include="CodeValidator\ValidatorNodeVisitor\LSLValidatorNodeVisitor.cs" />
+    <Compile Include="Collections\CollectionExtensions.cs" />
+    <Compile Include="Collections\IReadOnlySet.cs" />
+    <Compile Include="Collections\PriorityQueue.cs" />
+    <Compile Include="Collections\ReadOnlyDictionary.cs" />
+    <Compile Include="Collections\ReadOnlyHashSet.cs" />
+    <Compile Include="Collections\UniqueValueDictionary.cs" />
+    <Compile Include="Compilers\LSLCompilerInternalException.cs" />
+    <Compile Include="Compilers\LSLOpenSimCSCompiler.cs" />
+    <Compile Include="Compilers\Visitors\LSLOpenSimCSCompilerVisitor.cs" />
+    <Compile Include="CodeValidator\Visitor\LSLCodeValidationVisitor.cs" />
+    <Compile Include="CodeValidator\Visitor\LSLCodeValidationVisitorSubClasses.cs" />
+    <Compile Include="CodeValidator\Visitor\LSLVisitorScopeTracker.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="LSLParser\LSL.g4.lexer.cs">
+      <DependentUpon>LSL.g4</DependentUpon>
+    </Compile>
+    <Compile Include="LSLParser\LSL.g4.parser.cs">
+      <DependentUpon>LSL.g4</DependentUpon>
+    </Compile>
+    <Compile Include="LSLParser\LSLBaseListener.cs" />
+    <Compile Include="LSLParser\LSLBaseVisitor.cs" />
+    <Compile Include="LSLParser\LSLLexer.cs" />
+    <Compile Include="LSLParser\LSLListener.cs" />
+    <Compile Include="LSLParser\LSLParser.cs" />
+    <Compile Include="LSLParser\LSLVisitor.cs" />
+    <Compile Include="LSLRuntime\LSLScriptBase.cs" />
+    <Compile Include="LSLRuntime\LSLScriptLibraryBase.cs" />
+    <Compile Include="LSLRuntime\LSLTypes.cs" />
+    <Compile Include="LSLRuntime\OpenSimConstants.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CodeValidator\Utility.cs" />
+    <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerable.cs" />
+    <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerableExtension.cs" />
+    <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvideOld.xml" />
+    <None Include="LSLParser\LSL.tokens" />
+    <None Include="LSLParser\LSLLexer.tokens" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LSLParser\LSL.g4">
+      <CustomToolNamespace>LibLSLCC</CustomToolNamespace>
+      <ForceAtn>False</ForceAtn>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvider.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

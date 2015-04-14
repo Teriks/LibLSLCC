@@ -1,0 +1,70 @@
+﻿<SyntaxDefinition name="Linden Scripting Language" extensions=".lsl">
+  <Environment>
+    <Default bold="false" italic="false" color="#001400" bgcolor="#c8d1cc" />
+    <Selection bold="false" italic="false" color="#ffebff" bgcolor="#362d32" />
+    <CaretMarker bold="true" italic="false" color="Black" />
+    <LineNumbers bold="false" italic="false" color="White" bgcolor="#3e3e3e" />
+    <SelectedFoldLine bold="false" italic="false" color="White" />
+    <EOLMarkers bold="false" italic="false" color="#c8d1cc" />
+    <SpaceMarkers bold="false" italic="false" color="#c8d1cc" />
+    <TabMarkers bold="false" italic="false" color="#c8d1cc" />
+  </Environment>
+  <Properties>
+    <Property name="LineComment" value="//" />
+  </Properties>
+  <Digits name="Digits" bold="false" italic="false" color="#001400" />
+  <RuleSets>
+    <RuleSet ignorecase="false">
+      <Delimiters>&amp;&lt;&gt;~!@$%^*()-+=|\#/{}[]:;"' , .?</Delimiters>
+      <Span name="LineComment2" stopateol="true" bold="false" italic="false" color="#194c19">
+        <Begin>//</Begin>
+      </Span>
+      <Span name="String" escapecharacter="\" rule="str formatting" stopateol="true" bold="false" italic="false" color="#194c19">
+        <Begin>"</Begin>
+        <End>"</End>
+      </Span>
+
+      <KeyWords name="KeyWords" bold="true" italic="false" color="#0000cc">
+        <Key word="else" />
+        <Key word="if" />
+        <Key word="while" />
+        <Key word="do" />
+        <Key word="for" />
+        <Key word="return" />
+        <Key word="jump" />
+      </KeyWords>
+
+      <KeyWords name="ValueTypes" bold="true" italic="false" color="#194c19">
+        <Key word="integer" />
+        <Key word="float" />
+        <Key word="string" />
+        <Key word="vector" />
+        <Key word="rotation" />
+        <Key word="list" />
+        <Key word="key" />
+      </KeyWords>
+
+      <KeyWords name="State" bold="true" italic="false" color="#7f0026">
+        <Key word="default" />
+        <Key word="state" />
+      </KeyWords>
+      
+      <KeyWords name="LSLEvents" bold="true" italic="false" color="#004c7f">
+        {EVENT_NAMES}
+      </KeyWords>
+      <KeyWords name="LSLFunctions" bold="true" italic="false" color="#7f0026">
+        {FUNCTION_NAMES}
+      </KeyWords>
+      <KeyWords name="LSLConstants" bold="true" italic="false" color="#32348a">
+        {CONSTANT_NAMES}
+      </KeyWords>
+    </RuleSet>
+    <RuleSet name="str formatting" ignorecase="false">
+      <Delimiters>&amp;&lt;&gt;~!@%^*()-+=|\#/{}[]:;"' , .?</Delimiters>
+      <Span name="Formatting" stopateol="false" bold="false" italic="false" color="#194c19">
+        <Begin>${</Begin>
+        <End>}</End>
+      </Span>
+    </RuleSet>
+  </RuleSets>
+</SyntaxDefinition>
