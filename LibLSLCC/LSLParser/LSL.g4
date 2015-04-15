@@ -3,7 +3,6 @@ grammar LSL;
 
 
 
-
 TYPE:  'list' | 'vector' | 'float' | 'integer' | 'string' | 'rotation' | 'quaternion' | 'key';
 
 DO: 'do';

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:/Users/Eric/IdeaProjects/untitled/src\LSL.g4 by ANTLR 4.5
+// Generated from ./LSLParser/LSL.g4 by ANTLR 4.5
 
 // Unreachable code detected
 #pragma warning disable 0162

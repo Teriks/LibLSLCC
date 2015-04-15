@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:/Users/Eric/IdeaProjects/untitled/src\LSL.g4 by ANTLR 4.5
+// Generated from ./LSLParser/LSL.g4 by ANTLR 4.5
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -1410,7 +1410,9 @@ public partial class LSLParser : Parser {
 			if ( !(_la==DEFAULT || _la==ID) ) {
 				_localctx.state_target = ErrorHandler.RecoverInline(this);
 			}
-			Consume();
+			else {
+			    Consume();
+			}
 			State = 206; Match(SEMI_COLON);
 			}
 		}
@@ -2180,7 +2182,9 @@ public partial class LSLParser : Parser {
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) ) {
 					((Expr_PrefixOperationContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 				}
-				Consume();
+				else {
+				    Consume();
+				}
 				State = 240; ((Expr_PrefixOperationContext)_localctx).expr_rvalue = expression(15);
 				}
 				break;
@@ -2277,7 +2281,7 @@ public partial class LSLParser : Parser {
 			_alt = Interpreter.AdaptivePredict(TokenStream,21,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
-					if ( ParseListeners!=null ) 
+					if ( ParseListeners!=null )
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
@@ -2296,7 +2300,9 @@ public partial class LSLParser : Parser {
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MUL) | (1L << DIV) | (1L << MOD))) != 0)) ) {
 							((Expr_MultDivModContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 						}
-						Consume();
+						else {
+						    Consume();
+						}
 						State = 269; ((Expr_MultDivModContext)_localctx).expr_rvalue = expression(14);
 						}
 						break;
@@ -2313,7 +2319,9 @@ public partial class LSLParser : Parser {
 						if ( !(_la==MINUS || _la==PLUS) ) {
 							((Expr_AddSubContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 						}
-						Consume();
+						else {
+						    Consume();
+						}
 						State = 272; ((Expr_AddSubContext)_localctx).expr_rvalue = expression(13);
 						}
 						break;
@@ -2330,7 +2338,9 @@ public partial class LSLParser : Parser {
 						if ( !(_la==RIGHT_SHIFT || _la==LEFT_SHIFT) ) {
 							((Expr_BitwiseShiftContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 						}
-						Consume();
+						else {
+						    Consume();
+						}
 						State = 275; ((Expr_BitwiseShiftContext)_localctx).expr_rvalue = expression(12);
 						}
 						break;
@@ -2347,7 +2357,9 @@ public partial class LSLParser : Parser {
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LESS_THAN) | (1L << GREATER_THAN) | (1L << LESS_THAN_EQUAL) | (1L << GREATER_THAN_EQUAL))) != 0)) ) {
 							((Expr_LogicalCompareContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 						}
-						Consume();
+						else {
+						    Consume();
+						}
 						State = 278; ((Expr_LogicalCompareContext)_localctx).expr_rvalue = expression(11);
 						}
 						break;
@@ -2364,7 +2376,9 @@ public partial class LSLParser : Parser {
 						if ( !(_la==LOGICAL_EQUAL || _la==LOGICAL_NOT_EQUAL) ) {
 							((Expr_LogicalEqualityContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 						}
-						Consume();
+						else {
+						    Consume();
+						}
 						State = 281; ((Expr_LogicalEqualityContext)_localctx).expr_rvalue = expression(10);
 						}
 						break;
@@ -2457,7 +2471,9 @@ public partial class LSLParser : Parser {
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINUS_EQUAL) | (1L << PLUS_EQUAL) | (1L << MUL_EQUAL) | (1L << DIV_EQUAL) | (1L << MOD_EQUAL))) != 0)) ) {
 							((Expr_ModifyingAssignmentContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 						}
-						Consume();
+						else {
+						    Consume();
+						}
 						State = 302; ((Expr_ModifyingAssignmentContext)_localctx).expr_rvalue = expression(3);
 						}
 						break;
@@ -2485,7 +2501,9 @@ public partial class LSLParser : Parser {
 						if ( !(_la==INCREMENT || _la==DECREMENT) ) {
 							((Expr_PostfixOperationContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 						}
-						Consume();
+						else {
+						    Consume();
+						}
 						}
 						break;
 					}
@@ -2989,7 +3007,9 @@ public partial class LSLParser : Parser {
 			if ( !(_la==DEFAULT || _la==ID) ) {
 				_localctx.state_name = ErrorHandler.RecoverInline(this);
 			}
-			Consume();
+			else {
+			    Consume();
+			}
 			State = 358; Match(O_BRACE);
 			State = 362;
 			ErrorHandler.Sync(this);
