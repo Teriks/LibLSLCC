@@ -2049,10 +2049,16 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             else if (result.LeftExpression.IsCompoundExpression())
             {
-                SyntaxErrorListener.
-                    AssignmentToCompoundExpression(location);
+                var checkAssign = result.LeftExpression as LSLBinaryExpressionNode;
+                if ((checkAssign != null && checkAssign.Operation != LSLBinaryOperationType.Assign) ||
+                    checkAssign == null)
+                {
 
-                result.HasErrors = true;
+                    SyntaxErrorListener.
+                        AssignmentToCompoundExpression(location);
+
+                    result.HasErrors = true;
+                }
             }
 
             else if (result.LeftExpression.IsLiteral())

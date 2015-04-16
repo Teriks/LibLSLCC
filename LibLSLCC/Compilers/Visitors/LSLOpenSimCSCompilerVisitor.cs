@@ -156,6 +156,8 @@ private static class UTILITIES
 
             if (node.OperationString.EqualsOneOf("=", "*=", "+=", "/=", "%=", "-="))
             {
+                parenths = node.OperationString != "=";
+
                 if (parenths && ParenthesizeExpressions)
                 {
                     Writer.Write("(");
