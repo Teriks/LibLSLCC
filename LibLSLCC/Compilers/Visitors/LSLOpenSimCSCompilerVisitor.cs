@@ -156,24 +156,12 @@ private static class UTILITIES
 
             if (node.OperationString.EqualsOneOf("=", "*=", "+=", "/=", "%=", "-="))
             {
-                if (parenths)
-                {
-                    parenths = node.OperationString != "=";
-                }
 
-                if (parenths && ParenthesizeExpressions)
-                {
-                    Writer.Write("(");
-                }
 
                 Visit(node.LeftExpression);
                 Writer.Write(node.OperationString);
                 Visit(node.RightExpression);
 
-                if (parenths && ParenthesizeExpressions)
-                {
-                    Writer.Write(")");
-                }
 
                 return false;
             }

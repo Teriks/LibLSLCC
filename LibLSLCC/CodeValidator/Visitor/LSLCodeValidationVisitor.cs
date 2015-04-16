@@ -2049,9 +2049,9 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             else if (result.LeftExpression.IsCompoundExpression())
             {
+                //allow chaining assignment, and modifying assignment operations when the left operand is a binary expression involving assignment, but nothing else
                 var checkAssign = result.LeftExpression as LSLBinaryExpressionNode;
-                if ((checkAssign != null && checkAssign.Operation != LSLBinaryOperationType.Assign) ||
-                    checkAssign == null)
+                if ((checkAssign != null && !checkAssign.Operation.IsAssignOrModifyAssign()) || checkAssign == null)
                 {
 
                     SyntaxErrorListener.
@@ -2107,11 +2107,16 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             else if (result.LeftExpression.IsCompoundExpression())
             {
-                SyntaxErrorListener.
-                    ModifyingAssignmentToCompoundExpression(location,
-                        context.operation.Text);
+                //allow chaining assignment, and modifying assignment operations when the left operand is a binary expression involving assignment, but nothing else
+                var checkAssign = result.LeftExpression as LSLBinaryExpressionNode;
+                if ((checkAssign != null && !checkAssign.Operation.IsAssignOrModifyAssign()) || checkAssign == null)
+                {
+                    SyntaxErrorListener.
+                        ModifyingAssignmentToCompoundExpression(location,
+                            context.operation.Text);
 
-                result.HasErrors = true;
+                    result.HasErrors = true;
+                }
             }
 
             else if (result.LeftExpression.IsLiteral())

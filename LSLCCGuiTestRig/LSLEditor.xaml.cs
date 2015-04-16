@@ -267,7 +267,7 @@ namespace LSLCCEditor
         {
             if (e.Text.Length > 0 && _completionWindow != null)
             {
-                if (!char.IsLetterOrDigit(e.Text[0]))
+                if (!(char.IsLetterOrDigit(e.Text[0])||e.Text[0]=='_'))
                 {
                     // Whenever a non-letter is typed while the completion window is open,
                     // insert the currently selected element.

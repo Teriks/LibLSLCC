@@ -45,6 +45,11 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
 
+        public static bool IsAssignOrModifyAssign(this LSLBinaryOperationType type)
+        {
+            return type == LSLBinaryOperationType.Assign || IsModifyAssign(type);
+        }
+
         public static LSLBinaryOperationType ParseFromOperator(string operationString)
         {
             if (operationString == "=")
