@@ -191,6 +191,7 @@
     <Compile Include="CodeValidator\Visitor\LSLCodeValidationVisitor.cs" />
     <Compile Include="CodeValidator\Visitor\LSLCodeValidationVisitorSubClasses.cs" />
     <Compile Include="CodeValidator\Visitor\LSLVisitorScopeTracker.cs" />
+    <Compile Include="Formatter\Visitor\LSLCodeFormatterVisitor.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LSLParser\LSL.g4.lexer.cs">
       <DependentUpon>LSL.g4</DependentUpon>

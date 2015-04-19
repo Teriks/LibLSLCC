@@ -13,6 +13,7 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.Compilers;
+using LibLSLCC.Formatter.Visitor;
 using LSLCCGuiTestRig;
 using Microsoft.Win32;
 
@@ -683,6 +684,26 @@ default{
         {
             _additionalLibrarys &= ~LSLLibraryDataAdditions.OpenSimModInvoke;
             UpdateFromAdditionalLibrarys();
+        }
+
+        private void Format_Click(object sender, RoutedEventArgs e)
+        {
+            var validated = ValidateCurrentEditorText();
+
+            if (validated == null)
+            {
+                return;
+            }
+
+            var formatter = new LSLCodeFormatterVisitor();
+
+            StringWriter str = new StringWriter();
+            formatter.WriteAndFlush(validated, str);
+
+            LslEditor.TextEditor.Text = str.ToString();
+
+
+
         }
     }
 

@@ -32,6 +32,7 @@
                     <MenuItem Name="SaveAsButton" Header="Save As" Click="SaveFileAs_Click" />
 
                 </MenuItem>
+                <MenuItem Header="Format" Click="Format_Click" />
                 <MenuItem Header="Compile" Click="Compile_Click" />
                 <MenuItem Header="Check Syntax" Click="CheckSyntax_Click" />
                 <MenuItem Header="Clear Messages" Click="ClearMessages_Click" />
