@@ -688,6 +688,8 @@ default{
 
         private void Format_Click(object sender, RoutedEventArgs e)
         {
+            CompilerMessages.Items.Clear();
+
             var validated = ValidateCurrentEditorText();
 
             if (validated == null)

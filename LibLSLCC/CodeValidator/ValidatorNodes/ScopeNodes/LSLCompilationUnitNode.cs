@@ -50,6 +50,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         internal LSLParser.CompilationUnitContext ParserContext { get; private set; }
 
 
+        public IReadOnlyList<LSLComment> Comments { get; set; }
+
         public IReadOnlyList<LSLVariableDeclarationNode> GlobalVariableDeclarations
         {
             get { return _globalVariableDeclarations; }

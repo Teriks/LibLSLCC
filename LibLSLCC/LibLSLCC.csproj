@@ -73,6 +73,7 @@
     <Compile Include="CodeValidator\Enums\LSLVariableScope.cs" />
     <Compile Include="CodeValidator\Enums\LSLVectorComponent.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLCodeValidatorInternalError.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLComment.cs" />
     <Compile Include="CodeValidator\Primitives\LSLEventSignature.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignature.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryConstantSignature.cs" />

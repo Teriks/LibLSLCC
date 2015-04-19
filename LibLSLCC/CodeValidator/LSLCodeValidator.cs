@@ -85,6 +85,8 @@ namespace LibLSLCC.CodeValidator
                 return null;
             }
 
+            r.Comments = lexer.Comments;
+
             return r;
         }
     }

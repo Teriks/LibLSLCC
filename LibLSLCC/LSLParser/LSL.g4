@@ -1,7 +1,14 @@
 
 grammar LSL;
 
+@lexer::header {
+	using System.Collections.Generic;
+	using LibLSLCC.CodeValidator.Primitives;
+}
 
+@lexer::members {
+ 	public List<LSLComment> Comments = new List<LSLComment>();
+}
 
 TYPE:  'list' | 'vector' | 'float' | 'integer' | 'string' | 'rotation' | 'quaternion' | 'key';
 
@@ -366,9 +373,23 @@ Newline
 ;
 
 BlockComment
-: '/*' .*? '*/'  ->skip
+: '/*' .*? '*/' {
+					Comments.Add(new LSLComment()
+					{
+						Text = this.Text, 
+						Start = this.TokenStartCharIndex,
+						End = this.Text.Length + this.TokenStartCharIndex
+					});
+				} -> channel(HIDDEN)
 ;
 
 LineComment
-: '//' ~[\r\n]* ->skip
+: '//' ~[\r\n]* {
+					Comments.Add(new LSLComment()
+					{
+						Text = this.Text, 
+						Start = this.TokenStartCharIndex,
+						End = this.Text.Length + this.TokenStartCharIndex
+					});
+				} -> channel(HIDDEN)
 ;
