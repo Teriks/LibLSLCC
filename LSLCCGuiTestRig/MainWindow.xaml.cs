@@ -305,7 +305,7 @@ default{
             CompilerMessages.UpdateLayout();
 
             var validated = ValidateCurrentEditorText();
-
+            Console.Write("TEST");
             if (validated == null)
             {
                 return;
@@ -692,7 +692,7 @@ default{
 
             var validated = ValidateCurrentEditorText();
 
-            if (validated == null)
+            if (validated == null || validated.HasErrors)
             {
                 return;
             }

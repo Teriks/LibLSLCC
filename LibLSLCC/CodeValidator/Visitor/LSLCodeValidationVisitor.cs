@@ -368,8 +368,13 @@ namespace LibLSLCC.CodeValidator.Visitor
                 {
                     result.HasErrors = true;
                 }
-
-                result.AddVariableDeclaration(child);
+                else
+                {
+                    //prevent global variable declarations from being added
+                    //to the global variable pool, they are effectively undefined if there is an error
+                    //in their definition
+                    result.AddVariableDeclaration(child);
+                }
             }
 
 
@@ -388,6 +393,8 @@ namespace LibLSLCC.CodeValidator.Visitor
                     result.HasErrors = true;
                 }
 
+                //function definitions are guaranteed not to have duplicate definitions in a pre-pass
+                //also guaranteed to have syntacticly correct parameter definitions
                 result.AddFunctionDeclaration(child);
             }
 

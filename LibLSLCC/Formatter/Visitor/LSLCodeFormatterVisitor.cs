@@ -13,7 +13,7 @@ namespace LibLSLCC.Formatter.Visitor
 {
     public class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
     {
-        private List<LSLComment> comments = new List<LSLComment>();
+        private LinkedList<LSLComment> comments = new LinkedList<LSLComment>();
         private ILSLCompilationUnitNode compilationUnitNode;
         private int indentLevel = 0;
 
@@ -39,8 +39,13 @@ namespace LibLSLCC.Formatter.Visitor
         public void WriteAndFlush(ILSLCompilationUnitNode node, TextWriter writer, bool closeStream = true)
         {
             compilationUnitNode = node;
-            comments.AddRange(node.Comments);
 
+            foreach (var comment in node.Comments)
+            {
+                comments.AddLast(comment);
+            }
+
+            
 
             Writer = writer;
 
@@ -283,8 +288,8 @@ namespace LibLSLCC.Formatter.Visitor
                     if (((ct + 1) < node.GlobalVariableDeclarations.Count) && comment.Start > gvar.SourceCodeRange.StopIndex &&
                         comment.Start < node.GlobalVariableDeclarations[ct + 1].SourceCodeRange.StartIndex)
                     {
-                        compilationUnitNode.Comments.
                         Writer.Write(comment.Text + "\n");
+                        comments.Remove(comment);
                     }
                 }
 
