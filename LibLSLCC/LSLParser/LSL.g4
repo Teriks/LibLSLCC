@@ -8,6 +8,17 @@ grammar LSL;
 
 @lexer::members {
  	public List<LSLComment> Comments = new List<LSLComment>();
+
+
+	private static int CountStringLines(string str){
+		int cnt=0;
+		foreach(var c in str){
+			if(c == '\n'){
+				cnt++;
+			}
+		}
+		return cnt;
+	}
 }
 
 TYPE:  'list' | 'vector' | 'float' | 'integer' | 'string' | 'rotation' | 'quaternion' | 'key';
@@ -378,7 +389,10 @@ BlockComment
 					{
 						Text = this.Text, 
 						Start = this.TokenStartCharIndex,
-						End = this.Text.Length + this.TokenStartCharIndex
+						End = this.Text.Length + this.TokenStartCharIndex,
+                        StartLine = this.TokenStartLine,
+                        StartColumn = this.TokenStartColumn,
+                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
 					});
 				} -> channel(HIDDEN)
 ;
@@ -389,7 +403,10 @@ LineComment
 					{
 						Text = this.Text, 
 						Start = this.TokenStartCharIndex,
-						End = this.Text.Length + this.TokenStartCharIndex
+						End = this.Text.Length + this.TokenStartCharIndex,
+                        StartLine = this.TokenStartLine,
+                        StartColumn = this.TokenStartColumn,
+                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
 					});
 				} -> channel(HIDDEN)
 ;

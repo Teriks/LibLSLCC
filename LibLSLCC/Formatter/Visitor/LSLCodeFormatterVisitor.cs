@@ -264,90 +264,212 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+        public IEnumerable<LSLComment> GetComments(int sourceRangeStart, int sourceRangeEnd, bool remove = false)
+        {
+            var first = comments.First;
 
+            while (first != null)
+            {
+                var next = first.Next;
+                var comment = first.Value;
+
+                if (comment.Start >= sourceRangeStart &&  comment.End <= sourceRangeEnd)
+                {
+                        yield return comment;
+                        if (remove)
+                        {
+                            comments.Remove(first);
+                        }
+                        
+                }
+                first = next;
+            }
+        }
 
         public override bool VisitCompilationUnit(ILSLCompilationUnitNode node)
         {
 
+            var nodes = node.GlobalVariableDeclarations.Concat<ILSLReadOnlySyntaxTreeNode>(node.FunctionDeclarations).ToList();
 
-            int ct = 0;
+            nodes.Sort((emp1, emp2) => { return emp1.SourceCodeRange.StartIndex.CompareTo(emp2.SourceCodeRange.StartIndex); });
+
+
+            int cnt = 0;
             int lastStopIndex = 0;
+            int lastStopLine = 1;
 
-            foreach (var gvar in node.GlobalVariableDeclarations)
+            List<LSLComment> comments;
+            int spaceBetween;
+
+            ILSLReadOnlySyntaxTreeNode next;
+
+
+            if (nodes.Count > 0)
             {
+                comments = GetComments(0, nodes.First().SourceCodeRange.StartIndex, true).ToList();
+                foreach (var comment in comments)
+                {
+                    Writer.Write(comment.Text + "\n");
+                }
 
+            }
+            
 
-                Visit(gvar);
+            foreach (var n in nodes)
+            {
+               
+                Visit(n);
 
+                if ((cnt + 1) < nodes.Count) {
+                    next = nodes[cnt + 1];
 
+                    comments = GetComments(n.SourceCodeRange.StopIndex, next.SourceCodeRange.StartIndex, true).ToList();
+
+                    if (comments.Count == 0){
+                        spaceBetween = next.SourceCodeRange.LineStart - n.SourceCodeRange.LineEnd;
+                    }
+                    else{
+                        spaceBetween = comments.First().StartLine - n.SourceCodeRange.LineEnd;
+                    }
+
+                    while (spaceBetween != 0){
+                        Writer.Write("\n");
+                        spaceBetween--;
+                    }
+
+                    foreach (var comment in comments){
+                        Writer.Write(comment.Text + "\n");
+                    }
                 
-                Writer.Write(";\n");
-
-                foreach (var comment in comments)
-                {
-                    if (((ct + 1) < node.GlobalVariableDeclarations.Count) && comment.Start > gvar.SourceCodeRange.StopIndex &&
-                        comment.Start < node.GlobalVariableDeclarations[ct + 1].SourceCodeRange.StartIndex)
-                    {
-                        Writer.Write(comment.Text + "\n");
-                        comments.Remove(comment);
-                    }
                 }
 
-                lastStopIndex = gvar.SourceCodeRange.StopIndex;
-                ct++;
+                lastStopIndex = n.SourceCodeRange.StopIndex;
+                lastStopLine = n.SourceCodeRange.LineEnd;
+                cnt++;
             }
 
-           
-            foreach (var comment in comments)
+
+            next = node.DefaultState;
+            comments = GetComments(lastStopIndex, next.SourceCodeRange.StartIndex, true).ToList();
+
+            if (comments.Count == 0)
             {
-                if ((node.FunctionDeclarations.Count > 0) && comment.Start > lastStopIndex &&
-                    comment.Start < node.FunctionDeclarations.First().SourceCodeRange.StartIndex)
-                {
-                    Writer.Write(comment.Text + "\n");
-                }
+                spaceBetween = next.SourceCodeRange.LineStart - lastStopLine;
+            }
+            else
+            {
+                spaceBetween = comments.First().StartLine - lastStopLine;
             }
 
-            ct = 0;
-
-
-            foreach (var func in node.FunctionDeclarations)
+            while (spaceBetween != 0)
             {
-                Visit(func);
                 Writer.Write("\n");
-
-                foreach (var comment in comments)
-                {
-                    if (((ct + 1) < node.FunctionDeclarations.Count) && comment.Start > func.SourceCodeRange.StopIndex &&
-                        comment.Start < node.FunctionDeclarations[ct + 1].SourceCodeRange.StartIndex)
-                    {
-                        
-                        Writer.Write(comment.Text + "\n");
-                    }
-                }
-
-                lastStopIndex = func.SourceCodeRange.StopIndex;
-                ct++;
+                spaceBetween--;
             }
-
-
 
             foreach (var comment in comments)
             {
-                if (comment.Start > lastStopIndex &&
-                    comment.Start < node.DefaultState.SourceCodeRange.StartIndex)
-                {
-                    Writer.Write(comment.Text + "\n");
-                }
+                Writer.Write(comment.Text + "\n");
             }
+
+
+            lastStopIndex = node.DefaultState.SourceCodeRange.StopIndex;
+            lastStopLine = node.DefaultState.SourceCodeRange.LineEnd;
 
             Visit(node.DefaultState);
-            Writer.Write("\n");
 
 
-            foreach (var st in node.StateDeclarations)
+            if (node.StateDeclarations.Count > 0)
             {
-                Visit(st);
-                Writer.Write("\n");
+
+                next = node.StateDeclarations.First();
+
+                comments = GetComments(lastStopIndex, next.SourceCodeRange.StartIndex, true).ToList();
+
+                if (comments.Count == 0)
+                {
+                    spaceBetween = next.SourceCodeRange.LineStart - lastStopLine;
+                }
+                else
+                {
+                    spaceBetween = comments.First().StartLine - lastStopLine;
+                }
+
+                while (spaceBetween != 0)
+                {
+                    Writer.Write("\n");
+                    spaceBetween--;
+                }
+
+                foreach (var comment in comments)
+                {
+                    Writer.Write(comment.Text + "\n");
+                }
+
+            }
+            else
+            {
+                comments = GetComments(lastStopIndex, int.MaxValue, true).ToList();
+
+
+                if (comments.Count > 0)
+                {
+
+                    spaceBetween = comments.First().StartLine - lastStopLine;
+
+
+                    while (spaceBetween != 0)
+                    {
+                        Writer.Write("\n");
+                        spaceBetween--;
+                    }
+
+                    foreach (var comment in comments)
+                    {
+                        Writer.Write(comment.Text + "\n");
+                    }
+                }
+
+            }
+
+            cnt = 0;
+
+
+            foreach (var n in node.StateDeclarations)
+            {
+                Visit(n);
+
+                if ((cnt + 1) < node.StateDeclarations.Count)
+                {
+                    next = node.StateDeclarations[cnt + 1];
+
+                    comments = GetComments(n.SourceCodeRange.StopIndex, next.SourceCodeRange.StartIndex, true).ToList();
+
+                    if (comments.Count == 0)
+                    {
+                        spaceBetween = next.SourceCodeRange.LineStart - n.SourceCodeRange.LineEnd;
+                    }
+                    else
+                    {
+                        spaceBetween = comments.First().StartLine - n.SourceCodeRange.LineEnd;
+                    }
+
+                    while (spaceBetween != 0)
+                    {
+                        Writer.Write("\n");
+                        spaceBetween--;
+                    }
+
+                    foreach (var comment in comments)
+                    {
+                        Writer.Write(comment.Text + "\n");
+                    }
+
+                }
+
+                lastStopIndex = n.SourceCodeRange.StopIndex;
+                lastStopLine = n.SourceCodeRange.LineEnd;
+                cnt++;
             }
 
             return true;
@@ -378,7 +500,7 @@ namespace LibLSLCC.Formatter.Visitor
         {
             Writer.Write(node.Name+"(");
             Visit(node.ParameterListNode);
-            Writer.Write(")\n");
+            Writer.Write(")");
             Visit(node.EventBodyNode);
 
             return true;
@@ -386,7 +508,15 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
-            Writer.Write(node.ReturnTypeString +" "+node.Name+"(");
+            if (node.ReturnType != CodeValidator.Enums.LSLType.Void)
+            {
+                Writer.Write(node.ReturnTypeString + " " + node.Name + "(");
+            }
+            else
+            {
+                Writer.Write(node.Name + "(");
+            }
+
             Visit(node.ParameterListNode);
             Writer.Write(")");
             Visit(node.FunctionBodyNode);
@@ -394,20 +524,31 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
-        public override bool VisitDefaultState(ILSLStateScopeNode node)
+        public override bool VisitState(ILSLStateScopeNode node)
         {
-            Writer.Write("default\n{\n");
+            if (node.IsDefaultState)
+            {
+                Writer.Write("default\n{\n");
+            }
+            else
+            {
+                Writer.Write("state "+node.StateName+"\n{\n");
+            }
 
             indentLevel++;
 
-
-
-            foreach (var eventHandler in node.EventHandlers)
+            var cnt = node.EventHandlers.Count-1;
+            int i;
+            for (i = 0; i < cnt; i++)
             {
                 Writer.Write(genIndent());
-                Visit(eventHandler);
+                Visit(node.EventHandlers[i]);
                 Writer.Write("\n\n");
+
             }
+
+            Writer.Write(genIndent());
+            Visit(node.EventHandlers[i]);
 
             indentLevel--;
 
@@ -416,25 +557,6 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
-        public override bool VisitDefinedState(ILSLStateScopeNode node)
-        {
-            Writer.Write("state "+node.StateName+"\n{");
-
-            indentLevel++;
-
-            foreach (var eventHandler in node.EventHandlers)
-            {
-                Writer.Write(genIndent());
-                Visit(eventHandler);
-                Writer.Write("\n\n");
-            }
-
-            indentLevel--;
-
-            Writer.Write("}");
-
-            return true;
-        }
 
         public override bool VisitParameterDefinition(ILSLParameterNode node)
         {
@@ -468,8 +590,16 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitReturnStatement(ILSLReturnStatementNode node)
         {
-            Writer.Write("return ");
-            Visit(node.ReturnExpression);
+            if (node.HasReturnExpression)
+            {
+                Writer.Write("return ");
+                Visit(node.ReturnExpression);
+                Writer.Write(";");
+            }
+            else
+            {
+                Writer.Write("return;");
+            }
             return true;
         }
 
@@ -516,7 +646,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitElseIfStatement(ILSLElseIfStatementNode node)
         {
-            Writer.Write("else if(");
+            Writer.Write("\n"+genIndent()+"else if(");
             Visit(node.ConditionExpression);
             Writer.Write(")");
             Visit(node.Code);
@@ -525,7 +655,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitElseStatement(ILSLElseStatementNode node)
         {
-            Writer.Write("else");
+            Writer.Write("\n" + genIndent() + "else");
             Visit(node.Code);
             return true;
         }
@@ -533,6 +663,7 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitExpressionStatement(ILSLExpressionStatementNode node)
         {
             Visit(node.Expression);
+            Writer.Write(";");
             return true;
         }
 
@@ -540,6 +671,12 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitGlobalVariableDeclaration(ILSLVariableDeclarationNode node)
         {
             Writer.Write(node.TypeString+" "+node.Name);
+            if (node.HasDeclarationExpression)
+            {
+                Writer.Write(" = ");
+                Visit(node.DeclarationExpression);
+            }
+            Writer.Write(";");
 
             return true;
         }
@@ -547,6 +684,12 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitLocalVariableDeclaration(ILSLVariableDeclarationNode node)
         {
             Writer.Write(node.TypeString + " " + node.Name);
+            if (node.HasDeclarationExpression)
+            {
+                Writer.Write(" = ");
+                Visit(node.DeclarationExpression);
+            }
+            Writer.Write(";");
 
             return true;
         }
@@ -561,15 +704,58 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitMultiStatementCodeScope(ILSLCodeScopeNode node)
         {
-            Writer.Write(genIndent()+"{\n");
+            Writer.Write("\n"+genIndent()+"{\n");
 
             indentLevel++;
 
-            foreach (var n in node.CodeStatements)
+            var ct = 0;
+            var lastStopIndex = node.SourceCodeRange.StartIndex;
+
+            List<ILSLReadOnlyCodeStatement> codeStatements = new List<ILSLReadOnlyCodeStatement>();
+            codeStatements.AddRange(node.CodeStatements);
+
+            if (codeStatements.Count > 0)
+            {
+                
+
+                foreach (var comment in
+                        GetComments(lastStopIndex,
+                        codeStatements[0].SourceCodeRange.StartIndex, true))
+                {
+
+                    Writer.Write(genIndent()+comment.Text + "\n");
+                }
+
+                lastStopIndex = codeStatements[0].SourceCodeRange.StopIndex;
+            }
+
+            foreach (var n in codeStatements)
             {
                 Writer.Write(genIndent());
                 Visit(n);
-                Writer.Write(";\n");
+                Writer.Write("\n");
+
+                if ((ct + 1) < codeStatements.Count)
+                {
+                    foreach (var comment in
+                        GetComments(n.SourceCodeRange.StopIndex,
+                        codeStatements[ct + 1].SourceCodeRange.StartIndex, true))
+                    {
+
+                        Writer.Write(genIndent() + comment.Text + "\n");
+                    }
+                }
+
+                lastStopIndex = n.SourceCodeRange.StopIndex;
+            }
+
+
+            foreach (var comment in
+                        GetComments(lastStopIndex,
+                        node.SourceCodeRange.StopIndex, true))
+            {
+
+                Writer.Write(genIndent() + comment.Text + "\n");
             }
 
             indentLevel--;

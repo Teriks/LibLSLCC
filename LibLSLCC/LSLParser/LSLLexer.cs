@@ -63,6 +63,17 @@ public partial class LSLLexer : Lexer {
 	 	public List<LSLComment> Comments = new List<LSLComment>();
 
 
+		private static int CountStringLines(string str){
+			int cnt=0;
+			foreach(var c in str){
+				if(c == '\n'){
+					cnt++;
+				}
+			}
+			return cnt;
+		}
+
+
 	public LSLLexer(ICharStream input)
 		: base(input)
 	{
@@ -121,7 +132,10 @@ public partial class LSLLexer : Lexer {
 							{
 								Text = this.Text, 
 								Start = this.TokenStartCharIndex,
-								End = this.Text.Length + this.TokenStartCharIndex
+								End = this.Text.Length + this.TokenStartCharIndex,
+		                        StartLine = this.TokenStartLine,
+		                        StartColumn = this.TokenStartColumn,
+		                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
 							});
 						 break;
 		}
@@ -133,7 +147,10 @@ public partial class LSLLexer : Lexer {
 							{
 								Text = this.Text, 
 								Start = this.TokenStartCharIndex,
-								End = this.Text.Length + this.TokenStartCharIndex
+								End = this.Text.Length + this.TokenStartCharIndex,
+		                        StartLine = this.TokenStartLine,
+		                        StartColumn = this.TokenStartColumn,
+		                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
 							});
 						 break;
 		}
