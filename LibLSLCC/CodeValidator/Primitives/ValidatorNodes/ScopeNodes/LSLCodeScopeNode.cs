@@ -298,6 +298,37 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
 
 
+        private bool IsJumpDead(LSLJumpStatementNode jump)
+        {
+            if (jump.IsDeadCode) return true;
+
+
+            ILSLSyntaxTreeNode tn = jump.Parent;
+
+
+            ILSLCodeStatement n = tn as ILSLCodeStatement;
+            while (n == null || !n.IsDeadCode)
+            {
+                tn = tn.Parent;
+
+                if (tn == null || tn is ILSLEventHandlerNode || tn is ILSLFunctionDeclarationNode)
+                {
+                    break;
+                }
+
+                n = tn as ILSLCodeStatement;
+
+                if (n != null && n.IsDeadCode)
+                {
+                    return true;
+                }
+              
+            }
+
+            return false;
+           
+        }
+
         /// <summary>
         ///     Add a code statement to the code scope, the dead code detection algorithm is encapsulated inside
         ///     of this object, the algorithm is on-line and most of its logic occurs in this function
@@ -434,26 +465,49 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
                     //if the return path was a top level return statement
                     //save it, otherwise null
                     ReturnStatementNode = statement as LSLReturnStatementNode;
+
+                    _afterLabelJumpDownOverReturn = false;
                 }
                 else if (HasReturnPath)
                 {
-                    //this code is after a return path, everything after is dead
+                     //this code is after a return path, everything after is dead
 
-                    if (FirstDeadStatementNode == null)
-                    {
-                        FirstDeadStatementNode = statement;
-                        FirstDeadStatementNodeContext = context;
+                        var label = statement as LSLLabelStatementNode;
+
+                        var dead = !_afterLabelJumpDownOverReturn;
+
+                        if (label != null)
+                        {
+                            if (label.JumpsToHere.Any(x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
+                            {
+                                dead = false;
+                                _afterLabelJumpDownOverReturn = true;
+                                HasReturnPath = false;
+                            }
+                        }
+
+
+                        if(dead){
+                            if (FirstDeadStatementNode == null)
+                            {
+                                FirstDeadStatementNode = statement;
+                                FirstDeadStatementNodeContext = context;
+                            }
+
+                            if (!_insideDeadCode)
+                            {
+                                _deadCodeSegmentsStack.Push(
+                                    new LSLDeadCodeSegment(LSLDeadCodeType.AfterReturnPath));
+                            }
+
+
+                            _insideDeadCode = true;
+                            _insideDeadCodeAfterReturnPath = true;
+
+                        }
+
                     }
-
-                    if (!_insideDeadCode)
-                    {
-                        _deadCodeSegmentsStack.Push(
-                            new LSLDeadCodeSegment(LSLDeadCodeType.AfterReturnPath));
-                    }
-
-
-                    _insideDeadCode = true;
-                }
+                
             }
             else
             {
@@ -464,7 +518,35 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
             if (_insideDeadCode)
             {
-                if (_inDeadJumpedOverCode && statement.StatementIndex < _deadCodeJumpOverEnding)
+                if (_insideDeadCodeAfterReturnPath)
+                {
+                    var label = statement as LSLLabelStatementNode;
+
+                    var dead = true;
+
+                    if (label != null)
+                    {
+                        if (label.JumpsToHere.Any(x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
+                        {
+                            dead = false;
+                            _afterLabelJumpDownOverReturn = true;
+                            HasReturnPath = false;
+                        }
+                    }
+
+                    if (dead)
+                    {
+                        statement.IsDeadCode = true;
+                        statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
+                        _deadCodeSegmentsStack.Peek().AddStatement(statement);
+                    }
+                    else
+                    {
+                        _insideDeadCode = false;
+                        _insideDeadCodeAfterReturnPath = false;
+                    }
+                }
+                else if (_inDeadJumpedOverCode && statement.StatementIndex < _deadCodeJumpOverEnding)
                 {
                     statement.IsDeadCode = true;
                     statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
@@ -547,8 +629,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         private bool _insideDeadCode;
 
         private ILSLCodeStatement _lastStatementAdded;
-
-
+        private bool _insideDeadCodeAfterReturnPath;
+        private bool _afterLabelJumpDownOverReturn;
         #endregion
     }
 }

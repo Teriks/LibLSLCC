@@ -1460,7 +1460,10 @@ namespace LibLSLCC.Formatter.Visitor
         {
             Writer.Write("\n"+genIndent()+"else");
 
-            WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.IfKeywordSourceCodeRange);
+            if (!WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.IfKeywordSourceCodeRange))
+            {
+                Writer.Write(" ");
+            }
 
             Writer.Write("if");
 
@@ -1477,10 +1480,6 @@ namespace LibLSLCC.Formatter.Visitor
 
             Writer.Write(")");
 
-
-
-            Visit(node.ConditionExpression);
-            Writer.Write(")");
 
             var comments = GetComments(node.ConditionExpression.SourceCodeRange.StopIndex, node.Code.SourceCodeRange.StartIndex).ToList();
 

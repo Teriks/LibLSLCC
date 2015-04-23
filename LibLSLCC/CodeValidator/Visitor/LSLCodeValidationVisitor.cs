@@ -1288,7 +1288,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 var result = new LSLCodeScopeNode(context.statement, ScopingManager.CurrentScopeId, ScopingManager.CurrentCodeScopeType);
 
-
+            
                 result.AddCodeStatement(code, context.statement);
                 result.EndScope();
 
