@@ -14,6 +14,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
         T VisitForLoopAfterthoughts(ILSLExpressionListNode node);
 
+        T VisitForLoopInitExpressions(ILSLExpressionListNode node);
+
 
         T VisitFloatLiteral(ILSLFloatLiteralNode node);
 

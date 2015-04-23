@@ -930,7 +930,7 @@ private static class UTILITIES
 
             if (node.HasInitExpression)
             {
-                Visit(node.InitExpression);
+                Visit(node.InitExpressionsList);
             }
 
             Writer.Write(";");

@@ -60,18 +60,39 @@ public partial class LSLLexer : Lexer {
 	};
 
 
-	 	public List<LSLComment> Comments = new List<LSLComment>();
 
+		public List<LSLComment> Comments = new List<LSLComment>();
 
-		private static int CountStringLines(string str){
+	    private struct LineCount
+	    {
+	        public int Lines;
+	        public int EndColumn;
+	    }
+	    private static LineCount CountStringLines(int startColumn, string str)
+	    {
 			int cnt=0;
+	        int lastLineStart = 0;
+	        int i = 0;
+	        int endColumn;
 			foreach(var c in str){
 				if(c == '\n'){
 					cnt++;
+	                lastLineStart = i+1;
 				}
+	            i++;
 			}
-			return cnt;
+
+	        if (lastLineStart == 0)
+	        {
+	            endColumn = (startColumn + str.Length) - 1;
+	        }
+	        else
+	        {
+	            endColumn = (i - lastLineStart) - 1;
+	        }
+	        return new LineCount { Lines = cnt, EndColumn = endColumn };
 		}
+
 
 
 	public LSLLexer(ICharStream input)
@@ -128,14 +149,17 @@ public partial class LSLLexer : Lexer {
 	private void BlockComment_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 		case 0: 
+		                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
 							Comments.Add(new LSLComment()
 							{
 								Text = this.Text, 
-								Start = this.TokenStartCharIndex,
-								End = this.Text.Length + this.TokenStartCharIndex,
-		                        StartLine = this.TokenStartLine,
-		                        StartColumn = this.TokenStartColumn,
-		                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
+		                        SourceCodeRange = new LSLSourceCodeRange(
+		                            this.TokenStartLine,
+		                            this.TokenStartColumn,
+		                            this.TokenStartLine + lineData.Lines, 
+		                            lineData.EndColumn, 
+		                            this.TokenStartCharIndex, 
+		                            this.Text.Length+this.TokenStartCharIndex)
 							});
 						 break;
 		}
@@ -143,14 +167,17 @@ public partial class LSLLexer : Lexer {
 	private void LineComment_action(RuleContext _localctx, int actionIndex) {
 		switch (actionIndex) {
 		case 1: 
+		                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
 							Comments.Add(new LSLComment()
 							{
 								Text = this.Text, 
-								Start = this.TokenStartCharIndex,
-								End = this.Text.Length + this.TokenStartCharIndex,
-		                        StartLine = this.TokenStartLine,
-		                        StartColumn = this.TokenStartColumn,
-		                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
+		                        SourceCodeRange = new LSLSourceCodeRange(
+		                            this.TokenStartLine,
+		                            this.TokenStartColumn,
+		                            this.TokenStartLine + lineData.Lines, 
+		                            lineData.EndColumn, 
+		                            this.TokenStartCharIndex, 
+		                            this.Text.Length+this.TokenStartCharIndex)
 							});
 						 break;
 		}

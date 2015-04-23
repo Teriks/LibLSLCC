@@ -162,7 +162,15 @@ namespace LibLSLCC.CodeValidator.Primitives
             get { return _stopIndex; }
         }
 
+        public LSLSourceCodeRange GetFirstCharRange()
+        {
+            return new LSLSourceCodeRange(this.LineStart, this.ColumnStart, this.LineStart, this.ColumnStart, this.StartIndex, this.StartIndex);
+        }
 
+        public LSLSourceCodeRange GetLastCharRange()
+        {
+            return new LSLSourceCodeRange(this.LineEnd, this.ColumnEnd, this.LineEnd, this.ColumnEnd, this.StopIndex, this.StopIndex);
+        }
 
         public void ExtendTo(ILSLReadOnlySyntaxTreeNode statement)
         {

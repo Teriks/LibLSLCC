@@ -100,6 +100,20 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        public virtual void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
+            int expressionCountTotal)
+        {
+            if (expressionCountTotal == 1)
+            {
+                OnWarning(location, "For loop initializer expression has no effect");
+            }
+            else
+            {
+                OnWarning(location,
+                    string.Format("For loop initializer number {0} has no effect", expressionIndex + 1));
+            }
+        }
+
 
         public virtual void RedundantCast(LSLSourceCodeRange location, LSLType castType)
         {

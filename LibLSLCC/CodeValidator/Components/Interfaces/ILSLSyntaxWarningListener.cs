@@ -31,6 +31,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, int expressionIndex, int expressionCountTotal);
 
+        void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex, int expressionCountTotal);
+
         void RedundantCast(LSLSourceCodeRange location, LSLType castType);
 
         void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function);

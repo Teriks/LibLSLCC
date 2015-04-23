@@ -7,18 +7,39 @@ grammar LSL;
 }
 
 @lexer::members {
- 	public List<LSLComment> Comments = new List<LSLComment>();
 
+	public List<LSLComment> Comments = new List<LSLComment>();
 
-	private static int CountStringLines(string str){
+    private struct LineCount
+    {
+        public int Lines;
+        public int EndColumn;
+    }
+    private static LineCount CountStringLines(int startColumn, string str)
+    {
 		int cnt=0;
+        int lastLineStart = 0;
+        int i = 0;
+        int endColumn;
 		foreach(var c in str){
 			if(c == '\n'){
 				cnt++;
+                lastLineStart = i+1;
 			}
+            i++;
 		}
-		return cnt;
+
+        if (lastLineStart == 0)
+        {
+            endColumn = (startColumn + str.Length) - 1;
+        }
+        else
+        {
+            endColumn = (i - lastLineStart) - 1;
+        }
+        return new LineCount { Lines = cnt, EndColumn = endColumn };
 	}
+
 }
 
 TYPE:  'list' | 'vector' | 'float' | 'integer' | 'string' | 'rotation' | 'quaternion' | 'key';
@@ -142,11 +163,11 @@ DOT: '.';
 
 
 vectorLiteral:
-	LESS_THAN vector_x=expression COMMA vector_y=expression COMMA vector_z=expression GREATER_THAN
+	LESS_THAN vector_x=expression comma_one=COMMA vector_y=expression comma_two=COMMA vector_z=expression GREATER_THAN
 	;
 
 rotationLiteral:
-	LESS_THAN rotation_x=expression COMMA rotation_y=expression COMMA rotation_z=expression COMMA rotation_s=expression GREATER_THAN
+	LESS_THAN rotation_x=expression comma_one=COMMA rotation_y=expression comma_two=COMMA rotation_z=expression comma_three=COMMA rotation_s=expression GREATER_THAN
 	;
 
 
@@ -166,17 +187,17 @@ codeScopeOrSingleBlockStatement:
 
 //condition is optional so an error can be provided when its missing
 elseIfStatement:
-	ELSE IF O_PAREN condition=expression? C_PAREN code=codeScopeOrSingleBlockStatement
+	else_keyword=ELSE if_keyword=IF open_parenth=O_PAREN condition=expression? close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
 	;
 
 
 elseStatement:
-	ELSE code=codeScopeOrSingleBlockStatement
+	else_keyword=ELSE code=codeScopeOrSingleBlockStatement
 	;
 
 //condition is optional so an error can be provided when its missing
 ifStatement:
-	IF O_PAREN condition=expression? C_PAREN code=codeScopeOrSingleBlockStatement
+	if_keyword=IF open_parenth=O_PAREN condition=expression? close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
 	;
 
 
@@ -186,7 +207,7 @@ controlStructure:
 
 
 codeScope:
-	O_BRACE codeStatement* C_BRACE
+	open_brace=O_BRACE codeStatement* close_brace=C_BRACE
 	;
 
 //loop_condition is optional so an error can be provided when its missing
@@ -203,7 +224,7 @@ whileLoop:
 
 //for loops without a loop condition are allowed
 forLoop:
-	loop_keyword=FOR O_PAREN loop_init=expression? SEMI_COLON loop_condition=expression? SEMI_COLON expression_list=optionalExpressionList C_PAREN code=codeScopeOrSingleBlockStatement
+	loop_keyword=FOR open_parenth=O_PAREN loop_init=optionalExpressionList first_semi_colon=SEMI_COLON loop_condition=expression? second_semi_colon=SEMI_COLON expression_list=optionalExpressionList close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
 	;
 
 
@@ -251,12 +272,12 @@ stateChangeStatement:
 
 
 localVariableDeclaration: 
-                     variable_type=TYPE variable_name=ID EQUAL variable_value=expression SEMI_COLON 
+                     variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression SEMI_COLON 
                    | variable_type=TYPE variable_name=ID SEMI_COLON
 				   ;
 
 globalVariableDeclaration:
-					 variable_type=TYPE variable_name=ID EQUAL variable_value=expression SEMI_COLON 
+					 variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression SEMI_COLON 
                    | variable_type=TYPE variable_name=ID SEMI_COLON
 				   ;
 
@@ -361,13 +382,13 @@ eventHandler:
 instead of a parser token type mismatch
 */
 definedState:
-	STATE state_name=(ID|DEFAULT) O_BRACE eventHandler* C_BRACE
+	STATE state_name=(ID|DEFAULT) open_brace=O_BRACE eventHandler* close_brace=C_BRACE
 	;
 
 
 
 defaultState:
-	state_name=DEFAULT O_BRACE eventHandler* C_BRACE
+	state_name=DEFAULT open_brace=O_BRACE eventHandler* close_brace=C_BRACE
 	;
 
 
@@ -385,28 +406,34 @@ Newline
 
 BlockComment
 : '/*' .*? '*/' {
+                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
 					Comments.Add(new LSLComment()
 					{
 						Text = this.Text, 
-						Start = this.TokenStartCharIndex,
-						End = this.Text.Length + this.TokenStartCharIndex,
-                        StartLine = this.TokenStartLine,
-                        StartColumn = this.TokenStartColumn,
-                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
+                        SourceCodeRange = new LSLSourceCodeRange(
+                            this.TokenStartLine,
+                            this.TokenStartColumn,
+                            this.TokenStartLine + lineData.Lines, 
+                            lineData.EndColumn, 
+                            this.TokenStartCharIndex, 
+                            this.Text.Length+this.TokenStartCharIndex)
 					});
 				} -> channel(HIDDEN)
 ;
 
 LineComment
 : '//' ~[\r\n]* {
+                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
 					Comments.Add(new LSLComment()
 					{
 						Text = this.Text, 
-						Start = this.TokenStartCharIndex,
-						End = this.Text.Length + this.TokenStartCharIndex,
-                        StartLine = this.TokenStartLine,
-                        StartColumn = this.TokenStartColumn,
-                        EndLine = this.TokenStartLine+CountStringLines(this.Text)
+                        SourceCodeRange = new LSLSourceCodeRange(
+                            this.TokenStartLine,
+                            this.TokenStartColumn,
+                            this.TokenStartLine + lineData.Lines, 
+                            lineData.EndColumn, 
+                            this.TokenStartCharIndex, 
+                            this.Text.Length+this.TokenStartCharIndex)
 					});
 				} -> channel(HIDDEN)
 ;

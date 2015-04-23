@@ -578,6 +578,15 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        public void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex, int expressionCountTotal)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                 () =>
+                     SyntaxWarningListener.ForLoopInitExpressionHasNoEffect(location, expressionIndex,
+                         expressionCountTotal));
+        }
+
+
 
         void ILSLSyntaxWarningListener.RedundantCast(LSLSourceCodeRange location, LSLType castType)
         {
@@ -695,5 +704,7 @@ namespace LibLSLCC.CodeValidator.Components
                 _warningActionQueue.DequeueValue()();
             }
         }
+
+
     }
 }

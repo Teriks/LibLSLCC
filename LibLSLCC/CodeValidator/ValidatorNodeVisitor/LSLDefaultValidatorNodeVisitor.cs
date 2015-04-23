@@ -58,6 +58,18 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
 
         /// <summary>
+        ///     Default implementation calls VisitExpressionList(node)
+        /// </summary>
+        /// <param name="node">An object describing a list of expressions in the context of for loop initializer expressions</param>
+        /// <returns>VisitExpressionList(node)</returns>
+        public virtual T VisitForLoopInitExpressions(ILSLExpressionListNode node)
+        {
+            return VisitExpressionList(node);
+        }
+
+
+
+        /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
         /// <param name="node">An object describing an float literal in an expression tree</param>
@@ -265,7 +277,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             if (node.HasInitExpression)
             {
-                Visit(node.InitExpression);
+                Visit(node.InitExpressionsList);
             }
 
             if (node.HasConditionExpression)

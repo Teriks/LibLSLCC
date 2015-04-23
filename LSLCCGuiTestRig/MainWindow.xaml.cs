@@ -692,7 +692,7 @@ default{
 
             var validated = ValidateCurrentEditorText();
 
-            if (validated == null || validated.HasErrors)
+            if (validated == null)
             {
                 return;
             }
@@ -705,7 +705,15 @@ default{
             LslEditor.TextEditor.Text = str.ToString();
 
 
+            CompilerMessages.Items.Clear();
 
+            validated = ValidateCurrentEditorText();
+
+
+            if (validated != null)
+            {
+                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected."));
+            }
         }
     }
 

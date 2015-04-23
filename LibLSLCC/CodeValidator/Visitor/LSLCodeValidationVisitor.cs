@@ -265,6 +265,64 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
+
+
+        private ILSLSyntaxTreeNode VisitForLoopInitExpressions(LSLParser.OptionalExpressionListContext context)
+        {
+            if (context == null)
+            {
+                throw LSLCodeValidatorInternalError
+                    .VisitContextInvalidState("VisitForLoopInitExpressions");
+            }
+
+
+            var result = new LSLExpressionListNode(context, LSLExpressionListType.ForLoopInitExpressions);
+
+            var expressionList = context.expressionList();
+            if (expressionList == null)
+            {
+                return result;
+            }
+
+            if (expressionList.children == null)
+            {
+                throw LSLCodeValidatorInternalError
+                    .VisitContextInvalidState("VisitForLoopInitExpressions");
+            }
+
+            var expressionContexts = expressionList.children.Where(x => x is LSLParser.ExpressionContext).ToList();
+
+
+            var expressionIndex = 0;
+
+            foreach (var expressionContext in expressionContexts)
+            {
+                var ctx = (LSLParser.ExpressionContext)expressionContext;
+                var expressionHasEffect = DoesExpressionHaveEffect(ctx);
+
+                if (!expressionHasEffect)
+                {
+                    SyntaxWarningListener.ForLoopInitExpressionHasNoEffect(
+                        new LSLSourceCodeRange(ctx),
+                        expressionIndex, expressionContexts.Count);
+                }
+
+                var expression = VisitTopOfExpression(ctx);
+                if (expression.HasErrors)
+                {
+                    result.HasErrors = true;
+                }
+
+                result.AddExpression(expression);
+
+                expressionIndex++;
+            }
+
+
+            return ReturnFromVisit(context, result);
+        }
+
+
         private ILSLSyntaxTreeNode VisitFunctionCallParameters(LSLParser.OptionalExpressionListContext context,
             LSLExpressionListType type)
         {
@@ -1135,7 +1193,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             ScopingManager.IncrementScopeId();
 
 
-            var result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId);
+            var result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId, ScopingManager.CurrentCodeScopeType);
 
 
             var codeStatementContexts = context.codeStatement();
@@ -1228,7 +1286,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 ScopingManager.IncrementScopeId();
 
 
-                var result = new LSLCodeScopeNode(context.statement, ScopingManager.CurrentScopeId);
+                var result = new LSLCodeScopeNode(context.statement, ScopingManager.CurrentScopeId, ScopingManager.CurrentCodeScopeType);
 
 
                 result.AddCodeStatement(code, context.statement);
@@ -1657,10 +1715,17 @@ namespace LibLSLCC.CodeValidator.Visitor
             var isError = false;
 
 
-            ILSLExprNode loopInit = null;
+            ILSLExpressionListNode loopInit = null;
             if (context.loop_init != null)
             {
-                loopInit = VisitTopOfExpression(context.loop_init);
+                loopInit = VisitForLoopInitExpressions(context.loop_init) as LSLExpressionListNode;
+
+                if (loopInit == null)
+                {
+                    throw LSLCodeValidatorInternalError
+                        .VisitReturnTypeException("VisitOptionalExpressionList",
+                            typeof(LSLExpressionListNode));
+                }
 
                 if (loopInit.HasErrors)
                 {
@@ -2090,7 +2155,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .VisitContextInvalidState("VisitExpr_ModifyingAssignment");
             }
 
-
+           
             var result = VisitBinaryExpression(
                 new BinaryExpressionContext(context.expr_lvalue, context.operation, context.expr_rvalue, context,
                     true));
@@ -2442,8 +2507,13 @@ namespace LibLSLCC.CodeValidator.Visitor
                 new LSLSourceCodeRange(context.OperationToken));
 
 
-            var result = new LSLBinaryExpressionNode(context.OriginalContext, exprLvalue,
-                exprRvalue, validate.ResultType, operationString)
+            var result = new LSLBinaryExpressionNode(
+                context.OriginalContext, 
+                context.OperationToken, 
+                exprLvalue,
+                exprRvalue, 
+                validate.ResultType, 
+                operationString)
             {
                 HasErrors = !validate.IsValid
             };
