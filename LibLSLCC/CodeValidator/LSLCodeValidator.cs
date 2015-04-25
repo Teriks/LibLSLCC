@@ -64,6 +64,7 @@ namespace LibLSLCC.CodeValidator
             lexer.AddErrorListener(_antlrLexerErrorHandler);
 
             var tokenStream = new CommonTokenStream(lexer);
+
             var parser = new LSLParser(tokenStream);
             parser.RemoveErrorListeners();
             parser.AddErrorListener(_antlrParserErrorHandler);
@@ -71,7 +72,9 @@ namespace LibLSLCC.CodeValidator
             var parseTree = parser.compilationUnit();
 
 
-            if (parser.NumberOfSyntaxErrors > 0)
+            
+
+            if (parser.NumberOfSyntaxErrors > 0 || _antlrLexerErrorHandler.HasErrors)
             {
                 HasSyntaxErrors = true;
                 return null;

@@ -195,12 +195,6 @@
     <Compile Include="CodeValidator\Visitor\LSLVisitorScopeTracker.cs" />
     <Compile Include="Formatter\Visitor\LSLCodeFormatterVisitor.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="LSLParser\LSL.g4.lexer.cs">
-      <DependentUpon>LSL.g4</DependentUpon>
-    </Compile>
-    <Compile Include="LSLParser\LSL.g4.parser.cs">
-      <DependentUpon>LSL.g4</DependentUpon>
-    </Compile>
     <Compile Include="LSLParser\LSLBaseListener.cs" />
     <Compile Include="LSLParser\LSLBaseVisitor.cs" />
     <Compile Include="LSLParser\LSLLexer.cs" />

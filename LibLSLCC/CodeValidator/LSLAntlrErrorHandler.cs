@@ -6,7 +6,7 @@ namespace LibLSLCC.CodeValidator
     internal class LSLAntlrErrorHandler<T> : IAntlrErrorListener<T>
     {
         private readonly ILSLSyntaxErrorListener _errorListener;
-
+        public bool HasErrors { get; private set; }
 
 
         public LSLAntlrErrorHandler(ILSLSyntaxErrorListener errorListener)
@@ -19,6 +19,7 @@ namespace LibLSLCC.CodeValidator
         public void SyntaxError(IRecognizer recognizer, T offendingSymbol, int line, int charPositionInLine, string msg,
             RecognitionException e)
         {
+            HasErrors = true;
             _errorListener.GrammarLevelSyntaxError(line,charPositionInLine, msg);
         }
     }

@@ -264,14 +264,14 @@ default{
             ILSLCompilationUnitNode validated = null;
 
 
-            var memoryStream = new MemoryStream(Encoding.Default.GetBytes(LslEditor.TextEditor.Text));
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(LslEditor.TextEditor.Text));
 
 
             try
             {
                 try
                 {
-                    using (var infile = new StreamReader(memoryStream))
+                    using (var infile = new StreamReader(memoryStream, Encoding.UTF8))
                     {
                         validated = validator.Validate(infile);
                     }
@@ -305,7 +305,7 @@ default{
             CompilerMessages.UpdateLayout();
 
             var validated = ValidateCurrentEditorText();
-            Console.Write("TEST");
+
             if (validated == null)
             {
                 return;
@@ -700,7 +700,7 @@ default{
             var formatter = new LSLCodeFormatterVisitor();
 
             StringWriter str = new StringWriter();
-            formatter.WriteAndFlush(validated, str);
+            formatter.WriteAndFlush(LslEditor.TextEditor.Text, validated, str);
 
             LslEditor.TextEditor.Text = str.ToString();
 
