@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Schema;
@@ -53,7 +52,7 @@ LSLLibraryDataSubsetsAttributeRegex();
             : base(sig)
         {
             DocumentationString = sig.DocumentationString;
-            this._subsets = new HashSet<string>(sig._subsets);
+            _subsets = new HashSet<string>(sig._subsets);
         }
 
         public LSLLibraryEventSignature(string name, IEnumerable<LSLParameter> parameters)
@@ -138,7 +137,7 @@ LSLLibraryDataSubsetsAttributeRegex();
                 
                 if (reader.Name == "Subsets")
                 {
-                    this.SetSubsets(reader.Value);
+                    SetSubsets(reader.Value);
                     hasSubsets = true;
                 }
                 else if (reader.Name == "Name")

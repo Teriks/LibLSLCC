@@ -16,7 +16,7 @@ namespace LibLSLCC.CodeValidator.Components
 
             public IEnumerable<string> ParseSubsets(string parse)
             {
-                 MatchCollection matches = this.Matches(parse);
+                 MatchCollection matches = Matches(parse);
                
 
                 if (matches.Count > 1 && matches[0].Groups.Count > 1)

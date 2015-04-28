@@ -18,7 +18,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         protected LSLParameterListNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            this.SourceCodeRange = sourceRange;
+            SourceCodeRange = sourceRange;
             //this.SourceCodeRange = sourceRange;
             HasErrors = true;
         }

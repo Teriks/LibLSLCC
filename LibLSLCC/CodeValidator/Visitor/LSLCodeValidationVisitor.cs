@@ -2136,7 +2136,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private ILSLExprNode VisitTopOfExpression(LSLParser.ExpressionContext tree)
         {
-            var result = base.Visit(tree) as ILSLExprNode;
+            var result = Visit(tree) as ILSLExprNode;
 
             if (result != null)
             {
@@ -2152,7 +2152,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private ILSLExprNode VisitExpressionContent(LSLParser.ExpressionContext tree)
         {
-            var result = base.Visit(tree) as ILSLExprNode;
+            var result = Visit(tree) as ILSLExprNode;
 
             if (result != null)
             {
@@ -2701,16 +2701,8 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
             }
 
-            int checkUpToIndex;
-
-            if (functionSignature.HasVariadicParameter)
-            {
-                checkUpToIndex = functionSignature.VariadicParameterIndex;
-            }
-            else
-            {
-                checkUpToIndex = expressions.Count;
-            }
+            var checkUpToIndex = functionSignature.HasVariadicParameter ? 
+                functionSignature.VariadicParameterIndex : expressions.Count;
 
             for (; parameterNumber < checkUpToIndex; parameterNumber++)
             {

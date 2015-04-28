@@ -64,11 +64,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         }
 
 
-        ILSLCodeScopeNode ILSLDoLoopNode.Code
-        {
-            get { return Code; }
-        }
-
         ILSLCodeScopeNode ILSLLoopNode.Code
         {
             get { return Code; }
@@ -82,10 +77,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
             get { return ConditionExpression; }
         }
 
-        ILSLReadOnlyExprNode ILSLDoLoopNode.ConditionExpression
-        {
-            get { return ConditionExpression; }
-        }
 
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath

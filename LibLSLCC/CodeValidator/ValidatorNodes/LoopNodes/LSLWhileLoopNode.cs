@@ -66,26 +66,18 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         }
 
 
-        ILSLCodeScopeNode ILSLWhileLoopNode.Code
-        {
-            get { return Code; }
-        }
-
         ILSLCodeScopeNode ILSLLoopNode.Code
         {
             get { return Code; }
         }
 
 
-        ILSLReadOnlyExprNode ILSLWhileLoopNode.ConditionExpression
-        {
-            get { return ConditionExpression; }
-        }
 
         ILSLReadOnlyExprNode ILSLLoopNode.ConditionExpression
         {
             get { return ConditionExpression; }
         }
+
 
 
         public LSLDeadCodeType DeadCodeType { get; set; }

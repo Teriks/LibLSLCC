@@ -17,7 +17,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             
             string types = "(?:" + string.Join("|", dataTypes) + ")";
             const string id = "[a-zA-Z]+[a-zA-Z0-9_]*";
-            this.Regex = new Regex(before + "(?:(" + types + ")\\s+)?(" + id + ")\\((\\s*(?:\\s*" + types + "\\s+" + id + "\\s*(?:\\s*,\\s*" + types + "\\s+" + id + "\\s*)*)?)\\)" + after);
+            Regex = new Regex(before + "(?:(" + types + ")\\s+)?(" + id + ")\\((\\s*(?:\\s*" + types + "\\s+" + id + "\\s*(?:\\s*,\\s*" + types + "\\s+" + id + "\\s*)*)?)\\)" + after);
         }
 
         public LSLFunctionSignatureRegex(string before, string after) : this (new[]
@@ -89,7 +89,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             {
                 if (ReferenceEquals(null, obj)) return false;
                 if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
+                if (obj.GetType() != GetType()) return false;
                 return Equals((SimpleSignature) obj);
             }
 
@@ -116,9 +116,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                     }
 
 
-                    var sig = new SimpleSignature();
-                    sig.ReturnType = returnTypeParam;
-                    sig.Name = name;
+                    var sig = new SimpleSignature { ReturnType = returnTypeParam, Name = name };
 
                     var ps = param.Split(',');
 
@@ -144,7 +142,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         public IEnumerable<LSLFunctionSignature> GetSignatures(string inString)
         {
 
-            var matches = this.Regex.Matches(inString);
+            var matches = Regex.Matches(inString);
             foreach (Match m in matches)
             {
                 if (m.Success)

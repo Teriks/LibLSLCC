@@ -218,11 +218,7 @@ namespace LibLSLCC.CodeValidator.Components
                                         GetType().Name, pName, Name));
                             }
                         }
-                        else if (variadic.ToLower() == "false")
-                        {
-                            isVariadic = false;
-                        }
-                        else
+                        else if (variadic.ToLower() != "false")
                         {
                             throw new XmlSyntaxException(lineNumberInfo.LineNumber,
                                 string.Format(

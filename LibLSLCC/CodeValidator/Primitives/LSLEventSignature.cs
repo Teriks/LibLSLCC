@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 
@@ -12,8 +11,8 @@ namespace LibLSLCC.CodeValidator.Primitives
 
         public LSLEventSignature(LSLEventSignature other)
         {
-            this.Name = other.Name;
-            this._parameters = other._parameters.ToList();
+            Name = other.Name;
+            _parameters = other._parameters.ToList();
         }
 
         protected LSLEventSignature()

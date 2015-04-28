@@ -5,8 +5,6 @@ using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Components
@@ -2944,7 +2942,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                         if (AccumulateDuplicates || signature.Subsets.Any(subset => Subsets.Contains(subset)))
                         {
-                            base.AddValidLibraryFunction(signature);
+                            AddValidLibraryFunction(signature);
 
                         }
 
@@ -2958,7 +2956,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                         if (AccumulateDuplicates || signature.Subsets.Any(subset => Subsets.Contains(subset)))
                         {
-                            base.AddValidEventHandler(signature);
+                            AddValidEventHandler(signature);
                         }
                         
 
@@ -2971,7 +2969,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                         if (AccumulateDuplicates || signature.Subsets.Any(subset => Subsets.Contains(subset)))
                         {
-                            base.AddValidConstant(signature);
+                            AddValidConstant(signature);
                         }
                         
 

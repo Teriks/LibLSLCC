@@ -309,15 +309,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             foreach (Match constant in _constantPageNames.Matches(constantsList))
             {
                 string value=constant.Groups[3].ToString().Trim();
-                string strValue;
-                if(value.Contains("x"))
-                {
-                    strValue = Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    strValue = value;
-                }
+
+                var strValue = value.Contains("x") ? 
+                    Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture) : value;
 
                 var constantSignature =
                     new LSLLibraryConstantSignature(LSLType.Integer,
@@ -332,15 +326,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             foreach (Match constant in _constantPageNames2.Matches(constantsList))
             {
                 string value = constant.Groups[3].ToString().Trim();
-                string strValue;
-                if (value.Contains("x"))
-                {
-                    strValue = Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    strValue = value;
-                }
+
+                var strValue = value.Contains("x") ? 
+                    Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture) : value;
 
                 var constantSignature =
                     new LSLLibraryConstantSignature(LSLType.Integer, constant.Groups[1].ToString().Trim(), strValue);

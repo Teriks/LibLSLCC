@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace LSLCCGuiTestRig
+namespace LSLCCEditor
 {
     /// <summary>
     /// Interaction logic for CodeCompletionMenu.xaml

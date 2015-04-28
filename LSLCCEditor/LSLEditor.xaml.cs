@@ -19,7 +19,7 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
-using LibLSLCC.FastVarParser;
+using LibLSLCC.FastEditorParse;
 using System.Windows.Media;
 
 #endregion
@@ -56,7 +56,7 @@ namespace LSLCCEditor
 
 
         private CompletionWindow _completionWindow;
-        private bool _completionWindowOpen = false;
+        private bool _completionWindowOpen;
         private List<LSLLibraryConstantSignature> _constantSignatures;
         private List<LSLLibraryEventSignature> _eventSignatures;
         private List<string> _libraryFunctionNames;
@@ -201,15 +201,6 @@ namespace LSLCCEditor
         }
 
 
-        enum ScopeType
-        {
-            Local,
-            Global,
-        };
-
-
-
-
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
 
@@ -254,15 +245,15 @@ namespace LSLCCEditor
                     var caretOffset = textArea.Caret.Offset;
                     
 
-                    var scopeAddress = LSLFastVarParse.FastParseToOffset(TextEditor.Text, caretOffset);
+                    var scopeAddress = LSLFastEditorParse.FastParseToOffset(TextEditor.Text, caretOffset);
 
                     if (scopeAddress.InString || scopeAddress.InComment || (scopeAddress.InState && scopeAddress.ScopeLevel == 1)) return;
 
                     _completionWindow = new CompletionWindow(textArea);
 
 
-                    LSLFastVarParse fastVarParser = new LSLFastVarParse();
-                    fastVarParser.Parse(new StringReader(this.TextEditor.Text));
+                    LSLFastEditorParse fastVarParser = new LSLFastEditorParse();
+                    fastVarParser.Parse(new StringReader(TextEditor.Text));
 
 
                     bool pastDefaultState = false;

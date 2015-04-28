@@ -6,15 +6,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.Compilers;
 using LibLSLCC.Formatter.Visitor;
-using LSLCCGuiTestRig;
 using Microsoft.Win32;
 
 namespace LSLCCEditor
@@ -42,7 +41,7 @@ default{
 
         private bool _pendingChanges;
 
-        void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;
 
@@ -144,7 +143,7 @@ default{
                     LslEditor.TextEditor.Text = File.ReadAllText(args[1], Encoding.UTF8);
                     _currentlyOpenFile = args[1];
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     MessageBox.Show("Could not open file:\n\"" + args[1] + "\"");
                     LslEditor.TextEditor.Text = DefaultProgram;
@@ -178,25 +177,10 @@ default{
             
 
             var location = message.CodeLocation;
-            int line;
-            int lineend;
-            if (location.LineStart == 0)
-            {
-                line = 1;
-            }
-            else
-            {
-                line = location.LineStart;
-            }
 
-            if (location.LineEnd == 0)
-            {
-                lineend = 1;
-            }
-            else
-            {
-                lineend = location.LineEnd;
-            }
+            var line = location.LineStart == 0 ? 1 : location.LineStart;
+
+            var lineend = location.LineEnd == 0 ? 1 : location.LineEnd;
 
             
 
@@ -238,9 +222,12 @@ default{
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            var openDialog = new OpenFileDialog();
-            openDialog.Multiselect = false;
-            openDialog.Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt";
+            var openDialog = new OpenFileDialog
+            {
+                Multiselect = false, 
+                Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt"
+            };
+
             try
             {
                 if (openDialog.ShowDialog().Value)
@@ -261,10 +248,12 @@ default{
 
         private void SaveFileAs_Click(object sender, RoutedEventArgs e)
         {
-            var saveDialog = new SaveFileDialog();
-            saveDialog.FileName = "LSLScript.lsl";
-            saveDialog.DefaultExt = ".lsl";
-            saveDialog.Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt";
+            var saveDialog = new SaveFileDialog
+            {
+                FileName = "LSLScript.lsl",
+                DefaultExt = ".lsl",
+                Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt"
+            };
 
             try
             {
@@ -287,7 +276,8 @@ default{
         private ILSLCompilationUnitNode ValidateCurrentEditorText()
         {
             var validator = new LSLCodeValidator(_validatorServices);
-            ILSLCompilationUnitNode validated = null;
+
+            ILSLCompilationUnitNode validated;
 
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(LslEditor.TextEditor.Text));
@@ -384,12 +374,12 @@ default{
             }
 
 
-            var saveDialog = new SaveFileDialog();
-
-            saveDialog.FileName = suggestedFileName;
-            saveDialog.DefaultExt = ".cs";
-            saveDialog.Filter = "CSharp Code (*.cs) | *.cs";
-
+            var saveDialog = new SaveFileDialog
+            {
+                FileName = suggestedFileName,
+                DefaultExt = ".cs",
+                Filter = "CSharp Code (*.cs) | *.cs"
+            };
 
             try
             {
@@ -429,10 +419,12 @@ default{
             if (!requestNewFileIfNoneCurrent) return false;
 
 
-            var saveDialog = new SaveFileDialog();
-            saveDialog.FileName = "LSLScript.lsl";
-            saveDialog.DefaultExt = ".lsl";
-            saveDialog.Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt";
+            var saveDialog = new SaveFileDialog
+            {
+                FileName = "LSLScript.lsl",
+                DefaultExt = ".lsl",
+                Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt"
+            };
 
             try
             {

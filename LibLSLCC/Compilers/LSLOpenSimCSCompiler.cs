@@ -10,7 +10,9 @@ using LibLSLCC.Compilers.Visitors;
 
 namespace LibLSLCC.Compilers
 {
+    // ReSharper disable InconsistentNaming
     public class LSLOpenSimCSCompilerSettings
+        // ReSharper restore InconsistentNaming
     {
         public LSLOpenSimCSCompilerSettings(ILSLMainLibraryDataProvider libraryData)
         {
@@ -68,7 +70,9 @@ namespace LibLSLCC.Compilers
     }
 
 
+    // ReSharper disable InconsistentNaming
     public class LSLOpenSimCSCompiler
+        // ReSharper restore InconsistentNaming
     {
         private readonly LSLOpenSimCSCompilerVisitor _visitor = new LSLOpenSimCSCompilerVisitor();
 

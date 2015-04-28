@@ -26,18 +26,11 @@ namespace LibLSLCC.CodeValidator.Components
             if (baseDataLSLLibraryBaseData == LSLLibraryBaseData.All)
             {
                 subsets.Add("all");
-                this.AccumulateDuplicates = true;
+                AccumulateDuplicates = true;
                 return subsets;
             }
 
-            if (baseDataLSLLibraryBaseData == LSLLibraryBaseData.OpensimLsl)
-            {
-                subsets.Add("os-lsl");
-            }
-            else
-            {
-                subsets.Add("lsl");
-            }
+            subsets.Add(baseDataLSLLibraryBaseData == LSLLibraryBaseData.OpensimLsl ? "os-lsl" : "lsl");
 
             if ((dataAdditions & LSLLibraryDataAdditions.OpenSimOssl) == LSLLibraryDataAdditions.OpenSimOssl)
             {

@@ -18,7 +18,7 @@ namespace LSLCCEditor
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             
-            textArea.Document.Replace(completionSegment, this.Text);
+            textArea.Document.Replace(completionSegment, Text);
         }
 
         public LSLConstantCompletionData(string text, string description, double priority)
@@ -40,18 +40,20 @@ namespace LSLCCEditor
         {
             get
             {
-                var x= new TextBlock();
-                x.Text = _text;
-                x.TextAlignment=TextAlignment.Left;
-                x.TextTrimming=TextTrimming.CharacterEllipsis;
-                x.Foreground=ColorBrush;
-                x.FontWeight = FontWeights.Bold;
+                var x = new TextBlock
+                {
+                    Text = _text,
+                    TextAlignment = TextAlignment.Left,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    Foreground = ColorBrush,
+                    FontWeight = FontWeights.Bold
+                };
                 return x;
             }
         }
 
         Brush _colorBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
-        public System.Windows.Media.Brush ColorBrush
+        public Brush ColorBrush
         {
             get { return _colorBrush; }
             set { _colorBrush = value; }

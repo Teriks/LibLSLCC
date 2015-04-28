@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace LSLCCGuiTestRig
+namespace LSLCCEditor
 {
     /// <summary>
     /// Interaction logic for App.xaml

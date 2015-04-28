@@ -3,7 +3,6 @@ using System.IO;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.Visitor;
 
 namespace LibLSLCC.CodeValidator

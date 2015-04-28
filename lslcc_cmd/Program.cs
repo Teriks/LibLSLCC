@@ -5,7 +5,6 @@ using System.Text;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.Compilers;
 
 namespace lslcc

@@ -508,16 +508,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     var type = LSLTypeTools.FromLSLTypeString(constantMatch.Groups[1].ToString());
                     var webVal = constantMatch.Groups[3].ToString();
                     var strVal = "";
+
                     if (type == LSLType.Integer)
                     {
-                        if (webVal.Contains("x"))
-                        {
-                            strVal = Convert.ToInt32(webVal, 16).ToString();
-                        }
-                        else
-                        {
-                            strVal = webVal;
-                        }
+
+                        strVal = webVal.Contains("x") ? 
+                            Convert.ToInt32(webVal, 16).ToString() : webVal;
                     }
 
                     if (type == LSLType.Vector || type==LSLType.Rotation)

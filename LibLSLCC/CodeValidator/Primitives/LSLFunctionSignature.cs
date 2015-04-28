@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.Primitives
@@ -33,11 +32,11 @@ namespace LibLSLCC.CodeValidator.Primitives
 
         public LSLFunctionSignature(LSLFunctionSignature other)
         {
-            this.Name = other.Name;
-            this._parameters = other._parameters.ToList();
-            this.ReturnType = other.ReturnType;
-            this.HasVariadicParameter = other.HasVariadicParameter;
-            this.VariadicParameterIndex = other.VariadicParameterIndex;
+            Name = other.Name;
+            _parameters = other._parameters.ToList();
+            ReturnType = other.ReturnType;
+            HasVariadicParameter = other.HasVariadicParameter;
+            VariadicParameterIndex = other.VariadicParameterIndex;
         }
 
         public static LSLFunctionSignature Parse(string cSignature)

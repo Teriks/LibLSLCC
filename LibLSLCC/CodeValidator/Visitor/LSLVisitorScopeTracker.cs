@@ -635,7 +635,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 _scopingManager.PreDefineState("default");
 
 
-                if (context.eventHandler().Count() == 0)
+                if (!context.eventHandler().Any())
                 {
                     _validatorServiceProvider.SyntaxErrorListener.StateHasNoEventHandlers(
                         new LSLSourceCodeRange(context.state_name),
@@ -703,7 +703,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 _scopingManager.PreDefineState(context.state_name.Text);
 
 
-                if (context.eventHandler().Count() == 0)
+                if (!context.eventHandler().Any())
                 {
                     _validatorServiceProvider.SyntaxErrorListener.StateHasNoEventHandlers(
                         new LSLSourceCodeRange(context.state_name),

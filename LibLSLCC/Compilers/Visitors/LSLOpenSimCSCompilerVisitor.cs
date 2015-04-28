@@ -12,7 +12,9 @@ using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
 namespace LibLSLCC.Compilers.Visitors
 {
+    // ReSharper disable InconsistentNaming
     internal class LSLOpenSimCSCompilerVisitor : LSLValidatorNodeVisitor<bool>
+        // ReSharper restore InconsistentNaming
     {
         private const string UtilityLibrary =
             @"
@@ -557,12 +559,7 @@ private static class UTILITIES
 
         public override bool VisitFloatLiteral(ILSLFloatLiteralNode node)
         {
-            var box = true;
-
-            if (node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode)
-            {
-                box = false;
-            }
+            bool box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
 
             if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
             {

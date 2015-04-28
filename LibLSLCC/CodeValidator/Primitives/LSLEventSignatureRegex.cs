@@ -17,7 +17,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             string types = "(?:" + string.Join("|", dataTypes) + ")";
             const string id = "[a-zA-Z]+[a-zA-Z0-9_]*";
-            this.Regex=new Regex(before + "(" + id + ")\\((\\s*(?:\\s*" + types + "\\s+" + id + "\\s*(?:\\s*,\\s*" + types + "\\s+" + id + "\\s*)*)?)\\)" + after);
+            Regex=new Regex(before + "(" + id + ")\\((\\s*(?:\\s*" + types + "\\s+" + id + "\\s*(?:\\s*,\\s*" + types + "\\s+" + id + "\\s*)*)?)\\)" + after);
         }
 
         public LSLEventSignatureRegex(string before, string after)
@@ -48,7 +48,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         public IEnumerable<LSLEventSignature> GetSignatures(string inString)
         {
 
-            var matches = this.Regex.Matches(inString);
+            var matches = Regex.Matches(inString);
             foreach (Match m in matches)
             {
                 if (m.Success)

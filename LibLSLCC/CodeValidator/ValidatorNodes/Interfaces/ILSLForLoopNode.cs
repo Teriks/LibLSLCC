@@ -13,7 +13,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
         LSLSourceCodeRange FirstSemiColonSourceCodeRange { get; }
 
-        ILSLReadOnlyExprNode ConditionExpression { get; }
 
         LSLSourceCodeRange SecondSemiColonSourceCodeRange { get; }
 
@@ -21,7 +20,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
 
         ILSLExpressionListNode AfterthoughExpressions { get; }
-        ILSLCodeScopeNode Code { get; }
+
         bool HasInitExpression { get; }
         bool HasConditionExpression { get; }
         bool HasAfterthoughtExpressions { get; }

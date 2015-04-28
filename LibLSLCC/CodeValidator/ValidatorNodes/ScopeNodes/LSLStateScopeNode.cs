@@ -11,10 +11,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         private readonly List<LSLEventHandlerNode> _eventHandlers = new List<LSLEventHandlerNode>();
 
 
-// ReSharper push UnusedParameter.Local
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        // ReSharper disable UnusedParameter.Local
         protected LSLStateScopeNode(LSLSourceCodeRange sourceRange, Err err)
-// ReSharper restore UnusedParameter.Local
+        // ReSharper restore UnusedParameter.Local
         {
             SourceCodeRange = sourceRange;
             HasErrors = true;

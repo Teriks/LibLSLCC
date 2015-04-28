@@ -6,7 +6,7 @@ namespace LibLSLCC.CodeValidator.Components
     /// <summary>
     ///     If you derive from LSLXmlLibraryDataProvider, the derived class must have this attribute
     /// </summary>
-    [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.All)]
     public sealed class LSLXmlLibraryDataRootAttribute : XmlRootAttribute
     {
         public readonly static string RootElementName = "LSLLibraryData";

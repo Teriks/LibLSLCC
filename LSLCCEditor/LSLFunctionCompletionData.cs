@@ -24,7 +24,7 @@ namespace LSLCCEditor
         }
 
 
-        public System.Windows.Media.ImageSource Image
+        public ImageSource Image
         {
             get { return null; }
         }
@@ -36,12 +36,14 @@ namespace LSLCCEditor
         {
             get
             {
-                var x= new TextBlock();
-                x.Text = _text;
-                x.TextAlignment=TextAlignment.Left;
-                x.TextTrimming=TextTrimming.CharacterEllipsis;
-                x.Foreground=ColorBrush;
-                x.FontWeight = FontWeights.Bold;
+                var x = new TextBlock
+                {
+                    Text = _text,
+                    TextAlignment = TextAlignment.Left,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    Foreground = ColorBrush,
+                    FontWeight = FontWeights.Bold
+                };
                 return x;
             }
         }

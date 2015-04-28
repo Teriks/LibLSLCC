@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
-using Antlr4.Runtime;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 {
@@ -18,7 +18,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
     }
 
 
-    public class LSLExpressionListNode : ILSLExpressionListNode, ILSLSyntaxTreeNode
+    public class LSLExpressionListNode : ILSLExpressionListNode
     {
         private readonly List<ILSLExprNode> _expressionNodes = new List<ILSLExprNode>();
 
@@ -26,7 +26,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
 
         // ReSharper disable UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLExpressionListNode(LSLSourceCodeRange sourceRange, Err err)
 
             // ReSharper restore UnusedParameter.Local
@@ -198,7 +198,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
          public void AddCommaRange(LSLSourceCodeRange range )
          {
-            this._commaSourceCodeRanges.Add(range);
+            _commaSourceCodeRanges.Add(range);
          }
 
 
