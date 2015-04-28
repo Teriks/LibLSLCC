@@ -240,6 +240,16 @@ public interface ILSLListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitGlobalVariableDeclaration([NotNull] LSLParser.GlobalVariableDeclarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LSLParser.expressionListTail"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpressionListTail([NotNull] LSLParser.ExpressionListTailContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LSLParser.expressionListTail"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpressionListTail([NotNull] LSLParser.ExpressionListTailContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.expressionList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

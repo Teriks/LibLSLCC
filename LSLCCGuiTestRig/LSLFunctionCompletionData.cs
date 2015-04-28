@@ -20,6 +20,7 @@ namespace LSLCCEditor
             _description = description;
             _priority = priority;
             _text = text;
+            ColorBrush = new SolidColorBrush(Color.FromRgb(127, 0, 38));
         }
 
 
@@ -39,7 +40,7 @@ namespace LSLCCEditor
                 x.Text = _text;
                 x.TextAlignment=TextAlignment.Left;
                 x.TextTrimming=TextTrimming.CharacterEllipsis;
-                x.Foreground=new SolidColorBrush(Color.FromRgb(127,0,38));
+                x.Foreground=ColorBrush;
                 x.FontWeight = FontWeights.Bold;
                 return x;
             }
@@ -48,6 +49,13 @@ namespace LSLCCEditor
         public object Description
         {
             get { return _description; }
+        }
+
+
+        public SolidColorBrush ColorBrush
+        {
+            get;
+            set;
         }
 
         public double Priority

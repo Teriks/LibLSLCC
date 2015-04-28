@@ -227,5 +227,30 @@ namespace LibLSLCC.CodeValidator.Components
         {
             OnWarning(location, "Not all code paths return a value in function \"" + currentFunction.Name + "\"");
         }
+
+
+        public void ConditionalExpressionIsConstant(LSLSourceCodeRange expression, LSLConditionalStatementType conditionalStatementType)
+        {
+            if (conditionalStatementType == LSLConditionalStatementType.If)
+            {
+                OnWarning(expression, "Conditional expression in 'if' branch is constant");
+            }
+            else if (conditionalStatementType == LSLConditionalStatementType.ElseIf)
+            {
+                OnWarning(expression, "Conditional expression in 'else if' branch is constant");
+            }
+            else if (conditionalStatementType == LSLConditionalStatementType.For)
+            {
+                OnWarning(expression, "Conditional expression in 'for' loop is constant");
+            }
+            else if (conditionalStatementType == LSLConditionalStatementType.While)
+            {
+                OnWarning(expression, "Conditional expression in 'while' loop is constant");
+            }
+            else if (conditionalStatementType == LSLConditionalStatementType.DoWhile)
+            {
+                OnWarning(expression, "Conditional expression in 'do while' loop is constant");
+            }
+        }
     }
 }

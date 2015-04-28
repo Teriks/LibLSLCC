@@ -183,12 +183,24 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var expressions = expressionList.children.Where(x => x is LSLParser.ExpressionContext).ToList();
+            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
 
-
-            for (var i = 0; i < expressions.Count; i++)
+            if (expressionList.children.Count > 1)
             {
-                var expression = VisitTopOfExpression((LSLParser.ExpressionContext)expressions[i]);
+                subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
+                {
+                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    return listTail.expression();
+                }));
+            }
+
+            var expressionContexts = subtrees.ToList();
+
+
+            for (var i = 0; i < expressionContexts.Count; i++)
+            {
+                var expression = VisitTopOfExpression((LSLParser.ExpressionContext)expressionContexts[i]);
 
                 result.AddExpression(expression);
 
@@ -232,7 +244,19 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .VisitContextInvalidState("VisitForLoopAfterthoughts");
             }
 
-            var expressionContexts = expressionList.children.Where(x => x is LSLParser.ExpressionContext).ToList();
+            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
+
+            if (expressionList.children.Count > 1)
+            {
+                subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
+                {
+                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    return listTail.expression();
+                }));
+            }
+
+            var expressionContexts = subtrees.ToList();
 
 
             var expressionIndex = 0;
@@ -290,7 +314,23 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .VisitContextInvalidState("VisitForLoopInitExpressions");
             }
 
-            var expressionContexts = expressionList.children.Where(x => x is LSLParser.ExpressionContext).ToList();
+
+
+
+            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
+
+            if (expressionList.children.Count > 1)
+            {
+                subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
+                {
+                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    return listTail.expression();
+                }));
+            }
+
+            var expressionContexts = subtrees.ToList();
+
 
 
             var expressionIndex = 0;
@@ -356,7 +396,21 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var expressionContexts = expressionList.children.Where(x => x is LSLParser.ExpressionContext);
+
+            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
+
+            if (expressionList.children.Count > 1)
+            {
+                subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
+                {
+                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    return listTail.expression();
+                }));
+            }
+
+            var expressionContexts = subtrees.ToList();
+
 
 
             foreach (var expressionContext in expressionContexts)
@@ -813,12 +867,10 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 expression = VisitTopOfExpression(context.condition);
 
-
                 if (expression.HasErrors)
                 {
                     isError = true;
                 }
-
                 else if (!ExpressionValidator.ValidBooleanConditional(expression))
                 {
                     SyntaxErrorListener.IfConditionNotValidType(
@@ -828,6 +880,11 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
                     isError = true;
+                }
+
+                if (!isError && expression.IsConstant)
+                {
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition), LSLConditionalStatementType.ElseIf);
                 }
             }
 
@@ -903,7 +960,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 {
                     isError = true;
                 }
-
                 else if (!ExpressionValidator.ValidBooleanConditional(expression))
                 {
                     SyntaxErrorListener.ElseIfConditionNotValidType(
@@ -913,6 +969,12 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
                     isError = true;
+                }
+
+                
+                if (!isError && expression.IsConstant)
+                {
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition), LSLConditionalStatementType.ElseIf);
                 }
             }
 
@@ -1578,6 +1640,11 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                     isError = true;
                 }
+
+                if (!isError && loopCondition.IsConstant)
+                {
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.For);
+                }
             }
             else
             {
@@ -1653,6 +1720,12 @@ namespace LibLSLCC.CodeValidator.Visitor
                         loopCondition);
 
                     isError = true;
+                }
+
+
+                if (!isError && loopCondition.IsConstant)
+                {
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.While);
                 }
             }
             else
@@ -1750,6 +1823,11 @@ namespace LibLSLCC.CodeValidator.Visitor
                         loopCondition);
 
                     isError = true;
+                }
+
+                if (!isError && loopCondition.IsConstant)
+                {
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.For);
                 }
             }
 
@@ -3124,6 +3202,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             return false;
         }
+
 
 
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "context")]

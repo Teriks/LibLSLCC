@@ -44,12 +44,18 @@ namespace LSLCCEditor
                 x.Text = _text;
                 x.TextAlignment=TextAlignment.Left;
                 x.TextTrimming=TextTrimming.CharacterEllipsis;
-                x.Foreground=new SolidColorBrush(Color.FromRgb(50, 52, 138));
+                x.Foreground=ColorBrush;
                 x.FontWeight = FontWeights.Bold;
                 return x;
             }
         }
 
+        Brush _colorBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+        public System.Windows.Media.Brush ColorBrush
+        {
+            get { return _colorBrush; }
+            set { _colorBrush = value; }
+        }
         public object Description
         {
             get { return _description; }

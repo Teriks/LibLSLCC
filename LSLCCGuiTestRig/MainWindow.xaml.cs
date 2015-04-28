@@ -67,6 +67,8 @@ default{
 
             App.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
+            
+
             InitializeComponent();
 
             _validatorServices = new LSLCustomValidatorServiceProvider
@@ -131,8 +133,28 @@ default{
 
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+
         {
-            LslEditor.TextEditor.Text = DefaultProgram;
+            var args = Environment.GetCommandLineArgs();
+
+            if (args.Length > 1)
+            {
+                try
+                {
+                    LslEditor.TextEditor.Text = File.ReadAllText(args[1], Encoding.UTF8);
+                    _currentlyOpenFile = args[1];
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Could not open file:\n\"" + args[1] + "\"");
+                    LslEditor.TextEditor.Text = DefaultProgram;
+                }
+            }
+            else
+            {
+                LslEditor.TextEditor.Text = DefaultProgram;
+            }
+            
         }
 
 
@@ -148,6 +170,10 @@ default{
         {
             var message = (CompilerMessage) ((ListViewItem) sender).Content;
 
+            if (!message.Clickable)
+            {
+                return;
+            }
 
             
 
@@ -457,7 +483,7 @@ default{
 
             if (validated != null)
             {
-                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected."));
+                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected.") { Clickable = false } );
             }
         }
 
@@ -712,7 +738,7 @@ default{
 
             if (validated != null)
             {
-                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected."));
+                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected.") { Clickable = false });
             }
         }
     }
@@ -721,10 +747,11 @@ default{
     {
         private string _messageTypeText;
 
-
+        public bool Clickable { get; set; }
 
         public CompilerMessage(string messageTypeText, LSLSourceCodeRange codeLocation, string messageText)
         {
+            Clickable = true;
             MessageTypeText = messageTypeText;
             CodeLocation = codeLocation;
             Line = codeLocation.LineStart;
@@ -734,6 +761,7 @@ default{
 
         public CompilerMessage(string messageTypeText, string messageText)
         {
+            Clickable = true;
             MessageTypeText = messageTypeText;
             Line = 0;
             Column = 0;

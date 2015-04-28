@@ -157,6 +157,12 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitGlobalVariableDeclaration([NotNull] LSLParser.GlobalVariableDeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LSLParser.expressionListTail"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpressionListTail([NotNull] LSLParser.ExpressionListTailContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.expressionList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

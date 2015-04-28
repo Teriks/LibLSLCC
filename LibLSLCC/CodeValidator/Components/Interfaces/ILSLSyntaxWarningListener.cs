@@ -24,6 +24,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             LSLDeadCodeSegment deadSegment);
 
 
+        void ConditionalExpressionIsConstant(LSLSourceCodeRange expression, LSLConditionalStatementType conditionalStatementType);
+
 
         void UselessSemiColon(LSLSourceCodeRange location);
 

@@ -19,6 +19,8 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.FastVarParser;
+using System.Windows.Media;
 
 #endregion
 
@@ -65,10 +67,13 @@ namespace LSLCCEditor
             InitializeComponent();
             Loaded += Control_Loaded;
 
-            TextEditor.TextArea.TextEntering += TextEditor_TextArea_TextEntering;
-            TextEditor.TextArea.TextEntered += TextEditor_TextArea_TextEntered;
+            //TextEditor.TextArea.TextEntering += TextArea_TextEntering;
+            TextEditor.TextArea.TextEntered += TextArea_TextEntered;
             TextEditor.MouseHover += TextEditor_MouseHover;
             TextEditor.MouseHover += TextEditor_MouseHoverStopped;
+            TextEditor.TextArea.KeyDown += TextEditor_KeyDown;
+
+            
         }
 
         public ILSLMainLibraryDataProvider LibraryDataProvider { get; private set; }
@@ -196,8 +201,28 @@ namespace LSLCCEditor
         }
 
 
-        private void TextEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        enum ScopeType
         {
+            Local,
+            Global,
+        };
+
+
+
+
+        private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        {
+
+            lock (_completionLock)
+            {
+                if (_completionWindow != null && _completionWindow.CompletionList.ListBox.Items.Count == 0)
+                {
+                    _completionWindow.Close();
+                    _completionWindow = null;
+                }
+            }
+
+
             var behind = "";
 
             if (TextEditor.TextArea.Caret.Offset > 2)
@@ -215,31 +240,159 @@ namespace LSLCCEditor
                 .ToString(CultureInfo.InvariantCulture);
 
 
+    
+
             lock (_completionLock)
             {
-                if (_validSuggestionPrefixes.Contains(onebehind)
-                    && Regex.Match(e.Text, "[A-Za-z]").Success && !_completionWindowOpen)
+                if (_validSuggestionPrefixes.Contains(onebehind) && Regex.Match(e.Text, "[A-Za-z]").Success && !_completionWindowOpen)
                 {
-                    _completionWindow = new CompletionWindow(TextEditor.TextArea);
+
+                    var scopeAddress = LSLFastVarParse.FindAreaIDScopeIDAndLevel(TextEditor.Text, TextEditor.TextArea.Caret.Offset);
+
+                    if (scopeAddress.InString || scopeAddress.InComment || (scopeAddress.InState && scopeAddress.ScopeLevel == 1)) return;
+
+                    _completionWindow = new CompletionWindow(this.TextEditor.TextArea);
+
+
+                    
+
+                    LSLFastVarParse fastVarParser = new LSLFastVarParse();
+                    fastVarParser.Parse(new StringReader(this.TextEditor.Text));
+
+                    
+
 
                     _completionWindow.Width = _completionWindow.Width + 160;
 
                     var data = _completionWindow.CompletionList.CompletionData;
 
-                    double priority = 0;
-                    var functionSuggestions = _libraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
-                    foreach (var func in functionSuggestions)
-                    {
-                        var docs = string.Join(Environment.NewLine + Environment.NewLine,
-                            LibraryDataProvider.GetLibraryFunctionSignatures(func)
-                                .Select(x => x.SignatureAndDocumentation));
 
-                        data.Add(new LSLFunctionCompletionData(func,
-                            docs, priority));
-                        priority++;
+                    
+
+                    double priority = 0;
+
+                    bool possibleLibraryFunction = false;
+                    bool possibleUserDefinedItem = false;
+
+
+                    if (scopeAddress.ScopeLevel != 0)
+                    {
+                        var functionSuggestions = _libraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
+                        foreach (var func in functionSuggestions)
+                        {
+                            var docs = string.Join(Environment.NewLine + Environment.NewLine,
+                                LibraryDataProvider.GetLibraryFunctionSignatures(func)
+                                    .Select(x => x.SignatureAndDocumentation));
+
+                            data.Add(new LSLFunctionCompletionData(func,
+                                docs, priority));
+                            priority++;
+
+                            possibleLibraryFunction = true;
+                        }
+
+                        
                     }
 
+
+
+                    foreach(var func in fastVarParser.GlobalFunctions.Where(x=>x.Name.StartsWith(e.Text))){
+
+                        string doc = "Global function:\n"+func.Signature;
+
+                        data.Add(new LSLFunctionCompletionData(func.Name,doc, 0){ColorBrush = new SolidColorBrush(Color.FromRgb(0,0,0))});
+
+                        possibleUserDefinedItem = true;
+                    }
+
+
+
+                    foreach (var v in fastVarParser.GlobalVariables.Where(x=>x.Name.StartsWith(e.Text)))
+                    {
+                        string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
+                        data.Add(new LSLConstantCompletionData(v.Name, doc, 0) { ColorBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0)) });
+                        possibleUserDefinedItem = true;
+                    }
+
+
+
+                    foreach (var v in fastVarParser.GetLocalVariables(scopeAddress, this.TextEditor.TextArea.Caret.Offset)
+                        .Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        string doc = "Local variable:\n" + v.Type + " " + v.Name + ";";
+
+                        data.Add(new LSLConstantCompletionData(v.Name,
+                            doc, 0) { ColorBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0)) });
+                        possibleUserDefinedItem = true;
+                    }
+
+
+
+                    foreach (var v in fastVarParser.GetLocalParameters(scopeAddress, this.TextEditor.TextArea.Caret.Offset)
+                        .Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        string doc = "";
+                        if (v.Type == "") {
+                            doc = "local parameter";
+                        }
+                        else{
+                            doc = "local " + v.Type + " parameter";
+                        }
+
+                        data.Add(new LSLConstantCompletionData(v.Type,
+                            doc, 0) { ColorBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0)) });
+                        possibleUserDefinedItem = true;
+                    }
+
+
+
                     var constantSuggestions = _constantSignatures.Where(x => x.Name.StartsWith(e.Text)).ToList();
+
+                    var possibleType = false ;
+
+                    
+                    Color green = Color.FromRgb(25, 76, 25);
+
+                    if (e.Text.StartsWith("i"))
+                    {
+
+                        data.Add(new LSLConstantCompletionData("integer",
+                                "integer type", 0) { ColorBrush = new SolidColorBrush(green) });
+                        possibleType = true;
+
+                    }
+                    else if (e.Text.StartsWith("s"))
+                    {
+                        data.Add(new LSLConstantCompletionData("string",
+                                "string type", 0) { ColorBrush = new SolidColorBrush(green) });
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("v"))
+                    {
+                        data.Add(new LSLConstantCompletionData("vector",
+                                "vector type", 0) { ColorBrush = new SolidColorBrush(green) });
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("r"))
+                    {
+                        data.Add(new LSLConstantCompletionData("rotation",
+                                "rotation type", 0) { ColorBrush = new SolidColorBrush(green) });
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("k"))
+                    {
+                        data.Add(new LSLConstantCompletionData("key",
+                                "key type", 0) { ColorBrush = new SolidColorBrush(green) });
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("f"))
+                    {
+
+                        data.Add(new LSLConstantCompletionData("float",
+                                "float type", 0) { ColorBrush = new SolidColorBrush(green) });
+                        possibleType = true;
+                    }
+
                     foreach (var func in constantSuggestions)
                     {
                         data.Add(new LSLConstantCompletionData(func.Name,
@@ -247,7 +400,7 @@ namespace LSLCCEditor
                         priority++;
                     }
 
-                    if (constantSuggestions.Any() || functionSuggestions.Any())
+                    if (constantSuggestions.Any() || possibleLibraryFunction || possibleType || possibleUserDefinedItem)
                     {
                         _completionWindow.Show();
                         _completionWindow.Closed += delegate
@@ -263,24 +416,45 @@ namespace LSLCCEditor
         }
 
 
-        private void TextEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        private void TextEditor_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Text.Length > 0 && _completionWindow != null)
+
+            if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                if (!(char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_' || e.Text[0] == '('))
+                lock (_completionLock)
                 {
-                    // Whenever a non-letter is typed while the completion window is open,
-                    // insert the currently selected element.
-                    _completionWindow.CompletionList.RequestInsertion(e);
+                    if (_completionWindow != null)
+                    {
+                        _completionWindow.CompletionList.RequestInsertion(e);
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+
+        /*
+        private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+        {
+            lock (_completionLock)
+            {
+                if (e.Text.Length > 0 && _completionWindow != null)
+                {
+                    if (!(char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_' || e.Text[0] == '('))
+                    {
+                        // Whenever a non-letter is typed while the completion window is open,
+                        // insert the currently selected element.
+                        _completionWindow.CompletionList.RequestInsertion(e);
+
+
+                    }
 
 
                 }
-
-                
             }
             // Do not set e.Handled=true.
             // We still want to insert the character that was typed.
-        }
+        }*/
 
 
         public void SetLibraryDataProvider(ILSLMainLibraryDataProvider provider)

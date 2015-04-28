@@ -286,6 +286,18 @@ public partial class LSLBaseListener : ILSLListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitGlobalVariableDeclaration([NotNull] LSLParser.GlobalVariableDeclarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LSLParser.expressionListTail"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExpressionListTail([NotNull] LSLParser.ExpressionListTailContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LSLParser.expressionListTail"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExpressionListTail([NotNull] LSLParser.ExpressionListTailContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.expressionList"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

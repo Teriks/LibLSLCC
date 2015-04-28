@@ -38,6 +38,8 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
 
+
+
         internal LSLSourceCodeRange(ParserRuleContext ctx)
         {
             _lineStart = ctx.Start.Line;

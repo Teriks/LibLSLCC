@@ -706,5 +706,12 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+
+
+        public void ConditionalExpressionIsConstant(LSLSourceCodeRange expression, LSLConditionalStatementType conditionalStatementType)
+        {
+            _warningActionQueue.Enqueue(expression.StartIndex,
+              () => SyntaxWarningListener.ConditionalExpressionIsConstant(expression, conditionalStatementType));
+        }
     }
 }

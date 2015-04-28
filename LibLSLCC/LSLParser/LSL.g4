@@ -237,13 +237,13 @@ codeScope:
 
 //loop_condition is optional so an error can be provided when its missing
 doLoop:
-	loop_keyword=DO code=codeScopeOrSingleBlockStatement WHILE O_PAREN loop_condition=expression? C_PAREN SEMI_COLON
+	loop_keyword=DO code=codeScopeOrSingleBlockStatement while_keyword=WHILE open_parenth=O_PAREN loop_condition=expression? close_parenth=C_PAREN semi_colon=SEMI_COLON
 	;
 
 
 //loop_condition is optional so an error can be provided when its missing
 whileLoop:
-	loop_keyword=WHILE O_PAREN loop_condition=expression? C_PAREN code=codeScopeOrSingleBlockStatement
+	loop_keyword=WHILE open_parenth=O_PAREN loop_condition=expression? close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
 	;
 
 
@@ -279,20 +279,20 @@ expressionStatement:
 	;
 
 returnStatement: 
-                   RETURN return_expression=expression SEMI_COLON
-               |   RETURN SEMI_COLON ;
+                   return_keyword=RETURN return_expression=expression semi_colon=SEMI_COLON
+               |   return_keyword=RETURN semi_colon=SEMI_COLON ;
 
 labelStatement:
-	LABEL_PREFIX label_name=ID SEMI_COLON
+	label_prefix=LABEL_PREFIX label_name=ID semi_colon=SEMI_COLON
 	;
 
 
 jumpStatement:
-	JUMP jump_target=ID SEMI_COLON
+	jump_keyword=JUMP jump_target=ID semi_colon=SEMI_COLON
 	;
 
 stateChangeStatement:
-	STATE state_target=(ID|DEFAULT) SEMI_COLON
+	state_keyword=STATE state_target=(ID|DEFAULT) semi_colon=SEMI_COLON
 	;
 
 
@@ -308,8 +308,14 @@ globalVariableDeclaration:
 
 
 
+//this is so I can easily get full source code interval info, including line number and column information for commas. since in this configuration
+//the comma and next expression are a single node, and .comma is a member of the node (an IToken object)
+expressionListTail:
+	comma=COMMA expression;
+
+
 expressionList:
-	expression (COMMA expression)*
+	expression (expressionListTail)*
 	;
 
 
@@ -390,7 +396,7 @@ compilationUnit:
 
 
 parameterDefinition:
-	TYPE ID
+	parameter_type=TYPE parameter_name=ID
 	;
 
 parameterList: 
