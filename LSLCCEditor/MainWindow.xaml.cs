@@ -24,14 +24,14 @@ namespace LSLCCEditor
     public partial class MainWindow : Window
     {
         private const string DefaultProgram =
-            @"
-default{
+@"
 
-    state_entry(){
-
+default
+{
+    state_entry()
+    {
         llSay(0, ""Hello World!"");
     }
-
 }
 ";
 
