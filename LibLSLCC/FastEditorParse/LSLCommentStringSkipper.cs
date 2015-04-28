@@ -38,6 +38,7 @@
         {
             int lookAhead = i + 1;
             int lookBehind = i - 1;
+            int lookBehindTwo = i - 2;
             int offsetMOne = offset - 1;
 
             if (!_inLineComment && !_inString)
@@ -46,7 +47,7 @@
                 {
                     _inBlockComment = true;
                 }
-                else if (_inBlockComment && text[i - 2] == '*' && text[lookBehind] == '/')
+                else if (_inBlockComment && (lookBehindTwo > 0) && text[lookBehindTwo] == '*' && text[lookBehind] == '/')
                 {
                     _inBlockComment = false;
                 }
@@ -57,7 +58,7 @@
                 {
                     _inLineComment = true;
                 }
-                else if (_inLineComment && text[lookBehind] == '\n')
+                else if (_inLineComment && lookBehind > 0 && text[lookBehind] == '\n')
                 {
                     _inLineComment = false;
                 }
@@ -68,7 +69,7 @@
                 {
                     _inString = true;
                 }
-                else if (_inString && text[lookBehind] == '"')
+                else if (_inString && lookBehind > 0 && text[lookBehind] == '"')
                 {
                     int c = 0;
                     int s = i - 2;

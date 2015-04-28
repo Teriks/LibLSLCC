@@ -479,11 +479,6 @@ namespace LSLCCEditor
         {
             LibraryDataProvider = provider;
 
-            var functionNames = new StringBuilder();
-            var eventNames = new StringBuilder();
-            var constantNames = new StringBuilder();
-
-
             _libraryFunctionNames = LibraryDataProvider.LibraryFunctions.Select(x => x.First().Name).ToList();
             _eventSignatures = LibraryDataProvider.SupportedEventHandlers.ToList();
             _constantSignatures = LibraryDataProvider.LibraryConstants.ToList();
@@ -493,43 +488,46 @@ namespace LSLCCEditor
             _constantSignatures.Sort((x, y) => String.CompareOrdinal(x.Name, y.Name));
 
 
-            foreach (var func in _libraryFunctionNames)
-            {
-                functionNames.Append("<Key word=\"" + func + "\"/>");
-            }
-
-            foreach (var cnst in _constantSignatures)
-            {
-                constantNames.Append("<Key word=\"" + cnst.Name + "\"/>");
-            }
-
-            foreach (var evnt in _eventSignatures)
-            {
-                eventNames.Append("<Key word=\"" + evnt.Name + "\"/>");
-            }
 
             using (var resourceStream = GetType().Assembly.GetManifestResourceStream("LSLCCEditor.LSL.xshd"))
             {
                 if (resourceStream != null)
                 {
-                    var streamReader = new StreamReader(resourceStream, Encoding.Default);
-                    var builder = new StringBuilder();
-
-                    while (!streamReader.EndOfStream)
-                    {
-                        builder.Append(streamReader.ReadLine());
-                        builder.Replace("{FUNCTION_NAMES}", functionNames.ToString());
-                        builder.Replace("{CONSTANT_NAMES}", constantNames.ToString());
-                        builder.Replace("{EVENT_NAMES}", eventNames.ToString());
-                    }
-
-                    var text = builder.ToString();
-
-                    var memStream = new MemoryStream(Encoding.Default.GetBytes(text));
-
-                    using (var reader = new XmlTextReader(memStream))
+                    using (var reader = new XmlTextReader(resourceStream))
                     {
                         TextEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+
+                    }
+
+
+                    foreach (var func in _libraryFunctionNames)
+                    {
+                        var rule = new HighlightingRule
+                        {
+                            Regex = new Regex(func),
+                            Color = TextEditor.SyntaxHighlighting.GetNamedColor("Functions")
+                        };
+                        TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
+                    }
+
+                    foreach (var cnst in _constantSignatures)
+                    {
+                        var rule = new HighlightingRule
+                        {
+                            Regex = new Regex(cnst.Name),
+                            Color = TextEditor.SyntaxHighlighting.GetNamedColor("Constants")
+                        };
+                        TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
+                    }
+
+                    foreach (var evnt in _eventSignatures)
+                    {
+                        var rule = new HighlightingRule
+                        {
+                            Regex = new Regex(evnt.Name),
+                            Color = TextEditor.SyntaxHighlighting.GetNamedColor("Events")
+                        };
+                        TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
                 }
                 else
