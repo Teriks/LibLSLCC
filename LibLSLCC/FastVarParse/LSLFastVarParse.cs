@@ -30,6 +30,19 @@ namespace LibLSLCC.FastVarParser
         }
 
 
+        public class StateBlock
+        {
+            public string Name { get; private set; }
+
+            public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+            public StateBlock(string name, LSLSourceCodeRange range)
+            {
+                this.Name = name;
+                this.SourceCodeRange = range;
+            }
+        }
+
 
         public class GlobalFunction
         {
@@ -133,6 +146,20 @@ namespace LibLSLCC.FastVarParser
                 this.SourceCodeRange = range;
                 this.ScopeAddress = address;
             }
+        }
+
+
+        List<StateBlock> _stateBlocks = new List<StateBlock>();
+
+        public IReadOnlyList<StateBlock> StateBlocks
+        {
+            get { return _stateBlocks; }
+        }
+
+        public StateBlock DefaultState
+        {
+            get;
+            private set;
         }
 
         List<GlobalVariable> _globalVariables = new List<GlobalVariable>();
@@ -249,6 +276,8 @@ namespace LibLSLCC.FastVarParser
 
             public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
             {
+                this.Parent.DefaultState = new StateBlock("default", new LSLSourceCodeRange(context));
+
                 codeAreaID++;
                 scopeLevel++;
                 scopeID++;
@@ -261,6 +290,12 @@ namespace LibLSLCC.FastVarParser
 
             public override bool VisitDefinedState(LSLParser.DefinedStateContext context)
             {
+                if (context.state_name == null) return true;
+
+
+                this.Parent._stateBlocks.Add(new StateBlock(context.state_name.Text, 
+                    new LSLSourceCodeRange(context)));
+
                 codeAreaID++;
                 scopeLevel++;
                 scopeID++;
@@ -310,29 +345,50 @@ namespace LibLSLCC.FastVarParser
         }
 
 
-        public static ScopeAddress FindAreaIDScopeIDAndLevel(string text, int offset)
+        private class CommentStringSkipper
         {
-
             bool inBlockComment = false;
-            bool inLineComment = false;
-            bool inString = false;
-            bool inState = false;
-            int level = 0;
-            int id = 0;
-            int codeAreaID = 0;
 
-
-            offset = Clamp(offset, 0, text.Length);
-
-            for (int i = 0; i < offset; i++)
+            public bool InBlockComment
             {
+                get { return inBlockComment; }
+            }
+            bool inLineComment = false;
+
+            public bool InLineComment
+            {
+                get { return inLineComment; }
+                set { inLineComment = value; }
+            }
+            bool inString = false;
+
+            public bool InString
+            {
+                get { return inString; }
+            }
+
+            public bool InComment
+            {
+                get { return this.inLineComment || this.inBlockComment; }
+            }
+            public void Reset()
+            {
+                this.inBlockComment = false;
+                this.inLineComment = false;
+                this.inString = false;
+            }
+
+            public void FeedChar(string text, int i, int offset)
+            {
+
+
                 if (!inLineComment && !inString)
                 {
                     if (text[i] == '/' && i < offset - 1 && text[i + 1] == '*')
                     {
                         inBlockComment = true;
                     }
-                    else if (inBlockComment && text[i] == '*' && i < offset - 1 && text[i + 1] == '/')
+                    else if (inBlockComment && text[i-2] == '*' && text[i-1] == '/')
                     {
                         inBlockComment = false;
                     }
@@ -343,7 +399,7 @@ namespace LibLSLCC.FastVarParser
                     {
                         inLineComment = true;
                     }
-                    else if (inLineComment && text[i] == '\n')
+                    else if (inLineComment && text[i-1] == '\n')
                     {
                         inLineComment = false;
                     }
@@ -354,11 +410,11 @@ namespace LibLSLCC.FastVarParser
                     {
                         inString = true;
                     }
-                    else if (inString && text[i] == '"')
+                    else if (inString && text[i-1] == '"')
                     {
                         int c = 0;
-                        int o = 0;
-                        int s = i - 1;
+                        int s = i - 2;
+                        int o = s;
                         for (o = s; text[o] == '\\'; o--, c++) ;
 
                         if (c == 0 || ((c % 2) == 0))
@@ -367,19 +423,132 @@ namespace LibLSLCC.FastVarParser
                         }
                     }
                 }
+            }
+        }
 
-                if (!inLineComment && !inBlockComment && !inString)
+
+        public static ScopeAddress FastParseToOffset(string text, int offset)
+        {
+
+            CommentStringSkipper skipper = new CommentStringSkipper();
+            bool inState = false;
+            int level = 0;
+            int id = 0;
+            int codeAreaID = 0;
+
+
+            offset = Clamp(offset, 0, text.Length);
+
+            for (int i = 0; i < offset; i++)
+            {
+                skipper.FeedChar(text, i, offset);
+
+
+                if (!(skipper.InComment || skipper.InString))
                 {
-                    if (((i + 7 < text.Length) && text.Substring(i, 7) == "default") || ((i + 5 < text.Length) && text.Substring(i, 5) == "state"))
+                    int defaultStopOffset = i + 7;
+                    int stateStopOffset = i + 5;
+
+                    if ((defaultStopOffset < text.Length) && text.Substring(i, 7) == "default")
                     {
-                        if (((i + 6) < text.Length) && text[i + 6] != '_')
+                        inState = true;
+
+                        if (text[defaultStopOffset]=='{')
                         {
-                            inState = true;
+                            i = defaultStopOffset + 1;
+                        }
+                        else
+                        {
+                            var dstateSkipper = new CommentStringSkipper();
+                            
+                            var o = defaultStopOffset;
+                            var c = '0';
+                            while (o < offset)
+                            {
+                                c = text[o];
+
+                                
+
+                                if (c == '{') break;
+
+                                dstateSkipper.FeedChar(text, o, offset);
+                                if (!(dstateSkipper.InComment || dstateSkipper.InString) && !char.IsWhiteSpace(c))
+                                {
+                                    inState = false;
+                                    break;
+                                }
+
+                                o++;
+
+                            }
+
+                            if (inState) i = o + 1;
+   
+                        }
+
+                        if (inState)
+                        {
+                            level++;
+                            id++;
+                            codeAreaID++;
+                            
+                        }
+                    }
+                    if (!inState && (stateStopOffset < text.Length) && text.Substring(i, 5) == "state")
+                    {
+                        inState = true;
+
+                        if (text[stateStopOffset] == '{')
+                        {
+                            i = stateStopOffset + 1;
+                        }
+                        else
+                        {
+                            var stateSkipper = new CommentStringSkipper();
+                            bool spacesBetween = false;
+                            var o = stateStopOffset;
+                            var c = '0';
+                            while (o < offset)
+                            {
+                                c = text[o];
+
+
+                                if (c == ';') { inState = false; break; }
+                                if (c == '{') { break; }
+
+                                stateSkipper.FeedChar(text, o, offset);
+
+                                if (stateSkipper.InComment) { 
+                                    spacesBetween = true;
+                                }
+                                else if (c == ' ')
+                                {
+                                    spacesBetween = true;
+                                }
+
+                                if (!(stateSkipper.InComment || stateSkipper.InString) && !char.IsWhiteSpace(c) && !spacesBetween)
+                                {
+                                    inState = false;
+                                    break;
+                                }
+
+                                o++;
+
+                            }
+
+                            if (inState) i = o + 1;
+                        }
+
+                        if (inState)
+                        {
+                            level++;
+                            id++;
                             codeAreaID++;
                         }
                     }
-                    if (text[i] == '{')
+                    else if (text[i] == '{')
                     {
+                        char t = text[i - 1];
                         level++;
                         if ((inState && level == 2) || (!inState && level == 1))
                         {
@@ -387,8 +556,9 @@ namespace LibLSLCC.FastVarParser
                         }
                         id++;
                     }
-                    if (text[i] == '}')
+                    else if (text[i] == '}')
                     {
+                        char t = text[i - 1];
                         level--;
                         if (inState && level == 0)
                         {
@@ -398,7 +568,7 @@ namespace LibLSLCC.FastVarParser
 
                 }
             }
-            return new ScopeAddress(codeAreaID, id, level) { InState = inState, InString = inString, InComment = inLineComment || inBlockComment };
+            return new ScopeAddress(codeAreaID, id, level) { InState = inState, InString = skipper.InString, InComment = skipper.InComment };
         }
 
         public void Parse(TextReader stream)
