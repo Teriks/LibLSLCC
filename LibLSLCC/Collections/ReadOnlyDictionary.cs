@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
 namespace LibLSLCC.Collections
 {
+    [Serializable]
     public class ReadOnlyDictionary<TKey,TValue> : IReadOnlyDictionary<TKey, TValue>, ISerializable, IDeserializationCallback
     {
         readonly IDictionary<TKey,TValue> _items;
@@ -13,6 +15,11 @@ namespace LibLSLCC.Collections
         {
             _items = items;
         }
+
+        protected ReadOnlyDictionary(SerializationInfo info, StreamingContext context)
+        {
+            GetObjectData(info,context);
+        } 
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {

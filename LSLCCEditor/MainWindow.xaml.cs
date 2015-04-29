@@ -58,13 +58,13 @@ default
                             "Error details:\n\n" + details,
                 "Unexpected error", MessageBoxButton.OK);
 
-            App.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         public MainWindow()
         {
 
-            App.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
             
 
@@ -134,18 +134,21 @@ default
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 
         {
-            var args = Environment.GetCommandLineArgs();
+            var aargs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments;
 
-            if (args.Length > 1)
+
+
+            if (aargs != null && aargs.ActivationData != null && aargs.ActivationData.Length > 0)
             {
                 try
                 {
-                    LslEditor.TextEditor.Text = File.ReadAllText(args[1], Encoding.UTF8);
-                    _currentlyOpenFile = args[1];
+                    Console.WriteLine(aargs.ActivationData[0]);
+                    LslEditor.TextEditor.Text = File.ReadAllText(aargs.ActivationData[0], Encoding.UTF8);
+                    _currentlyOpenFile = aargs.ActivationData[0];
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Could not open file:\n\"" + args[1] + "\"");
+                    MessageBox.Show("Could not open file:\n\"" + aargs.ActivationData[0] + "\"");
                     LslEditor.TextEditor.Text = DefaultProgram;
                 }
             }

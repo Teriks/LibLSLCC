@@ -563,7 +563,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Writer.Write(")");
 
-            WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 0);
+            WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange);
 
             Visit(node.Code);
 

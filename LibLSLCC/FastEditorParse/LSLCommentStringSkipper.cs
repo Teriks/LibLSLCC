@@ -5,6 +5,7 @@
         private bool _inBlockComment;
         private bool _inLineComment;
         private bool _inString;
+        private int _lastStringStart;
 
         public bool InBlockComment
         {
@@ -67,18 +68,28 @@
             {
                 if (!_inString && text[i] == '"')
                 {
+                    _lastStringStart = i;
                     _inString = true;
                 }
-                else if (_inString && lookBehind > 0 && text[lookBehind] == '"')
+                else if (_inString && lookBehind > 0 && text[lookBehind] == '"' && lookBehind != _lastStringStart)
                 {
-                    int c = 0;
-                    int s = i - 2;
 
-                    for (int o = s; text[o] == '\\'; o--, c++)
+                    if ((lookBehind - _lastStringStart) > 2)
                     {
-                    }
 
-                    if ((c%2) == 0)
+                        int c = 0;
+                        int s = i - 2;
+
+                        for (int o = s; text[o] == '\\'; o--, c++)
+                        {
+                        }
+
+                        if ((c%2) == 0)
+                        {
+                            _inString = false;
+                        }
+                    }
+                    else
                     {
                         _inString = false;
                     }

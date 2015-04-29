@@ -56,52 +56,52 @@ namespace LibraryDataScrapingTools.ScraperProxys
         public ISet<LSLLibraryEventSignature> EventSet { get; private set; }
         public ISet<LSLLibraryConstantSignature> ConstantSet { get; private set; }
 
-        bool ILibraryData.LSLFunctionExist(string name)
+        public bool LSLFunctionExist(string name)
         {
             return OverloadsDictionary.ContainsKey(name);
         }
 
-        bool ILibraryData.LSLConstantExist(string name)
+        public bool LSLConstantExist(string name)
         {
             return ConstantDictionary.ContainsKey(name);
         }
 
-        bool ILibraryData.LSLEventExist(string name)
+        public bool LSLEventExist(string name)
         {
             return EventDictionary.ContainsKey(name);
         }
 
-        IReadOnlyList<LSLLibraryFunctionSignature> ILibraryData.LSLFunctionOverloads(string name)
+        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
             return OverloadsDictionary[name];
         }
 
-        LSLLibraryConstantSignature ILibraryData.LSLConstant(string name)
+        public LSLLibraryConstantSignature LSLConstant(string name)
         {
             return ConstantDictionary[name];
         }
 
-        LSLLibraryEventSignature ILibraryData.LSLEvent(string name)
+        public LSLLibraryEventSignature LSLEvent(string name)
         {
             return EventDictionary[name];
         }
 
-        IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> ILibraryData.LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
             return OverloadsDictionary.Values;
         }
 
-        IEnumerable<LSLLibraryFunctionSignature> ILibraryData.LSLFunctions()
+        public IEnumerable<LSLLibraryFunctionSignature> LSLFunctions()
         {
             return FunctionSet;
         }
 
-        IEnumerable<LSLLibraryConstantSignature> ILibraryData.LSLConstants()
+        public IEnumerable<LSLLibraryConstantSignature> LSLConstants()
         {
             return ConstantSet;
         }
 
-        IEnumerable<LSLLibraryEventSignature> ILibraryData.LSLEvents()
+        public IEnumerable<LSLLibraryEventSignature> LSLEvents()
         {
             return EventSet;
         }

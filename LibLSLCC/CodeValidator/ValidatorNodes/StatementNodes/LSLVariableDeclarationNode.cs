@@ -332,7 +332,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
 
-        LSLSourceCodeRange ILSLVariableDeclarationNode.OperatorSourceCodeRange { get { return OperationSourceCodeRange; } }
+        public LSLSourceCodeRange OperatorSourceCodeRange { get { return OperationSourceCodeRange; } }
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {

@@ -423,7 +423,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         {
             public LSLLibraryConstantSignature GetSignature(IReadOnlyList<string> subsets)
             {
-                string[] s = Desc.Split(new[] {','});
+                string[] s = Desc.Split(',');
                 LSLType t = s.Length == 3 ? LSLType.Vector : LSLType.Rotation;
                 var f = new LSLLibraryConstantSignature(t, Name) {DocumentationString = Desc};
                 f.SetSubsets(subsets);

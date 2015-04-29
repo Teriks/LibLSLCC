@@ -13,37 +13,65 @@ namespace LibLSLCC.FastEditorParse
 {
     public class LSLFastEditorParse
     {
-        private readonly List<GlobalFunction> _globalFunctions = new List<GlobalFunction>();
-        private readonly List<GlobalVariable> _globalVariables = new List<GlobalVariable>();
-        private readonly List<LocalVariable> _localVariables = new List<LocalVariable>();
-        private readonly List<LocalParameter> _parameters = new List<LocalParameter>();
-        private readonly List<StateBlock> _stateBlocks = new List<StateBlock>();
+        private readonly Dictionary<string, GlobalFunction> _globalFunctions = new Dictionary<string, GlobalFunction>();
+        private readonly Dictionary<string, GlobalVariable> _globalVariables = new Dictionary<string, GlobalVariable>();
 
-        public IReadOnlyList<StateBlock> StateBlocks
+        private readonly Stack<Dictionary<string, LocalVariable>> _localVariables =
+            new Stack<Dictionary<string, LocalVariable>>();
+
+        private readonly Dictionary<string, LocalParameter> _parameters = new Dictionary<string, LocalParameter>();
+        private readonly List<StateBlock> _stateBlocks = new List<StateBlock>();
+        private int _toOffset;
+
+        public LSLFastEditorParse()
+        {
+            InGlobalScope = true;
+        }
+
+        public string CurrentState { get; private set; }
+        public string CurrentFunction { get; private set; }
+        public string CurrentEvent { get; private set; }
+
+        public bool AfterDefaultState
+        {
+            get { return !InGlobalScope && !InState; }
+        }
+
+        public bool InStateOutsideEvent
+        {
+            get { return (InState && !InEventHandler); }
+        }
+
+        public bool InState { get; private set; }
+        public bool InEventHandler { get; private set; }
+        public bool InFunctionDeclaration { get; private set; }
+        public bool InGlobalScope { get; private set; }
+
+        public IEnumerable<StateBlock> StateBlocks
         {
             get { return _stateBlocks; }
         }
 
         public StateBlock DefaultState { get; private set; }
 
-        public IReadOnlyList<GlobalVariable> GlobalVariables
+        public IEnumerable<GlobalVariable> GlobalVariables
         {
-            get { return _globalVariables; }
+            get { return _globalVariables.Values; }
         }
 
-        public IReadOnlyList<LocalVariable> LocalVariables
+        public IEnumerable<LocalVariable> LocalVariables
         {
-            get { return _localVariables; }
+            get { return _localVariables.SelectMany(x => x.Values); }
         }
 
-        public IReadOnlyList<GlobalFunction> GlobalFunctions
+        public IEnumerable<GlobalFunction> GlobalFunctions
         {
-            get { return _globalFunctions; }
+            get { return _globalFunctions.Values; }
         }
 
-        public IReadOnlyList<LocalParameter> LocalParameters
+        public IEnumerable<LocalParameter> LocalParameters
         {
-            get { return _parameters; }
+            get { return _parameters.Values; }
         }
 
         private static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
@@ -53,30 +81,12 @@ namespace LibLSLCC.FastEditorParse
             return val;
         }
 
-        public IEnumerable<LocalParameter> GetLocalParameters(ScopeAddress address, int offset)
-        {
-            return LocalParameters.Where(
-                x =>
-                    x.ScopeAddress.CodeAreaId == address.CodeAreaId &&
-                    x.ScopeAddress.ScopeId <= address.ScopeId &&
-                    x.ScopeAddress.ScopeLevel == address.ScopeLevel &&
-                    x.SourceCodeRange.StartIndex < offset);
-        }
-
-        public IEnumerable<LocalVariable> GetLocalVariables(ScopeAddress address, int offset)
-        {
-            return LocalVariables.Where(
-                x =>
-                    x.ScopeAddress.CodeAreaId == address.CodeAreaId &&
-                    x.ScopeAddress.ScopeId <= address.ScopeId &&
-                    x.ScopeAddress.ScopeLevel == address.ScopeLevel &&
-                    x.SourceCodeRange.StartIndex < offset);
-        }
-
         public static ScopeAddress FastParseToOffset(string text, int offset)
         {
             LSLCommentStringSkipper skipper = new LSLCommentStringSkipper();
             bool inState = false;
+            bool inEvent = false;
+            bool inFunction = false;
             int level = 0;
             int id = 0;
             int codeAreaId = 0;
@@ -86,6 +96,10 @@ namespace LibLSLCC.FastEditorParse
 
             for (int i = 0; i < offset; i++)
             {
+                if (text[i] == '"')
+                {
+                    Console.Write("TEST");
+                }
                 skipper.FeedChar(text, i, offset);
 
 
@@ -94,7 +108,8 @@ namespace LibLSLCC.FastEditorParse
                     int defaultStopOffset = i + 7;
                     int stateStopOffset = i + 5;
 
-                    if ((defaultStopOffset < text.Length) && text.Substring(i, 7) == "default")
+                    if (!inEvent && !inFunction && !inState && (defaultStopOffset < text.Length) &&
+                        text.Substring(i, 7) == "default")
                     {
                         inState = true;
 
@@ -134,7 +149,8 @@ namespace LibLSLCC.FastEditorParse
                             codeAreaId++;
                         }
                     }
-                    if (!inState && (stateStopOffset < text.Length) && text.Substring(i, 5) == "state")
+                    if (!inEvent && !inFunction && !inState && (stateStopOffset < text.Length) &&
+                        text.Substring(i, 5) == "state")
                     {
                         inState = true;
 
@@ -186,29 +202,43 @@ namespace LibLSLCC.FastEditorParse
                             if (inState) i = o + 1;
                         }
 
-                        if (!inState) continue;
-
-                        level++;
-                        id++;
-                        codeAreaId++;
-
+                        if (inState)
+                        {
+                            level++;
+                            id++;
+                            codeAreaId++;
+                        }
                     }
-                    else if (text[i] == '{')
+                    else if (text[i] == '{' && !skipper.InComment && !skipper.InString)
                     {
                         level++;
-                        if ((inState && level == 2) || (!inState && level == 1))
+                        if (!inEvent && (inState && level == 2))
                         {
+                            inEvent = true;
+                            codeAreaId++;
+                        }
+                        else if (!inFunction && !inState && level == 1)
+                        {
+                            char t = text[i];
+                            inFunction = true;
                             codeAreaId++;
                         }
                         id++;
                     }
-                    else if (text[i] == '}')
+                    else if (text[i] == '}' && !skipper.InComment && !skipper.InString)
                     {
-
                         level--;
                         if (inState && level == 0)
                         {
                             inState = false;
+                        }
+                        else if (inState && inEvent && level == 1)
+                        {
+                            inEvent = false;
+                        }
+                        else if (inFunction && level == 0)
+                        {
+                            inFunction = false;
                         }
                     }
                 }
@@ -221,12 +251,14 @@ namespace LibLSLCC.FastEditorParse
             };
         }
 
-        public void Parse(TextReader stream)
+        public void Parse(TextReader stream, int toOffset)
         {
             _globalFunctions.Clear();
             _globalVariables.Clear();
             _localVariables.Clear();
             _parameters.Clear();
+
+            _toOffset = toOffset;
 
             var inputStream = new AntlrInputStream(stream);
 
@@ -328,9 +360,11 @@ namespace LibLSLCC.FastEditorParse
             public int CodeAreaId { get; private set; }
             public int ScopeLevel { get; private set; }
             public int ScopeId { get; private set; }
-            public bool InComment { get; set; }
-            public bool InString { get; set; }
-            public bool InState { get; set; }
+            public bool InComment { get; internal set; }
+            public bool InString { get; internal set; }
+            public bool InState { get; internal set; }
+            public bool InEvent { get; internal set; }
+            public bool InFunction { get; internal set; }
         }
 
         public class LocalVariable
@@ -369,7 +403,6 @@ namespace LibLSLCC.FastEditorParse
         {
             private readonly LSLFastEditorParse _parent;
             private int _codeAreaId;
-            private bool _inState;
             private int _scopeId;
             private int _scopeLevel;
 
@@ -380,39 +413,75 @@ namespace LibLSLCC.FastEditorParse
 
             public override bool VisitGlobalVariableDeclaration(LSLParser.GlobalVariableDeclarationContext context)
             {
+                if (context.Start.StartIndex > _parent._toOffset) return true;
+
                 if (context.variable_type == null || context.variable_name == null) return true;
 
-                _parent._globalVariables.Add(
+                var variable =
                     new GlobalVariable(
                         context.variable_name.Text,
                         context.variable_type.Text,
-                        new LSLSourceCodeRange(context)));
+                        new LSLSourceCodeRange(context));
+
+
+                if (!_parent._globalVariables.ContainsKey(context.variable_name.Text))
+                {
+                    _parent._globalVariables.Add(context.variable_name.Text, variable);
+                }
+
 
                 return true;
             }
 
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
             {
+                if (context.Start.StartIndex > _parent._toOffset) return true;
+
                 if (context.variable_type == null || context.variable_name == null) return true;
 
-                _parent._localVariables.Add(
-                    new LocalVariable(
+
+                var variable = new LocalVariable(
+                    context.variable_name.Text,
+                    context.variable_type.Text,
+                    new LSLSourceCodeRange(context),
+                    new ScopeAddress(_codeAreaId, _scopeId, _scopeLevel)
+                    {
+                        InState = _parent.InState,
+                        InFunction = _parent.InFunctionDeclaration,
+                        InEvent = _parent.InEventHandler
+                    });
+
+
+                var scopeVars = _parent._localVariables.Peek();
+
+                if (_parent._globalVariables.ContainsKey(context.variable_name.Text))
+                {
+                    _parent._globalVariables.Remove(context.variable_name.Text);
+                }
+
+                if (!scopeVars.ContainsKey(context.variable_name.Text))
+                {
+                    scopeVars.Add(
                         context.variable_name.Text,
-                        context.variable_type.Text,
-                        new LSLSourceCodeRange(context),
-                        new ScopeAddress(_codeAreaId, _scopeId, _scopeLevel) {InState = _inState}));
+                        variable);
+                }
 
                 return true;
             }
 
             public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
             {
+                if (context.Start.StartIndex > _parent._toOffset) return true;
+
                 string returnTypeText = context.return_type == null ? "" : context.return_type.Text;
 
                 if (context.function_name == null || context.code == null) return true;
 
 
                 _codeAreaId++;
+
+                _parent._parameters.Clear();
+
 
                 var parms = new List<LocalParameter>();
 
@@ -426,6 +495,7 @@ namespace LibLSLCC.FastEditorParse
                             var i = child as LSLParser.ParameterDefinitionContext;
 
                             if (i == null) continue;
+                            if (_parent._parameters.ContainsKey(i.parameter_name.Text)) continue;
 
                             var parm = new LocalParameter(
                                 i.parameter_name.Text,
@@ -434,21 +504,43 @@ namespace LibLSLCC.FastEditorParse
                                 new ScopeAddress(_codeAreaId, _scopeId + 1, _scopeLevel + 1));
 
                             parms.Add(parm);
-                            _parent._parameters.Add(parm);
+                            _parent._parameters.Add(parm.Name, parm);
                         }
                     }
                 }
 
-                _parent._globalFunctions.Add(new GlobalFunction(context.function_name.Text, returnTypeText,
-                    new LSLSourceCodeRange(context), parms));
+
+                if (!_parent._globalFunctions.ContainsKey(context.function_name.Text))
+                {
+                    _parent._globalFunctions.Add(
+                        context.function_name.Text,
+                        new GlobalFunction(context.function_name.Text, returnTypeText,
+                            new LSLSourceCodeRange(context), parms));
+                }
 
 
-                return base.VisitFunctionDeclaration(context);
+                _parent.InFunctionDeclaration = true;
+
+                _parent.CurrentFunction = context.function_name != null ? context.function_name.Text : null;
+
+                base.VisitFunctionDeclaration(context);
+
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
+
+                _parent.InFunctionDeclaration = false;
+
+                return true;
             }
+
+
 
             public override bool VisitEventHandler(LSLParser.EventHandlerContext context)
             {
+                if (context.Start.StartIndex > _parent._toOffset) return true;
+
                 _codeAreaId++;
+
+                _parent._parameters.Clear();
 
                 if (context.parameters != null && context.parameters.children != null)
                 {
@@ -461,37 +553,68 @@ namespace LibLSLCC.FastEditorParse
 
                             if (i == null) continue;
 
-                            _parent._parameters.Add(
-                                new LocalParameter(
-                                    i.parameter_name.Text,
-                                    i.parameter_type.Text,
-                                    new LSLSourceCodeRange(i),
-                                    new ScopeAddress(_codeAreaId, _scopeId + 1, _scopeLevel + 1)));
+                            if (_parent._parameters.ContainsKey(i.parameter_name.Text)) continue;
+
+                            var parm = new LocalParameter(
+                                i.parameter_name.Text,
+                                i.parameter_type.Text,
+                                new LSLSourceCodeRange(i),
+                                new ScopeAddress(_codeAreaId, _scopeId + 1, _scopeLevel + 1));
+
+                            _parent._parameters.Add(parm.Name, parm);
                         }
                     }
                 }
 
-                return base.VisitEventHandler(context);
+                _parent.InEventHandler = true;
+
+                _parent.CurrentEvent = context.handler_name != null ? context.handler_name.Text : null;
+
+                base.VisitEventHandler(context);
+
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
+
+                _parent.InEventHandler = false;
+
+                return true;
             }
+
+
 
             public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
             {
+                if (context.Start.StartIndex > _parent._toOffset) return true;
+
                 _parent.DefaultState = new StateBlock("default", new LSLSourceCodeRange(context));
 
                 _codeAreaId++;
                 _scopeLevel++;
                 _scopeId++;
-                _inState = true;
+
+
+                _parent.InGlobalScope = false;
+                _parent.InState = true;
+
+                _parent.CurrentState = context.state_name != null ? context.state_name.Text : null;
 
                 base.VisitDefaultState(context);
 
-                _inState = false;
+
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
+
+                _parent.InState = false;
+
+
                 _scopeLevel--;
+
+
                 return true;
             }
 
             public override bool VisitDefinedState(LSLParser.DefinedStateContext context)
             {
+                if (context.Start.StartIndex > _parent._toOffset) return true;
+
                 if (context.state_name == null) return true;
 
 
@@ -501,21 +624,46 @@ namespace LibLSLCC.FastEditorParse
                 _codeAreaId++;
                 _scopeLevel++;
                 _scopeId++;
-                _inState = true;
+
+
+                _parent.InState = true;
+
+                _parent.CurrentState = context.state_name != null ? context.state_name.Text : null;
 
                 base.VisitDefinedState(context);
 
-                _inState = false;
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
+
+
+                _parent.InState = false;
+
                 _scopeLevel--;
+
                 return true;
             }
 
             public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
             {
+                if (context.Start.StartIndex > _parent._toOffset) return true;
+
                 _scopeLevel++;
                 _scopeId++;
 
-                base.VisitCodeScope(context);
+                _parent._localVariables.Push(new Dictionary<string, LocalVariable>());
+
+                foreach (var i in context.codeStatement())
+                {
+                    if (i.Start.StartIndex > _parent._toOffset)
+                    {
+                        return true;
+                    }
+
+                    VisitCodeStatement(i);
+                }
+
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
+
+                _parent._localVariables.Pop();
 
                 _scopeLevel--;
                 return true;

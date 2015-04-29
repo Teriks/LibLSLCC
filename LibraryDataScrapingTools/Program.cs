@@ -326,19 +326,16 @@ namespace LibraryDataScrapingTools
                 {
                     serializer.Serialize(notInLeft, diff.NotInLeft);
                     notInLeft.Flush();
-                    notInLeft.Close();
                 }
 
                 using (var notInRight = File.Create("notInRight.xml.txt"))
                 {
                     serializer.Serialize(notInRight, diff.NotInRight);
                     notInRight.Flush();
-                    notInRight.Close();
                 }
 
                 logWriter.Flush();
-                logStream.Close();
-                libraryDataStream.Close();
+
             }
             Process.Start("log.txt");
             Process.Start("LibraryData.xml.txt");
