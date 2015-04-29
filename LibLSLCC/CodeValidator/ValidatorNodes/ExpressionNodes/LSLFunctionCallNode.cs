@@ -43,7 +43,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             ParameterListNode = parameterList;
 
             parameterList.Parent = this;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
+            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
+            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+            FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
         }
 
 
@@ -64,7 +68,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             _libraryFunction = true;
             ParameterListNode = parameterList;
             parameterList.Parent = this;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
+            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
+            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+            FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
         }
 
 
@@ -90,6 +98,20 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
                 throw new InvalidOperationException("Cannot get a definition node for a library function call.");
             }
+        }
+
+        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+
+        public LSLSourceCodeRange CloseParenthSourceCodeRange
+        {
+            get;
+            private set;
+        }
+
+        public LSLSourceCodeRange FunctionNameSourceCodeRange
+        {
+            get;
+            private set;
         }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent

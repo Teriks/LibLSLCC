@@ -2096,13 +2096,15 @@ public partial class LSLParser : Parser {
 	}
 	public partial class Expr_FunctionCallContext : ExpressionContext {
 		public IToken function_name;
+		public IToken open_parenth;
 		public OptionalExpressionListContext expression_list;
+		public IToken close_parenth;
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
 		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
-		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public OptionalExpressionListContext optionalExpressionList() {
 			return GetRuleContext<OptionalExpressionListContext>(0);
 		}
+		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public Expr_FunctionCallContext(ExpressionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			ILSLListener typedListener = listener as ILSLListener;
@@ -2293,9 +2295,9 @@ public partial class LSLParser : Parser {
 				_prevctx = _localctx;
 				State = 252; ((Expr_FunctionCallContext)_localctx).function_name = Match(ID);
 				{
-				State = 253; Match(O_PAREN);
+				State = 253; ((Expr_FunctionCallContext)_localctx).open_parenth = Match(O_PAREN);
 				State = 254; ((Expr_FunctionCallContext)_localctx).expression_list = optionalExpressionList();
-				State = 255; Match(C_PAREN);
+				State = 255; ((Expr_FunctionCallContext)_localctx).close_parenth = Match(C_PAREN);
 				}
 				}
 				break;

@@ -10,5 +10,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         LSLFunctionSignature Signature { get; }
         ILSLExpressionListNode ParameterListNode { get; }
         ILSLFunctionDeclarationNode DefinitionNode { get; }
+
+        LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+
+        LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+
+        LSLSourceCodeRange FunctionNameSourceCodeRange { get; }
     }
 }

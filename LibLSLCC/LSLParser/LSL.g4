@@ -326,7 +326,7 @@ expression:
 
     O_PAREN expr_value=expression C_PAREN													 #ParenthesizedExpression
 
-|   function_name=ID (O_PAREN  expression_list=optionalExpressionList C_PAREN)               #Expr_FunctionCall
+|   function_name=ID (open_parenth=O_PAREN  expression_list=optionalExpressionList close_parenth=C_PAREN) #Expr_FunctionCall
 
 |   expr_lvalue=expression operation=DOT member=ID											 #Expr_DotAccessor
 

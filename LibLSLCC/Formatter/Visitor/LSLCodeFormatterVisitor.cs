@@ -196,6 +196,21 @@ namespace LibLSLCC.Formatter.Visitor
             var cntr = 0;
 
 
+            if (cnt > 0)
+            {
+                var start = node.Parent.SourceCodeRange.StartIndex + 1;
+                var len = node.ExpressionNodes[0].SourceCodeRange.StartIndex - start;
+                Writer.Write(_sourceReference.Substring(start, len));
+            }
+            else
+            {
+                var start = node.Parent.SourceCodeRange.StartIndex + 1;
+                var len = node.Parent.SourceCodeRange.StopIndex - start;
+                Writer.Write(_sourceReference.Substring(start, len));
+
+                return true;
+            }
+
             for (var x = 0; x < cnt; x++)
             {
                 Visit(node.ExpressionNodes[x]);
@@ -208,6 +223,14 @@ namespace LibLSLCC.Formatter.Visitor
 
                 cntr++;
             }
+
+            if (cnt > 0)
+            {
+                var start = node.ExpressionNodes.Last().SourceCodeRange.StopIndex + 1;
+                var len = node.Parent.SourceCodeRange.StopIndex - start;
+                Writer.Write(_sourceReference.Substring(start, len));
+            }
+
             return true;
         }
 
@@ -216,21 +239,47 @@ namespace LibLSLCC.Formatter.Visitor
             var cnt = node.ExpressionNodes.Count;
             var cntr = 0;
 
+            var Parent = (ILSLFunctionCallNode)node.Parent;
+
+            if (cnt > 0)
+            {
+                var start = Parent.OpenParenthSourceCodeRange.StartIndex + 1;
+                var len = node.ExpressionNodes[0].SourceCodeRange.StartIndex - start;
+                Writer.Write(_sourceReference.Substring(start, len));
+            }
+            else
+            {
+                var start = Parent.OpenParenthSourceCodeRange.StartIndex + 1;
+                var len = Parent.CloseParenthSourceCodeRange.StopIndex - start;
+                Writer.Write(_sourceReference.Substring(start, len));
+
+                return true;
+            }
 
             for (var x = 0; x < cnt; x++)
             {
                 Visit(node.ExpressionNodes[x]);
                 if ((cntr + 1) < cnt)
                 {
-                    var start = node.ExpressionNodes[x].SourceCodeRange.StopIndex+1;
+                    var start = node.ExpressionNodes[x].SourceCodeRange.StopIndex + 1;
                     var len = node.ExpressionNodes[x + 1].SourceCodeRange.StartIndex - start;
                     Writer.Write(_sourceReference.Substring(start, len));
                 }
 
                 cntr++;
             }
+
+            if (cnt > 0)
+            {
+                var start = node.ExpressionNodes.Last().SourceCodeRange.StopIndex + 1;
+                var len = Parent.CloseParenthSourceCodeRange.StopIndex - start;
+                Writer.Write(_sourceReference.Substring(start, len));
+            }
+
             return true;
         }
+
+
 
         //public override bool VisitForLoopAfterthoughts(ILSLExpressionListNode node)
         //{
