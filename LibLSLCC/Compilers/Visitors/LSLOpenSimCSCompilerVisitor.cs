@@ -925,7 +925,7 @@ private static class UTILITIES
 
             Writer.Write(GenIndent() + "for(");
 
-            if (node.HasInitExpression)
+            if (node.HasInitExpressions)
             {
                 Visit(node.InitExpressionsList);
             }

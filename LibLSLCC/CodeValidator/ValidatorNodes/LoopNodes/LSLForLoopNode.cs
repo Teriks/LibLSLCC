@@ -109,9 +109,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         }
 
 
-        public bool HasInitExpression
+        public bool HasInitExpressions
         {
-            get { return InitExpressionsList != null; }
+            get { return InitExpressionsList != null && InitExpressionsList.HasExpressionNodes; }
         }
 
         public bool HasConditionExpression
@@ -121,7 +121,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
 
         public bool HasAfterthoughtExpressions
         {
-            get { return AfterthoughExpressions != null; }
+            get { return AfterthoughExpressions != null && AfterthoughExpressions.HasExpressionNodes; }
         }
 
 

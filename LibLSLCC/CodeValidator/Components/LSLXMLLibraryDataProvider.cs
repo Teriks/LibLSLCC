@@ -63,7 +63,6 @@ namespace LibLSLCC.CodeValidator.Components
                     {
                         var signature = LSLLibraryFunctionSignature.FromXmlFragment(reader);
 
-
                         if (AccumulateDuplicates || signature.Subsets.Any(subset => Subsets.Contains(subset)))
                         {
                             AddValidLibraryFunction(signature);

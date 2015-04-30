@@ -134,21 +134,20 @@ default
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 
         {
-            var aargs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments;
+            var args = Environment.GetCommandLineArgs();
 
 
 
-            if (aargs != null && aargs.ActivationData != null && aargs.ActivationData.Length > 0)
+            if (args.Length > 1)
             {
                 try
                 {
-                    Console.WriteLine(aargs.ActivationData[0]);
-                    LslEditor.TextEditor.Text = File.ReadAllText(aargs.ActivationData[0], Encoding.UTF8);
-                    _currentlyOpenFile = aargs.ActivationData[0];
+                    LslEditor.TextEditor.Text = File.ReadAllText(args[1], Encoding.UTF8);
+                    _currentlyOpenFile = args[1];
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Could not open file:\n\"" + aargs.ActivationData[0] + "\"");
+                    MessageBox.Show("Could not open file:\n\"" + args[1] + "\"");
                     LslEditor.TextEditor.Text = DefaultProgram;
                 }
             }

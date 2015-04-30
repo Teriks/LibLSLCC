@@ -21,7 +21,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
         ILSLExpressionListNode AfterthoughExpressions { get; }
 
-        bool HasInitExpression { get; }
+        bool HasInitExpressions { get; }
         bool HasConditionExpression { get; }
         bool HasAfterthoughtExpressions { get; }
     }

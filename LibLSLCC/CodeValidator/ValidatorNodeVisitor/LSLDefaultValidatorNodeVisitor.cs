@@ -275,7 +275,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         /// <returns>default(T)</returns>
         public virtual T VisitForLoop(ILSLForLoopNode node)
         {
-            if (node.HasInitExpression)
+            if (node.HasInitExpressions)
             {
                 Visit(node.InitExpressionsList);
             }

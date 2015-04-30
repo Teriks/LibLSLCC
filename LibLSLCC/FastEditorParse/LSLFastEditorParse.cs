@@ -459,6 +459,11 @@ namespace LibLSLCC.FastEditorParse
                     _parent._globalVariables.Remove(context.variable_name.Text);
                 }
 
+                if (_parent._parameters.ContainsKey(context.variable_name.Text))
+                {
+                    _parent._parameters.Remove(context.variable_name.Text);
+                }
+
                 if (!scopeVars.ContainsKey(context.variable_name.Text))
                 {
                     scopeVars.Add(

@@ -884,7 +884,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && expression.IsConstant)
                 {
-                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition), LSLConditionalStatementType.ElseIf);
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition), LSLConditionalStatementType.If);
                 }
             }
 
@@ -1643,7 +1643,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && loopCondition.IsConstant)
                 {
-                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.For);
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.DoWhile);
                 }
             }
             else

@@ -55,7 +55,6 @@ namespace LSLCCEditor
 
 
         private CompletionWindow _completionWindow;
-        private bool _completionWindowOpen;
         private List<LSLLibraryConstantSignature> _constantSignatures;
         private List<LSLLibraryEventSignature> _eventSignatures;
         private List<string> _libraryFunctionNames;
@@ -200,6 +199,11 @@ namespace LSLCCEditor
         }
 
 
+        private SolidColorBrush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
+        private SolidColorBrush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+        private SolidColorBrush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
+        private SolidColorBrush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
+
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
 
@@ -237,7 +241,7 @@ namespace LSLCCEditor
                 if ( 
                      _validSuggestionPrefixes.Contains(onebehind) &&
                      Regex.Match(e.Text, "[A-Za-z]").Success && 
-                     !_completionWindowOpen
+                     _completionWindow == null
                     )
                 {
 
@@ -361,7 +365,7 @@ namespace LSLCCEditor
 
                             data.Add(new LSLConstantCompletionData(v.Name, doc, 0)
                             {
-                                ColorBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0))
+                                ColorBrush = _localVariableCompleteColor
                             });
 
                             possibleUserDefinedItem = true;
@@ -376,7 +380,7 @@ namespace LSLCCEditor
 
                             data.Add(new LSLConstantCompletionData(v.Name, doc, 0)
                             {
-                                ColorBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0))
+                                ColorBrush = _localParameterCompleteColor
                             });
                             possibleUserDefinedItem = true;
                         }
@@ -387,7 +391,7 @@ namespace LSLCCEditor
                             string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
                             data.Add(new LSLConstantCompletionData(v.Name, doc, 0)
                             {
-                                ColorBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0))
+                                ColorBrush = _globalVariableCompleteColor
                             });
                             possibleUserDefinedItem = true;
                         }
@@ -400,7 +404,7 @@ namespace LSLCCEditor
 
                             data.Add(new LSLFunctionCompletionData(func.Name, doc, 0)
                             {
-                                ColorBrush = new SolidColorBrush(Color.FromRgb(0, 0, 0))
+                                ColorBrush = _globalFunctionCompleteColor
                             });
 
                             possibleUserDefinedItem = true;
@@ -416,7 +420,7 @@ namespace LSLCCEditor
                         {
                             lock (_completionLock)
                             {
-                                _completionWindowOpen = false;
+                                _completionWindow = null;
                             }
                         };
                     }
@@ -431,14 +435,104 @@ namespace LSLCCEditor
 
             if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                lock (_completionLock)
+                if (_completionWindow != null)
                 {
-                    if (_completionWindow != null)
+                    lock (_completionLock)
                     {
-                        _completionWindow.CompletionList.RequestInsertion(e);
-                        e.Handled = true;
+                        if (_completionWindow != null)
+                        {
+                            _completionWindow.CompletionList.RequestInsertion(e);
+                            e.Handled = true;
+                        }
                     }
                 }
+                else
+                {
+                    var textArea = TextEditor.TextArea;
+                    var caretOffset = textArea.Caret.Offset;
+
+                    var commentSkipper = new LSLCommentStringSkipper();
+
+                    for (int i = 0; i < caretOffset; i++)
+                    {
+                        commentSkipper.FeedChar(TextEditor.Text, i, caretOffset);
+                    }
+
+                    if (commentSkipper.InComment || commentSkipper.InString)
+                    {
+                        return;
+                    }
+
+                    _completionWindow = new CompletionWindow(textArea);
+
+
+                    var fastVarParser = new LSLFastEditorParse();
+                    fastVarParser.Parse(new StringReader(TextEditor.Text), caretOffset);
+
+
+                    _completionWindow.Width = _completionWindow.Width + 160;
+
+                    var data = _completionWindow.CompletionList.CompletionData;
+
+
+
+                    foreach (var i in fastVarParser.GlobalFunctions)
+                    {
+                        data.Add(new LSLFunctionCompletionData(i.Name, "Global function:\n" + i.Signature, 0) 
+                        { 
+                            ColorBrush = _globalFunctionCompleteColor 
+                        });
+                    }
+
+                    foreach (var i in fastVarParser.GlobalVariables)
+                    {
+                        data.Add(new LSLConstantCompletionData(i.Name, "Global variable:\n" + i.Type + " " + i.Name, 1) 
+                        { 
+                            ColorBrush = _globalVariableCompleteColor 
+                        });
+                    }
+
+                    foreach (var i in fastVarParser.LocalParameters)
+                    {
+                        data.Add(new LSLConstantCompletionData(i.Name, "Local parameter:\n" + i.Type + " " + i.Name, 2)
+                        { 
+                            ColorBrush = _localParameterCompleteColor
+                        });
+                    }
+
+                    foreach (var i in fastVarParser.LocalVariables)
+                    {
+                        data.Add(new LSLConstantCompletionData(i.Name, "Local Variable:\n" + i.Type + " " + i.Name, 3) 
+                        { 
+                            ColorBrush = _localVariableCompleteColor
+                        });
+                    }
+
+
+                    _completionWindow.Loaded += delegate{
+                        lock(_completionWindow){
+                            if(_completionWindow.CompletionList.ListBox.Items.Count == 0){
+                                _completionWindow.Close();
+                            }
+                        }
+                    };
+
+
+
+                    _completionWindow.Closed += delegate
+                    {
+                        lock (_completionLock)
+                        {
+                            _completionWindow = null;
+                        }
+                    };
+
+                    _completionWindow.Show();
+
+                    e.Handled = true;
+
+                }
+                
             }
         }
 
@@ -491,7 +585,8 @@ namespace LSLCCEditor
 
 
 
-                    foreach (var func in _libraryFunctionNames)
+
+                    foreach (var func in (from s in _libraryFunctionNames orderby s.Length descending select s))
                     {
                         var rule = new HighlightingRule
                         {
@@ -501,7 +596,7 @@ namespace LSLCCEditor
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
 
-                    foreach (var cnst in _constantSignatures)
+                    foreach (var cnst in (from s in _constantSignatures orderby s.Name.Length descending select s))
                     {
                         var rule = new HighlightingRule
                         {
@@ -511,7 +606,7 @@ namespace LSLCCEditor
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
 
-                    foreach (var evnt in _eventSignatures)
+                    foreach (var evnt in (from s in _eventSignatures orderby s.Name.Length descending select s))
                     {
                         var rule = new HighlightingRule
                         {
@@ -520,6 +615,7 @@ namespace LSLCCEditor
                         };
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
+
                 }
                 else
                 {
