@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*" UpgradeCode="{136D61E0-ED94-4F7C-8B1F-3B142506E88D}" Version="1.0.0.0" Language="1033" Name="LSLCCEditor" Manufacturer="Teriks">
-        <Package InstallerVersion="300" Compressed="yes"/>
+        <Package InstallerVersion="300" Compressed="yes" InstallPrivileges="elevated" InstallScope="perMachine" />
         <Media Id="1" Cabinet="application.cab" EmbedCab="yes" />
 
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
-                <Directory Id="APPLICATIONROOTDIRECTORY" Name="LSLCCEditor"/>
+              <Directory Id="CompanyFolder" Name="LSLcc">
+                <Directory Id="INSTALLLOCATION" Name="LSLCCEditor"/>
+              </Directory>
             </Directory>
             <!-- Step 1: Define the directory structure -->
             <Directory Id="ProgramMenuFolder">
@@ -14,7 +16,7 @@
             </Directory>
         </Directory>
 
-        <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+        <DirectoryRef Id="INSTALLLOCATION">
             <Component Id="LSLCCEditor.exe" Guid="{C2A64567-7F79-40CA-AECC-39702C4E851E}">
               <File Id="LSLCCEditor.exe" Source="..\LSLCCEditor\bin\Release\LSLCCEditor.exe" KeyPath="yes" Checksum="yes"/>
               
@@ -41,7 +43,7 @@
                      Name="LSLCCEditor" 
                    Description="LSLCCEditor"
                     Target="[#LSLCCEditor.exe]"
-                          WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+                          WorkingDirectory="INSTALLLOCATION"/>
                 <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
                 <RegistryValue Root="HKCU" Key="Software\LSLcc\LSLCCEditor" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
            </Component>

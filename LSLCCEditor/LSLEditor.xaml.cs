@@ -199,10 +199,10 @@ namespace LSLCCEditor
         }
 
 
-        private SolidColorBrush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
-        private SolidColorBrush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-        private SolidColorBrush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
-        private SolidColorBrush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
+        private readonly SolidColorBrush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
+        private readonly SolidColorBrush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+        private readonly SolidColorBrush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
+        private readonly SolidColorBrush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
@@ -590,7 +590,7 @@ namespace LSLCCEditor
                     {
                         var rule = new HighlightingRule
                         {
-                            Regex = new Regex(func),
+                            Regex = new Regex("\\b" + func + "\\b" ),
                             Color = TextEditor.SyntaxHighlighting.GetNamedColor("Functions")
                         };
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
@@ -600,7 +600,7 @@ namespace LSLCCEditor
                     {
                         var rule = new HighlightingRule
                         {
-                            Regex = new Regex(cnst.Name),
+                            Regex = new Regex("\\b"+cnst.Name+"\\b"),
                             Color = TextEditor.SyntaxHighlighting.GetNamedColor("Constants")
                         };
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
@@ -610,7 +610,7 @@ namespace LSLCCEditor
                     {
                         var rule = new HighlightingRule
                         {
-                            Regex = new Regex(evnt.Name),
+                            Regex = new Regex("\\b" + evnt.Name+"\\b"),
                             Color = TextEditor.SyntaxHighlighting.GetNamedColor("Events")
                         };
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
