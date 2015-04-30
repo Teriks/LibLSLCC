@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Bundle Name="LSLCCEditor" Version="1.0.0.0" Manufacturer="Teriks" UpgradeCode="1b6d9a63-68b0-46c9-b78d-8632d60261c7">
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+
+
+    <Chain>
+      <PackageGroupRef Id="NetFx45Redist"/>
+			<!-- TODO: Define the list of chained packages. -->
+			<MsiPackage SourceFile="..\LSLCCEditorInstaller\bin\Release\LSLCCEditorInstaller.msi"/>
+		</Chain>
+	</Bundle>
+</Wix>
