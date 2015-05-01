@@ -63,9 +63,7 @@ namespace LSLCCEditor
         public LSLEditor()
         {
             InitializeComponent();
-            Loaded += Control_Loaded;
 
-            //TextEditor.TextArea.TextEntering += TextArea_TextEntering;
             TextEditor.TextArea.TextEntered += TextArea_TextEntered;
             TextEditor.MouseHover += TextEditor_MouseHover;
             TextEditor.MouseHover += TextEditor_MouseHoverStopped;
@@ -203,6 +201,9 @@ namespace LSLCCEditor
         private readonly SolidColorBrush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
         private readonly SolidColorBrush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
         private readonly SolidColorBrush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
+        private readonly SolidColorBrush _libraryFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
+        private readonly SolidColorBrush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+        private readonly SolidColorBrush _builtInTypeCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
@@ -238,194 +239,188 @@ namespace LSLCCEditor
 
             lock (_completionLock)
             {
-                if ( 
-                     _validSuggestionPrefixes.Contains(onebehind) &&
-                     Regex.Match(e.Text, "[A-Za-z]").Success && 
-                     _completionWindow == null
-                    )
+                if (!_validSuggestionPrefixes.Contains(onebehind) || !Regex.Match(e.Text, "[A-Za-z]").Success ||
+                    _completionWindow != null) return;
+
+
+                var textArea = TextEditor.TextArea;
+                var caretOffset = textArea.Caret.Offset;
+
+                var commentSkipper = new LSLCommentStringSkipper();
+
+                for (int i = 0; i < caretOffset; i++)
                 {
+                    commentSkipper.FeedChar(TextEditor.Text,i, caretOffset);
+                }
 
-
-
-
-                    var textArea = TextEditor.TextArea;
-                    var caretOffset = textArea.Caret.Offset;
-
-                    var commentSkipper = new LSLCommentStringSkipper();
-
-                    for (int i = 0; i < caretOffset; i++)
-                    {
-                        commentSkipper.FeedChar(TextEditor.Text,i, caretOffset);
-                    }
-
-                    if (commentSkipper.InComment || commentSkipper.InString)
-                    {
-                        return;
-                    }
+                if (commentSkipper.InComment || commentSkipper.InString)
+                {
+                    return;
+                }
   
-                    _completionWindow = new CompletionWindow(textArea);
+                _completionWindow = new CompletionWindow(textArea);
 
 
-                    var fastVarParser = new LSLFastEditorParse();
-                    fastVarParser.Parse(new StringReader(TextEditor.Text), caretOffset);
+                var fastVarParser = new LSLFastEditorParse();
+                fastVarParser.Parse(new StringReader(TextEditor.Text), caretOffset);
 
  
-                    _completionWindow.Width = _completionWindow.Width + 160;
+                _completionWindow.Width = _completionWindow.Width + 160;
 
-                    var data = _completionWindow.CompletionList.CompletionData;
-
-                    double priority = 0;
-
-                    bool possibleLibraryFunction = false;
-                    bool possibleUserDefinedItem = false;
-                    bool possibleType = false;
-                    bool possibleConstant = false;
-
-
-                    if (!fastVarParser.InStateOutsideEvent && !fastVarParser.AfterDefaultState)
-                    {
-                        Color green = Color.FromRgb(25, 76, 25);
-
-                        if (e.Text.StartsWith("i"))
-                        {
-
-                            data.Add(new LSLConstantCompletionData("integer",
-                                "integer type", 0) {ColorBrush = new SolidColorBrush(green)});
-                            possibleType = true;
-
-                        }
-                        else if (e.Text.StartsWith("s"))
-                        {
-                            data.Add(new LSLConstantCompletionData("string",
-                                "string type", 0) {ColorBrush = new SolidColorBrush(green)});
-                            possibleType = true;
-                        }
-                        else if (e.Text.StartsWith("v"))
-                        {
-                            data.Add(new LSLConstantCompletionData("vector",
-                                "vector type", 0) {ColorBrush = new SolidColorBrush(green)});
-                            possibleType = true;
-                        }
-                        else if (e.Text.StartsWith("r"))
-                        {
-                            data.Add(new LSLConstantCompletionData("rotation",
-                                "rotation type", 0) {ColorBrush = new SolidColorBrush(green)});
-                            possibleType = true;
-                        }
-                        else if (e.Text.StartsWith("k"))
-                        {
-                            data.Add(new LSLConstantCompletionData("key",
-                                "key type", 0) {ColorBrush = new SolidColorBrush(green)});
-                            possibleType = true;
-                        }
-                        else if (e.Text.StartsWith("f"))
-                        {
-
-                            data.Add(new LSLConstantCompletionData("float",
-                                "float type", 0) {ColorBrush = new SolidColorBrush(green)});
-                            possibleType = true;
-                        }
-
-                        foreach (var func in _constantSignatures.Where(x => x.Name.StartsWith(e.Text)))
-                        {
-                            data.Add(new LSLConstantCompletionData(func.Name, func.SignatureAndDocumentation, priority));
-                            possibleConstant = true;
-                            priority++;
-
-                        }
-                    }
+                var data = _completionWindow.CompletionList.CompletionData;
 
 
 
+                bool possibleLibraryFunction = false;
+                bool possibleUserDefinedItem = false;
+                bool possibleType = false;
+                bool possibleConstant = false;
 
 
+                if (!fastVarParser.InStateOutsideEvent && !fastVarParser.AfterDefaultState)
+                {
 
-                    if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
+                    if (e.Text.StartsWith("i"))
                     {
 
-                        var functionSuggestions = _libraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
-                        foreach (var func in functionSuggestions)
-                        {
-                            var docs = string.Join(Environment.NewLine + Environment.NewLine,
-                                LibraryDataProvider.GetLibraryFunctionSignatures(func)
-                                    .Select(x => x.SignatureAndDocumentation));
+                        data.Add(new LSLCompletionData("integer", "integer",
+                            "integer type", 0) {ColorBrush = _builtInTypeCompleteColor});
+                        possibleType = true;
 
-                            data.Add(new LSLFunctionCompletionData(func,
-                                docs, priority));
-                            priority++;
-
-                            possibleLibraryFunction = true;
-                        }
-
-
-                        foreach (var v in fastVarParser.LocalVariables
-                            .Where(x => x.Name.StartsWith(e.Text)))
-                        {
-                            string doc = "Local variable:\n" + v.Type + " " + v.Name + ";";
-
-                            data.Add(new LSLConstantCompletionData(v.Name, doc, 0)
-                            {
-                                ColorBrush = _localVariableCompleteColor
-                            });
-
-                            possibleUserDefinedItem = true;
-                        }
-
-
-
-                        foreach (var v in fastVarParser.LocalParameters
-                            .Where(x => x.Name.StartsWith(e.Text)))
-                        {
-                            string doc = "Local parameter:\n" + v.Type + " " + v.Name + ";";
-
-                            data.Add(new LSLConstantCompletionData(v.Name, doc, 0)
-                            {
-                                ColorBrush = _localParameterCompleteColor
-                            });
-                            possibleUserDefinedItem = true;
-                        }
-
-
-                        foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(e.Text)))
-                        {
-                            string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
-                            data.Add(new LSLConstantCompletionData(v.Name, doc, 0)
-                            {
-                                ColorBrush = _globalVariableCompleteColor
-                            });
-                            possibleUserDefinedItem = true;
-                        }
-
-
-                        foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(e.Text)))
-                        {
-
-                            string doc = "Global function:\n" + func.Signature;
-
-                            data.Add(new LSLFunctionCompletionData(func.Name, doc, 0)
-                            {
-                                ColorBrush = _globalFunctionCompleteColor
-                            });
-
-                            possibleUserDefinedItem = true;
-                        }
                     }
-
-
-
-                    if (possibleConstant || possibleLibraryFunction || possibleType || possibleUserDefinedItem)
+                    else if (e.Text.StartsWith("s"))
                     {
-                        _completionWindow.Show();
-                        _completionWindow.Closed += delegate
-                        {
-                            lock (_completionLock)
-                            {
-                                _completionWindow = null;
-                            }
-                        };
+                        data.Add(new LSLCompletionData("string", "string",
+                            "string type", 0) {ColorBrush = _builtInTypeCompleteColor});
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("v"))
+                    {
+                        data.Add(new LSLCompletionData("vector", "vector",
+                            "vector type", 0) {ColorBrush = _builtInTypeCompleteColor});
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("r"))
+                    {
+                        data.Add(new LSLCompletionData("rotation", "rotation",
+                            "rotation type", 0) {ColorBrush = _builtInTypeCompleteColor});
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("k"))
+                    {
+                        data.Add(new LSLCompletionData("key", "key",
+                            "key type", 0) {ColorBrush = _builtInTypeCompleteColor});
+                        possibleType = true;
+                    }
+                    else if (e.Text.StartsWith("f"))
+                    {
+
+                        data.Add(new LSLCompletionData("float", "float",
+                            "float type", 0) {ColorBrush = _builtInTypeCompleteColor});
+                        possibleType = true;
                     }
 
+                    foreach (var sig in _constantSignatures.Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        data.Add(new LSLCompletionData(sig.Name, sig.Name,
+                            sig.SignatureAndDocumentation, 1)
+                        {
+                            ColorBrush = _libraryConstantCompleteColor
+                        });
+
+                        possibleConstant = true;
+
+                    }
                 }
+
+
+
+                if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
+                {
+
+                    var functionSuggestions = _libraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
+                    foreach (var func in functionSuggestions)
+                    {
+                        var docs = string.Join(Environment.NewLine + Environment.NewLine,
+                            LibraryDataProvider.GetLibraryFunctionSignatures(func)
+                                .Select(x => x.SignatureAndDocumentation));
+
+
+                        data.Add(new LSLCompletionData(func, func+"(",docs, 0)
+                        {
+                            ColorBrush = _libraryFunctionCompleteColor
+                        });
+
+
+                        possibleLibraryFunction = true;
+                    }
+
+
+                    foreach (var v in fastVarParser.LocalVariables
+                        .Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        string doc = "Local variable:\n" + v.Type + " " + v.Name + ";";
+
+                        data.Add(new LSLCompletionData(v.Name, v.Name, doc, 0)
+                        {
+                            ColorBrush = _localVariableCompleteColor
+                        });
+
+                        possibleUserDefinedItem = true;
+                    }
+
+
+
+                    foreach (var v in fastVarParser.LocalParameters
+                        .Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        string doc = "Local parameter:\n" + v.Type + " " + v.Name + ";";
+
+                        data.Add(new LSLCompletionData(v.Name, v.Name, doc, 0)
+                        {
+                            ColorBrush = _localParameterCompleteColor
+                        });
+                        possibleUserDefinedItem = true;
+                    }
+
+
+                    foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
+                        data.Add(new LSLCompletionData(v.Name, v.Name,
+                            doc, 0)
+                        {
+                            ColorBrush = _globalVariableCompleteColor
+                        });
+                        possibleUserDefinedItem = true;
+                    }
+
+
+                    foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(e.Text)))
+                    {
+
+                        string doc = "Global function:\n" + func.Signature;
+
+                        data.Add(new LSLCompletionData(func.Name, func.Name+"(", doc, 0)
+                        {
+                            ColorBrush = _globalFunctionCompleteColor
+                        });
+
+                        possibleUserDefinedItem = true;
+                    }
+                }
+
+
+                if (!possibleConstant && !possibleLibraryFunction && !possibleType && !possibleUserDefinedItem) return;
+
+                _completionWindow.Show();
+                _completionWindow.Closed += delegate
+                {
+                    lock (_completionLock)
+                    {
+                        _completionWindow = null;
+                    }
+                };
             }
         }
 
@@ -478,32 +473,41 @@ namespace LSLCCEditor
 
                     foreach (var i in fastVarParser.GlobalFunctions)
                     {
-                        data.Add(new LSLFunctionCompletionData(i.Name, "Global function:\n" + i.Signature, 0) 
+                        data.Add(new LSLCompletionData(
+                            i.Name, 
+                            i.Name+"(", "Global function:\n" + i.Signature, 0) 
                         { 
+                            TextSubStringStart = 0,
                             ColorBrush = _globalFunctionCompleteColor 
                         });
                     }
 
                     foreach (var i in fastVarParser.GlobalVariables)
                     {
-                        data.Add(new LSLConstantCompletionData(i.Name, "Global variable:\n" + i.Type + " " + i.Name, 1) 
-                        { 
+                        data.Add(new LSLCompletionData(i.Name, i.Name,
+                            "Global variable:\n" + i.Type + " " + i.Name, 1) 
+                        {
+                            TextSubStringStart = 0,
                             ColorBrush = _globalVariableCompleteColor 
                         });
                     }
 
                     foreach (var i in fastVarParser.LocalParameters)
                     {
-                        data.Add(new LSLConstantCompletionData(i.Name, "Local parameter:\n" + i.Type + " " + i.Name, 2)
-                        { 
+                        data.Add(new LSLCompletionData(i.Name, i.Name,
+                            "Local parameter:\n" + i.Type + " " + i.Name, 2)
+                        {
+                            TextSubStringStart = 0,
                             ColorBrush = _localParameterCompleteColor
                         });
                     }
 
                     foreach (var i in fastVarParser.LocalVariables)
                     {
-                        data.Add(new LSLConstantCompletionData(i.Name, "Local Variable:\n" + i.Type + " " + i.Name, 3) 
-                        { 
+                        data.Add(new LSLCompletionData(i.Name, i.Name,
+                            "Local Variable:\n" + i.Type + " " + i.Name, 3) 
+                        {
+                            TextSubStringStart = 0,
                             ColorBrush = _localVariableCompleteColor
                         });
                     }
@@ -532,33 +536,10 @@ namespace LSLCCEditor
                     e.Handled = true;
 
                 }
-                
             }
         }
 
 
-        /*
-        private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
-        {
-            lock (_completionLock)
-            {
-                if (e.Text.Length > 0 && _completionWindow != null)
-                {
-                    if (!(char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_' || e.Text[0] == '('))
-                    {
-                        // Whenever a non-letter is typed while the completion window is open,
-                        // insert the currently selected element.
-                        _completionWindow.CompletionList.RequestInsertion(e);
-
-
-                    }
-
-
-                }
-            }
-            // Do not set e.Handled=true.
-            // We still want to insert the character that was typed.
-        }*/
 
 
         public void SetLibraryDataProvider(ILSLMainLibraryDataProvider provider)
@@ -582,8 +563,6 @@ namespace LSLCCEditor
                     var reader = new XmlTextReader(resourceStream);
 
                     TextEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-
-
 
 
                     foreach (var func in (from s in _libraryFunctionNames orderby s.Length descending select s))
@@ -622,10 +601,6 @@ namespace LSLCCEditor
                     throw new InvalidOperationException("Could not open manifest resource stream LSLCCEditor.LSL.xshd");
                 }
             }
-        }
-
-        private void Control_Loaded(object sender, RoutedEventArgs a)
-        {
         }
 
 

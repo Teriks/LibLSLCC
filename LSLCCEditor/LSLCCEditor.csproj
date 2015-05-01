@@ -121,11 +121,10 @@
     <Compile Include="CodeCompletionMenu.xaml.cs">
       <DependentUpon>CodeCompletionMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LSLConstantCompletionData.cs" />
+    <Compile Include="LSLCompletionData.cs" />
     <Compile Include="LSLEditor.xaml.cs">
       <DependentUpon>LSLEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LSLFunctionCompletionData.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -8,11 +8,12 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace LSLCCEditor
 {
-    public class LSLConstantCompletionData : ICompletionData
+    public class LSLCompletionData : ICompletionData
     {
         private readonly string _description;
         private readonly double _priority;
         private readonly string _text;
+        private readonly string _label;
 
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
@@ -21,12 +22,14 @@ namespace LSLCCEditor
             textArea.Document.Replace(completionSegment, Text);
         }
 
-        public LSLConstantCompletionData(string text, string description, double priority)
+        public LSLCompletionData(string label, string text, string description, double priority)
         {
 
             _description = description;
             _priority = priority;
             _text = text;
+            _label = label;
+            TextSubStringStart = 1;
         }
 
         public ImageSource Image
@@ -34,7 +37,19 @@ namespace LSLCCEditor
             get { return null; }
         }
 
-        public string Text { get { return _text.Substring(1);  } }
+        public int TextSubStringStart { get; set; }
+
+        public string Text
+        {
+            get
+            {
+                if (TextSubStringStart == 0) return _text;
+
+                return _text.Substring(TextSubStringStart);
+            }
+        }
+
+
 
         public object Content
         {
@@ -42,7 +57,7 @@ namespace LSLCCEditor
             {
                 var x = new TextBlock
                 {
-                    Text = _text,
+                    Text = _label,
                     TextAlignment = TextAlignment.Left,
                     TextTrimming = TextTrimming.CharacterEllipsis,
                     Foreground = ColorBrush,
