@@ -25,6 +25,28 @@ namespace LibLSLCC.Formatter.Visitor
 
 
 
+        class CodeWrappingContext 
+        {
+            public ILSLReadOnlySyntaxTreeNode Statement { get; set; }
+
+            public int WriteColumn { get; set; }
+
+            public int WriteLine { get; set; }
+
+            public CodeWrappingContext(ILSLReadOnlySyntaxTreeNode statement, LSLCodeFormatterVisitor parent)
+            {
+                Statement = statement;
+                WriteColumn = parent._writeColumn;
+                WriteLine = parent._writeLine;
+            }
+        }
+
+
+        private CodeWrappingContext _lastCodeWrappingContext;
+        
+
+
+
         private int _writeColumn = 0;
         private int _writeLine = 0;
 
@@ -203,7 +225,18 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitBinaryExpression(ILSLBinaryExpressionNode node)
         {
+
+            bool t = ReferenceEquals(node.Parent, _lastCodeWrappingContext.Statement);
+            if (node.Parent is ILSLVariableDeclarationNode && t)
+            {
+
+               _lastCodeWrappingContext = new CodeWrappingContext(node, this);
+                
+            }
+
             Visit(node.LeftExpression);
+
+
 
 
             if (!WriteCommentsBetweenRange(node.LeftExpression.SourceCodeRange, node.OperationSourceCodeRange))
@@ -215,11 +248,41 @@ namespace LibLSLCC.Formatter.Visitor
             Write(node.OperationString);
 
 
+
+
+            if(
+                !(node.Parent is ILSLExpressionStatementNode) &&
+                !(node.Parent is ILSLParenthesizedExpressionNode) &&
+
+                ((_writeColumn - _lastCodeWrappingContext.WriteColumn) > 40))
+            {
+                var indentLevel = _lastCodeWrappingContext.WriteColumn - 1;
+                Write("\n");
+                while (indentLevel > 0)
+                {
+                    
+                    Write(" ");
+
+                    indentLevel--;
+                }
+            }
+
+
             if (!WriteCommentsBetweenRange(node.OperationSourceCodeRange, node.RightExpression.SourceCodeRange))
             {
                 Write(" ");
             }
 
+
+
+            if (node.Parent is ILSLExpressionStatementNode &&
+                ReferenceEquals(node.Parent, _lastCodeWrappingContext.Statement))
+            {
+                if (node.Operation.IsAssignOrModifyAssign())
+                {
+                    _lastCodeWrappingContext = new CodeWrappingContext(node, this);
+                }
+            }
 
 
             Visit(node.RightExpression);
@@ -1728,7 +1791,7 @@ namespace LibLSLCC.Formatter.Visitor
         {
 
 
-
+            _lastCodeWrappingContext = new CodeWrappingContext(node, this);
 
             Visit(node.Expression);
 
@@ -1746,6 +1809,8 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitVariableDeclaration(ILSLVariableDeclarationNode node)
         {
             
+            _lastCodeWrappingContext = new CodeWrappingContext(node, this);
+
 
             Write(node.TypeString);
 

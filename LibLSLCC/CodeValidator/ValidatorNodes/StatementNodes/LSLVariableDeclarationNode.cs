@@ -168,6 +168,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             n.TypeSourceCodeRange = new LSLSourceCodeRange(context.variable_type);
             n.NameSourceCodeRange = new LSLSourceCodeRange(context.variable_name);
 
+            declarationExpression.Parent = n;
+
             if (context.operation != null)
             {
                 n.OperationSourceCodeRange = new LSLSourceCodeRange(context.operation);
@@ -189,6 +191,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
             n.TypeSourceCodeRange = new LSLSourceCodeRange(context.variable_type);
             n.NameSourceCodeRange = new LSLSourceCodeRange(context.variable_name);
+
+            declarationExpression.Parent = n;
 
             if (context.operation != null)
             {

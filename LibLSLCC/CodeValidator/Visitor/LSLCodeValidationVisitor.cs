@@ -654,6 +654,8 @@ namespace LibLSLCC.CodeValidator.Visitor
                 {
                     variable = LSLVariableDeclarationNode.CreateVar(
                         (LSLParser.GlobalVariableDeclarationContext)context, expression);
+
+                    
                 }
 
 
@@ -670,6 +672,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                     return LSLVariableDeclarationNode.GetError(new LSLSourceCodeRange(context));
                 }
+
+               
             }
             else
             {
