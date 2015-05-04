@@ -2118,6 +2118,9 @@ namespace LibLSLCC.Formatter.Visitor
                     }
                 }
 
+                /////////////////////
+                /////////////////////
+                /////////////////////
 
                 for (int i = 0; i < nodes.Count; i++)
                 {
@@ -2184,7 +2187,7 @@ namespace LibLSLCC.Formatter.Visitor
                                         linesBetweenComments--;
                                     }
                                 }
-                                else
+                                else //last comment
                                 {
                                     var linesBetweenCommentAndNextNode = nextNode.SourceCodeRange.LineStart -
                                                                          comment.SourceCodeRange.LineEnd +
@@ -2206,7 +2209,7 @@ namespace LibLSLCC.Formatter.Visitor
                                 }
                             }
                         }
-                        else
+                        else //no comments
                         {
                             var linesBetweenTwoNodes = (nextNode.SourceCodeRange.LineStart -
                                                         node.SourceCodeRange.LineEnd) + singleLineBroken;
@@ -2255,7 +2258,7 @@ namespace LibLSLCC.Formatter.Visitor
                             }
                         }
                     }
-                    else
+                    else  // last node in scope
                     {
                         comments = GetComments(node.SourceCodeRange.StopIndex, snode.SourceCodeRange.StopIndex).ToList();
 
@@ -2289,7 +2292,7 @@ namespace LibLSLCC.Formatter.Visitor
                                     Write(space + comment.Text);
                                 }
 
-                                if ((j + 1) < comments.Count)
+                                if ((j + 1) < comments.Count) 
                                 {
                                     var nextComment = comments[j + 1];
                                     var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
@@ -2301,7 +2304,7 @@ namespace LibLSLCC.Formatter.Visitor
                                         linesBetweenComments--;
                                     }
                                 }
-                                else
+                                else // last comment
                                 {
                                     var linesBetweenCommentAndEndOfScope = snode.SourceCodeRange.LineEnd -
                                                                            comment.SourceCodeRange.LineEnd;
@@ -2323,7 +2326,7 @@ namespace LibLSLCC.Formatter.Visitor
                                 }
                             }
                         }
-                        else
+                        else //no comments
                         {
                             var linesBetweenNodeAndEndOfScope = snode.SourceCodeRange.LineEnd -
                                                                 node.SourceCodeRange.LineEnd;
@@ -2354,7 +2357,7 @@ namespace LibLSLCC.Formatter.Visitor
                     }
                 }
             }
-            else
+            else // no nodes
             {
                 var comments = GetComments(snode.SourceCodeRange.StartIndex, snode.SourceCodeRange.StopIndex).ToList();
 
