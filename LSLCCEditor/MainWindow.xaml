@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:lslccEditor="clr-namespace:LSLCCEditor"
+        xmlns:lslEditor="clr-namespace:LSLCCEditor.LSLEditor"
         mc:Ignorable="d"
         Title="LSLCC Editor" Height="640.358" Width="897.987" Closing="MainWindow_OnClosing">
     <Window.Resources>
@@ -45,10 +46,11 @@
                     <MenuItem Name="OsBulletPhysics" Header="OS Bullet Physics" IsCheckable="true" Unchecked="OsBulletPhysics_OnUnchecked" Checked="OsBulletPhysics_OnChecked" />
                     
                 </MenuItem>
+                <MenuItem Name="Search" Header="Search" Click="Search_OnClick"></MenuItem>
             </Menu>
 
             <Border BorderThickness="1" BorderBrush="Black" Margin="5,5,5,5" Grid.Row="1">
-                    <lslccEditor:LSLEditor x:Name="LslEditor" />
+                    <lslEditor:LSLEditor x:Name="LslEditor" />
                 </Border>
 
                 <GridSplitter Grid.Row="2"

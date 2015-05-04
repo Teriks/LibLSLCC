@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" UpgradeCode="{136D61E0-ED94-4F7C-8B1F-3B142506E88D}" Version="1.0.0.0" Language="1033" Name="LSLCCEditor" Manufacturer="Teriks">
+    <Product Id="CE950867-D35C-41BF-9A11-FA4E3AFA45A7" 
+             UpgradeCode="F1C48367-6E7A-4B17-9059-E0CC9C511339" Version="1.0.0.0" Language="1033" Name="LSLCCEditor" Manufacturer="Teriks">
         <Package InstallerVersion="300" Compressed="yes" InstallPrivileges="elevated" InstallScope="perMachine" />
         <Media Id="1" Cabinet="application.cab" EmbedCab="yes" />
 
+      <Icon Id="icon.ico" SourceFile="..\LSLCCEditor\bin\Release\lsl_script_icon.ico"/>
+      <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+      
+      
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
               <Directory Id="CompanyFolder" Name="LSLcc">
@@ -17,7 +22,7 @@
         </Directory>
 
         <DirectoryRef Id="INSTALLLOCATION">
-            <Component Id="LSLCCEditor.exe" Guid="{C2A64567-7F79-40CA-AECC-39702C4E851E}">
+            <Component Id="LSLCCEditor.exe" Guid="C2A64567-7F79-40CA-AECC-39702C4E851E">
               <File Id="LSLCCEditor.exe" Source="..\LSLCCEditor\bin\Release\LSLCCEditor.exe" KeyPath="yes" Checksum="yes"/>
               
               <ProgId Id='LSLCCEditor.lslfile' Description='LSL Source Code'>
@@ -38,7 +43,7 @@
 
         <!-- Step 2: Add the shortcut to your installer package -->
         <DirectoryRef Id="ApplicationProgramsFolder">
-            <Component Id="ApplicationShortcut" Guid="{346EA803-F018-45E5-8D79-A5D47A1737DB}">
+            <Component Id="ApplicationShortcut" Guid="346EA803-F018-45E5-8D79-A5D47A1737DB">
                 <Shortcut Id="ApplicationStartMenuShortcut" 
                      Name="LSLCCEditor" 
                    Description="LSLCCEditor"

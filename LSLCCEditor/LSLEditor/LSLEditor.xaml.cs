@@ -1,12 +1,12 @@
 ﻿#region
 
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,9 +21,13 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.FastEditorParse;
 
+
 #endregion
 
-namespace LSLCCEditor
+
+
+
+namespace LSLCCEditor.LSLEditor
 {
     /// <summary>
     ///     Interaction logic for LSLEditor.xaml
@@ -60,6 +64,7 @@ namespace LSLCCEditor
         private List<string> _libraryFunctionNames;
 
 
+
         public LSLEditor()
         {
             InitializeComponent();
@@ -67,12 +72,27 @@ namespace LSLCCEditor
             TextEditor.TextArea.TextEntered += TextArea_TextEntered;
             TextEditor.MouseHover += TextEditor_MouseHover;
             TextEditor.MouseHover += TextEditor_MouseHoverStopped;
-            TextEditor.TextArea.KeyDown += TextEditor_KeyDown;
-
-            
+            TextEditor.KeyDown += TextEditor_KeyDown;
         }
 
+
+
+        public void CloseCompletionWindow()
+        {
+            lock (_completionLock)
+            {
+                if (_completionWindow != null)
+                {
+                    _completionWindow.Close();
+                    _completionWindow = null;
+                }
+            }
+        }
+
+
+
         public ILSLMainLibraryDataProvider LibraryDataProvider { get; private set; }
+
 
 
         private static string GetIdUnderMouse(TextDocument document, TextViewPosition position)
@@ -86,6 +106,7 @@ namespace LSLCCEditor
                 return "";
             }
         }
+
 
 
         private static string _GetIDUnderMouse(TextDocument document, TextViewPosition position)
@@ -144,6 +165,7 @@ namespace LSLCCEditor
         }
 
 
+
         private void TextEditor_MouseHover(object sender, MouseEventArgs e)
         {
             var pos = TextEditor.GetPositionFromPoint(e.GetPosition(TextEditor));
@@ -190,11 +212,13 @@ namespace LSLCCEditor
         }
 
 
+
         private void TextEditor_MouseHoverStopped(object sender, MouseEventArgs e)
         {
             _hoverToolTip.IsOpen = false;
             e.Handled = true;
         }
+
 
 
         private readonly SolidColorBrush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
@@ -205,9 +229,19 @@ namespace LSLCCEditor
         private readonly SolidColorBrush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
         private readonly SolidColorBrush _builtInTypeCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
 
+
+
+        private CompletionWindow CreateCompletionWindow()
+        {
+            var c = new CompletionWindow(this.TextEditor.TextArea);
+            c.Width = c.Width + 160;
+            return c;
+        }
+
+
+
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
-
             lock (_completionLock)
             {
                 if (_completionWindow != null && _completionWindow.CompletionList.ListBox.Items.Count == 0)
@@ -235,8 +269,6 @@ namespace LSLCCEditor
                 .ToString(CultureInfo.InvariantCulture);
 
 
-    
-
             lock (_completionLock)
             {
                 if (!_validSuggestionPrefixes.Contains(onebehind) || !Regex.Match(e.Text, "[A-Za-z]").Success ||
@@ -250,25 +282,22 @@ namespace LSLCCEditor
 
                 for (int i = 0; i < caretOffset; i++)
                 {
-                    commentSkipper.FeedChar(TextEditor.Text,i, caretOffset);
+                    commentSkipper.FeedChar(TextEditor.Text, i, caretOffset);
                 }
 
                 if (commentSkipper.InComment || commentSkipper.InString)
                 {
                     return;
                 }
-  
-                _completionWindow = new CompletionWindow(textArea);
+
+                _completionWindow = CreateCompletionWindow();
 
 
                 var fastVarParser = new LSLFastEditorParse();
                 fastVarParser.Parse(new StringReader(TextEditor.Text), caretOffset);
 
- 
-                _completionWindow.Width = _completionWindow.Width + 160;
 
                 var data = _completionWindow.CompletionList.CompletionData;
-
 
 
                 bool possibleLibraryFunction = false;
@@ -279,14 +308,11 @@ namespace LSLCCEditor
 
                 if (!fastVarParser.InStateOutsideEvent && !fastVarParser.AfterDefaultState)
                 {
-
                     if (e.Text.StartsWith("i"))
                     {
-
                         data.Add(new LSLCompletionData("integer", "integer",
                             "integer type", 0) {ColorBrush = _builtInTypeCompleteColor});
                         possibleType = true;
-
                     }
                     else if (e.Text.StartsWith("s"))
                     {
@@ -314,7 +340,6 @@ namespace LSLCCEditor
                     }
                     else if (e.Text.StartsWith("f"))
                     {
-
                         data.Add(new LSLCompletionData("float", "float",
                             "float type", 0) {ColorBrush = _builtInTypeCompleteColor});
                         possibleType = true;
@@ -329,15 +354,12 @@ namespace LSLCCEditor
                         });
 
                         possibleConstant = true;
-
                     }
                 }
 
 
-
                 if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
                 {
-
                     var functionSuggestions = _libraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
                     foreach (var func in functionSuggestions)
                     {
@@ -346,7 +368,7 @@ namespace LSLCCEditor
                                 .Select(x => x.SignatureAndDocumentation));
 
 
-                        data.Add(new LSLCompletionData(func, func+"(",docs, 0)
+                        data.Add(new LSLCompletionData(func, func + "(", docs, 0)
                         {
                             ColorBrush = _libraryFunctionCompleteColor
                         });
@@ -368,7 +390,6 @@ namespace LSLCCEditor
 
                         possibleUserDefinedItem = true;
                     }
-
 
 
                     foreach (var v in fastVarParser.LocalParameters
@@ -398,10 +419,9 @@ namespace LSLCCEditor
 
                     foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(e.Text)))
                     {
-
                         string doc = "Global function:\n" + func.Signature;
 
-                        data.Add(new LSLCompletionData(func.Name, func.Name+"(", doc, 0)
+                        data.Add(new LSLCompletionData(func.Name, func.Name + "(", doc, 0)
                         {
                             ColorBrush = _globalFunctionCompleteColor
                         });
@@ -411,10 +431,14 @@ namespace LSLCCEditor
                 }
 
 
-                if (!possibleConstant && !possibleLibraryFunction && !possibleType && !possibleUserDefinedItem) return;
+                if (!possibleConstant && !possibleLibraryFunction && !possibleType && !possibleUserDefinedItem)
+                {
+                    _completionWindow = null;
+                    return;
+                }
 
                 _completionWindow.Show();
-                _completionWindow.Closed += delegate
+                _completionWindow.Closed += (o, args) =>
                 {
                     lock (_completionLock)
                     {
@@ -425,25 +449,20 @@ namespace LSLCCEditor
         }
 
 
-        private void TextEditor_KeyDown(object sender, KeyEventArgs e)
-        {
 
-            if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+        private void ControlSpace(KeyEventArgs e)
+        {
+            var textArea = TextEditor.TextArea;
+
+            lock (_completionLock)
             {
                 if (_completionWindow != null)
                 {
-                    lock (_completionLock)
-                    {
-                        if (_completionWindow != null)
-                        {
-                            _completionWindow.CompletionList.RequestInsertion(e);
-                            e.Handled = true;
-                        }
-                    }
+                    _completionWindow.CompletionList.RequestInsertion(e);
+                    e.Handled = true;
                 }
                 else
                 {
-                    var textArea = TextEditor.TextArea;
                     var caretOffset = textArea.Caret.Offset;
 
                     var commentSkipper = new LSLCommentStringSkipper();
@@ -458,37 +477,34 @@ namespace LSLCCEditor
                         return;
                     }
 
-                    _completionWindow = new CompletionWindow(textArea);
+                    _completionWindow = CreateCompletionWindow();
 
 
                     var fastVarParser = new LSLFastEditorParse();
                     fastVarParser.Parse(new StringReader(TextEditor.Text), caretOffset);
 
 
-                    _completionWindow.Width = _completionWindow.Width + 160;
-
                     var data = _completionWindow.CompletionList.CompletionData;
-
 
 
                     foreach (var i in fastVarParser.GlobalFunctions)
                     {
                         data.Add(new LSLCompletionData(
-                            i.Name, 
-                            i.Name+"(", "Global function:\n" + i.Signature, 0) 
-                        { 
+                            i.Name,
+                            i.Name + "(", "Global function:\n" + i.Signature, 0)
+                        {
                             TextSubStringStart = 0,
-                            ColorBrush = _globalFunctionCompleteColor 
+                            ColorBrush = _globalFunctionCompleteColor
                         });
                     }
 
                     foreach (var i in fastVarParser.GlobalVariables)
                     {
                         data.Add(new LSLCompletionData(i.Name, i.Name,
-                            "Global variable:\n" + i.Type + " " + i.Name, 1) 
+                            "Global variable:\n" + i.Type + " " + i.Name, 1)
                         {
                             TextSubStringStart = 0,
-                            ColorBrush = _globalVariableCompleteColor 
+                            ColorBrush = _globalVariableCompleteColor
                         });
                     }
 
@@ -505,7 +521,7 @@ namespace LSLCCEditor
                     foreach (var i in fastVarParser.LocalVariables)
                     {
                         data.Add(new LSLCompletionData(i.Name, i.Name,
-                            "Local Variable:\n" + i.Type + " " + i.Name, 3) 
+                            "Local Variable:\n" + i.Type + " " + i.Name, 3)
                         {
                             TextSubStringStart = 0,
                             ColorBrush = _localVariableCompleteColor
@@ -513,17 +529,19 @@ namespace LSLCCEditor
                     }
 
 
-                    _completionWindow.Loaded += delegate{
-                        lock(_completionWindow){
-                            if(_completionWindow.CompletionList.ListBox.Items.Count == 0){
+                    _completionWindow.Loaded += (o, args) =>
+                    {
+                        lock (_completionWindow)
+                        {
+                            if (_completionWindow.CompletionList.ListBox.Items.Count == 0)
+                            {
                                 _completionWindow.Close();
                             }
                         }
                     };
 
 
-
-                    _completionWindow.Closed += delegate
+                    _completionWindow.Closed += (o, args) =>
                     {
                         lock (_completionLock)
                         {
@@ -534,11 +552,91 @@ namespace LSLCCEditor
                     _completionWindow.Show();
 
                     e.Handled = true;
-
                 }
             }
         }
 
+
+
+        private void ControlW(KeyEventArgs e)
+        {
+            var textArea = TextEditor.TextArea;
+
+            lock (_completionLock)
+            {
+                if (_completionWindow != null) return;
+
+                _completionWindow = CreateCompletionWindow();
+
+
+                foreach (var func in _libraryFunctionNames)
+                {
+                    var docs = string.Join(Environment.NewLine + Environment.NewLine,
+                        LibraryDataProvider.GetLibraryFunctionSignatures(func)
+                            .Select(x => x.SignatureAndDocumentation));
+
+
+                    _completionWindow.CompletionList.CompletionData.Add(new LSLCompletionData(func, func + "(", docs, 0)
+                    {
+                        ColorBrush = _libraryFunctionCompleteColor,
+                        TextSubStringStart = 0
+                    });
+                }
+
+                _completionWindow.Closed += (o, args) => { _completionWindow = null; };
+
+                _completionWindow.Show();
+            }
+        }
+
+
+
+        private void ControlQ(KeyEventArgs e)
+        {
+            var textArea = TextEditor.TextArea;
+
+            lock (_completionLock)
+            {
+                if (_completionWindow != null) return;
+
+                _completionWindow = CreateCompletionWindow();
+
+
+                foreach (var con in _constantSignatures)
+                {
+                    _completionWindow.CompletionList.CompletionData.Add(
+                        new LSLCompletionData(con.Name,
+                            con.Name,
+                            con.SignatureAndDocumentation, 0)
+                        {
+                            ColorBrush = _libraryConstantCompleteColor,
+                            TextSubStringStart = 0
+                        });
+                }
+
+                _completionWindow.Closed += (o, args) => { _completionWindow = null; };
+
+                _completionWindow.Show();
+            }
+        }
+
+
+
+        private void TextEditor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Q && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                ControlQ(e);
+            }
+            else if (e.Key == Key.W && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                ControlW(e);
+            }
+            else if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                ControlSpace(e);
+            }
+        }
 
 
 
@@ -555,8 +653,7 @@ namespace LSLCCEditor
             _constantSignatures.Sort((x, y) => String.CompareOrdinal(x.Name, y.Name));
 
 
-
-            using (var resourceStream = GetType().Assembly.GetManifestResourceStream("LSLCCEditor.LSL.xshd"))
+            using (var resourceStream = GetType().Assembly.GetManifestResourceStream("LSLCCEditor.LSLEditor.LSL.xshd"))
             {
                 if (resourceStream != null)
                 {
@@ -569,7 +666,7 @@ namespace LSLCCEditor
                     {
                         var rule = new HighlightingRule
                         {
-                            Regex = new Regex("\\b" + func + "\\b" ),
+                            Regex = new Regex("\\b" + func + "\\b"),
                             Color = TextEditor.SyntaxHighlighting.GetNamedColor("Functions")
                         };
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
@@ -579,7 +676,7 @@ namespace LSLCCEditor
                     {
                         var rule = new HighlightingRule
                         {
-                            Regex = new Regex("\\b"+cnst.Name+"\\b"),
+                            Regex = new Regex("\\b" + cnst.Name + "\\b"),
                             Color = TextEditor.SyntaxHighlighting.GetNamedColor("Constants")
                         };
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
@@ -589,12 +686,11 @@ namespace LSLCCEditor
                     {
                         var rule = new HighlightingRule
                         {
-                            Regex = new Regex("\\b" + evnt.Name+"\\b"),
+                            Regex = new Regex("\\b" + evnt.Name + "\\b"),
                             Color = TextEditor.SyntaxHighlighting.GetNamedColor("Events")
                         };
                         TextEditor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
-
                 }
                 else
                 {
@@ -604,10 +700,12 @@ namespace LSLCCEditor
         }
 
 
+
         private void TextEditor_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             _hoverToolTip.IsOpen = false;
         }
+
 
 
         private void TextEditor_OnMouseLeave(object sender, MouseEventArgs e)
@@ -616,11 +714,13 @@ namespace LSLCCEditor
         }
 
 
+
         public class CustomIndentationStrategy : IIndentationStrategy
         {
             public void IndentLine(TextDocument document, DocumentLine line)
             {
             }
+
 
 
             public void IndentLines(TextDocument document, int beginLine, int endLine)

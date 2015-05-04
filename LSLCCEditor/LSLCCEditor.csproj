@@ -102,11 +102,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="CodeCompletionMenu.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="FindReplace\FindReplaceDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="LSLEditor.xaml">
+    <Page Include="LSLEditor\LSLEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -114,15 +114,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="FindReplace\Adapters.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CodeCompletionMenu.xaml.cs">
-      <DependentUpon>CodeCompletionMenu.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LSLCompletionData.cs" />
-    <Compile Include="LSLEditor.xaml.cs">
+    <Compile Include="FindReplace\FindReplace.cs" />
+    <Compile Include="FindReplace\FindReplaceDialog.xaml.cs" />
+    <Compile Include="FindReplace\IFindReplaceMgr.cs" />
+    <Compile Include="LSLEditor\LSLCompletionData.cs" />
+    <Compile Include="LSLEditor\LSLEditor.xaml.cs">
       <DependentUpon>LSLEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
@@ -148,9 +149,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="LSL.xshd" />
+    <EmbeddedResource Include="LSLEditor\LSL.xshd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="LSLCCEditor_TemporaryKey.pfx" />
-    <None Include="ModeV2.xsd">
+    <None Include="LSLEditor\ModeV2.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />

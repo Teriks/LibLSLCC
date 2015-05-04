@@ -6,7 +6,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
-namespace LSLCCEditor
+namespace LSLCCEditor.LSLEditor
 {
     public class LSLCompletionData : ICompletionData
     {

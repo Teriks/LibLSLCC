@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   
-	<Bundle Name="LSLCCEditor" Version="1.0.0.0" Manufacturer="Teriks" UpgradeCode="1b6d9a63-68b0-46c9-b78d-8632d60261c7" IconSourceFile="../LSLCCEditor/lsl_script_icon.ico">
+	<Bundle Name="LSLCCEditor" Version="1.0.0.1" Manufacturer="Teriks"  UpgradeCode="56E73E24-9F33-415C-95F2-08950CB58BB2" IconSourceFile="../LSLCCEditor/lsl_script_icon.ico">
     
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
       <bal:WixStandardBootstrapperApplication
@@ -17,7 +17,7 @@
       
       <PackageGroupRef Id="NetFx45Redist"/>
 			<!-- TODO: Define the list of chained packages. -->
-			<MsiPackage  SourceFile="..\LSLCCEditorInstaller\bin\Release\LSLCCEditorInstaller.msi">
+			<MsiPackage  SourceFile="..\LSLCCEditorInstaller\bin\Release\LSLCCEditorInstaller.msi" >
           <MsiProperty Name="INSTALLLOCATION" Value="[InstallFolder]" />
       </MsiPackage>
 		</Chain>

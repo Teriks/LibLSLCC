@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using FindReplace;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Exceptions;
@@ -24,7 +25,7 @@ namespace LSLCCEditor
     public partial class MainWindow : Window
     {
         private const string DefaultProgram =
-@"
+            @"
 
 default
 {
@@ -41,7 +42,9 @@ default
 
         private bool _pendingChanges;
 
-        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+
+
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;
 
@@ -61,12 +64,12 @@ default
             Application.Current.Shutdown();
         }
 
+
+
         public MainWindow()
         {
-
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
-            
 
             InitializeComponent();
 
@@ -89,6 +92,8 @@ default
 
 
             Title = "LSLCC Editor - (Unsaved Untitled)";
+
+            this.KeyDown += OnKeyDown;
         }
 
 
@@ -129,13 +134,14 @@ default
             }
         }
 
+        private FindReplaceMgr FindDialogManager { get; set; }
+
 
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 
         {
             var args = Environment.GetCommandLineArgs();
-
 
 
             if (args.Length > 1)
@@ -155,7 +161,13 @@ default
             {
                 LslEditor.TextEditor.Text = DefaultProgram;
             }
-            
+
+            FindDialogManager = new FindReplaceMgr
+            {
+                CurrentEditor = LslEditor.TextEditor,
+                InterfaceConverter = new IEditorConverter(),
+                ShowSearchIn = false
+            };
         }
 
 
@@ -169,6 +181,8 @@ default
 
         private void CompilerMessageItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             var message = (CompilerMessage) ((ListViewItem) sender).Content;
 
             if (!message.Clickable)
@@ -176,7 +190,6 @@ default
                 return;
             }
 
-            
 
             var location = message.CodeLocation;
 
@@ -184,27 +197,21 @@ default
 
             var lineend = location.LineEnd == 0 ? 1 : location.LineEnd;
 
-            
-
-
-
 
             LslEditor.TextEditor.ScrollToLine(line);
 
 
             if (message.CodeLocation.HasIndexInfo && message.CodeLocation.IsSingleLine)
             {
-                LslEditor.TextEditor.Select(message.CodeLocation.StartIndex, 
-                    (message.CodeLocation.StopIndex+1) - message.CodeLocation.StartIndex);
+                LslEditor.TextEditor.Select(message.CodeLocation.StartIndex,
+                    (message.CodeLocation.StopIndex + 1) - message.CodeLocation.StartIndex);
 
                 return;
-
             }
 
 
-
             int l = 0;
-            for(int i=line;i<=lineend;i++)
+            for (int i = line; i <= lineend; i++)
             {
                 l += LslEditor.TextEditor.Document.GetLineByNumber(i).TotalLength;
             }
@@ -217,16 +224,17 @@ default
             }
 
             LslEditor.TextEditor.Select(linestart.Offset, l);
-
         }
 
 
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             var openDialog = new OpenFileDialog
             {
-                Multiselect = false, 
+                Multiselect = false,
                 Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt"
             };
 
@@ -250,6 +258,8 @@ default
 
         private void SaveFileAs_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             var saveDialog = new SaveFileDialog
             {
                 FileName = "LSLScript.lsl",
@@ -367,6 +377,9 @@ default
 
         private void Compile_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
+
             var suggestedFileName = "LSLScript.cs";
 
 
@@ -450,6 +463,8 @@ default
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             try
             {
                 SaveToCurrentFile(true);
@@ -463,6 +478,8 @@ default
 
         private void ClearMessages_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             CompilerMessages.Items.Clear();
         }
 
@@ -470,6 +487,8 @@ default
 
         private void CheckSyntax_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             CompilerMessages.Items.Clear();
 
             var validated = ValidateCurrentEditorText();
@@ -477,7 +496,10 @@ default
 
             if (validated != null)
             {
-                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected.") { Clickable = false } );
+                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected.")
+                {
+                    Clickable = false
+                });
             }
         }
 
@@ -515,6 +537,8 @@ default
 
         private void NewFile_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             if (PendingChanges)
             {
                 var x = MessageBox.Show("Would you like to save the current file before opening a new one?",
@@ -589,10 +613,8 @@ default
         }
 
 
+        private LSLLibraryDataAdditions _additionalLibrarys = LSLLibraryDataAdditions.None;
 
-
-
-        LSLLibraryDataAdditions _additionalLibrarys=LSLLibraryDataAdditions.None;
 
 
         private void LindenLsl_OnChecked(object sender, RoutedEventArgs e)
@@ -600,7 +622,8 @@ default
             if (OpenSimLsl != null && OpenSimLsl.IsChecked)
             {
                 OpenSimLsl.IsChecked = false;
-                _validatorServices.MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
+                _validatorServices.MainLibraryDataProvider =
+                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
                 LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
             }
         }
@@ -612,18 +635,17 @@ default
             if (LindenLsl != null && LindenLsl.IsChecked)
             {
                 LindenLsl.IsChecked = false;
-                _validatorServices.MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
+                _validatorServices.MainLibraryDataProvider =
+                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
                 LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
             }
         }
 
 
 
-
         private void LindenLsl_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            
-            if (OpenSimLsl!=null && !OpenSimLsl.IsChecked)
+            if (OpenSimLsl != null && !OpenSimLsl.IsChecked)
             {
                 LindenLsl.IsChecked = true;
             }
@@ -633,7 +655,7 @@ default
 
         private void OpenSimLsl_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            if (LindenLsl!=null && !LindenLsl.IsChecked)
+            if (LindenLsl != null && !LindenLsl.IsChecked)
             {
                 OpenSimLsl.IsChecked = true;
             }
@@ -643,17 +665,20 @@ default
 
         private void UpdateFromAdditionalLibrarys()
         {
-            if (OpenSimLsl!=null && OpenSimLsl.IsChecked)
+            if (OpenSimLsl != null && OpenSimLsl.IsChecked)
             {
-                _validatorServices.MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
+                _validatorServices.MainLibraryDataProvider =
+                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
                 LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
             }
-            if (LindenLsl!=null && LindenLsl.IsChecked)
+            if (LindenLsl != null && LindenLsl.IsChecked)
             {
-                _validatorServices.MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl,_additionalLibrarys);
+                _validatorServices.MainLibraryDataProvider =
+                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
                 LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
             }
         }
+
 
 
         private void OsslFunctions_OnChecked(object sender, RoutedEventArgs e)
@@ -663,11 +688,14 @@ default
         }
 
 
+
         private void OsslFunctions_OnUnchecked(object sender, RoutedEventArgs e)
         {
             _additionalLibrarys &= ~LSLLibraryDataAdditions.OpenSimOssl;
             UpdateFromAdditionalLibrarys();
         }
+
+
 
         private void OsWindlight_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -675,11 +703,15 @@ default
             UpdateFromAdditionalLibrarys();
         }
 
+
+
         private void OsWindlight_OnUnchecked(object sender, RoutedEventArgs e)
         {
             _additionalLibrarys &= ~LSLLibraryDataAdditions.OpenSimWindlight;
             UpdateFromAdditionalLibrarys();
         }
+
+
 
         private void OsBulletPhysics_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -687,11 +719,15 @@ default
             UpdateFromAdditionalLibrarys();
         }
 
+
+
         private void OsBulletPhysics_OnUnchecked(object sender, RoutedEventArgs e)
         {
             _additionalLibrarys &= ~LSLLibraryDataAdditions.OpenSimBulletPhysics;
             UpdateFromAdditionalLibrarys();
         }
+
+
 
         private void OsModInvoke_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -700,14 +736,19 @@ default
         }
 
 
+
         private void OsModInvoke_OnUnChecked(object sender, RoutedEventArgs e)
         {
             _additionalLibrarys &= ~LSLLibraryDataAdditions.OpenSimModInvoke;
             UpdateFromAdditionalLibrarys();
         }
 
+
+
         private void Format_Click(object sender, RoutedEventArgs e)
         {
+            LslEditor.CloseCompletionWindow();
+
             CompilerMessages.Items.Clear();
 
             var validated = ValidateCurrentEditorText();
@@ -732,8 +773,35 @@ default
 
             if (validated != null)
             {
-                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected.") { Clickable = false });
+                CompilerMessages.Items.Add(new CompilerMessage("Notice", "No Syntax errors detected.")
+                {
+                    Clickable = false
+                });
             }
+        }
+
+
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                LslEditor.CloseCompletionWindow();
+                FindDialogManager.ShowAsFind();
+            }
+            else if (e.Key == Key.H && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                LslEditor.CloseCompletionWindow();
+                FindDialogManager.ShowAsReplace();
+            }
+        }
+
+
+
+        private void Search_OnClick(object sender, RoutedEventArgs e)
+        {
+            LslEditor.CloseCompletionWindow();
+            FindDialogManager.ShowAsFind();
         }
     }
 
@@ -742,6 +810,8 @@ default
         private string _messageTypeText;
 
         public bool Clickable { get; set; }
+
+
 
         public CompilerMessage(string messageTypeText, LSLSourceCodeRange codeLocation, string messageText)
         {
@@ -753,6 +823,8 @@ default
             MessageText = messageText;
         }
 
+
+
         public CompilerMessage(string messageTypeText, string messageText)
         {
             Clickable = true;
@@ -760,7 +832,7 @@ default
             Line = 0;
             Column = 0;
             MessageText = messageText;
-            CodeLocation=new LSLSourceCodeRange();
+            CodeLocation = new LSLSourceCodeRange();
         }
 
 

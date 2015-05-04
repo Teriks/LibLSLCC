@@ -4,7 +4,7 @@
   <Color name="Type" foreground="#194c19" fontWeight="bold"/>
   <Color name="String" foreground="#194c19"/>
   <Color name="State" foreground="#7f0026" fontWeight="bold"/>
-  <Color name="Constants" foreground="#32348a"/>
+  <Color name="Constants" foreground="#32348a" fontWeight="bold"/>
   <Color name="Functions" foreground="#7f0026" fontWeight="bold"/>
   <Color name="Events" foreground="#004c7f" fontWeight="bold"/>
    <RuleSet>
