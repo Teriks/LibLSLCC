@@ -1077,7 +1077,7 @@ private static class UTILITIES
         }
 
 
-        public override bool VisitCompilationUnit(ILSLCompilationUnitNode node)
+        public override bool VisitCompilationUnit(ILSLCompilationUnitNode unode)
         {
             if (Settings.GenerateClass)
             {
@@ -1131,12 +1131,12 @@ private static class UTILITIES
             Writer.Write(Environment.NewLine);
 
 
-            if (node.GlobalVariableDeclarations.Count > 0)
+            if (unode.GlobalVariableDeclarations.Count > 0)
             {
-                CreateGlobalVariablesClass(node);
+                CreateGlobalVariablesClass(unode);
             }
 
-            if (node.FunctionDeclarations.Count > 0)
+            if (unode.FunctionDeclarations.Count > 0)
             {
                 Writer.WriteLine(GenIndent() + "//============================");
                 Writer.WriteLine(GenIndent() + "//== User Defined Functions ==");
@@ -1145,14 +1145,14 @@ private static class UTILITIES
             }
 
 
-            foreach (var ctx in node.FunctionDeclarations)
+            foreach (var ctx in unode.FunctionDeclarations)
             {
                 VisitFunctionDeclaration(ctx);
                 Writer.Write(Environment.NewLine + Environment.NewLine);
             }
 
 
-            if (node.StateDeclarations.Count > 0)
+            if (unode.StateDeclarations.Count > 0)
             {
                 Writer.WriteLine();
                 Writer.WriteLine(GenIndent() + "//=======================================");
@@ -1161,7 +1161,7 @@ private static class UTILITIES
                 Writer.Write(Environment.NewLine + Environment.NewLine);
             }
 
-            foreach (var ctx in node.StateDeclarations)
+            foreach (var ctx in unode.StateDeclarations)
             {
                 VisitDefinedState(ctx);
                 Writer.Write(Environment.NewLine + Environment.NewLine);
@@ -1174,7 +1174,7 @@ private static class UTILITIES
             Writer.Write(Environment.NewLine + Environment.NewLine);
 
 
-            VisitDefaultState(node.DefaultState);
+            VisitDefaultState(unode.DefaultState);
 
 
             Writer.Write(Environment.NewLine + Environment.NewLine);

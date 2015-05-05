@@ -1,45 +1,27 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace LibLSLCC.Collections
 {
     public class UniqueValueDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-
-        public event Action<TKey, TValue> OnAdd;
-
-        protected virtual void InvokeOnAdd(TKey arg1, TValue arg2)
-        {
-            Action<TKey, TValue> handler = OnAdd;
-            if (handler != null) handler(arg1, arg2);
-        }
-
-        public event Action<TKey, TValue> OnRemove;
-
-        protected virtual void InvokeOnRemove(TKey arg1, TValue arg2)
-        {
-            Action<TKey, TValue> handler = OnRemove;
-            if (handler != null) handler(arg1, arg2);
-        }
-
-
-        public event Action OnClear;
-
-        protected virtual void InvokeOnClear()
-        {
-            Action handler = OnClear;
-            if (handler != null) handler();
-        }
-
-        private readonly HashSet<TValue> _usedValues = new HashSet<TValue>();
         private readonly Dictionary<TKey, TValue> _items = new Dictionary<TKey, TValue>();
+        private readonly HashSet<TValue> _usedValues = new HashSet<TValue>();
 
         public Dictionary<TKey, TValue> Items
         {
-
             get { return _items; }
+        }
+
+        public ReadOnlyHashSet<TValue> ValueSet
+        {
+            get { return new ReadOnlyHashSet<TValue>(_usedValues); }
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -49,12 +31,11 @@ namespace LibLSLCC.Collections
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_items).GetEnumerator();
+            return ((IEnumerable) _items).GetEnumerator();
         }
 
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-
             _usedValues.Add(item.Value);
             _items.Add(item.Key, item.Value);
             InvokeOnAdd(item.Key, item.Value);
@@ -62,7 +43,6 @@ namespace LibLSLCC.Collections
 
         public void Clear()
         {
-
             _usedValues.Clear();
             _items.Clear();
             InvokeOnClear();
@@ -80,7 +60,6 @@ namespace LibLSLCC.Collections
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-
             _usedValues.Remove(item.Value);
             var removed = _items.Remove(item.Key);
 
@@ -99,7 +78,7 @@ namespace LibLSLCC.Collections
 
         public bool IsReadOnly
         {
-            get { return ((IDictionary<TKey, TValue>)_items).IsReadOnly; }
+            get { return ((IDictionary<TKey, TValue>) _items).IsReadOnly; }
         }
 
         public bool ContainsKey(TKey key)
@@ -109,7 +88,6 @@ namespace LibLSLCC.Collections
 
         public void Add(TKey key, TValue value)
         {
-
             _usedValues.Add(value);
             _items.Add(key, value);
             InvokeOnAdd(key, value);
@@ -127,10 +105,8 @@ namespace LibLSLCC.Collections
             var removed = _items.Remove(key);
             if (removed)
             {
-
                 _usedValues.Remove(itemValue);
                 InvokeOnRemove(key, itemValue);
-
             }
 
             return removed;
@@ -143,10 +119,7 @@ namespace LibLSLCC.Collections
 
         public TValue this[TKey key]
         {
-            get
-            {
-                return _items[key];
-            }
+            get { return _items[key]; }
             set
             {
                 TValue itemValue;
@@ -173,9 +146,43 @@ namespace LibLSLCC.Collections
             get { return _items.Values; }
         }
 
-        public ReadOnlyHashSet<TValue> ValueSet
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
+        public event Action<object, UniqueValueDictionaryEventArgs> OnAdd;
+
+        protected virtual void InvokeOnAdd(TKey arg1, TValue arg2)
         {
-            get { return new ReadOnlyHashSet<TValue>(_usedValues); }
+            Action<object, UniqueValueDictionaryEventArgs> handler = OnAdd;
+            if (handler != null) handler(this, new UniqueValueDictionaryEventArgs(arg1, arg2));
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
+        public event Action<object, UniqueValueDictionaryEventArgs> OnRemove;
+
+        protected virtual void InvokeOnRemove(TKey arg1, TValue arg2)
+        {
+            Action<object, UniqueValueDictionaryEventArgs> handler = OnRemove;
+            if (handler != null) handler(this, new UniqueValueDictionaryEventArgs(arg1, arg2));
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
+        public event Action<object, EventArgs> OnClear;
+
+        protected virtual void InvokeOnClear()
+        {
+            Action<object, EventArgs> handler = OnClear;
+            if (handler != null) handler(this, new EventArgs());
+        }
+
+        public class UniqueValueDictionaryEventArgs : EventArgs
+        {
+            public UniqueValueDictionaryEventArgs(TKey key, TValue value)
+            {
+                Key = key;
+                Value = value;
+            }
+
+            public TKey Key { get; private set; }
+            public TValue Value { get; private set; }
         }
     }
 }

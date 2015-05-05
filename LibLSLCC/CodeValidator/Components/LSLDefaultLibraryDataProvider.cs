@@ -56,13 +56,8 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
-        public LSLDefaultLibraryDataProvider(LSLLibraryBaseData libraryBaseData) : this(libraryBaseData,LSLLibraryDataAdditions.None)
-        {
-            
-        }
-
-        public LSLDefaultLibraryDataProvider(LSLLibraryBaseData libraryBaseData, LSLLibraryDataAdditions dataAdditions)
+        public LSLDefaultLibraryDataProvider(LSLLibraryBaseData libraryBaseData, 
+            LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None)
         {
             using (
                 var libraryData =

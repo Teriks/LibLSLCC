@@ -51,7 +51,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
 
-        public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters)
+        public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null)
         {
             ReturnType = returnType;
             Name = name;
@@ -72,13 +72,6 @@ namespace LibLSLCC.CodeValidator.Primitives
                 }
             }
         }
-
-        public LSLFunctionSignature(LSLType returnType, string name) : this(returnType,name,null)
-        {
-            
-            
-        }
-
 
 
         /// <summary>

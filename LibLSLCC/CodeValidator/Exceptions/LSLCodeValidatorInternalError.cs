@@ -39,14 +39,8 @@ namespace LibLSLCC.CodeValidator.Exceptions
         }
 
 
-        public static LSLCodeValidatorInternalError VisitContextInvalidState(string visitFunctionName)
-        {
-            return VisitContextInvalidState(visitFunctionName,false);
-        }
-
-
         public static LSLCodeValidatorInternalError VisitContextInvalidState(string visitFunctionName,
-            bool prePass)
+            bool prePass = false)
         {
             if (prePass)
             {
@@ -60,14 +54,8 @@ namespace LibLSLCC.CodeValidator.Exceptions
         }
 
 
-        public static LSLCodeValidatorInternalError ContextInInvalidState(string visitFunctionName, MemberInfo contextType)
-        {
-             return ContextInInvalidState(visitFunctionName, contextType,false);
-        }
-
-
         public static LSLCodeValidatorInternalError ContextInInvalidState(string visitFunctionName, MemberInfo contextType,
-            bool prePass)
+            bool prePass = false)
         {
             if (prePass)
             {

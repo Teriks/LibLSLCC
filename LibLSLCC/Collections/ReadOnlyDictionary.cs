@@ -16,6 +16,7 @@ namespace LibLSLCC.Collections
             _items = items;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         protected ReadOnlyDictionary(SerializationInfo info, StreamingContext context)
         {
             GetObjectData(info,context);
@@ -88,7 +89,9 @@ namespace LibLSLCC.Collections
             get { return _items.Values; }
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+
+
+        virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             ((ISerializable) _items).GetObjectData(info, context);
         }

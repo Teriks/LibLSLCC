@@ -167,7 +167,7 @@ namespace FindReplace
 
     public class IEditorConverter : IValueConverter
     {
-        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is TextEditor)
                 return new TextEditorAdapter(value as TextEditor);
@@ -178,7 +178,7 @@ namespace FindReplace
             else return null;
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

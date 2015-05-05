@@ -320,7 +320,6 @@ default
             finally
             {
                 memoryStream.Close();
-                memoryStream.Dispose();
             }
             return validated;
         }

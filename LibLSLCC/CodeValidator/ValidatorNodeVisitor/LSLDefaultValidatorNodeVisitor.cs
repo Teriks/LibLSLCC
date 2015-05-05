@@ -333,26 +333,26 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         ///     Then it calls Visit(stateDeclaration) for each LSLVariableNode in node.StateDeclarations.
         ///     Finally it calls Visit(node.DefaultState) to visit the single default state in the script, and returns default(T)
         /// </summary>
-        /// <param name="node">An object describing the compilation unit, which is the top of the syntax tree</param>
+        /// <param name="unode">An object describing the compilation unit, which is the top of the syntax tree</param>
         /// <returns>default(T)</returns>
-        public virtual T VisitCompilationUnit(ILSLCompilationUnitNode node)
+        public virtual T VisitCompilationUnit(ILSLCompilationUnitNode unode)
         {
-            foreach (var gvar in node.GlobalVariableDeclarations)
+            foreach (var gvar in unode.GlobalVariableDeclarations)
             {
                 Visit(gvar);
             }
 
-            foreach (var func in node.FunctionDeclarations)
+            foreach (var func in unode.FunctionDeclarations)
             {
                 Visit(func);
             }
 
-            foreach (var st in node.StateDeclarations)
+            foreach (var st in unode.StateDeclarations)
             {
                 Visit(st);
             }
 
-            Visit(node.DefaultState);
+            Visit(unode.DefaultState);
 
             return default(T);
         }

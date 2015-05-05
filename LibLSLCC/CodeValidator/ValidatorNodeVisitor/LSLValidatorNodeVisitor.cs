@@ -52,7 +52,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
         T VisitCodeScope(ILSLCodeScopeNode node);
 
-        T VisitCompilationUnit(ILSLCompilationUnitNode node);
+        T VisitCompilationUnit(ILSLCompilationUnitNode unode);
 
         T VisitEventHandler(ILSLEventHandlerNode node);
 
