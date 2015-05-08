@@ -1,0 +1,23 @@
+﻿<Window x:Class="LSLCCEditor.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Window1" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="New"></MenuItem>
+                
+            </MenuItem>
+            <MenuItem Header="Compile"></MenuItem>
+            <MenuItem Header="Tools"></MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            
+        </Grid>
+    </Grid>
+</Window>
