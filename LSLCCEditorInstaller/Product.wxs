@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="CE950867-D35C-41BF-9A11-FA4E3AFA45A7" 
-             UpgradeCode="F1C48367-6E7A-4B17-9059-E0CC9C511339" Version="1.0.0.0" Language="1033" Name="LSLCCEditor" Manufacturer="Teriks">
+    <Product Id="*" 
+             UpgradeCode="F1C48367-6E7A-4B17-9059-E0CC9C511339" Version="1.0.1.0" Language="1033" Name="LSLCCEditor" Manufacturer="Teriks">
         <Package InstallerVersion="300" Compressed="yes" InstallPrivileges="elevated" InstallScope="perMachine" />
-        <Media Id="1" Cabinet="application.cab" EmbedCab="yes" />
+        <Media Id="1" Cabinet="application.cab" EmbedCab="yes"  />
 
       <Icon Id="icon.ico" SourceFile="..\LSLCCEditor\bin\Release\lsl_script_icon.ico"/>
       <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+      <MajorUpgrade AllowSameVersionUpgrades="yes" Disallow="no" AllowDowngrades="no" DowngradeErrorMessage="A newer version of this software is already installed." />
+
+      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+      <UIRef Id="WixUI_InstallDir" />
       
-      
-        <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
               <Directory Id="CompanyFolder" Name="LSLcc">
                 <Directory Id="INSTALLLOCATION" Name="LSLCCEditor"/>

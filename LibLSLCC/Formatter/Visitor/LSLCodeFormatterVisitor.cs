@@ -1284,7 +1284,7 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         var comment = comments[j];
 
-                        Write(indent + comment.Text);
+                        Write(FormatComment(indent, comment));
 
                         if ((j + 1) < comments.Count)
                         {
@@ -1367,7 +1367,7 @@ namespace LibLSLCC.Formatter.Visitor
                             {
                                 var comment = comments[j];
 
-                                Write(indent + comment.Text);
+                                Write(FormatComment(indent,comment));
 
                                 if ((j + 1) < comments.Count)
                                 {
@@ -1427,7 +1427,7 @@ namespace LibLSLCC.Formatter.Visitor
                             for (int j = 0; j < comments.Count; j++)
                             {
                                 var comment = comments[j];
-                                Write(indent + comment.Text);
+                                Write(FormatComment(indent, comment));
 
                                 if ((j + 1) < comments.Count)
                                 {
@@ -1512,7 +1512,7 @@ namespace LibLSLCC.Formatter.Visitor
                     for (int j = 0; j < comments.Count; j++)
                     {
                         var comment = comments[j];
-                        Write(indent + comment.Text);
+                        Write(FormatComment(indent, comment));
 
                         if ((j + 1) < comments.Count)
                         {
@@ -1909,6 +1909,41 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
+
+        private int GetStringIndent(string str)
+        {
+            int columns = 0;
+            for (int x = 0; x < str.Length; x++)
+            {
+                if (char.IsWhiteSpace(str[x]))
+                {
+                    if (str[x] == '\t')
+                    {
+                        columns += 4;
+                    }
+                    else if(str[x] == ' ')
+                    {
+                        columns++;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return columns;
+        }
+
+
+
+        private string CreateStringIndent(int spaces)
+        {
+            string r="";
+            for (int i = 0; i < spaces; i++) r += " ";
+            return r;
+        }
+
         private string FormatComment(string indent, LSLComment comment)
         {
             if (comment.Type == LSLCommentType.SingleLine)
@@ -1917,46 +1952,46 @@ namespace LibLSLCC.Formatter.Visitor
             }
 
 
-            var c = comment.Text.Trim('\t', '*', '/', ' ', '\n', '\r');
+            var parts = comment.Text.Split('\n').ToList();
 
-            bool multiLine = comment.Text.Contains('\n');
-
-            if (!multiLine)
+            if (parts.Count == 0)
             {
                 return indent + comment.Text;
             }
 
 
-            var r = indent + "/*" + ("\n" + indent + "   ");
 
-            for (int i = 0; i < c.Length; i++)
+
+            var firstLine = parts[0];
+
+            firstLine = firstLine.Substring(2, firstLine.Length - 2);
+
+            if (parts.Count == 1)
             {
-                var ch = c[i];
-                if (ch == '\n')
-                {
-                    r += '\n';
-
-                    i++;
-
-                    while (c[i] == '\t' || c[i] == ' ')
-                    {
-                        i++;
-                    }
-
-                    ch = c[i];
-
-                    if (ch != '\r')
-                    {
-                        r += indent + "   " + ch;
-                    }
-                }
-                else
-                {
-                    r += ch;
-                }
+                return indent + comment.Text;
             }
 
-            return r + ("\n" + indent) + "*/";
+
+            int indentSpaces = GetStringIndent(indent);
+
+            var indnt = CreateStringIndent(indentSpaces == 0 ? 0 : indentSpaces - 1);
+
+            firstLine = indnt + "/*" + firstLine + "\n";
+
+            for (int i = 1; i < parts.Count; i++)
+            {
+                var part = parts[i];
+                var userIndent = GetStringIndent(part);
+                if (indentSpaces != userIndent || (indentSpaces == 0 && userIndent == 0))
+                {
+                    part = indnt + " " + part.Trim();
+                }
+
+                firstLine += part + (i == parts.Count - 1 ? "" : "\n");
+
+            }
+
+            return firstLine;
         }
 
         public override bool VisitMultiStatementCodeScope(ILSLCodeScopeNode snode)
