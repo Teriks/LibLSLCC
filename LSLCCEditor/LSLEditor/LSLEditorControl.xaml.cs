@@ -313,7 +313,7 @@ namespace LSLCCEditor.LSLEditor
         private readonly SolidColorBrush _libraryFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
         private readonly SolidColorBrush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
         private readonly SolidColorBrush _builtInTypeCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
-
+        private readonly SolidColorBrush _eventHandlerCompleteColor = new SolidColorBrush(Color.FromRgb(0, 76, 127));
 
 
         private CompletionWindow CreateCompletionWindow()
@@ -391,7 +391,29 @@ namespace LSLCCEditor.LSLEditor
                 bool possibleUserDefinedItem = false;
                 bool possibleType = false;
                 bool possibleConstant = false;
+                bool possibleEventName = false;
 
+
+                if (fastVarParser.InStateOutsideEvent)
+                {
+                    foreach (var eventHandler in _eventSignatures.Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        var sig = eventHandler.SignatureString + "\n{\n\t\n}";
+                        data.Add(new LSLCompletionData(eventHandler.Name,sig,eventHandler.SignatureAndDocumentation,0)
+                        {
+                            ColorBrush = _eventHandlerCompleteColor,
+                            ForceIndent = true,
+                            IndentLevel = 1,
+                            TextSubStringStart = 0,
+                            OffsetCaretAfterInsert = true,
+                            CaretOffsetAfterInsert = -3,
+                            InsertTextAtCaretAfterOffset = true,
+                            CaretOffsetInsertionText = "\t"
+                        });
+                        possibleEventName = true;
+                    }
+
+                }
 
                 if (!fastVarParser.InStateOutsideEvent && !fastVarParser.AfterDefaultState)
                 {
@@ -445,6 +467,22 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
+                if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler || fastVarParser.InGlobalScope)
+                {
+
+                    foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(e.Text)))
+                    {
+                        string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
+                        data.Add(new LSLCompletionData(v.Name, v.Name,
+                            doc, 0)
+                        {
+                            ColorBrush = _globalVariableCompleteColor
+                        });
+                        possibleUserDefinedItem = true;
+                    }
+                }
+
+
                 if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
                 {
                     var functionSuggestions = _libraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
@@ -492,16 +530,6 @@ namespace LSLCCEditor.LSLEditor
                     }
 
 
-                    foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(e.Text)))
-                    {
-                        string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
-                        data.Add(new LSLCompletionData(v.Name, v.Name,
-                            doc, 0)
-                        {
-                            ColorBrush = _globalVariableCompleteColor
-                        });
-                        possibleUserDefinedItem = true;
-                    }
 
 
                     foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(e.Text)))
@@ -518,7 +546,7 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                if (!possibleConstant && !possibleLibraryFunction && !possibleType && !possibleUserDefinedItem)
+                if (!possibleConstant && !possibleLibraryFunction && !possibleType && !possibleUserDefinedItem && !possibleEventName)
                 {
                     _completionWindow = null;
                     return;
@@ -574,58 +602,85 @@ namespace LSLCCEditor.LSLEditor
                     var data = _completionWindow.CompletionList.CompletionData;
 
 
-                    foreach (var i in fastVarParser.GlobalFunctions)
-                    {
-                        data.Add(new LSLCompletionData(
-                            i.Name,
-                            i.Name + "(", "Global function:\n" + i.Signature, 0)
-                        {
-                            TextSubStringStart = 0,
-                            ColorBrush = _globalFunctionCompleteColor
-                        });
-                    }
+                    bool possibleUserDefinedItem = false;
+                    bool possibleEventName = false;
 
-                    foreach (var i in fastVarParser.GlobalVariables)
+                    if (fastVarParser.InStateOutsideEvent)
                     {
-                        data.Add(new LSLCompletionData(i.Name, i.Name,
-                            "Global variable:\n" + i.Type + " " + i.Name, 1)
+                        foreach (var eventHandler in _eventSignatures)
                         {
-                            TextSubStringStart = 0,
-                            ColorBrush = _globalVariableCompleteColor
-                        });
-                    }
-
-                    foreach (var i in fastVarParser.LocalParameters)
-                    {
-                        data.Add(new LSLCompletionData(i.Name, i.Name,
-                            "Local parameter:\n" + i.Type + " " + i.Name, 2)
-                        {
-                            TextSubStringStart = 0,
-                            ColorBrush = _localParameterCompleteColor
-                        });
-                    }
-
-                    foreach (var i in fastVarParser.LocalVariables)
-                    {
-                        data.Add(new LSLCompletionData(i.Name, i.Name,
-                            "Local Variable:\n" + i.Type + " " + i.Name, 3)
-                        {
-                            TextSubStringStart = 0,
-                            ColorBrush = _localVariableCompleteColor
-                        });
-                    }
-
-
-                    _completionWindow.Loaded += (o, args) =>
-                    {
-                        lock (_completionWindow)
-                        {
-                            if (_completionWindow.CompletionList.ListBox.Items.Count == 0)
+                            var sig = eventHandler.SignatureString + "\n{\n\t\n}";
+                            data.Add(new LSLCompletionData(eventHandler.Name, sig, eventHandler.SignatureAndDocumentation, 0)
                             {
-                                _completionWindow.Close();
-                            }
+                                ColorBrush = _eventHandlerCompleteColor,
+                                ForceIndent = true,
+                                IndentLevel = 1,
+                                TextSubStringStart = 0,
+                                OffsetCaretAfterInsert = true,
+                                CaretOffsetAfterInsert = -3,
+                                InsertTextAtCaretAfterOffset = true,
+                                CaretOffsetInsertionText = "\t"
+                            });
+                            possibleEventName = true;
                         }
-                    };
+                        
+                    }
+
+
+                    if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration || fastVarParser.InGlobalScope)
+                    {
+                        foreach (var i in fastVarParser.GlobalVariables)
+                        {
+                            data.Add(new LSLCompletionData(i.Name, i.Name,
+                                "Global variable:\n" + i.Type + " " + i.Name, 1)
+                            {
+                                TextSubStringStart = 0,
+                                ColorBrush = _globalVariableCompleteColor
+                            });
+                            possibleUserDefinedItem = true;
+                        }
+                    }
+                    
+
+                    if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration)
+                    {
+
+                        foreach (var i in fastVarParser.GlobalFunctions)
+                        {
+                            data.Add(new LSLCompletionData(
+                                i.Name,
+                                i.Name + "(", "Global function:\n" + i.Signature, 0)
+                            {
+                                TextSubStringStart = 0,
+                                ColorBrush = _globalFunctionCompleteColor
+                            });
+                            possibleUserDefinedItem = true;
+                        }
+
+
+
+                        foreach (var i in fastVarParser.LocalParameters)
+                        {
+                            data.Add(new LSLCompletionData(i.Name, i.Name,
+                                "Local parameter:\n" + i.Type + " " + i.Name, 2)
+                            {
+                                TextSubStringStart = 0,
+                                ColorBrush = _localParameterCompleteColor
+                            });
+                            possibleUserDefinedItem = true;
+                        }
+
+                        foreach (var i in fastVarParser.LocalVariables)
+                        {
+                            data.Add(new LSLCompletionData(i.Name, i.Name,
+                                "Local Variable:\n" + i.Type + " " + i.Name, 3)
+                            {
+                                TextSubStringStart = 0,
+                                ColorBrush = _localVariableCompleteColor
+                            });
+                            possibleUserDefinedItem = true;
+                        }
+                    }
 
 
                     _completionWindow.Closed += (o, args) =>
@@ -636,9 +691,19 @@ namespace LSLCCEditor.LSLEditor
                         }
                     };
 
-                    _completionWindow.Show();
+                    if (possibleUserDefinedItem || possibleEventName)
+                    {
+                        
+                        _completionWindow.Show();
+                    }
+                    else
+                    {
+
+                       _completionWindow = null;
+                    }
 
                     e.Handled = true;
+
                 }
             }
         }
@@ -651,28 +716,61 @@ namespace LSLCCEditor.LSLEditor
 
             lock (_completionLock)
             {
+
                 if (_completionWindow != null) return;
+
+                var caretOffset = textArea.Caret.Offset;
+
+                var commentSkipper = new LSLCommentStringSkipper();
+
+                for (int i = 0; i < caretOffset; i++)
+                {
+                    commentSkipper.FeedChar(Editor.Text, i, caretOffset);
+                }
+
+                if (commentSkipper.InComment || commentSkipper.InString)
+                {
+                    return;
+                }
+
 
                 _completionWindow = CreateCompletionWindow();
 
+                var fastVarParser = new LSLFastEditorParse();
+                fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
-                foreach (var func in _libraryFunctionNames)
+
+                bool possibleGlobalFunctions = false;
+                if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration)
                 {
-                    var docs = string.Join(Environment.NewLine + Environment.NewLine,
-                        LibraryDataProvider.GetLibraryFunctionSignatures(func)
-                            .Select(x => x.SignatureAndDocumentation));
-
-
-                    _completionWindow.CompletionList.CompletionData.Add(new LSLCompletionData(func, func + "(", docs, 0)
+                    foreach (var func in _libraryFunctionNames)
                     {
-                        ColorBrush = _libraryFunctionCompleteColor,
-                        TextSubStringStart = 0
-                    });
+                        var docs = string.Join(Environment.NewLine + Environment.NewLine,
+                            LibraryDataProvider.GetLibraryFunctionSignatures(func)
+                                .Select(x => x.SignatureAndDocumentation));
+
+
+                        _completionWindow.CompletionList.CompletionData.Add(new LSLCompletionData(func, func + "(", docs,
+                            0)
+                        {
+                            ColorBrush = _libraryFunctionCompleteColor,
+                            TextSubStringStart = 0
+                        });
+
+                        possibleGlobalFunctions = true;
+                    }
                 }
 
                 _completionWindow.Closed += (o, args) => { _completionWindow = null; };
 
-                _completionWindow.Show();
+                if (possibleGlobalFunctions)
+                {
+                    _completionWindow.Show();
+                }
+                else
+                {
+                    _completionWindow = null;
+                }
             }
         }
 
@@ -687,24 +785,54 @@ namespace LSLCCEditor.LSLEditor
             {
                 if (_completionWindow != null) return;
 
+                var caretOffset = textArea.Caret.Offset;
+
+                var commentSkipper = new LSLCommentStringSkipper();
+
+                for (int i = 0; i < caretOffset; i++)
+                {
+                    commentSkipper.FeedChar(Editor.Text, i, caretOffset);
+                }
+
+                if (commentSkipper.InComment || commentSkipper.InString)
+                {
+                    return;
+                }
+
+
                 _completionWindow = CreateCompletionWindow();
 
+                var fastVarParser = new LSLFastEditorParse();
+                fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
-                foreach (var con in _constantSignatures)
+                bool possibleLibraryConstants = false;
+
+                if (fastVarParser.InGlobalScope || fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
                 {
-                    _completionWindow.CompletionList.CompletionData.Add(
-                        new LSLCompletionData(con.Name,
-                            con.Name,
-                            con.SignatureAndDocumentation, 0)
-                        {
-                            ColorBrush = _libraryConstantCompleteColor,
-                            TextSubStringStart = 0
-                        });
+                    foreach (var con in _constantSignatures)
+                    {
+                        _completionWindow.CompletionList.CompletionData.Add(
+                            new LSLCompletionData(con.Name,
+                                con.Name,
+                                con.SignatureAndDocumentation, 0)
+                            {
+                                ColorBrush = _libraryConstantCompleteColor,
+                                TextSubStringStart = 0
+                            });
+                        possibleLibraryConstants = true;
+                    }
                 }
 
                 _completionWindow.Closed += (o, args) => { _completionWindow = null; };
 
-                _completionWindow.Show();
+                if (possibleLibraryConstants)
+                {
+                    _completionWindow.Show();
+                }
+                else
+                {
+                    _completionWindow = null;
+                }
             }
         }
 
@@ -726,8 +854,7 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
-        public void SetLibraryDataProvider(ILSLMainLibraryDataProvider provider)
+        private void SetLibraryDataProvider(ILSLMainLibraryDataProvider provider)
         {
             _libraryFunctionNames = provider.LibraryFunctions.Select(x => x.First().Name).ToList();
             _eventSignatures = provider.SupportedEventHandlers.ToList();

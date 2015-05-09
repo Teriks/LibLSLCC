@@ -103,8 +103,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AvalonEditBehaviour.cs" />
-    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="LSLEditor\LSLEditorControl.xaml.cs">
       <DependentUpon>LSLEditorControl.xaml</DependentUpon>
     </Compile>

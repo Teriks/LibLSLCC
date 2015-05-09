@@ -23,7 +23,7 @@ using ICSharpCode.AvalonEdit.Indentation;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.FastEditorParse;
-using LSLCCEditor.Annotations;
+
 
 
 #endregion
@@ -349,6 +349,9 @@ namespace LSLCCEditor.LSLEditor
                 bool possibleUserDefinedItem = false;
                 bool possibleType = false;
                 bool possibleConstant = false;
+
+
+      
 
 
                 if (!fastVarParser.InStateOutsideEvent && !fastVarParser.AfterDefaultState)
@@ -771,17 +774,9 @@ namespace LSLCCEditor.LSLEditor
             public void IndentLines(TextDocument document, int beginLine, int endLine)
             {
             }
+
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

@@ -9,13 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
@@ -24,7 +19,6 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers;
 using LibLSLCC.Formatter.Visitor;
-using LSLCCEditor.Annotations;
 using LSLCCEditor.LSLEditor;
 using ListViewItem = System.Windows.Controls.ListViewItem;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -45,7 +39,7 @@ namespace LSLCCEditor
 
         private readonly LSLCustomValidatorServiceProvider _validatorServices;
 
-        public class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
+        private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
         {
             private readonly Window1 _parent;
 
@@ -65,7 +59,7 @@ namespace LSLCCEditor
             }
         }
 
-        public class WindowSyntaxErrorListener : LSLDefaultSyntaxErrorListener
+        private class WindowSyntaxErrorListener : LSLDefaultSyntaxErrorListener
         {
             private readonly Window1 _parent;
 
@@ -161,12 +155,11 @@ namespace LSLCCEditor
         {
             EditorTabs.Add(new EditorTab());
             TabControl.SelectedIndex = (EditorTabs.Count-1);
-            _swapingTabs = false;
+
         }
 
 
 
-        private bool _swapingTabs = false;
 
         private void LSLEditorControl_OnTextChanged(object sender, EventArgs e)
         {
@@ -343,10 +336,6 @@ namespace LSLCCEditor
 
 
 
-        private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            _swapingTabs = true;
-        }
 
 
 
@@ -500,6 +489,10 @@ namespace LSLCCEditor
             if (tab.SourceCode != st)
             {
                 tab.ChangesPending = true;
+                if (!tab.MemoryOnly)
+                {
+                    tab.Header = System.IO.Path.GetFileName(tab.FilePath)+"*";
+                }
             }
 
             tab.SourceCode = st;
@@ -557,7 +550,6 @@ namespace LSLCCEditor
 
                     this.EditorTabs.Add(tab);
                     TabControl.SelectedIndex = (EditorTabs.Count - 1);
-                    _swapingTabs = false;
 
                     tab.MemoryOnly = false;
                     tab.ChangesPending = false;

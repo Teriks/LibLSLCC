@@ -82,7 +82,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             get
             {
                 return Name + "(" +
-                       string.Join(",", Parameters.Select(x => LSLTypeTools.ToLSLTypeString(x.Type) + " " + x.Name)) +
+                       string.Join(", ", Parameters.Select(x => LSLTypeTools.ToLSLTypeString(x.Type) + " " + x.Name)) +
                        ")";
             }
         }

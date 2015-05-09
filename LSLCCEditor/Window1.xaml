@@ -32,7 +32,7 @@
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">
-            <TabControl ItemsSource="{Binding EditorTabs}" x:Name="TabControl" SelectionChanged="TabControl_OnSelectionChanged">
+            <TabControl ItemsSource="{Binding EditorTabs}" x:Name="TabControl">
                 <TabControl.ItemTemplate>
                 <DataTemplate>
                         <StackPanel Orientation="Horizontal">

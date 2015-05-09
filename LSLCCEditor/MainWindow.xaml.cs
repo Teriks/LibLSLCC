@@ -84,7 +84,7 @@ default
                 SyntaxWarningListener = new WindowSyntaxWarningListener(this)
             };
 
-            LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
+            LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
 
             LslEditor.Editor.TextChanged += EditorOnChanged;
 
@@ -624,7 +624,7 @@ default
                 OpenSimLsl.IsChecked = false;
                 _validatorServices.MainLibraryDataProvider =
                     new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
-                LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
+                LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
         }
 
@@ -637,7 +637,7 @@ default
                 LindenLsl.IsChecked = false;
                 _validatorServices.MainLibraryDataProvider =
                     new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
-                LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
+                LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
         }
 
@@ -669,13 +669,13 @@ default
             {
                 _validatorServices.MainLibraryDataProvider =
                     new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
-                LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
+                LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
             if (LindenLsl != null && LindenLsl.IsChecked)
             {
                 _validatorServices.MainLibraryDataProvider =
                     new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
-                LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
+                LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
         }
 

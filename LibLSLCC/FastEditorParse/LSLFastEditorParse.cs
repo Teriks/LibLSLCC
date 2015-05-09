@@ -39,10 +39,12 @@ namespace LibLSLCC.FastEditorParse
 
         public bool InStateOutsideEvent
         {
-            get { return (InState && !InEventHandler); }
+            get { return (InState && !InEventHandler && !InBetweenStateNameEndAndCodeStart); }
         }
 
         public bool InState { get; private set; }
+
+        public bool InBetweenStateNameEndAndCodeStart { get; private set; }
         public bool InEventHandler { get; private set; }
         public bool InFunctionDeclaration { get; private set; }
         public bool InGlobalScope { get; private set; }
@@ -541,6 +543,19 @@ namespace LibLSLCC.FastEditorParse
 
             public override bool VisitEventHandler(LSLParser.EventHandlerContext context)
             {
+
+                if ((context.handler_name.StopIndex + 1) == _parent._toOffset)
+                {
+                    return true;
+                }
+
+                if ((context.handler_name.StopIndex < _parent._toOffset) &&
+                    (_parent._toOffset < context.code.Start.StartIndex))
+                {
+                    _parent.InBetweenStateNameEndAndCodeStart = true;
+                    return true;
+                }
+
                 if (context.Start.StartIndex > _parent._toOffset) return true;
 
                 _codeAreaId++;
