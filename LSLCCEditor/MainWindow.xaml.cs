@@ -86,7 +86,7 @@ default
 
             LslEditor.SetLibraryDataProvider(_validatorServices.MainLibraryDataProvider);
 
-            LslEditor.TextEditor.TextChanged += TextEditorOnTextChanged;
+            LslEditor.Editor.TextChanged += EditorOnChanged;
 
             Loaded += OnLoaded;
 
@@ -148,23 +148,23 @@ default
             {
                 try
                 {
-                    LslEditor.TextEditor.Text = File.ReadAllText(args[1], Encoding.UTF8);
+                    LslEditor.Editor.Text = File.ReadAllText(args[1], Encoding.UTF8);
                     _currentlyOpenFile = args[1];
                 }
                 catch (Exception)
                 {
                     MessageBox.Show("Could not open file:\n\"" + args[1] + "\"");
-                    LslEditor.TextEditor.Text = DefaultProgram;
+                    LslEditor.Editor.Text = DefaultProgram;
                 }
             }
             else
             {
-                LslEditor.TextEditor.Text = DefaultProgram;
+                LslEditor.Editor.Text = DefaultProgram;
             }
 
             FindDialogManager = new FindReplaceMgr
             {
-                CurrentEditor = LslEditor.TextEditor,
+                CurrentEditor = LslEditor.Editor,
                 InterfaceConverter = new IEditorConverter(),
                 ShowSearchIn = false
             };
@@ -172,7 +172,7 @@ default
 
 
 
-        private void TextEditorOnTextChanged(object sender, EventArgs eventArgs)
+        private void EditorOnChanged(object sender, EventArgs eventArgs)
         {
             PendingChanges = true;
         }
@@ -198,12 +198,12 @@ default
             var lineend = location.LineEnd == 0 ? 1 : location.LineEnd;
 
 
-            LslEditor.TextEditor.ScrollToLine(line);
+            LslEditor.Editor.ScrollToLine(line);
 
 
             if (message.CodeLocation.HasIndexInfo && message.CodeLocation.IsSingleLine)
             {
-                LslEditor.TextEditor.Select(message.CodeLocation.StartIndex,
+                LslEditor.Editor.Select(message.CodeLocation.StartIndex,
                     (message.CodeLocation.StopIndex + 1) - message.CodeLocation.StartIndex);
 
                 return;
@@ -213,17 +213,17 @@ default
             int l = 0;
             for (int i = line; i <= lineend; i++)
             {
-                l += LslEditor.TextEditor.Document.GetLineByNumber(i).TotalLength;
+                l += LslEditor.Editor.Document.GetLineByNumber(i).TotalLength;
             }
 
-            var linestart = LslEditor.TextEditor.Document.GetLineByNumber(line);
+            var linestart = LslEditor.Editor.Document.GetLineByNumber(line);
 
             if (l == 0)
             {
                 l = 1;
             }
 
-            LslEditor.TextEditor.Select(linestart.Offset, l);
+            LslEditor.Editor.Select(linestart.Offset, l);
         }
 
 
@@ -242,7 +242,7 @@ default
             {
                 if (openDialog.ShowDialog().Value)
                 {
-                    LslEditor.TextEditor.Load(openDialog.FileName);
+                    LslEditor.Editor.Load(openDialog.FileName);
                     CurrentlyOpenFile = openDialog.FileName;
                     PendingChanges = false;
                 }
@@ -271,7 +271,7 @@ default
             {
                 if (saveDialog.ShowDialog().Value)
                 {
-                    LslEditor.TextEditor.Save(saveDialog.FileName);
+                    LslEditor.Editor.Save(saveDialog.FileName);
                     CurrentlyOpenFile = saveDialog.FileName;
                     PendingChanges = false;
                 }
@@ -292,7 +292,7 @@ default
             ILSLCompilationUnitNode validated;
 
 
-            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(LslEditor.TextEditor.Text));
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(LslEditor.Editor.Text));
 
 
             try
@@ -418,7 +418,7 @@ default
             {
                 try
                 {
-                    LslEditor.TextEditor.Save(CurrentlyOpenFile);
+                    LslEditor.Editor.Save(CurrentlyOpenFile);
                     PendingChanges = false;
                     return true;
                 }
@@ -442,9 +442,10 @@ default
 
             try
             {
-                if (saveDialog.ShowDialog().Value)
+                var showDialog = saveDialog.ShowDialog();
+                if (showDialog != null && showDialog.Value)
                 {
-                    LslEditor.TextEditor.Save(saveDialog.FileName);
+                    LslEditor.Editor.Save(saveDialog.FileName);
                     CurrentlyOpenFile = saveDialog.FileName;
                     PendingChanges = false;
                     return true;
@@ -549,7 +550,7 @@ default
                     {
                         if (SaveToCurrentFile(true))
                         {
-                            LslEditor.TextEditor.Text = DefaultProgram;
+                            LslEditor.Editor.Text = DefaultProgram;
                             CurrentlyOpenFile = null;
                             PendingChanges = false;
                         }
@@ -560,7 +561,7 @@ default
                 }
                 if (x == MessageBoxResult.No)
                 {
-                    LslEditor.TextEditor.Text = DefaultProgram;
+                    LslEditor.Editor.Text = DefaultProgram;
                     CurrentlyOpenFile = null;
                     PendingChanges = false;
                 }
@@ -760,9 +761,9 @@ default
             var formatter = new LSLCodeFormatterVisitor();
 
             StringWriter str = new StringWriter();
-            formatter.WriteAndFlush(LslEditor.TextEditor.Text, validated, str);
+            formatter.WriteAndFlush(LslEditor.Editor.Text, validated, str);
 
-            LslEditor.TextEditor.Text = str.ToString();
+            LslEditor.Editor.Text = str.ToString();
 
 
             CompilerMessages.Items.Clear();
@@ -804,7 +805,7 @@ default
         }
     }
 
-    internal class CompilerMessage
+    public class CompilerMessage
     {
         private string _messageTypeText;
 

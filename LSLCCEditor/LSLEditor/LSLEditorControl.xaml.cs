@@ -1,13 +1,11 @@
-﻿#region
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,61 +15,85 @@ using System.Xml;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.FastEditorParse;
-using LSLCCEditor.Annotations;
-
-
-#endregion
-
-
-
 
 namespace LSLCCEditor.LSLEditor
 {
     /// <summary>
-    ///     Interaction logic for LSLEditor.xaml
+    /// Interaction logic for Test.xaml
     /// </summary>
-    public partial class LSLEditor : UserControl
+    public partial class LSLEditorControl : UserControl
     {
-
-
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-            "Text", typeof(string), typeof(LSLEditor), new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, TextPropertyChangedCallback));
+            "Text", typeof (string), typeof (LSLEditorControl),
+            new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                TextPropertyChangedCallback));
 
+        private readonly object _propertyChangingLock = new object();
         private readonly object _userChangingLock = new object();
         private bool _userChanging;
-        private static void TextPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private bool _propertyChanging;
+
+
+
+        private static void TextPropertyChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var t = (LSLEditor)dependencyObject;
+            var t = (LSLEditorControl) dependencyObject;
             if (!t._userChanging && t.Editor.Document != null)
             {
-                t.Editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue.ToString();
+                t._propertyChanging = true;
+                t.Editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue == null ? "" : dependencyPropertyChangedEventArgs.NewValue.ToString();
+                t._propertyChanging = false;
             }
         }
+
+
 
         private void TextEditor_OnTextChanged(object sender, EventArgs e)
         {
+            lock (_propertyChangingLock)
+            {
+                if (_propertyChanging)
+                {
+                    return;
+                }
+            }
             lock (_userChangingLock)
             {
-                var editor = (TextEditor)sender;
+                var editor = (TextEditor) sender;
                 _userChanging = true;
                 this.Text = editor.Text;
                 _userChanging = false;
+                OnUserChangedText();
             }
         }
 
-        public string Text
+        public delegate void TextChangedEventHandler(object sender, EventArgs e);
+
+        public event TextChangedEventHandler UserChangedText;
+
+
+
+
+        protected virtual void OnUserChangedText()
         {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+            var handler = UserChangedText;
+            if (handler != null) handler(this, EventArgs.Empty);
         }
 
 
+        public string Text
+        {
+            get { return (string) GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
 
 
         private readonly object _completionLock = new object();
@@ -105,18 +127,19 @@ namespace LSLCCEditor.LSLEditor
 
 
 
-        public LSLEditor()
+        public LSLEditorControl()
         {
             InitializeComponent();
-
+          
             Editor.TextArea.TextEntered += TextArea_TextEntered;
-            Editor.MouseHover += EditorMouseHover;
-            Editor.MouseHover += EditorMouseHoverStopped;
-            Editor.KeyDown += EditorKeyDown;
+            Editor.MouseHover += TextEditor_MouseHover;
+            Editor.MouseHover += TextEditor_MouseHoverStopped;
+            Editor.KeyDown += TextEditor_KeyDown;
         }
 
 
 
+        
 
 
 
@@ -133,10 +156,27 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
+        public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
+    "LibraryDataProvider", typeof(ILSLMainLibraryDataProvider), typeof(LSLEditorControl),
+    new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+        LibraryDataProviderPropertyChangedCallback));
 
-        public ILSLMainLibraryDataProvider LibraryDataProvider { get; private set; }
 
-        
+        private static void LibraryDataProviderPropertyChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            if (dependencyPropertyChangedEventArgs.NewValue != null)
+            {
+                ((LSLEditorControl)dependencyObject).SetLibraryDataProvider((ILSLMainLibraryDataProvider)dependencyPropertyChangedEventArgs.NewValue);
+            }
+        }
+
+
+        public ILSLMainLibraryDataProvider LibraryDataProvider
+        {
+            get { return (ILSLMainLibraryDataProvider)GetValue(LibraryDataProviderProperty); }
+            set { SetValue(LibraryDataProviderProperty, value); }
+        }
 
 
 
@@ -211,7 +251,7 @@ namespace LSLCCEditor.LSLEditor
 
 
 
-        private void EditorMouseHover(object sender, MouseEventArgs e)
+        private void TextEditor_MouseHover(object sender, MouseEventArgs e)
         {
             var pos = Editor.GetPositionFromPoint(e.GetPosition(Editor));
 
@@ -258,7 +298,7 @@ namespace LSLCCEditor.LSLEditor
 
 
 
-        private void EditorMouseHoverStopped(object sender, MouseEventArgs e)
+        private void TextEditor_MouseHoverStopped(object sender, MouseEventArgs e)
         {
             _hoverToolTip.IsOpen = false;
             e.Handled = true;
@@ -287,6 +327,8 @@ namespace LSLCCEditor.LSLEditor
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
+            
+
             lock (_completionLock)
             {
                 if (_completionWindow != null && _completionWindow.CompletionList.ListBox.Items.Count == 0)
@@ -636,6 +678,7 @@ namespace LSLCCEditor.LSLEditor
 
 
 
+
         private void ControlQ(KeyEventArgs e)
         {
             var textArea = Editor.TextArea;
@@ -666,8 +709,7 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
-        private void EditorKeyDown(object sender, KeyEventArgs e)
+        private void TextEditor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Q && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
@@ -680,18 +722,16 @@ namespace LSLCCEditor.LSLEditor
             else if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
                 ControlSpace(e);
-            }
+            } 
         }
 
 
 
         public void SetLibraryDataProvider(ILSLMainLibraryDataProvider provider)
         {
-            LibraryDataProvider = provider;
-
-            _libraryFunctionNames = LibraryDataProvider.LibraryFunctions.Select(x => x.First().Name).ToList();
-            _eventSignatures = LibraryDataProvider.SupportedEventHandlers.ToList();
-            _constantSignatures = LibraryDataProvider.LibraryConstants.ToList();
+            _libraryFunctionNames = provider.LibraryFunctions.Select(x => x.First().Name).ToList();
+            _eventSignatures = provider.SupportedEventHandlers.ToList();
+            _constantSignatures = provider.LibraryConstants.ToList();
 
             _libraryFunctionNames.Sort(String.CompareOrdinal);
             _eventSignatures.Sort((x, y) => String.CompareOrdinal(x.Name, y.Name));
@@ -777,11 +817,5 @@ namespace LSLCCEditor.LSLEditor
 
 
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }
