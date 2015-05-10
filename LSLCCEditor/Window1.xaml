@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:editorTabUi="clr-namespace:LSLCCEditor.EditorTabUI"
         mc:Ignorable="d"
-        Title="LSLCCEditor" Height="300" Width="300"  Closing="Window1_OnClosing" Loaded="Window1_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        Title="LSLCCEditor" Height="640.358" Width="897.987"  Closing="Window1_OnClosing" Loaded="Window1_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
         <Grid.Resources>
             <editorTabUi:BooleanToVisibilityConverter 
@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-       
+
 
         <Menu Grid.Row="0">
             <MenuItem Header="File">
@@ -35,9 +35,9 @@
                 <MenuItem Header="Clear Compiler Messages" Click="ClearCompilerMessages_OnClick" />
                 <MenuItem Header="Check Syntax" Click="CheckSyntax_OnClick"/>
                 <MenuItem Header="Format" Click="Format_OnClick" />
-             
+
             </MenuItem>
-            <MenuItem Header="Search" Click="Search_OnClick" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"/> 
+            <MenuItem Header="Search" Click="Search_OnClick" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"/>
         </Menu>
         <Grid Grid.Row="1">
             <TabControl  ItemsSource="{Binding EditorTabs}" x:Name="TabControl" SelectionChanged="TabControl_OnSelectionChanged">
@@ -56,9 +56,9 @@
                                               Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                     <MenuItem Header="Rename" Command="{Binding RenameCommand}" 
                                               Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                    
+
                                     <Separator Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                                    
+
                                     <MenuItem Header="Copy Full Path" Command="{Binding CopyFullPathCommand}" 
                                               Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                     <MenuItem Header="Open Containing Folder" Command="{Binding OpenFolderCommand}" 
