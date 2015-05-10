@@ -427,6 +427,33 @@ namespace LSLCCEditor
 
         private void OpenInCurrentTab()
         {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab == null) return;
+
+
+            if (tab.ChangesPending)
+            {
+                var r = MessageBox.Show(tab.MemoryOnly ? 
+                      "Would you like to save the changes in this tab to a new file before opening a another file in this tab?" 
+                    : "Would you like to save the changes to this tab before opening another file in it?", 
+                    
+                    "Save Changes", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
+                switch (r)
+                {
+                    case MessageBoxResult.Yes:
+                        if (!tab.SaveTabToFileInteractive())
+                        {
+                            return;
+                        }
+                        break;
+                    case MessageBoxResult.Cancel:
+                        return;
+                }
+            }
+
+
             var openDialog = new OpenFileDialog
             {
                 Multiselect = false,
@@ -437,9 +464,7 @@ namespace LSLCCEditor
             var showDialog = openDialog.ShowDialog();
             if (showDialog != null && showDialog.Value)
             {
-                if (TabControl.SelectedItem == null) return;
 
-                var tab = (EditorTab) TabControl.SelectedItem;
 
                 tab.OpenFileInteractive(openDialog.FileName);
             }
@@ -451,6 +476,7 @@ namespace LSLCCEditor
         {
             if (TabControl.SelectedItem != null)
             {
+                
                 OpenInCurrentTab();
             }
             else
