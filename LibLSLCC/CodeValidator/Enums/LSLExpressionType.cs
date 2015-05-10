@@ -18,6 +18,6 @@ namespace LibLSLCC.CodeValidator.Enums
         PostfixExpression,
         PrefixExpression,
         TypecastExpression,
-        ParenthesizedExpression,
+        ParenthesizedExpression
     }
 }

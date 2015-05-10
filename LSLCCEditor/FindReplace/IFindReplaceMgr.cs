@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections;
+
 namespace FindReplace
 {
     /// <summary>
@@ -9,7 +10,7 @@ namespace FindReplace
     {
         bool CaseSensitive { get; set; }
         object CurrentEditor { get; set; }
-        System.Collections.IEnumerable Editors { get; set; }
+        IEnumerable Editors { get; set; }
         string ReplacementText { get; set; }
         FindReplaceMgr.SearchScope SearchIn { get; set; }
         bool SearchUp { get; set; }

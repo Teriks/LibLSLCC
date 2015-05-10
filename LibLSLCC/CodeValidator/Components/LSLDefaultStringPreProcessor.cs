@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using LibLSLCC.CodeValidator.Components.Interfaces;
@@ -112,7 +113,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "index")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "index")]
         private static string FilterCharacter(int index, char chr)
         {
             if (chr == '\n')

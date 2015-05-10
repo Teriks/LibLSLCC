@@ -1,5 +1,6 @@
 #region
 
+
 using System;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -7,6 +8,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Primitives;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.ScraperInterfaces;
+
 
 #endregion
 

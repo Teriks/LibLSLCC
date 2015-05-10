@@ -1,9 +1,12 @@
 ﻿#region
 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+
 
 #endregion
 
@@ -146,7 +149,7 @@ namespace LibLSLCC.Collections
             get { return _items.Values; }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
+        [SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         public event Action<object, UniqueValueDictionaryEventArgs> OnAdd;
 
         protected virtual void InvokeOnAdd(TKey arg1, TValue arg2)
@@ -155,7 +158,7 @@ namespace LibLSLCC.Collections
             if (handler != null) handler(this, new UniqueValueDictionaryEventArgs(arg1, arg2));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
+        [SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         public event Action<object, UniqueValueDictionaryEventArgs> OnRemove;
 
         protected virtual void InvokeOnRemove(TKey arg1, TValue arg2)
@@ -164,7 +167,7 @@ namespace LibLSLCC.Collections
             if (handler != null) handler(this, new UniqueValueDictionaryEventArgs(arg1, arg2));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
+        [SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         public event Action<object, EventArgs> OnClear;
 
         protected virtual void InvokeOnClear()

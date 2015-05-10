@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
@@ -250,7 +249,7 @@ namespace LibLSLCC.CodeValidator.Components
             else
             {
 
-                _validLibraryFunctions.Add(signature.Name, new List<LSLLibraryFunctionSignature>() {signature});
+                _validLibraryFunctions.Add(signature.Name, new List<LSLLibraryFunctionSignature> {signature});
             }
         }
 

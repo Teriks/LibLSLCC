@@ -19,7 +19,7 @@ namespace FindReplace
     /// </summary>
     public class FindReplaceMgr : DependencyObject
     {
-        private FindReplaceDialog _dialog = null;
+        private FindReplaceDialog _dialog;
 
         /// <summary>
         /// Instance of the dialog window
@@ -107,7 +107,7 @@ namespace FindReplace
         /// </summary>
         public object CurrentEditor
         {
-            get { return (object) GetValue(CurrentEditorProperty); }
+            get { return GetValue(CurrentEditorProperty); }
             set { SetValue(CurrentEditorProperty, value); }
         }
 
@@ -538,11 +538,6 @@ namespace FindReplace
                         {
                             CE.Select(m.Index, m.Length);
                             break;
-                        }
-                        else
-                        {
-                            // Failed to find the text
-                            //MessageBox.Show("No occurence found.", "Search");
                         }
                     } while (CurrentEditor != OldEditor);
                 }

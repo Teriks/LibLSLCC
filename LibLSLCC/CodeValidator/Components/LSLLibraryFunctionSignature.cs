@@ -1,5 +1,6 @@
 #region
 
+
 using System;
 using System.Collections.Generic;
 using System.Security;
@@ -9,6 +10,7 @@ using System.Xml.Serialization;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
+
 
 #endregion
 

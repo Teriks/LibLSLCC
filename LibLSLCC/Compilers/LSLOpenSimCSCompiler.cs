@@ -1,10 +1,12 @@
 ﻿#region
 
+
 using System;
 using System.IO;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers.Visitors;
+
 
 #endregion
 

@@ -11,6 +11,14 @@
 // Generated from ./LSLParser/LSL.g4 by ANTLR 4.5
 
 // Unreachable code detected
+
+using System;
+using System.CodeDom.Compiler;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -18,18 +26,8 @@
 #pragma warning disable 1591
 
 namespace LibLSLCC {
-using System;
-using System.Text;
-using System.Diagnostics;
-using System.Collections.Generic;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using DFA = Antlr4.Runtime.Dfa.DFA;
-
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
-[System.CLSCompliant(false)]
+    [GeneratedCode("ANTLR", "4.5")]
+[CLSCompliant(false)]
 public partial class LSLParser : Parser {
 	public const int
 		TYPE=1, DO=2, IF=3, ELSE=4, WHILE=5, FOR=6, DEFAULT=7, STATE=8, RETURN=9, 
@@ -625,7 +623,7 @@ public partial class LSLParser : Parser {
 					State = 121;
 					ErrorHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(TokenStream,4,Context);
-				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+				} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
 				State = 124;
 				switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
 				case 1:
@@ -2356,7 +2354,7 @@ public partial class LSLParser : Parser {
 			State = 312;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,20,Context);
-			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( ParseListeners!=null )
 						TriggerExitRuleEvent();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
@@ -9,7 +10,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
     public class LSLPostfixOperationNode : ILSLPostfixOperationNode, ILSLExprNode
     {
 // ReSharper disable UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLPostfixOperationNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
@@ -65,7 +66,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             return new LSLPostfixOperationNode(ParserContext, Type, LeftExpression.Clone())
             {
                 HasErrors = HasErrors,
-                Parent = Parent,
+                Parent = Parent
             };
         }
 

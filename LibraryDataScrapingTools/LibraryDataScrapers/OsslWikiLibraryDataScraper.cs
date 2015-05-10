@@ -1,5 +1,6 @@
 ﻿#region
 
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,6 +12,7 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
+
 
 #endregion
 
@@ -102,7 +104,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {"Key", "key"},
             {"LSL_Types.key", "key"},
             {"LSL_Key", "key"},
-            {"LSL_key", "key"},
+            {"LSL_key", "key"}
         };
 
         public OsslWikiLibraryDataScraper(IDocumentationProvider provider, IEnumerable<string> subsets)

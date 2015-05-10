@@ -9,6 +9,6 @@ namespace LibLSLCC.CodeValidator.Enums
         AfterJumpOutOfScope = 1,
         AfterJumpLoopForever = 2,
         JumpOverCode = 3,
-        AfterReturnPath = 4,
+        AfterReturnPath = 4
     }
 }

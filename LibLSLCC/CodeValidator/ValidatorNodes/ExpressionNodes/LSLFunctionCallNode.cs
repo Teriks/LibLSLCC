@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
@@ -16,7 +17,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
 
 // ReSharper disable UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
@@ -175,7 +176,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 return new LSLFunctionCallNode(ParserContext, _librarySignature, parameterList)
                 {
                     HasErrors = HasErrors,
-                    Parent = Parent,
+                    Parent = Parent
                 };
             }
 

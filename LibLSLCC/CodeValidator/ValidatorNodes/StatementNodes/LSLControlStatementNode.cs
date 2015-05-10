@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
@@ -15,7 +16,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         private LSLIfStatementNode _ifStatement;
 
 // ReSharper disable UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLControlStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
@@ -176,7 +177,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         ///     The label that this control statement jumps to can be found with DeterminingJump.JumpTarget.
         ///     EffectiveJumpStatement is mostly useful for its statement index information
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public LSLConstantJumpDescription GetConstantJump()
         {
             if (!HasElseIfStatements && !HasElseStatement)

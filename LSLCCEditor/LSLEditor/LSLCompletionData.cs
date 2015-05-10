@@ -1,6 +1,8 @@
 #region
 
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +11,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using LibLSLCC.Extensions;
+
 
 #endregion
 
@@ -21,6 +24,9 @@ namespace LSLCCEditor.LSLEditor
         private readonly double _priority;
         private readonly string _text;
         private Brush _colorBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+        private HashSet<char> _indentBreakCharacters = new HashSet<char>();
+
+
 
         public LSLCompletionData(string label, string text, string description, double priority)
         {
@@ -45,6 +51,13 @@ namespace LSLCCEditor.LSLEditor
 
         public string CaretOffsetInsertionText { get; set; }
 
+
+        public HashSet<char> IndentBreakCharacters
+        {
+            get { return _indentBreakCharacters; }
+            set { _indentBreakCharacters = value; }
+        }
+
         public Brush ColorBrush
         {
             get { return _colorBrush; }
@@ -68,23 +81,42 @@ namespace LSLCCEditor.LSLEditor
                     string line;
                     if (i == 0)
                     {
+                        string indentPrefix = "";
                         var j = completionSegment.Offset;
                         var start = j;
                         var end = 0;
                         while (j > 0)
                         {
                             char c = textArea.Document.Text[j];
-                            if (c == '\n')
+                            if (c == '\n' || _indentBreakCharacters.Contains(c))
                             {
-                                end = j + 1;
+                                if (start != j)
+                                {
+                                    end = j + 1;
+                                }
+                                else
+                                {
+                                    indentPrefix = "\n";
+                                    end = start;
+                                }
+
+                                if (c != '\n')
+                                {
+                                    indentPrefix = "\n";
+                                }
                                 break;
                             }
                             j--;
                         }
 
-                        textArea.Document.Replace(end, start - end, "");
 
-                        line = indent + lines[i].Trim();
+                        if (start != end)
+                        {
+                            textArea.Document.Replace(end, start - end, "");
+                        }
+                        
+
+                        line = indentPrefix + indent + lines[i].Trim();
                     }
                     else
                     {

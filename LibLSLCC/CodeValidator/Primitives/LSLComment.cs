@@ -4,7 +4,7 @@
     public enum LSLCommentType
     {
         Block,
-        SingleLine,
+        SingleLine
     }
     public class LSLComment
     {

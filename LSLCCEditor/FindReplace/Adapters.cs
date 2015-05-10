@@ -75,7 +75,7 @@ namespace FindReplace
         public RichTextBoxAdapter(RichTextBox editor) { rtb = editor; }
 
         RichTextBox rtb;
-        TextRange oldsel = null;
+        TextRange oldsel;
         public string Text { get { return new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd).Text; } }
         public int SelectionStart
         {
@@ -171,12 +171,14 @@ namespace FindReplace
         {
             if (value is TextEditor)
                 return new TextEditorAdapter(value as TextEditor);
-            else if (value is TextBox)
+            if (value is TextBox)
                 return new TextBoxAdapter(value as TextBox);
-            else if (value is RichTextBox)
+            if (value is RichTextBox)
                 return new RichTextBoxAdapter(value as RichTextBox);
-            else return null;
+            return null;
         }
+
+
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

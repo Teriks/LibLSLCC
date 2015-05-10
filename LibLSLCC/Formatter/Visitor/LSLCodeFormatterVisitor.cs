@@ -1,5 +1,6 @@
 ﻿#region
 
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using LibLSLCC.CodeValidator.ValidatorNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 using LibLSLCC.Extensions;
+
 
 #endregion
 
@@ -22,8 +24,8 @@ namespace LibLSLCC.Formatter.Visitor
         private int _indentLevel;
         private CodeWrappingContext _lastCodeWrappingContext;
         private string _sourceReference;
-        private int _writeColumn = 0;
-        private int _writeLine = 0;
+        private int _writeColumn;
+        private int _writeLine;
 
         public LSLCodeFormatterVisitor()
         {

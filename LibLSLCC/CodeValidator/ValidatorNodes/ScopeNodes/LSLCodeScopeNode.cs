@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
@@ -12,7 +13,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
     public class LSLCodeScopeNode : ILSLCodeScopeNode, ILSLCodeStatement
     {
 // ReSharper disable UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLCodeScopeNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
@@ -88,7 +89,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// <summary>
         ///     Is this a single block statement, for LSLCodeScopeNode it is always false
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public bool IsSingleBlockStatement
         {
             get { return false; }

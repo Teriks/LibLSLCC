@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
@@ -12,7 +13,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         // ReSharper disable UnusedParameter.Local
         protected LSLStateScopeNode(LSLSourceCodeRange sourceRange, Err err)
         // ReSharper restore UnusedParameter.Local

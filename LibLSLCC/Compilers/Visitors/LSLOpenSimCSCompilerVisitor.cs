@@ -339,7 +339,7 @@ private static class UTILITIES
                 {LSLType.Key,"modInvokeK"},
                 {LSLType.List,"modInvokeL"},
                 {LSLType.Vector,"modInvokeV"},
-                {LSLType.Rotation,"modInvokeR"},
+                {LSLType.Rotation,"modInvokeR"}
             }; 
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)

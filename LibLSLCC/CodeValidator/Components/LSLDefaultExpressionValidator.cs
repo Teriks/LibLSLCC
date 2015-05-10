@@ -229,7 +229,7 @@ namespace LibLSLCC.CodeValidator.Components
             var left = new LSLDummyExpr
             {
                 Type = returnType,
-                ExpressionType = LSLExpressionType.LocalVariable,
+                ExpressionType = LSLExpressionType.LocalVariable
             };
 
             return

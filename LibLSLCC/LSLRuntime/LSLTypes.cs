@@ -107,7 +107,7 @@ namespace LibLSLCC.LSLRuntime
 
             public static implicit operator list(LSLFloat f)
             {
-                return new list(new object[] {f});
+                return new list(f);
             }
 
 
@@ -332,7 +332,7 @@ namespace LibLSLCC.LSLRuntime
 
             public static implicit operator list(LSLInteger i)
             {
-                return new list(new object[] {i});
+                return new list(i);
             }
 
 
@@ -764,7 +764,7 @@ namespace LibLSLCC.LSLRuntime
 
             public static implicit operator list(LSLString s)
             {
-                return new list(new object[] {s});
+                return new list(s);
             }
 
 
@@ -862,7 +862,7 @@ namespace LibLSLCC.LSLRuntime
             {
                 str = str.Replace('<', ' ');
                 str = str.Replace('>', ' ');
-                var tmps = str.Split(new[] {',', '<', '>'});
+                var tmps = str.Split(',', '<', '>');
                 if (tmps.Length < 4)
                 {
                     x = y = z = s = 0;
@@ -963,7 +963,7 @@ namespace LibLSLCC.LSLRuntime
 
             public static implicit operator list(Quaternion r)
             {
-                return new list(new object[] {r});
+                return new list(r);
             }
 
 
@@ -1055,7 +1055,7 @@ namespace LibLSLCC.LSLRuntime
             {
                 str = str.Replace('<', ' ');
                 str = str.Replace('>', ' ');
-                var tmps = str.Split(new[] {',', '<', '>'});
+                var tmps = str.Split(',', '<', '>');
                 if (tmps.Length < 3)
                 {
                     x = y = z = 0;
@@ -1105,7 +1105,7 @@ namespace LibLSLCC.LSLRuntime
 
             public static implicit operator list(Vector3 vec)
             {
-                return new list(new object[] {vec});
+                return new list(vec);
             }
 
 
@@ -1764,7 +1764,7 @@ namespace LibLSLCC.LSLRuntime
                 if (start > end)
                 {
                     if (end >= m_data.Length)
-                        return new list(new Object[0]);
+                        return new list();
 
                     if (start >= m_data.Length)
                         start = m_data.Length - 1;

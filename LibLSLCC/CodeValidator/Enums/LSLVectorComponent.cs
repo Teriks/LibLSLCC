@@ -9,7 +9,7 @@ namespace LibLSLCC.CodeValidator.Enums
     {
         X,
         Y,
-        Z,
+        Z
     }
 
 

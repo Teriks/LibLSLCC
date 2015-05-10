@@ -1,4 +1,4 @@
-using  LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {

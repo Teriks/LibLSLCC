@@ -28,7 +28,7 @@ namespace LibLSLCC.CodeValidator.Enums
         RightShift = 3,
         Equals = 2,
         NotEquals = 1,
-        Error = 0,
+        Error = 0
     }
 
 

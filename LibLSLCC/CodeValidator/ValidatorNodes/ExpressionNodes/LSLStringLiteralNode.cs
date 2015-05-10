@@ -1,4 +1,5 @@
-﻿using LibLSLCC.CodeValidator.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
@@ -8,7 +9,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
     public class LSLStringLiteralNode : LSLConstantLiteralNode, ILSLStringLiteralNode
     {
         // ReSharper disable UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLStringLiteralNode(LSLSourceCodeRange sourceRange, Err err)
             : base(sourceRange, Err.Err)
             // ReSharper restore UnusedParameter.Local
@@ -65,7 +66,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             var x = new LSLStringLiteralNode(ParserContext, PreProccessedText)
             {
                 HasErrors = HasErrors,
-                Parent = Parent,
+                Parent = Parent
             };
 
             return x;

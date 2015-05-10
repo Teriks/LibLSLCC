@@ -62,6 +62,8 @@ default
                 "Unexpected error", MessageBoxButton.OK);
 
             Application.Current.Shutdown();
+
+
         }
 
 
@@ -93,7 +95,7 @@ default
 
             Title = "LSLCC Editor - (Unsaved Untitled)";
 
-            this.KeyDown += OnKeyDown;
+            KeyDown += OnKeyDown;
         }
 
 

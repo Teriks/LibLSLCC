@@ -1,4 +1,5 @@
 ﻿using LibLSLCC.CodeValidator.Primitives;
+
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
     public interface ILSLReturnStatementNode : ILSLReadOnlyCodeStatement

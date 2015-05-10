@@ -10,7 +10,7 @@ namespace LibLSLCC.CodeValidator.Enums
         X,
         Y,
         Z,
-        S,
+        S
     }
 
 

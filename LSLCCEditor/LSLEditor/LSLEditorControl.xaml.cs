@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +12,6 @@ using System.Xml;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
@@ -41,7 +37,7 @@ namespace LSLCCEditor.LSLEditor
         private bool _propertyChanging;
 
 
-
+        
         private static void TextPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
@@ -56,8 +52,31 @@ namespace LSLCCEditor.LSLEditor
 
 
 
+        public static readonly DependencyProperty DocUndoStackProperty = DependencyProperty.Register(
+            "DocUndoStack", typeof (UndoStack), typeof (LSLEditorControl), new FrameworkPropertyMetadata(default(UndoStack), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, DocUndoStackChangedCallback));
+
+
+
+        private static void DocUndoStackChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var editor = (LSLEditorControl) dependencyObject;
+
+            editor.Editor.Document.UndoStack = (UndoStack)dependencyPropertyChangedEventArgs.NewValue;
+        }
+
+
+
+        public UndoStack DocUndoStack
+        {
+            get { return (UndoStack) GetValue(DocUndoStackProperty); }
+            set { SetValue(DocUndoStackProperty, value); }
+        }
+
+
+
         private void TextEditor_OnTextChanged(object sender, EventArgs e)
         {
+            OnTextChanged();
             lock (_propertyChangingLock)
             {
                 if (_propertyChanging)
@@ -69,7 +88,7 @@ namespace LSLCCEditor.LSLEditor
             {
                 var editor = (TextEditor) sender;
                 _userChanging = true;
-                this.Text = editor.Text;
+                Text = editor.Text;
                 _userChanging = false;
                 OnUserChangedText();
             }
@@ -78,9 +97,13 @@ namespace LSLCCEditor.LSLEditor
         public delegate void TextChangedEventHandler(object sender, EventArgs e);
 
         public event TextChangedEventHandler UserChangedText;
+        public event TextChangedEventHandler TextChanged;
 
-
-
+        protected virtual void OnTextChanged()
+        {
+            var handler = TextChanged;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
 
         protected virtual void OnUserChangedText()
         {
@@ -106,6 +129,7 @@ namespace LSLCCEditor.LSLEditor
             "\n",
             " ",
             "{",
+            "}",
             "[",
             "(",
             "<",
@@ -116,8 +140,15 @@ namespace LSLCCEditor.LSLEditor
             "-",
             "*",
             "/",
-            "%",
+            "%"
         };
+
+
+        private readonly HashSet<char> _stateAutocompleteIndentBreakCharacters = new HashSet<char>
+        {
+            '{',
+            '}'
+        }; 
 
 
         private CompletionWindow _completionWindow;
@@ -135,6 +166,8 @@ namespace LSLCCEditor.LSLEditor
             Editor.MouseHover += TextEditor_MouseHover;
             Editor.MouseHover += TextEditor_MouseHoverStopped;
             Editor.KeyDown += TextEditor_KeyDown;
+
+            DocUndoStack = Editor.Document.UndoStack;
         }
 
 
@@ -318,7 +351,7 @@ namespace LSLCCEditor.LSLEditor
 
         private CompletionWindow CreateCompletionWindow()
         {
-            var c = new CompletionWindow(this.Editor.TextArea);
+            var c = new CompletionWindow(Editor.TextArea);
             c.Width = c.Width + 160;
             return c;
         }
@@ -408,7 +441,8 @@ namespace LSLCCEditor.LSLEditor
                             OffsetCaretAfterInsert = true,
                             CaretOffsetAfterInsert = -3,
                             InsertTextAtCaretAfterOffset = true,
-                            CaretOffsetInsertionText = "\t"
+                            CaretOffsetInsertionText = "\t",
+                            IndentBreakCharacters = _stateAutocompleteIndentBreakCharacters
                         });
                         possibleEventName = true;
                     }
@@ -619,7 +653,8 @@ namespace LSLCCEditor.LSLEditor
                                 OffsetCaretAfterInsert = true,
                                 CaretOffsetAfterInsert = -3,
                                 InsertTextAtCaretAfterOffset = true,
-                                CaretOffsetInsertionText = "\t"
+                                CaretOffsetInsertionText = "\t",
+                                IndentBreakCharacters = _stateAutocompleteIndentBreakCharacters
                             });
                             possibleEventName = true;
                         }
@@ -940,7 +975,6 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
 
 

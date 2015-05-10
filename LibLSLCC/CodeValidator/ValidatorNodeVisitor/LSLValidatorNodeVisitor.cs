@@ -1,4 +1,5 @@
-﻿using LibLSLCC.CodeValidator.ValidatorNodes;
+﻿using System.Diagnostics.CodeAnalysis;
+using LibLSLCC.CodeValidator.ValidatorNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
@@ -123,7 +124,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
         T VisitLibraryFunctionCall(ILSLFunctionCallNode lslFunctionCallNode);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "lsl")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "lsl")]
         T VisitUserFunctionCall(ILSLFunctionCallNode lslFunctionCallNode);
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
-
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces

@@ -1,29 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
+using FindReplace;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers;
 using LibLSLCC.Formatter.Visitor;
-using LSLCCEditor.LSLEditor;
-using ListViewItem = System.Windows.Controls.ListViewItem;
-using MessageBox = System.Windows.Forms.MessageBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using LSLCCEditor.EditorTabUI;
+using Microsoft.Win32;
 
 // ReSharper disable LocalizableElement
 
@@ -34,10 +28,10 @@ namespace LSLCCEditor
     /// </summary>
     public partial class Window1 : Window
     {
-
-        ObservableCollection<EditorTab> _tabs = new ObservableCollection<EditorTab>();
+        private ObservableCollection<EditorTab> _tabs = new ObservableCollection<EditorTab>();
 
         private readonly LSLCustomValidatorServiceProvider _validatorServices;
+
 
         private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
         {
@@ -54,7 +48,7 @@ namespace LSLCCEditor
 
             public override void OnWarning(LSLSourceCodeRange location, string message)
             {
-                var tab = (EditorTab)_parent.TabControl.SelectedItem;
+                var tab = (EditorTab) _parent.TabControl.SelectedItem;
                 tab.CompilerMessages.Add(new CompilerMessage("Warning", location, message));
             }
         }
@@ -74,17 +68,39 @@ namespace LSLCCEditor
 
             public override void OnError(LSLSourceCodeRange location, string message)
             {
-                var tab = (EditorTab)_parent.TabControl.SelectedItem;
+                var tab = (EditorTab) _parent.TabControl.SelectedItem;
                 tab.CompilerMessages.Add(new CompilerMessage("Error", location, message));
             }
         }
 
 
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+
+            string details = "";
+            Exception i = e.Exception;
+
+            while (i != null)
+            {
+                details += i.Message + "\n\n";
+                i = i.InnerException;
+            }
+
+            MessageBox.Show("An unexpected error has occurred.  The progam will need to exit.\n" +
+                            "Error details:\n\n" + details,
+                "Unexpected error", MessageBoxButton.OK);
+
+            Application.Current.Shutdown();
+
+
+        }
+
         public Window1()
         {
-            InitializeComponent();
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
-            _tabs.Add(new EditorTab());
+            InitializeComponent();
 
             _validatorServices = new LSLCustomValidatorServiceProvider
             {
@@ -93,8 +109,20 @@ namespace LSLCCEditor
                 SyntaxErrorListener = new WindowSyntaxErrorListener(this),
                 SyntaxWarningListener = new WindowSyntaxWarningListener(this)
             };
-
         }
+
+
+
+        private EditorTab CreateEditorTab()
+        {
+            var t = new EditorTab(TabControl, EditorTabs);
+
+            t.Content = new EditorTabContent(t);
+
+            return t;
+        }
+
+
 
         public ObservableCollection<EditorTab> EditorTabs
         {
@@ -104,22 +132,18 @@ namespace LSLCCEditor
 
 
 
-
-
-
         private void CompileForOpenSim_OnClick(object sender, RoutedEventArgs e)
         {
+            if (TabControl.SelectedItem == null) return;
 
-            if (this.TabControl.SelectedContent == null) return;
-
-            var tab = (EditorTab) this.TabControl.SelectedContent;
+            var tab = (EditorTab) TabControl.SelectedItem;
 
             var suggestedFileName = "LSLScript.cs";
 
 
             if (!string.IsNullOrWhiteSpace(tab.FilePath))
             {
-                suggestedFileName = System.IO.Path.GetFileName(tab.FilePath) + ".cs";
+                suggestedFileName = Path.GetFileName(tab.FilePath) + ".cs";
             }
 
 
@@ -137,14 +161,24 @@ namespace LSLCCEditor
                 {
                     if (!tab.MemoryOnly)
                     {
-                        SaveOpenFileTab(tab);
+                        try
+                        {
+                            tab.SaveTabToFile();
+                        }
+                        catch (Exception err)
+                        {
+                            MessageBox.Show(err.Message, "Could Not Save Before Compiling",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
                     }
                     CompileCurrentEditorText(saveDialog.FileName);
                 }
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.Message, "Could Not Compile");
+                MessageBox.Show(err.Message, "Could Not Compile",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         }
@@ -153,27 +187,8 @@ namespace LSLCCEditor
 
         private void NewFile_OnClick(object sender, RoutedEventArgs e)
         {
-            EditorTabs.Add(new EditorTab());
-            TabControl.SelectedIndex = (EditorTabs.Count-1);
-
-        }
-
-
-
-
-        private void LSLEditorControl_OnTextChanged(object sender, EventArgs e)
-        {
-
-
-            var item = TabControl.SelectedItem as EditorTab;
-            if (item != null)
-            {
-                if (!item.MemoryOnly && !item.ChangesPending)
-                {
-                    item.Header = item.Header + "*";
-                }
-                item.ChangesPending = true;
-            }
+            EditorTabs.Add(CreateEditorTab());
+            TabControl.SelectedIndex = (EditorTabs.Count - 1);
         }
 
 
@@ -186,40 +201,16 @@ namespace LSLCCEditor
                 return;
             }
 
-            if (tab.MemoryOnly)
-            {
-                SaveMemoryOnlyTab(tab);
-            }
-            else
-            {
-                SaveOpenFileTab(tab);
-            }
-        }
-
-
-
-        private void SaveOpenFileTab(EditorTab tab)
-        {
-            try
-            {
-                tab.Header = System.IO.Path.GetFileName(tab.FilePath);
-                tab.ChangesPending = false;
-                tab.MemoryOnly = false;
-                File.WriteAllText(tab.FilePath, tab.SourceCode);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Could not write file: "+e.Message);
-            }
+            tab.SaveTabToFileInteractive();
         }
 
 
 
         private void CompileCurrentEditorText(string destinationFile)
         {
-            if (this.TabControl.SelectedItem == null) return;
+            if (TabControl.SelectedItem == null) return;
 
-            var tab = (EditorTab)this.TabControl.SelectedItem;
+            var tab = (EditorTab) TabControl.SelectedItem;
 
             tab.CompilerMessages.Clear();
 
@@ -235,6 +226,7 @@ namespace LSLCCEditor
             {
                 File.Delete(destinationFile);
             }
+
             using (var outfile = File.OpenWrite(destinationFile))
             {
                 var compiler = new LSLOpenSimCSCompiler(LSLOpenSimCSCompilerSettings
@@ -248,52 +240,19 @@ namespace LSLCCEditor
                     catch (LSLCompilerInternalException error)
                     {
                         MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
-                            "Internal Compiler Error");
+                            "Internal Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         throw;
                     }
                 }
                 catch (Exception error)
                 {
                     MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
-                        "Unknown Compiler Error");
+                        "Unknown Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     throw;
                 }
             }
 
             tab.CompilerMessages.Add(new CompilerMessage("Notice", "Program compiled successfully"));
-        }
-
-
-
-
-        private void SaveMemoryOnlyTab(EditorTab tab)
-        {
-
-            var saveDialog = new SaveFileDialog
-            {
-                FileName = "LSLScript.lsl",
-                DefaultExt = ".lsl",
-                Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt"
-            };
-
-
-            var showDialog = saveDialog.ShowDialog();
-            if (showDialog != null && showDialog.Value)
-            {
-                try
-                {
-                    File.WriteAllText(saveDialog.FileName, tab.SourceCode);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Could not write file: " + e.Message);
-                }
-
-                tab.ChangesPending = false;
-                tab.MemoryOnly = false;
-                tab.FilePath = saveDialog.FileName;
-                tab.Header = System.IO.Path.GetFileName(saveDialog.FileName);
-            }
         }
 
 
@@ -307,99 +266,20 @@ namespace LSLCCEditor
             }
 
 
-            var saveDialog = new SaveFileDialog
-            {
-                FileName = "LSLScript.lsl",
-                DefaultExt = ".lsl",
-                Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt"
-            };
-
-
-            var showDialog = saveDialog.ShowDialog();
-            if (showDialog != null && showDialog.Value)
-            {
-                try
-                {
-                    File.WriteAllText(saveDialog.FileName, tab.SourceCode);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Could not write file: " + ex.Message);
-                }
-
-                tab.ChangesPending = false;
-                tab.MemoryOnly = false;
-                tab.FilePath = saveDialog.FileName;
-                tab.Header = System.IO.Path.GetFileName(saveDialog.FileName);
-            }
+            tab.SaveTabToNewFileInteractive();
         }
 
-
-
-
-
-
-        private void CompilerMessageItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (_editorInstance != null)
-            {
-
-                
-
-                var message = (CompilerMessage)((ListViewItem)sender).Content;
-
-                if (!message.Clickable)
-                {
-                    return;
-                }
-
-
-                var location = message.CodeLocation;
-
-                var line = location.LineStart == 0 ? 1 : location.LineStart;
-
-                var lineend = location.LineEnd == 0 ? 1 : location.LineEnd;
-
-
-                _editorInstance.Editor.ScrollToLine(line);
-
-
-                if (message.CodeLocation.HasIndexInfo && message.CodeLocation.IsSingleLine)
-                {
-                    _editorInstance.Editor.Select(message.CodeLocation.StartIndex,
-                        (message.CodeLocation.StopIndex + 1) - message.CodeLocation.StartIndex);
-
-                    return;
-                }
-
-
-                int l = 0;
-                for (int i = line; i <= lineend; i++)
-                {
-                    l += _editorInstance.Editor.Document.GetLineByNumber(i).TotalLength;
-                }
-
-                var linestart = _editorInstance.Editor.Document.GetLineByNumber(line);
-
-
-                _editorInstance.Editor.Select(linestart.Offset, l);
-            }
-            
-           
-        }
 
 
         private ILSLCompilationUnitNode ValidateCurrentEditorText()
         {
+            if (TabControl.SelectedItem == null) return null;
 
-            if (this.TabControl.SelectedItem == null) return null;
-
-            var tab = (EditorTab) this.TabControl.SelectedItem;
+            var tab = (EditorTab) TabControl.SelectedItem;
 
             if (tab.SourceCode == null) tab.SourceCode = "";
 
             _validatorServices.MainLibraryDataProvider = tab.LibraryDataProvider;
-
 
 
             var validator = new LSLCodeValidator(_validatorServices);
@@ -422,15 +302,14 @@ namespace LSLCCEditor
                 catch (LSLCodeValidatorInternalError error)
                 {
                     MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
-                        "Internal Validation Error");
+                        "Internal Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     validated = null;
                 }
             }
             catch (Exception error)
             {
-                
                 MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
-                    "Unknown Validation Error");
+                    "Unknown Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 validated = null;
             }
             finally
@@ -441,11 +320,12 @@ namespace LSLCCEditor
         }
 
 
+
         private void CheckSyntax_OnClick(object sender, RoutedEventArgs e)
         {
-            if (this.TabControl.SelectedItem == null) return;
+            if (TabControl.SelectedItem == null) return;
 
-            var tab = (EditorTab)this.TabControl.SelectedItem;
+            var tab = (EditorTab) TabControl.SelectedItem;
 
 
             tab.CompilerMessages.Clear();
@@ -466,9 +346,9 @@ namespace LSLCCEditor
 
         private void Format_OnClick(object sender, RoutedEventArgs e)
         {
-            if (this.TabControl.SelectedContent == null) return;
+            if (TabControl.SelectedItem == null) return;
 
-            var tab = (EditorTab)this.TabControl.SelectedContent;
+            var tab = (EditorTab) TabControl.SelectedItem;
 
 
             tab.CompilerMessages.Clear();
@@ -491,7 +371,7 @@ namespace LSLCCEditor
                 tab.ChangesPending = true;
                 if (!tab.MemoryOnly)
                 {
-                    tab.Header = System.IO.Path.GetFileName(tab.FilePath)+"*";
+                    tab.TabHeader = Path.GetFileName(tab.FilePath) + "*";
                 }
             }
 
@@ -514,15 +394,7 @@ namespace LSLCCEditor
 
 
 
-        private LSLEditorControl _editorInstance;
-        private void Editor_Loaded(object sender, RoutedEventArgs e)
-        {
-            _editorInstance = (LSLEditorControl)sender;
-        }
-
-
-
-        void OpenInNewTab()
+        private void OpenInNewTab()
         {
             var openDialog = new OpenFileDialog
             {
@@ -530,49 +402,30 @@ namespace LSLCCEditor
                 Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt"
             };
 
-            try
+
+            var showDialog = openDialog.ShowDialog();
+            if (showDialog != null && showDialog.Value)
             {
-                var showDialog = openDialog.ShowDialog();
-                if (showDialog != null && showDialog.Value)
+                var tab = CreateEditorTab();
+
+                if (tab.OpenFileInteractive(openDialog.FileName))
                 {
-
-                    if (this.EditorTabs.Any(x => x.FilePath == openDialog.FileName))
-                    {
-                        MessageBox.Show("File: \"" + openDialog.FileName + "\", Is already open in another tab.", "File already open");
-                        return;
-                    }
-
-
-                    var tab = new EditorTab();
-
-                    tab.SourceCode = File.ReadAllText(openDialog.FileName);
-
-
-                    this.EditorTabs.Add(tab);
-                    TabControl.SelectedIndex = (EditorTabs.Count - 1);
-
-                    tab.MemoryOnly = false;
-                    tab.ChangesPending = false;
-                    tab.Header = System.IO.Path.GetFileName(openDialog.FileName);
-                    tab.FilePath = openDialog.FileName;
+                    EditorTabs.Add(tab);
+                    TabControl.SelectedIndex = EditorTabs.Count - 1;
                 }
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Could Not Read File: " + err.Message);
             }
         }
 
 
+
         private void Open_OnClick(object sender, RoutedEventArgs e)
         {
-
             OpenInNewTab();
         }
 
 
 
-        void OpenInCurrentTab()
+        private void OpenInCurrentTab()
         {
             var openDialog = new OpenFileDialog
             {
@@ -580,43 +433,23 @@ namespace LSLCCEditor
                 Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt"
             };
 
-            try
+
+            var showDialog = openDialog.ShowDialog();
+            if (showDialog != null && showDialog.Value)
             {
-                var showDialog = openDialog.ShowDialog();
-                if (showDialog != null && showDialog.Value)
-                {
+                if (TabControl.SelectedItem == null) return;
 
-                    if (this.EditorTabs.Any(x => x.FilePath == openDialog.FileName))
-                    {
-                        MessageBox.Show("File: \"" + openDialog.FileName + "\", Is already open in another tab.", "File already open");
-                        return;
-                    }
+                var tab = (EditorTab) TabControl.SelectedItem;
 
-
-                    if (this.TabControl.SelectedItem == null) return;
-
-                    var tab = (EditorTab)this.TabControl.SelectedItem;
-
-                    tab.SourceCode = File.ReadAllText(openDialog.FileName);
-
-                    tab.ChangesPending = false;
-                    tab.MemoryOnly = false;
-
-                    tab.Header = System.IO.Path.GetFileName(openDialog.FileName);
-                    tab.FilePath = openDialog.FileName;
-
-
-                }
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Could Not Read File: " + err.Message);
+                tab.OpenFileInteractive(openDialog.FileName);
             }
         }
 
+
+
         private void OpenInThisTab_OnClick(object sender, RoutedEventArgs e)
         {
-            if (this.TabControl.SelectedItem != null)
+            if (TabControl.SelectedItem != null)
             {
                 OpenInCurrentTab();
             }
@@ -630,118 +463,179 @@ namespace LSLCCEditor
 
         private void Window1_OnClosing(object sender, CancelEventArgs e)
         {
-            foreach (var tab in EditorTabs.Where(x=>x.ChangesPending))
+            for (var i = 0; i < EditorTabs.Count; i++)
             {
-                if (!string.IsNullOrWhiteSpace(tab.FilePath))
+                var tab = EditorTabs[i];
+
+                if (tab.ChangesPending)
                 {
-                    var result = MessageBox.Show("Do you want to save: \"" + tab.FilePath + "\"?", "Save Changed File",
-                        MessageBoxButtons.YesNo);
-                    if (result == System.Windows.Forms.DialogResult.Yes)
+                    TabControl.SelectedIndex = i;
+                    if (!tab.Close())
                     {
-                        try
-                        {
-                            File.WriteAllText(tab.FilePath, tab.SourceCode);
-                        }
-                        catch (Exception err)
-                        {
-                            MessageBox.Show("Unable to save file: " + err.Message, "Error");
-                        }
+                        e.Cancel = true;
+                        break;
                     }
                 }
             }
         }
 
 
+        private FindReplaceMgr FindDialogManager { get; set; }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+
+        private void Window1_OnLoaded(object sender, RoutedEventArgs e)
         {
-            var button = (System.Windows.Controls.Button) sender;
-            var stackPanel = (StackPanel) button.Parent;
-            var tab = (EditorTab)((ContentPresenter)stackPanel.TemplatedParent).Content;
 
-            if (tab.ChangesPending)
+            FindDialogManager = new FindReplaceMgr
             {
-                if (!string.IsNullOrWhiteSpace(tab.FilePath))
+                InterfaceConverter = new IEditorConverter(),
+                ShowSearchIn = false
+            };
+
+
+
+            var args = Environment.GetCommandLineArgs();
+
+
+            if (args.Length > 1)
+            {
+                var tab = CreateEditorTab();
+                tab.OpenFileInteractive(args[1]);
+                EditorTabs.Add(tab);
+            }
+            else
+            {
+                EditorTabs.Add(CreateEditorTab());
+            }
+
+            TabControl.SelectedIndex = 0;
+        }
+
+
+
+        private void Search_OnClick(object sender, RoutedEventArgs e)
+        {
+            FindDialogManager.ShowAsFind();
+        }
+
+        private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (var i in e.RemovedItems)
+            {
+                var t = i as EditorTab;
+                if (t != null)
                 {
-                    var result = MessageBox.Show("Do you want to save: \"" + tab.FilePath + "\"?", "Save Changed File",
-                        MessageBoxButtons.YesNo);
-                    if (result == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        try
-                        {
-                            File.WriteAllText(tab.FilePath, tab.SourceCode);
-                        }
-                        catch (Exception err)
-                        {
-                            MessageBox.Show("Unable to save file: " + err.Message, "Error");
-                        }
-                    }
+                    t.IsSelected = false;
                 }
             }
 
-            this.EditorTabs.Remove(tab);
+            foreach (var i in e.AddedItems)
+            {
+                var t = i as EditorTab;
+                if (t != null)
+                {
+                    t.Content.Editor.Editor.Unloaded += (o, args) =>
+                    {
+                        if (ReferenceEquals(FindDialogManager.CurrentEditor, t.Content.Editor.Editor) && _droppingTab)
+                        {
+                            FindDialogManager.CurrentEditor = null;
+                        }
+                    };
 
-        }
-    }
+                    FindDialogManager.CurrentEditor = t.Content.Editor.Editor;
 
-
-
-
-    public class EditorTab : DependencyObject
-    {
-
-        private ObservableCollection<CompilerMessage> _compilerMessages = new ObservableCollection<CompilerMessage>(); 
-
-
-        public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
-            "LibraryDataProvider", typeof (ILSLMainLibraryDataProvider), typeof (EditorTab), new PropertyMetadata(default(ILSLMainLibraryDataProvider)));
-
-        public ILSLMainLibraryDataProvider LibraryDataProvider
-        {
-            get { return (ILSLMainLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
-            set { SetValue(LibraryDataProviderProperty, value); }
-        }
-
-
-        public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register(
-            "Header", typeof(string), typeof(EditorTab), new PropertyMetadata(default(string)));
-
-        public string Header
-        {
-            get { return (string)GetValue(HeaderProperty); }
-            set { SetValue(HeaderProperty, value); }
-        }
-
-
-        public static readonly DependencyProperty SourceCodeProperty = DependencyProperty.Register("SourceCode", typeof(string), typeof(EditorTab), new PropertyMetadata(default(string)));
-
-        public string SourceCode
-        {
-            get { return (string)GetValue(SourceCodeProperty); }
-            set { SetValue(SourceCodeProperty, value); }
-        }
-
-
-        public bool ChangesPending { get; set; }
-
-        public bool MemoryOnly { get; set; }
-
-        public string FilePath { get; set; }
-
-        public ObservableCollection<CompilerMessage> CompilerMessages
-        {
-            get { return _compilerMessages; }
-            set { _compilerMessages = value; }
+                    t.IsSelected = true;
+                    t.CheckExternalChanges();
+                }
+            }
         }
 
 
 
-        public EditorTab()
+        private void TabStackPanelPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            MemoryOnly = true;
-            ChangesPending = false;
-            LibraryDataProvider = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl);
-            Header = "New (Unsaved)";
+
+            var textBlock = e.Source as TextBlock;
+
+            if (textBlock == null) return;
+
+            var stackPanel = textBlock.Parent as StackPanel;
+
+            if (stackPanel == null) return;
+
+            var contentPresenter = stackPanel.TemplatedParent as ContentPresenter;
+
+            if (contentPresenter == null) return;
+
+
+            if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop(contentPresenter, contentPresenter, DragDropEffects.All);
+            }
+        }
+
+
+
+        private bool _droppingTab;
+
+        private void TabOnDrop(object sender, DragEventArgs e)
+        {
+
+            var textBlock = e.Source as TextBlock;
+
+            if (textBlock == null) return;
+
+            var stackPanel = textBlock.Parent as StackPanel;
+
+            if (stackPanel == null) return;
+
+            var contentPresenter = stackPanel.TemplatedParent as ContentPresenter;
+
+            if (contentPresenter == null) return;
+
+
+            var tabItemTarget = contentPresenter.Content as EditorTab;
+
+            if (tabItemTarget == null) return;
+
+            var tabItemSourceContentPresenter = e.Data.GetData(typeof(ContentPresenter)) as ContentPresenter;
+
+
+            if (tabItemSourceContentPresenter == null) return;
+
+            var tabItemSource = tabItemSourceContentPresenter.Content as EditorTab;
+
+            if (tabItemSource == null) return;
+
+
+            if (!tabItemTarget.Equals(tabItemSource))
+            {
+                _droppingTab = true;
+                int sourceIndex = EditorTabs.IndexOf(tabItemSource);
+                int targetIndex = EditorTabs.IndexOf(tabItemTarget);
+
+                EditorTabs.Remove(tabItemSource);
+                EditorTabs.Insert(targetIndex, tabItemSource);
+
+                EditorTabs.Remove(tabItemTarget);
+                EditorTabs.Insert(sourceIndex, tabItemTarget);
+
+                TabControl.SelectedIndex = targetIndex;
+                _droppingTab = false;
+            }
+            
+        }
+
+
+
+        private void ClearCompilerMessages_OnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null)
+            {
+                tab.CompilerMessages.Clear();
+            }
         }
     }
 }

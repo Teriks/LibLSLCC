@@ -1,4 +1,5 @@
-﻿using LibLSLCC.CodeValidator.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
@@ -8,7 +9,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
     public class LSLParameterNode : ILSLParameterNode, ILSLSyntaxTreeNode
     {
 // ReSharper disable UnusedParameter.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLParameterNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
