@@ -525,9 +525,12 @@ namespace LSLCCEditor
 
             if (args.Length > 1)
             {
-                var tab = CreateEditorTab();
-                tab.OpenFileInteractive(args[1]);
-                EditorTabs.Add(tab);
+                for (int i = 1; i < args.Length; i++)
+                {
+                    var tab = CreateEditorTab();
+                    tab.OpenFileInteractive(args[i]);
+                    EditorTabs.Add(tab);
+                }
             }
             else
             {
