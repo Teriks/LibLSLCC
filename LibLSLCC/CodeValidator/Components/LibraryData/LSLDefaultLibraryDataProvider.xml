@@ -22,6 +22,10 @@
     <Parameter Name="volume" Type="Float" />
     <DocumentationString>Adjusts volume of attached sound (0.0 - 1.0)</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llAgentInExperience" ReturnType="Integer" Subsets="lsl">
+    <Parameter Name="agent" Type="Key" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="llAllowInventoryDrop" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="add" Type="Integer" />
     <DocumentationString>If add == TRUE, users without modify permissions can still drop inventory items onto a prim</DocumentationString>
@@ -91,10 +95,6 @@
     <Parameter Name="link" Type="Integer" />
     <DocumentationString>Delinks the prim with the given link number in a linked object set (requires that PERMISSION_CHANGE_LINKS be granted)</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llCSV2List" ReturnType="List" Subsets="lsl,os-lsl">
-    <Parameter Name="src" Type="String" />
-    <DocumentationString>Creates a list from a string of comma separated values</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="llCastRay" ReturnType="List" Subsets="lsl,os-lsl">
     <Parameter Name="start" Type="Vector" />
     <Parameter Name="end" Type="Vector" />
@@ -148,13 +148,29 @@
     <Parameter Name="options" Type="List" />
     <DocumentationString>Convert linkset to AI Character which can navigate the world</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llCreateKeyValue" ReturnType="Key" Subsets="lsl">
+    <Parameter Name="k" Type="String" />
+    <Parameter Name="v" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="llCreateLink" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="target" Type="Key" />
     <Parameter Name="parent" Type="Integer" />
     <DocumentationString>Attempts to link the script's object with the target (requires that PERMISSION_CHANGE_LINKS be granted). If parent == TRUE, then the script's object becomes the root</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llCSV2List" ReturnType="List" Subsets="lsl,os-lsl">
+    <Parameter Name="src" Type="String" />
+    <DocumentationString>Creates a list from a string of comma separated values</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llDataSizeKeyValue" ReturnType="Key" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="llDeleteCharacter" ReturnType="Void" Subsets="lsl">
     <DocumentationString>Convert linkset from AI Character to Physics object</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llDeleteKeyValue" ReturnType="Key" Subsets="lsl">
+    <Parameter Name="k" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="llDeleteSubList" ReturnType="List" Subsets="lsl,os-lsl">
     <Parameter Name="src" Type="List" />
@@ -385,9 +401,17 @@
   <LibraryFunction Name="llGetEnergy" ReturnType="Float" Subsets="lsl,os-lsl">
     <DocumentationString>Returns how much energy is in the object as a percentage of maximum</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llGetEnv" ReturnType="String" Subsets="lsl">
+  <LibraryFunction Name="llGetEnv" ReturnType="String" Subsets="lsl,os-lsl">
     <Parameter Name="name" Type="String" />
     <DocumentationString>Returns a string with the requested data about the region</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llGetExperienceDetails" ReturnType="List" Subsets="lsl">
+    <Parameter Name="experience_id" Type="Key" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetExperienceErrorMessage" ReturnType="String" Subsets="lsl">
+    <Parameter Name="error" Type="Integer" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="llGetForce" ReturnType="Vector" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the force (if the script is physical)</DocumentationString>
@@ -398,11 +422,11 @@
   <LibraryFunction Name="llGetFreeURLs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the number of available URLs for the current script</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llGetGMTclock" ReturnType="Float" Subsets="lsl,os-lsl">
-    <DocumentationString>Returns the time in seconds since midnight GMT</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="llGetGeometricCenter" ReturnType="Vector" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the geometric center of the linked set the script is attached to</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llGetGMTclock" ReturnType="Float" Subsets="lsl,os-lsl">
+    <DocumentationString>Returns the time in seconds since midnight GMT</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetHTTPHeader" ReturnType="String" Subsets="lsl,os-lsl">
     <Parameter Name="request_id" Type="Key" />
@@ -590,14 +614,14 @@
   <LibraryFunction Name="llGetPos" ReturnType="Vector" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the position of the task in region coordinates</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llGetPrimitiveParams" ReturnType="List" Subsets="lsl,os-lsl">
+    <Parameter Name="params" Type="List" />
+    <DocumentationString>Returns the primitive parameters specified in the params list</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="llGetPrimMediaParams" ReturnType="List" Subsets="lsl,os-lsl">
     <Parameter Name="face" Type="Integer" />
     <Parameter Name="params" Type="List" />
     <DocumentationString>Returns the media params for a particular face on an object, given the desired list of names, in the order requested.;(Returns an empty list if no media exists on the face.)</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llGetPrimitiveParams" ReturnType="List" Subsets="lsl,os-lsl">
-    <Parameter Name="params" Type="List" />
-    <DocumentationString>Returns the primitive parameters specified in the params list</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetRegionAgentCount" ReturnType="Integer" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the number of avatars in the region</DocumentationString>
@@ -605,11 +629,11 @@
   <LibraryFunction Name="llGetRegionCorner" ReturnType="Vector" Subsets="lsl,os-lsl">
     <DocumentationString>Returns a vector in meters that is the global location of the south-west corner of the region which the object is in</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llGetRegionFPS" ReturnType="Float" Subsets="lsl,os-lsl">
-    <DocumentationString>Returns the mean region frames per second</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="llGetRegionFlags" ReturnType="Integer" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the region flags (REGION_FLAG_*) for the region the object is in</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llGetRegionFPS" ReturnType="Float" Subsets="lsl,os-lsl">
+    <DocumentationString>Returns the mean region frames per second</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetRegionName" ReturnType="String" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the current region name</DocumentationString>
@@ -625,9 +649,6 @@
   </LibraryFunction>
   <LibraryFunction Name="llGetRot" ReturnType="Rotation" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the rotation relative to the region's axes</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llGetSPMaxMemory" ReturnType="Integer" Subsets="lsl,os-lsl">
-    <DocumentationString>Returns the maximum used memory for the current script. Only valid after using PROFILE_SCRIPT_MEMORY. Non-mono scripts always use 16k</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetScale" ReturnType="Vector" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the scale of the prim</DocumentationString>
@@ -645,6 +666,9 @@
   </LibraryFunction>
   <LibraryFunction Name="llGetSimulatorHostname" ReturnType="String" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the hostname of the machine which the script is running on (same as string in viewer Help dialog)</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llGetSPMaxMemory" ReturnType="Integer" Subsets="lsl,os-lsl">
+    <DocumentationString>Returns the maximum used memory for the current script. Only valid after using PROFILE_SCRIPT_MEMORY. Non-mono scripts always use 16k</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetStartParameter" ReturnType="Integer" Subsets="lsl,os-lsl">
     <DocumentationString>Returns an integer that is the script start/rez parameter</DocumentationString>
@@ -807,6 +831,14 @@
     <Parameter Name="id" Type="Key" />
     <DocumentationString>Returns the name of the prim or avatar specified by id.;(The id must be a valid rezzed prim or avatar key in the current simulator, otherwise an empty string is returned.)</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llKeyCountKeyValue" ReturnType="Key" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llKeysKeyValue" ReturnType="Key" Subsets="lsl">
+    <Parameter Name="first" Type="Integer" />
+    <Parameter Name="count" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="llLinkParticleSystem" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="link" Type="Integer" />
     <Parameter Name="rules" Type="List" />
@@ -870,6 +902,22 @@
     <Parameter Name="index" Type="Integer" />
     <DocumentationString>Copies the vector at index in the list</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llListen" ReturnType="Integer" Subsets="lsl,os-lsl">
+    <Parameter Name="channel" Type="Integer" />
+    <Parameter Name="name" Type="String" />
+    <Parameter Name="id" Type="Key" />
+    <Parameter Name="msg" Type="String" />
+    <DocumentationString>Sets a callback for message on channel from name and id (name, id, and/or message can be empty) and returns an identifier that can be used to deactivate or remove the listen</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llListenControl" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="handle" Type="Integer" />
+    <Parameter Name="active" Type="Integer" />
+    <DocumentationString>Makes a listen event callback active or inactive</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llListenRemove" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="handle" Type="Integer" />
+    <DocumentationString>Removes listen event callback number</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="llListFindList" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="src" Type="List" />
     <Parameter Name="test" Type="List" />
@@ -903,22 +951,6 @@
     <Parameter Name="operation" Type="Integer" />
     <Parameter Name="src" Type="List" />
     <DocumentationString>Performs statistical aggregate functions on list src using LIST_STAT_* operations</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llListen" ReturnType="Integer" Subsets="lsl,os-lsl">
-    <Parameter Name="channel" Type="Integer" />
-    <Parameter Name="name" Type="String" />
-    <Parameter Name="id" Type="Key" />
-    <Parameter Name="msg" Type="String" />
-    <DocumentationString>Sets a callback for message on channel from name and id (name, id, and/or message can be empty) and returns an identifier that can be used to deactivate or remove the listen</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llListenControl" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="handle" Type="Integer" />
-    <Parameter Name="active" Type="Integer" />
-    <DocumentationString>Makes a listen event callback active or inactive</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llListenRemove" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="handle" Type="Integer" />
-    <DocumentationString>Removes listen event callback number</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llLoadURL" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="avatar" Type="Key" />
@@ -954,11 +986,6 @@
     <Parameter Name="sound" Type="String" />
     <Parameter Name="volume" Type="Float" />
     <DocumentationString>Plays attached sound looping at volume (0.0 - 1.0), synced to most audible sync master</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llMD5String" ReturnType="String" Subsets="lsl,os-lsl">
-    <Parameter Name="src" Type="String" />
-    <Parameter Name="nonce" Type="Integer" />
-    <DocumentationString>Returns a string of 32 hex characters that is a RSA Data Security, Inc. MD5 Message-Digest Algorithm of src with nonce</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llMakeExplosion" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="particles" Type="Integer" />
@@ -1018,6 +1045,11 @@
     <Parameter Name="group_keys" Type="List" />
     <DocumentationString />
   </LibraryFunction>
+  <LibraryFunction Name="llMD5String" ReturnType="String" Subsets="lsl,os-lsl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="nonce" Type="Integer" />
+    <DocumentationString>Returns a string of 32 hex characters that is a RSA Data Security, Inc. MD5 Message-Digest Algorithm of src with nonce</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="llMessageLinked" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="link" Type="Integer" />
     <Parameter Name="num" Type="Integer" />
@@ -1029,16 +1061,16 @@
     <Parameter Name="delay" Type="Float" />
     <DocumentationString>Sets the minimum time between events being handled</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llModifyLand" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="action" Type="Integer" />
+    <Parameter Name="brush" Type="Integer" />
+    <DocumentationString>Modifies land using the specified action on the specified brush size of land</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="llModPow" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="a" Type="Integer" />
     <Parameter Name="b" Type="Integer" />
     <Parameter Name="c" Type="Integer" />
     <DocumentationString>Returns a raised to the b power, mod c. ( (a**b)%c );b is capped at 0xFFFF (16 bits).</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llModifyLand" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="action" Type="Integer" />
-    <Parameter Name="brush" Type="Integer" />
-    <DocumentationString>Modifies land using the specified action on the specified brush size of land</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llMoveToTarget" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="target" Type="Vector" />
@@ -1139,6 +1171,10 @@
     <Parameter Name="local" Type="Integer" />
     <DocumentationString>Applies impulse and ang_impulse to object id</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llReadKeyValue" ReturnType="Key" Subsets="lsl">
+    <Parameter Name="k" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="llRefreshPrimURL" ReturnType="Void" Subsets="lsl,os-lsl">
     <DocumentationString>Reloads the web page shown on the sides of the object</DocumentationString>
   </LibraryFunction>
@@ -1213,6 +1249,11 @@
   <LibraryFunction Name="llRequestDisplayName" ReturnType="Key" Subsets="lsl,os-lsl">
     <Parameter Name="id" Type="Key" />
     <DocumentationString>Requests name of an avatar.  When data is available the dataserver event will be raised</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llRequestExperiencePermissions" ReturnType="Void" Subsets="lsl">
+    <Parameter Name="agent" Type="Key" />
+    <Parameter Name="name" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="llRequestInventoryData" ReturnType="Key" Subsets="lsl,os-lsl">
     <Parameter Name="name" Type="String" />
@@ -1307,6 +1348,11 @@
     <Parameter Name="q" Type="Rotation" />
     <DocumentationString>Returns the up vector defined by q</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llRotateTexture" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="angle" Type="Float" />
+    <Parameter Name="face" Type="Integer" />
+    <DocumentationString>Sets the texture rotation for the chosen face</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="llRotBetween" ReturnType="Rotation" Subsets="lsl,os-lsl">
     <Parameter Name="start" Type="Vector" />
     <Parameter Name="end" Type="Vector" />
@@ -1327,18 +1373,9 @@
     <Parameter Name="handle" Type="Integer" />
     <DocumentationString>Removes rotational target number registered with llRotTarget</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llRotateTexture" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="angle" Type="Float" />
-    <Parameter Name="face" Type="Integer" />
-    <DocumentationString>Sets the texture rotation for the chosen face</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="llRound" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="val" Type="Float" />
     <DocumentationString>Returns val rounded to the nearest integer</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llSHA1String" ReturnType="String" Subsets="lsl,os-lsl">
-    <Parameter Name="src" Type="String" />
-    <DocumentationString>Returns a string of 40 hex characters that is the SHA1 security Hash of src</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llSameGroup" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="uuid" Type="Key" />
@@ -1365,8 +1402,10 @@
   </LibraryFunction>
   <LibraryFunction Name="llScriptProfiler" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="flags" Type="Integer" />
-    <DocumentationString>Enabled or disables script profiling options. Currently only supports PROFILE_SCRIPT_MEMORY (mono only) and PROFILE_NONE.
-		MAY SIGNIFICANTLY REDUCE SCRIPT PERFORMANCE!</DocumentationString>
+    <DocumentationString>
+      Enabled or disables script profiling options. Currently only supports PROFILE_SCRIPT_MEMORY (mono only) and PROFILE_NONE.
+      MAY SIGNIFICANTLY REDUCE SCRIPT PERFORMANCE!
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llSendRemoteData" ReturnType="Key" Subsets="lsl,os-lsl">
     <Parameter Name="channel" Type="Key" />
@@ -1379,7 +1418,7 @@
     <Parameter Name="name" Type="String" />
     <Parameter Name="id" Type="Key" />
     <Parameter Name="type" Type="Integer" />
-    <Parameter Name="range" Type="Float" />
+    <Parameter Name="radius" Type="Float" />
     <Parameter Name="arc" Type="Float" />
     <DocumentationString>Performs a single scan for name and id with type (AGENT, ACTIVE, PASSIVE, and/or SCRIPTED) within range meters and arc radians of forward vector (name, id, and/or keytype can be empty or 0)</DocumentationString>
   </LibraryFunction>
@@ -1537,7 +1576,8 @@
   <LibraryFunction Name="llSetParcelMusicURL" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="url" Type="String" />
     <DocumentationString>
-		Sets the streaming audio URL for the parcel which the object is on</DocumentationString>
+      Sets the streaming audio URL for the parcel which the object is on
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llSetPayPrice" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="price" Type="Integer" />
@@ -1556,19 +1596,6 @@
     <Parameter Name="pos" Type="Vector" />
     <DocumentationString>Moves the object or prim towards pos without using physics (if the script isn't physical)</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llSetPrimMediaParams" ReturnType="Integer" Subsets="lsl,os-lsl">
-    <Parameter Name="face" Type="Integer" />
-    <Parameter Name="params" Type="List" />
-    <DocumentationString>Sets the media params for a particular face on an object. If media is not already on this object, add it.;List is a set of name/value pairs in no particular order.  Params not specified are unchanged, or if new media is added then set to the default specified.;The possible names are below, along with the types of values and what they mean</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llSetPrimURL" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="url" Type="String" />
-    <DocumentationString>Updates the URL for the web page shown on the sides of the object</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="llSetPrimitiveParams" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="rules" Type="List" />
-    <DocumentationString>Sets the prim's parameters according to rules</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="llSetLinkPrimitiveParams" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="link" Type="Integer" />
     <Parameter Name="rules" Type="List" />
@@ -1578,6 +1605,19 @@
     <Parameter Name="link" Type="Integer" />
     <Parameter Name="rules" Type="List" />
     <DocumentationString>Set primitive parameters for linknumber based on rules</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llSetPrimitiveParams" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="rules" Type="List" />
+    <DocumentationString>Sets the prim's parameters according to rules</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llSetPrimMediaParams" ReturnType="Integer" Subsets="lsl,os-lsl">
+    <Parameter Name="face" Type="Integer" />
+    <Parameter Name="params" Type="List" />
+    <DocumentationString>Sets the media params for a particular face on an object. If media is not already on this object, add it.;List is a set of name/value pairs in no particular order.  Params not specified are unchanged, or if new media is added then set to the default specified.;The possible names are below, along with the types of values and what they mean</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llSetPrimURL" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="url" Type="String" />
+    <DocumentationString>Updates the URL for the web page shown on the sides of the object</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llSetRegionPos" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="position" Type="Vector" />
@@ -1678,6 +1718,10 @@
     <Parameter Name="force" Type="Vector" />
     <Parameter Name="local" Type="Integer" />
     <DocumentationString>Sets an objects velocity, in local coords if local == TRUE (if the script is physical)</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llSHA1String" ReturnType="String" Subsets="lsl,os-lsl">
+    <Parameter Name="src" Type="String" />
+    <DocumentationString>Returns a string of 40 hex characters that is the SHA1 security Hash of src</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llShout" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="channel" Type="Integer" />
@@ -1831,17 +1875,24 @@
     <Parameter Name="bottom_south_west" Type="Vector" />
     <DocumentationString>Plays sound at volume (0.0 - 1.0), centered at but not attached to object, limited to the box defined by vectors top_north_east and bottom_south_west</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llUnSit" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="id" Type="Key" />
-    <DocumentationString>If avatar identified by id is sitting on the object the script is attached to or is over land owned by the object's owner, the avatar is forced to stand up</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="llUnescapeURL" ReturnType="String" Subsets="lsl,os-lsl">
     <Parameter Name="url" Type="String" />
     <DocumentationString>Returns an unescaped/ unencoded version of url, replacing %20 with spaces etc</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llUnSit" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="id" Type="Key" />
+    <DocumentationString>If avatar identified by id is sitting on the object the script is attached to or is over land owned by the object's owner, the avatar is forced to stand up</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="llUpdateCharacter" ReturnType="Void" Subsets="lsl">
     <Parameter Name="options" Type="List" />
     <DocumentationString>Change the AI Character's settings</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llUpdateKeyValue" ReturnType="Key" Subsets="lsl">
+    <Parameter Name="k" Type="String" />
+    <Parameter Name="v" Type="String" />
+    <Parameter Name="checked" Type="Integer" />
+    <Parameter Name="original_value" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="llVecDist" ReturnType="Float" Subsets="lsl,os-lsl">
     <Parameter Name="vec_a" Type="Vector" />
@@ -1884,15 +1935,15 @@
     <Parameter Name="str2" Type="String" />
     <DocumentationString>Correctly performs an exclusive or on two Base64 strings and returns a Base64 string.;If the inputs are not Base64 strings the result will be erratic</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llXorBase64StringsCorrect" ReturnType="String" Subsets="lsl,os-lsl">
-    <Parameter Name="str1" Type="String" />
-    <Parameter Name="str2" Type="String" />
-    <DocumentationString>Correctly performs an exclusive or on two Base64 strings.;s2 repeats if it is shorter than s1</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="llXorBase64Strings" ReturnType="String" Subsets="lsl,os-lsl">
     <Parameter Name="str1" Type="String" />
     <Parameter Name="str2" Type="String" />
     <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llXorBase64StringsCorrect" ReturnType="String" Subsets="lsl,os-lsl">
+    <Parameter Name="str1" Type="String" />
+    <Parameter Name="str2" Type="String" />
+    <DocumentationString>Correctly performs an exclusive or on two Base64 strings.;s2 repeats if it is shorter than s1</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="osAgentSaveAppearance" ReturnType="Key" Subsets="ossl">
     <Parameter Name="agentId" Type="Key" />
@@ -1915,12 +1966,12 @@
     <DocumentationString>Stops playing an animation on a specified avatar</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="osCauseDamage" ReturnType="Void" Subsets="ossl">
-    <Parameter Name="avatar" Type="String" />
+    <Parameter Name="avatar" Type="Key" />
     <Parameter Name="damage" Type="Float" />
     <DocumentationString>Causes health damage to the specified avatar</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="osCauseHealing" ReturnType="Void" Subsets="ossl">
-    <Parameter Name="avatar" Type="String" />
+    <Parameter Name="avatar" Type="Key" />
     <Parameter Name="healing" Type="Float" />
     <DocumentationString>Increase health to the specified avatar</DocumentationString>
   </LibraryFunction>
@@ -2033,6 +2084,15 @@
     <Parameter Name="pos" Type="Vector" />
     <Parameter Name="rot" Type="Rotation" />
     <DocumentationString>Drops an attachment at a given position and rotation without a PERMISSION_ATTACH check</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osForceOtherSit" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="avatar" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osForceOtherSit" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="avatar" Type="String" />
+    <Parameter Name="target" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="osFormatString" ReturnType="String" Subsets="ossl">
     <Parameter Name="format" Type="String" />
@@ -2155,6 +2215,11 @@
     <Parameter Name="plugin" Type="String" />
     <Parameter Name="param" Type="String" />
     <DocumentationString>Gets the value of param property for plugin module.;SimpleRandomWind plugin param is: strength.;ConfigurableWind plugin params are: avgStrength, avgDirection, varStrength, varDirection, rateChange.</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osGrantScriptPermissions" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="allowed_key" Type="Key" />
+    <Parameter Name="function" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="osInviteToGroup" ReturnType="Integer" Subsets="ossl">
     <Parameter Name="user" Type="Key" />
@@ -2397,6 +2462,11 @@
     <Parameter Name="start" Type="Integer" />
     <DocumentationString>Replaces a given string</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="osRevokeScriptPermissions" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="revoked_key" Type="Key" />
+    <Parameter Name="function" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="osSetContentType" ReturnType="Void" Subsets="ossl">
     <Parameter Name="id" Type="Key" />
     <Parameter Name="type" Type="String" />
@@ -2578,7 +2648,7 @@
     <DocumentationString>Sets value of param property for plugin module.;SimpleRandomWind plugin param is: strength.;ConfigurableWind plugin params are: avgStrength, avgDirection, varStrength, varDirection, rateChange</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="osTeleportAgent" ReturnType="Void" Subsets="ossl">
-    <Parameter Name="agent" Type="String" />
+    <Parameter Name="agent" Type="Key" />
     <Parameter Name="regionX" Type="Integer" />
     <Parameter Name="regionY" Type="Integer" />
     <Parameter Name="position" Type="Vector" />
@@ -2586,14 +2656,14 @@
     <DocumentationString>Teleports an agent to the specified location</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="osTeleportAgent" ReturnType="Void" Subsets="ossl">
-    <Parameter Name="agent" Type="String" />
+    <Parameter Name="agent" Type="Key" />
     <Parameter Name="regionName" Type="String" />
     <Parameter Name="position" Type="Vector" />
     <Parameter Name="lookat" Type="Vector" />
     <DocumentationString>Teleports an agent to the specified location</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="osTeleportAgent" ReturnType="Void" Subsets="ossl">
-    <Parameter Name="agent" Type="String" />
+    <Parameter Name="agent" Type="Key" />
     <Parameter Name="position" Type="Vector" />
     <Parameter Name="lookat" Type="Vector" />
     <DocumentationString>Teleports an agent to the specified location</DocumentationString>
@@ -2643,33 +2713,7 @@
     <DocumentationString>Remove Windlight settings from a region</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="physGetEngineType" ReturnType="String" Subsets="os-bullet-physics">
-    <Property Name="ModInvoke" Value="true"/>
     <DocumentationString>Get physics engine type</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="physSetLinksetType" ReturnType="Integer" Subsets="os-bullet-physics">
-    <Parameter Name="linksetType" Type="Integer" />
-    <Property Name="ModInvoke" Value="true"/>
-    <DocumentationString>:Bulletsim: Set linkset type</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="physGetLinksetType" ReturnType="Integer" Subsets="os-bullet-physics">
-    <Property Name="ModInvoke" Value="true"/>
-    <DocumentationString />
-  </LibraryFunction>
-  <LibraryFunction Name="physChangeLinkType" ReturnType="Integer" Subsets="os-bullet-physics">
-    <Parameter Name="linkNum" Type="Integer" />
-    <Parameter Name="typeCode" Type="Integer" />
-    <Property Name="ModInvoke" Value="true"/>
-    <DocumentationString />
-  </LibraryFunction>
-  <LibraryFunction Name="physGetLinkType" ReturnType="Integer" Subsets="os-bullet-physics">
-    <Parameter Name="linkNum" Type="Integer" />
-    <Property Name="ModInvoke" Value="true"/>
-    <DocumentationString />
-  </LibraryFunction>
-  <LibraryFunction Name="physChangeLinkFixed" ReturnType="Integer" Subsets="os-bullet-physics">
-    <Parameter Name="linkNum" Type="Integer" />
-    <Property Name="ModInvoke" Value="true"/>
-    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="modInvokeN" ReturnType="Void" Subsets="os-mod-api">
     <Parameter Name="fname" Type="String" />
@@ -2717,6 +2761,10 @@
     <Parameter Name="k" Type="String" />
     <DocumentationString />
   </LibraryFunction>
+  <EventHandler Name="attach" Subsets="lsl,os-lsl">
+    <Parameter Name="id" Type="Key" />
+    <DocumentationString>Triggered when task attaches or detaches from agent</DocumentationString>
+  </EventHandler>
   <EventHandler Name="at_rot_target" Subsets="lsl,os-lsl">
     <Parameter Name="handle" Type="Integer" />
     <Parameter Name="targetrot" Type="Rotation" />
@@ -2728,10 +2776,6 @@
     <Parameter Name="targetpos" Type="Vector" />
     <Parameter Name="ourpos" Type="Vector" />
     <DocumentationString>Result of llTarget library function call</DocumentationString>
-  </EventHandler>
-  <EventHandler Name="attach" Subsets="lsl,os-lsl">
-    <Parameter Name="id" Type="Key" />
-    <DocumentationString>Triggered when task attaches or detaches from agent</DocumentationString>
   </EventHandler>
   <EventHandler Name="changed" Subsets="lsl,os-lsl">
     <Parameter Name="change" Type="Integer" />
@@ -2767,6 +2811,15 @@
     <Parameter Name="message" Type="String" />
     <Parameter Name="num_left" Type="Integer" />
     <DocumentationString>Triggered when task receives email</DocumentationString>
+  </EventHandler>
+  <EventHandler Name="experience_permissions" Subsets="lsl,os-lsl">
+    <Parameter Name="agent_id" Type="Key" />
+    <DocumentationString >The agent has approved an experience permissions request. This may be through interaction with the experience permission dialog or the experience profile, or automatically if the agent has previously approved the experience.</DocumentationString>
+  </EventHandler>
+  <EventHandler Name="experience_permissions_denied" Subsets="lsl,os-lsl">
+    <Parameter Name="agent_id" Type="Key" />
+    <Parameter Name="reason" Type="Integer" />
+    <DocumentationString >The agent has denied experience permission.</DocumentationString>
   </EventHandler>
   <EventHandler Name="http_request" Subsets="lsl,os-lsl">
     <Parameter Name="request_id" Type="Key" />
@@ -2818,14 +2871,14 @@
   <EventHandler Name="moving_start" Subsets="lsl,os-lsl">
     <DocumentationString>Triggered when task begins moving</DocumentationString>
   </EventHandler>
-  <EventHandler Name="no_sensor" Subsets="lsl,os-lsl">
-    <DocumentationString>Result of the llSensor library function call</DocumentationString>
-  </EventHandler>
   <EventHandler Name="not_at_rot_target" Subsets="lsl,os-lsl">
     <DocumentationString>Result of LLRotTarget library function call</DocumentationString>
   </EventHandler>
   <EventHandler Name="not_at_target" Subsets="lsl,os-lsl">
     <DocumentationString>Result of llTarget library function call</DocumentationString>
+  </EventHandler>
+  <EventHandler Name="no_sensor" Subsets="lsl,os-lsl">
+    <DocumentationString>Result of the llSensor library function call</DocumentationString>
   </EventHandler>
   <EventHandler Name="object_rez" Subsets="lsl,os-lsl">
     <Parameter Name="id" Type="Key" />
@@ -3230,31 +3283,31 @@
     <DocumentationString>Used with llSetClickAction to set touch as the default action when object is clicked</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_ATOM" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/atom+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_FORM" Type="Integer" Value="7" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/x-www-form-urlencoded".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_HTML" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "text/html".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_JSON" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/json".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_LLSD" Type="Integer" Value="6" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/llsd+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_RSS" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/rss+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_TEXT" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "text/plain".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_XHTML" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/xhtml+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_XML" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTROL_BACK" Type="Integer" Value="2" Subsets="lsl,os-lsl">
     <DocumentationString>Passed to llTakeControls library function and used control event handler to test for agent back control</DocumentationString>
@@ -3313,7 +3366,7 @@
   <LibraryConstant Name="DEBUG_CHANNEL" Type="Integer" Value="2147483647" Subsets="lsl,os-lsl">
     <DocumentationString>Chat channel reserved for debug and error messages from scripts</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="DEG_TO_RAD" Type="Float" Value="0.017453292519943295769236907684886" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="DEG_TO_RAD" Type="Float" Value="0.017453292519943295769236907684886f" Subsets="lsl,os-lsl">
     <DocumentationString>To convert from degrees to radians</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="EOF" Type="String" Value="\n\n\n" Subsets="lsl,os-lsl">
@@ -3356,7 +3409,7 @@
     <DocumentationString>integer_constant for Boolean operations</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="FORCE_DIRECT_PATH" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString >Used with llNavigateTo( vector pos, list options );  Makes character navigate in a straight line toward pos. May be set to TRUE or FALSE</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="HORIZONTAL" Type="Integer" Value="1" Subsets="lsl">
     <DocumentationString>Constant to indicate that the orientation of the capsule for a Pathfinding character is horizontal.</DocumentationString>
@@ -3424,31 +3477,31 @@
   <LibraryConstant Name="JSON_APPEND" Type="Integer" Value="-1" Subsets="lsl">
     <DocumentationString>Used with llJsonSetValue as a specifier to indicate appending the value to the end of the array at that level.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_ARRAY" Type="String" Value="&#xFDD2;" Subsets="lsl">
+  <LibraryConstant Name="JSON_ARRAY" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD2&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD2;&amp;#13;llUnescapeUrl(%EF%B7%92);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·’&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Represents a json datatype mappable to the LSL datatype "list"</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_DELETE" Type="String" Value="&#xFDD8;" Subsets="lsl">
+  <LibraryConstant Name="JSON_DELETE" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD8&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD8;&amp;#13;llUnescapeUrl(%EF%B7%98);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Used to delete a value within a JSON text string.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_FALSE" Type="String" Value="&#xFDD7;" Subsets="lsl">
+  <LibraryConstant Name="JSON_FALSE" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD7&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD7;&amp;#13;llUnescapeUrl(%EF%B7%97);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Represents the constant "false" of a json value.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_INVALID" Type="String" Value="&#xFDD0;" Subsets="lsl">
+  <LibraryConstant Name="JSON_INVALID" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDDO&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD0;&amp;#13;llUnescapeUrl(%EF%B7%90);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>A return value that indicates an invalid type was specified to an llJson* function</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_NULL" Type="String" Value="&#xFDD5;" Subsets="lsl">
+  <LibraryConstant Name="JSON_NULL" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD5&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD5;&amp;#13;llUnescapeUrl(%EF%B7%95);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Represents the constant "null" of a json value.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_NUMBER" Type="String" Value="&#xFDD3;" Subsets="lsl">
+  <LibraryConstant Name="JSON_NUMBER" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD3&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD3;&amp;#13;llUnescapeUrl(%EF%B7%93);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Represents a json datatype mappable to the LSL datatypes "integer" and "float"</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_OBJECT" Type="String" Value="&#xFDD1;" Subsets="lsl">
+  <LibraryConstant Name="JSON_OBJECT" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD1&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD1;&amp;#13;llUnescapeUrl(%EF%B7%91);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·‘&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Represents a json datatype represented in LSL as a strided list of name/value pairs</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_STRING" Type="String" Value="&#xFDD4;" Subsets="lsl">
+  <LibraryConstant Name="JSON_STRING" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD4&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD4;&amp;#13;llUnescapeUrl(%EF%B7%94);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Represents a json datatype mappable to the LSL datatype "string"</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_TRUE" Type="String" Value="&#xFDD6;" Subsets="lsl">
+  <LibraryConstant Name="JSON_TRUE" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD6&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD6;&amp;#13;llUnescapeUrl(%EF%B7%96);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
     <DocumentationString>Represents the constant "true" of a json value.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="KFM_CMD_PAUSE" Type="Integer" Value="2" Subsets="lsl,os-lsl">
@@ -3568,11 +3621,14 @@
   <LibraryConstant Name="MASK_OWNER" Type="Integer" Value="1" Subsets="lsl,os-lsl">
     <DocumentationString>Owner permissions</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="NULL_KEY" Type="String" Value="00000000-0000-0000-0000-000000000000" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="NULL_KEY" Type="String" Value="&quot;00000000-0000-0000-0000-000000000000&quot;" Subsets="lsl,os-lsl">
     <DocumentationString>Indicates an empty key</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_ATTACHED_POINT" Type="Integer" Value="19" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's attachment point.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_BODY_SHAPE_TYPE" Type="Integer" Value="26" Subsets="lsl">
+    <DocumentationString >This is a flag used with llGetObjectDetails to get the "gender" setting of an avatar's currently worn shape.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_CHARACTER_TIME" Type="Integer" Value="17" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's average CPU time (in seconds) used by the object for navigation, if the object is a pathfinding character. Returns 0 for non-characters.</DocumentationString>
@@ -3585,6 +3641,12 @@
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_GROUP" Type="Integer" Value="7" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's group's key</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_HOVER_HEIGHT" Type="Float" Value="25" Subsets="lsl">
+    <DocumentationString >This is a flag used with llGetObjectDetails to get the hover height of the avatar.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_LAST_OWNER_ID" Type="Integer" Value="27" Subsets="lsl">
+    <DocumentationString >This is a flag used with llGetObjectDetails to get the last object owner key (if known).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_NAME" Type="Integer" Value="1" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's name</DocumentationString>
@@ -3608,7 +3670,7 @@
     <DocumentationString>Used with llGetObjectDetails to get an object's position</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_PRIM_EQUIVALENCE" Type="Integer" Value="13" Subsets="lsl,os-lsl">
-    <DocumentationString>Used with llGetObjectDetails to get the prim equivalence.</DocumentationString>
+    <DocumentationString>Gets the prim equivalence of the object.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_RENDER_WEIGHT" Type="Integer" Value="24" Subsets="lsl">
     <DocumentationString>Used with llGetObjectDetails to return an avatar's rendering weight</DocumentationString>
@@ -3654,9 +3716,6 @@
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_VELOCITY" Type="Integer" Value="5" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's velocity</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="OPT CHARACTER" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="OPT_AVATAR" Type="Integer" Value="1" Subsets="lsl,os-lsl">
     <DocumentationString>Returned object pathfinding type by llGetObjectDetails for avatars.</DocumentationString>
@@ -3874,29 +3933,29 @@
   <LibraryConstant Name="PERM_TRANSFER" Type="Integer" Value="8192" Subsets="lsl,os-lsl">
     <DocumentationString>Transfer permission</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="PI" Type="Float" Value="3.1415926535897932384626433832795" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="PI" Type="Float" Value="3.1415926535897932384626433832795f" Subsets="lsl,os-lsl">
     <DocumentationString>3.1415926535897932384626433832795</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PING_PONG" Type="Integer" Value="8" Subsets="lsl,os-lsl">
     <DocumentationString>Animate forward, then reverse</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="PI_BY_TWO" Type="Float" Value="1.5707963267948966192313216916398" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="PI_BY_TWO" Type="Float" Value="1.5707963267948966192313216916398f" Subsets="lsl,os-lsl">
     <DocumentationString>1.5707963267948966192313216916398</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_ALPHA_MODE" Type="Integer" Value="38" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString>Sets the prim's diffuse texture alpha rendering mode attributes. Followed by integer face, integer alpha_mode (PRIM_ALPHA_MODE_* flag) and integer mask_cutoff.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_ALPHA_MODE_BLEND" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString>Used with PRIM_ALPHA_MODE. Prims faces set to this type use alpha blending for diffuse texture rendering (assuming the alpha channel exists).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_ALPHA_MODE_EMISSIVE" Type="Integer" Value="3" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString>Used with PRIM_ALPHA_MODE. Prims faces set to this type render with an emissivity corresponding to the opacity of each pixel of the diffuse texture. The more opaque a pixel is, the brighter it renders under all lighting conditions. A fully-opaque pixel will effectively render as 'full bright'.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_ALPHA_MODE_MASK" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString>Used with PRIM_ALPHA_MODE. Prims faces set to this type render as either completely opaque or completely transparent on a per-pixel basis. Pixels which are less opaque than the specified mask_cutoff are rendered as completely transparent, and the rest are rendered as fully opaque.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_ALPHA_MODE_NONE" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString>Used with PRIM_ALPHA_MODE. Prims faces set to this type ignore the alpha channel of the diffuse texture, and render as completely opaque.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_BUMP_BARK" Type="Integer" Value="4" Subsets="lsl,os-lsl">
     <DocumentationString>Bark bump map</DocumentationString>
@@ -4070,7 +4129,7 @@
     <DocumentationString>Sets the prim's name.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_NORMAL" Type="Integer" Value="37" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString>Sets the prim's normal map attributes. Followed by integer face, string texture, vector repeats, vector offsets and float rotation_in_radians.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_OMEGA" Type="Integer" Value="32" Subsets="lsl,os-lsl">
     <DocumentationString>Makes the object spin at the specified axis and rate.</DocumentationString>
@@ -4148,7 +4207,7 @@
     <DocumentationString>Get and set the "slice" parameter of all shapes. Takes a vector parameter of the form &lt;start_slice, end_slice, 0&gt;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_SPECULAR" Type="Integer" Value="36" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString>Sets the prim's specular map attributes. Followed by integer face, string texture, vector repeats, vector offsets, float rotation_in_radians, vector color, integer glossiness and integer environment.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_TEMP_ON_REZ" Type="Integer" Value="4" Subsets="lsl,os-lsl">
     <DocumentationString>Sets temporary on rez to TRUE or FALSE</DocumentationString>
@@ -4204,7 +4263,7 @@
   <LibraryConstant Name="PUBLIC_CHANNEL" Type="Integer" Value="0" Subsets="lsl,os-lsl">
     <DocumentationString>Chat channel that broadcasts to all nearby users</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="RAD_TO_DEG" Type="Float" Value="57.295779513082320876798154814105" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="RAD_TO_DEG" Type="Float" Value="57.295779513082320876798154814105f" Subsets="lsl,os-lsl">
     <DocumentationString>To convert from radians to degrees</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="RCERR_CAST_TIME_EXCEEDED" Type="Integer" Value="-3" Subsets="lsl,os-lsl">
@@ -4303,13 +4362,13 @@
   <LibraryConstant Name="SMOOTH" Type="Integer" Value="16" Subsets="lsl,os-lsl">
     <DocumentationString>Textures slides, instead of stepping</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="SQRT2" Type="Float" Value="1.4142135623730950488016887242097" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="SQRT2" Type="Float" Value="1.4142135623730950488016887242097f" Subsets="lsl,os-lsl">
     <DocumentationString>1.4142135623730950488016887242097</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="STATUS_BLOCK_GRAB" Type="Integer" Value="64" Subsets="lsl,os-lsl">
     <DocumentationString>Passed in the llSetStatus library function.  If TRUE, root prim of linkset (or unlinked prim) can't be grabbed and physically dragged</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="STATUS_BLOCK_GRAB_OBJECT" Type="Integer" Value="1024" Subsets="lsl">
+  <LibraryConstant Name="STATUS_BLOCK_GRAB_OBJECT" Type="Integer" Value="1024" Subsets="lsl,os-lsl">
     <DocumentationString>This status flag keeps the object from being moved by grabs. This flag applies to the entire linkset.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="STATUS_BOUNDS_ERROR" Type="Integer" Value="1002" Subsets="lsl">
@@ -4372,16 +4431,16 @@
   <LibraryConstant Name="STRING_TRIM_TAIL" Type="Integer" Value="2" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llStringTrim to trim trailing spaces from a string</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_BLANK" Type="String" Value="5748decc-f629-461c-9a36-a35a221fe21f" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_BLANK" Type="String" Value="&quot;5748decc-f629-461c-9a36-a35a221fe21f&quot;" Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the "Blank" texture</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_MEDIA" Type="String" Value="8b5fec65-8d8d-9dc5-cda8-8fdf2716e361" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_MEDIA" Type="String" Value="&quot;8b5fec65-8d8d-9dc5-cda8-8fdf2716e361&quot;" Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the "Default Media" texture</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_PLYWOOD" Type="String" Value="89556747-24cb-43ed-920b-47caed15465f" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_PLYWOOD" Type="String" Value="&quot;89556747-24cb-43ed-920b-47caed15465f&quot;" Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the default "Plywood" texture</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_TRANSPARENT" Type="String" Value="8dcd4a48-2d37-4909-9f78-f7a9eb4ef903" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_TRANSPARENT" Type="String" Value="&quot;8dcd4a48-2d37-4909-9f78-f7a9eb4ef903&quot;" Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the "White - Transparent" texture</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="TOUCH_INVALID_FACE" Type="Integer" Value="-1" Subsets="lsl,os-lsl">
@@ -4399,7 +4458,7 @@
   <LibraryConstant Name="TRUE" Type="Integer" Value="1" Subsets="lsl,os-lsl">
     <DocumentationString>integer_constant for Boolean operations</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TWO_PI" Type="Float" Value="6.283185307179586476925286766559" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TWO_PI" Type="Float" Value="6.283185307179586476925286766559f" Subsets="lsl,os-lsl">
     <DocumentationString>6.283185307179586476925286766559</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="TYPE_FLOAT" Type="Integer" Value="2" Subsets="lsl,os-lsl">
@@ -4523,22 +4582,22 @@
     <DocumentationString>Rotation of vehicle axes relative to local frame</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_AIRPLANE" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Uses linear deflection for lift, no hover, and banking to turn.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_BALLOON" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Hover, and friction, but no deflection.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_BOAT" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Hovers over water with lots of friction and some anglar deflection.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_CAR" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Another vehicle that bounces along the ground but needs the motors to be driven from external controls or timer events.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_NONE" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Turns off vehicle support</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_SLED" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Simple vehicle that bumps along the ground, and likes to move along it’s local x-axis.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_VERTICAL_ATTRACTION_EFFICIENCY" Type="Integer" Value="36" Subsets="lsl,os-lsl">
     <DocumentationString>A slider between 0 (bouncy) and 1 (critically damped) attraction of vehicle z-axis to world z-axis (vertical)</DocumentationString>
@@ -4552,341 +4611,164 @@
   <LibraryConstant Name="ZERO_VECTOR" Type="Vector" Value="0.0, 0.0, 0.0" Subsets="lsl,os-lsl">
     <DocumentationString>&lt;0.0, 0.0, 0.0&gt;</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="ATTACH_LPEC" Type="Integer" Value="30" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="ATTACH_RPEC" Type="Integer" Value="29" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="AVOID_CHARACTERS" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="AVOID_DYNAMIC_OBSTACLES" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="AVOID_NONE" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="CHARACTER_CMD_JUMP" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString>Used with  llExecCharacterCmd(). Stops any current pathfinding operation.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="CHARACTER_CMD_SMOOTH_STOP" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString>Used with  llExecCharacterCmd(). Stops any current pathfinding operation in a smooth like fashion.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="CHARACTER_CMD_STOP" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString>Used with  llExecCharacterCmd(). Makes the character jump.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="DENSITY" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the density.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="FRICTION" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the friction.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="GCNP_RADIUS" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="GCNP_STATIC" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="GRAVITY_MULTIPLIER" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the gravity multiplier.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="KFM_CMD_SET_MODE" Type="Integer" Value="3" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="LAND_LARGE_BRUSH" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString>Passed to llModifyLand to modify large land areas</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="LAND_MEDIUM_BRUSH" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString>Passed to llModifyLand to modify medium land areas</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="LAND_SMALL_BRUSH" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString>Passed to llModifyLand to modify small land areas</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="OPT_CHARACTER" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PERMISSION_CHANGE_JOINTS" Type="Integer" Value="256" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PERMISSION_CHANGE_PERMISSIONS" Type="Integer" Value="512" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PERMISSION_RELEASE_OWNERSHIP" Type="Integer" Value="64" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PERMISSION_REMAP_CONTROLS" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_CAST_SHADOWS" Type="Integer" Value="24" Subsets="lsl,os-lsl">
-    <DocumentationString>DEPRECATED. Takes 1 parameter, an integer, but has no effect when set and always returns 0 if used in llGetPrimitiveParams</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_CONTROLS" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams to determine the controls shown for media</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_CONTROLS_MINI" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, a PRIM_MEDIA_CONTROLS value meaning 'mini controls'</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_CONTROLS_STANDARD" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, a PRIM_MEDIA_CONTROLS value meaning 'standard controls'</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_MAX_HEIGHT_PIXELS" Type="Integer" Value="2048" Subsets="lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum width allowed in PRIM_MEDIA_HEIGHT_PIXELS</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_MAX_URL_LENGTH" Type="Integer" Value="1024" Subsets="lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum length of PRIM_MEDIA_CURRENT_URL or PRIM_MEDIA_HOME_URL</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_MAX_WHITELIST_COUNT" Type="Integer" Value="64" Subsets="lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum number of items allowed in PRIM_MEDIA_WHITELIST</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_MAX_WHITELIST_SIZE" Type="Integer" Value="1024" Subsets="lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum length, in bytes, of PRIM_MEDIA_WHITELIST</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_MAX_WIDTH_PIXELS" Type="Integer" Value="2048" Subsets="lsl">
-    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum width allowed in PRIM_MEDIA_WIDTH_PIXELS</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PRIM_MEDIA_PARAM_MAX" Type="Integer" Value="14" Subsets="lsl">
-    <DocumentationString>The value of the largest media param</DocumentationString>
+  <LibraryConstant Name="PSYS_PART_FLAGS" Type="Integer" Value="0" Subsets="lsl,os-lsl">
+    <DocumentationString >Various flags controlling the behavior of the particle system</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BOUNCE_MASK" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >When set, specifies particles will bounce off a plane at the region Z height of the emitter. On "bounce", each particle reverses velocity and angle. This only works for particles above the plane falling down on it.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_EMISSIVE_MASK" Type="Integer" Value="256" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_END_ALPHA" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_END_COLOR" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_END_SCALE" Type="Integer" Value="6" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_FLAGS" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >When set, particles are full-bright and are unaffected by global lighting (sunlight). Otherwise, particles will be lit depending on the current global lighting conditions. Note that point lights do illuminate non-emissive particles.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_FOLLOW_SRC_MASK" Type="Integer" Value="16" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >When set, particles move relative to the position of the emitter. Otherwise, particle position and movement are unaffected by the position/movement of the emitter. This flag disables the PSYS_SRC_BURST_RADIUS rule.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_FOLLOW_VELOCITY_MASK" Type="Integer" Value="32" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >When set, particles rotate to orient their "top" towards the direction of movement or emission. Otherwise, particles are oriented vertically as their textures would appear (top of texture at top, left at left).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_INTERP_COLOR_MASK" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >When set, particle color and alpha transition from their START settings to their END settings during the particle's lifetime. The transition is a smooth interpolation.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_INTERP_SCALE_MASK" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_MAX_AGE" Type="Integer" Value="7" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_START_ALPHA" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_START_COLOR" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_START_SCALE" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_TARGET_LINEAR_MASK" Type="Integer" Value="128" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_TARGET_POS_MASK" Type="Integer" Value="64" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_PART_WIND_MASK" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_ACCEL" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_ANGLE_BEGIN" Type="Integer" Value="22" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_ANGLE_END" Type="Integer" Value="23" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_BURST_PART_COUNT" Type="Integer" Value="15" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_BURST_RADIUS" Type="Integer" Value="16" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_BURST_RATE" Type="Integer" Value="13" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_BURST_SPEED_MAX" Type="Integer" Value="18" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_BURST_SPEED_MIN" Type="Integer" Value="17" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_INNERANGLE" Type="Integer" Value="10" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_MAX_AGE" Type="Integer" Value="19" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_OBJ_REL_MASK" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_OMEGA" Type="Integer" Value="21" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_OUTERANGLE" Type="Integer" Value="11" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_PATTERN" Type="Integer" Value="9" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE_CONE" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY" Type="Integer" Value="16" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_PATTERN_DROP" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_PATTERN_EXPLODE" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_TARGET_KEY" Type="Integer" Value="20" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PSYS_SRC_TEXTURE" Type="Integer" Value="12" Subsets="lsl,os-lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="PURSUIT_FUZZ_FACTOR" Type="Integer" Value="3" Subsets="lsl">
-    <DocumentationString>Used with llPursue(). Selects a random destination near the PURSUIT_OFFSET. The valid fuzz factor range is from 0 to 1, where 1 is most random. This option requires a nonzero PURSUIT_OFFSET.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PURSUIT_GOAL_TOLERANCE" Type="Integer" Value="5" Subsets="lsl">
-    <DocumentationString>Used with llPursue(). Defines approximately how close the character must be to the current goal to consider itself to be at the desired position. The valid range is from 0.25 to 10m.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PURSUIT_INTERCEPT" Type="Integer" Value="4" Subsets="lsl">
-    <DocumentationString>Used with llPursue(). Define whether the character attempts to predict the target's future location.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PURSUIT_OFFSET" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString>Used with llPursue(). Go to a position offset from the target.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_EVADE_HIDDEN" Type="Integer" Value="7" Subsets="lsl">
-    <DocumentationString>Triggered when an llEvade character thinks it has hidden from its pursuer.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_EVADE_SPOTTED" Type="Integer" Value="8" Subsets="lsl">
-    <DocumentationString>Triggered when an llEvade character switches from hiding to running</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_DYNAMIC_PATHFINDING_DISABLED" Type="Integer" Value="10" Subsets="lsl">
-    <DocumentationString>Triggered when a character enters a region with dynamic pathfinding disabled.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_INVALID_GOAL" Type="Integer" Value="3" Subsets="lsl">
-    <DocumentationString>Goal is not on the navigation-mesh and cannot be reached.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_INVALID_START" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString>Character cannot navigate from the current location - e.g., the character is off the navmesh or too high above it.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_NO_NAVMESH" Type="Integer" Value="9" Subsets="lsl">
-    <DocumentationString>Triggered if no navmesh is available for the region.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_NO_VALID_DESTINATION" Type="Integer" Value="6" Subsets="lsl">
-    <DocumentationString>There's no good place for the character to go - e.g., it is patrolling and all the patrol points are now unreachable.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_OTHER" Type="Integer" Value="1000000" Subsets="lsl">
-    <DocumentationString>Unknown failure</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_PARCEL_UNREACHABLE" Type="Integer" Value="11" Subsets="lsl">
-    <DocumentationString>Triggered when a character failed to enter a parcel because it is not allowed to enter, e.g. because the parcel is already full or because object entry was disabled after the navmesh was baked.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_TARGET_GONE" Type="Integer" Value="5" Subsets="lsl">
-    <DocumentationString>Target (for llPursue or llEvade) can no longer be tracked - e.g., it left the region or is an avatar that is now more than about 30m outside the region.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_FAILURE_UNREACHABLE" Type="Integer" Value="4" Subsets="lsl">
-    <DocumentationString>Goal is no longer reachable for some reason - e.g., an obstacle blocks the path.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_GOAL_REACHED" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString>Character has reached the goal and will stop or choose a new goal (if wandering).</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="PU_SLOWDOWN_DISTANCE_REACHED" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString>Character is near current goal.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="REQUIRE_LINE_OF_SIGHT" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString>Used with llPursue(). Define whether the character needs a physical line-of-sight to give chase. When enabled, the character will not pick a new target position while there is a something solid between the character and the target object/agent.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="RESTITUTION" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the restitution.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_DEFAULT" Type="String" Value="89556747-24cb-43ed-920b-47caed15465f" Subsets="lsl,os-lsl">
-    <DocumentationString>Alias for TEXTURE_PLYWOOD</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="TRAVERSAL_TYPE_FAST" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="TRAVERSAL_TYPE_NONE" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="TRAVERSAL_TYPE_SLOW" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="VEHICLE_FLAG_NO_FLY_UP" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
-  <LibraryConstant Name="WANDER_PAUSE_AT_WAYPOINTS" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString>Used with llWanderWithin(). Defines if characters should pause after reaching each wander waypoint.</DocumentationString>
-  </LibraryConstant>
-  <LibraryConstant Name="ZERO_ROTATION" Type="Rotation" Value="0.0, 0.0, 0.0, 1.0" Subsets="lsl,os-lsl">
-    <DocumentationString>&lt;0.0, 0.0, 0.0, 1.0&gt;</DocumentationString>
+    <DocumentationString >When set, particle size/scale transitions from its START setting to its END setting during the particle's lifetime.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_RIBBON_MASK" Type="Integer" Value="1024" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Joins a stream of particles together into a continuous strip. Particle textures are stretched (or squeezed) to join their right edges to their predecessor's left. Ribbon 'width' is controlled by the 'x' values of start and end scale. (The 'y' values are ignored. The distance between particles controls the 'length' of each ribbon segment). Unlike other particle effects, ribbon segments are not rendered facing the viewer's camera. The Z axis of each new particle mimics the Z axis of the emitter prim. Ribbon segments will not render if they have no 'length' - this happens when particles move only 'up' or 'down' the local Z-axis of their emitter prim. PSYS_PART_FOLLOW_VELOCITY_MASK has no effect on ribbons. For a simple ribbon effect, try using the DROP pattern, TEXTURE_BLANK, ACCEL and/or WIND.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_TARGET_LINEAR_MASK" Type="Integer" Value="128" Subsets="lsl,os-lsl">
+    <DocumentationString >When set, emitted particles move in a straight evenly-spaced line towards the target specified by the PSYS_SRC_TARGET_KEY rule. This option ignores all Non-DROP patterns and their dependent attributes (radius, burst speeds, angles, and omega). PSYS_SRC_ACCEL and PSYS_PART_WIND_MASK are ignored as well. Using PSYS_PART_BOUNCE_MASK while the target is 'below' the emitter will cause the linear particle stream to deflect upwards, terminating above the target.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_TARGET_POS_MASK" Type="Integer" Value="64" Subsets="lsl,os-lsl">
+    <DocumentationString >When set, emitted particles change course during their lifetime, attempting to move towards the target specified by the PSYS_SRC_TARGET_KEY rule by the time they expire. Note that if no target is specified, the target moves out of range, or an invalid target is specified, the particles target the prim itself.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_WIND_MASK" Type="Integer" Value="8" Subsets="lsl,os-lsl">
+    <DocumentationString >When set, particle movement is affected by the wind. It is applied as a secondary force on the particles.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BEAM_MASK" Type="Integer" Value="512" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString >(unimplemented) mask but in the enum</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LL_PART_HUD" Type="Integer" Value="1073741824" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString >Used by the viewer to keep HUD and World particle sources separate.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LL_PART_DEAD_MASK" Type="Integer" Value="-2147483648" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString >Removes particles, not compatible with any other PSYS_PART_*_MASK</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_PATTERN" Type="Integer" Value="9" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the general emission pattern.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_PATTERN_EXPLODE" Type="Integer" Value="2" Subsets="lsl,os-lsl">
+    <DocumentationString >Sprays particles outwards in a spherical area. The Initial velocity of each particle is determined by PSYS_SRC_BURST_SPEED_MIN and PSYS_SRC_BURST_SPEED_MAX. The EXPLODE pattern ignores the ANGLE parameters.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE_CONE" Type="Integer" Value="8" Subsets="lsl,os-lsl">
+    <DocumentationString >Sprays particles outwards in a spherical, sub-spherical, conical or ring shaped area, as defined by the ANGLE parameters PSYS_SRC_ANGLE_BEGIN and PSYS_SRC_ANGLE_END. The ANGLE_CONE pattern can be used to imitate the EXPLODE pattern by explicitly setting PSYS_SRC_ANGLE_BEGIN to 0.00000 and PSYS_SRC_ANGLE_END to 3.14159 (or PI) (or vice versa).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE" Type="Integer" Value="4" Subsets="lsl,os-lsl">
+    <DocumentationString >Sprays particles outward in a flat circular, semi-circular, arc or ray shaped areas, as defined by PSYS_SRC_ANGLE_BEGIN and PSYS_SRC_ANGLE_END. The circular pattern radiates outwards around the prim's local X axis line.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_PATTERN_DROP" Type="Integer" Value="1" Subsets="lsl,os-lsl">
+    <DocumentationString >Creates particles with no initial velocity. The DROP pattern will override any values given for PSYS_SRC_BURST_RADIUS, PSYS_SRC_BURST_SPEED_MIN, and PSYS_SRC_BURST_SPEED_MAX, setting each to 0.00000. (All patterns will behave like the DROP pattern, if RADIUS, SPEED_MIN and SPEED_MAX are explicitly set to 0.0000.)</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY" Type="Integer" Value="16" Subsets="lsl,os-lsl">
+    <DocumentationString >(incomplete implementation) acts the same as the PSYS_SRC_PATTERN_DROP pattern, it is believed that the original intention for this pattern was to invert the effect of the ANGLE parameters, making them delineate an area where particles were NOT to be sprayed. (effectively the inverse or opposite of the behavior of the ANGLE_CONE pattern).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_BURST_RADIUS" Type="Integer" Value="16" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the distance from the emitter where particles will be created. This rule is ignored when the PSYS_PART_FOLLOW_SRC_MASK flag is set.  Maximum value is 50.00</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_ANGLE_BEGIN" Type="Integer" Value="22" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies a half angle, in radians, of a circular or spherical "dimple" or conic section (starting from the emitter facing) within which particles will NOT be emitted. Valid values are the same as for PSYS_SRC_ANGLE_END, though the effects are reversed accordingly. If the pattern is PSYS_SRC_PATTERN_ANGLE, the presentation is a 2D flat circular section. If PSYS_SRC_PATTERN_ANGLE_CONE or PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY is used, the presentation is a 3D spherical section. Note that the value of this parameter and PSYS_SRC_ANGLE_END are internally re-ordered such that this parameter gets the smaller of the two values.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_ANGLE_END" Type="Integer" Value="23" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies a half angle, in radians, of a circular or spherical "dimple" or conic section (starting from the emitter facing) within which particles WILL be emitted. Valid values are 0.0, which will result in particles being emitted in a straight line in the direction of the emitter facing, to PI, which will result in particles being emitted in a full circular or spherical arc around the emitter, not including the "dimple" or conic section defined by PSYS_SRC_ANGLE_BEGIN. If the pattern is PSYS_SRC_PATTERN_ANGLE, the presentation is a 2D flat circular section. If PSYS_SRC_PATTERN_ANGLE_CONE or PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY is used, the presentation is a 3D spherical section. Note that the value of this parameter and PSYS_SRC_ANGLE_BEGIN are internally re-ordered such that this parameter gets the larger of the two values.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_INNERANGLE" Type="Integer" Value="10" Subsets="lsl,os-lsl">
+    <DocumentationString >DEPRECATED: Use PSYS_SRC_ANGLE_BEGIN instead. Works similar to its replacement rule, except the edge of the section is aligned with the emitter facing, rather than its center.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_OUTERANGLE" Type="Integer" Value="11" Subsets="lsl,os-lsl">
+    <DocumentationString >DEPRECATED: Use PSYS_SRC_ANGLE_END instead. Works similar to its replacement rule, except the edge of the section is aligned with the emitter facing, rather than the section's center.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_TARGET_KEY" Type="Integer" Value="20" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the key of a target object, prim, or agent towards which the particles will change course and move (if PSYS_PART_TARGET_POS_MASK is specified) or will move in a straight line (if PSYS_PART_TARGET_LINEAR_MASK is specified). They will attempt to end up at the geometric center of the target at the end of their lifetime. Requires the PSYS_PART_TARGET_POS_MASK or PSYS_PART_TARGET_LINEAR_MASK flag be set.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_START_COLOR" Type="Integer" Value="1" Subsets="lsl,os-lsl">
+    <DocumentationString >A vector specifying the color of the particles upon emission.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_END_COLOR" Type="Integer" Value="3" Subsets="lsl,os-lsl">
+    <DocumentationString >A vector specifying the color the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_COLOR_MASK flag is set.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_START_ALPHA" Type="Integer" Value="2" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the alpha of the particles upon emission. Valid values are in the range 0.0 to 1.0. Lower values are more transparent; higher ones are more opaque.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_END_ALPHA" Type="Integer" Value="4" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the alpha the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_COLOR_MASK flag is set. Valid values are the same as PSYS_PART_START_ALPHA.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_START_SCALE" Type="Integer" Value="5" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the scale or size of the particles upon emission. Valid values for each direction are 0.03125 to 4.0, in meters. The actual particle size is always a multiple of 0.03125. Smaller changes don't have any effect. Since particles are essentially 2D sprites, the Z component of the vector is ignored and can be set to 0.0.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_END_SCALE" Type="Integer" Value="6" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the scale or size the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_SCALE_MASK flag is set. Valid values are the same as PSYS_PART_START_SCALE.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_TEXTURE" Type="Integer" Value="12" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the name of a texture in the emitter prim's inventory to use for each particle. Alternatively, you may specify an asset key UUID for a texture. If using llLinkParticleSystem and texture is not a UUID, texture must be in the emitter prim (not necessarily with the script).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_START_GLOW" Type="Integer" Value="26" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Specifies the glow of the particles upon emission. Valid values are in the range of 0.0 (no glow) to 1.0 (full glow).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_END_GLOW" Type="Integer" Value="27" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Specifies the glow that the particles transition to during their lifetime. Valid values are the same as PSYS_PART_START_GLOW.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BLEND_FUNC_SOURCE" Type="Integer" Value="24" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Specifies how blending function uses the incoming particle's color and alpha information to produce the rendered result. Defaults to PSYS_PART_BF_SOURCE_ALPHA.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BLEND_FUNC_DEST" Type="Integer" Value="25" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Specifies how blending function uses the current framebuffer's color and alpha information to produce the rendered result. Defaults to PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA. To make particles blend with the background in a less opaque and more luminescent way use PSYS_PART_BF_ONE for dest and the default for source. Most other blending combinations will render the invisible/alpha portion of your particle texture, unless the invisible area of your texture is all black (or, in some cases, unless it is all white).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Do not scale the source or destination RGBA values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ZERO" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Zero out the source or destination RGBA values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_DEST_COLOR" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Scale the RGBA values by the RGBA values of the destination.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_SOURCE_COLOR" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Scale the RGBA values by the RGBA values of the particle source.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE_MINUS_DEST_COLOR" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Scale the RGBA values by the inverted RGBA values of the destination.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE_MINUS_SOURCE_COLOR" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Scale the RGBA values by the inverted RGBA values of the particle source.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_SOURCE_ALPHA" Type="Integer" Value="7" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Scale the RGBA values by the alpha values of the particle source.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA" Type="Integer" Value="9" Subsets="lsl,os-lsl">
-    <DocumentationString />
+    <DocumentationString >Scale the RGBA values by the inverted alpha values of the particle source.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_MAX_AGE" Type="Integer" Value="19" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the length of time, in seconds, that the emitter will operate upon coming into view range (if the particle system is already set) or upon execution of this function (if already in view range). Upon expiration, no more particles will be emitted, except as specified above. Zero will give the particle system an infinite duration.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_PART_MAX_AGE" Type="Integer" Value="7" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the lifetime of each particle emitted, in seconds. Maximum is 30.0 seconds. During this time, the particle will appear, change appearance and move according to the parameters specified in the other sections, and then disappear.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_BURST_RATE" Type="Integer" Value="13" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the time interval, in seconds, between "bursts" of particles being emitted. Specifying a value of 0.0 will cause the emission of particles as fast as the viewer can do so.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_BURST_PART_COUNT" Type="Integer" Value="15" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the number of particles emitted in each "burst".</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_ACCEL" Type="Integer" Value="8" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies a directional acceleration vector applied to each particle as it is emitted, in meters per second squared. Valid values are 0.0 to 100.0 for each direction both positive and negative, as region coordinates.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_OMEGA" Type="Integer" Value="21" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the rotational spin of the emitter in radians per second along each axis. This "unsticks" the emitter facing from the prim's positive Z axis and is noticeable in directional presentations. Prim spin (via llTargetOmega) has no effect on emitter spin.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_BURST_SPEED_MIN" Type="Integer" Value="17" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the minimum value of a random range of values which is selected for each particle in a burst as its initial speed upon emission, in meters per second. Note that the value of this parameter and PSYS_SRC_BURST_SPEED_MAX are internally re-ordered such that this parameter gets the smaller of the two values.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_BURST_SPEED_MAX" Type="Integer" Value="18" Subsets="lsl,os-lsl">
+    <DocumentationString >Specifies the maximum value of a random range of values which is selected for each particle in a burst as its initial speed upon emission, in meters per second. Note that the value of this parameter and PSYS_SRC_BURST_SPEED_MIN are internally re-ordered such that this parameter gets the larger of the two values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CLICK_ACTION_ZOOM" Type="Integer" Value="7" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llSetClickAction to set zoom in as the default action when object is clicked</DocumentationString>
@@ -4895,7 +4777,7 @@
     <DocumentationString>The set of animations playing on the avatar to whom this object is attached has been changed.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="DATA_SIM_RELEASE" Type="Integer" Value="128" Subsets="ossl">
-    <DocumentationString />
+    <DocumentationString >returns the version of the simulator the script is running in; the string parameter of llRequestSimulatorData is ignored.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OS_NPC" Type="Integer" Value="16777216" Subsets="ossl">
     <DocumentationString>Target is NPC. Use this instead of NPC, Value 0x01000000</DocumentationString>
@@ -4954,29 +4836,29 @@
   <LibraryConstant Name="CAMERA_FOCUS_Z" Type="Integer" Value="20" Subsets="ossl">
     <DocumentationString>Sets camera z focus (target position) in region coordinates</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_OK" Type="Integer" Value="0" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_OK" Type="Integer" Value="0" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  Result of function call was success</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_MALFORMED_PARAMS" Type="Integer" Value="1000" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_MALFORMED_PARAMS" Type="Integer" Value="1000" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  Function was called with malformed parameters</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_TYPE_MISMATCH" Type="Integer" Value="1001" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_TYPE_MISMATCH" Type="Integer" Value="1001" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  Argument(s) passed to function had a type mismatch</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_BOUNDS_ERROR" Type="Integer" Value="1002" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_BOUNDS_ERROR" Type="Integer" Value="1002" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  Argument(s) passed to function had a bounds error</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_NOT_FOUND" Type="Integer" Value="1003" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_NOT_FOUND" Type="Integer" Value="1003" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  Object or other item was not found</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_NOT_SUPPORTED" Type="Integer" Value="1004" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_NOT_SUPPORTED" Type="Integer" Value="1004" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  Feature not supported</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_INTERNAL_ERROR" Type="Integer" Value="1999" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_INTERNAL_ERROR" Type="Integer" Value="1999" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  An internal error occurred</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="LSL_STATUS_WHITELIST_FAILED" Type="Integer" Value="2001" Subsets="ossl">
-    <DocumentationString />
+  <LibraryConstant Name="LSL_STATUS_WHITELIST_FAILED" Type="Integer" Value="2001" Subsets="lsl,ossl">
+    <DocumentationString >llClearPrimMedia success/failure flag.  Whitelist Failed</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="STATS_TIME_DILATION" Type="Integer" Value="0" Subsets="ossl">
     <DocumentationString>Time Dilation, Value 0</DocumentationString>
@@ -5198,170 +5080,405 @@
     <DocumentationString>Set parcel claim date</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_CENTER_OF_MASS" Type="Integer" Value="1" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR" Type="Integer" Value="14700" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR_X" Type="Integer" Value="14701" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LIMIT_LINEAR_X" Type="Integer" Value="14702" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR_Y" Type="Integer" Value="14703" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LIMIT_LINEAR_Y" Type="Integer" Value="14704" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR_Z" Type="Integer" Value="14705" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LIMIT_LINEAR_Z" Type="Integer" Value="14706" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR" Type="Integer" Value="14707" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR_X" Type="Integer" Value="14708" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LIMIT_ANGULAR_X" Type="Integer" Value="14709" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR_Y" Type="Integer" Value="14710" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LIMIT_ANGULAR_Y" Type="Integer" Value="14711" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR_Z" Type="Integer" Value="14712" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_LIMIT_ANGULAR_Z" Type="Integer" Value="14713" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR" Type="Integer" Value="14714" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR_X" Type="Integer" Value="14715" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR_Y" Type="Integer" Value="14716" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR_Z" Type="Integer" Value="14717" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR" Type="Integer" Value="14718" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR_X" Type="Integer" Value="14719" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR_Y" Type="Integer" Value="14720" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR_Z" Type="Integer" Value="14721" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PHYS_AXIS_UNLOCK" Type="Integer" Value="14722" Subsets="os-bullet-physics">
     <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINKSET_TYPE_CONSTRAINT" Type="Integer" Value="0" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;Links are created with physics constraint objects. Used for flexible objects. Not a good default as it uses more CPU</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINKSET_TYPE_COMPOUND" Type="Integer" Value="1" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;Linkset is constructed as a compound object made up of the shapes of all the children. The most efficient linkset implementation and the default</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINKSET_TYPE_MANUAL" Type="Integer" Value="2" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;NOT IMPLEMENTED. Linkset is implemented by CPU code that moves each of the object in the linkset independently</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_FIXED" Type="Integer" Value="1234" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;Link is fixed and unmovable. Default. Implemented as a 6 degree-of-freedom constraint with no motion in either the linear or angular directions</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_HINGE" Type="Integer" Value="4" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_SPRING" Type="Integer" Value="9" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_6DOF" Type="Integer" Value="6" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_SLIDER" Type="Integer" Value="7" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINA_LOC" Type="Integer" Value="14401" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINA_ROT" Type="Integer" Value="14402" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINB_LOC" Type="Integer" Value="14403" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINB_ROT" Type="Integer" Value="14404" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_LINEAR_LIMIT_LOW" Type="Integer" Value="14405" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_LINEAR_LIMIT_HIGH" Type="Integer" Value="14406" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ANGULAR_LIMIT_LOW" Type="Integer" Value="14407" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ANGULAR_LIMIT_HIGH" Type="Integer" Value="14408" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_USE_FRAME_OFFSET" Type="Integer" Value="14409" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ENABLE_TRANSMOTOR" Type="Integer" Value="14410" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_TRANSMOTOR_MAXVEL" Type="Integer" Value="14411" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_TRANSMOTOR_MAXFORCE" Type="Integer" Value="14412" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_CFM" Type="Integer" Value="14413" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ERP" Type="Integer" Value="14414" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SOLVER_ITERATIONS" Type="Integer" Value="14415" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_AXIS_ENABLE" Type="Integer" Value="14416" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;[PHYS_PARAM_SPRING_AXIS_ENABLE, int axisCode, bool flag]</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_DAMPING" Type="Integer" Value="14417" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;[PHYS_PARAM_SPRING_DAMPING, int axisCode, float damping]</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_STIFFNESS" Type="Integer" Value="14418" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;[PHYS_PARAM_SPRING_STIFFNESS, int axisCode, float stiffness]</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_LINK_TYPE" Type="Integer" Value="14419" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_USE_LINEAR_FRAMEA" Type="Integer" Value="14420" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_EQUILIBRIUM_POINT" Type="Integer" Value="14421" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ALL" Type="Integer" Value="-1" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;(-1) make changes to all axis</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_ALL" Type="Integer" Value="-2" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;all linear axis (X, Y, Z)</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_ALL" Type="Integer" Value="-3" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;all angular axis (X, Y, Z)</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_X" Type="Integer" Value="0" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;X linear axis</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_Y" Type="Integer" Value="1" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;Y linear axis</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_Z" Type="Integer" Value="2" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;Z linear axis</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_X" Type="Integer" Value="3" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;X angular axis</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_Y" Type="Integer" Value="4" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;Y angular axis</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_Z" Type="Integer" Value="5" Subsets="os-bullet-physics">
-    <Property Name="Expand" Value="true"/>
     <DocumentationString>Bulletsim;Z angular axis</DocumentationString>
   </LibraryConstant>
+
+
+  <LibraryFunction Name="physSetLinksetType" ReturnType="Integer" Subsets="os-bullet-physics">
+    <Parameter Name="linksetType" Type="Integer" />
+    <DocumentationString>:Bulletsim: Set linkset type</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="physGetLinksetType" ReturnType="Integer" Subsets="os-bullet-physics">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="physChangeLinkType" ReturnType="Integer" Subsets="os-bullet-physics">
+    <Parameter Name="linkNum" Type="Integer" />
+    <Parameter Name="typeCode" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="physGetLinkType" ReturnType="Integer" Subsets="os-bullet-physics">
+    <Parameter Name="linkNum" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="physChangeLinkFixed" ReturnType="Integer" Subsets="os-bullet-physics">
+    <Parameter Name="linkNum" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="physChangeLinkParams" ReturnType="Integer" Subsets="os-bullet-physics">
     <Parameter Name="linkNum" Type="Integer" />
     <Parameter Name="parms" Type="List" />
     <DocumentationString>Bulletsim: Change link params</DocumentationString>
   </LibraryFunction>
-  <LibraryConstant Name="NPC" Type="Integer" Value="32" Subsets="os-lsl">
+  
+  
+  <LibraryConstant Name="ATTACH_LPEC" Type="Integer" Value="30" Subsets="lsl,os-lsl">
+    <DocumentationString >Integer constant equal to 30, this is not equivalent to ATTACH_LEFT_PEC (29) and does not seem to be used anywhere in linden secondlife.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_RPEC" Type="Integer" Value="29" Subsets="lsl,os-lsl">
+    <DocumentationString >Integer constant equal to 29, this is not equivalent to ATTACH_RIGHT_PEC (30) and does not seem to be used anywhere in linden secondlife.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="AVOID_CHARACTERS" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString >Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="AVOID_DYNAMIC_OBSTACLES" Type="Integer" Value="2" Subsets="lsl">
+    <DocumentationString >Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="AVOID_NONE" Type="Integer" Value="0" Subsets="lsl">
+    <DocumentationString >Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="CHARACTER_CMD_JUMP" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString>Used with  llExecCharacterCmd(). Stops any current pathfinding operation.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="CHARACTER_CMD_SMOOTH_STOP" Type="Integer" Value="2" Subsets="lsl">
+    <DocumentationString>Used with  llExecCharacterCmd(). Stops any current pathfinding operation in a smooth like fashion.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="CHARACTER_CMD_STOP" Type="Integer" Value="0" Subsets="lsl">
+    <DocumentationString>Used with  llExecCharacterCmd(). Makes the character jump.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="DENSITY" Type="Integer" Value="1" Subsets="lsl,os-lsl">
+    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the density.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="FRICTION" Type="Integer" Value="2" Subsets="lsl,os-lsl">
+    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the friction.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="GCNP_RADIUS" Type="Integer" Value="0" Subsets="lsl">
+    <DocumentationString >Used with LLGetClosestNavPoint(vector point, list options); Limits how far out to search for a navigation point.  Parameters are [ float distance ]</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="GCNP_STATIC" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString >Used with LLGetClosestNavPoint(vector point, list options); Specifies whether the test should use the static or dynamic nav mesh. In the static case, all dynamic obstacles are ignored.  Parameters are [ integer use_static_mesh ]</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="GRAVITY_MULTIPLIER" Type="Integer" Value="8" Subsets="lsl,os-lsl">
+    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the gravity multiplier.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="KFM_CMD_SET_MODE" Type="Integer" Value="3" Subsets="lsl">
     <DocumentationString />
   </LibraryConstant>
+  <LibraryConstant Name="LAND_LARGE_BRUSH" Type="Integer" Value="3" Subsets="lsl,os-lsl">
+    <DocumentationString>Passed to llModifyLand to modify large land areas</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="LAND_MEDIUM_BRUSH" Type="Integer" Value="2" Subsets="lsl,os-lsl">
+    <DocumentationString>Passed to llModifyLand to modify medium land areas</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="LAND_SMALL_BRUSH" Type="Integer" Value="1" Subsets="lsl,os-lsl">
+    <DocumentationString>Passed to llModifyLand to modify small land areas</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OPT_CHARACTER" Type="Integer" Value="2" Subsets="lsl,os-lsl">
+    <DocumentationString >Possible return value of llGetObjectDetails when OBJECT_PATHFINDING_TYPE is requested.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PERMISSION_CHANGE_JOINTS" Type="Integer" Value="256" Subsets="lsl,os-lsl">
+    <DocumentationString >Permission to change joints.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PERMISSION_CHANGE_PERMISSIONS" Type="Integer" Value="512" Subsets="lsl,os-lsl">
+    <DocumentationString >Permission to change asset permissions.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PERMISSION_RELEASE_OWNERSHIP" Type="Integer" Value="64" Subsets="lsl,os-lsl">
+    <DocumentationString >Permission to release ownership.  The concept of public objects has been removed from SL</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PERMISSION_REMAP_CONTROLS" Type="Integer" Value="8" Subsets="lsl,os-lsl">
+    <DocumentationString >permission to remap agent's controls.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_CAST_SHADOWS" Type="Integer" Value="24" Subsets="lsl,os-lsl">
+    <DocumentationString>DEPRECATED. Takes 1 parameter, an integer, but has no effect when set and always returns 0 if used in llGetPrimitiveParams</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_CONTROLS" Type="Integer" Value="1" Subsets="lsl,os-lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams to determine the controls shown for media</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_CONTROLS_MINI" Type="Integer" Value="1" Subsets="lsl,os-lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, a PRIM_MEDIA_CONTROLS value meaning 'mini controls'</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_CONTROLS_STANDARD" Type="Integer" Value="0" Subsets="lsl,os-lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, a PRIM_MEDIA_CONTROLS value meaning 'standard controls'</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_MAX_HEIGHT_PIXELS" Type="Integer" Value="2048" Subsets="lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum width allowed in PRIM_MEDIA_HEIGHT_PIXELS</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_MAX_URL_LENGTH" Type="Integer" Value="1024" Subsets="lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum length of PRIM_MEDIA_CURRENT_URL or PRIM_MEDIA_HOME_URL</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_MAX_WHITELIST_COUNT" Type="Integer" Value="64" Subsets="lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum number of items allowed in PRIM_MEDIA_WHITELIST</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_MAX_WHITELIST_SIZE" Type="Integer" Value="1024" Subsets="lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum length, in bytes, of PRIM_MEDIA_WHITELIST</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_MAX_WIDTH_PIXELS" Type="Integer" Value="2048" Subsets="lsl">
+    <DocumentationString>Used with ll{Get,Set}PrimMediaParams, the maximum width allowed in PRIM_MEDIA_WIDTH_PIXELS</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_MEDIA_PARAM_MAX" Type="Integer" Value="14" Subsets="lsl">
+    <DocumentationString>The value of the largest media param</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PSYS_SRC_OBJ_REL_MASK" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PURSUIT_FUZZ_FACTOR" Type="Integer" Value="3" Subsets="lsl">
+    <DocumentationString>Used with llPursue(). Selects a random destination near the PURSUIT_OFFSET. The valid fuzz factor range is from 0 to 1, where 1 is most random. This option requires a nonzero PURSUIT_OFFSET.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PURSUIT_GOAL_TOLERANCE" Type="Integer" Value="5" Subsets="lsl">
+    <DocumentationString>Used with llPursue(). Defines approximately how close the character must be to the current goal to consider itself to be at the desired position. The valid range is from 0.25 to 10m.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PURSUIT_INTERCEPT" Type="Integer" Value="4" Subsets="lsl">
+    <DocumentationString>Used with llPursue(). Define whether the character attempts to predict the target's future location.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PURSUIT_OFFSET" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString>Used with llPursue(). Go to a position offset from the target.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_EVADE_HIDDEN" Type="Integer" Value="7" Subsets="lsl">
+    <DocumentationString>Triggered when an llEvade character thinks it has hidden from its pursuer.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_EVADE_SPOTTED" Type="Integer" Value="8" Subsets="lsl">
+    <DocumentationString>Triggered when an llEvade character switches from hiding to running</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_DYNAMIC_PATHFINDING_DISABLED" Type="Integer" Value="10" Subsets="lsl">
+    <DocumentationString>Triggered when a character enters a region with dynamic pathfinding disabled.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_INVALID_GOAL" Type="Integer" Value="3" Subsets="lsl">
+    <DocumentationString>Goal is not on the navigation-mesh and cannot be reached.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_INVALID_START" Type="Integer" Value="2" Subsets="lsl">
+    <DocumentationString>Character cannot navigate from the current location - e.g., the character is off the navmesh or too high above it.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_NO_NAVMESH" Type="Integer" Value="9" Subsets="lsl">
+    <DocumentationString>Triggered if no navmesh is available for the region.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_NO_VALID_DESTINATION" Type="Integer" Value="6" Subsets="lsl">
+    <DocumentationString>There's no good place for the character to go - e.g., it is patrolling and all the patrol points are now unreachable.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_OTHER" Type="Integer" Value="1000000" Subsets="lsl">
+    <DocumentationString>Unknown failure</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_PARCEL_UNREACHABLE" Type="Integer" Value="11" Subsets="lsl">
+    <DocumentationString>Triggered when a character failed to enter a parcel because it is not allowed to enter, e.g. because the parcel is already full or because object entry was disabled after the navmesh was baked.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_TARGET_GONE" Type="Integer" Value="5" Subsets="lsl">
+    <DocumentationString>Target (for llPursue or llEvade) can no longer be tracked - e.g., it left the region or is an avatar that is now more than about 30m outside the region.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_FAILURE_UNREACHABLE" Type="Integer" Value="4" Subsets="lsl">
+    <DocumentationString>Goal is no longer reachable for some reason - e.g., an obstacle blocks the path.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_GOAL_REACHED" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString>Character has reached the goal and will stop or choose a new goal (if wandering).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PU_SLOWDOWN_DISTANCE_REACHED" Type="Integer" Value="0" Subsets="lsl">
+    <DocumentationString>Character is near current goal.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="REQUIRE_LINE_OF_SIGHT" Type="Integer" Value="2" Subsets="lsl">
+    <DocumentationString>Used with llPursue(). Define whether the character needs a physical line-of-sight to give chase. When enabled, the character will not pick a new target position while there is a something solid between the character and the target object/agent.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="RESTITUTION" Type="Integer" Value="4" Subsets="lsl,os-lsl">
+    <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the restitution.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="TEXTURE_DEFAULT" Type="String" Value="89556747-24cb-43ed-920b-47caed15465f" Subsets="lsl,os-lsl">
+    <DocumentationString>Alias for TEXTURE_PLYWOOD</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="TRAVERSAL_TYPE_FAST" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString >Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="TRAVERSAL_TYPE_NONE" Type="Integer" Value="2" Subsets="lsl">
+    <DocumentationString >Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="TRAVERSAL_TYPE_SLOW" Type="Integer" Value="0" Subsets="lsl">
+    <DocumentationString >Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="VEHICLE_FLAG_NO_FLY_UP" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString >DEPRECATED name for VEHICLE_FLAG_NO_DEFLECTION_UP</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="WANDER_PAUSE_AT_WAYPOINTS" Type="Integer" Value="0" Subsets="lsl">
+    <DocumentationString>Used with llWanderWithin(). Defines if characters should pause after reaching each wander waypoint.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ZERO_ROTATION" Type="Rotation" Value="0.0, 0.0, 0.0, 1.0" Subsets="lsl,os-lsl">
+    <DocumentationString>&lt;0.0, 0.0, 0.0, 1.0&gt;</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="NPC" Type="Integer" Value="32" Subsets="os-lsl">
+    <DocumentationString >Used with llSensor and llAgentSensor to detect NPC characters in OpenSim.</DocumentationString>
+  </LibraryConstant>
+  
+  <!-- requested feature 
   <LibraryConstant Name="PRIM_PHYSICS_MATERIAL" Type="Integer" Value="31" Subsets="os-lsl">
     <DocumentationString />
   </LibraryConstant>
+  -->
+
 </LSLLibraryData>

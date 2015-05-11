@@ -9,7 +9,7 @@ using LibLSLCC.ThreadSafeEnumeration;
 
 namespace LibLSLCC.CodeValidator.Components
 {
-    public class LSLLibraryDataProvider : ILSLMainLibraryDataProvider
+    public class LSLStaticLibraryDataProvider : ILSLMainLibraryDataProvider
     {
         private readonly Dictionary<string, LSLLibraryConstantSignature> _validConstants
             = new Dictionary<string, LSLLibraryConstantSignature>();
@@ -20,22 +20,22 @@ namespace LibLSLCC.CodeValidator.Components
         private readonly Dictionary<string, List<LSLLibraryFunctionSignature>> _validLibraryFunctions
             = new Dictionary<string, List<LSLLibraryFunctionSignature>>();
 
-        public IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
+        public virtual IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
         {
             get { return _validEventHandlers.Values.AsLocked(_validEventHandlers); }
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions
+        public virtual IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions
         {
             get { return _validLibraryFunctions.Values.AsLocked(_validLibraryFunctions); }
         }
 
-        public IEnumerable<LSLLibraryConstantSignature> LibraryConstants
+        public virtual IEnumerable<LSLLibraryConstantSignature> LibraryConstants
         {
             get { return _validConstants.Values.AsLocked(_validLibraryFunctions); }
         }
 
-
+            
 
         protected void ClearLibraryConstants()
         {
@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="name">Name of the event handler.</param>
         /// <returns>True if the event handler with given name exists.</returns>
-        public bool EventHandlerExist(string name)
+        public virtual bool EventHandlerExist(string name)
         {
             return _validEventHandlers.ContainsKey(name);
         }
@@ -79,7 +79,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     An LSLEventHandlerSignature object describing the given event handlers signature,
         ///     or null if the event handler does not exist.
         /// </returns>
-        public LSLLibraryEventSignature GetEventHandlerSignature(string name)
+        public virtual LSLLibraryEventSignature GetEventHandlerSignature(string name)
         {
             LSLLibraryEventSignature result;
 
@@ -97,7 +97,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="name">Name of the library function.</param>
         /// <returns>True if the library function with given name exists.</returns>
-        public bool LibraryFunctionExist(string name)
+        public virtual bool LibraryFunctionExist(string name)
         {
             return _validLibraryFunctions.ContainsKey(name);
         }
@@ -113,7 +113,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     An LSLFunctionSignature list object describing the given library functions signatures,
         ///     or null if the library function does not exist.
         /// </returns>
-        public IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
+        public virtual IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
         {
             List<LSLLibraryFunctionSignature> result;
 
@@ -131,7 +131,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="name">Name of the library constant.</param>
         /// <returns>True if a library constant with the given name exists.</returns>
-        public bool LibraryConstantExist(string name)
+        public virtual bool LibraryConstantExist(string name)
         {
             return _validConstants.ContainsKey(name);
         }
@@ -145,7 +145,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <returns>
         ///     The library constants signature
         /// </returns>
-        public LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
+        public virtual LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
         {
             LSLLibraryConstantSignature result;
 

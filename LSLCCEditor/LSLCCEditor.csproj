@@ -103,14 +103,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EditorTabUI\BooleanConverter.cs" />
-    <Compile Include="EditorTabUI\BooleanVisibilityConverter.cs" />
-    <Compile Include="EditorTabUI\IntegerNotZeroToVisibilityConverter.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\BooleanVisibilityConverter.cs" />
+    <Compile Include="Converters\IntegerNotZeroToVisibilityConverter.cs" />
     <Compile Include="EditorTabUI\EditorTab.cs" />
     <Compile Include="EditorTabUI\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EditorTabUI\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="LSLEditor\LSLEditorControl.xaml.cs">
       <DependentUpon>LSLEditorControl.xaml</DependentUpon>
     </Compile>
@@ -118,8 +118,8 @@
       <DependentUpon>EditorTabContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\RelayCommand.cs" />
-    <Compile Include="Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
+    <Compile Include="TabbedMainWindow.xaml.cs">
+      <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="FindReplace\FindReplaceDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -154,7 +154,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window1.xaml">
+    <Page Include="TabbedMainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -180,7 +180,6 @@
     <EmbeddedResource Include="LSLEditor\LSL.xshd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="LSLCCEditor_TemporaryKey.pfx" />
     <None Include="LSLEditor\ModeV2.xsd">
       <SubType>Designer</SubType>
     </None>

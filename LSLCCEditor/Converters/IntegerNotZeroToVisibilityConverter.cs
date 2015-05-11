@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Windows;
 using System.Windows.Data;
 
-namespace LSLCCEditor.EditorTabUI
+namespace LSLCCEditor.Converters
 {
     [ValueConversion(typeof(int), typeof(Visibility))]
     public class IntegerNotZeroToVisibilityConverter : IValueConverter

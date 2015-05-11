@@ -44,7 +44,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         private readonly Regex _constantPageNavigation =
             new Regex(
-                "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Constants\">next 200</a>\\)<div id=");
+                "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Constants\">next 200</a>\\)<div");
 
         private readonly Regex _constantSignature =
             new Regex(
@@ -61,7 +61,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         private readonly Regex _eventPageNavigation =
             new Regex(
-                "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Events\">next 200</a>\\)<div id=");
+                "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Events\">next 200</a>\\)<div");
 
 
         private readonly LSLEventSignatureRegex _eventSignature =
@@ -80,7 +80,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         private readonly Regex _functionPageNavigation =
             new Regex(
-                "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Functions\">next 200</a>\\)<div id=");
+                "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Functions\">next 200</a>\\)<div");
 
         private readonly LSLFunctionSignatureRegex _functionSignature = new LSLFunctionSignatureRegex("function\\s+(",
             ";)");

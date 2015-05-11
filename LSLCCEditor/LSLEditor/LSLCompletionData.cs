@@ -182,7 +182,7 @@ namespace LSLCCEditor.LSLEditor
 
         public object Description
         {
-            get { return _description; }
+            get { return new TextBlock(){Text = _description, MaxWidth = 500, TextWrapping = TextWrapping.Wrap}; }
         }
 
         public double Priority

@@ -17,15 +17,15 @@ namespace LibraryDataScrapingTools
         {
             Left = left;
             Right = right;
-            NotInLeft = new LSLXmlLibraryDataProvider();
-            NotInRight = new LSLXmlLibraryDataProvider();
+            NotInLeft = new LSLStaticXmlLibraryDataProvider();
+            NotInRight = new LSLStaticXmlLibraryDataProvider();
         }
 
         public ILSLMainLibraryDataProvider Left { get; set; }
         public ILSLMainLibraryDataProvider Right { get; set; }
 
-        public LSLXmlLibraryDataProvider NotInLeft { get; private set; }
-        public LSLXmlLibraryDataProvider NotInRight { get; private set; }
+        public LSLStaticXmlLibraryDataProvider NotInLeft { get; private set; }
+        public LSLStaticXmlLibraryDataProvider NotInRight { get; private set; }
 
         private void DiffFunctions()
         {

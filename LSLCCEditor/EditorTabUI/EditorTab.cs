@@ -2,9 +2,13 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.Utility;
@@ -102,11 +106,21 @@ namespace LSLCCEditor.EditorTabUI
             get { return Content.CompilerMessages; }
         }
 
-        public ILSLMainLibraryDataProvider LibraryDataProvider
+        public LSLStaticDefaultLibraryDataProvider LibraryDataProvider
         {
-            get { return Content.LibraryDataProvider; }
-            set { Content.LibraryDataProvider = value; }
+            get { return (LSLStaticDefaultLibraryDataProvider)Content.LibraryDataProvider; }
+            set
+            {
+                Content.LibraryDataProvider = value;
+            }
         }
+
+
+        public LSLLibraryBaseData BaseLibraryData { get; set; }
+
+
+        public LSLLibraryDataAdditions LibraryDataAdditions { get; set; }
+
 
         private FileSystemWatcher _fileWatcher;
 
@@ -156,25 +170,8 @@ namespace LSLCCEditor.EditorTabUI
 
         public void CheckExternalChanges()
         {
-            if (_fileChanged)
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    var r = MessageBox.Show("This file was changed outside of this tab, would you like to reload it?",
-                        "File Changed", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (r != MessageBoxResult.Yes) return;
-
-                    try
-                    {
-                        OpenFile(FilePath);
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show("File could not be loaded: " + e.Message, "Error");
-                    }
-                });
-            }
-            else if (_fileDeleted)
+ 
+            if (_fileDeleted)
             {
                 Dispatcher.Invoke(() =>
                 {
@@ -184,7 +181,8 @@ namespace LSLCCEditor.EditorTabUI
                             "File Deleted", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (r == MessageBoxResult.Yes)
                     {
-                        CloseCommandImpl(null);
+                        ChangesPending = false;
+                        Close();
                     }
                     else
                     {
@@ -194,9 +192,37 @@ namespace LSLCCEditor.EditorTabUI
 
                         _fileWatcher = null;
 
-                        TabHeader = Path.GetFileName(FilePath) + " (Unsaved)";
+                        TabHeader = Path.GetFileName(FilePath) + " (Old Unsaved)";
+                        MemoryOnly = true;
+                        FilePath = null;
 
                         _fileDeleted = false;
+                    }
+                });
+            }
+            else if (_fileChanged)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    var r = MessageBox.Show("This file was changed outside of this tab, would you like to reload it?",
+                        "File Changed", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (r != MessageBoxResult.Yes)
+                    {
+                        MemoryOnly = true;
+                        TabHeader = Path.GetFileName(FilePath) + " (Old Unsaved)";
+                        FilePath = null;
+                        return;
+                    }
+
+                    try
+                    {
+                        OpenFile(FilePath);
+                        _fileChanged = false;
+
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show("File could not be loaded: " + e.Message, "Error");
                     }
                 });
             }
@@ -236,11 +262,30 @@ namespace LSLCCEditor.EditorTabUI
 
         private void FileWatcherOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
         {
-            _fileChanged = true;
-            if (IsSelected)
+            Dispatcher.Invoke(() =>
             {
-                CheckExternalChanges();
-            }
+                using (var md5 = MD5.Create())
+                {
+                    byte[] source = Encoding.UTF8.GetBytes(SourceCode);
+                    var oldHash = md5.ComputeHash(source, 0, source.Length);
+                    byte[] newHash;
+                    using (var stream = File.OpenRead(FilePath))
+                    {
+                        newHash = md5.ComputeHash(stream);
+                    }
+
+                    if (!oldHash.SequenceEqual(newHash))
+                    {
+                        _fileChanged = true;
+                        if (IsSelected)
+                        {
+                            CheckExternalChanges();
+                        }
+                    }
+                }
+            });
+
+
         }
 
 
@@ -303,13 +348,19 @@ namespace LSLCCEditor.EditorTabUI
 
         public bool SaveTabToNewFile()
         {
+
             var saveDialog = new SaveFileDialog
             {
-                FileName = "LSLScript.lsl",
+                FileName = "script.lsl",
                 DefaultExt = ".lsl",
                 Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt"
             };
 
+            if (!MemoryOnly)
+            {
+                saveDialog.FileName = Path.GetFileName(FilePath);
+                saveDialog.InitialDirectory = Path.GetDirectoryName(FilePath);
+            }
 
             var showDialog = saveDialog.ShowDialog();
             if (showDialog != null && showDialog.Value)
@@ -383,7 +434,7 @@ namespace LSLCCEditor.EditorTabUI
         {
             var saveDialog = new SaveFileDialog
             {
-                FileName = "LSLScript.lsl",
+                FileName = "script.lsl",
                 DefaultExt = ".lsl",
                 Filter = "LSL Script (*.lsl *.txt)|*.lsl;*.txt"
             };
@@ -407,18 +458,29 @@ namespace LSLCCEditor.EditorTabUI
 
 
 
-        public EditorTab(TabControl owner, ObservableCollection<EditorTab> otherTabs)
+        public EditorTab(TabControl owner, ObservableCollection<EditorTab> otherTabs, LSLStaticDefaultLibraryDataProvider dataProvider)
         {
             _owner = owner;
             _otherTabs = otherTabs;
-            Content = new EditorTabContent(this);
+
+            Content = new EditorTabContent(this)
+            {
+                Editor =
+                {
+                    LibraryDataProvider = dataProvider
+                }
+            };
+
+            LibraryDataProvider.LiveFilteringBaseLibraryData = LSLLibraryBaseData.StandardLsl;
+            LibraryDataProvider.LiveFilteringLibraryDataAdditions = LSLLibraryDataAdditions.None;
+            Content.Editor.UpdateHighlightingFromDataProvider();
+
             CloseCommand = new RelayCommand(CloseCommandImpl);
             SaveCommand = new RelayCommand(SaveCommandImpl);
             SaveAsCommand = new RelayCommand(SaveAsCommandImpl);
             RenameCommand = new RelayCommand(RenameCommandImpl);
             OpenFolderCommand = new RelayCommand(OpenFolderImpl);
             CopyFullPathCommand = new RelayCommand(CopyFullFilePathImpl);
-
             CloseAllExceptMeCommand = new RelayCommand(CloseAllExceptMeImpl);
             CloseAllRightCommand = new RelayCommand(CloseAllRightImpl);
             CloseAllLeftCommand = new RelayCommand(CloseAllLeftImpl);
@@ -498,15 +560,12 @@ namespace LSLCCEditor.EditorTabUI
                 throw new InvalidOperationException("OpenFolderImpl: Directory null");
             }
 
-            // suppose that we have a test.txt at E:\
             string filePath = FilePath;
             if (!File.Exists(filePath))
             {
                 return;
             }
 
-            // combine the arguments together
-            // it doesn't matter if there is a space after ','
             string argument = @"/select, " + filePath;
 
             System.Diagnostics.Process.Start("explorer.exe", argument);
@@ -648,17 +707,19 @@ namespace LSLCCEditor.EditorTabUI
                 }
             }
 
-            if (removingIndex > lastSelectedIndex)
-            {
-                _owner.SelectedIndex = lastSelectedIndex;
-            }
-            else
-            {
-                _owner.SelectedIndex = lastSelectedIndex - 1;
-            }
+           
 
             if (!canceled)
             {
+                if (removingIndex > lastSelectedIndex)
+                {
+                    _owner.SelectedIndex = lastSelectedIndex;
+                }
+                else
+                {
+                    _owner.SelectedIndex = lastSelectedIndex - 1;
+                }
+
                 IsSelected = false;
                 RemoveFileWatcher();
                 _otherTabs.Remove(this);

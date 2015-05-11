@@ -78,7 +78,7 @@ default
             _validatorServices = new LSLCustomValidatorServiceProvider
             {
                 ExpressionValidator = new LSLDefaultExpressionValidator(),
-                MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(
+                MainLibraryDataProvider = new LSLStaticDefaultLibraryDataProvider(false,
                     LSLLibraryBaseData.StandardLsl,
                     LSLLibraryDataAdditions.None),
                 StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
@@ -625,7 +625,7 @@ default
             {
                 OpenSimLsl.IsChecked = false;
                 _validatorServices.MainLibraryDataProvider =
-                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
+                    new LSLStaticDefaultLibraryDataProvider(false, LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
                 LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
         }
@@ -638,7 +638,7 @@ default
             {
                 LindenLsl.IsChecked = false;
                 _validatorServices.MainLibraryDataProvider =
-                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
+                    new LSLStaticDefaultLibraryDataProvider(false, LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
                 LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
         }
@@ -670,13 +670,13 @@ default
             if (OpenSimLsl != null && OpenSimLsl.IsChecked)
             {
                 _validatorServices.MainLibraryDataProvider =
-                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
+                    new LSLStaticDefaultLibraryDataProvider(false, LSLLibraryBaseData.OpensimLsl, _additionalLibrarys);
                 LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
             if (LindenLsl != null && LindenLsl.IsChecked)
             {
                 _validatorServices.MainLibraryDataProvider =
-                    new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
+                    new LSLStaticDefaultLibraryDataProvider(false, LSLLibraryBaseData.StandardLsl, _additionalLibrarys);
                 LslEditor.LibraryDataProvider = _validatorServices.MainLibraryDataProvider;
             }
         }

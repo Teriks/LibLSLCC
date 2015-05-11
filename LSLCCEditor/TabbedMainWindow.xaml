@@ -1,18 +1,18 @@
-﻿<Window x:Class="LSLCCEditor.Window1"
+﻿<Window x:Class="LSLCCEditor.TabbedMainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:editorTabUi="clr-namespace:LSLCCEditor.EditorTabUI"
+        xmlns:converters="clr-namespace:LSLCCEditor.Converters"
         mc:Ignorable="d"
-        Title="LSLCCEditor" Height="640.358" Width="897.987"  Closing="Window1_OnClosing" Loaded="Window1_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        Title="LSLCCEditor"  Height="640.358" Width="897.987"  Closing="Window1_OnClosing" Loaded="Window1_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}" Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325">
     <Grid>
         <Grid.Resources>
-            <editorTabUi:BooleanToVisibilityConverter 
+            <converters:BooleanToVisibilityConverter 
                         x:Key="InverseBooleanToVisibilityConverter" 
                         True="Collapsed" False="Visible"/>
-            <editorTabUi:IntegerNotZeroToVisibilityConverter x:Key="IntegerNotZeroToVisibilityConverter"/>
-            <editorTabUi:IntegerNotZeroToBoolConverter x:Key="IntegerNotZeroToBoolConverter"/>
+            <converters:IntegerNotZeroToVisibilityConverter x:Key="IntegerNotZeroToVisibilityConverter"/>
+            <converters:IntegerNotZeroToBoolConverter x:Key="IntegerNotZeroToBoolConverter"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -31,20 +31,57 @@
             <MenuItem Header="Compile" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" >
                 <MenuItem Header="For OpenSim" Click="CompileForOpenSim_OnClick"/>
             </MenuItem>
+            
             <MenuItem Header="Tools" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
                 <MenuItem Header="Clear Compiler Messages" Click="ClearCompilerMessages_OnClick" />
                 <MenuItem Header="Check Syntax" Click="CheckSyntax_OnClick"/>
                 <MenuItem Header="Format" Click="Format_OnClick" />
 
             </MenuItem>
+            <MenuItem Header="Tab Library Data" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" >
+                <MenuItem Name="LindenLsl" Header="Linden LSL" IsChecked="True" IsCheckable="true" Unchecked="LindenLsl_OnUnchecked" Checked="LindenLsl_OnChecked" />
+                <MenuItem Name="OpenSimLsl" Header="OpenSim LSL" IsCheckable="true" Unchecked="OpenSimLsl_OnUnchecked" Checked="OpenSimLsl_OnChecked"  />
+                <MenuItem Name="OsslFunctions" Header="OSSL Functions" IsCheckable="true" Unchecked="OsslFunctions_OnUnchecked" Checked="OsslFunctions_OnChecked" />
+                <MenuItem Name="OsWindlight" Header="OS Windlight" IsCheckable="true" Unchecked="OsWindlight_OnUnchecked" Checked="OsWindlight_OnChecked" />
+                <MenuItem Name="OsModInvoke" Header="OS Mod Invoke" IsCheckable="true" Checked="OsModInvoke_OnChecked" Unchecked="OsModInvoke_OnUnChecked"/>
+                <MenuItem Name="OsBulletPhysics" Header="OS Bullet Physics" IsCheckable="true" Unchecked="OsBulletPhysics_OnUnchecked" Checked="OsBulletPhysics_OnChecked" />
+
+            </MenuItem>
             <MenuItem Header="Search" Click="Search_OnClick" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"/>
         </Menu>
         <Grid Grid.Row="1">
             <TabControl  ItemsSource="{Binding EditorTabs}" x:Name="TabControl" SelectionChanged="TabControl_OnSelectionChanged">
+                
+                <TabControl.Template>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Hidden" >
+                                <TabPanel x:Name="HeaderPanel"
+                          Panel.ZIndex ="1" 
+                          KeyboardNavigation.TabIndex="1"
+                          Grid.Column="0"
+                          Grid.Row="0"
+                          Margin="0,2,0,0"
+                          IsItemsHost="true"/>
+                            </ScrollViewer>
+                            <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="#8C8E94" Background="#F9F9F9">
 
+                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      Margin="{TemplateBinding Padding}"
+                                      ContentSource="SelectedContent" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </TabControl.Template>
+                
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" PreviewMouseDown="TabStackPanelPreviewMouseDown" Drop="TabOnDrop" AllowDrop="True">
+                        <StackPanel Orientation="Horizontal" PreviewMouseDown="TabStackPanelPreviewMouseDown" MouseUp="TabStackPanelOnPreviewMouseUp" Drop="TabOnDrop" AllowDrop="True">
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Save" Command="{Binding SaveCommand}"/>

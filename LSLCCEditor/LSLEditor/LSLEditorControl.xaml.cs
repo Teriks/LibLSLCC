@@ -22,22 +22,104 @@ using LibLSLCC.FastEditorParse;
 namespace LSLCCEditor.LSLEditor
 {
     /// <summary>
-    /// Interaction logic for Test.xaml
+    ///     Interaction logic for Test.xaml
     /// </summary>
     public partial class LSLEditorControl : UserControl
     {
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-            "Text", typeof (string), typeof (LSLEditorControl),
-            new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                TextPropertyChangedCallback));
+        public delegate void TextChangedEventHandler(object sender, EventArgs e);
+
+        private readonly ToolTip _hoverToolTip = new ToolTip();
 
         private readonly object _propertyChangingLock = new object();
-        private readonly object _userChangingLock = new object();
-        private bool _userChanging;
-        private bool _propertyChanging;
+        private readonly object _completionLock = new object();
 
-
+        private readonly SolidColorBrush _builtInTypeCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+        private readonly SolidColorBrush _eventHandlerCompleteColor = new SolidColorBrush(Color.FromRgb(0, 76, 127));
+        private readonly SolidColorBrush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
+        private readonly SolidColorBrush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+        private readonly SolidColorBrush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+        private readonly SolidColorBrush _libraryFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
+        private readonly SolidColorBrush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
+        private readonly SolidColorBrush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
         
+
+        private readonly HashSet<char> _stateAutocompleteIndentBreakCharacters = new HashSet<char>
+        {
+            '{',
+            '}'
+        };
+
+        private readonly object _userChangingLock = new object();
+
+        private readonly HashSet<string> _validSuggestionPrefixes = new HashSet<string>
+        {
+            "\t",
+            "\r",
+            "\n",
+            " ",
+            "{",
+            "}",
+            "[",
+            "(",
+            "<",
+            ",",
+            ";",
+            "=",
+            "+",
+            "-",
+            "*",
+            "/",
+            "%"
+        };
+
+        private CompletionWindow _completionWindow;
+        private bool _propertyChanging;
+        private bool _userChanging;
+
+
+
+        public LSLEditorControl()
+        {
+            InitializeComponent();
+
+            Editor.TextArea.TextEntered += TextArea_TextEntered;
+            Editor.MouseHover += TextEditor_MouseHover;
+            Editor.MouseHover += TextEditor_MouseHoverStopped;
+            Editor.KeyDown += TextEditor_KeyDown;
+
+        }
+
+
+
+        public string Text
+        {
+            get { return (string) GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        public IEnumerable<LSLLibraryConstantSignature> ConstantSignatures
+        {
+            get { return LibraryDataProvider.LibraryConstants; }
+        }
+
+        public IEnumerable<LSLLibraryEventSignature> EventSignatures
+        {
+            get { return LibraryDataProvider.SupportedEventHandlers; }
+        }
+
+        public IEnumerable<string> LibraryFunctionNames
+        {
+            get { return LibraryDataProvider.LibraryFunctions.Where(x => x.Count > 0).Select(x => x.First().Name); }
+        }
+
+        public ILSLMainLibraryDataProvider LibraryDataProvider
+        {
+            get { return (ILSLMainLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
+            set { SetValue(LibraryDataProviderProperty, value); }
+        }
+
+
+
         private static void TextPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
@@ -45,31 +127,11 @@ namespace LSLCCEditor.LSLEditor
             if (!t._userChanging && t.Editor.Document != null)
             {
                 t._propertyChanging = true;
-                t.Editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue == null ? "" : dependencyPropertyChangedEventArgs.NewValue.ToString();
+                t.Editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue == null
+                    ? ""
+                    : dependencyPropertyChangedEventArgs.NewValue.ToString();
                 t._propertyChanging = false;
             }
-        }
-
-
-
-        public static readonly DependencyProperty DocUndoStackProperty = DependencyProperty.Register(
-            "DocUndoStack", typeof (UndoStack), typeof (LSLEditorControl), new FrameworkPropertyMetadata(default(UndoStack), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, DocUndoStackChangedCallback));
-
-
-
-        private static void DocUndoStackChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
-        {
-            var editor = (LSLEditorControl) dependencyObject;
-
-            editor.Editor.Document.UndoStack = (UndoStack)dependencyPropertyChangedEventArgs.NewValue;
-        }
-
-
-
-        public UndoStack DocUndoStack
-        {
-            get { return (UndoStack) GetValue(DocUndoStackProperty); }
-            set { SetValue(DocUndoStackProperty, value); }
         }
 
 
@@ -94,10 +156,12 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
-        public delegate void TextChangedEventHandler(object sender, EventArgs e);
+
 
         public event TextChangedEventHandler UserChangedText;
         public event TextChangedEventHandler TextChanged;
+
+
 
         protected virtual void OnTextChanged()
         {
@@ -105,74 +169,13 @@ namespace LSLCCEditor.LSLEditor
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
+
+
         protected virtual void OnUserChangedText()
         {
             var handler = UserChangedText;
             if (handler != null) handler(this, EventArgs.Empty);
         }
-
-
-        public string Text
-        {
-            get { return (string) GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
-
-
-        private readonly object _completionLock = new object();
-        private readonly ToolTip _hoverToolTip = new ToolTip();
-
-        private readonly HashSet<string> _validSuggestionPrefixes = new HashSet<string>
-        {
-            "\t",
-            "\r",
-            "\n",
-            " ",
-            "{",
-            "}",
-            "[",
-            "(",
-            "<",
-            ",",
-            ";",
-            "=",
-            "+",
-            "-",
-            "*",
-            "/",
-            "%"
-        };
-
-
-        private readonly HashSet<char> _stateAutocompleteIndentBreakCharacters = new HashSet<char>
-        {
-            '{',
-            '}'
-        }; 
-
-
-        private CompletionWindow _completionWindow;
-        private List<LSLLibraryConstantSignature> _constantSignatures;
-        private List<LSLLibraryEventSignature> _eventSignatures;
-        private List<string> _libraryFunctionNames;
-
-
-
-        public LSLEditorControl()
-        {
-            InitializeComponent();
-          
-            Editor.TextArea.TextEntered += TextArea_TextEntered;
-            Editor.MouseHover += TextEditor_MouseHover;
-            Editor.MouseHover += TextEditor_MouseHoverStopped;
-            Editor.KeyDown += TextEditor_KeyDown;
-
-            DocUndoStack = Editor.Document.UndoStack;
-        }
-
-
-
-        
 
 
 
@@ -189,26 +192,15 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-        public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
-    "LibraryDataProvider", typeof(ILSLMainLibraryDataProvider), typeof(LSLEditorControl),
-    new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-        LibraryDataProviderPropertyChangedCallback));
-
 
         private static void LibraryDataProviderPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             if (dependencyPropertyChangedEventArgs.NewValue != null)
             {
-                ((LSLEditorControl)dependencyObject).SetLibraryDataProvider((ILSLMainLibraryDataProvider)dependencyPropertyChangedEventArgs.NewValue);
+                ((LSLEditorControl) dependencyObject).UpdateHighlightingFromDataProvider(
+                    (ILSLMainLibraryDataProvider) dependencyPropertyChangedEventArgs.NewValue);
             }
-        }
-
-
-        public ILSLMainLibraryDataProvider LibraryDataProvider
-        {
-            get { return (ILSLMainLibraryDataProvider)GetValue(LibraryDataProviderProperty); }
-            set { SetValue(LibraryDataProviderProperty, value); }
         }
 
 
@@ -323,7 +315,7 @@ namespace LSLCCEditor.LSLEditor
                 }
 
                 _hoverToolTip.PlacementTarget = this; // required for property inheritance
-                _hoverToolTip.Content = hoverText;
+                _hoverToolTip.Content = new TextBlock {MaxWidth = 500, TextWrapping = TextWrapping.Wrap, Text = hoverText};
                 _hoverToolTip.IsOpen = true;
                 e.Handled = true;
             }
@@ -339,29 +331,19 @@ namespace LSLCCEditor.LSLEditor
 
 
 
-        private readonly SolidColorBrush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
-        private readonly SolidColorBrush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-        private readonly SolidColorBrush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
-        private readonly SolidColorBrush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
-        private readonly SolidColorBrush _libraryFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
-        private readonly SolidColorBrush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
-        private readonly SolidColorBrush _builtInTypeCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
-        private readonly SolidColorBrush _eventHandlerCompleteColor = new SolidColorBrush(Color.FromRgb(0, 76, 127));
-
-
         private CompletionWindow CreateCompletionWindow()
         {
             var c = new CompletionWindow(Editor.TextArea);
+           
             c.Width = c.Width + 160;
             return c;
         }
 
 
 
+        // ReSharper disable once FunctionComplexityOverflow
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
-            
-
             lock (_completionLock)
             {
                 if (_completionWindow != null && _completionWindow.CompletionList.ListBox.Items.Count == 0)
@@ -429,10 +411,10 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.InStateOutsideEvent)
                 {
-                    foreach (var eventHandler in _eventSignatures.Where(x => x.Name.StartsWith(e.Text)))
+                    foreach (var eventHandler in EventSignatures.Where(x => x.Name.StartsWith(e.Text)))
                     {
                         var sig = eventHandler.SignatureString + "\n{\n\t\n}";
-                        data.Add(new LSLCompletionData(eventHandler.Name,sig,eventHandler.SignatureAndDocumentation,0)
+                        data.Add(new LSLCompletionData(eventHandler.Name, sig, eventHandler.SignatureAndDocumentation, 0)
                         {
                             ColorBrush = _eventHandlerCompleteColor,
                             ForceIndent = true,
@@ -446,7 +428,6 @@ namespace LSLCCEditor.LSLEditor
                         });
                         possibleEventName = true;
                     }
-
                 }
 
                 if (!fastVarParser.InStateOutsideEvent && !fastVarParser.AfterDefaultState)
@@ -488,7 +469,7 @@ namespace LSLCCEditor.LSLEditor
                         possibleType = true;
                     }
 
-                    foreach (var sig in _constantSignatures.Where(x => x.Name.StartsWith(e.Text)))
+                    foreach (var sig in ConstantSignatures.Where(x => x.Name.StartsWith(e.Text)))
                     {
                         data.Add(new LSLCompletionData(sig.Name, sig.Name,
                             sig.SignatureAndDocumentation, 1)
@@ -503,7 +484,6 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler || fastVarParser.InGlobalScope)
                 {
-
                     foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(e.Text)))
                     {
                         string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
@@ -519,7 +499,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
                 {
-                    var functionSuggestions = _libraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
+                    var functionSuggestions = LibraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
                     foreach (var func in functionSuggestions)
                     {
                         var docs = string.Join(Environment.NewLine + Environment.NewLine,
@@ -564,8 +544,6 @@ namespace LSLCCEditor.LSLEditor
                     }
 
 
-
-
                     foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(e.Text)))
                     {
                         string doc = "Global function:\n" + func.Signature;
@@ -580,7 +558,8 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                if (!possibleConstant && !possibleLibraryFunction && !possibleType && !possibleUserDefinedItem && !possibleEventName)
+                if (!possibleConstant && !possibleLibraryFunction && !possibleType && !possibleUserDefinedItem &&
+                    !possibleEventName)
                 {
                     _completionWindow = null;
                     return;
@@ -641,10 +620,11 @@ namespace LSLCCEditor.LSLEditor
 
                     if (fastVarParser.InStateOutsideEvent)
                     {
-                        foreach (var eventHandler in _eventSignatures)
+                        foreach (var eventHandler in EventSignatures)
                         {
                             var sig = eventHandler.SignatureString + "\n{\n\t\n}";
-                            data.Add(new LSLCompletionData(eventHandler.Name, sig, eventHandler.SignatureAndDocumentation, 0)
+                            data.Add(new LSLCompletionData(eventHandler.Name, sig,
+                                eventHandler.SignatureAndDocumentation, 0)
                             {
                                 ColorBrush = _eventHandlerCompleteColor,
                                 ForceIndent = true,
@@ -658,11 +638,11 @@ namespace LSLCCEditor.LSLEditor
                             });
                             possibleEventName = true;
                         }
-                        
                     }
 
 
-                    if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration || fastVarParser.InGlobalScope)
+                    if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration ||
+                        fastVarParser.InGlobalScope)
                     {
                         foreach (var i in fastVarParser.GlobalVariables)
                         {
@@ -675,11 +655,10 @@ namespace LSLCCEditor.LSLEditor
                             possibleUserDefinedItem = true;
                         }
                     }
-                    
+
 
                     if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration)
                     {
-
                         foreach (var i in fastVarParser.GlobalFunctions)
                         {
                             data.Add(new LSLCompletionData(
@@ -691,7 +670,6 @@ namespace LSLCCEditor.LSLEditor
                             });
                             possibleUserDefinedItem = true;
                         }
-
 
 
                         foreach (var i in fastVarParser.LocalParameters)
@@ -728,17 +706,14 @@ namespace LSLCCEditor.LSLEditor
 
                     if (possibleUserDefinedItem || possibleEventName)
                     {
-                        
                         _completionWindow.Show();
                     }
                     else
                     {
-
-                       _completionWindow = null;
+                        _completionWindow = null;
                     }
 
                     e.Handled = true;
-
                 }
             }
         }
@@ -751,7 +726,6 @@ namespace LSLCCEditor.LSLEditor
 
             lock (_completionLock)
             {
-
                 if (_completionWindow != null) return;
 
                 var caretOffset = textArea.Caret.Offset;
@@ -778,7 +752,7 @@ namespace LSLCCEditor.LSLEditor
                 bool possibleGlobalFunctions = false;
                 if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration)
                 {
-                    foreach (var func in _libraryFunctionNames)
+                    foreach (var func in LibraryFunctionNames)
                     {
                         var docs = string.Join(Environment.NewLine + Environment.NewLine,
                             LibraryDataProvider.GetLibraryFunctionSignatures(func)
@@ -808,7 +782,6 @@ namespace LSLCCEditor.LSLEditor
                 }
             }
         }
-
 
 
 
@@ -844,7 +817,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.InGlobalScope || fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
                 {
-                    foreach (var con in _constantSignatures)
+                    foreach (var con in ConstantSignatures)
                     {
                         _completionWindow.CompletionList.CompletionData.Add(
                             new LSLCompletionData(con.Name,
@@ -872,6 +845,7 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
+
         private void TextEditor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Q && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
@@ -885,21 +859,20 @@ namespace LSLCCEditor.LSLEditor
             else if (e.Key == Key.Space && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
                 ControlSpace(e);
-            } 
+            }
         }
 
 
-        private void SetLibraryDataProvider(ILSLMainLibraryDataProvider provider)
+
+        public void UpdateHighlightingFromDataProvider()
         {
-            _libraryFunctionNames = provider.LibraryFunctions.Select(x => x.First().Name).ToList();
-            _eventSignatures = provider.SupportedEventHandlers.ToList();
-            _constantSignatures = provider.LibraryConstants.ToList();
-
-            _libraryFunctionNames.Sort(String.CompareOrdinal);
-            _eventSignatures.Sort((x, y) => String.CompareOrdinal(x.Name, y.Name));
-            _constantSignatures.Sort((x, y) => String.CompareOrdinal(x.Name, y.Name));
+            UpdateHighlightingFromDataProvider(LibraryDataProvider);
+        }
 
 
+
+        public void UpdateHighlightingFromDataProvider(ILSLMainLibraryDataProvider provider)
+        {
             using (var resourceStream = GetType().Assembly.GetManifestResourceStream("LSLCCEditor.LSLEditor.LSL.xshd"))
             {
                 if (resourceStream != null)
@@ -909,7 +882,11 @@ namespace LSLCCEditor.LSLEditor
                     Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
 
 
-                    foreach (var func in (from s in _libraryFunctionNames orderby s.Length descending select s))
+                    foreach (
+                        var func in
+                            (from s in provider.LibraryFunctions.Where(x => x.Count > 0).Select(x => x.First().Name)
+                                orderby s.Length descending
+                                select s))
                     {
                         var rule = new HighlightingRule
                         {
@@ -919,7 +896,8 @@ namespace LSLCCEditor.LSLEditor
                         Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
 
-                    foreach (var cnst in (from s in _constantSignatures orderby s.Name.Length descending select s))
+                    foreach (var cnst in (from s in provider.LibraryConstants orderby s.Name.Length descending select s)
+                        )
                     {
                         var rule = new HighlightingRule
                         {
@@ -929,7 +907,9 @@ namespace LSLCCEditor.LSLEditor
                         Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
 
-                    foreach (var evnt in (from s in _eventSignatures orderby s.Name.Length descending select s))
+                    foreach (
+                        var evnt in
+                            (from s in provider.SupportedEventHandlers orderby s.Name.Length descending select s))
                     {
                         var rule = new HighlightingRule
                         {
@@ -975,8 +955,14 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+            "Text", typeof (string), typeof (LSLEditorControl),
+            new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                TextPropertyChangedCallback));
 
-
-
+        public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
+            "LibraryDataProvider", typeof (ILSLMainLibraryDataProvider), typeof (LSLEditorControl),
+            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                LibraryDataProviderPropertyChangedCallback));
     }
 }

@@ -27,7 +27,7 @@ namespace LSLCCEditor.EditorTabUI
 
         public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
             "LibraryDataProvider", typeof(ILSLMainLibraryDataProvider), typeof(EditorTabContent),
-            new FrameworkPropertyMetadata(new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl)));
+            new FrameworkPropertyMetadata(null));
 
         public ILSLMainLibraryDataProvider LibraryDataProvider
         {
@@ -99,15 +99,6 @@ namespace LSLCCEditor.EditorTabUI
             Editor.Editor.Select(linestart.Offset, l);
         }
 
-
-
-
-
-
-        private void EditorTab_OnLoaded(object sender, RoutedEventArgs e)
-        {
-
-        }
 
 
         private void Editor_OnTextChanged(object sender, EventArgs e)

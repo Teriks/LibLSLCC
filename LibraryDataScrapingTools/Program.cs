@@ -44,10 +44,10 @@ namespace LibraryDataScrapingTools
 
     internal class Program
     {
-        public static LSLXmlLibraryDataProvider ScrapeData(IDocumentationProvider documentation,
+        public static LSLStaticXmlLibraryDataProvider ScrapeData(IDocumentationProvider documentation,
             OpenSimLibraryReflectedTypeData openSimScriptFramework)
         {
-            var data = new LSLXmlLibraryDataProvider();
+            var data = new LSLStaticXmlLibraryDataProvider();
 
             var osslLibraryWikiData = new OsslWikiLibraryDataScraper(
                 documentation, new[] { "ossl" });
@@ -179,7 +179,7 @@ namespace LibraryDataScrapingTools
 
 
         private static void CheckMissingOpensimKeywords(OpenSimLibraryReflectedTypeData openSimLibraryReflectedTypeData,
-            LSLLibraryDataProvider existingData)
+            LSLStaticLibraryDataProvider existingData)
         {
             var openSim = new OpenSimDirectLibraryData(openSimLibraryReflectedTypeData);
             openSim.IncludeScriptConstantContainerClass(openSimLibraryReflectedTypeData.ScriptBaseClass,
@@ -318,7 +318,7 @@ namespace LibraryDataScrapingTools
                 Log.WriteLine("");
                 Log.WriteLine("");
 
-                var diff = new LibraryDataDiff(data, new LSLDefaultLibraryDataProvider(
+                var diff = new LibraryDataDiff(data, new LSLStaticDefaultLibraryDataProvider(false,
                     LSLLibraryBaseData.All));
 
                 diff.Diff();

@@ -47,10 +47,11 @@
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
     <Compile Include="CodeValidator\Components\LSLCustomValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
-    <Compile Include="CodeValidator\Components\LSLDefaultLibraryDataProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLStaticDefaultLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLStaticLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataRootAttribute.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetsAttributeParser.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryDataXmlSerializer.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\LSLValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultStringPreProcessor.cs" />
-    <Compile Include="CodeValidator\Components\LSLXMLLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLStaticXMLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultSyntaxErrorListener.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Enums\LSLCodeScopeNodeType.cs" />
@@ -215,7 +216,6 @@
     <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvideOld.xml" />
     <None Include="LSLParser\LSL.tokens" />
     <None Include="LSLParser\LSLLexer.tokens" />
   </ItemGroup>
@@ -224,6 +224,9 @@
       <CustomToolNamespace>LibLSLCC</CustomToolNamespace>
       <ForceAtn>False</ForceAtn>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProviderOld.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvider.xml" />
