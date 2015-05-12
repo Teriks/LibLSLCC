@@ -8,7 +8,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             ExpressionValidator = new LSLDefaultExpressionValidator();
 
-            MainLibraryDataProvider = new LSLStaticDefaultLibraryDataProvider(false,
+            MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(false,
                 LSLLibraryBaseData.StandardLsl, 
                 LSLLibraryDataAdditions.None);
 

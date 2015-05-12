@@ -2,7 +2,11 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,7 +37,26 @@ namespace LSLCCEditor
         private readonly LSLCustomValidatorServiceProvider _validatorServices;
 
 
-        private readonly LSLStaticDefaultLibraryDataProvider _libraryDataProvider = new LSLStaticDefaultLibraryDataProvider(true, LSLLibraryBaseData.StandardLsl);
+        private readonly LSLDefaultLibraryDataProvider _libraryDataProvider = new LSLDefaultLibraryDataProvider(true, LSLLibraryBaseData.StandardLsl);
+
+
+
+        public static RoutedCommand FileNew = new RoutedCommand();
+        public static RoutedCommand FileOpen = new RoutedCommand();
+        public static RoutedCommand FileOpenNewTab = new RoutedCommand();
+        public static RoutedCommand FileSave = new RoutedCommand();
+        public static RoutedCommand FileSaveAs = new RoutedCommand();
+
+        public static RoutedCommand ToolsFormat = new RoutedCommand();
+        public static RoutedCommand ToolsSyntaxCheck = new RoutedCommand();
+        public static RoutedCommand ToolsClearMessages = new RoutedCommand();
+
+        public static RoutedCommand CompileOpenSim = new RoutedCommand();
+
+        public static RoutedCommand SearchFind = new RoutedCommand();
+        public static RoutedCommand SearchReplace = new RoutedCommand();
+
+
 
         private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
         {
@@ -117,7 +140,14 @@ namespace LSLCCEditor
 
         private EditorTab CreateEditorTab()
         {
-            var t = new EditorTab(TabControl, EditorTabs, _libraryDataProvider);
+            const string code = "default\n{\n\tstate_entry()\n\t{\n\t\tllSay(0, \"Hello World!\");\n\t}\n}";
+
+            var t = new EditorTab(TabControl, EditorTabs, _libraryDataProvider)
+            {
+                SourceCode = code,
+                ChangesPending = false
+            };
+
 
             return t;
         }
@@ -182,6 +212,10 @@ namespace LSLCCEditor
                 throw;
             }
         }
+
+
+
+        
 
 
 
@@ -369,10 +403,6 @@ namespace LSLCCEditor
             if (tab.SourceCode != st)
             {
                 tab.ChangesPending = true;
-                if (!tab.MemoryOnly)
-                {
-                    tab.TabHeader = Path.GetFileName(tab.FilePath) + "*";
-                }
             }
 
             tab.SourceCode = st;
@@ -406,6 +436,14 @@ namespace LSLCCEditor
             var showDialog = openDialog.ShowDialog();
             if (showDialog != null && showDialog.Value)
             {
+                var alreadyOpen = EditorTabs.FirstOrDefault(x => x.FilePath == openDialog.FileName);
+                if (alreadyOpen != null)
+                {
+                    TabControl.SelectedIndex = EditorTabs.IndexOf(alreadyOpen);
+                    return;
+                }
+
+
                 var tab = CreateEditorTab();
 
                 if (tab.OpenFileInteractive(openDialog.FileName))
@@ -514,6 +552,7 @@ namespace LSLCCEditor
 
             FindDialogManager = new FindReplaceMgr
             {
+                OwnerWindow = this,
                 InterfaceConverter = new IEditorConverter(),
                 ShowSearchIn = false
             };
@@ -542,9 +581,25 @@ namespace LSLCCEditor
 
 
 
-        private void Search_OnClick(object sender, RoutedEventArgs e)
+        private void Find_OnClick(object sender, RoutedEventArgs e)
         {
+
+            var tab = TabControl.SelectedItem as EditorTab;
+            if (tab == null) return;
+
+            FindDialogManager.TextToFind = tab.Content.Editor.Editor.SelectedText;
+
             FindDialogManager.ShowAsFind();
+        }
+
+        private void Replace_OnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+            if (tab == null) return;
+
+            FindDialogManager.TextToFind = tab.Content.Editor.Editor.SelectedText;
+
+            FindDialogManager.ShowAsReplace();
         }
 
         private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -564,12 +619,11 @@ namespace LSLCCEditor
                 if (t != null)
                 {
 
-                    t.LibraryDataProvider.LiveFilteringBaseLibraryData = t.BaseLibraryData;
-                    t.LibraryDataProvider.LiveFilteringLibraryDataAdditions = t.LibraryDataAdditions;
+                    t.LibraryDataProvider.LiveFilteringBaseLibraryData = t.BaseLibraryDataCache;
+                    t.LibraryDataProvider.LiveFilteringLibraryDataAdditions = t.LibraryDataAdditionsCache;
                     t.Content.Editor.UpdateHighlightingFromDataProvider();
 
                     SetLibraryMenuFromTab(t);
-
 
 
                     t.Content.Editor.Editor.Unloaded += (o, args) =>
@@ -711,22 +765,22 @@ namespace LSLCCEditor
 
             _settingLibraryMenuFromTab = true;
 
-            LindenLsl.IsChecked = tab.BaseLibraryData == LSLLibraryBaseData.StandardLsl;
+            LindenLsl.IsChecked = tab.BaseLibraryDataCache == LSLLibraryBaseData.StandardLsl;
             OpenSimLsl.IsChecked = !LindenLsl.IsChecked;
 
-            OsBulletPhysics.IsChecked = ((tab.LibraryDataAdditions & LSLLibraryDataAdditions.OpenSimBulletPhysics) ==
+            OsBulletPhysics.IsChecked = ((tab.LibraryDataAdditionsCache & LSLLibraryDataAdditions.OpenSimBulletPhysics) ==
                                                LSLLibraryDataAdditions.OpenSimBulletPhysics);
             
 
-            OsModInvoke.IsChecked = ((tab.LibraryDataAdditions & LSLLibraryDataAdditions.OpenSimModInvoke) ==
+            OsModInvoke.IsChecked = ((tab.LibraryDataAdditionsCache & LSLLibraryDataAdditions.OpenSimModInvoke) ==
                 LSLLibraryDataAdditions.OpenSimModInvoke);
 
 
-            OsslFunctions.IsChecked = ((tab.LibraryDataAdditions & LSLLibraryDataAdditions.OpenSimOssl) ==
+            OsslFunctions.IsChecked = ((tab.LibraryDataAdditionsCache & LSLLibraryDataAdditions.OpenSimOssl) ==
                                             LSLLibraryDataAdditions.OpenSimOssl);
 
 
-            OsWindlight.IsChecked = ((tab.LibraryDataAdditions & LSLLibraryDataAdditions.OpenSimWindlight) ==
+            OsWindlight.IsChecked = ((tab.LibraryDataAdditionsCache & LSLLibraryDataAdditions.OpenSimWindlight) ==
                                           LSLLibraryDataAdditions.OpenSimWindlight);
 
 
@@ -749,8 +803,8 @@ namespace LSLCCEditor
             if (OpenSimLsl != null && OpenSimLsl.IsChecked)
             {
                 OpenSimLsl.IsChecked = false;
-                tab.BaseLibraryData = LSLLibraryBaseData.StandardLsl;
-                tab.LibraryDataProvider.LiveFilteringBaseLibraryData = tab.BaseLibraryData;
+                tab.BaseLibraryDataCache = LSLLibraryBaseData.StandardLsl;
+                tab.LibraryDataProvider.LiveFilteringBaseLibraryData = tab.BaseLibraryDataCache;
                 tab.Content.Editor.UpdateHighlightingFromDataProvider();
             }
         }
@@ -769,8 +823,8 @@ namespace LSLCCEditor
             if (LindenLsl != null && LindenLsl.IsChecked)
             {
                 LindenLsl.IsChecked = false;
-                tab.BaseLibraryData = LSLLibraryBaseData.OpensimLsl;
-                tab.LibraryDataProvider.LiveFilteringBaseLibraryData = tab.BaseLibraryData;
+                tab.BaseLibraryDataCache = LSLLibraryBaseData.OpensimLsl;
+                tab.LibraryDataProvider.LiveFilteringBaseLibraryData = tab.BaseLibraryDataCache;
                 tab.Content.Editor.UpdateHighlightingFromDataProvider();
             }
         }
@@ -807,8 +861,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions |= LSLLibraryDataAdditions.OpenSimOssl;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache |= LSLLibraryDataAdditions.OpenSimOssl;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
             
         }
@@ -822,8 +876,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions &= ~LSLLibraryDataAdditions.OpenSimOssl;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache &= ~LSLLibraryDataAdditions.OpenSimOssl;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
@@ -836,8 +890,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions |= LSLLibraryDataAdditions.OpenSimWindlight;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache |= LSLLibraryDataAdditions.OpenSimWindlight;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
@@ -850,8 +904,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions &= ~LSLLibraryDataAdditions.OpenSimWindlight;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache &= ~LSLLibraryDataAdditions.OpenSimWindlight;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
@@ -864,8 +918,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions |= LSLLibraryDataAdditions.OpenSimBulletPhysics;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache |= LSLLibraryDataAdditions.OpenSimBulletPhysics;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
@@ -878,8 +932,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions &= ~LSLLibraryDataAdditions.OpenSimBulletPhysics;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache &= ~LSLLibraryDataAdditions.OpenSimBulletPhysics;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
@@ -892,8 +946,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions |= LSLLibraryDataAdditions.OpenSimModInvoke;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache |= LSLLibraryDataAdditions.OpenSimModInvoke;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
@@ -906,8 +960,8 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            tab.LibraryDataAdditions &= ~LSLLibraryDataAdditions.OpenSimModInvoke;
-            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditions;
+            tab.LibraryDataAdditionsCache &= ~LSLLibraryDataAdditions.OpenSimModInvoke;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 

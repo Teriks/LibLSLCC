@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,13 @@ namespace LSLCCEditor.EditorTabUI
     public class EditorTab : DependencyObject
     {
         private readonly TabControl _owner;
-        private readonly ObservableCollection<EditorTab> _otherTabs;
+        public IList<EditorTab> OwnerTabCollection { get; private set; }
+
+
+        public IEnumerable<EditorTab> OtherTabs
+        {
+            get { return OwnerTabCollection.Where(x => !ReferenceEquals(x, this)); }
+        }
 
         public static readonly DependencyProperty TabHeaderProperty = DependencyProperty.Register(
             "TabHeader", typeof (string), typeof (EditorTab), new FrameworkPropertyMetadata("New (Unsaved)"));
@@ -44,6 +51,50 @@ namespace LSLCCEditor.EditorTabUI
             set { SetValue(ContentProperty, value); }
         }
 
+
+
+        public string TabName
+        {
+            get
+            {
+                return _tabName;
+            }
+            set
+            {
+                if (_tabName == value) return;
+
+
+
+                var editorTabs = OtherTabs as IList<EditorTab> ?? OtherTabs.ToList();
+
+                var dups = editorTabs.Where(x => !ReferenceEquals(x, this)).Count(x => x.TabName == value);
+
+
+                string newHeader = value;
+                if (dups > 0)
+                {
+                    newHeader = value + " " + dups;
+                    while (editorTabs.Any(x => (x.TabHeader == newHeader) || (x.TabHeader == newHeader + "*")))
+                    {
+                        dups++;
+                        newHeader = value + " " + dups;
+                    }
+                }
+
+                if (!MemoryOnly && ChangesPending)
+                {
+                    TabHeader = newHeader + "*";
+                }
+                else
+                {
+                    TabHeader = newHeader;
+                }
+
+                _tabName = value;
+            }
+        }
+
+
         public ICommand CloseCommand { get; private set; }
 
         public ICommand CloseAllExceptMeCommand { get; private set; }
@@ -64,7 +115,45 @@ namespace LSLCCEditor.EditorTabUI
         public ICommand CopyFullPathCommand { get; private set; }
 
         public static readonly DependencyProperty ChangesPendingProperty = DependencyProperty.Register(
-            "ChangesPending", typeof (bool), typeof (EditorTab), new FrameworkPropertyMetadata(default(bool)));
+            "ChangesPending", typeof (bool), typeof (EditorTab), new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.None, ChangesPendingPropertyChangedCallback));
+
+
+
+        private static void ChangesPendingPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            if ((bool) dependencyPropertyChangedEventArgs.NewValue)
+            {
+                var tab = (EditorTab) dependencyObject;
+                tab.TabHeader = tab.TabHeader + "*";
+            }
+            else
+            {
+                var tab = (EditorTab)dependencyObject;
+
+
+                var editorTabs = tab.OtherTabs as IList<EditorTab> ?? tab.OtherTabs.ToList();
+
+                var dups = editorTabs.Count(x => x.TabName == tab.TabName);
+
+                string newHeader = tab.TabName;
+
+                if (dups > 0)
+                {
+                    newHeader = tab.TabName + " " + dups;
+                    while (editorTabs.Any(x => (x.TabHeader == newHeader) || (x.TabHeader == newHeader + "*")))
+                    {
+                        dups++;
+                        newHeader = tab.TabName + " " + dups;
+                    }
+                }
+
+                
+                tab.TabHeader = newHeader;
+                
+            }
+        }
+
+
 
         public bool ChangesPending
         {
@@ -86,6 +175,9 @@ namespace LSLCCEditor.EditorTabUI
         public static readonly DependencyProperty FilePathProperty = DependencyProperty.Register(
             "FilePath", typeof (string), typeof (EditorTab), new FrameworkPropertyMetadata(default(string)));
 
+
+
+
         public string FilePath
         {
             get { return (string) GetValue(FilePathProperty); }
@@ -106,9 +198,9 @@ namespace LSLCCEditor.EditorTabUI
             get { return Content.CompilerMessages; }
         }
 
-        public LSLStaticDefaultLibraryDataProvider LibraryDataProvider
+        public LSLDefaultLibraryDataProvider LibraryDataProvider
         {
-            get { return (LSLStaticDefaultLibraryDataProvider)Content.LibraryDataProvider; }
+            get { return (LSLDefaultLibraryDataProvider)Content.LibraryDataProvider; }
             set
             {
                 Content.LibraryDataProvider = value;
@@ -116,10 +208,10 @@ namespace LSLCCEditor.EditorTabUI
         }
 
 
-        public LSLLibraryBaseData BaseLibraryData { get; set; }
+        public LSLLibraryBaseData BaseLibraryDataCache { get; set; }
 
 
-        public LSLLibraryDataAdditions LibraryDataAdditions { get; set; }
+        public LSLLibraryDataAdditions LibraryDataAdditionsCache { get; set; }
 
 
         private FileSystemWatcher _fileWatcher;
@@ -165,6 +257,8 @@ namespace LSLCCEditor.EditorTabUI
 
         private bool _fileChanged;
         private bool _fileDeleted;
+        private string _tabName;
+
 
 
 
@@ -192,7 +286,7 @@ namespace LSLCCEditor.EditorTabUI
 
                         _fileWatcher = null;
 
-                        TabHeader = Path.GetFileName(FilePath) + " (Old Unsaved)";
+                        TabName = Path.GetFileName(FilePath) + " (Old Unsaved)";
                         MemoryOnly = true;
                         FilePath = null;
 
@@ -208,8 +302,9 @@ namespace LSLCCEditor.EditorTabUI
                         "File Changed", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (r != MessageBoxResult.Yes)
                     {
+                        
+                        TabName = Path.GetFileName(FilePath) + " (Old Unsaved)";
                         MemoryOnly = true;
-                        TabHeader = Path.GetFileName(FilePath) + " (Old Unsaved)";
                         FilePath = null;
                         return;
                     }
@@ -236,14 +331,7 @@ namespace LSLCCEditor.EditorTabUI
             {
                 FilePath = renamedEventArgs.FullPath;
 
-                if (ChangesPending)
-                {
-                    TabHeader = renamedEventArgs.Name + "*";
-                }
-                else
-                {
-                    TabHeader = renamedEventArgs.Name;
-                }
+                TabName = renamedEventArgs.Name;
             });
         }
 
@@ -318,11 +406,14 @@ namespace LSLCCEditor.EditorTabUI
 
         public void OpenFile(string fileName)
         {
+
+
+
             Content.SourceCode = File.ReadAllText(fileName);
 
+            TabName = Path.GetFileName(fileName);
             MemoryOnly = false;
             ChangesPending = false;
-            TabHeader = Path.GetFileName(fileName);
             FilePath = fileName;
 
             WatchNewFile(FilePath);
@@ -367,10 +458,11 @@ namespace LSLCCEditor.EditorTabUI
             {
                 File.WriteAllText(saveDialog.FileName, SourceCode);
 
+                TabName = Path.GetFileName(saveDialog.FileName);
                 ChangesPending = false;
                 MemoryOnly = false;
                 FilePath = saveDialog.FileName;
-                TabHeader = Path.GetFileName(saveDialog.FileName);
+                
 
                 WatchNewFile(FilePath);
 
@@ -401,9 +493,7 @@ namespace LSLCCEditor.EditorTabUI
         {
             try
             {
-                TabHeader = Path.GetFileName(FilePath);
-                ChangesPending = false;
-                MemoryOnly = false;
+
 
                 if (_fileWatcher != null)
                 {
@@ -415,6 +505,11 @@ namespace LSLCCEditor.EditorTabUI
                 {
                     _fileWatcher.EnableRaisingEvents = true;
                 }
+
+                TabName = Path.GetFileName(FilePath);
+                ChangesPending = false;
+                MemoryOnly = false;
+
                 return true;
             }
             catch (Exception e)
@@ -445,10 +540,11 @@ namespace LSLCCEditor.EditorTabUI
             {
                 File.WriteAllText(saveDialog.FileName, SourceCode);
 
+                TabName = Path.GetFileName(saveDialog.FileName);
                 ChangesPending = false;
                 MemoryOnly = false;
                 FilePath = saveDialog.FileName;
-                TabHeader = Path.GetFileName(saveDialog.FileName);
+                
 
                 return true;
             }
@@ -458,10 +554,13 @@ namespace LSLCCEditor.EditorTabUI
 
 
 
-        public EditorTab(TabControl owner, ObservableCollection<EditorTab> otherTabs, LSLStaticDefaultLibraryDataProvider dataProvider)
+        public EditorTab(TabControl owner, IList<EditorTab> ownerTabCollection, LSLDefaultLibraryDataProvider dataProvider, string sourceCode = "")
         {
             _owner = owner;
-            _otherTabs = otherTabs;
+            OwnerTabCollection = ownerTabCollection;
+
+            BaseLibraryDataCache = LSLLibraryBaseData.StandardLsl;
+            LibraryDataAdditionsCache = LSLLibraryDataAdditions.None;
 
             Content = new EditorTabContent(this)
             {
@@ -470,10 +569,6 @@ namespace LSLCCEditor.EditorTabUI
                     LibraryDataProvider = dataProvider
                 }
             };
-
-            LibraryDataProvider.LiveFilteringBaseLibraryData = LSLLibraryBaseData.StandardLsl;
-            LibraryDataProvider.LiveFilteringLibraryDataAdditions = LSLLibraryDataAdditions.None;
-            Content.Editor.UpdateHighlightingFromDataProvider();
 
             CloseCommand = new RelayCommand(CloseCommandImpl);
             SaveCommand = new RelayCommand(SaveCommandImpl);
@@ -485,6 +580,8 @@ namespace LSLCCEditor.EditorTabUI
             CloseAllRightCommand = new RelayCommand(CloseAllRightImpl);
             CloseAllLeftCommand = new RelayCommand(CloseAllLeftImpl);
 
+
+            TabName = "New Script";
             ChangesPending = false;
             MemoryOnly = true;
             FilePath = null;
@@ -495,15 +592,15 @@ namespace LSLCCEditor.EditorTabUI
         private void CloseAllLeftImpl(object o)
         {
             bool deleting = false;
-            for (var i = _otherTabs.Count - 1; i >= 0; i--)
+            for (var i = OwnerTabCollection.Count - 1; i >= 0; i--)
             {
-                if (ReferenceEquals(_otherTabs[i], this))
+                if (ReferenceEquals(OwnerTabCollection[i], this))
                 {
                     deleting = true;
                 }
                 else if (deleting)
                 {
-                    _otherTabs[i].Close();
+                    OwnerTabCollection[i].Close();
                 }
             }
         }
@@ -513,15 +610,15 @@ namespace LSLCCEditor.EditorTabUI
         private void CloseAllRightImpl(object o)
         {
             bool deleting = true;
-            for (var i = _otherTabs.Count - 1; i >= 0; i--)
+            for (var i = OwnerTabCollection.Count - 1; i >= 0; i--)
             {
-                if (ReferenceEquals(_otherTabs[i], this))
+                if (ReferenceEquals(OwnerTabCollection[i], this))
                 {
                     deleting = false;
                 }
                 else if (deleting)
                 {
-                    _otherTabs[i].Close();
+                    OwnerTabCollection[i].Close();
                 }
             }
         }
@@ -530,7 +627,7 @@ namespace LSLCCEditor.EditorTabUI
 
         private void CloseAllExceptMeImpl(object o)
         {
-            foreach (EditorTab t in _otherTabs.ToList())
+            foreach (EditorTab t in OwnerTabCollection.ToList())
             {
                 if (!ReferenceEquals(t, this))
                 {
@@ -603,9 +700,11 @@ namespace LSLCCEditor.EditorTabUI
                             var newfile = Path.Combine(dir, newName);
                             try
                             {
+                                
                                 File.Move(FilePath, newfile);
+                                TabName = newName;
                                 FilePath = newfile;
-                                TabHeader = newName;
+                                
                             }
                             catch (Exception e)
                             {
@@ -641,9 +740,9 @@ namespace LSLCCEditor.EditorTabUI
             var lastSelectedIndex = _owner.SelectedIndex;
             int removingIndex = 0;
 
-            for (var i = 0; i < _otherTabs.Count; i++)
+            for (var i = 0; i < OwnerTabCollection.Count; i++)
             {
-                if (ReferenceEquals(_otherTabs[i], this))
+                if (ReferenceEquals(OwnerTabCollection[i], this))
                 {
                     removingIndex = i;
                     break;
@@ -722,7 +821,7 @@ namespace LSLCCEditor.EditorTabUI
 
                 IsSelected = false;
                 RemoveFileWatcher();
-                _otherTabs.Remove(this);
+                OwnerTabCollection.Remove(this);
             }
 
             return !canceled;

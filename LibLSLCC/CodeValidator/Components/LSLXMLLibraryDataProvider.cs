@@ -14,7 +14,7 @@ namespace LibLSLCC.CodeValidator.Components
     ///     class, the new class must have the LSLXmlLibraryDataRoot attribute
     /// </summary>
     [LSLXmlLibraryDataRoot]
-    public class LSLStaticXmlLibraryDataProvider : LSLStaticLibraryDataProvider,
+    public class LSLXmlLibraryDataProvider : LSLLibraryDataProvider,
         IXmlSerializable
     {
 

@@ -51,6 +51,8 @@ namespace LibLSLCC.FastEditorParse
         public bool InFunctionDeclaration { get; private set; }
         public bool InGlobalScope { get; private set; }
 
+        public bool InVariableDeclarationStart { get; set; }
+
         public IEnumerable<StateBlock> StateBlocks
         {
             get { return _stateBlocks; }
@@ -78,182 +80,6 @@ namespace LibLSLCC.FastEditorParse
             get { return _parameters.Values; }
         }
 
-        private static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
-        {
-            if (val.CompareTo(min) < 0) return min;
-            if (val.CompareTo(max) > 0) return max;
-            return val;
-        }
-
-        public static ScopeAddress FastParseToOffset(string text, int offset)
-        {
-            LSLCommentStringSkipper skipper = new LSLCommentStringSkipper();
-            bool inState = false;
-            bool inEvent = false;
-            bool inFunction = false;
-            int level = 0;
-            int id = 0;
-            int codeAreaId = 0;
-
-
-            offset = Clamp(offset, 0, text.Length);
-
-            for (int i = 0; i < offset; i++)
-            {
-                if (text[i] == '"')
-                {
-                    Console.Write("TEST");
-                }
-                skipper.FeedChar(text, i, offset);
-
-
-                if (!(skipper.InComment || skipper.InString))
-                {
-                    int defaultStopOffset = i + 7;
-                    int stateStopOffset = i + 5;
-
-                    if (!inEvent && !inFunction && !inState && (defaultStopOffset < text.Length) &&
-                        text.Substring(i, 7) == "default")
-                    {
-                        inState = true;
-
-                        if (text[defaultStopOffset] == '{')
-                        {
-                            i = defaultStopOffset + 1;
-                        }
-                        else
-                        {
-                            var dstateSkipper = new LSLCommentStringSkipper();
-
-                            var o = defaultStopOffset;
-                            while (o < offset)
-                            {
-                                var c = text[o];
-
-
-                                if (c == '{') break;
-
-                                dstateSkipper.FeedChar(text, o, offset);
-                                if (!(dstateSkipper.InComment || dstateSkipper.InString) && !char.IsWhiteSpace(c))
-                                {
-                                    inState = false;
-                                    break;
-                                }
-
-                                o++;
-                            }
-
-                            if (inState) i = o + 1;
-                        }
-
-                        if (inState)
-                        {
-                            level++;
-                            id++;
-                            codeAreaId++;
-                        }
-                    }
-                    if (!inEvent && !inFunction && !inState && (stateStopOffset < text.Length) &&
-                        text.Substring(i, 5) == "state")
-                    {
-                        inState = true;
-
-                        if (text[stateStopOffset] == '{')
-                        {
-                            i = stateStopOffset + 1;
-                        }
-                        else
-                        {
-                            var stateSkipper = new LSLCommentStringSkipper();
-                            bool spacesBetween = false;
-                            var o = stateStopOffset;
-                            while (o < offset)
-                            {
-                                var c = text[o];
-
-
-                                if (c == ';')
-                                {
-                                    inState = false;
-                                    break;
-                                }
-                                if (c == '{')
-                                {
-                                    break;
-                                }
-
-                                stateSkipper.FeedChar(text, o, offset);
-
-                                if (stateSkipper.InComment)
-                                {
-                                    spacesBetween = true;
-                                }
-                                else if (c == ' ')
-                                {
-                                    spacesBetween = true;
-                                }
-
-                                if (!(stateSkipper.InComment || stateSkipper.InString) && !char.IsWhiteSpace(c) &&
-                                    !spacesBetween)
-                                {
-                                    inState = false;
-                                    break;
-                                }
-
-                                o++;
-                            }
-
-                            if (inState) i = o + 1;
-                        }
-
-                        if (inState)
-                        {
-                            level++;
-                            id++;
-                            codeAreaId++;
-                        }
-                    }
-                    else if (text[i] == '{' && !skipper.InComment && !skipper.InString)
-                    {
-                        level++;
-                        if (!inEvent && (inState && level == 2))
-                        {
-                            inEvent = true;
-                            codeAreaId++;
-                        }
-                        else if (!inFunction && !inState && level == 1)
-                        {
-                            char t = text[i];
-                            inFunction = true;
-                            codeAreaId++;
-                        }
-                        id++;
-                    }
-                    else if (text[i] == '}' && !skipper.InComment && !skipper.InString)
-                    {
-                        level--;
-                        if (inState && level == 0)
-                        {
-                            inState = false;
-                        }
-                        else if (inState && inEvent && level == 1)
-                        {
-                            inEvent = false;
-                        }
-                        else if (inFunction && level == 0)
-                        {
-                            inFunction = false;
-                        }
-                    }
-                }
-            }
-            return new ScopeAddress(codeAreaId, id, level)
-            {
-                InState = inState,
-                InString = skipper.InString,
-                InComment = skipper.InComment
-            };
-        }
 
         public void Parse(TextReader stream, int toOffset)
         {
@@ -441,8 +267,11 @@ namespace LibLSLCC.FastEditorParse
             {
                 if (context.Start.StartIndex > _parent._toOffset) return true;
 
+                _parent.InVariableDeclarationStart = true;
+
                 if (context.variable_type == null || context.variable_name == null) return true;
 
+                _parent.InVariableDeclarationStart = false;
 
                 var variable = new LocalVariable(
                     context.variable_name.Text,
@@ -691,5 +520,7 @@ namespace LibLSLCC.FastEditorParse
                 return true;
             }
         };
+
+        
     }
 }

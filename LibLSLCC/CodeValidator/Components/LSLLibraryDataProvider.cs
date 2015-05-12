@@ -9,7 +9,7 @@ using LibLSLCC.ThreadSafeEnumeration;
 
 namespace LibLSLCC.CodeValidator.Components
 {
-    public class LSLStaticLibraryDataProvider : ILSLMainLibraryDataProvider
+    public class LSLLibraryDataProvider : ILSLMainLibraryDataProvider
     {
         private readonly Dictionary<string, LSLLibraryConstantSignature> _validConstants
             = new Dictionary<string, LSLLibraryConstantSignature>();

@@ -104,11 +104,6 @@ namespace LSLCCEditor.EditorTabUI
         private void Editor_OnTextChanged(object sender, EventArgs e)
         {
             _ownerTab.ChangesPending = true;
-            if (!_ownerTab.MemoryOnly)
-            {
-
-                _ownerTab.TabHeader = Path.GetFileName(_ownerTab.FilePath) + "*";
-            }
         }
     }
 }

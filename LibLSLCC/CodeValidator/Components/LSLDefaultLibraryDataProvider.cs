@@ -12,14 +12,14 @@ namespace LibLSLCC.CodeValidator.Components
     ///     to define its data
     /// </summary>
     [LSLXmlLibraryDataRoot]
-    public class LSLStaticDefaultLibraryDataProvider : LSLStaticXmlLibraryDataProvider
+    public class LSLDefaultLibraryDataProvider : LSLXmlLibraryDataProvider
     {
         private LSLLibraryBaseData _liveFilteringBaseLibraryData;
         private LSLLibraryDataAdditions _liveFilteringLibraryDataAdditions;
 
 
 
-        protected LSLStaticDefaultLibraryDataProvider()
+        protected LSLDefaultLibraryDataProvider()
         {
             
         }
@@ -87,7 +87,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        public LSLStaticDefaultLibraryDataProvider(bool liveFiltering, LSLLibraryBaseData libraryBaseData, 
+        public LSLDefaultLibraryDataProvider(bool liveFiltering, LSLLibraryBaseData libraryBaseData, 
             LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None)
         {
             using (
