@@ -11,14 +11,6 @@
 // Generated from ./LSLParser/LSL.g4 by ANTLR 4.5
 
 // Unreachable code detected
-
-using System;
-using System.CodeDom.Compiler;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -26,8 +18,18 @@ using Antlr4.Runtime.Tree;
 #pragma warning disable 1591
 
 namespace LibLSLCC {
-    [GeneratedCode("ANTLR", "4.5")]
-[CLSCompliant(false)]
+using System;
+using System.Text;
+using System.Diagnostics;
+using System.Collections.Generic;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+using DFA = Antlr4.Runtime.Dfa.DFA;
+
+[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
+[System.CLSCompliant(false)]
 public partial class LSLParser : Parser {
 	public const int
 		TYPE=1, DO=2, IF=3, ELSE=4, WHILE=5, FOR=6, DEFAULT=7, STATE=8, RETURN=9, 
@@ -623,7 +625,7 @@ public partial class LSLParser : Parser {
 					State = 121;
 					ErrorHandler.Sync(this);
 					_alt = Interpreter.AdaptivePredict(TokenStream,4,Context);
-				} while ( _alt!=2 && _alt!=ATN.InvalidAltNumber );
+				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
 				State = 124;
 				switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
 				case 1:
@@ -1182,10 +1184,11 @@ public partial class LSLParser : Parser {
 
 	public partial class ExpressionStatementContext : ParserRuleContext {
 		public ExpressionContext expression_rule;
-		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
+		public IToken semi_colon;
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
+		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
 		public ExpressionStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1214,7 +1217,7 @@ public partial class LSLParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 185; _localctx.expression_rule = expression(0);
-			State = 186; Match(SEMI_COLON);
+			State = 186; _localctx.semi_colon = Match(SEMI_COLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1457,6 +1460,7 @@ public partial class LSLParser : Parser {
 		public IToken variable_name;
 		public IToken operation;
 		public ExpressionContext variable_value;
+		public IToken semi_colon;
 		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
 		public ITerminalNode TYPE() { return GetToken(LSLParser.TYPE, 0); }
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
@@ -1506,7 +1510,7 @@ public partial class LSLParser : Parser {
 				{
 				State = 214; _localctx.variable_type = Match(TYPE);
 				State = 215; _localctx.variable_name = Match(ID);
-				State = 216; Match(SEMI_COLON);
+				State = 216; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			}
@@ -1527,6 +1531,7 @@ public partial class LSLParser : Parser {
 		public IToken variable_name;
 		public IToken operation;
 		public ExpressionContext variable_value;
+		public IToken semi_colon;
 		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
 		public ITerminalNode TYPE() { return GetToken(LSLParser.TYPE, 0); }
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
@@ -1576,7 +1581,7 @@ public partial class LSLParser : Parser {
 				{
 				State = 225; _localctx.variable_type = Match(TYPE);
 				State = 226; _localctx.variable_name = Match(ID);
-				State = 227; Match(SEMI_COLON);
+				State = 227; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			}
@@ -2354,7 +2359,7 @@ public partial class LSLParser : Parser {
 			State = 312;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,20,Context);
-			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( ParseListeners!=null )
 						TriggerExitRuleEvent();

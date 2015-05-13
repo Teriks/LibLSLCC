@@ -676,6 +676,8 @@ namespace LSLCCEditor.EditorTabUI
 
             var input = new InputDialog();
             input.Title = "Rename File";
+            input.InputTextBox.Text = TabName;
+
             input.Closed += (sender, args) =>
             {
                 if (input.Accepted)

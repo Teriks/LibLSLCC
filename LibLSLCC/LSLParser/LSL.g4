@@ -275,7 +275,7 @@ codeStatement:
 
 
 expressionStatement:
-	expression_rule=expression SEMI_COLON
+	expression_rule=expression semi_colon=SEMI_COLON
 	;
 
 returnStatement: 
@@ -298,12 +298,12 @@ stateChangeStatement:
 
 localVariableDeclaration: 
                      variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression SEMI_COLON 
-                   | variable_type=TYPE variable_name=ID SEMI_COLON
+                   | variable_type=TYPE variable_name=ID semi_colon=SEMI_COLON
 				   ;
 
 globalVariableDeclaration:
 					 variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression SEMI_COLON 
-                   | variable_type=TYPE variable_name=ID SEMI_COLON
+                   | variable_type=TYPE variable_name=ID semi_colon = SEMI_COLON
 				   ;
 
 

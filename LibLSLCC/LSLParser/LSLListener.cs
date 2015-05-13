@@ -11,12 +11,6 @@
 // Generated from ./LSLParser/LSL.g4 by ANTLR 4.5
 
 // Unreachable code detected
-
-using System;
-using System.CodeDom.Compiler;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -24,12 +18,16 @@ using Antlr4.Runtime.Tree;
 #pragma warning disable 1591
 
 namespace LibLSLCC {
-    /// <summary>
+using Antlr4.Runtime.Misc;
+using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
+using IToken = Antlr4.Runtime.IToken;
+
+/// <summary>
 /// This interface defines a complete listener for a parse tree produced by
 /// <see cref="LSLParser"/>.
 /// </summary>
-[GeneratedCode("ANTLR", "4.5")]
-[CLSCompliant(false)]
+[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
+[System.CLSCompliant(false)]
 public interface ILSLListener : IParseTreeListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.vectorLiteral"/>.

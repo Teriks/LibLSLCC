@@ -378,7 +378,7 @@ namespace LSLCCEditor.LSLEditor
 
 
                 var textArea = Editor.TextArea;
-                var caretOffset = textArea.Caret.Offset;
+                var caretOffset = textArea.Caret.Offset-1;
 
                 var commentSkipper = new LSLCommentStringSkipper();
 
@@ -400,6 +400,7 @@ namespace LSLCCEditor.LSLEditor
 
 
                 if (fastVarParser.InVariableDeclarationStart) return;
+                if (fastVarParser.InBetweenStateNameStartAndOpenBrace) return;
 
                 var data = _completionWindow.CompletionList.CompletionData;
 
@@ -411,7 +412,7 @@ namespace LSLCCEditor.LSLEditor
                 bool possibleEventName = false;
 
 
-                if (fastVarParser.InStateOutsideEvent)
+                if (fastVarParser.InStateOutsideEvent || (fastVarParser.InBetweenEventNameEndAndCodeStart&&!fastVarParser.InEventParameterList))
                 {
                     foreach (var eventHandler in EventSignatures.Where(x => x.Name.StartsWith(e.Text)))
                     {
@@ -434,7 +435,12 @@ namespace LSLCCEditor.LSLEditor
                 else
                 {
 
-                    if (!fastVarParser.AfterDefaultState)
+                    if (fastVarParser.InEventParameterList||
+                        fastVarParser.InFunctionParameterList||
+                        fastVarParser.InFunctionDeclaration||
+                        fastVarParser.InEventHandler||
+                        fastVarParser.InGlobalScope && 
+                        !fastVarParser.InLocalVariableDeclarationExpr)
                     {
                         if (e.Text.StartsWith("i"))
                         {
@@ -534,7 +540,7 @@ namespace LSLCCEditor.LSLEditor
 
                     }
 
-                    if (!fastVarParser.AfterDefaultState)
+                    if (fastVarParser.InGlobalScope || fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
                     {
                         foreach (var sig in ConstantSignatures.Where(x => x.Name.StartsWith(e.Text)))
                         {
@@ -626,6 +632,7 @@ namespace LSLCCEditor.LSLEditor
                     fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
                     if (fastVarParser.InVariableDeclarationStart) return;
+                    if (fastVarParser.InBetweenStateNameStartAndOpenBrace) return;
 
                     var data = _completionWindow.CompletionList.CompletionData;
 
@@ -835,6 +842,7 @@ namespace LSLCCEditor.LSLEditor
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
                 if (fastVarParser.InVariableDeclarationStart) return;
+                if (fastVarParser.InBetweenStateNameStartAndOpenBrace) return;
 
                 bool possibleLibraryConstants = false;
 

@@ -803,6 +803,13 @@ namespace LSLCCEditor
             LslEditor.CloseCompletionWindow();
             FindDialogManager.ShowAsFind();
         }
+
+
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 
     public class CompilerMessage

@@ -967,5 +967,12 @@ namespace LSLCCEditor
 
 
 
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+            if (tab == null) return;
+
+            System.Windows.Forms.MessageBox.Show(tab.Content.Editor.Editor.CaretOffset.ToString());
+        }
     }
 }

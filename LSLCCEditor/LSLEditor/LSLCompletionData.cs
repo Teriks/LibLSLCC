@@ -81,42 +81,36 @@ namespace LSLCCEditor.LSLEditor
                     string line;
                     if (i == 0)
                     {
-                        string indentPrefix = "";
-                        var j = completionSegment.Offset;
+                        var j = completionSegment.EndOffset - 1;
+                        string linePrefix = "";
                         var start = j;
                         var end = 0;
                         while (j > 0)
                         {
                             char c = textArea.Document.Text[j];
-                            if (c == '\n' || _indentBreakCharacters.Contains(c))
+                            if (c == '\n'  || _indentBreakCharacters.Contains(c))
                             {
-                                if (start != j)
+                                end = j;
+                                if (c != '\n')
                                 {
-                                    end = j + 1;
+                                    linePrefix += c + "\n";
                                 }
                                 else
                                 {
-                                    indentPrefix = "\n";
-                                    end = start;
+                                    linePrefix += c;
                                 }
 
-                                if (c != '\n')
-                                {
-                                    indentPrefix = "\n";
-                                }
                                 break;
                             }
                             j--;
                         }
 
 
-                        if (start != end)
-                        {
-                            textArea.Document.Replace(end, start - end, "");
-                        }
                         
+                        textArea.Document.Remove(end, (start - end)+1);
 
-                        line = indentPrefix + indent + lines[i].Trim();
+
+                        line = linePrefix + indent + lines[i].Trim();
                     }
                     else
                     {
@@ -128,13 +122,16 @@ namespace LSLCCEditor.LSLEditor
                     {
                         line += '\n';
                     }
+
                     result += line;
                 }
 
                 text = result;
             }
 
-            textArea.Document.Replace(completionSegment, text);
+
+
+            textArea.Document.Replace(completionSegment,  text);
 
             if (OffsetCaretAfterInsert)
             {

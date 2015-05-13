@@ -50,6 +50,7 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="File">
+                <MenuItem Header="test" Click="MenuItem_OnClick"></MenuItem>
                 <MenuItem Header="New" ToolTip="(Ctrl+N)" Click="NewFile_OnClick"/>
                 <MenuItem Header="Save" ToolTip="(Ctrl+S)" Click="Save_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
                 <MenuItem Header="Save As" ToolTip="(Ctrl+Alt+S)" Click="SaveAs_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
