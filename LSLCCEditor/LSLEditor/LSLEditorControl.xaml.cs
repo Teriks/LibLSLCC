@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -19,6 +21,8 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.FastEditorParse;
 
+#endregion
+
 namespace LSLCCEditor.LSLEditor
 {
     /// <summary>
@@ -28,20 +32,17 @@ namespace LSLCCEditor.LSLEditor
     {
         public delegate void TextChangedEventHandler(object sender, EventArgs e);
 
-        private readonly ToolTip _hoverToolTip = new ToolTip();
-
-        private readonly object _propertyChangingLock = new object();
-        private readonly object _completionLock = new object();
-
         private readonly SolidColorBrush _builtInTypeCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+        private readonly object _completionLock = new object();
         private readonly SolidColorBrush _eventHandlerCompleteColor = new SolidColorBrush(Color.FromRgb(0, 76, 127));
         private readonly SolidColorBrush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
         private readonly SolidColorBrush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+        private readonly ToolTip _hoverToolTip = new ToolTip();
         private readonly SolidColorBrush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
         private readonly SolidColorBrush _libraryFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
         private readonly SolidColorBrush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
         private readonly SolidColorBrush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
-        
+        private readonly object _propertyChangingLock = new object();
 
         private readonly HashSet<char> _stateAutocompleteIndentBreakCharacters = new HashSet<char>
         {
@@ -76,8 +77,6 @@ namespace LSLCCEditor.LSLEditor
         private bool _propertyChanging;
         private bool _userChanging;
 
-
-
         public LSLEditorControl()
         {
             InitializeComponent();
@@ -86,10 +85,7 @@ namespace LSLCCEditor.LSLEditor
             Editor.MouseHover += TextEditor_MouseHover;
             Editor.MouseHover += TextEditor_MouseHoverStopped;
             Editor.KeyDown += TextEditor_KeyDown;
-
         }
-
-
 
         public string Text
         {
@@ -118,8 +114,6 @@ namespace LSLCCEditor.LSLEditor
             set { SetValue(LibraryDataProviderProperty, value); }
         }
 
-
-
         private static void TextPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
@@ -133,8 +127,6 @@ namespace LSLCCEditor.LSLEditor
                 t._propertyChanging = false;
             }
         }
-
-
 
         private void TextEditor_OnTextChanged(object sender, EventArgs e)
         {
@@ -156,12 +148,8 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
-
-
         public event TextChangedEventHandler UserChangedText;
         public event TextChangedEventHandler TextChanged;
-
-
 
         protected virtual void OnTextChanged()
         {
@@ -169,15 +157,11 @@ namespace LSLCCEditor.LSLEditor
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
-
-
         protected virtual void OnUserChangedText()
         {
             var handler = UserChangedText;
             if (handler != null) handler(this, EventArgs.Empty);
         }
-
-
 
         public void CloseCompletionWindow()
         {
@@ -191,8 +175,6 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
-
-
         private static void LibraryDataProviderPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
@@ -202,8 +184,6 @@ namespace LSLCCEditor.LSLEditor
                     (ILSLMainLibraryDataProvider) dependencyPropertyChangedEventArgs.NewValue);
             }
         }
-
-
 
         private static string GetIdUnderMouse(TextDocument document, TextViewPosition position)
         {
@@ -216,8 +196,6 @@ namespace LSLCCEditor.LSLEditor
                 return "";
             }
         }
-
-
 
         private static string _GetIDUnderMouse(TextDocument document, TextViewPosition position)
         {
@@ -274,8 +252,6 @@ namespace LSLCCEditor.LSLEditor
             return "";
         }
 
-
-
         private void TextEditor_MouseHover(object sender, MouseEventArgs e)
         {
             var pos = Editor.GetPositionFromPoint(e.GetPosition(Editor));
@@ -315,13 +291,16 @@ namespace LSLCCEditor.LSLEditor
                 }
 
                 _hoverToolTip.PlacementTarget = this; // required for property inheritance
-                _hoverToolTip.Content = new TextBlock {MaxWidth = 500, TextWrapping = TextWrapping.Wrap, Text = hoverText};
+                _hoverToolTip.Content = new TextBlock
+                {
+                    MaxWidth = 500,
+                    TextWrapping = TextWrapping.Wrap,
+                    Text = hoverText
+                };
                 _hoverToolTip.IsOpen = true;
                 e.Handled = true;
             }
         }
-
-
 
         private void TextEditor_MouseHoverStopped(object sender, MouseEventArgs e)
         {
@@ -329,17 +308,13 @@ namespace LSLCCEditor.LSLEditor
             e.Handled = true;
         }
 
-
-
         private CompletionWindow CreateCompletionWindow()
         {
             var c = new CompletionWindow(Editor.TextArea);
-           
+
             c.Width = c.Width + 160;
             return c;
         }
-
-
 
         // ReSharper disable once FunctionComplexityOverflow
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
@@ -378,19 +353,13 @@ namespace LSLCCEditor.LSLEditor
 
 
                 var textArea = Editor.TextArea;
-                var caretOffset = textArea.Caret.Offset-1;
+                var caretOffset = textArea.Caret.Offset - 1;
 
-                var commentSkipper = new LSLCommentStringSkipper();
 
-                for (int i = 0; i < caretOffset; i++)
-                {
-                    commentSkipper.FeedChar(Editor.Text, i, caretOffset);
-                }
+                var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
-                if (commentSkipper.InComment || commentSkipper.InString)
-                {
-                    return;
-                }
+
+                if (commentSkipper.InComment || commentSkipper.InString) return;
 
                 _completionWindow = CreateCompletionWindow();
 
@@ -398,9 +367,6 @@ namespace LSLCCEditor.LSLEditor
                 var fastVarParser = new LSLFastEditorParse();
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
-
-                if (fastVarParser.InVariableDeclarationStart) return;
-                if (fastVarParser.InBetweenStateNameStartAndOpenBrace) return;
 
                 var data = _completionWindow.CompletionList.CompletionData;
 
@@ -412,7 +378,7 @@ namespace LSLCCEditor.LSLEditor
                 bool possibleEventName = false;
 
 
-                if (fastVarParser.InStateOutsideEvent || (fastVarParser.InBetweenEventNameEndAndCodeStart&&!fastVarParser.InEventParameterList))
+                if (fastVarParser.InStateOutsideEvent)
                 {
                     foreach (var eventHandler in EventSignatures.Where(x => x.Name.StartsWith(e.Text)))
                     {
@@ -434,13 +400,10 @@ namespace LSLCCEditor.LSLEditor
                 }
                 else
                 {
-
-                    if (fastVarParser.InEventParameterList||
-                        fastVarParser.InFunctionParameterList||
-                        fastVarParser.InFunctionDeclaration||
-                        fastVarParser.InEventHandler||
-                        fastVarParser.InGlobalScope && 
-                        !fastVarParser.InLocalVariableDeclarationExpr)
+                    if (fastVarParser.InGlobalScope
+                        || fastVarParser.InExpressionStatementArea
+                        || fastVarParser.InEventParameterList
+                        || fastVarParser.InFunctionDeclarationParameterList)
                     {
                         if (e.Text.StartsWith("i"))
                         {
@@ -481,8 +444,7 @@ namespace LSLCCEditor.LSLEditor
                     }
 
 
-                    if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler ||
-                        fastVarParser.InGlobalScope)
+                    if (fastVarParser.InExpressionArea || fastVarParser.InExpressionStatementArea)
                     {
                         foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(e.Text)))
                         {
@@ -497,9 +459,8 @@ namespace LSLCCEditor.LSLEditor
                     }
 
 
-                    if (fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
+                    if (fastVarParser.InCodeArea)
                     {
-
                         foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(e.Text)))
                         {
                             string doc = "Global function:\n" + func.Signature;
@@ -511,8 +472,11 @@ namespace LSLCCEditor.LSLEditor
 
                             possibleUserDefinedItem = true;
                         }
+                    }
 
 
+                    if (fastVarParser.InLocalExpressionArea || fastVarParser.InExpressionStatementArea)
+                    {
                         foreach (var v in fastVarParser.LocalParameters.Where(x => x.Name.StartsWith(e.Text)))
                         {
                             string doc = "Local parameter:\n" + v.Type + " " + v.Name + ";";
@@ -536,11 +500,9 @@ namespace LSLCCEditor.LSLEditor
 
                             possibleUserDefinedItem = true;
                         }
-
-
                     }
 
-                    if (fastVarParser.InGlobalScope || fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
+                    if (fastVarParser.InExpressionArea || fastVarParser.InExpressionStatementArea)
                     {
                         foreach (var sig in ConstantSignatures.Where(x => x.Name.StartsWith(e.Text)))
                         {
@@ -555,9 +517,8 @@ namespace LSLCCEditor.LSLEditor
                     }
 
 
-                    if(fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
+                    if (fastVarParser.InCodeArea)
                     {
-
                         var functionSuggestions = LibraryFunctionNames.Where(x => x.StartsWith(e.Text)).ToList();
                         foreach (var func in functionSuggestions)
                         {
@@ -597,7 +558,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void ControlSpace(KeyEventArgs e)
         {
             var textArea = Editor.TextArea;
@@ -613,17 +573,10 @@ namespace LSLCCEditor.LSLEditor
                 {
                     var caretOffset = textArea.Caret.Offset;
 
-                    var commentSkipper = new LSLCommentStringSkipper();
+                    var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
-                    for (int i = 0; i < caretOffset; i++)
-                    {
-                        commentSkipper.FeedChar(Editor.Text, i, caretOffset);
-                    }
 
-                    if (commentSkipper.InComment || commentSkipper.InString)
-                    {
-                        return;
-                    }
+                    if (commentSkipper.InComment || commentSkipper.InString) return;
 
                     _completionWindow = CreateCompletionWindow();
 
@@ -631,9 +584,7 @@ namespace LSLCCEditor.LSLEditor
                     var fastVarParser = new LSLFastEditorParse();
                     fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
-                    if (fastVarParser.InVariableDeclarationStart) return;
-                    if (fastVarParser.InBetweenStateNameStartAndOpenBrace) return;
-
+ 
                     var data = _completionWindow.CompletionList.CompletionData;
 
 
@@ -660,14 +611,10 @@ namespace LSLCCEditor.LSLEditor
                             });
                             possibleEventName = true;
                         }
-
-
                     }
                     else
                     {
-
-                        if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration ||
-                            fastVarParser.InGlobalScope)
+                        if (fastVarParser.InExpressionArea || fastVarParser.InExpressionStatementArea)
                         {
                             foreach (var i in fastVarParser.GlobalVariables)
                             {
@@ -682,9 +629,8 @@ namespace LSLCCEditor.LSLEditor
                         }
 
 
-                        if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration)
+                        if (fastVarParser.InCodeArea)
                         {
-
                             foreach (var i in fastVarParser.GlobalFunctions)
                             {
                                 data.Add(new LSLCompletionData(
@@ -696,7 +642,10 @@ namespace LSLCCEditor.LSLEditor
                                 });
                                 possibleUserDefinedItem = true;
                             }
+                        }
 
+                        if (fastVarParser.InLocalExpressionArea || fastVarParser.InExpressionStatementArea)
+                        {
                             foreach (var i in fastVarParser.LocalParameters)
                             {
                                 data.Add(new LSLCompletionData(i.Name, i.Name,
@@ -718,7 +667,6 @@ namespace LSLCCEditor.LSLEditor
                                 });
                                 possibleUserDefinedItem = true;
                             }
-
                         }
                     }
 
@@ -744,7 +692,6 @@ namespace LSLCCEditor.LSLEditor
                 }
             }
         }
-
 
 
         private void ControlW(KeyEventArgs e)
@@ -775,10 +722,10 @@ namespace LSLCCEditor.LSLEditor
                 var fastVarParser = new LSLFastEditorParse();
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
-                if (fastVarParser.InVariableDeclarationStart) return;
-
                 bool possibleGlobalFunctions = false;
-                if (fastVarParser.InEventHandler || fastVarParser.InFunctionDeclaration)
+
+
+                if (fastVarParser.InCodeArea)
                 {
                     foreach (var func in LibraryFunctionNames)
                     {
@@ -813,6 +760,7 @@ namespace LSLCCEditor.LSLEditor
 
 
 
+
         private void ControlQ(KeyEventArgs e)
         {
             var textArea = Editor.TextArea;
@@ -841,12 +789,10 @@ namespace LSLCCEditor.LSLEditor
                 var fastVarParser = new LSLFastEditorParse();
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
-                if (fastVarParser.InVariableDeclarationStart) return;
-                if (fastVarParser.InBetweenStateNameStartAndOpenBrace) return;
 
                 bool possibleLibraryConstants = false;
 
-                if (fastVarParser.InGlobalScope || fastVarParser.InFunctionDeclaration || fastVarParser.InEventHandler)
+                if (fastVarParser.InExpressionArea || fastVarParser.InExpressionStatementArea)
                 {
                     foreach (var con in ConstantSignatures)
                     {
@@ -858,6 +804,7 @@ namespace LSLCCEditor.LSLEditor
                                 ColorBrush = _libraryConstantCompleteColor,
                                 TextSubStringStart = 0
                             });
+
                         possibleLibraryConstants = true;
                     }
                 }
@@ -874,7 +821,6 @@ namespace LSLCCEditor.LSLEditor
                 }
             }
         }
-
 
 
         private void TextEditor_KeyDown(object sender, KeyEventArgs e)
@@ -894,12 +840,10 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         public void UpdateHighlightingFromDataProvider()
         {
             UpdateHighlightingFromDataProvider(LibraryDataProvider);
         }
-
 
 
         public void UpdateHighlightingFromDataProvider(ILSLMainLibraryDataProvider provider)
@@ -958,12 +902,10 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void TextEditor_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             _hoverToolTip.IsOpen = false;
         }
-
 
 
         private void TextEditor_OnMouseLeave(object sender, MouseEventArgs e)
@@ -972,14 +914,11 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         public class CustomIndentationStrategy : IIndentationStrategy
         {
             public void IndentLine(TextDocument document, DocumentLine line)
             {
             }
-
-
 
             public void IndentLines(TextDocument document, int beginLine, int endLine)
             {

@@ -1,13 +1,10 @@
 ﻿#region
 
-
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Primitives;
-
 
 #endregion
 
@@ -34,23 +31,16 @@ namespace LibLSLCC.FastEditorParse
         public string CurrentFunction { get; private set; }
         public string CurrentEvent { get; private set; }
 
-      
-
         public bool InStateOutsideEvent
         {
-            get { return (InState && !InEventHandler && !InBetweenEventNameEndAndCodeStart); }
+            get { return (InState && !InEventCode && !InEventContextRange); }
         }
 
         public bool InState { get; private set; }
-
-        public bool InBetweenEventNameEndAndCodeStart { get; private set; }
-
-        public bool InBetweenStateNameStartAndOpenBrace { get; private set; }
-        public bool InEventHandler { get; private set; }
-        public bool InFunctionDeclaration { get; private set; }
+        public bool InEventContextRange { get; private set; }
+        public bool InEventCode { get; private set; }
+        public bool InFunctionCode { get; private set; }
         public bool InGlobalScope { get; private set; }
-
-        public bool InVariableDeclarationStart { get; set; }
 
         public IEnumerable<StateBlock> StateBlocks
         {
@@ -79,6 +69,42 @@ namespace LibLSLCC.FastEditorParse
             get { return _parameters.Values; }
         }
 
+        public bool InLocalVariableDeclarationExpression { get; private set; }
+        public bool InGlobalVariableDeclarationExpression { get; private set; }
+        public bool InFunctionDeclarationParameterList { get; private set; }
+        public bool InEventParameterList { get; private set; }
+        public bool InIfConditionExpression { get; private set; }
+        public bool InElseIfConditionExpression { get; private set; }
+        public bool InFunctionCallParameterList { get; private set; }
+
+        public bool InCodeArea
+        {
+            get { return InFunctionCode || InEventCode; }
+        }
+
+        public bool InExpressionStatementArea
+        {
+            get { return InCodeArea && !InExpressionArea; }
+        }
+
+        public bool InLocalExpressionArea
+        {
+            get
+            {
+                return InLocalVariableDeclarationExpression || InIfConditionExpression ||
+                       InElseIfConditionExpression || InFunctionCallParameterList;
+            }
+        }
+
+        public bool InGlobalExpressionArea
+        {
+            get { return InGlobalVariableDeclarationExpression; }
+        }
+
+        public bool InExpressionArea
+        {
+            get { return InGlobalExpressionArea || InLocalExpressionArea; }
+        }
 
         public void Parse(TextReader stream, int toOffset)
         {
@@ -244,21 +270,8 @@ namespace LibLSLCC.FastEditorParse
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                _parent.InVariableDeclarationStart = true;
                 _parent.InGlobalScope = false;
 
-                if (context.variable_type == null) return true;
-
-
-                if (_parent._toOffset > context.variable_type.StartIndex &&
-                    _parent._toOffset <= context.variable_type.StopIndex)
-                {
-                    _parent.InVariableDeclarationTypeDecl = true;
-                }
-
-                if (context.variable_name == null) return true;
-
-                _parent.InVariableDeclarationStart = false;
 
                 var variable =
                     new GlobalVariable(
@@ -272,15 +285,16 @@ namespace LibLSLCC.FastEditorParse
                     _parent._globalVariables.Add(context.variable_name.Text, variable);
                 }
 
-                var expr = context.expression();
-                if (expr != null && _parent._toOffset > expr.Start.StartIndex && _parent._toOffset < expr.Stop.StopIndex)
+                if (context.operation != null && context.operation.StartIndex < _parent._toOffset)
                 {
-                    _parent.InGlobalVariableDeclarationExpr = true;
+                    _parent.InGlobalVariableDeclarationExpression = true;
                 }
 
 
-                if (context.semi_colon != null && context.semi_colon.StartIndex < _parent._toOffset)
+                if (context.semi_colon != null && context.semi_colon.Text == ";" &&
+                    context.semi_colon.StartIndex < _parent._toOffset)
                 {
+                    _parent.InGlobalVariableDeclarationExpression = false;
                     _parent.InGlobalScope = true;
                 }
 
@@ -288,24 +302,67 @@ namespace LibLSLCC.FastEditorParse
                 return true;
             }
 
+            public override bool VisitIfStatement(LSLParser.IfStatementContext context)
+            {
+                if (context.Start.StartIndex >= _parent._toOffset) return true;
+
+                if (context.open_parenth != null && context.open_parenth.Text == "(" &&
+                    context.open_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InIfConditionExpression = true;
+                }
+
+                if (context.close_parenth != null && context.close_parenth.Text == ")" &&
+                    context.close_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InIfConditionExpression = false;
+                }
+
+                return base.VisitIfStatement(context);
+            }
+
+            public override bool VisitElseIfStatement(LSLParser.ElseIfStatementContext context)
+            {
+                if (context.Start.StartIndex >= _parent._toOffset) return true;
+
+                if (context.open_parenth != null && context.open_parenth.Text == "(" &&
+                    context.open_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InElseIfConditionExpression = true;
+                }
+
+                if (context.close_parenth != null && context.close_parenth.Text == ")" &&
+                    context.close_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InElseIfConditionExpression = false;
+                }
+
+                return base.VisitElseIfStatement(context);
+            }
+
+            public override bool VisitExpr_FunctionCall(LSLParser.Expr_FunctionCallContext context)
+            {
+                if (context.Start.StartIndex >= _parent._toOffset) return true;
+
+                if (context.open_parenth != null && context.open_parenth.Text == "(" &&
+                    context.open_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InFunctionCallParameterList = true;
+                }
+
+                if (context.close_parenth != null && context.close_parenth.Text == ")" &&
+                    context.close_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InFunctionCallParameterList = false;
+                }
+
+                return base.VisitExpr_FunctionCall(context);
+            }
+
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                _parent.InVariableDeclarationStart = true;
-
-                if (context.variable_type == null) return true;
-
-
-                if (_parent._toOffset > context.variable_type.StartIndex &&
-                    _parent._toOffset <= context.variable_type.StopIndex)
-                {
-                    _parent.InVariableDeclarationTypeDecl = true;
-                }
-
-                if (context.variable_name == null) return true;
-
-                _parent.InVariableDeclarationStart = false;
 
                 var variable = new LocalVariable(
                     context.variable_name.Text,
@@ -314,8 +371,8 @@ namespace LibLSLCC.FastEditorParse
                     new ScopeAddress(_codeAreaId, _scopeId, _scopeLevel)
                     {
                         InState = _parent.InState,
-                        InFunction = _parent.InFunctionDeclaration,
-                        InEvent = _parent.InEventHandler
+                        InFunction = _parent.InFunctionCode,
+                        InEvent = _parent.InEventCode
                     });
 
 
@@ -338,10 +395,17 @@ namespace LibLSLCC.FastEditorParse
                         variable);
                 }
 
-                var expr = context.expression();
-                if (expr != null && _parent._toOffset > expr.Start.StartIndex && _parent._toOffset < expr.Stop.StopIndex)
+
+                if (context.operation != null && context.operation.StartIndex < _parent._toOffset)
                 {
-                    _parent.InLocalVariableDeclarationExpr = true;
+                    _parent.InLocalVariableDeclarationExpression = true;
+                }
+
+
+                if (context.semi_colon != null && context.semi_colon.Text == ";" &&
+                    context.semi_colon.StartIndex < _parent._toOffset)
+                {
+                    _parent.InLocalVariableDeclarationExpression = false;
                 }
 
 
@@ -356,23 +420,21 @@ namespace LibLSLCC.FastEditorParse
 
                 _parent.InGlobalScope = false;
 
-                if (((context.function_name.StopIndex < _parent._toOffset) &&(context.code==null||
-    (context.code.open_brace.Text != "{") || (_parent._toOffset <= context.code.Start.StartIndex) || (context.code.Start.Text != "{"))))
+                if (context.open_parenth != null && context.open_parenth.Text == "(" &&
+                    context.open_parenth.StartIndex < _parent._toOffset)
                 {
-                    _parent.InBetweenFunctionNameEndAndCodeStart = true;
-
-
-                    var plist = context.optionalParameterList();
-                    if (plist != null && _parent._toOffset > plist.Start.StartIndex &&
-                        (_parent._toOffset <= plist.Stop.StopIndex + 1 || plist.Start.StartIndex >= plist.Stop.StopIndex))
-                    {
-                        _parent.InFunctionParameterList = true;
-                    }
-
-                    return true;
+                    _parent.InFunctionDeclarationParameterList = true;
                 }
 
-                if (context.code.open_brace.Text == "<missing '}'>" || context.code.open_brace.StartIndex >= _parent._toOffset) return true;
+                if (context.close_parenth != null && context.close_parenth.Text == ")" &&
+                    context.close_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InFunctionDeclarationParameterList = false;
+                }
+
+
+                if (context.code.open_brace.Text == "<missing '}'>" ||
+                    context.code.open_brace.StartIndex >= _parent._toOffset) return true;
 
 
                 _codeAreaId++;
@@ -416,46 +478,43 @@ namespace LibLSLCC.FastEditorParse
                 }
 
 
-                _parent.InFunctionDeclaration = true;
+                _parent.InFunctionCode = true;
 
                 _parent.CurrentFunction = context.function_name != null ? context.function_name.Text : null;
 
                 base.VisitFunctionDeclaration(context);
 
-                if ((context.Stop.StartIndex-1) > _parent._toOffset) return true;
+                if ((context.Stop.StartIndex - 1) > _parent._toOffset) return true;
 
-                _parent.InFunctionDeclaration = false;
+                _parent.InFunctionCode = false;
                 _parent.InGlobalScope = true;
 
                 return true;
             }
 
-
-
             public override bool VisitEventHandler(LSLParser.EventHandlerContext context)
             {
-
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
 
+                _parent.InEventContextRange = true;
 
-                if (((context.handler_name.StopIndex < _parent._toOffset) && (context.code == null ||
-    (context.code.open_brace.Text != "{") || (_parent._toOffset <= context.code.Start.StartIndex) || (context.code.Start.Text != "{"))))
+
+                if (context.open_parenth != null && context.open_parenth.Text == "(" &&
+                    context.open_parenth.StartIndex < _parent._toOffset)
                 {
-                    _parent.InBetweenEventNameEndAndCodeStart = true;
-
-
-                    var plist = context.optionalParameterList();
-                    if (plist != null && _parent._toOffset > plist.Start.StartIndex &&
-                        (_parent._toOffset <= plist.Stop.StopIndex + 1 || plist.Start.StartIndex >= plist.Stop.StopIndex))
-                    {
-                        _parent.InEventParameterList = true;
-                    }
-
-                    return true;
+                    _parent.InEventParameterList = true;
                 }
 
-                if (context.code.open_brace.Text == "<missing '}'>" || context.code.open_brace.StartIndex >= _parent._toOffset) return true;
+                if (context.close_parenth != null && context.close_parenth.Text == ")" &&
+                    context.close_parenth.StartIndex < _parent._toOffset)
+                {
+                    _parent.InEventParameterList = false;
+                }
+
+
+                if (context.code.open_brace.Text == "<missing '}'>" ||
+                    context.code.open_brace.StartIndex >= _parent._toOffset) return true;
 
                 _codeAreaId++;
 
@@ -485,7 +544,7 @@ namespace LibLSLCC.FastEditorParse
                     }
                 }
 
-                _parent.InEventHandler = true;
+                _parent.InEventCode = true;
 
                 _parent.CurrentEvent = context.handler_name != null ? context.handler_name.Text : null;
 
@@ -493,12 +552,12 @@ namespace LibLSLCC.FastEditorParse
 
                 if ((context.Stop.StartIndex) >= _parent._toOffset) return true;
 
-                _parent.InEventHandler = false;
+                _parent.InEventCode = false;
+
+                _parent.InEventContextRange = false;
 
                 return true;
             }
-
-
 
             public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
             {
@@ -507,9 +566,10 @@ namespace LibLSLCC.FastEditorParse
                 _parent.InGlobalScope = false;
 
 
-                if (((_parent._toOffset >= context.Start.StartIndex && context.open_brace.Text != "{") || (_parent._toOffset <= context.open_brace.StartIndex && _parent._toOffset >= context.Start.StartIndex)))
+                if (((_parent._toOffset >= context.Start.StartIndex && context.open_brace.Text != "{") ||
+                     (_parent._toOffset <= context.open_brace.StartIndex &&
+                      _parent._toOffset >= context.Start.StartIndex)))
                 {
-                    _parent.InBetweenStateNameStartAndOpenBrace = true;
                     return true;
                 }
 
@@ -525,7 +585,6 @@ namespace LibLSLCC.FastEditorParse
                 _scopeId++;
 
 
-                
                 _parent.InState = true;
 
                 _parent.CurrentState = context.state_name != null ? context.state_name.Text : null;
@@ -548,9 +607,10 @@ namespace LibLSLCC.FastEditorParse
             {
                 if (_parent._toOffset <= context.Start.StartIndex) return true;
 
-                if (((_parent._toOffset >= context.Start.StartIndex && context.open_brace.Text != "{") || (_parent._toOffset <= context.open_brace.StartIndex && _parent._toOffset >= context.Start.StartIndex)))
+                if (((_parent._toOffset >= context.Start.StartIndex && context.open_brace.Text != "{") ||
+                     (_parent._toOffset <= context.open_brace.StartIndex &&
+                      _parent._toOffset >= context.Start.StartIndex)))
                 {
-                    _parent.InBetweenStateNameStartAndOpenBrace = true;
                     return true;
                 }
 
@@ -610,19 +670,5 @@ namespace LibLSLCC.FastEditorParse
                 return true;
             }
         };
-
-        public bool InLocalVariableDeclarationExpr
-        { get; private set; }
-
-        public bool InGlobalVariableDeclarationExpr
-        { get; private set; }
-
-        public bool InVariableDeclarationTypeDecl { get; private set; }
-
-        public bool InBetweenFunctionNameEndAndCodeStart { get; private set; }
-
-        public bool InFunctionParameterList { get; private set; }
-
-        public bool InEventParameterList { get; private set; }
     }
 }

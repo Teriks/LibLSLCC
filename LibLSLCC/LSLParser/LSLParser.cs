@@ -244,14 +244,16 @@ public partial class LSLParser : Parser {
 	public partial class FunctionDeclarationContext : ParserRuleContext {
 		public IToken return_type;
 		public IToken function_name;
+		public IToken open_parenth;
 		public OptionalParameterListContext parameters;
+		public IToken close_parenth;
 		public CodeScopeContext code;
-		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
-		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
+		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
 		public OptionalParameterListContext optionalParameterList() {
 			return GetRuleContext<OptionalParameterListContext>(0);
 		}
+		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public CodeScopeContext codeScope() {
 			return GetRuleContext<CodeScopeContext>(0);
 		}
@@ -293,9 +295,9 @@ public partial class LSLParser : Parser {
 			}
 
 			State = 87; _localctx.function_name = Match(ID);
-			State = 88; Match(O_PAREN);
+			State = 88; _localctx.open_parenth = Match(O_PAREN);
 			State = 89; _localctx.parameters = optionalParameterList();
-			State = 90; Match(C_PAREN);
+			State = 90; _localctx.close_parenth = Match(C_PAREN);
 			State = 91; _localctx.code = codeScope();
 			}
 		}
@@ -1461,13 +1463,13 @@ public partial class LSLParser : Parser {
 		public IToken operation;
 		public ExpressionContext variable_value;
 		public IToken semi_colon;
-		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
 		public ITerminalNode TYPE() { return GetToken(LSLParser.TYPE, 0); }
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
 		public ITerminalNode EQUAL() { return GetToken(LSLParser.EQUAL, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
+		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
 		public LocalVariableDeclarationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1502,7 +1504,7 @@ public partial class LSLParser : Parser {
 				State = 209; _localctx.variable_name = Match(ID);
 				State = 210; _localctx.operation = Match(EQUAL);
 				State = 211; _localctx.variable_value = expression(0);
-				State = 212; Match(SEMI_COLON);
+				State = 212; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			case 2:
@@ -1532,13 +1534,13 @@ public partial class LSLParser : Parser {
 		public IToken operation;
 		public ExpressionContext variable_value;
 		public IToken semi_colon;
-		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
 		public ITerminalNode TYPE() { return GetToken(LSLParser.TYPE, 0); }
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
 		public ITerminalNode EQUAL() { return GetToken(LSLParser.EQUAL, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
+		public ITerminalNode SEMI_COLON() { return GetToken(LSLParser.SEMI_COLON, 0); }
 		public GlobalVariableDeclarationContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -1573,7 +1575,7 @@ public partial class LSLParser : Parser {
 				State = 220; _localctx.variable_name = Match(ID);
 				State = 221; _localctx.operation = Match(EQUAL);
 				State = 222; _localctx.variable_value = expression(0);
-				State = 223; Match(SEMI_COLON);
+				State = 223; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			case 2:
@@ -2985,14 +2987,16 @@ public partial class LSLParser : Parser {
 
 	public partial class EventHandlerContext : ParserRuleContext {
 		public IToken handler_name;
+		public IToken open_parenth;
 		public OptionalParameterListContext parameters;
+		public IToken close_parenth;
 		public CodeScopeContext code;
-		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
-		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
+		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
 		public OptionalParameterListContext optionalParameterList() {
 			return GetRuleContext<OptionalParameterListContext>(0);
 		}
+		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public CodeScopeContext codeScope() {
 			return GetRuleContext<CodeScopeContext>(0);
 		}
@@ -3024,9 +3028,9 @@ public partial class LSLParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 352; _localctx.handler_name = Match(ID);
-			State = 353; Match(O_PAREN);
+			State = 353; _localctx.open_parenth = Match(O_PAREN);
 			State = 354; _localctx.parameters = optionalParameterList();
-			State = 355; Match(C_PAREN);
+			State = 355; _localctx.close_parenth = Match(C_PAREN);
 			State = 356; _localctx.code = codeScope();
 			}
 		}

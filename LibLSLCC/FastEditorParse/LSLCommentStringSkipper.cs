@@ -1,4 +1,6 @@
-﻿namespace LibLSLCC.FastEditorParse
+﻿using System.CodeDom;
+
+namespace LibLSLCC.FastEditorParse
 {
     public class LSLCommentStringSkipper
     {
@@ -7,11 +9,13 @@
         private bool _inString;
         private int _lastStringStart;
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public bool InBlockComment
         {
             get { return _inBlockComment; }
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public bool InLineComment
         {
             get { return _inLineComment; }
@@ -25,7 +29,17 @@
 
         public bool InComment
         {
-            get { return _inLineComment || _inBlockComment; }
+            get { return InLineComment || InBlockComment; }
+        }
+
+        public LSLCommentStringSkipper()
+        {
+            
+        }
+
+        public LSLCommentStringSkipper(string text, int parseUpTo)
+        {
+            this.ParseUpTo(text,parseUpTo);
         }
 
         public void Reset()
@@ -35,6 +49,14 @@
             _inString = false;
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
+        public void ParseUpTo(string text, int offset)
+        {
+            for (int i = 0; i < offset; i++)
+            {
+                this.FeedChar(text, i, offset);
+            }
+        }
         public void FeedChar(string text, int i, int offset)
         {
             int lookAhead = i + 1;

@@ -198,7 +198,7 @@ rotationLiteral:
 
 
 functionDeclaration:
-	return_type=TYPE? function_name=ID O_PAREN parameters=optionalParameterList C_PAREN code=codeScope
+	return_type=TYPE? function_name=ID open_parenth=O_PAREN parameters=optionalParameterList close_parenth=C_PAREN code=codeScope
 	;
 
 
@@ -297,12 +297,12 @@ stateChangeStatement:
 
 
 localVariableDeclaration: 
-                     variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression SEMI_COLON 
+                     variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression semi_colon = SEMI_COLON 
                    | variable_type=TYPE variable_name=ID semi_colon=SEMI_COLON
 				   ;
 
 globalVariableDeclaration:
-					 variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression SEMI_COLON 
+					 variable_type=TYPE variable_name=ID operation = EQUAL variable_value=expression semi_colon = SEMI_COLON 
                    | variable_type=TYPE variable_name=ID semi_colon = SEMI_COLON
 				   ;
 
@@ -404,7 +404,7 @@ parameterList:
 	;
 
 eventHandler:
-	handler_name=ID O_PAREN parameters=optionalParameterList C_PAREN code=codeScope
+	handler_name=ID open_parenth=O_PAREN parameters=optionalParameterList close_parenth=C_PAREN code=codeScope
 	;
 
 
