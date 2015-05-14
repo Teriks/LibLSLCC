@@ -4,32 +4,37 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-
+             Name="_this"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" >
     <Grid>
+          
         <avalonedit:TextEditor
         Name="Editor"
         FontFamily="Courier New"
         FontSize="10pt" 
     
         ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" MouseLeave="TextEditor_OnMouseLeave" TextChanged="TextEditor_OnTextChanged">
+            <avalonedit:TextEditor.InputBindings>
+                <KeyBinding Key="Space" Modifiers="Control" Command="{Binding ElementName=_this, Path=AutoCompleteUserDefined}"/>
+                <KeyBinding Key="Q" Modifiers="Control" Command="{Binding ElementName=_this, Path=AutoCompleteLibraryConstants}"/>
+                <KeyBinding Key="W" Modifiers="Control" Command="{Binding ElementName=_this, Path=AutoCompleteLibraryFunctions}"/>
+            </avalonedit:TextEditor.InputBindings>
             <avalonedit:TextEditor.ContextMenu>
+                
                 <ContextMenu>
-                    <MenuItem Command="Cut" Header="Cut">
-                    </MenuItem>
-                    <MenuItem Command="Copy" Header="Copy">
-                    </MenuItem>
-                    <MenuItem Command="Paste" Header="Paste">
-                    </MenuItem>
-                    <MenuItem Command="Delete" Header="Delete">
-                    </MenuItem>
+                    <MenuItem Command="Cut" Header="Cut"/>
+                    <MenuItem Command="Copy" Header="Copy"/>
+                    <MenuItem Command="Paste" Header="Paste"/>
+                    <MenuItem Command="Delete" Header="Delete"/>
                     <MenuItem Command="SelectAll" Header="Select All"/>
                     <Separator />
-
-                    <MenuItem Command="Undo" Header="Undo">
-                    </MenuItem>
-                    <MenuItem Command="Redo" Header="Redo">
+                    <MenuItem Command="Undo" Header="Undo"/>
+                    <MenuItem Command="Redo" Header="Redo"/>
+                    <MenuItem Header="Auto Complete">
+                    <MenuItem Click="EditorContext_ClickSuggestLibraryConstants" Header="Suggest Library Constants" InputGestureText="Ctrl+Q"/>
+                    <MenuItem Click="EditorContext_ClickSuggestLibraryFunctions" Header="Suggest Library Functions" InputGestureText="Ctrl+W"/>
+                    <MenuItem Click="EditorContext_ClickSuggestUserDefinedOrEvent" Header="Suggest User Defined/Event" InputGestureText="Ctrl+Space"/>
                     </MenuItem>
                 </ContextMenu>
             </avalonedit:TextEditor.ContextMenu>

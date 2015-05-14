@@ -15,6 +15,9 @@ using LibLSLCC.Extensions;
 
 #endregion
 
+
+
+
 namespace LSLCCEditor.LSLEditor
 {
     public class LSLCompletionData : ICompletionData
@@ -34,23 +37,20 @@ namespace LSLCCEditor.LSLEditor
             _priority = priority;
             _text = text;
             _label = label;
-            TextSubStringStart = 1;
+            TextSubStringStart = 0;
         }
 
+
+
+        public string PrependOnInsert { get; set; }
+        public string AppendOnInsert { get; set; }
         public bool ForceIndent { get; set; }
         public int IndentLevel { get; set; }
         public int TextSubStringStart { get; set; }
-
         public int CaretOffsetAfterInsert { get; set; }
-
-
         public bool OffsetCaretAfterInsert { get; set; }
-
-
         public bool InsertTextAtCaretAfterOffset { get; set; }
-
         public string CaretOffsetInsertionText { get; set; }
-
 
         public HashSet<char> IndentBreakCharacters
         {
@@ -64,9 +64,14 @@ namespace LSLCCEditor.LSLEditor
             set { _colorBrush = value; }
         }
 
+
+
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            string text = Text;
+            var prep = string.IsNullOrWhiteSpace(PrependOnInsert) ? "" : PrependOnInsert;
+            var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
+
+            string text = prep + Text + app;
 
             if (ForceIndent)
             {
@@ -88,7 +93,7 @@ namespace LSLCCEditor.LSLEditor
                         while (j > 0)
                         {
                             char c = textArea.Document.Text[j];
-                            if (c == '\n'  || _indentBreakCharacters.Contains(c))
+                            if (c == '\n' || _indentBreakCharacters.Contains(c))
                             {
                                 end = j;
                                 if (c != '\n')
@@ -106,8 +111,7 @@ namespace LSLCCEditor.LSLEditor
                         }
 
 
-                        
-                        textArea.Document.Remove(end, (start - end)+1);
+                        textArea.Document.Remove(end, (start - end) + 1);
 
 
                         line = linePrefix + indent + lines[i].Trim();
@@ -129,17 +133,15 @@ namespace LSLCCEditor.LSLEditor
                 text = result;
             }
 
-
-
-            textArea.Document.Replace(completionSegment,  text);
+            textArea.Document.Replace(completionSegment, text);
 
             if (OffsetCaretAfterInsert)
             {
-                textArea.Caret.Offset = textArea.Caret.Offset+CaretOffsetAfterInsert;
+                textArea.Caret.Offset = textArea.Caret.Offset + CaretOffsetAfterInsert;
 
                 if (InsertTextAtCaretAfterOffset)
                 {
-                    textArea.Document.Insert(textArea.Caret.Offset,CaretOffsetInsertionText);
+                    textArea.Document.Insert(textArea.Caret.Offset, CaretOffsetInsertionText);
                 }
             }
         }
@@ -179,7 +181,7 @@ namespace LSLCCEditor.LSLEditor
 
         public object Description
         {
-            get { return new TextBlock(){Text = _description, MaxWidth = 500, TextWrapping = TextWrapping.Wrap}; }
+            get { return new TextBlock {Text = _description, MaxWidth = 500, TextWrapping = TextWrapping.Wrap}; }
         }
 
         public double Priority

@@ -1353,10 +1353,18 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 ScopingManager.IncrementScopeId();
 
+                LSLCodeScopeNode result;
+                if (!code.HasErrors)
+                {
+                    result = new LSLCodeScopeNode(context.statement, ScopingManager.CurrentScopeId,
+                        ScopingManager.CurrentCodeScopeType);
+                }
+                else
+                {
+                    result = LSLCodeScopeNode.GetError(new LSLSourceCodeRange(context.statement));
+                }
 
-                var result = new LSLCodeScopeNode(context.statement, ScopingManager.CurrentScopeId, ScopingManager.CurrentCodeScopeType);
 
-            
                 result.AddCodeStatement(code, context.statement);
                 result.EndScope();
 

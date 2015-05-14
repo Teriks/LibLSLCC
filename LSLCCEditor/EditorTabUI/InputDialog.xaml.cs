@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace LSLCCEditor
 {
     /// <summary>
-    /// Interaction logic for InputDialog.xaml
+    ///     Interaction logic for InputDialog.xaml
     /// </summary>
     public partial class InputDialog : Window
     {
@@ -24,19 +12,23 @@ namespace LSLCCEditor
             InitializeComponent();
         }
 
+
+
         public bool Accepted { get; set; }
+
+
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             Accepted = true;
-            this.Close();
+            Close();
         }
 
 
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.CodeDom;
-
-namespace LibLSLCC.FastEditorParse
+﻿namespace LibLSLCC.AutoCompleteParser
 {
     public class LSLCommentStringSkipper
     {

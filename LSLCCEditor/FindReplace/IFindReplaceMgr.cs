@@ -3,10 +3,10 @@
 namespace FindReplace
 {
     /// <summary>
-    /// The design is like this:
-    ///    (WPF wrapper) -- this interface -- (FindReplaceEngine)
+    ///     The design is like this:
+    ///     (WPF wrapper) -- this interface -- (FindReplaceEngine)
     /// </summary>
-    interface IFindReplaceMgr
+    internal interface IFindReplaceMgr
     {
         bool CaseSensitive { get; set; }
         object CurrentEditor { get; set; }

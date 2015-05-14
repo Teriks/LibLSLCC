@@ -56,8 +56,8 @@
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="Extensions\StringTools.cs" />
-    <Compile Include="FastEditorParse\LSLCommentStringSkipper.cs" />
-    <Compile Include="FastEditorParse\LSLFastEditorParse.cs" />
+    <Compile Include="AutoCompleteParser\LSLCommentStringSkipper.cs" />
+    <Compile Include="AutoCompleteParser\LSLAutoCompleteParser.cs" />
     <Compile Include="CodeValidator\Primitives\LSLBinaryOperationSignature.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLExpressionValidator.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLMainLibraryDataProvider.cs" />

@@ -48,7 +48,7 @@
                 <StackPanel>
                     <TextBox Margin="3" Name="txtFind2" AcceptsReturn="{Binding AcceptsReturn}" Text="{Binding TextToFind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <TextBlock Margin="3">Replace with:</TextBlock>
-                    <TextBox Margin="3" Name="txtReplace" AcceptsReturn="{Binding AcceptsReturn}" Text="{Binding ReplacementText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBox Margin="3" Name="txtReplace" AcceptsReturn="{Binding AcceptsReturn}" Text="{Binding ReplacementText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button IsDefault="True" Margin="3" HorizontalAlignment="Right" Width="65" Click="FindNextClick">Find Next</Button>
                         <Button Margin="3" HorizontalAlignment="Right" Width="65" Click="ReplaceClick">Replace</Button>

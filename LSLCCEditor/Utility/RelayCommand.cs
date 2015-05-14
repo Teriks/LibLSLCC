@@ -5,16 +5,17 @@ namespace LSLCCEditor.Utility
 {
     public class RelayCommand : ICommand
     {
+        private Predicate<object> _canExecute;
         private Action<object> _execute;
 
-        private Predicate<object> _canExecute;
 
-        private event EventHandler CanExecuteChangedInternal;
 
         public RelayCommand(Action<object> execute)
             : this(execute, DefaultCanExecute)
         {
         }
+
+
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
@@ -32,6 +33,8 @@ namespace LSLCCEditor.Utility
             _canExecute = canExecute;
         }
 
+
+
         public event EventHandler CanExecuteChanged
         {
             add
@@ -47,15 +50,25 @@ namespace LSLCCEditor.Utility
             }
         }
 
+
+
         public bool CanExecute(object parameter)
         {
             return _canExecute != null && _canExecute(parameter);
         }
 
+
+
         public void Execute(object parameter)
         {
             _execute(parameter);
         }
+
+
+
+        private event EventHandler CanExecuteChangedInternal;
+
+
 
         public void OnCanExecuteChanged()
         {
@@ -67,11 +80,15 @@ namespace LSLCCEditor.Utility
             }
         }
 
+
+
         public void Destroy()
         {
             _canExecute = _ => false;
             _execute = _ => { };
         }
+
+
 
         private static bool DefaultCanExecute(object parameter)
         {

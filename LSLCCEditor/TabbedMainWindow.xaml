@@ -6,19 +6,19 @@
         xmlns:converters="clr-namespace:LSLCCEditor.Converters"
         xmlns:lslccEditor="clr-namespace:LSLCCEditor"
         mc:Ignorable="d"
-        Title="LSLCCEditor"  Height="640.358" Width="897.987"  Closing="Window1_OnClosing" Loaded="Window1_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}" Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325">
+        Title="LSLCCEditor"  Height="640.358" Width="897.987"  Closing="TabbedMainWindow_OnClosing" Loaded="TabbedMainWindow_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}" Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325">
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileNew}" Executed="NewFile_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpenNewTab}" Executed="Open_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" Executed="Save_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" Executed="SaveAs_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}" Executed="CompileForOpenSim_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}" Executed="ClearCompilerMessages_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}" Executed="CheckSyntax_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" Executed="Format_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchFind}" Executed="Find_OnClick" ></CommandBinding>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchReplace}" Executed="Replace_OnClick" ></CommandBinding>
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileNew}" Executed="NewFile_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpenNewTab}" Executed="Open_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" Executed="Save_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" Executed="SaveAs_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}" Executed="CompileForOpenSim_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}" Executed="ClearCompilerMessages_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}" Executed="CheckSyntax_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" Executed="Format_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchFind}" Executed="Find_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchReplace}" Executed="Replace_OnClick" />
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{x:Static lslccEditor:TabbedMainWindow.FileOpen}" />
@@ -27,7 +27,7 @@
         <KeyBinding Modifiers="Control" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" />
         <KeyBinding Modifiers="Control+Alt" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" />
         <KeyBinding Modifiers="Control+Shift" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}" />
-        <KeyBinding Modifiers="Control+Alt" Key="F" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" />
+        <KeyBinding Modifiers="Control+Shift" Key="F" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" />
         <KeyBinding Modifiers="Control+Alt" Key="C" Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}" />
         <KeyBinding Modifiers="Control+Shift" Key="C" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}" />
         <KeyBinding Modifiers="Control" Key="F" Command="{x:Static lslccEditor:TabbedMainWindow.SearchFind}" />
@@ -43,28 +43,27 @@
         </Grid.Resources>
         
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
 
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="test" Click="MenuItem_OnClick"></MenuItem>
-                <MenuItem Header="New" ToolTip="(Ctrl+N)" Click="NewFile_OnClick"/>
-                <MenuItem Header="Save" ToolTip="(Ctrl+S)" Click="Save_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
-                <MenuItem Header="Save As" ToolTip="(Ctrl+Alt+S)" Click="SaveAs_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
-                <MenuItem Header="Open" ToolTip="(Ctrl+O)" Click="OpenInThisTab_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
-                <MenuItem Header="Open New Tab" ToolTip="(Ctrl+Alt+O)" Click="Open_OnClick"/>
+                <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewFile_OnClick"/>
+                <MenuItem Header="Save" InputGestureText="Ctrl+S" Click="Save_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
+                <MenuItem Header="Save As" InputGestureText="Ctrl+Alt+S" Click="SaveAs_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
+                <MenuItem Header="Open" InputGestureText="Ctrl+O" Click="OpenInThisTab_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
+                <MenuItem Header="Open New Tab" InputGestureText="Ctrl+Alt+O" Click="Open_OnClick"/>
             </MenuItem>
             <MenuItem Header="Compile" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" >
-                <MenuItem Header="For OpenSim" ToolTip="(Ctrl+Alt+C)" Click="CompileForOpenSim_OnClick"/>
+                <MenuItem Header="For OpenSim" InputGestureText="Ctrl+Alt+C" Click="CompileForOpenSim_OnClick"/>
             </MenuItem>
             
             <MenuItem Header="Tools" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
-                <MenuItem Header="Clear Messages" ToolTip="(Ctrl+Shift+C)" Click="ClearCompilerMessages_OnClick" />
-                <MenuItem Header="Check Syntax" ToolTip="(Ctrl+Shift+S)" Click="CheckSyntax_OnClick"/>
-                <MenuItem Header="Format" ToolTip="(Ctrl+Alt+F)" Click="Format_OnClick" />
+                <MenuItem Header="Clear Messages" InputGestureText="Ctrl+Shift+C" Click="ClearCompilerMessages_OnClick" />
+                <MenuItem Header="Check Syntax" InputGestureText="Ctrl+Shift+S" Click="CheckSyntax_OnClick"/>
+                <MenuItem Header="Format" InputGestureText="Ctrl+Shift+F" Click="Format_OnClick" />
 
             </MenuItem>
             <MenuItem Header="Tab Library Data" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" >
@@ -77,8 +76,8 @@
 
             </MenuItem>
             <MenuItem Header="Search"  IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
-                <MenuItem Header="Find" ToolTip="(Ctrl+F)" Click="Find_OnClick"/>
-                <MenuItem Header="Replace" ToolTip="(Ctrl+H)" Click="Replace_OnClick"/>
+                <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick"/>
+                <MenuItem Header="Replace" InputGestureText="Ctrl+H" Click="Replace_OnClick"/>
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">
@@ -134,7 +133,7 @@
                                               Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
-                            <TextBlock Text="{Binding TabHeader}"></TextBlock>
+                            <TextBlock Text="{Binding TabHeader}" />
                             <Button Margin="5,1.5,0,0" 
                                     Height="15" Width="15"
                                     Content="X" 
@@ -148,7 +147,7 @@
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <ContentControl Content="{Binding Content}"></ContentControl>
+                        <ContentControl Content="{Binding Content}" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </TabControl>
