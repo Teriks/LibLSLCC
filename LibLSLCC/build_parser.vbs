@@ -52,7 +52,7 @@ If (a) Or (b) Or (c) Or (d) Or (e) Or (f) Or Not exist Then
 	
 	Set oShell = WScript.CreateObject ("WScript.Shell")
 
-	oShell.Run "cmd /c java -classpath ./antlr-4.5-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC -o ./LSLParser ./LSLParser/LSL.g4", 1, 0
+	oShell.Run "cmd /c java -classpath ./antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC -o ./LSLParser ./LSLParser/LSL.g4", 1, 0
 
 
 
