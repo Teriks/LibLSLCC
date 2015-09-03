@@ -943,8 +943,10 @@ namespace LSLCCEditor
             public override void OnError(LSLSourceCodeRange location, string message)
             {
                 var tab = (EditorTab) _parent.TabControl.SelectedItem;
-                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Warning, "Error", location, message));
+                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error", location, message));
             }
         }
     }
+
+
 }

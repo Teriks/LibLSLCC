@@ -164,6 +164,16 @@ namespace LibLSLCC.CodeValidator.Primitives
             get { return _stopIndex; }
         }
 
+
+        public override bool Equals(object obj)
+        {
+            var x = obj as LSLSourceCodeRange;
+            if (x == null) return false;
+
+            return this.HasIndexInfo == x.HasIndexInfo && this.ColumnStart == x.ColumnStart &&
+                   this.ColumnEnd == x.ColumnEnd && this.LineStart == x.LineStart && this.StartIndex == x.StartIndex;
+        }
+
         public LSLSourceCodeRange GetFirstCharRange()
         {
             return new LSLSourceCodeRange(LineStart, ColumnStart, LineStart, ColumnStart, StartIndex, StartIndex);

@@ -71,12 +71,11 @@
     <ManifestKeyFile>LSLCCEditor_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LibLSLCC\bin\Release\Antlr4.Runtime.dll</HintPath>
+    <Reference Include="Antlr4.Runtime">
+      <HintPath>..\LibLSLCC\Antlr4.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.1.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,13 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EditorTabUI\CompilerMessage.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Converters\IntegerNotZeroToVisibilityConverter.cs" />
-    <Compile Include="DebugObjectView.xaml.cs">
-      <DependentUpon>DebugObjectView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditorTabUI\CompilerMessage.cs" />
     <Compile Include="EditorTabUI\EditorTab.cs" />
     <Compile Include="EditorTabUI\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
@@ -121,14 +117,11 @@
     <Compile Include="EditorTabUI\EditorTabContent.xaml.cs">
       <DependentUpon>EditorTabContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
     <Compile Include="TabbedMainWindow.xaml.cs">
       <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="DebugObjectView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="FindReplace\FindReplaceDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

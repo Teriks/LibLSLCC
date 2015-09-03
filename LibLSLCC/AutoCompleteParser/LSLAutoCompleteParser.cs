@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,6 +18,7 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.AutoCompleteParser
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class LSLAutoCompleteParser
     {
         private readonly Dictionary<string, GlobalFunction> _globalFunctions = new Dictionary<string, GlobalFunction>();
