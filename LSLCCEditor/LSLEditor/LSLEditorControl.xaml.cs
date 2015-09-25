@@ -175,9 +175,9 @@ namespace LSLCCEditor.LSLEditor
 
             InitializeComponent();
 
-            _selectionForgroundCache = Editor.TextArea.SelectionForeground;
+            /*_selectionForgroundCache = Editor.TextArea.SelectionForeground;
             _selectionBrushCache = Editor.TextArea.SelectionBrush;
-            _selectionBorderCache = Editor.TextArea.SelectionBorder;
+            _selectionBorderCache = Editor.TextArea.SelectionBorder;*/
 
             Editor.TextArea.TextEntering += TextArea_TextEntering;
             Editor.MouseHover += TextEditor_MouseHover;
@@ -1419,9 +1419,9 @@ namespace LSLCCEditor.LSLEditor
         private void TextArea_ContextMenu_GotoDefinitionClick(object sender, RoutedEventArgs e)
         {
 
-            Editor.TextArea.SelectionBorder = _selectionBorderCache;
-            Editor.TextArea.SelectionBrush = _selectionBrushCache;
-            Editor.TextArea.SelectionForeground = _selectionForgroundCache;
+            //Editor.TextArea.SelectionBorder = _selectionBorderCache;
+            //Editor.TextArea.SelectionBrush = _selectionBrushCache;
+            //Editor.TextArea.SelectionForeground = _selectionForgroundCache;
 
             if (_contextMenuOpenPosition != null)
             {
@@ -1452,15 +1452,23 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
+        /*
         private Pen _selectionBorderCache;
         private Brush _selectionBrushCache;
         private Brush _selectionForgroundCache;
 
-        private void ResetContextMenuGotoDefinitionState()
+        private void CacheSelectionStyle()
         {
             _selectionBorderCache = Editor.TextArea.SelectionBorder;
-            _selectionBrushCache = Editor.TextArea.SelectionBrush;
-            _selectionForgroundCache = Editor.TextArea.SelectionForeground;
+            _selectionForgroundCache = Editor.TextArea.SelectionBrush;
+            _selectionBrushCache = Editor.TextArea.SelectionForeground;
+        }
+
+        private void ResetContextMenuGotoDefinitionState()
+        {
+           Editor.TextArea.SelectionBorder = _selectionBorderCache;
+           Editor.TextArea.SelectionBrush  = _selectionForgroundCache;
+           Editor.TextArea.SelectionForeground =  _selectionForgroundCache;
 
 
             _contextMenuOpenPosition = null;
@@ -1469,11 +1477,13 @@ namespace LSLCCEditor.LSLEditor
             _contextMenuVar = null;
             _contextMenuLocalVar = null;
             _contextMenuLocalParam = null;
-        }
+        }*/
 
         private void TextArea_ContextMenu_OnOpened(object sender, RoutedEventArgs e)
         {
-            ResetContextMenuGotoDefinitionState();
+            _contextMenuOpenPosition = null;
+            GotoDefinitionContextMenuButton.Visibility = Visibility.Collapsed;
+
 
             _contextMenuOpenPosition = Editor.GetPositionFromPoint(Mouse.GetPosition(Editor));
 
@@ -1490,6 +1500,7 @@ namespace LSLCCEditor.LSLEditor
             var segment = GetIdSegmentUnderMouse(Editor.Document, _contextMenuOpenPosition.Value);
             if (segment == null)
             {
+                _contextMenuOpenPosition = null;
                 return;
             }
 
@@ -1519,9 +1530,11 @@ namespace LSLCCEditor.LSLEditor
                 _contextMenuLocalVar != null ||
                 _contextMenuLocalParam != null
                 );
-
+            /*
             if (isSymbol)
             {
+                //CacheSelectionStyle();
+
                 Editor.Select(segment.StartOffset, segment.Length);
 
                 Editor.TextArea.SelectionBorder = new Pen(Brushes.Black, 1)
@@ -1531,7 +1544,7 @@ namespace LSLCCEditor.LSLEditor
 
                 Editor.TextArea.SelectionBrush = Brushes.Transparent;
                 Editor.TextArea.SelectionForeground = Brushes.Red;
-            }
+            }*/
 
             GotoDefinitionContextMenuButton.Visibility =
                isSymbol ? Visibility.Visible
@@ -1540,7 +1553,15 @@ namespace LSLCCEditor.LSLEditor
 
         private void TextArea_ContextMenu_OnClosed(object sender, RoutedEventArgs e)
         {
-            ResetContextMenuGotoDefinitionState();
+            
+            _contextMenuOpenPosition = null;
+            GotoDefinitionContextMenuButton.Visibility = Visibility.Collapsed;
+
+            /*
+            _contextMenuFunction = null;
+            _contextMenuVar = null;
+            _contextMenuLocalVar = null;
+            _contextMenuLocalParam = null;*/
         }
     }
 }
