@@ -1244,7 +1244,7 @@ namespace LibLSLCC.AutoCompleteParser
                 base.VisitDefaultState(context);
 
 
-                if ((context.Stop.StartIndex) >= _parent._toOffset) return true;
+                if (((context.Stop.StartIndex) >= _parent._toOffset) || context.Stop.Text != "}") return true;
 
                 _parent.InState = false;
 
@@ -1290,7 +1290,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                 base.VisitDefinedState(context);
 
-                if ((context.Stop.StartIndex) >= _parent._toOffset) return true;
+                if (((context.Stop.StartIndex) >= _parent._toOffset) || context.Stop.Text != "}") return true;
 
 
                 _parent.InState = false;

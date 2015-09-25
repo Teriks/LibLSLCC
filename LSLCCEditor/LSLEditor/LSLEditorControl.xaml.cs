@@ -590,7 +590,10 @@ namespace LSLCCEditor.LSLEditor
 
 
                 if (commentSkipper.InComment || commentSkipper.InString ||
-                    LSLTypeNameBehindOffset(Editor.Text, caretOffset)) return;
+                    LSLTypeNameBehindOffset(Editor.Text, caretOffset))
+                {
+                    return;
+                }
 
 
                 CurrentCompletionWindow = CreateNewCompletionWindow();
