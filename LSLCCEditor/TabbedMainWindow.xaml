@@ -177,6 +177,6 @@
             </TabControl>
             
         </Grid>
-        <StatusBar Grid.Row="2" Height="20"></StatusBar>
+        <StatusBar Grid.Row="2" Height="20" />
     </Grid>
 </Window>

@@ -12,8 +12,11 @@
     <MajorUpgrade AllowSameVersionUpgrades="yes" Disallow="no" AllowDowngrades="no"
                   DowngradeErrorMessage="A newer version of this software is already installed." />
 
+   
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
     <UIRef Id="WixUI_InstallDir" />
+    
+     <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">

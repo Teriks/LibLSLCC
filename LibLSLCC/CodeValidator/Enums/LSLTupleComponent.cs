@@ -3,7 +3,7 @@
 // 
 // File: LSLTupleComponent.cs
 // 
-// Last Compile: 25/09/2015 @ 5:46 AM
+// Last Compile: 25/09/2015 @ 11:47 AM
 // 
 // Creation Date: 21/08/2015 @ 12:22 AM
 // 
@@ -11,12 +11,15 @@
 // ============================================================
 // 
 // 
+// Copyright (c) 2015, Teriks
+// 
+// All rights reserved.
+// 
+// 
 // This file is part of LibLSLCC.
 // 
 // LibLSLCC is distributed under the following BSD 3-Clause License
 // 
-// Copyright (c) 2015, Teriks
-// All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 // 

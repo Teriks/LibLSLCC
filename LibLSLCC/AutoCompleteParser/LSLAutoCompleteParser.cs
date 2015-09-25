@@ -3,7 +3,7 @@
 // 
 // File: LSLAutoCompleteParser.cs
 // 
-// Last Compile: 25/09/2015 @ 5:46 AM
+// Last Compile: 25/09/2015 @ 11:47 AM
 // 
 // Creation Date: 21/08/2015 @ 12:22 AM
 // 
@@ -11,12 +11,15 @@
 // ============================================================
 // 
 // 
+// Copyright (c) 2015, Teriks
+// 
+// All rights reserved.
+// 
+// 
 // This file is part of LibLSLCC.
 // 
 // LibLSLCC is distributed under the following BSD 3-Clause License
 // 
-// Copyright (c) 2015, Teriks
-// All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 // 
@@ -723,11 +726,16 @@ namespace LibLSLCC.AutoCompleteParser
 
             public override bool VisitGlobalVariableDeclaration(LSLParser.GlobalVariableDeclarationContext context)
             {
-                if (context.Start.StartIndex >= _parent._toOffset) return true;
+                
 
                 if (context.variable_name == null || context.variable_type == null) return true;
 
-                _parent.InGlobalScope = false;
+
+                if (context.Start.StartIndex <= _parent._toOffset)
+                {
+                    _parent.InGlobalScope = false;
+                }
+                
 
 
                 var variable =
@@ -743,22 +751,30 @@ namespace LibLSLCC.AutoCompleteParser
                     _parent._globalVariables.Add(context.variable_name.Text, variable);
                 }
 
-                if (context.operation != null && context.operation.StartIndex < _parent._toOffset)
+
+                if (context.Start.StartIndex <= _parent._toOffset)
                 {
-                    _parent.InGlobalVariableDeclarationExpression = true;
-                }
+
+                    if (context.operation != null && context.operation.StartIndex < _parent._toOffset)
+                    {
+                        _parent.InGlobalVariableDeclarationExpression = true;
+                    }
 
 
-                if (context.semi_colon != null && context.semi_colon.Text == ";" &&
-                    context.semi_colon.StartIndex < _parent._toOffset)
-                {
-                    _parent.InGlobalVariableDeclarationExpression = false;
-                    _parent.InGlobalScope = true;
+                    if (context.semi_colon != null && context.semi_colon.Text == ";" &&
+                        context.semi_colon.StartIndex < _parent._toOffset)
+                    {
+                        _parent.InGlobalVariableDeclarationExpression = false;
+                        _parent.InGlobalScope = true;
+                    }
+
                 }
 
 
                 return base.VisitGlobalVariableDeclaration(context);
             }
+
+
 
             public override bool VisitExpr_Assignment(LSLParser.Expr_AssignmentContext context)
             {
@@ -1054,7 +1070,8 @@ namespace LibLSLCC.AutoCompleteParser
             {
                 var returnTypeText = context.return_type == null ? "" : context.return_type.Text;
 
-                _parent._parameters.Clear();
+                
+                
 
 
                 var parms = new List<LocalParameter>();
@@ -1144,6 +1161,8 @@ namespace LibLSLCC.AutoCompleteParser
                 base.VisitFunctionDeclaration(context);
 
                 if ((context.Stop.StartIndex) >= _parent._toOffset) return true;
+
+                _parent._parameters.Clear();
 
 
                 _parent.InFunctionCodeBody = false;
