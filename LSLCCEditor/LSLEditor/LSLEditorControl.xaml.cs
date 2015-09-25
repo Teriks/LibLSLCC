@@ -558,7 +558,7 @@ namespace LSLCCEditor.LSLEditor
                 while (offset > 0)
                 {
                     var text = textArea.Document.GetText(offset, 1);
-                    if (text == ";" || text == "{")
+                    if (text == ";" || text == "{" || text == "}")
                     {
                         textArea.Document.Remove(caretOffset - 1, 1);
                         return;
