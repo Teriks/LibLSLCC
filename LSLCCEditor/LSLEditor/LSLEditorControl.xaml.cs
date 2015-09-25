@@ -1319,16 +1319,7 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-        public class CustomIndentationStrategy : IIndentationStrategy
-        {
-            public void IndentLine(TextDocument document, DocumentLine line)
-            {
-            }
 
-            public void IndentLines(TextDocument document, int beginLine, int endLine)
-            {
-            }
-        }
 
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             "Text", typeof (string), typeof (LSLEditorControl),
