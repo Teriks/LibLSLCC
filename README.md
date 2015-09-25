@@ -23,4 +23,3 @@ Note:
         the WiX Toolset to build.  see: http://wixtoolset.org/ for the WiX Toolset download 
         if your having trouble building the installer project. 
  
-TODO: readme.. 
