@@ -1,7 +1,8 @@
 See GPL-LICENSE.txt for license.
 
-This project contains an installer for the code editor application which requires 
-the WiX Toolset.  see: http://wixtoolset.org/ if your having trouble loading 
-the installer project.
+Note: 
+	This solution contains an installer project for the code editor which requires 
+	the WiX Toolset to build.  see: http://wixtoolset.org/ for the WiX Toolset download
+	if your having trouble building the installer project.
 
 TODO: readme..
