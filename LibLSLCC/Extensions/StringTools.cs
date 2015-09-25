@@ -1,20 +1,49 @@
-﻿namespace LibLSLCC.Extensions
+﻿#region FileInfo
+
+// 
+// File: StringTools.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:25 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+namespace LibLSLCC.Extensions
 {
     public static class StringTools
     {
-
         /// <summary>
-        /// Gets the number of spaces required to match the length of the whitespace leading up to the first non-whitespace
-        /// character in a string (new line is not considered whitespace here).
+        ///     Gets the number of spaces required to match the length of the whitespace leading up to the first non-whitespace
+        ///     character in a string (new line is not considered whitespace here).
         /// </summary>
         /// <param name="str">The string to consider</param>
         /// <param name="tabSize">The size of a tab character in spaces</param>
-        /// <returns>The number of space characters required to match the length of all the whitespace characters at the end of the string (except newlines)</returns>
-        public static int GetStringSpacesIndented(this string str, int tabSize=4)
+        /// <returns>
+        ///     The number of space characters required to match the length of all the whitespace characters at the end of the
+        ///     string (except newlines)
+        /// </returns>
+        public static int GetStringSpacesIndented(this string str, int tabSize = 4)
         {
-            int columns = 0;
+            var columns = 0;
 
-            foreach (char t in str)
+            foreach (var t in str)
             {
                 if (char.IsWhiteSpace(t))
                 {
@@ -36,7 +65,7 @@
         }
 
         /// <summary>
-        /// Gets the number of spaces required to exactly match the length of a given string up to the first new line
+        ///     Gets the number of spaces required to exactly match the length of a given string up to the first new line
         /// </summary>
         /// <param name="str">Input string to get the length in spaces of</param>
         /// <param name="tabSize">Tab size in spaces, defaults to 4</param>
@@ -45,11 +74,11 @@
         {
             if (str.Length == 0) return 0;
 
-            int columns = 0;
+            var columns = 0;
 
-            for (int index = 0; index < str.Length; index++)
+            for (var index = 0; index < str.Length; index++)
             {
-                char t = str[index];
+                var t = str[index];
                 if (char.IsWhiteSpace(t))
                 {
                     if (t == '\t')
@@ -78,21 +107,21 @@
             return columns;
         }
 
-
         /// <summary>
-        /// Creates a spacer string using tabs up until spaces are required for alignment.
-        /// Strings less than tabSize end up being only spaces.
+        ///     Creates a spacer string using tabs up until spaces are required for alignment.
+        ///     Strings less than tabSize end up being only spaces.
         /// </summary>
         /// <param name="spaces">The number of spaces the spacer string should be equivalent to</param>
         /// <param name="tabSize">The size of a tab character in spaces, default value is 4</param>
         /// <returns>
-        /// A string consisting of leading tabs and possibly trailing spaces that is equivalent in length 
-        /// to the number of spaces provided in the spaces parameter</returns>
+        ///     A string consisting of leading tabs and possibly trailing spaces that is equivalent in length
+        ///     to the number of spaces provided in the spaces parameter
+        /// </returns>
         public static string CreateTabCorrectSpaceString(int spaces, int tabSize = 4)
         {
-            string space = "";
-            int actual = 0;
-            for (int i = 0; i < (spaces / tabSize); i++)
+            var space = "";
+            var actual = 0;
+            for (var i = 0; i < (spaces/tabSize); i++)
             {
                 space += '\t';
                 actual += tabSize;
@@ -108,16 +137,15 @@
             return space;
         }
 
-
         public static string CreateRepeatingString(int repeats, string content)
         {
-            string r = "";
-            for (int i = 0; i < repeats; i++) r += content;
+            var r = "";
+            for (var i = 0; i < repeats; i++) r += content;
             return r;
         }
 
         /// <summary>
-        /// Generate a string with N number of spaces in it
+        ///     Generate a string with N number of spaces in it
         /// </summary>
         /// <param name="spaces">Number of spaces</param>
         /// <returns>A string containing 'spaces' number of spaces</returns>
@@ -126,9 +154,8 @@
             return CreateRepeatingString(spaces, " ");
         }
 
-
         /// <summary>
-        /// Generate a string with N number of tabs in it
+        ///     Generate a string with N number of tabs in it
         /// </summary>
         /// <param name="tabs">Number of tabs</param>
         /// <returns>A string containing 'tabs' number of tabs</returns>
@@ -137,10 +164,8 @@
             return CreateRepeatingString(tabs, "\t");
         }
 
-
-
         /// <summary>
-        /// Generate a string with N number of newlines in it
+        ///     Generate a string with N number of newlines in it
         /// </summary>
         /// <param name="newLines">Number of newlines</param>
         /// <returns>A string containing 'newLines' number of newlines</returns>

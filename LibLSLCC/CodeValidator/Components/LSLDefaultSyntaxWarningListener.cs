@@ -1,9 +1,40 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLDefaultSyntaxWarningListener.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Components
 {
@@ -15,23 +46,17 @@ namespace LibLSLCC.CodeValidator.Components
                 "Multiple list assignments in expression, may not evaluate how you expect");
         }
 
-
-
         public virtual void MultipleStringAssignmentsInExpression(LSLSourceCodeRange location)
         {
             OnWarning(location,
                 "Multiple string assignments in expression, may not evaluate how you expect");
         }
 
-
-
         public virtual void OnWarning(LSLSourceCodeRange location, string message)
         {
             Console.WriteLine("({0},{1}) WARNING: {2}", location.LineStart, location.ColumnStart,
                 message + Environment.NewLine);
         }
-
-
 
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLFunctionSignature currentFunction,
             LSLDeadCodeSegment deadSegment)
@@ -50,8 +75,6 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
-
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLEventSignature currentEvent,
             LSLDeadCodeSegment deadSegment)
         {
@@ -69,21 +92,15 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
-
         public virtual void UselessSemiColon(LSLSourceCodeRange location)
         {
             OnWarning(location, "Pointless semicolon detected");
         }
 
-
-
         public virtual void ExpressionStatementHasNoEffect(LSLSourceCodeRange location)
         {
             OnWarning(location, "Expression statement has no effect");
         }
-
-
 
         public virtual void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
             int expressionCountTotal)
@@ -99,7 +116,6 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
         public virtual void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
             int expressionCountTotal)
         {
@@ -114,20 +130,15 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
         public virtual void RedundantCast(LSLSourceCodeRange location, LSLType castType)
         {
             OnWarning(location, string.Format("Redundant cast to {0}", castType));
         }
 
-
-
         public void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function)
         {
             OnWarning(location, string.Format("Function \"{0}\" was never used", function.Name));
         }
-
-
 
         public void GlobalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable)
         {
@@ -136,8 +147,6 @@ namespace LibLSLCC.CodeValidator.Components
 
             OnWarning(location, string.Format(msg, variable.Name));
         }
-
-
 
         public void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
             LSLFunctionSignature inFunction)
@@ -148,88 +157,80 @@ namespace LibLSLCC.CodeValidator.Components
             OnWarning(location, string.Format(msg, variable.Name, inFunction.Name));
         }
 
-
-
         public void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
             LSLEventSignature inEvent)
         {
             const string msg = "Local variable \"{0}\" was never used in event \"{1}\"";
 
-            OnWarning(location, string.Format(msg, variable.Name,inEvent.Name));
-
+            OnWarning(location, string.Format(msg, variable.Name, inEvent.Name));
         }
 
-
-
-        public void FunctionParameterNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode parameter, LSLFunctionSignature inFunction)
+        public void FunctionParameterNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode parameter,
+            LSLFunctionSignature inFunction)
         {
-            OnWarning(location, string.Format("Parameter \"{0}\" was never used in function \"{1}\"", parameter.Name,inFunction.Name));
+            OnWarning(location,
+                string.Format("Parameter \"{0}\" was never used in function \"{1}\"", parameter.Name, inFunction.Name));
         }
-
-
 
         public void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
             LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
-            OnWarning(location, string.Format("Parameter \"{0}\" of function \"{1}\" hides global variable \"{2}\" defined on line {3}",
-                parameter.Name, functionSignature.Name, globalVariable.Name, globalVariable.SourceCodeRange.LineStart));
+            OnWarning(location,
+                string.Format("Parameter \"{0}\" of function \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                    parameter.Name, functionSignature.Name, globalVariable.Name,
+                    globalVariable.SourceCodeRange.LineStart));
         }
-
-
 
         public void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLEventSignature eventHandlerSignature,
             LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
-            OnWarning(location, string.Format("Parameter \"{0}\" of event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
-                parameter.Name, eventHandlerSignature.Name, globalVariable.Name, globalVariable.SourceCodeRange.LineStart));
+            OnWarning(location,
+                string.Format(
+                    "Parameter \"{0}\" of event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                    parameter.Name, eventHandlerSignature.Name, globalVariable.Name,
+                    globalVariable.SourceCodeRange.LineStart));
         }
 
-
-
-        public void LocalVariableHidesParameter(LSLSourceCodeRange location, LSLPreDefinedFunctionSignature functionSignature,
+        public void LocalVariableHidesParameter(LSLSourceCodeRange location,
+            LSLPreDefinedFunctionSignature functionSignature,
             LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
         {
             OnWarning(location, string.Format("Local variable \"{0}\" in function \"{1}\" hides parameter \"{2}\"",
                 localVariable.Name, functionSignature.Name, parameter.Name));
         }
 
-
-
-        public void LocalVariableHidesParameter(LSLSourceCodeRange location, LSLParsedEventHandlerSignature eventHandlerSignature,
+        public void LocalVariableHidesParameter(LSLSourceCodeRange location,
+            LSLParsedEventHandlerSignature eventHandlerSignature,
             LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
         {
             OnWarning(location, string.Format("Local variable \"{0}\" in event handler \"{1}\" hides parameter \"{2}\"",
                 localVariable.Name, eventHandlerSignature.Name, parameter.Name));
         }
 
-
-
-        public void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location, LSLPreDefinedFunctionSignature functionSignature,
+        public void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
+            LSLPreDefinedFunctionSignature functionSignature,
             LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
         {
-            OnWarning(location, string.Format("Local variable \"{0}\" in function \"{1}\" hides global variable \"{2}\" defined on line {3}",
-                localVariable.Name, functionSignature.Name, globalVariable.Name, globalVariable.SourceCodeRange.LineStart));
+            OnWarning(location,
+                string.Format(
+                    "Local variable \"{0}\" in function \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                    localVariable.Name, functionSignature.Name, globalVariable.Name,
+                    globalVariable.SourceCodeRange.LineStart));
         }
 
-
-
-        public void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location, LSLParsedEventHandlerSignature eventHandlerSignature,
+        public void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
+            LSLParsedEventHandlerSignature eventHandlerSignature,
             LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
         {
-            OnWarning(location, string.Format("Local variable \"{0}\" in event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
-                localVariable.Name, eventHandlerSignature.Name, globalVariable.Name, globalVariable.SourceCodeRange.LineStart));
+            OnWarning(location,
+                string.Format(
+                    "Local variable \"{0}\" in event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                    localVariable.Name, eventHandlerSignature.Name, globalVariable.Name,
+                    globalVariable.SourceCodeRange.LineStart));
         }
 
-
-
-        public virtual void NotAllCodePathsReturnAValue(LSLSourceCodeRange location,
-            LSLFunctionSignature currentFunction)
-        {
-            OnWarning(location, "Not all code paths return a value in function \"" + currentFunction.Name + "\"");
-        }
-
-
-        public void ConditionalExpressionIsConstant(LSLSourceCodeRange expression, LSLConditionalStatementType conditionalStatementType)
+        public void ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
+            LSLConditionalStatementType conditionalStatementType)
         {
             if (conditionalStatementType == LSLConditionalStatementType.If)
             {
@@ -251,6 +252,12 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 OnWarning(expression, "Conditional expression in 'do while' loop is constant");
             }
+        }
+
+        public virtual void NotAllCodePathsReturnAValue(LSLSourceCodeRange location,
+            LSLFunctionSignature currentFunction)
+        {
+            OnWarning(location, "Not all code paths return a value in function \"" + currentFunction.Name + "\"");
         }
     }
 }

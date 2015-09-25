@@ -1,9 +1,40 @@
+#region FileInfo
+
+// 
+// File: LSLDefaultExpressionValidator.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Components
 {
@@ -16,8 +47,6 @@ namespace LibLSLCC.CodeValidator.Components
     public class LSLDefaultExpressionValidator : ILSLExpressionValidator
     {
         private readonly Dictionary<string, LSLType> _operations = new Dictionary<string, LSLType>();
-
-
 
         public LSLDefaultExpressionValidator()
         {
@@ -222,8 +251,6 @@ namespace LibLSLCC.CodeValidator.Components
             AddPostfixOperation(LSLType.Float, LSLPostfixOperationType.Decrement, LSLType.Float);
         }
 
-
-
         public bool ValidateReturnTypeMatch(LSLType returnType, ILSLExprNode returnedExpression)
         {
             var left = new LSLDummyExpr
@@ -236,28 +263,20 @@ namespace LibLSLCC.CodeValidator.Components
                 ValidateBinaryOperation(left, LSLBinaryOperationType.Assign, returnedExpression).IsValid;
         }
 
-
-
         public bool ValidVectorContent(ILSLExprNode type)
         {
             return !type.HasErrors && type.Type == LSLType.Float || type.Type == LSLType.Integer;
         }
-
-
 
         public bool ValidRotationContent(ILSLExprNode type)
         {
             return !type.HasErrors && (type.Type == LSLType.Float || type.Type == LSLType.Integer);
         }
 
-
-
         public bool ValidListContent(ILSLExprNode type)
         {
             return !type.HasErrors && type.Type != LSLType.List;
         }
-
-
 
         public bool ValidBooleanConditional(ILSLExprNode type)
         {
@@ -270,8 +289,6 @@ namespace LibLSLCC.CodeValidator.Components
                 (type.Type == LSLType.String) ||
                 (type.Type == LSLType.Float);
         }
-
-
 
         public bool ValidFunctionParameter(
             LSLFunctionSignature functionSignature,
@@ -295,8 +312,6 @@ namespace LibLSLCC.CodeValidator.Components
                     parameterExpressionPassed).IsValid;
         }
 
-
-
         public LSLExpressionValidatorResult ValidatePostfixOperation(ILSLExprNode left,
             LSLPostfixOperationType operation)
         {
@@ -314,8 +329,6 @@ namespace LibLSLCC.CodeValidator.Components
             return LSLExpressionValidatorResult.Error;
         }
 
-
-
         public LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLExprNode right)
         {
             if (right.HasErrors)
@@ -331,8 +344,6 @@ namespace LibLSLCC.CodeValidator.Components
 
             return LSLExpressionValidatorResult.Error;
         }
-
-
 
         public LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode from)
         {
@@ -350,8 +361,6 @@ namespace LibLSLCC.CodeValidator.Components
 
             return LSLExpressionValidatorResult.Error;
         }
-
-
 
         public LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, LSLBinaryOperationType operation,
             ILSLExprNode right)
@@ -398,28 +407,20 @@ namespace LibLSLCC.CodeValidator.Components
             return new LSLExpressionValidatorResult(t, false);
         }
 
-
-
         private void AddPostfixOperation(LSLType left, LSLPostfixOperationType operation, LSLType result)
         {
             _operations.Add(left + operation.ToOperatorString(), result);
         }
-
-
 
         private void AddPrefixOperation(LSLPrefixOperationType operation, LSLType right, LSLType result)
         {
             _operations.Add(operation.ToOperatorString() + right, result);
         }
 
-
-
         private void AddBinaryOperation(LSLType left, LSLBinaryOperationType operation, LSLType right, LSLType result)
         {
             _operations.Add(left + operation.ToOperatorString() + right, result);
         }
-
-
 
         private void AddCastOperation(LSLType castTo, LSLType from, LSLType result)
         {

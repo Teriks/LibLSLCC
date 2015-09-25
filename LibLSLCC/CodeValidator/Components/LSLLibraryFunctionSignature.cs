@@ -1,5 +1,31 @@
-#region
+#region FileInfo
 
+// 
+// File: LSLLibraryFunctionSignature.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +36,6 @@ using System.Xml.Serialization;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
-
 
 #endregion
 
@@ -25,12 +50,10 @@ namespace LibLSLCC.CodeValidator.Components
         private LSLLibraryDataSubsetsAttributeRegex _subsetsRegex = new
             LSLLibraryDataSubsetsAttributeRegex();
 
-
         public LSLLibraryFunctionSignature(LSLFunctionSignature other) : base(other)
         {
             DocumentationString = "";
         }
-
 
         private LSLLibraryFunctionSignature()
         {
@@ -59,7 +82,6 @@ namespace LibLSLCC.CodeValidator.Components
             get { return _properties; }
         }
 
-
         public string DocumentationString { get; set; }
 
         public string SignatureAndDocumentation
@@ -75,7 +97,6 @@ namespace LibLSLCC.CodeValidator.Components
                        DocumentationString;
             }
         }
-
 
         /// <summary>
         ///     This method is reserved and should not be used. When implementing the IXmlSerializable interface, you should return
@@ -93,7 +114,6 @@ namespace LibLSLCC.CodeValidator.Components
             return null;
         }
 
-
         /// <summary>
         ///     Generates an object from its XML representation.
         /// </summary>
@@ -105,9 +125,9 @@ namespace LibLSLCC.CodeValidator.Components
             var lineNumberInfo = (IXmlLineInfo) reader;
 
             reader.MoveToContent();
-            bool hasReturnType = false;
-            bool hasSubsets = false;
-            bool hasName = false;
+            var hasReturnType = false;
+            var hasSubsets = false;
+            var hasName = false;
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Name == "Subsets")
@@ -165,7 +185,7 @@ namespace LibLSLCC.CodeValidator.Components
                     "Missing Subsets attribute");
             }
 
-            bool isVariadic = false;
+            var isVariadic = false;
 
             var canRead = reader.Read();
             while (canRead)
@@ -286,7 +306,6 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
         /// <summary>
         ///     Converts an object into its XML representation.
         /// </summary>
@@ -340,7 +359,6 @@ namespace LibLSLCC.CodeValidator.Components
         {
             return new LSLLibraryFunctionSignature(LSLFunctionSignature.Parse(str));
         }
-
 
         public static LSLLibraryFunctionSignature FromXmlFragment(XmlReader fragment)
         {

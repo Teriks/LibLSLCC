@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLOpenSimCSCompilerVisitor.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:25 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +38,8 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+
+#endregion
 
 namespace LibLSLCC.Compilers.Visitors
 {
@@ -62,32 +93,36 @@ private static class UTILITIES
 ";
 
         private const bool ParenthesizeExpressions = true;
-
-
         private bool _creatingGlobalsClass;
         private string _currentLSLStateBody;
         private int _indentLevel;
-
-
-        public LSLOpenSimCSCompilerSettings Settings
-        {
-            get;
-            set;
-        }
-
-
+        public LSLOpenSimCSCompilerSettings Settings { get; set; }
         public TextWriter Writer { get; private set; }
 
+        public void WriteAndFlush(ILSLCompilationUnitNode node, TextWriter writer, bool closeStream = true)
+        {
+            Writer = writer;
 
+            Visit(node);
+            Writer.Flush();
 
+            if (closeStream)
+            {
+                Writer.Close();
+            }
+        }
+
+        public void Reset()
+        {
+            _currentLSLStateBody = "";
+            _creatingGlobalsClass = false;
+            _indentLevel = 0;
+            _binOpsUsed.Clear();
+        }
 
         #region Expressions
 
-
-
-
         #region BasicExpressions
-
 
         private readonly HashSet<LSLBinaryOperationSignature> _binOpsUsed = new HashSet<LSLBinaryOperationSignature>();
 
@@ -158,8 +193,6 @@ private static class UTILITIES
 
             if (node.OperationString.EqualsOneOf("=", "*=", "+=", "/=", "%=", "-="))
             {
-
-
                 Visit(node.LeftExpression);
                 Writer.Write(node.OperationString);
                 Visit(node.RightExpression);
@@ -300,14 +333,9 @@ private static class UTILITIES
             return false;
         }
 
-
         #endregion
 
-
-
-
         #region FunctionCalls
-
 
         public override bool VisitUserFunctionCall(ILSLFunctionCallNode node)
         {
@@ -332,37 +360,36 @@ private static class UTILITIES
         private readonly Dictionary<LSLType, string> _modInvokeFunctionMap
             = new Dictionary<LSLType, string>
             {
-                {LSLType.Void,"modInvokeN"},
-                {LSLType.String,"modInvokeS"},
-                {LSLType.Integer,"modInvokeI"},
-                {LSLType.Float,"modInvokeF"},
-                {LSLType.Key,"modInvokeK"},
-                {LSLType.List,"modInvokeL"},
-                {LSLType.Vector,"modInvokeV"},
-                {LSLType.Rotation,"modInvokeR"}
-            }; 
+                {LSLType.Void, "modInvokeN"},
+                {LSLType.String, "modInvokeS"},
+                {LSLType.Integer, "modInvokeI"},
+                {LSLType.Float, "modInvokeF"},
+                {LSLType.Key, "modInvokeK"},
+                {LSLType.List, "modInvokeL"},
+                {LSLType.Vector, "modInvokeV"},
+                {LSLType.Rotation, "modInvokeR"}
+            };
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
-
-            var libDataNode=Settings.LibraryData.GetLibraryFunctionSignatures(node.Name).First(x => x.SignatureMatches(node.Signature));
+            var libDataNode =
+                Settings.LibraryData.GetLibraryFunctionSignatures(node.Name)
+                    .First(x => x.SignatureMatches(node.Signature));
 
             if (libDataNode.Properties.ContainsKey("ModInvoke") && libDataNode.Properties["ModInvoke"] == "true")
             {
-                string modInvokeFunction = "this."+_modInvokeFunctionMap[node.Signature.ReturnType];
+                var modInvokeFunction = "this." + _modInvokeFunctionMap[node.Signature.ReturnType];
 
-                string afterName = node.ParameterExpressions.Count > 0 ? ", " : "";
+                var afterName = node.ParameterExpressions.Count > 0 ? ", " : "";
 
-                Writer.Write(modInvokeFunction + "(\"" + node.Name +"\""+afterName);
+                Writer.Write(modInvokeFunction + "(\"" + node.Name + "\"" + afterName);
 
                 VisitFunctionCallParameters(node.ParameterListNode);
 
                 Writer.Write(")");
-
             }
             else
             {
-
                 var functionName = "this." + node.Name;
 
                 if (node.ParameterExpressions.Count > 0)
@@ -381,14 +408,9 @@ private static class UTILITIES
             return false;
         }
 
-
         #endregion
 
-
-
-
         #region VariableReferences
-
 
         public override bool VisitGlobalVariableReference(ILSLVariableNode node)
         {
@@ -406,7 +428,7 @@ private static class UTILITIES
 
         public override bool VisitLocalVariableReference(ILSLVariableNode node)
         {
-            Writer.Write("Var"+node.Declaration.ScopeId+"_"+node.Name);
+            Writer.Write("Var" + node.Declaration.ScopeId + "_" + node.Name);
             return false;
         }
 
@@ -420,7 +442,7 @@ private static class UTILITIES
 
         public override bool VisitLibraryConstantVariableReference(ILSLVariableNode node)
         {
-            var x=Settings.LibraryData.GetLibraryConstantSignature(node.Name);
+            var x = Settings.LibraryData.GetLibraryConstantSignature(node.Name);
             if (x.Properties.ContainsKey("Expand") && x.Properties["Expand"] == "true")
             {
                 switch (x.Type)
@@ -454,36 +476,25 @@ private static class UTILITIES
             }
 
 
-           
             return false;
         }
 
-
         #endregion
 
-
-
-
         #endregion
-
-
-
 
         #region ExpressionLists
-
 
         public override bool VisitExpressionList(ILSLExpressionListNode node)
         {
             if (node.HasExpressionNodes)
             {
-
                 if (node.ExpressionNodes.Count == 1)
                 {
                     var expression = node.ExpressionNodes[0];
                     Visit(expression);
                     return false;
                 }
-
 
 
                 var i = 0;
@@ -548,18 +559,13 @@ private static class UTILITIES
             return false;
         }
 
-
         #endregion
-
-
-
 
         #region Literals
 
-
         public override bool VisitFloatLiteral(ILSLFloatLiteralNode node)
         {
-            bool box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
+            var box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
 
             if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
             {
@@ -596,7 +602,7 @@ private static class UTILITIES
 
         public override bool VisitIntegerLiteral(ILSLIntegerLiteralNode node)
         {
-            bool box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
+            var box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
 
             if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
             {
@@ -666,7 +672,7 @@ private static class UTILITIES
 
         public override bool VisitStringLiteral(ILSLStringLiteralNode node)
         {
-            bool box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
+            var box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
 
             if (box)
             {
@@ -697,14 +703,9 @@ private static class UTILITIES
             return false;
         }
 
-
         #endregion
 
-
-
-
         #region Utilitys
-
 
         private static string LSLType_To_CSharpType(string name)
         {
@@ -881,7 +882,7 @@ private static class UTILITIES
 
         private void WriteMultiLineIndentedString(string str)
         {
-            var splitStr = str.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var splitStr = str.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
 
             foreach (var line in splitStr)
             {
@@ -889,14 +890,9 @@ private static class UTILITIES
             }
         }
 
-
         #endregion
 
-
-
-
         #region LoopConstructs
-
 
         public override bool VisitDoLoop(ILSLDoLoopNode node)
         {
@@ -972,39 +968,9 @@ private static class UTILITIES
             return false;
         }
 
-
         #endregion
 
-
-
-
-        public void WriteAndFlush(ILSLCompilationUnitNode node, TextWriter writer, bool closeStream = true)
-        {
-            Writer = writer;
-
-            Visit(node);
-            Writer.Flush();
-
-            if (closeStream)
-            {
-                Writer.Close();
-            }
-        }
-
-
-        public void Reset()
-        {
-            _currentLSLStateBody = "";
-            _creatingGlobalsClass = false;
-            _indentLevel = 0;
-            _binOpsUsed.Clear();
-        }
-
-
-
-
         #region ScopesAndDeclarations
-
 
         public override bool VisitCodeScope(ILSLCodeScopeNode node)
         {
@@ -1114,9 +1080,9 @@ private static class UTILITIES
             }
             else
             {
-
                 Writer.WriteLine(GenIndent() + "//C#");
-                Writer.WriteLine(GenIndent() + "//OpenSim CSharp code, CSharp scripting must be enabled on the server to run.");
+                Writer.WriteLine(GenIndent() +
+                                 "//OpenSim CSharp code, CSharp scripting must be enabled on the server to run.");
                 Writer.WriteLine(GenIndent() + "//Do not remove the first comment.");
                 Writer.WriteLine(GenIndent() + "//Compiled by LibLSLCC, Date: {0}", DateTime.Now);
 
@@ -1183,7 +1149,6 @@ private static class UTILITIES
             WriteBinaryOperatorOverloadStubs();
 
 
-
             if (Settings.GenerateClass)
             {
                 if (!string.IsNullOrWhiteSpace(Settings.GenerateClassNamespace))
@@ -1191,7 +1156,6 @@ private static class UTILITIES
                     _indentLevel--;
 
                     Writer.WriteLine(GenIndent() + "}");
-                    
                 }
 
 
@@ -1329,14 +1293,9 @@ private static class UTILITIES
             return false;
         }
 
-
         #endregion
 
-
-
-
         #region CodeStatements
-
 
         public override bool VisitReturnStatement(ILSLReturnStatementNode node)
         {
@@ -1418,7 +1377,7 @@ private static class UTILITIES
             Writer.Write(GenIndent());
 
 
-            var variableName = "Var" +node.ScopeId+ "_" + node.Name;
+            var variableName = "Var" + node.ScopeId + "_" + node.Name;
 
 
             if (!node.HasDeclarationExpression)
@@ -1443,11 +1402,7 @@ private static class UTILITIES
             return false;
         }
 
-
         #endregion
-
-
-
 
         #region BranchStatements
 
@@ -1495,7 +1450,6 @@ private static class UTILITIES
             Visit(node.Code);
             return false;
         }
-
 
         #endregion
     }

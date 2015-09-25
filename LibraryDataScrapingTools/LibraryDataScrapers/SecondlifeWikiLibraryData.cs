@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: SecondlifeWikiLibraryData.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +40,6 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
 
-
 #endregion
 
 namespace LibraryDataScrapingTools.LibraryDataScrapers
@@ -25,7 +50,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private const string SecondlifeWikiBaseUrl = SecondlifeWikiDomain + "/wiki/";
 
         private readonly Regex _changedEventConstants =
-            new Regex("<a href=\"/wiki/[A-Z_]*?\" title=\".*?\">([A-Z_]*?)</a>(?:\\n|\\r|.)*?title=\"Hexadecimal notation for:.*?\" style=\"border-bottom:1px dotted; cursor:help;\">(.*?)</span>");
+            new Regex(
+                "<a href=\"/wiki/[A-Z_]*?\" title=\".*?\">([A-Z_]*?)</a>(?:\\n|\\r|.)*?title=\"Hexadecimal notation for:.*?\" style=\"border-bottom:1px dotted; cursor:help;\">(.*?)</span>");
 
         private readonly Regex _changedEventConstantsTable =
             new Regex("<tr bgcolor=\"#A7C1F2\">(\\n|\\r|.)*?</td></tr></table>");
@@ -46,15 +72,15 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Constants\">next 200</a>\\)<div");
 
-        private readonly Regex _constantSignature =
-            new Regex(
-                "Constant: <a href=\"/wiki/.*?\" title=\"(.*?)\" class=\"mw-redirect\">(?:integer|float|vector|string|list|key|quaternion)</a> <strong class=\"selflink\"><span title=\".*?\">(.*?)</span></strong>\\s*=\\s*(.*?); </span>");
-
         private readonly Dictionary<string, LSLLibraryConstantSignature> _constants =
             new Dictionary<string, LSLLibraryConstantSignature>();
 
         private readonly Regex _constantsGroupKeywordsAll =
             new Regex("<a\\s+name\\s*=\\s*\"Constants\"\\s+id\\s*=\\s*\"Constants\"></a><h2>((?:\\r|\\n|.))*?</pre>");
+
+        private readonly Regex _constantSignature =
+            new Regex(
+                "Constant: <a href=\"/wiki/.*?\" title=\"(.*?)\" class=\"mw-redirect\">(?:integer|float|vector|string|list|key|quaternion)</a> <strong class=\"selflink\"><span title=\".*?\">(.*?)</span></strong>\\s*=\\s*(.*?); </span>");
 
         private readonly Regex _eventPageCategory =
             new Regex("<h2>Pages in category \"LSL Events\"</h2>((?:.|(?:\n|\r|\r\n))*?)</tr></table>");
@@ -63,13 +89,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Events\">next 200</a>\\)<div");
 
+        private readonly Dictionary<string, LSLLibraryEventSignature> _events =
+            new Dictionary<string, LSLLibraryEventSignature>();
 
         private readonly LSLEventSignatureRegex _eventSignature =
             new LSLEventSignatureRegex("<pre id=\"lsl-signature\">\\s*event\\s+void\\s+(", ";)");
-
-
-        private readonly Dictionary<string, LSLLibraryEventSignature> _events =
-            new Dictionary<string, LSLLibraryEventSignature>();
 
         private readonly Regex _functionInKeywordsAll =
             new Regex(
@@ -82,14 +106,14 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Functions\">next 200</a>\\)<div");
 
-        private readonly LSLFunctionSignatureRegex _functionSignature = new LSLFunctionSignatureRegex("function\\s+(",
-            ";)");
-
         private readonly Dictionary<string, List<LSLLibraryFunctionSignature>> _functions =
             new Dictionary<string, List<LSLLibraryFunctionSignature>>();
 
         private readonly Regex _functionsGroupInKeywordsAll =
             new Regex("<a\\s+name\\s*=\\s*\"Functions\"\\s+id\\s*=\\s*\"Functions\"></a><h2>((?:\\r|\\n|.))*?</pre>");
+
+        private readonly LSLFunctionSignatureRegex _functionSignature = new LSLFunctionSignatureRegex("function\\s+(",
+            ";)");
 
         private readonly Regex _hrefLink = new Regex("href=\"(/wiki/.*?)\"");
 
@@ -101,7 +125,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public SecondlifeWikiLibraryData(IDocumentationProvider documentationProvider, IEnumerable<string> subsets)
         {
-            IDocumentationProvider documentationProvider1 = documentationProvider;
+            var documentationProvider1 = documentationProvider;
             _subsets = subsets.ToList();
 
 
@@ -149,7 +173,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             Log.WriteLine("============================");
         }
 
-
         public SecondlifeWikiLibraryData(IEnumerable<string> subsets)
             : this(new BlankDocumentor(), subsets)
         {
@@ -158,7 +181,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         public string EventSubsets { get; set; }
         public string ConstantSubsets { get; set; }
         public string FunctionSubsets { get; set; }
-
 
         public bool LSLFunctionExist(string name)
         {
@@ -183,7 +205,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
             return new List<LSLLibraryFunctionSignature>();
         }
-
 
         public LSLLibraryConstantSignature LSLConstant(string name)
         {
@@ -227,19 +248,19 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         {
             var page = _client.DownloadString(url);
 
-            var hexNotation=new Regex("<span title=\"Hexadecimal notation for: (.*?)\"");
+            var hexNotation = new Regex("<span title=\"Hexadecimal notation for: (.*?)\"");
 
             var match = _constantSignature.Match(page);
             if (match.Success)
             {
-                string val = match.Groups[3].ToString();
+                var val = match.Groups[3].ToString();
                 string strValue;
 
 
                 var type = LSLTypeTools.FromLSLTypeString(match.Groups[1].ToString());
 
 
-                if (type ==LSLType.Integer || type == LSLType.Float)
+                if (type == LSLType.Integer || type == LSLType.Float)
                 {
                     var hxMatch = hexNotation.Match(val);
                     if (hxMatch.Success)
@@ -255,10 +276,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                         strValue = val;
                     }
                 }
-                else if(type == LSLType.Rotation || type == LSLType.Vector)
+                else if (type == LSLType.Rotation || type == LSLType.Vector)
                 {
                     strValue = val.Replace("&lt;", "").Replace("&gt;", "");
-
                 }
                 else if (type == LSLType.String || type == LSLType.Key)
                 {
@@ -268,7 +288,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 {
                     strValue = val;
                 }
-
 
 
                 var constantSignature =
@@ -285,7 +304,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
             return null;
         }
-
 
         private LSLLibraryFunctionSignature GetSigFromFunctionPage(string url)
         {
@@ -329,7 +347,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
             return null;
         }
-
 
         private IEnumerable<string> GetLSLEventPages()
         {
@@ -385,7 +402,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             var page = _client.DownloadString(currentPage);
 
 
-            Match match = _functionPageNavigation.Match(page);
+            var match = _functionPageNavigation.Match(page);
 
             while (match.Success)
             {
@@ -414,7 +431,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
         }
 
-
         private IEnumerable<LSLLibraryFunctionSignature> GetLSLFunctions()
         {
             return
@@ -424,10 +440,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     .Union(GetLSLFunctionsFromKeywordsAll());
         }
 
-
         private IEnumerable<LSLLibraryConstantSignature> LSLConstantsFromParticlePage()
         {
-            string particleConstants = _client.DownloadString(SecondlifeWikiBaseUrl + "LlParticleSystem");
+            var particleConstants = _client.DownloadString(SecondlifeWikiBaseUrl + "LlParticleSystem");
 
             var matches = _physicsConstantTableRow.Matches(particleConstants);
 
@@ -436,9 +451,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var matchString = match.ToString();
                 var valueCase1 = Regex.Match(matchString, "title=\"Hexadecimal notation for: (.*?)\"");
                 var valueCase2 = Regex.Match(matchString, "<td align=\"center\">(.*)");
-                
 
-                string name = match.Groups[1].ToString();
+
+                var name = match.Groups[1].ToString();
                 if (string.IsNullOrWhiteSpace(name))
                 {
                     name = match.Groups[2].ToString();
@@ -446,33 +461,32 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 if (string.IsNullOrWhiteSpace(valueCase1.Groups[1].ToString()))
                 {
-                    var constant = new LSLLibraryConstantSignature(LSLType.Integer, name, valueCase2.Groups[1].ToString());
+                    var constant = new LSLLibraryConstantSignature(LSLType.Integer, name,
+                        valueCase2.Groups[1].ToString());
                     constant.SetSubsets(_subsets);
                     yield return constant;
                 }
                 else
                 {
-                    var constant = new LSLLibraryConstantSignature(LSLType.Integer, name, valueCase1.Groups[1].ToString());
+                    var constant = new LSLLibraryConstantSignature(LSLType.Integer, name,
+                        valueCase1.Groups[1].ToString());
                     constant.SetSubsets(_subsets);
                     yield return constant;
                 }
-
-                
-                
             }
         }
 
-
         private IEnumerable<LSLLibraryConstantSignature> LSLConstantsFromClickActionPage()
         {
-            string particleConstants = _client.DownloadString(SecondlifeWikiBaseUrl + "LlSetClickAction");
+            var particleConstants = _client.DownloadString(SecondlifeWikiBaseUrl + "LlSetClickAction");
 
             var matches = _clickActionConstants.Matches(particleConstants);
 
 
             foreach (Match match in matches)
             {
-                var c = new LSLLibraryConstantSignature(LSLType.Integer, match.Groups[2].ToString(), match.Groups[1].ToString());
+                var c = new LSLLibraryConstantSignature(LSLType.Integer, match.Groups[2].ToString(),
+                    match.Groups[1].ToString());
                 c.SetSubsets(_subsets);
                 yield return c;
             }
@@ -480,7 +494,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         private IEnumerable<LSLLibraryConstantSignature> LSLConstantsFromChangedEventPage()
         {
-            string particleConstants = _client.DownloadString(SecondlifeWikiBaseUrl + "Changed");
+            var particleConstants = _client.DownloadString(SecondlifeWikiBaseUrl + "Changed");
 
             var tableMatch = _changedEventConstantsTable.Match(particleConstants);
             var table = tableMatch.ToString();
@@ -490,12 +504,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             foreach (Match match in matches)
             {
                 var s = Convert.ToInt32(match.Groups[2].ToString(), 16);
-                var c = new LSLLibraryConstantSignature(LSLType.Integer, match.Groups[1].ToString(),s.ToString(CultureInfo.InvariantCulture));
+                var c = new LSLLibraryConstantSignature(LSLType.Integer, match.Groups[1].ToString(),
+                    s.ToString(CultureInfo.InvariantCulture));
                 c.SetSubsets(_subsets);
                 yield return c;
             }
         }
-
 
         private IEnumerable<LSLLibraryConstantSignature> LSLConstantsFromKeywordsAll()
         {
@@ -513,14 +527,14 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                     if (type == LSLType.Integer)
                     {
-
-                        strVal = webVal.Contains("x") ? 
-                            Convert.ToInt32(webVal, 16).ToString() : webVal;
+                        strVal = webVal.Contains("x")
+                            ? Convert.ToInt32(webVal, 16).ToString()
+                            : webVal;
                     }
 
-                    if (type == LSLType.Vector || type==LSLType.Rotation)
+                    if (type == LSLType.Vector || type == LSLType.Rotation)
                     {
-                        strVal = webVal.Replace("&lt;", "").Replace("&gt;","");
+                        strVal = webVal.Replace("&lt;", "").Replace("&gt;", "");
                     }
 
                     LSLLibraryConstantSignature result;
@@ -534,13 +548,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     else
                     {
                         result =
-                        new LSLLibraryConstantSignature(
-                            LSLTypeTools.FromLSLTypeString(constantMatch.Groups[1].ToString()),
-                            constantMatch.Groups[2].ToString(),strVal);
+                            new LSLLibraryConstantSignature(
+                                LSLTypeTools.FromLSLTypeString(constantMatch.Groups[1].ToString()),
+                                constantMatch.Groups[2].ToString(), strVal);
                     }
-                    
 
-               
 
                     result.SetSubsets(_subsets);
                     yield return result;
@@ -553,7 +565,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return GetLSLEventPages().Select(GetSigFromEventPage).Where(x => x != null);
         }
 
-
         private IEnumerable<string> GetLSLConstantPages()
         {
             var currentPage = SecondlifeWikiBaseUrl + "Category:LSL_Constants";
@@ -564,7 +575,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             var page = _client.DownloadString(currentPage);
 
-            Match match = _constantPageNavigation.Match(page);
+            var match = _constantPageNavigation.Match(page);
 
             while (match.Success)
             {
@@ -592,7 +603,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
         }
 
-
         private IEnumerable<LSLLibraryFunctionSignature> GetLSLFunctionsFromKeywordsAll()
         {
             var data = _client.DownloadString(SecondlifeWikiBaseUrl + "Category:LSL_Keywords/All");
@@ -602,7 +612,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 foreach (Match functionMatch in _functionInKeywordsAll.Matches(group.ToString()))
                 {
-                    string sig = functionMatch.Groups[1] + " " + functionMatch.Groups[2] + functionMatch.Groups[3];
+                    var sig = functionMatch.Groups[1] + " " + functionMatch.Groups[2] + functionMatch.Groups[3];
 
 
                     var result = LSLLibraryFunctionSignature.Parse(sig);
@@ -612,10 +622,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
         }
 
-
         public IEnumerable<LSLLibraryConstantSignature> GetLSLConstants()
         {
-
             return
                 GetLSLConstantPages()
                     .Select(GetSigFromConstantPage)

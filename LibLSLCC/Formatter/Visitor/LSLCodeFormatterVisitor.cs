@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: LSLCodeFormatterVisitor.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:25 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +37,6 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 using LibLSLCC.Extensions;
 
-
 #endregion
 
 namespace LibLSLCC.Formatter.Visitor
@@ -22,7 +47,6 @@ namespace LibLSLCC.Formatter.Visitor
         private readonly LinkedList<LSLComment> _comments = new LinkedList<LSLComment>();
         private readonly Stack<bool> _expressionWrappingStack = new Stack<bool>();
         private int _indentLevel;
-        private CodeWrappingContext _lastCodeWrappingContext;
         private string _sourceReference;
         private int _writeColumn;
         private int _writeLine;
@@ -33,12 +57,7 @@ namespace LibLSLCC.Formatter.Visitor
         }
 
         public TextWriter Writer { get; private set; }
-
-        private CodeWrappingContext LastCodeWrappingContext
-        {
-            get { return _lastCodeWrappingContext; }
-            set { _lastCodeWrappingContext = value; }
-        }
+        private CodeWrappingContext LastCodeWrappingContext { get; set; }
 
         private string GenIndent(int add = 0)
         {
@@ -47,8 +66,8 @@ namespace LibLSLCC.Formatter.Visitor
 
         private void Write(string str)
         {
-            int lastNewLine = -1;
-            for (int i = 0; i < str.Length; i++)
+            var lastNewLine = -1;
+            for (var i = 0; i < str.Length; i++)
             {
                 if (str[i] == '\n')
                 {
@@ -126,7 +145,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                 Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
-                for (int j = 0; j < comments.Count; j++)
+                for (var j = 0; j < comments.Count; j++)
                 {
                     var comment = comments[j];
 
@@ -223,7 +242,7 @@ namespace LibLSLCC.Formatter.Visitor
             }
 
 
-            bool popEnableWrapping = false;
+            var popEnableWrapping = false;
             if (LastCodeWrappingContext != null
                 && (node.Parent is ILSLExpressionStatementNode
                     && ReferenceEquals(node.Parent, LastCodeWrappingContext.Statement)))
@@ -728,7 +747,7 @@ namespace LibLSLCC.Formatter.Visitor
                 CompilationUnit_WriteCommentsAtTopOfSource_WithNodes(nodes, unode);
 
 
-                for (int i = 0; i < nodes.Count; i++)
+                for (var i = 0; i < nodes.Count; i++)
                 {
                     var node = nodes[i];
                     Visit(node);
@@ -795,7 +814,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
 
-            for (int j = 0; j < comments.Count; j++)
+            for (var j = 0; j < comments.Count; j++)
             {
                 var comment = comments[j];
                 Write(FormatComment("", comment));
@@ -837,7 +856,7 @@ namespace LibLSLCC.Formatter.Visitor
             Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
 
-            for (int j = 0; j < comments.Count; j++)
+            for (var j = 0; j < comments.Count; j++)
             {
                 var comment = comments[j];
 
@@ -890,7 +909,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
-            for (int j = 0; j < comments.Count; j++)
+            for (var j = 0; j < comments.Count; j++)
             {
                 var comment = comments[j];
 
@@ -971,7 +990,7 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
 
 
-                for (int j = 0; j < comments.Count; j++)
+                for (var j = 0; j < comments.Count; j++)
                 {
                     var comment = comments[j];
 
@@ -1020,7 +1039,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                 Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
-                for (int j = 0; j < comments.Count; j++)
+                for (var j = 0; j < comments.Count; j++)
                 {
                     var comment = comments[j];
 
@@ -1084,7 +1103,7 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
 
-                for (int j = 0; j < comments.Count; j++)
+                for (var j = 0; j < comments.Count; j++)
                 {
                     var comment = comments[j];
 
@@ -1143,7 +1162,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             var nodes = snode.EventHandlers;
 
-            string indent = GenIndent();
+            var indent = GenIndent();
 
 
             if (nodes.Count > 0)
@@ -1162,7 +1181,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
 
-                    for (int j = 0; j < comments.Count; j++)
+                    for (var j = 0; j < comments.Count; j++)
                     {
                         var comment = comments[j];
 
@@ -1196,7 +1215,7 @@ namespace LibLSLCC.Formatter.Visitor
                 }
 
 
-                for (int i = 0; i < nodes.Count; i++)
+                for (var i = 0; i < nodes.Count; i++)
                 {
                     var node = nodes[i];
 
@@ -1232,7 +1251,7 @@ namespace LibLSLCC.Formatter.Visitor
                             Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
 
-                            for (int j = 0; j < comments.Count; j++)
+                            for (var j = 0; j < comments.Count; j++)
                             {
                                 var comment = comments[j];
 
@@ -1281,7 +1300,7 @@ namespace LibLSLCC.Formatter.Visitor
                             Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
 
-                            for (int j = 0; j < comments.Count; j++)
+                            for (var j = 0; j < comments.Count; j++)
                             {
                                 var comment = comments[j];
                                 Write(FormatComment(indent, comment));
@@ -1351,7 +1370,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
 
-                    for (int j = 0; j < comments.Count; j++)
+                    for (var j = 0; j < comments.Count; j++)
                     {
                         var comment = comments[j];
                         Write(FormatComment(indent, comment));
@@ -1542,7 +1561,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             GenIndent();
 
-            for (int i = 0; i < nodes.Count; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
                 var node = nodes[i];
 
@@ -1766,13 +1785,13 @@ namespace LibLSLCC.Formatter.Visitor
             }
 
 
-            int indentSpaces = indent.GetStringSpacesIndented();
+            var indentSpaces = indent.GetStringSpacesIndented();
 
             var indnt = StringTools.CreateTabCorrectSpaceString(indentSpaces == 0 ? 0 : indentSpaces - 1);
 
             firstLine = indnt + "/*" + firstLine + "\n";
 
-            for (int i = 1; i < parts.Count; i++)
+            for (var i = 1; i < parts.Count; i++)
             {
                 var part = parts[i];
                 var userIndent = part.GetStringSpacesIndented();
@@ -1802,7 +1821,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             var nodes = snode.CodeStatements.ToList();
 
-            string indent = GenIndent();
+            var indent = GenIndent();
 
 
             if (nodes.Count > 0)
@@ -1823,7 +1842,7 @@ namespace LibLSLCC.Formatter.Visitor
                 /////////////////////
                 /////////////////////                 
 
-                for (int i = 0; i < nodes.Count; i++)
+                for (var i = 0; i < nodes.Count; i++)
                 {
                     var node = nodes[i];
 
@@ -1888,7 +1907,7 @@ namespace LibLSLCC.Formatter.Visitor
             Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
 
 
-            for (int j = 0; j < comments.Count; j++)
+            for (var j = 0; j < comments.Count; j++)
             {
                 var comment = comments[j];
 
@@ -1948,7 +1967,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                 Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
 
-                for (int j = 0; j < comments.Count; j++)
+                for (var j = 0; j < comments.Count; j++)
                 {
                     var comment = comments[j];
 
@@ -2066,7 +2085,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(StringTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
 
-            for (int j = 0; j < comments.Count; j++)
+            for (var j = 0; j < comments.Count; j++)
             {
                 var comment = comments[j];
 
@@ -2108,7 +2127,7 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(StringTools.CreateNewLinesString(linesBetweenLastNodeAndFirstComment));
 
 
-                for (int j = 0; j < comments.Count; j++)
+                for (var j = 0; j < comments.Count; j++)
                 {
                     var comment = comments[j];
 
@@ -2213,8 +2232,8 @@ namespace LibLSLCC.Formatter.Visitor
                 WriteLine = parent._writeLine;
             }
 
-            public ILSLReadOnlySyntaxTreeNode Statement { get; set; }
-            public int WriteColumn { get; set; }
+            public ILSLReadOnlySyntaxTreeNode Statement { get; }
+            public int WriteColumn { get; }
             public int WriteLine { get; set; }
         }
     }

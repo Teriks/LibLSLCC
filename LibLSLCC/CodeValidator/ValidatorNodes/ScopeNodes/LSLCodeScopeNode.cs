@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLCodeScopeNode.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,6 +36,8 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 {
@@ -21,9 +52,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             HasErrors = true;
         }
 
-
-
-        internal LSLCodeScopeNode(LSLParser.CodeScopeContext context,  UInt64 scopeId, LSLCodeScopeType codeScopeType)
+        internal LSLCodeScopeNode(LSLParser.CodeScopeContext context, ulong scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
             {
@@ -39,11 +68,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             CodeScopeType = codeScopeType;
         }
 
-
-
-
-
-        internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, UInt64 scopeId, LSLCodeScopeType codeScopeType)
+        internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, ulong scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
             {
@@ -59,13 +84,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             CodeScopeType = codeScopeType;
         }
 
-        public LSLCodeScopeType CodeScopeType { get; private set; }
-
         internal LSLParser.CodeScopeContext CodeScopeContext { get; private set; }
-
-
         internal LSLParser.CodeStatementContext SingleStatementContext { get; private set; }
-
 
         /// <summary>
         ///     Code statements that are children of this code scope
@@ -95,77 +115,21 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return false; }
         }
 
-
-
+        public LSLCodeScopeType CodeScopeType { get; }
 
         #region ILSLReturnPathNode Members
-
 
         /// <summary>
         ///     True if this code scope has a valid return path
         /// </summary>
         public bool HasReturnPath { get; set; }
 
-
         #endregion
-
-
-
-
-        #region ILSLTreeNode Members
-
-
-        /// <summary>
-        ///     Does this node or its children have errors
-        /// </summary>
-        public bool HasErrors { get; set; }
-
-
-        /// <summary>
-        ///     The source code range this statement occupies in the source code
-        /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
-
-
-
-        public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
-        {
-            if (IsSingleStatement)
-            {
-                return visitor.VisitSingleStatementCodeScope(this);
-            }
-            return visitor.VisitMultiStatementCodeScope(this);
-        }
-
-
-
-        public ILSLSyntaxTreeNode Parent { get; set; }
-
-
-        #endregion
-
-
-
-
-        #region Nested type: Err
-
-
-        protected enum Err
-        {
-            Err
-        }
-
-
-        #endregion
-
-
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
             get { return Parent; }
         }
-
 
         /// <summary>
         ///     Constant jump descriptors for constant jumps that occur in this scope
@@ -177,22 +141,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return _constantJumps; }
         }
 
-
         /// <summary>
         ///     Is this scope a single statement scope, like a brace-less 'if' branch.
         ///     true if IsCodeScope is false
         /// </summary>
-        public bool IsSingleStatement { get; private set; }
-
-
-// ReSharper disable UnusedParameter.Local
+        public bool IsSingleStatement { get; }
 
         /// <summary>
         ///     Is this a normal braced code scope.
         ///     true if IsSingleStatement is false
         /// </summary>
-        public bool IsCodeScope { get; private set; }
-
+        public bool IsCodeScope { get; }
 
         /// <summary>
         ///     Code statements that are children of this code scope
@@ -201,7 +160,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         {
             get { return _codeStatements; }
         }
-
 
         /// <summary>
         ///     ReturnStatementNode != null
@@ -219,7 +177,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return FirstDeadStatementNode != null; }
         }
 
-
         /// <summary>
         ///     The first statement node to be considered dead, when dead code is detected
         /// </summary>
@@ -227,7 +184,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         {
             get { return FirstDeadStatementNode; }
         }
-
 
         /// <summary>
         ///     Returns descriptions of all dead code segments in the top level of this scope,
@@ -238,15 +194,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return _deadCodeSegments; }
         }
 
-
         /// <summary>
         ///     The top level return statement for a code scope, if one exists
         /// </summary>
         public LSLReturnStatementNode ReturnStatementNode { get; private set; }
 
-
         public LSLDeadCodeType DeadCodeType { get; set; }
-
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
         {
@@ -259,14 +212,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         ///     event handlers, the tree builder increments the id as new scopes are encountered
         ///     inside the top level scope
         /// </summary>
-        public UInt64 ScopeId { get; set; }
-
+        public ulong ScopeId { get; set; }
 
         /// <summary>
         ///     The index of this statement in its parent scope
         /// </summary>
         public int StatementIndex { get; set; }
-
 
         /// <summary>
         ///     Is this the last statement in its parent scope
@@ -289,25 +240,21 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// </remarks>
         public ILSLCodeStatement ReturnPath { get; set; }
 
-
-
         public static
             LSLCodeScopeNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLCodeScopeNode(sourceRange, Err.Err);
         }
 
-
-
         private bool IsJumpDead(LSLJumpStatementNode jump)
         {
             if (jump.IsDeadCode) return true;
 
 
-            ILSLSyntaxTreeNode tn = jump.Parent;
+            var tn = jump.Parent;
 
 
-            ILSLCodeStatement n = tn as ILSLCodeStatement;
+            var n = tn as ILSLCodeStatement;
             while (n == null || !n.IsDeadCode)
             {
                 tn = tn.Parent;
@@ -323,11 +270,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
                 {
                     return true;
                 }
-              
             }
 
             return false;
-           
         }
 
         /// <summary>
@@ -471,44 +416,44 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
                 }
                 else if (HasReturnPath)
                 {
-                     //this code is after a return path, everything after is dead
+                    //this code is after a return path, everything after is dead
 
-                        var label = statement as LSLLabelStatementNode;
+                    var label = statement as LSLLabelStatementNode;
 
-                        var dead = !_afterLabelJumpDownOverReturn;
+                    var dead = !_afterLabelJumpDownOverReturn;
 
-                        if (label != null)
+                    if (label != null)
+                    {
+                        if (
+                            label.JumpsToHere.Any(
+                                x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
                         {
-                            if (label.JumpsToHere.Any(x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
-                            {
-                                dead = false;
-                                _afterLabelJumpDownOverReturn = true;
-                                HasReturnPath = false;
-                            }
+                            dead = false;
+                            _afterLabelJumpDownOverReturn = true;
+                            HasReturnPath = false;
                         }
-
-
-                        if(dead){
-                            if (FirstDeadStatementNode == null)
-                            {
-                                FirstDeadStatementNode = statement;
-                                FirstDeadStatementNodeContext = context;
-                            }
-
-                            if (!_insideDeadCode)
-                            {
-                                _deadCodeSegmentsStack.Push(
-                                    new LSLDeadCodeSegment(LSLDeadCodeType.AfterReturnPath));
-                            }
-
-
-                            _insideDeadCode = true;
-                            _insideDeadCodeAfterReturnPath = true;
-
-                        }
-
                     }
-                
+
+
+                    if (dead)
+                    {
+                        if (FirstDeadStatementNode == null)
+                        {
+                            FirstDeadStatementNode = statement;
+                            FirstDeadStatementNodeContext = context;
+                        }
+
+                        if (!_insideDeadCode)
+                        {
+                            _deadCodeSegmentsStack.Push(
+                                new LSLDeadCodeSegment(LSLDeadCodeType.AfterReturnPath));
+                        }
+
+
+                        _insideDeadCode = true;
+                        _insideDeadCodeAfterReturnPath = true;
+                    }
+                }
             }
             else
             {
@@ -527,7 +472,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
                     if (label != null)
                     {
-                        if (label.JumpsToHere.Any(x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
+                        if (
+                            label.JumpsToHere.Any(
+                                x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
                         {
                             dead = false;
                             _afterLabelJumpDownOverReturn = true;
@@ -559,7 +506,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
                     _insideDeadCode = false;
                     _inDeadJumpedOverCode = false;
                 }
-                else if (! _inDeadJumpedOverCode)
+                else if (!_inDeadJumpedOverCode)
                 {
                     statement.IsDeadCode = true;
                     statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
@@ -567,8 +514,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
                 }
             }
         }
-
-
 
         /// <summary>
         ///     Must be called after all statements have been added to the code scope, in order to
@@ -587,11 +532,44 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             }
         }
 
+        #region Nested type: Err
+
+        protected enum Err
+        {
+            Err
+        }
+
+        #endregion
+
+        #region ILSLTreeNode Members
+
+        /// <summary>
+        ///     Does this node or its children have errors
+        /// </summary>
+        public bool HasErrors { get; set; }
 
 
+        /// <summary>
+        ///     The source code range this statement occupies in the source code
+        /// </summary>
+        public LSLSourceCodeRange SourceCodeRange { get; }
+
+
+        public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
+        {
+            if (IsSingleStatement)
+            {
+                return visitor.VisitSingleStatementCodeScope(this);
+            }
+            return visitor.VisitMultiStatementCodeScope(this);
+        }
+
+
+        public ILSLSyntaxTreeNode Parent { get; set; }
+
+        #endregion // ReSharper disable UnusedParameter.Local
 
         #region AddCodeStatementState
-
 
         private readonly List<ILSLCodeStatement> _codeStatements = new List<ILSLCodeStatement>();
 
@@ -615,7 +593,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         ///     of the label we jumped to, so we can stop classifying nodes as dead
         ///     once we reach that point
         /// </summary>
-        private Int64 _deadCodeJumpOverEnding = -1;
+        private long _deadCodeJumpOverEnding = -1;
 
 
         /// <summary>
@@ -632,6 +610,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         private ILSLCodeStatement _lastStatementAdded;
         private bool _insideDeadCodeAfterReturnPath;
         private bool _afterLabelJumpDownOverReturn;
+
         #endregion
     }
 }

@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: OsslWikiLibraryDataScraper.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +39,6 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
 
-
 #endregion
 
 namespace LibraryDataScrapingTools.LibraryDataScrapers
@@ -21,7 +46,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
     public class OsslWikiLibraryDataScraper : ILibraryData
     {
         private readonly WebClient _client = new WebClient();
-
 
         private readonly Regex _constantPageNames =
             new Regex(
@@ -34,7 +58,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private readonly Dictionary<string, LSLLibraryConstantSignature> _constants =
             new Dictionary<string, LSLLibraryConstantSignature>();
 
-
         private readonly Regex _functionPageAllFunctionsCatagory =
             new Regex(
                 "<h2>Pages in category \"OSSL Functions\"</h2>((?:.|\\n||\\r)*?)</div></div></div><div class=\"printfooter\">");
@@ -44,10 +67,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 "<td colspan=\".*?\"><div style=\"font-size:18px;margin-bottom:5px;\">((?:.|\\n||\\r)*?)(?:(?:C#:\\s+)|(?:</td></tr>))");
 
         private readonly Regex _functionPageLinks = new Regex("href\\s*=\\s*\"(/wiki/Os.*?)\"");
-
-
         private readonly LSLFunctionSignatureRegex _functionPageSignatureRegex;
-
 
         private readonly Dictionary<string, List<LSLLibraryFunctionSignature>> _functions =
             new Dictionary<string, List<LSLLibraryFunctionSignature>>();
@@ -225,7 +245,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     {
                         var returnType = LSLType.Void;
 
-                        string actualReturnType = _wikiTypeToLslType[sig.ReturnType];
+                        var actualReturnType = _wikiTypeToLslType[sig.ReturnType];
 
 
                         if (actualReturnType != "void")
@@ -235,8 +255,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
 
                         var parameters = new List<LSLParameter>();
-                        bool badParam = false;
-                        string badParamType = "";
+                        var badParam = false;
+                        var badParamType = "";
 
                         foreach (var pa in sig.Parameters)
                         {
@@ -250,7 +270,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                                 }
 
                                 parameters.Add(new LSLParameter(
-                                    parameterType, pa.Value,false));
+                                    parameterType, pa.Value, false));
                             }
                             else
                             {
@@ -310,10 +330,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             foreach (Match constant in _constantPageNames.Matches(constantsList))
             {
-                string value=constant.Groups[3].ToString().Trim();
+                var value = constant.Groups[3].ToString().Trim();
 
-                var strValue = value.Contains("x") ? 
-                    Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture) : value;
+                var strValue = value.Contains("x")
+                    ? Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture)
+                    : value;
 
                 var constantSignature =
                     new LSLLibraryConstantSignature(LSLType.Integer,
@@ -327,10 +348,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             foreach (Match constant in _constantPageNames2.Matches(constantsList))
             {
-                string value = constant.Groups[3].ToString().Trim();
+                var value = constant.Groups[3].ToString().Trim();
 
-                var strValue = value.Contains("x") ? 
-                    Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture) : value;
+                var strValue = value.Contains("x")
+                    ? Convert.ToInt32(value, 16).ToString(CultureInfo.InvariantCulture)
+                    : value;
 
                 var constantSignature =
                     new LSLLibraryConstantSignature(LSLType.Integer, constant.Groups[1].ToString().Trim(), strValue);

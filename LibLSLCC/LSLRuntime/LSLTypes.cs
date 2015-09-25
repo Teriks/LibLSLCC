@@ -1,7 +1,38 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLTypes.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
+
+#endregion
 
 namespace LibLSLCC.LSLRuntime
 {
@@ -15,11 +46,7 @@ namespace LibLSLCC.LSLRuntime
         {
             public double value;
 
-
-
-
             #region Constructors
-
 
             public LSLFloat(int i)
             {
@@ -41,7 +68,7 @@ namespace LibLSLCC.LSLRuntime
 
                 v = v.Trim();
 
-                if (v == String.Empty || v == null)
+                if (v == string.Empty || v == null)
                     v = "0.0";
                 else if (!v.Contains(".") && !v.ToLower().Contains("e"))
                     v = v + ".0";
@@ -50,14 +77,9 @@ namespace LibLSLCC.LSLRuntime
                 value = double.Parse(v, NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat);
             }
 
-
             #endregion
 
-
-
-
             #region Operators
-
 
             public static explicit operator float(LSLFloat f)
             {
@@ -77,7 +99,7 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public static implicit operator Boolean(LSLFloat f)
+            public static implicit operator bool(LSLFloat f)
             {
                 if (f.value == 0.0)
                 {
@@ -205,27 +227,22 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public static implicit operator Double(LSLFloat f)
+            public static implicit operator double(LSLFloat f)
             {
                 return f.value;
             }
 
-
             #endregion
-
-
-
 
             #region Overriders
 
-
             public override string ToString()
             {
-                return String.Format(CultureInfo.CurrentCulture, "{0:0.000000}", value);
+                return string.Format(CultureInfo.CurrentCulture, "{0:0.000000}", value);
             }
 
 
-            public override bool Equals(Object o)
+            public override bool Equals(object o)
             {
                 if (!(o is LSLFloat))
                     return false;
@@ -238,7 +255,6 @@ namespace LibLSLCC.LSLRuntime
                 return value.GetHashCode();
             }
 
-
             #endregion
         }
 
@@ -248,11 +264,18 @@ namespace LibLSLCC.LSLRuntime
             private static readonly Regex castRegex =
                 new Regex(@"(^[ ]*0[xX][0-9A-Fa-f][0-9A-Fa-f]*)|(^[ ]*(-?|\+?)[0-9][0-9]*)");
 
+            public int value;
 
+            #region Overriders
 
+            public override string ToString()
+            {
+                return value.ToString();
+            }
+
+            #endregion
 
             #region Constructors
-
 
             public LSLInteger(int i)
             {
@@ -279,7 +302,7 @@ namespace LibLSLCC.LSLRuntime
                 // Leading plus sign is allowed, but ignored
                 v = v.Replace("+", "");
 
-                if (v == String.Empty)
+                if (v == string.Empty)
                 {
                     value = 0;
                 }
@@ -303,14 +326,9 @@ namespace LibLSLCC.LSLRuntime
                 }
             }
 
-
             #endregion
 
-
-
-
             #region Operators
-
 
             public static implicit operator int(LSLInteger i)
             {
@@ -336,7 +354,7 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public static implicit operator Boolean(LSLInteger i)
+            public static implicit operator bool(LSLInteger i)
             {
                 if (i.value == 0)
                 {
@@ -482,7 +500,7 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public override bool Equals(Object o)
+            public override bool Equals(object o)
             {
                 if (!(o is LSLInteger))
                 {
@@ -563,7 +581,7 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public static implicit operator Double(LSLInteger i)
+            public static implicit operator double(LSLInteger i)
             {
                 return i.value;
             }
@@ -580,27 +598,7 @@ namespace LibLSLCC.LSLRuntime
                 return i.value == 0;
             }
 
-
             #endregion
-
-
-
-
-            #region Overriders
-
-
-            public override string ToString()
-            {
-                return value.ToString();
-            }
-
-
-            #endregion
-
-
-
-
-            public int value;
         }
 
         [Serializable]
@@ -608,11 +606,7 @@ namespace LibLSLCC.LSLRuntime
         {
             public string m_string;
 
-
-
-
             #region Constructors
-
 
             public LSLString(string s)
             {
@@ -622,21 +616,21 @@ namespace LibLSLCC.LSLRuntime
 
             public LSLString(double d)
             {
-                var s = String.Format(CultureInfo.CurrentCulture, "{0:0.000000}", d);
+                var s = string.Format(CultureInfo.CurrentCulture, "{0:0.000000}", d);
                 m_string = s;
             }
 
 
             public LSLString(LSLFloat f)
             {
-                var s = String.Format(CultureInfo.CurrentCulture, "{0:0.000000}", f.value);
+                var s = string.Format(CultureInfo.CurrentCulture, "{0:0.000000}", f.value);
                 m_string = s;
             }
 
 
             public LSLString(int i)
             {
-                var s = String.Format("{0}", i);
+                var s = string.Format("{0}", i);
                 m_string = s;
             }
 
@@ -645,16 +639,11 @@ namespace LibLSLCC.LSLRuntime
             {
             }
 
-
             #endregion
-
-
-
 
             #region Operators
 
-
-            public static implicit operator Boolean(LSLString s)
+            public static implicit operator bool(LSLString s)
             {
                 if (s.m_string.Length == 0)
                 {
@@ -664,7 +653,7 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public static implicit operator String(LSLString s)
+            public static implicit operator string(LSLString s)
             {
                 return s.m_string;
             }
@@ -767,14 +756,9 @@ namespace LibLSLCC.LSLRuntime
                 return new list(s);
             }
 
-
             #endregion
 
-
-
-
             #region Overriders
-
 
             public override bool Equals(object o)
             {
@@ -787,14 +771,9 @@ namespace LibLSLCC.LSLRuntime
                 return m_string.GetHashCode();
             }
 
-
             #endregion
 
-
-
-
             #region " Standard string functions "
-
 
             //Clone,CompareTo,Contains
             //CopyTo,EndsWith,Equals,GetEnumerator,GetHashCode,GetType,GetTypeCode
@@ -818,7 +797,6 @@ namespace LibLSLCC.LSLRuntime
                 return m_string.IndexOf(value);
             }
 
-
             #endregion
         }
 
@@ -830,11 +808,60 @@ namespace LibLSLCC.LSLRuntime
             public double y;
             public double z;
 
+            #region Methods
 
+            public Quaternion Normalize()
+            {
+                var length = Math.Sqrt(x*x + y*y + z*z + s*s);
+                if (length < float.Epsilon)
+                {
+                    x = 0;
+                    y = 0;
+                    z = 0;
+                    s = 1;
+                }
+                else
+                {
+                    var invLength = 1.0/length;
+                    x *= invLength;
+                    y *= invLength;
+                    z *= invLength;
+                    s *= invLength;
+                }
 
+                return this;
+            }
+
+            #endregion
+
+            public static Quaternion operator +(Quaternion a, Quaternion b)
+            {
+                return new Quaternion(a.x + b.x, a.y + b.y, a.z + b.z, a.s + b.s);
+            }
+
+            public static Quaternion operator /(Quaternion a, Quaternion b)
+            {
+                b.s = -b.s;
+                return a*b;
+            }
+
+            public static Quaternion operator -(Quaternion a, Quaternion b)
+            {
+                return new Quaternion(a.x - b.x, a.y - b.y, a.z - b.z, a.s - b.s);
+            }
+
+            // using the equations below, we need to do "b * a" to be compatible with LSL
+            public static Quaternion operator *(Quaternion b, Quaternion a)
+            {
+                Quaternion c;
+                c.x = a.s*b.x + a.x*b.s + a.y*b.z - a.z*b.y;
+                c.y = a.s*b.y + a.y*b.s + a.z*b.x - a.x*b.z;
+                c.z = a.s*b.z + a.z*b.s + a.x*b.y - a.y*b.x;
+                c.s = a.s*b.s - a.x*b.x - a.y*b.y - a.z*b.z;
+                return c;
+            }
 
             #region Constructors
-
 
             public Quaternion(Quaternion Quat)
             {
@@ -869,53 +896,17 @@ namespace LibLSLCC.LSLRuntime
                     return;
                 }
                 bool res;
-                res = Double.TryParse(tmps[0], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out x);
-                res = res & Double.TryParse(tmps[1], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out y);
-                res = res & Double.TryParse(tmps[2], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out z);
-                res = res & Double.TryParse(tmps[3], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out s);
+                res = double.TryParse(tmps[0], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out x);
+                res = res & double.TryParse(tmps[1], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out y);
+                res = res & double.TryParse(tmps[2], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out z);
+                res = res & double.TryParse(tmps[3], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out s);
                 if (x == 0 && y == 0 && z == 0 && s == 0)
                     s = 1;
             }
 
-
             #endregion
-
-
-
-
-            #region Methods
-
-
-            public Quaternion Normalize()
-            {
-                var length = Math.Sqrt(x*x + y*y + z*z + s*s);
-                if (length < float.Epsilon)
-                {
-                    x = 0;
-                    y = 0;
-                    z = 0;
-                    s = 1;
-                }
-                else
-                {
-                    var invLength = 1.0/length;
-                    x *= invLength;
-                    y *= invLength;
-                    z *= invLength;
-                    s *= invLength;
-                }
-
-                return this;
-            }
-
-
-            #endregion
-
-
-
 
             #region Overriders
-
 
             public override int GetHashCode()
             {
@@ -935,7 +926,7 @@ namespace LibLSLCC.LSLRuntime
 
             public override string ToString()
             {
-                var st = String.Format(CultureInfo.CurrentCulture,
+                var st = string.Format(CultureInfo.CurrentCulture,
                     "<{0:0.000000},{1:0.000000},{2:0.000000},{3:0.000000}>", x, y, z, s);
                 return st;
             }
@@ -943,14 +934,14 @@ namespace LibLSLCC.LSLRuntime
 
             public static explicit operator string(Quaternion r)
             {
-                var s = String.Format("<{0:0.000000},{1:0.000000},{2:0.000000},{3:0.000000}>", r.x, r.y, r.z, r.s);
+                var s = string.Format("<{0:0.000000},{1:0.000000},{2:0.000000},{3:0.000000}>", r.x, r.y, r.z, r.s);
                 return s;
             }
 
 
             public static explicit operator LSLString(Quaternion r)
             {
-                var s = String.Format("<{0:0.000000},{1:0.000000},{2:0.000000},{3:0.000000}>", r.x, r.y, r.z, r.s);
+                var s = string.Format("<{0:0.000000},{1:0.000000},{2:0.000000},{3:0.000000}>", r.x, r.y, r.z, r.s);
                 return new LSLString(s);
             }
 
@@ -985,41 +976,7 @@ namespace LibLSLCC.LSLRuntime
                 return Math.Sqrt(q.x*q.x + q.y*q.y + q.z*q.z + q.s*q.s);
             }
 
-
             #endregion
-
-
-
-
-            public static Quaternion operator +(Quaternion a, Quaternion b)
-            {
-                return new Quaternion(a.x + b.x, a.y + b.y, a.z + b.z, a.s + b.s);
-            }
-
-
-            public static Quaternion operator /(Quaternion a, Quaternion b)
-            {
-                b.s = -b.s;
-                return a*b;
-            }
-
-
-            public static Quaternion operator -(Quaternion a, Quaternion b)
-            {
-                return new Quaternion(a.x - b.x, a.y - b.y, a.z - b.z, a.s - b.s);
-            }
-
-
-            // using the equations below, we need to do "b * a" to be compatible with LSL
-            public static Quaternion operator *(Quaternion b, Quaternion a)
-            {
-                Quaternion c;
-                c.x = a.s*b.x + a.x*b.s + a.y*b.z - a.z*b.y;
-                c.y = a.s*b.y + a.y*b.s + a.z*b.x - a.x*b.z;
-                c.z = a.s*b.z + a.z*b.s + a.x*b.y - a.y*b.x;
-                c.s = a.s*b.s - a.x*b.x - a.y*b.y - a.z*b.z;
-                return c;
-            }
         }
 
         [Serializable]
@@ -1029,11 +986,7 @@ namespace LibLSLCC.LSLRuntime
             public double y;
             public double z;
 
-
-
-
             #region Constructors
-
 
             public Vector3(Vector3 vector)
             {
@@ -1062,37 +1015,32 @@ namespace LibLSLCC.LSLRuntime
                     return;
                 }
                 bool res;
-                res = Double.TryParse(tmps[0], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out x);
-                res = res & Double.TryParse(tmps[1], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out y);
-                res = res & Double.TryParse(tmps[2], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out z);
+                res = double.TryParse(tmps[0], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out x);
+                res = res & double.TryParse(tmps[1], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out y);
+                res = res & double.TryParse(tmps[2], NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out z);
             }
-
 
             #endregion
 
-
-
-
             #region Overriders
-
 
             public override string ToString()
             {
-                var s = String.Format("<{0:0.000000},{1:0.000000},{2:0.000000}>", x, y, z);
+                var s = string.Format("<{0:0.000000},{1:0.000000},{2:0.000000}>", x, y, z);
                 return s;
             }
 
 
             public static explicit operator LSLString(Vector3 vec)
             {
-                var s = String.Format("<{0:0.000000},{1:0.000000},{2:0.000000}>", vec.x, vec.y, vec.z);
+                var s = string.Format("<{0:0.000000},{1:0.000000},{2:0.000000}>", vec.x, vec.y, vec.z);
                 return new LSLString(s);
             }
 
 
             public static explicit operator string(Vector3 vec)
             {
-                var s = String.Format("<{0:0.000000},{1:0.000000},{2:0.000000}>", vec.x, vec.y, vec.z);
+                var s = string.Format("<{0:0.000000},{1:0.000000},{2:0.000000}>", vec.x, vec.y, vec.z);
                 return s;
             }
 
@@ -1142,14 +1090,9 @@ namespace LibLSLCC.LSLRuntime
                 return new Vector3(-vector.x, -vector.y, -vector.z);
             }
 
-
             #endregion
 
-
-
-
             #region Vector & Vector Math
-
 
             // Vector-Vector Math
             public static Vector3 operator +(Vector3 lhs, Vector3 rhs)
@@ -1180,14 +1123,9 @@ namespace LibLSLCC.LSLRuntime
                 return tv;
             }
 
-
             #endregion
 
-
-
-
             #region Vector & Float Math
-
 
             // Vector-Float and Float-Vector Math
             public static Vector3 operator *(Vector3 vec, float val)
@@ -1210,14 +1148,9 @@ namespace LibLSLCC.LSLRuntime
                 return v;
             }
 
-
             #endregion
 
-
-
-
             #region Vector & Double Math
-
 
             public static Vector3 operator *(Vector3 vec, double val)
             {
@@ -1239,14 +1172,9 @@ namespace LibLSLCC.LSLRuntime
                 return v;
             }
 
-
             #endregion
 
-
-
-
             #region Vector & Rotation Math
-
 
             // Vector-Rotation Math
             public static Vector3 operator *(Vector3 v, Quaternion r)
@@ -1267,14 +1195,9 @@ namespace LibLSLCC.LSLRuntime
                 return v*r;
             }
 
-
             #endregion
 
-
-
-
             #region Static Helper Functions
-
 
             public static double Dot(Vector3 v1, Vector3 v2)
             {
@@ -1310,7 +1233,6 @@ namespace LibLSLCC.LSLRuntime
                 return new Vector3(0, 0, 0);
             }
 
-
             #endregion
         }
 
@@ -1319,25 +1241,16 @@ namespace LibLSLCC.LSLRuntime
         {
             public string value;
 
-
-
-
             #region Constructors
-
 
             public key(string s)
             {
                 value = s;
             }
 
-
             #endregion
 
-
-
-
             #region Methods
-
 
             public static bool Parse2Key(string s)
             {
@@ -1351,16 +1264,11 @@ namespace LibLSLCC.LSLRuntime
                 return false;
             }
 
-
             #endregion
-
-
-
 
             #region Operators
 
-
-            public static implicit operator Boolean(key k)
+            public static implicit operator bool(key k)
             {
                 if (k.value.Length == 0)
                 {
@@ -1388,7 +1296,7 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public static implicit operator String(key k)
+            public static implicit operator string(key k)
             {
                 return k.value;
             }
@@ -1411,14 +1319,9 @@ namespace LibLSLCC.LSLRuntime
                 return k1.value != k2.value;
             }
 
-
             #endregion
 
-
-
-
             #region Overriders
-
 
             public override bool Equals(object o)
             {
@@ -1437,7 +1340,6 @@ namespace LibLSLCC.LSLRuntime
                 return value;
             }
 
-
             #endregion
         }
 
@@ -1446,19 +1348,17 @@ namespace LibLSLCC.LSLRuntime
         {
             private object[] m_data;
 
-
             public list(params object[] args)
             {
                 m_data = args;
             }
-
 
             public int Length
             {
                 get
                 {
                     if (m_data == null)
-                        m_data = new Object[0];
+                        m_data = new object[0];
                     return m_data.Length;
                 }
             }
@@ -1468,7 +1368,7 @@ namespace LibLSLCC.LSLRuntime
                 get
                 {
                     if (m_data == null)
-                        m_data = new Object[0];
+                        m_data = new object[0];
 
                     var size = 0;
 
@@ -1506,13 +1406,12 @@ namespace LibLSLCC.LSLRuntime
                 get
                 {
                     if (m_data == null)
-                        m_data = new Object[0];
+                        m_data = new object[0];
                     return m_data;
                 }
 
                 set { m_data = value; }
             }
-
 
             /// <summary>
             ///     Obtain LSL type from an index.
@@ -1527,7 +1426,6 @@ namespace LibLSLCC.LSLRuntime
             {
                 return m_data[itemIndex].GetType();
             }
-
 
             /// <summary>
             ///     Obtain float from an index.
@@ -1547,7 +1445,7 @@ namespace LibLSLCC.LSLRuntime
                 {
                     return (LSLInteger) m_data[itemIndex];
                 }
-                if (m_data[itemIndex] is Int32)
+                if (m_data[itemIndex] is int)
                 {
                     return new LSLFloat((int) m_data[itemIndex]);
                 }
@@ -1555,9 +1453,9 @@ namespace LibLSLCC.LSLRuntime
                 {
                     return new LSLFloat((float) m_data[itemIndex]);
                 }
-                if (m_data[itemIndex] is Double)
+                if (m_data[itemIndex] is double)
                 {
-                    return new LSLFloat((Double) m_data[itemIndex]);
+                    return new LSLFloat((double) m_data[itemIndex]);
                 }
                 if (m_data[itemIndex] is LSLString)
                 {
@@ -1565,7 +1463,6 @@ namespace LibLSLCC.LSLRuntime
                 }
                 return (LSLFloat) m_data[itemIndex];
             }
-
 
             public LSLString GetLSLStringItem(int itemIndex)
             {
@@ -1576,14 +1473,13 @@ namespace LibLSLCC.LSLRuntime
                 return new LSLString(m_data[itemIndex].ToString());
             }
 
-
             public LSLInteger GetLSLIntegerItem(int itemIndex)
             {
                 if (m_data[itemIndex] is LSLInteger)
                     return (LSLInteger) m_data[itemIndex];
                 if (m_data[itemIndex] is LSLFloat)
                     return new LSLInteger((int) m_data[itemIndex]);
-                if (m_data[itemIndex] is Int32)
+                if (m_data[itemIndex] is int)
                     return new LSLInteger((int) m_data[itemIndex]);
                 if (m_data[itemIndex] is LSLString)
                     return new LSLInteger(m_data[itemIndex].ToString());
@@ -1594,7 +1490,6 @@ namespace LibLSLCC.LSLRuntime
                         ? m_data[itemIndex].GetType().Name
                         : "null"));
             }
-
 
             public Vector3 GetVector3Item(int itemIndex)
             {
@@ -1610,7 +1505,6 @@ namespace LibLSLCC.LSLRuntime
                         : "null"));
             }
 
-
             public Quaternion GetQuaternionItem(int itemIndex)
             {
                 if (m_data[itemIndex] is Quaternion)
@@ -1625,12 +1519,10 @@ namespace LibLSLCC.LSLRuntime
                         : "null"));
             }
 
-
             public key GetKeyItem(int itemIndex)
             {
                 return (key) m_data[itemIndex];
             }
-
 
             public static list operator +(list a, list b)
             {
@@ -1641,13 +1533,11 @@ namespace LibLSLCC.LSLRuntime
                 return new list(tmp);
             }
 
-
             private void ExtendAndAdd(object o)
             {
                 Array.Resize(ref m_data, Length + 1);
                 m_data.SetValue(o, Length - 1);
             }
-
 
             public static list operator +(list a, LSLString s)
             {
@@ -1655,20 +1545,17 @@ namespace LibLSLCC.LSLRuntime
                 return a;
             }
 
-
             public static list operator +(list a, LSLInteger i)
             {
                 a.ExtendAndAdd(i);
                 return a;
             }
 
-
             public static list operator +(list a, LSLFloat d)
             {
                 a.ExtendAndAdd(d);
                 return a;
             }
-
 
             public static bool operator ==(list a, list b)
             {
@@ -1692,7 +1579,6 @@ namespace LibLSLCC.LSLRuntime
                 return la == lb;
             }
 
-
             public static bool operator !=(list a, list b)
             {
                 var la = -1;
@@ -1715,7 +1601,6 @@ namespace LibLSLCC.LSLRuntime
                 return la != lb;
             }
 
-
             public void Add(object o)
             {
                 object[] tmp;
@@ -1724,7 +1609,6 @@ namespace LibLSLCC.LSLRuntime
                 tmp[m_data.Length] = o;
                 m_data = tmp;
             }
-
 
             public bool Contains(object o)
             {
@@ -1740,7 +1624,6 @@ namespace LibLSLCC.LSLRuntime
                 return ret;
             }
 
-
             public list DeleteSublist(int start, int end)
             {
                 // Not an easy one
@@ -1748,7 +1631,7 @@ namespace LibLSLCC.LSLRuntime
                 // if either is negative, count from the end of the array
                 // if the resulting start > end, remove all BUT that part
 
-                Object[] ret;
+                object[] ret;
 
                 if (start < 0)
                     start = m_data.Length + start;
@@ -1775,7 +1658,7 @@ namespace LibLSLCC.LSLRuntime
                 // start >= 0 && end >= 0 here
                 if (start >= m_data.Length)
                 {
-                    ret = new Object[m_data.Length];
+                    ret = new object[m_data.Length];
                     Array.Copy(m_data, 0, ret, 0, m_data.Length);
 
                     return new list(ret);
@@ -1787,7 +1670,7 @@ namespace LibLSLCC.LSLRuntime
                 // now, this makes the math easier
                 var remove = end + 1 - start;
 
-                ret = new Object[m_data.Length - remove];
+                ret = new object[m_data.Length - remove];
                 if (ret.Length == 0)
                     return new list(ret);
 
@@ -1802,7 +1685,6 @@ namespace LibLSLCC.LSLRuntime
 
                 return new list(ret);
             }
-
 
             public list GetSublist(int start, int end)
             {
@@ -1890,7 +1772,6 @@ namespace LibLSLCC.LSLRuntime
                 return result + GetSublist(start, Data.Length);
             }
 
-
             private static int compare(object left, object right, int ascending)
             {
                 if (!left.GetType().Equals(right.GetType()))
@@ -1907,13 +1788,13 @@ namespace LibLSLCC.LSLRuntime
                 {
                     var l = (key) left;
                     var r = (key) right;
-                    ret = String.CompareOrdinal(l.value, r.value);
+                    ret = string.CompareOrdinal(l.value, r.value);
                 }
                 else if (left is LSLString)
                 {
                     var l = (LSLString) left;
                     var r = (LSLString) right;
-                    ret = String.CompareOrdinal(l.m_string, r.m_string);
+                    ret = string.CompareOrdinal(l.m_string, r.m_string);
                 }
                 else if (left is LSLInteger)
                 {
@@ -1947,7 +1828,6 @@ namespace LibLSLCC.LSLRuntime
 
                 return ret;
             }
-
 
             public list Sort(int stride, int ascending)
             {
@@ -2020,7 +1900,6 @@ namespace LibLSLCC.LSLRuntime
                 return new list(ret);
             }
 
-
             public string ToPrettyString()
             {
                 string output;
@@ -2031,7 +1910,7 @@ namespace LibLSLCC.LSLRuntime
                 output = "[";
                 foreach (var o in m_data)
                 {
-                    if (o is String)
+                    if (o is string)
                     {
                         output = output + "\"" + o + "\", ";
                     }
@@ -2045,7 +1924,6 @@ namespace LibLSLCC.LSLRuntime
                 return output;
             }
 
-
             public override bool Equals(object o)
             {
                 if (!(o is list))
@@ -2054,17 +1932,58 @@ namespace LibLSLCC.LSLRuntime
                 return Data.Length == ((list) o).Data.Length;
             }
 
-
             public override int GetHashCode()
             {
                 return Data.GetHashCode();
             }
 
+            public class AlphaCompare : IComparer
+            {
+                int IComparer.Compare(object x, object y)
+                {
+                    return string.Compare(x.ToString(), y.ToString());
+                }
+            }
 
+            private class HomogeneousComparer : IComparer
+            {
+                public int Compare(object lhs, object rhs)
+                {
+                    return compare(lhs, rhs, 1);
+                }
+            }
 
+            public class NumericComparer : IComparer
+            {
+                int IComparer.Compare(object x, object y)
+                {
+                    double a;
+                    double b;
+                    if (
+                        !double.TryParse(x.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat,
+                            out a))
+                    {
+                        a = 0.0;
+                    }
+                    if (
+                        !double.TryParse(y.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat,
+                            out b))
+                    {
+                        b = 0.0;
+                    }
+                    if (a < b)
+                    {
+                        return -1;
+                    }
+                    if (a == b)
+                    {
+                        return 0;
+                    }
+                    return 1;
+                }
+            }
 
             #region CSV Methods
-
 
             public static list FromCSV(string csv)
             {
@@ -2093,10 +2012,10 @@ namespace LibLSLCC.LSLRuntime
             private string ToSoup()
             {
                 string output;
-                output = String.Empty;
+                output = string.Empty;
                 if (m_data.Length == 0)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
                 foreach (var o in m_data)
                 {
@@ -2106,7 +2025,7 @@ namespace LibLSLCC.LSLRuntime
             }
 
 
-            public static explicit operator String(list l)
+            public static explicit operator string(list l)
             {
                 return l.ToSoup();
             }
@@ -2123,14 +2042,9 @@ namespace LibLSLCC.LSLRuntime
                 return ToSoup();
             }
 
-
             #endregion
 
-
-
-
             #region Statistic Methods
-
 
             public double Min()
             {
@@ -2314,57 +2228,7 @@ namespace LibLSLCC.LSLRuntime
                 return (double) j.Data[((int) (Math.Ceiling(Length*i))) - 1];
             }
 
-
             #endregion
-
-
-
-
-            public class AlphaCompare : IComparer
-            {
-                int IComparer.Compare(object x, object y)
-                {
-                    return string.Compare(x.ToString(), y.ToString());
-                }
-            }
-
-            private class HomogeneousComparer : IComparer
-            {
-                public int Compare(object lhs, object rhs)
-                {
-                    return compare(lhs, rhs, 1);
-                }
-            }
-
-            public class NumericComparer : IComparer
-            {
-                int IComparer.Compare(object x, object y)
-                {
-                    double a;
-                    double b;
-                    if (
-                        !double.TryParse(x.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat,
-                            out a))
-                    {
-                        a = 0.0;
-                    }
-                    if (
-                        !double.TryParse(y.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat,
-                            out b))
-                    {
-                        b = 0.0;
-                    }
-                    if (a < b)
-                    {
-                        return -1;
-                    }
-                    if (a == b)
-                    {
-                        return 0;
-                    }
-                    return 1;
-                }
-            }
         }
     }
 }

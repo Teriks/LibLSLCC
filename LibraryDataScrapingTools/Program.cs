@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: Program.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +41,6 @@ using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.OpenSimLibraryReflection;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
-
 
 #endregion
 
@@ -50,14 +75,11 @@ namespace LibraryDataScrapingTools
             var data = new LSLXmlLibraryDataProvider();
 
             var osslLibraryWikiData = new OsslWikiLibraryDataScraper(
-                documentation, new[] { "ossl" });
-
+                documentation, new[] {"ossl"});
 
 
             var lslLibraryData = new SecondlifeWikiLibraryData(documentation,
                 new[] {"lsl"});
-
-            
 
 
             var openSimLightShare = new OpenSimDirectLibraryData(openSimScriptFramework, documentation);
@@ -91,12 +113,12 @@ namespace LibraryDataScrapingTools
             var modInvokeSubset = new OpenSimDirectLibraryData(openSimScriptFramework, documentation);
 
             modInvokeSubset.IncludeFunctionContainingInterface("IMOD_Api",
-                new[] { "os-mod-api" });
+                new[] {"os-mod-api"});
 
 
             var allData = new CompoundLibraryData(
                 lslLibraryData, osslLibraryWikiData,
-                openSimLightShare, extendedPhysicsSubset, 
+                openSimLightShare, extendedPhysicsSubset,
                 modInvokeSubset);
 
 
@@ -177,7 +199,6 @@ namespace LibraryDataScrapingTools
             return data;
         }
 
-
         private static void CheckMissingOpensimKeywords(OpenSimLibraryReflectedTypeData openSimLibraryReflectedTypeData,
             LSLLibraryDataProvider existingData)
         {
@@ -224,7 +245,6 @@ namespace LibraryDataScrapingTools
             }
         }
 
-
         [STAThread]
         private static void Main(string[] args)
         {
@@ -249,11 +269,11 @@ namespace LibraryDataScrapingTools
             ScriptLibrary firestormOssl;
 
             using (
-                Stream firestormLSLDocs =
+                var firestormLSLDocs =
                     typeof (Program).Assembly.GetManifestResourceStream(
                         "LibraryDataScrapingTools.FirestormDropIn.scriptlibrary_lsl.xml"))
             using (
-                Stream firestormOsslDocs =
+                var firestormOsslDocs =
                     typeof (Program).Assembly.GetManifestResourceStream(
                         "LibraryDataScrapingTools.FirestormDropIn.scriptlibrary_ossl.xml"))
             {
@@ -283,8 +303,8 @@ namespace LibraryDataScrapingTools
             var openSimScriptFramework = new OpenSimLibraryReflectedTypeData(folderBrowserDialog.SelectedPath);
 
 
-            using (FileStream logStream = File.Create("log.txt"))
-            using (FileStream libraryDataStream = File.Create("LibraryData.xml.txt"))
+            using (var logStream = File.Create("log.txt"))
+            using (var libraryDataStream = File.Create("LibraryData.xml.txt"))
 
             {
                 var logWriter = new StreamWriter(logStream) {AutoFlush = true};
@@ -337,7 +357,6 @@ namespace LibraryDataScrapingTools
                 }
 
                 logWriter.Flush();
-
             }
             Process.Start("log.txt");
             Process.Start("LibraryData.xml.txt");

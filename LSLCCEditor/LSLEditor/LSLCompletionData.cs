@@ -1,5 +1,31 @@
-#region
+#region FileInfo
 
+// 
+// File: LSLCompletionData.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -12,11 +38,7 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using LibLSLCC.Extensions;
 
-
 #endregion
-
-
-
 
 namespace LSLCCEditor.LSLEditor
 {
@@ -24,23 +46,16 @@ namespace LSLCCEditor.LSLEditor
     {
         private readonly string _description;
         private readonly string _label;
-        private readonly double _priority;
         private readonly string _text;
-        private Brush _colorBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
-        private HashSet<char> _indentBreakCharacters = new HashSet<char>();
-
-
 
         public LSLCompletionData(string label, string text, string description, double priority)
         {
             _description = description;
-            _priority = priority;
+            Priority = priority;
             _text = text;
             _label = label;
             TextSubStringStart = 0;
         }
-
-
 
         public string PrependOnInsert { get; set; }
         public string AppendOnInsert { get; set; }
@@ -51,49 +66,37 @@ namespace LSLCCEditor.LSLEditor
         public bool OffsetCaretAfterInsert { get; set; }
         public bool InsertTextAtCaretAfterOffset { get; set; }
         public string CaretOffsetInsertionText { get; set; }
-
-        public HashSet<char> IndentBreakCharacters
-        {
-            get { return _indentBreakCharacters; }
-            set { _indentBreakCharacters = value; }
-        }
-
-        public Brush ColorBrush
-        {
-            get { return _colorBrush; }
-            set { _colorBrush = value; }
-        }
-
-
+        public HashSet<char> IndentBreakCharacters { get; set; } = new HashSet<char>();
+        public Brush ColorBrush { get; set; } = new SolidColorBrush(Color.FromRgb(50, 52, 138));
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             var prep = string.IsNullOrWhiteSpace(PrependOnInsert) ? "" : PrependOnInsert;
             var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
 
-            string text = prep + Text + app;
+            var text = prep + Text + app;
 
             if (ForceIndent)
             {
-                string indent = StringTools.CreateTabsString(IndentLevel);
+                var indent = StringTools.CreateTabsString(IndentLevel);
 
-                string result = "";
+                var result = "";
 
                 var lines = text.Split('\n').ToList();
 
-                for (int i = 0; i < lines.Count; i++)
+                for (var i = 0; i < lines.Count; i++)
                 {
                     string line;
                     if (i == 0)
                     {
                         var j = completionSegment.EndOffset - 1;
-                        string linePrefix = "";
+                        var linePrefix = "";
                         var start = j;
                         var end = 0;
                         while (j > 0)
                         {
-                            char c = textArea.Document.Text[j];
-                            if (c == '\n' || _indentBreakCharacters.Contains(c))
+                            var c = textArea.Document.Text[j];
+                            if (c == '\n' || IndentBreakCharacters.Contains(c))
                             {
                                 end = j;
                                 if (c != '\n')
@@ -146,8 +149,6 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
-
-
         public ImageSource Image
         {
             get { return null; }
@@ -184,9 +185,6 @@ namespace LSLCCEditor.LSLEditor
             get { return new TextBlock {Text = _description, MaxWidth = 500, TextWrapping = TextWrapping.Wrap}; }
         }
 
-        public double Priority
-        {
-            get { return _priority; }
-        }
+        public double Priority { get; }
     }
 }

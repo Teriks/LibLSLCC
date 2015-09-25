@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLLibraryDataProvider.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -7,10 +36,20 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.ThreadSafeEnumeration;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Components
 {
     public class LSLLibraryDataProvider : ILSLMainLibraryDataProvider
     {
+        private readonly List<LSLLibraryConstantSignature> _duplicateConstantsDefined =
+            new List<LSLLibraryConstantSignature>();
+
+        private readonly List<LSLLibraryEventSignature> _duplicateEventsDefined = new List<LSLLibraryEventSignature>();
+
+        private readonly List<LSLLibraryFunctionSignature> _duplicateFunctionsDefined =
+            new List<LSLLibraryFunctionSignature>();
+
         private readonly Dictionary<string, LSLLibraryConstantSignature> _validConstants
             = new Dictionary<string, LSLLibraryConstantSignature>();
 
@@ -19,6 +58,32 @@ namespace LibLSLCC.CodeValidator.Components
 
         private readonly Dictionary<string, List<LSLLibraryFunctionSignature>> _validLibraryFunctions
             = new Dictionary<string, List<LSLLibraryFunctionSignature>>();
+
+        /// <summary>
+        ///     Only useful when Subsets contains the "all" keyword
+        /// </summary>
+        public IEnumerable<LSLLibraryEventSignature> DuplicateEventsDefined
+        {
+            get { return _duplicateEventsDefined; }
+        }
+
+        /// <summary>
+        ///     Only useful when Subsets contains the "all" keyword
+        /// </summary>
+        public IEnumerable<LSLLibraryConstantSignature> DuplicateConstantsDefined
+        {
+            get { return _duplicateConstantsDefined; }
+        }
+
+        /// <summary>
+        ///     Only useful when Subsets contains the "all" keyword
+        /// </summary>
+        public IEnumerable<LSLLibraryFunctionSignature> DuplicateFunctionsDefined
+        {
+            get { return _duplicateFunctionsDefined; }
+        }
+
+        public bool AccumulateDuplicates { get; protected set; }
 
         public virtual IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
         {
@@ -35,29 +100,6 @@ namespace LibLSLCC.CodeValidator.Components
             get { return _validConstants.Values.AsLocked(_validLibraryFunctions); }
         }
 
-            
-
-        protected void ClearLibraryConstants()
-        {
-            _validConstants.Clear();
-        }
-
-
-
-        protected void ClearLibraryFunctions()
-        {
-            _validLibraryFunctions.Clear();
-        }
-
-
-
-        protected void ClearEventHandlers()
-        {
-            _validEventHandlers.Clear();
-        }
-
-
-
         /// <summary>
         ///     Return true if an event handler with the given name exists in the default library.
         /// </summary>
@@ -67,8 +109,6 @@ namespace LibLSLCC.CodeValidator.Components
         {
             return _validEventHandlers.ContainsKey(name);
         }
-
-
 
         /// <summary>
         ///     Return an LSLEventHandlerSignature object describing an event handler signature;
@@ -90,8 +130,6 @@ namespace LibLSLCC.CodeValidator.Components
             return null;
         }
 
-
-
         /// <summary>
         ///     Return true if a library function with the given name exists.
         /// </summary>
@@ -101,8 +139,6 @@ namespace LibLSLCC.CodeValidator.Components
         {
             return _validLibraryFunctions.ContainsKey(name);
         }
-
-
 
         /// <summary>
         ///     Return an LSLFunctionSignature list object describing the function call signatures of a library function;
@@ -124,8 +160,6 @@ namespace LibLSLCC.CodeValidator.Components
             return null;
         }
 
-
-
         /// <summary>
         ///     Return true if a library constant with the given name exists.
         /// </summary>
@@ -135,8 +169,6 @@ namespace LibLSLCC.CodeValidator.Components
         {
             return _validConstants.ContainsKey(name);
         }
-
-
 
         /// <summary>
         ///     Return the library constant if it exists, otherwise null.
@@ -156,7 +188,20 @@ namespace LibLSLCC.CodeValidator.Components
             return null;
         }
 
+        protected void ClearLibraryConstants()
+        {
+            _validConstants.Clear();
+        }
 
+        protected void ClearLibraryFunctions()
+        {
+            _validLibraryFunctions.Clear();
+        }
+
+        protected void ClearEventHandlers()
+        {
+            _validEventHandlers.Clear();
+        }
 
         public virtual void AddValidConstant(LSLLibraryConstantSignature signature)
         {
@@ -175,41 +220,8 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-        /// <summary>
-        /// Only useful when Subsets contains the "all" keyword
-        /// </summary>
-        public IEnumerable<LSLLibraryEventSignature> DuplicateEventsDefined
-        {
-            get { return _duplicateEventsDefined; }
-        }
-
-
-        /// <summary>
-        /// Only useful when Subsets contains the "all" keyword
-        /// </summary>
-        public IEnumerable<LSLLibraryConstantSignature> DuplicateConstantsDefined
-        {
-            get { return _duplicateConstantsDefined; }
-        }
-
-
-        /// <summary>
-        /// Only useful when Subsets contains the "all" keyword
-        /// </summary>
-        public IEnumerable<LSLLibraryFunctionSignature> DuplicateFunctionsDefined
-        {
-            get { return _duplicateFunctionsDefined; }
-        }
-
-
-        private readonly List<LSLLibraryConstantSignature> _duplicateConstantsDefined = new List<LSLLibraryConstantSignature>();
-        private readonly List<LSLLibraryFunctionSignature> _duplicateFunctionsDefined = new List<LSLLibraryFunctionSignature>();
-        private readonly List<LSLLibraryEventSignature> _duplicateEventsDefined = new List<LSLLibraryEventSignature>();
-
         public virtual void AddValidEventHandler(LSLLibraryEventSignature signature)
         {
-
-
             if (_validEventHandlers.ContainsKey(signature.Name))
             {
                 if (!AccumulateDuplicates)
@@ -224,9 +236,6 @@ namespace LibLSLCC.CodeValidator.Components
                 _validEventHandlers.Add(signature.Name, signature);
             }
         }
-
-        public bool AccumulateDuplicates { get; protected set; }
-
 
         public virtual void AddValidLibraryFunction(LSLLibraryFunctionSignature signature)
         {
@@ -248,27 +257,22 @@ namespace LibLSLCC.CodeValidator.Components
             }
             else
             {
-
                 _validLibraryFunctions.Add(signature.Name, new List<LSLLibraryFunctionSignature> {signature});
             }
         }
 
-
         public virtual void AddValidConstant(LSLType type, string name)
         {
-            AddValidConstant(new LSLLibraryConstantSignature(type,name));
+            AddValidConstant(new LSLLibraryConstantSignature(type, name));
         }
-
-
 
         public virtual void AddValidEventHandler(string name, IEnumerable<LSLParameter> parameters)
         {
-            AddValidEventHandler(new LSLLibraryEventSignature(name,parameters));
+            AddValidEventHandler(new LSLLibraryEventSignature(name, parameters));
         }
 
-
-
-        public virtual void AddValidLibraryFunction(LSLType returnType, string name, IEnumerable<LSLParameter> parameters)
+        public virtual void AddValidLibraryFunction(LSLType returnType, string name,
+            IEnumerable<LSLParameter> parameters)
         {
             AddValidLibraryFunction(new LSLLibraryFunctionSignature(returnType, name, parameters));
         }
@@ -281,21 +285,15 @@ namespace LibLSLCC.CodeValidator.Components
         {
         }
 
-
-
         public LSLDuplicateSignatureException(string message)
             : base(message)
         {
         }
 
-
-
         public LSLDuplicateSignatureException(string message, Exception inner)
             : base(message, inner)
         {
         }
-
-
 
         protected LSLDuplicateSignatureException(
             SerializationInfo info,

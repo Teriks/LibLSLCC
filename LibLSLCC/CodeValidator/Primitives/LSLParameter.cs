@@ -1,12 +1,43 @@
+#region FileInfo
+
+// 
+// File: LSLParameter.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using System;
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
     public class LSLParameter
     {
         /// <summary>
-        /// Construct a parameter object
+        ///     Construct a parameter object
         /// </summary>
         /// <param name="type">The parameter type</param>
         /// <param name="name">The parameter name</param>
@@ -24,28 +55,25 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
+        /// <summary>
+        ///     Name of the parameter
+        /// </summary>
+        public string Name { get; }
 
         /// <summary>
-        /// Name of the parameter
+        ///     Does this parameter represent a variadic place holder
         /// </summary>
-        public string Name { get; private set; }
+        public bool Variadic { get; }
 
         /// <summary>
-        /// Does this parameter represent a variadic place holder
+        ///     The parameter type
         /// </summary>
-        public bool Variadic { get; private set; }
+        public LSLType Type { get; }
 
         /// <summary>
-        /// The parameter type
+        ///     The parameter index, which gets set when the parameter is added to an LSLFunctionSignature or LSLEventSignature
         /// </summary>
-        public LSLType Type { get; private set; }
-
-        /// <summary>
-        /// The parameter index, which gets set when the parameter is added to an LSLFunctionSignature or LSLEventSignature
-        /// </summary>
-        public int ParameterIndex { get; set; }
-
-
+        public int ParameterIndex { get; }
 
         public override int GetHashCode()
         {
@@ -56,7 +84,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             hash = hash*31 + Variadic.GetHashCode();
             return hash;
         }
-
 
         public override bool Equals(object obj)
         {

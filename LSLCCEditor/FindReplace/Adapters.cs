@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: Adapters.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -6,9 +35,10 @@ using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
 using RichTextBox = System.Windows.Controls.RichTextBox;
 using TextBox = System.Windows.Controls.TextBox;
+
+#endregion
 
 namespace FindReplace
 {
@@ -17,16 +47,12 @@ namespace FindReplace
     /// </summary>
     public class TextEditorAdapter : IEditor
     {
-        private TextEditor te;
-
-
+        private readonly TextEditor te;
 
         public TextEditorAdapter(TextEditor editor)
         {
             te = editor;
         }
-
-
 
         public string Text
         {
@@ -43,30 +69,22 @@ namespace FindReplace
             get { return te.SelectionLength; }
         }
 
-
-
         public void BeginChange()
         {
             te.BeginChange();
         }
-
-
 
         public void EndChange()
         {
             te.EndChange();
         }
 
-
-
         public void Select(int start, int length)
         {
             te.Select(start, length);
-            TextLocation loc = te.Document.GetLocation(start);
+            var loc = te.Document.GetLocation(start);
             te.ScrollTo(loc.Line, loc.Column);
         }
-
-
 
         public void Replace(int start, int length, string ReplaceWith)
         {
@@ -80,16 +98,12 @@ namespace FindReplace
     /// </summary>
     public class TextBoxAdapter : IEditor
     {
-        private TextBox te;
-
-
+        private readonly TextBox te;
 
         public TextBoxAdapter(TextBox editor)
         {
             te = editor;
         }
-
-
 
         public string Text
         {
@@ -106,28 +120,20 @@ namespace FindReplace
             get { return te.SelectionLength; }
         }
 
-
-
         public void BeginChange()
         {
             te.BeginChange();
         }
-
-
 
         public void EndChange()
         {
             te.EndChange();
         }
 
-
-
         public void Select(int start, int length)
         {
             te.Select(start, length);
         }
-
-
 
         public void Replace(int start, int length, string ReplaceWith)
         {
@@ -142,17 +148,13 @@ namespace FindReplace
     /// </summary>
     public class RichTextBoxAdapter : IEditor
     {
+        private readonly RichTextBox rtb;
         private TextRange oldsel;
-        private RichTextBox rtb;
-
-
 
         public RichTextBoxAdapter(RichTextBox editor)
         {
             rtb = editor;
         }
-
-
 
         public string Text
         {
@@ -169,25 +171,19 @@ namespace FindReplace
             get { return rtb.Selection.Text.Length; }
         }
 
-
-
         public void BeginChange()
         {
             rtb.BeginChange();
         }
-
-
 
         public void EndChange()
         {
             rtb.EndChange();
         }
 
-
-
         public void Select(int start, int length)
         {
-            TextPointer tp = rtb.Document.ContentStart;
+            var tp = rtb.Document.ContentStart;
             rtb.Selection.Select(GetPoint(tp, start), GetPoint(tp, start + length));
             rtb.ScrollToVerticalOffset(rtb.Selection.Start.GetCharacterRect(LogicalDirection.Forward).Top);
             rtb.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, Brushes.Yellow);
@@ -195,24 +191,18 @@ namespace FindReplace
             rtb.SelectionChanged += rtb_SelectionChanged;
         }
 
-
-
         public void Replace(int start, int length, string ReplaceWith)
         {
-            TextPointer tp = rtb.Document.ContentStart;
-            TextRange tr = new TextRange(GetPoint(tp, start), GetPoint(tp, start + length));
+            var tp = rtb.Document.ContentStart;
+            var tr = new TextRange(GetPoint(tp, start), GetPoint(tp, start + length));
             tr.Text = ReplaceWith;
         }
-
-
 
         private void rtb_SelectionChanged(object sender, RoutedEventArgs e)
         {
             oldsel.ApplyPropertyValue(TextElement.BackgroundProperty, null);
             rtb.SelectionChanged -= rtb_SelectionChanged;
         }
-
-
 
         /*private static TextPointer GetPointOld(TextPointer start, int x)
        {
@@ -230,10 +220,9 @@ namespace FindReplace
        }*/
 
 
-
         private static TextPointer GetPoint(TextPointer start, int x)
         {
-            TextPointer ret = start.GetPositionAtOffset(x);
+            var ret = start.GetPositionAtOffset(x);
             while (new TextRange(start, ret).Text.Length < x)
             {
                 if (ret.GetPositionAtOffset(1, LogicalDirection.Forward) == null)
@@ -244,8 +233,6 @@ namespace FindReplace
             return ret;
         }
 
-
-
         private static int GetPos(TextPointer start, TextPointer p)
         {
             return (new TextRange(start, p)).Text.Length;
@@ -254,16 +241,12 @@ namespace FindReplace
 
     internal class WFTextBoxAdapter : IEditor
     {
-        private TextBoxBase tb;
-
-
+        private readonly TextBoxBase tb;
 
         public WFTextBoxAdapter(TextBoxBase ttb)
         {
             tb = ttb;
         }
-
-
 
         public string Text
         {
@@ -280,27 +263,19 @@ namespace FindReplace
             get { return tb.SelectionLength; }
         }
 
-
-
         public void BeginChange()
         {
         }
 
-
-
         public void EndChange()
         {
         }
-
-
 
         public void Select(int start, int length)
         {
             tb.Select(start, length);
             tb.ScrollToCaret();
         }
-
-
 
         public void Replace(int start, int length, string ReplaceWith)
         {
@@ -320,8 +295,6 @@ namespace FindReplace
                 return new RichTextBoxAdapter(value as RichTextBox);
             return null;
         }
-
-
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

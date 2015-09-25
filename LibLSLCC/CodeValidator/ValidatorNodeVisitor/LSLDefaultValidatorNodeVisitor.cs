@@ -1,5 +1,36 @@
+#region FileInfo
+
+// 
+// File: LSLDefaultValidatorNodeVisitor.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:25 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using LibLSLCC.CodeValidator.ValidatorNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 {
@@ -19,8 +50,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitExpressionList(node)
         /// </summary>
@@ -30,8 +59,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitExpressionList(node);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitExpressionList(node)
@@ -43,8 +70,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitExpressionList(node);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitExpressionList(node)
         /// </summary>
@@ -54,8 +79,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitExpressionList(node);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitExpressionList(node)
@@ -67,8 +90,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitExpressionList(node);
         }
 
-
-
         /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
@@ -78,8 +99,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.ParameterListNode) and returns default(T)
@@ -93,8 +112,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
@@ -104,8 +121,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     DefaultImplementation calls Visit(node.ExpressionListNode) and returns default(T)
@@ -119,8 +134,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.InnerExpression) and returns default(T)
         /// </summary>
@@ -132,8 +145,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.LeftExpression) and returns default(T)
@@ -147,8 +158,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.RightExpression) and returns default(T)
         /// </summary>
@@ -160,8 +169,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls in order:
@@ -180,8 +187,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation returns default(T)
         /// </summary>
@@ -191,8 +196,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.CastedExpression) and returns default(T)
@@ -206,8 +209,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
@@ -217,8 +218,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.AccessedExpression) and returns default(T)
@@ -231,8 +230,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls in order: Visit(node.XExpression), Visit(node.YExpression), Visit(node.ZExpression).
@@ -249,8 +246,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.Code) then Visit(node.ConditionExpression) and returns default(T)
         /// </summary>
@@ -262,8 +257,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             Visit(node.ConditionExpression);
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.InitExpression) if node.HasInitExpression is true.
@@ -293,8 +286,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.ConditionExpression) then Visit(node.Code) and returns default(T)
         /// </summary>
@@ -306,8 +297,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             Visit(node.Code);
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(codeStatement) for each ILSLCodeStatement in node.CodeStatements
@@ -324,8 +313,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(globalVariable) for each LSLVariableNode in node.GlobalVariableDeclarations.
@@ -357,8 +344,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.ParameterListNode) then Visit(node.EventBodyNode)
         ///     and returns default(T)
@@ -372,8 +357,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.ParameterListNode) then Visit(node.FunctionBodyNode)
@@ -389,8 +372,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitState(node)
         /// </summary>
@@ -400,8 +381,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitState(node);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitState(node)
@@ -413,8 +392,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitState(node);
         }
 
-
-
         /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
@@ -424,8 +401,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(parameter) on each parameter in node.Parameters, then returns default(T)
@@ -442,8 +417,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
@@ -458,8 +431,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
@@ -469,8 +440,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation just returns default(T)
@@ -482,8 +451,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation just returns default(T)
         /// </summary>
@@ -491,10 +458,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         /// <returns>default(T)</returns>
         public virtual T VisitJumpStatement(ILSLJumpStatementNode node)
         {
-            return default (T);
+            return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation just returns default(T)
@@ -505,8 +470,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.IfStatement), then Visit(elseIfStatement) for each
@@ -533,8 +496,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.ConditionExpression) then Visit(node.Code) and returns default(T)
         /// </summary>
@@ -548,8 +509,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.ConditionExpression) then Visit(node.Code) and returns default(T)
@@ -565,8 +524,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.Code) and returns default(T)
         /// </summary>
@@ -578,8 +535,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(node.Expression) and returns default(T)
         /// </summary>
@@ -588,10 +543,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         public virtual T VisitExpressionStatement(ILSLExpressionStatementNode node)
         {
             Visit(node.Expression);
-            return default (T);
+            return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls treeNode.AcceptVisitor(this)
@@ -603,8 +556,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return treeNode.AcceptVisitor(this);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitVariableDeclaration(node)
         /// </summary>
@@ -614,8 +565,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitVariableDeclaration(node);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitVariableDeclaration(node)
@@ -627,8 +576,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitVariableDeclaration(node);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitCodeScope(node) and returns default(T)
         /// </summary>
@@ -638,8 +585,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitCodeScope(node);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitCodeScope(node) and returns default(T)
@@ -651,8 +596,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitCodeScope(node);
         }
 
-
-
         /// <summary>
         ///     Default implementation returns default(T)
         /// </summary>
@@ -662,8 +605,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitUserFunctionCallParameters(lslExpressionListNode)
@@ -678,8 +619,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitFunctionCallParameters(lslExpressionListNode);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitUserFunctionCallParameters(lslExpressionListNode)
         /// </summary>
@@ -693,8 +632,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitFunctionCallParameters(lslExpressionListNode);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitVariableReference(lslVariableNode)
         /// </summary>
@@ -704,8 +641,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitVariableReference(lslVariableNode);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitVariableReference(lslVariableNode)
@@ -717,8 +652,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitVariableReference(lslVariableNode);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitVariableReference(lslVariableNode)
         /// </summary>
@@ -729,8 +662,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitVariableReference(lslVariableNode);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitVariableReference(lslVariableNode)
         /// </summary>
@@ -740,8 +671,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitVariableReference(lslVariableNode);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls VisitFunctionCall(lslFunctionCallNode)
@@ -756,8 +685,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return VisitFunctionCall(lslFunctionCallNode);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls VisitFunctionCall(lslFunctionCallNode)
         /// </summary>
@@ -770,8 +697,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         {
             return VisitFunctionCall(lslFunctionCallNode);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(expression) for each expression in node.ExpressionNodes, and returns default(T)
@@ -789,8 +714,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
             return default(T);
         }
 
-
-
         /// <summary>
         ///     Default implementation calls Visit(eventHandler) for each eventHandler in node.EventHandlers, then returns
         ///     default(T)
@@ -806,8 +729,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             return default(T);
         }
-
-
 
         /// <summary>
         ///     Default implementation calls Visit(node.DeclarationExpression) if node.HasDeclarationExpression is true

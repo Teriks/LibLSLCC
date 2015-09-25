@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLControlStatementNode.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,6 +36,8 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 {
     public class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
@@ -14,7 +45,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         private readonly List<LSLElseIfStatementNode> _elseIfStatements = new List<LSLElseIfStatementNode>();
         private LSLElseStatementNode _elseStatement;
         private LSLIfStatementNode _ifStatement;
-
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLControlStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -23,8 +53,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             SourceCodeRange = sourceRange;
             HasErrors = true;
         }
-
-
 
         internal LSLControlStatementNode(LSLParser.ControlStructureContext context, bool isSingleBlockStatement)
         {
@@ -40,8 +68,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-
-        
         internal LSLControlStatementNode(LSLParser.ControlStructureContext context, LSLIfStatementNode ifStatement,
             IEnumerable<LSLElseIfStatementNode> elseIfStatements,
             LSLElseStatementNode elseStatement, bool isSingleBlockStatement) :
@@ -55,8 +81,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             ElseStatement = elseStatement;
             elseStatement.Parent = this;
         }
-
-
 
         internal LSLControlStatementNode(LSLParser.ControlStructureContext context, LSLIfStatementNode ifStatement,
             IEnumerable<LSLElseIfStatementNode> elseIfStatements, bool isSingleBlockStatement) :
@@ -73,8 +97,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             }
         }
 
-
-
         internal LSLControlStatementNode(LSLParser.ControlStructureContext context,
             LSLIfStatementNode ifStatement,
             bool isSingleBlockStatement) : this(context, isSingleBlockStatement)
@@ -87,8 +109,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             IfStatement = ifStatement;
             IfStatement.Parent = this;
         }
-
-
 
         public LSLElseStatementNode ElseStatement
         {
@@ -126,12 +146,85 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         internal LSLParser.ControlStructureContext ParserContext { get; private set; }
+        public ILSLCodeStatement ReturnPath { get; set; }
+        public LSLDeadCodeType DeadCodeType { get; set; }
+
+        ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
+        {
+            get { return Parent; }
+        }
+
+        public bool HasElseStatement
+        {
+            get { return ElseStatement != null; }
+        }
+
+        public bool HasIfStatement
+        {
+            get { return IfStatement != null; }
+        }
+
+        public bool HasElseIfStatements
+        {
+            get { return ElseIfStatements.Any(); }
+        }
+
+        ILSLElseStatementNode ILSLControlStatementNode.ElseStatement
+        {
+            get { return ElseStatement; }
+        }
+
+        ILSLIfStatementNode ILSLControlStatementNode.IfStatement
+        {
+            get { return IfStatement; }
+        }
+
+        IEnumerable<ILSLElseIfStatementNode> ILSLControlStatementNode.ElseIfStatements
+        {
+            get { return _elseIfStatements; }
+        }
+
+        public ulong ScopeId { get; set; }
+
+        public static
+            LSLControlStatementNode GetError(LSLSourceCodeRange sourceRange)
+        {
+            return new LSLControlStatementNode(sourceRange, Err.Err);
+        }
+
+        public void AddElseIfStatement(LSLElseIfStatementNode node)
+        {
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
 
 
+            node.Parent = this;
+            _elseIfStatements.Add(node);
+        }
 
+        private bool HaveReturnPath()
+        {
+            if (!ElseIfStatements.Any())
+            {
+                return IfStatement.HasReturnPath && (ElseStatement != null && ElseStatement.HasReturnPath);
+            }
+
+            return IfStatement.HasReturnPath && ElseIfStatements.All(x => x.HasReturnPath) &&
+                   (ElseStatement != null && ElseStatement.HasReturnPath);
+        }
+
+        #region Nested type: Err
+
+        protected enum Err
+        {
+            Err
+        }
+
+        #endregion
 
         #region ILSLCodeStatement Members
-
 
         public bool IsSingleBlockStatement { get; private set; }
         public ILSLSyntaxTreeNode Parent { get; set; }
@@ -155,15 +248,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
-
+        public LSLSourceCodeRange SourceCodeRange { get; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitControlStatement(this);
         }
-
 
 
         /// <summary>
@@ -212,7 +303,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
 
-
         private class JumpCmp :
             IEqualityComparer<LSLConstantJumpDescription>
         {
@@ -221,8 +311,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
                 return x.DeterminingJump.JumpTarget == y.DeterminingJump.JumpTarget &&
                        x.DeterminingJump.JumpTarget.ScopeId == y.DeterminingJump.JumpTarget.ScopeId;
             }
-
-
 
             public int GetHashCode(LSLConstantJumpDescription obj)
             {
@@ -233,101 +321,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
                 return hash;
             }
         }
-
-
-        #endregion
-
-
-
-
-        public ILSLCodeStatement ReturnPath { get; set; }
-        public LSLDeadCodeType DeadCodeType { get; set; }
-
-        ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
-        {
-            get { return Parent; }
-        }
-
-
-        public bool HasElseStatement
-        {
-            get { return ElseStatement != null; }
-        }
-
-        public bool HasIfStatement
-        {
-            get { return IfStatement != null; }
-        }
-
-        public bool HasElseIfStatements
-        {
-            get { return ElseIfStatements.Any(); }
-        }
-
-        ILSLElseStatementNode ILSLControlStatementNode.ElseStatement
-        {
-            get { return ElseStatement; }
-        }
-
-        ILSLIfStatementNode ILSLControlStatementNode.IfStatement
-        {
-            get { return IfStatement; }
-        }
-
-
-        IEnumerable<ILSLElseIfStatementNode> ILSLControlStatementNode.ElseIfStatements
-        {
-            get { return _elseIfStatements; }
-        }
-
-        public ulong ScopeId { get; set; }
-
-
-
-        public static
-            LSLControlStatementNode GetError(LSLSourceCodeRange sourceRange)
-        {
-            return new LSLControlStatementNode(sourceRange, Err.Err);
-        }
-
-
-
-        public void AddElseIfStatement(LSLElseIfStatementNode node)
-        {
-            if (node == null)
-            {
-                throw new ArgumentNullException("node");
-            }
-
-
-            node.Parent = this;
-            _elseIfStatements.Add(node);
-        }
-
-
-
-        private bool HaveReturnPath()
-        {
-            if (!ElseIfStatements.Any())
-            {
-                return IfStatement.HasReturnPath && (ElseStatement != null && ElseStatement.HasReturnPath);
-            }
-
-            return IfStatement.HasReturnPath && ElseIfStatements.All(x => x.HasReturnPath) &&
-                   (ElseStatement != null && ElseStatement.HasReturnPath);
-        }
-
-
-
-
-        #region Nested type: Err
-
-
-        protected enum Err
-        {
-            Err
-        }
-
 
         #endregion
     }

@@ -1,5 +1,31 @@
-#region
+#region FileInfo
 
+// 
+// File: OpenSimDirectLibraryData.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +38,6 @@ using LibraryDataScrapingTools.OpenSimLibraryReflection;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
 
-
 #endregion
 
 namespace LibraryDataScrapingTools.LibraryDataScrapers
@@ -22,13 +47,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private readonly HashSet<Type> _attributedScriptModuleClasses = new HashSet<Type>();
         private readonly IDocumentationProvider _documentationProvider;
         private readonly HashSet<Type> _functionContainingInterfaces = new HashSet<Type>();
-        private readonly IReflectedLibraryData _reflectedData;
         private readonly HashSet<Type> _scriptConstantContainerClasses = new HashSet<Type>();
         private readonly Dictionary<Type, HashSet<string>> _subsetsMap = new Dictionary<Type, HashSet<string>>();
-
-        public bool IncludeFunctions { get; set; }
-        public bool IncludeConstants { get; set; }
-        
 
         public OpenSimDirectLibraryData(IReflectedLibraryData reflectedData,
             IDocumentationProvider documentationProvider)
@@ -36,7 +56,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             OptionalScriptModuleConstantAttribute = reflectedData.ScriptModuleConstantAttribute;
             OptionalScriptModuleFunctionAttribute = reflectedData.ScriptModuleFunctionAttribute;
             DataTypeMapping = reflectedData.OpenSimToLSLTypeMapping();
-            _reflectedData = reflectedData;
+            ReflectedData = reflectedData;
             _documentationProvider = documentationProvider;
             IncludeConstants = true;
             IncludeFunctions = true;
@@ -47,22 +67,18 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             OptionalScriptModuleConstantAttribute = reflectedData.ScriptModuleConstantAttribute;
             OptionalScriptModuleFunctionAttribute = reflectedData.ScriptModuleFunctionAttribute;
             DataTypeMapping = reflectedData.OpenSimToLSLTypeMapping();
-            _reflectedData = reflectedData;
+            ReflectedData = reflectedData;
             _documentationProvider = new BlankDocumentor();
             IncludeConstants = true;
             IncludeFunctions = true;
         }
 
+        public bool IncludeFunctions { get; set; }
+        public bool IncludeConstants { get; set; }
         public IReadOnlyDictionary<Type, LSLType> DataTypeMapping { get; set; }
         public Type OptionalScriptModuleConstantAttribute { get; set; }
-
         public Type OptionalScriptModuleFunctionAttribute { get; set; }
-
-        public IReflectedLibraryData ReflectedData
-        {
-            get { return _reflectedData; }
-        }
-
+        public IReflectedLibraryData ReflectedData { get; }
 
         public bool LSLFunctionExist(string name)
         {
@@ -135,7 +151,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
-            if(!IncludeFunctions) return new List<LSLLibraryFunctionSignature>();
+            if (!IncludeFunctions) return new List<LSLLibraryFunctionSignature>();
 
             return LSLFunctions().Where(x => x.Name == name).ToList();
         }
@@ -207,7 +223,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 var constantContainer = Activator.CreateInstance(constantContrainerType);
 
-               
 
                 var subsets = _subsetsMap[constantContrainerType];
 
@@ -216,7 +231,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 foreach (var c in fields)
                 {
-                    string valueString = c.GetValue(constantContainer).ToString();
+                    var valueString = c.GetValue(constantContainer).ToString();
 
                     var type = LslTypeFromCsharpType(c.FieldType);
                     if (type == null)
@@ -239,7 +254,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             foreach (var module in _attributedScriptModuleClasses)
             {
                 var constantContainer = Activator.CreateInstance(module);
-            
+
                 IEnumerable<FieldInfo> fields;
 
                 if (OptionalScriptModuleConstantAttribute == null)
@@ -257,7 +272,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 foreach (var c in fields)
                 {
-                    string valueString = c.GetValue(constantContainer).ToString();
+                    var valueString = c.GetValue(constantContainer).ToString();
 
                     var type = LslTypeFromCsharpType(c.FieldType);
                     if (type == null)
@@ -297,7 +312,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             _subsetsMap.Add(type, new HashSet<string>(subsets));
         }
 
-
         /// <summary>
         ///     Adds ReflectedData.GetFunctionContainingInterface(typeName) to the list of function containing interfaces
         ///     that provide library functions to this ILibraryData object
@@ -309,7 +323,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             var type = ReflectedData.GetFunctionContainingInterface(typeName);
             IncludeFunctionContainingInterface(type, subsets);
         }
-
 
         public void IncludeScriptConstantContainerClass(Type type, IEnumerable<string> subsets)
         {
@@ -330,7 +343,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         ///     that provide library constants to this ILibraryData object
         /// </summary>
         /// <param name="typeName">the name of the CSharp a class name that exist in ReflectedData.ScriptConstantContainerClasses</param>
-        /// /// <param name="subsets">The subsets functions from this interface will have in their Subsets property</param>
+        /// ///
+        /// <param name="subsets">The subsets functions from this interface will have in their Subsets property</param>
         public void IncludeScriptConstantContainerClass(string typeName, IEnumerable<string> subsets)
         {
             var type = ReflectedData.GetScriptConstantContainer(typeName);
@@ -357,7 +371,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         ///     that provide library constants+functions to this ILibraryData object
         /// </summary>
         /// <param name="typeName">the name of the CSharp a class name that exist in ReflectedData.AttributedModuleClasses</param>
-        /// /// <param name="subsets">The subsets functions from this interface will have in their Subsets property</param>
+        /// ///
+        /// <param name="subsets">The subsets functions from this interface will have in their Subsets property</param>
         public void IncludeAttributedModuleClass(string typeName, IEnumerable<string> subsets)
         {
             var type = ReflectedData.GetAttributedModuleClass(typeName);
@@ -384,7 +399,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         private static bool IsParams(ParameterInfo param)
         {
-            return param.GetCustomAttributes(typeof(ParamArrayAttribute), false).Length > 0;
+            return param.GetCustomAttributes(typeof (ParamArrayAttribute), false).Length > 0;
         }
 
         private IEnumerable<LSLLibraryFunctionSignature> InterfaceMethods(Type containerType)
@@ -417,7 +432,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     var type = LslTypeFromCsharpParameterType(p.ParameterType, p.Name);
                     if (type != null)
                     {
-                        pTypes.Add(new LSLParameter(type.Value, p.Name,false));
+                        pTypes.Add(new LSLParameter(type.Value, p.Name, false));
                     }
                     else
                     {
@@ -480,7 +495,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 foreach (var p in v.GetParameters().Skip(2))
                 {
                     var isVariadic = IsParams(p);
-                    if (p.ParameterType == (typeof(object[])) && isVariadic)
+                    if (p.ParameterType == (typeof (object[])) && isVariadic)
                     {
                         pTypes.Add(new LSLParameter(LSLType.Void, p.Name, true));
                         continue;

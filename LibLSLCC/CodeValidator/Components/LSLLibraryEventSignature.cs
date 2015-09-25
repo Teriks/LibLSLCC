@@ -1,3 +1,32 @@
+#region FileInfo
+
+// 
+// File: LSLLibraryEventSignature.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using System;
 using System.Collections.Generic;
 using System.Security;
@@ -8,39 +37,22 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Components
 {
     [XmlRoot("EventHandler")]
     public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable
     {
-
-        private LSLLibraryDataSubsetsAttributeRegex _subsetsRegex = new
-LSLLibraryDataSubsetsAttributeRegex();
-
+        private Dictionary<string, string> _properties = new Dictionary<string, string>();
         private HashSet<string> _subsets = new HashSet<string>();
 
-        public IReadOnlySet<string> Subsets
-        {
-            get { return new ReadOnlyHashSet<string>(_subsets); }
-        }
-
-        public static new LSLLibraryEventSignature Parse(string str)
-        {
-            return new LSLLibraryEventSignature(LSLEventSignature.Parse(str));
-        }
-
-        private Dictionary<string, string> _properties = new Dictionary<string, string>();
-
-        public IReadOnlyDictionary<string, string> Properties
-        {
-            get { return _properties; }
-        }
-
+        private LSLLibraryDataSubsetsAttributeRegex _subsetsRegex = new
+            LSLLibraryDataSubsetsAttributeRegex();
 
         private LSLLibraryEventSignature()
         {
         }
-
 
         public LSLLibraryEventSignature(LSLEventSignature sig)
             : base(sig)
@@ -61,13 +73,21 @@ LSLLibraryDataSubsetsAttributeRegex();
             DocumentationString = "";
         }
 
-
         public LSLLibraryEventSignature(string name)
             : base(name)
         {
             DocumentationString = "";
         }
 
+        public IReadOnlySet<string> Subsets
+        {
+            get { return new ReadOnlyHashSet<string>(_subsets); }
+        }
+
+        public IReadOnlyDictionary<string, string> Properties
+        {
+            get { return _properties; }
+        }
 
         public string DocumentationString { get; set; }
 
@@ -85,8 +105,6 @@ LSLLibraryDataSubsetsAttributeRegex();
             }
         }
 
-
-
         /// <summary>
         ///     This method is reserved and should not be used. When implementing the IXmlSerializable interface, you should return
         ///     null (Nothing in Visual Basic) from this method, and instead, if specifying a custom schema is required, apply the
@@ -103,19 +121,6 @@ LSLLibraryDataSubsetsAttributeRegex();
             return null;
         }
 
-
-        public void AddSubsets(string subsets)
-        {
-            _subsets.UnionWith(_subsetsRegex.ParseSubsets(subsets));
-        }
-        public void AddSubsets(IEnumerable<string> subsets)
-        {
-            _subsets.UnionWith(subsets);
-        }
-
-
-
-
         /// <summary>
         ///     Generates an object from its XML representation.
         /// </summary>
@@ -127,14 +132,13 @@ LSLLibraryDataSubsetsAttributeRegex();
 
             reader.MoveToContent();
 
-            bool hasSubsets = false;
-            bool hasName = false;
+            var hasSubsets = false;
+            var hasName = false;
 
-            var lineNumberInfo = (IXmlLineInfo)reader;
+            var lineNumberInfo = (IXmlLineInfo) reader;
 
             while (reader.MoveToNextAttribute())
             {
-                
                 if (reader.Name == "Subsets")
                 {
                     SetSubsets(reader.Value);
@@ -254,8 +258,6 @@ LSLLibraryDataSubsetsAttributeRegex();
             }
         }
 
-
-
         /// <summary>
         ///     Converts an object into its XML representation.
         /// </summary>
@@ -276,6 +278,21 @@ LSLLibraryDataSubsetsAttributeRegex();
             writer.WriteStartElement("DocumentationString");
             writer.WriteString(DocumentationString);
             writer.WriteEndElement();
+        }
+
+        public new static LSLLibraryEventSignature Parse(string str)
+        {
+            return new LSLLibraryEventSignature(LSLEventSignature.Parse(str));
+        }
+
+        public void AddSubsets(string subsets)
+        {
+            _subsets.UnionWith(_subsetsRegex.ParseSubsets(subsets));
+        }
+
+        public void AddSubsets(IEnumerable<string> subsets)
+        {
+            _subsets.UnionWith(subsets);
         }
 
         public void SetSubsets(IEnumerable<string> subsets)

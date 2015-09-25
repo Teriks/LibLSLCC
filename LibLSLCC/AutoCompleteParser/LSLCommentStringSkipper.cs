@@ -1,117 +1,127 @@
-﻿namespace LibLSLCC.AutoCompleteParser
+﻿#region FileInfo
+
+// 
+// File: LSLCommentStringSkipper.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+namespace LibLSLCC.AutoCompleteParser
 {
     public class LSLCommentStringSkipper
     {
-        private bool _inBlockComment;
-        private bool _inLineComment;
-        private bool _inString;
         private int _lastStringStart;
 
-        // ReSharper disable once MemberCanBePrivate.Global
-        public bool InBlockComment
+        public LSLCommentStringSkipper()
         {
-            get { return _inBlockComment; }
+        }
+
+        public LSLCommentStringSkipper(string text, int parseUpTo)
+        {
+            ParseUpTo(text, parseUpTo);
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public bool InLineComment
-        {
-            get { return _inLineComment; }
-            set { _inLineComment = value; }
-        }
-
-        public bool InString
-        {
-            get { return _inString; }
-        }
+        public bool InBlockComment { get; private set; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public bool InLineComment { get; set; }
+        public bool InString { get; private set; }
 
         public bool InComment
         {
             get { return InLineComment || InBlockComment; }
         }
 
-        public LSLCommentStringSkipper()
-        {
-            
-        }
-
-        public LSLCommentStringSkipper(string text, int parseUpTo)
-        {
-            this.ParseUpTo(text,parseUpTo);
-        }
-
         public void Reset()
         {
-            _inBlockComment = false;
-            _inLineComment = false;
-            _inString = false;
+            InBlockComment = false;
+            InLineComment = false;
+            InString = false;
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
         public void ParseUpTo(string text, int offset)
         {
-            for (int i = 0; i < offset; i++)
+            for (var i = 0; i < offset; i++)
             {
-                this.FeedChar(text, i, offset);
+                FeedChar(text, i, offset);
             }
         }
+
         public void FeedChar(string text, int i, int offset)
         {
-            int lookAhead = i + 1;
-            int lookBehind = i - 1;
-            int lookBehindTwo = i - 2;
-            int offsetMOne = offset - 1;
+            var lookAhead = i + 1;
+            var lookBehind = i - 1;
+            var lookBehindTwo = i - 2;
+            var offsetMOne = offset - 1;
 
-            if (!_inLineComment && !_inString)
+            if (!InLineComment && !InString)
             {
                 if (text[i] == '/' && i < offsetMOne && text[lookAhead] == '*')
                 {
-                    _inBlockComment = true;
+                    InBlockComment = true;
                 }
-                else if (_inBlockComment && (lookBehindTwo > 0) && text[lookBehindTwo] == '*' && text[lookBehind] == '/')
+                else if (InBlockComment && (lookBehindTwo > 0) && text[lookBehindTwo] == '*' && text[lookBehind] == '/')
                 {
-                    _inBlockComment = false;
+                    InBlockComment = false;
                 }
             }
-            if (!_inBlockComment && !_inString)
+            if (!InBlockComment && !InString)
             {
                 if (text[i] == '/' && i < offsetMOne && text[lookAhead] == '/')
                 {
-                    _inLineComment = true;
+                    InLineComment = true;
                 }
-                else if (_inLineComment && lookBehind > 0 && text[lookBehind] == '\n')
+                else if (InLineComment && lookBehind > 0 && text[lookBehind] == '\n')
                 {
-                    _inLineComment = false;
+                    InLineComment = false;
                 }
             }
-            if (!_inLineComment && !_inBlockComment)
+            if (!InLineComment && !InBlockComment)
             {
-                if (!_inString && text[i] == '"')
+                if (!InString && text[i] == '"')
                 {
                     _lastStringStart = i;
-                    _inString = true;
+                    InString = true;
                 }
-                else if (_inString && lookBehind > 0 && text[lookBehind] == '"' && lookBehind != _lastStringStart)
+                else if (InString && lookBehind > 0 && text[lookBehind] == '"' && lookBehind != _lastStringStart)
                 {
-
                     if ((lookBehind - _lastStringStart) > 2)
                     {
+                        var c = 0;
+                        var s = i - 2;
 
-                        int c = 0;
-                        int s = i - 2;
-
-                        for (int o = s; text[o] == '\\'; o--, c++)
+                        for (var o = s; text[o] == '\\'; o--, c++)
                         {
                         }
 
                         if ((c%2) == 0)
                         {
-                            _inString = false;
+                            InString = false;
                         }
                     }
                     else
                     {
-                        _inString = false;
+                        InString = false;
                     }
                 }
             }

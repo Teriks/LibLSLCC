@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: TabbedMainWindow.xaml.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -19,6 +48,8 @@ using LibLSLCC.Compilers;
 using LibLSLCC.Formatter.Visitor;
 using LSLCCEditor.EditorTabUI;
 using Microsoft.Win32;
+
+#endregion
 
 // ReSharper disable LocalizableElement
 
@@ -48,9 +79,6 @@ namespace LSLCCEditor
         private bool _droppingTab;
         private bool _settingLibraryMenuFromTab;
         private Timer _tabDragTimer;
-        private ObservableCollection<EditorTab> _tabs = new ObservableCollection<EditorTab>();
-
-
 
         public TabbedMainWindow()
         {
@@ -65,28 +93,17 @@ namespace LSLCCEditor
                 SyntaxErrorListener = new WindowSyntaxErrorListener(this),
                 SyntaxWarningListener = new WindowSyntaxWarningListener(this)
             };
-
-
         }
 
-
-
-        public ObservableCollection<EditorTab> EditorTabs
-        {
-            get { return _tabs; }
-            set { _tabs = value; }
-        }
-
+        public ObservableCollection<EditorTab> EditorTabs { get; set; } = new ObservableCollection<EditorTab>();
         private FindReplaceMgr FindDialogManager { get; set; }
-
-
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;
 
-            string details = "";
-            Exception i = e.Exception;
+            var details = "";
+            var i = e.Exception;
 
             while (i != null)
             {
@@ -101,8 +118,6 @@ namespace LSLCCEditor
             Application.Current.Shutdown();
         }
 
-
-
         private EditorTab CreateEditorTab()
         {
             const string code = "default\n{\n\tstate_entry()\n\t{\n\t\tllSay(0, \"Hello World!\");\n\t}\n}";
@@ -116,8 +131,6 @@ namespace LSLCCEditor
 
             return t;
         }
-
-
 
         private void CompileForOpenSim_OnClick(object sender, RoutedEventArgs e)
         {
@@ -170,15 +183,11 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void NewFile_OnClick(object sender, RoutedEventArgs e)
         {
             EditorTabs.Add(CreateEditorTab());
             TabControl.SelectedIndex = (EditorTabs.Count - 1);
         }
-
-
 
         private void Save_OnClick(object sender, RoutedEventArgs e)
         {
@@ -190,8 +199,6 @@ namespace LSLCCEditor
 
             tab.SaveTabToFileInteractive();
         }
-
-
 
         private void CompileCurrentEditorText(string destinationFile)
         {
@@ -243,8 +250,6 @@ namespace LSLCCEditor
                 "Program compiled successfully") {Clickable = false});
         }
 
-
-
         private void SaveAs_OnClick(object sender, RoutedEventArgs e)
         {
             var tab = TabControl.SelectedItem as EditorTab;
@@ -256,8 +261,6 @@ namespace LSLCCEditor
 
             tab.SaveTabToNewFileInteractive();
         }
-
-
 
         private ILSLCompilationUnitNode ValidateCurrentEditorText()
         {
@@ -307,8 +310,6 @@ namespace LSLCCEditor
             return validated;
         }
 
-
-
         private void CheckSyntax_OnClick(object sender, RoutedEventArgs e)
         {
             if (TabControl.SelectedItem == null) return;
@@ -331,8 +332,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void Format_OnClick(object sender, RoutedEventArgs e)
         {
             if (TabControl.SelectedItem == null) return;
@@ -354,7 +353,7 @@ namespace LSLCCEditor
             var str = new StringWriter();
             formatter.WriteAndFlush(tab.SourceCode, validated, str);
 
-            string st = str.ToString();
+            var st = str.ToString();
             if (tab.SourceCode != st)
             {
                 tab.ChangesPending = true;
@@ -377,8 +376,6 @@ namespace LSLCCEditor
                 });
             }
         }
-
-
 
         private void OpenInNewTab()
         {
@@ -410,14 +407,10 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void Open_OnClick(object sender, RoutedEventArgs e)
         {
             OpenInNewTab();
         }
-
-
 
         private void OpenInCurrentTab()
         {
@@ -461,8 +454,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void OpenInThisTab_OnClick(object sender, RoutedEventArgs e)
         {
             if (TabControl.SelectedItem != null)
@@ -474,8 +465,6 @@ namespace LSLCCEditor
                 OpenInNewTab();
             }
         }
-
-
 
         private void TabbedMainWindow_OnClosing(object sender, CancelEventArgs e)
         {
@@ -495,8 +484,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void TabbedMainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             FindDialogManager = new FindReplaceMgr
@@ -512,7 +499,7 @@ namespace LSLCCEditor
 
             if (args.Length > 1)
             {
-                for (int i = 1; i < args.Length; i++)
+                for (var i = 1; i < args.Length; i++)
                 {
                     var tab = CreateEditorTab();
                     tab.OpenFileInteractive(args[i]);
@@ -527,8 +514,6 @@ namespace LSLCCEditor
             TabControl.SelectedIndex = 0;
         }
 
-
-
         private void Find_OnClick(object sender, RoutedEventArgs e)
         {
             var tab = TabControl.SelectedItem as EditorTab;
@@ -539,8 +524,6 @@ namespace LSLCCEditor
             FindDialogManager.ShowAsFind(this);
         }
 
-
-
         private void Replace_OnClick(object sender, RoutedEventArgs e)
         {
             var tab = TabControl.SelectedItem as EditorTab;
@@ -550,8 +533,6 @@ namespace LSLCCEditor
 
             FindDialogManager.ShowAsReplace(this);
         }
-
-
 
         private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -592,8 +573,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void TabStackPanelPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (EditorTabs.Count <= 1) return;
@@ -626,8 +605,6 @@ namespace LSLCCEditor
             _tabDragTimer.Start();
         }
 
-
-
         private void TabStackPanelOnPreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (_tabDragTimer != null)
@@ -637,8 +614,6 @@ namespace LSLCCEditor
                 _tabDragTimer = null;
             }
         }
-
-
 
         private void TabOnDrop(object sender, DragEventArgs e)
         {
@@ -672,8 +647,8 @@ namespace LSLCCEditor
             if (!tabItemTarget.Equals(tabItemSource))
             {
                 _droppingTab = true;
-                int sourceIndex = EditorTabs.IndexOf(tabItemSource);
-                int targetIndex = EditorTabs.IndexOf(tabItemTarget);
+                var sourceIndex = EditorTabs.IndexOf(tabItemSource);
+                var targetIndex = EditorTabs.IndexOf(tabItemTarget);
 
                 EditorTabs.Remove(tabItemSource);
                 EditorTabs.Insert(targetIndex, tabItemSource);
@@ -686,8 +661,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void ClearCompilerMessages_OnClick(object sender, RoutedEventArgs e)
         {
             var tab = TabControl.SelectedItem as EditorTab;
@@ -697,8 +670,6 @@ namespace LSLCCEditor
                 tab.CompilerMessages.Clear();
             }
         }
-
-
 
         private void SetLibraryMenuFromTab(EditorTab tab)
         {
@@ -731,8 +702,6 @@ namespace LSLCCEditor
             _settingLibraryMenuFromTab = false;
         }
 
-
-
         private void LindenLsl_OnChecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -749,8 +718,6 @@ namespace LSLCCEditor
                 tab.Content.Editor.UpdateHighlightingFromDataProvider();
             }
         }
-
-
 
         private void OpenSimLsl_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -769,8 +736,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void LindenLsl_OnUnchecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -781,8 +746,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
         private void OpenSimLsl_OnUnchecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -792,8 +755,6 @@ namespace LSLCCEditor
                 OpenSimLsl.IsChecked = true;
             }
         }
-
-
 
         private void OsslFunctions_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -807,8 +768,6 @@ namespace LSLCCEditor
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
-
-
         private void OsslFunctions_OnUnchecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -820,8 +779,6 @@ namespace LSLCCEditor
             tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
-
-
 
         private void OsWindlight_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -835,8 +792,6 @@ namespace LSLCCEditor
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
-
-
         private void OsWindlight_OnUnchecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -848,8 +803,6 @@ namespace LSLCCEditor
             tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
-
-
 
         private void OsBulletPhysics_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -863,8 +816,6 @@ namespace LSLCCEditor
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
-
-
         private void OsBulletPhysics_OnUnchecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -876,8 +827,6 @@ namespace LSLCCEditor
             tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
-
-
 
         private void OsModInvoke_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -891,8 +840,6 @@ namespace LSLCCEditor
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
-
-
         private void OsModInvoke_OnUnChecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -905,20 +852,14 @@ namespace LSLCCEditor
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
-
-
         private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
         {
             private readonly TabbedMainWindow _parent;
-
-
 
             public WindowSyntaxWarningListener(TabbedMainWindow parent)
             {
                 _parent = parent;
             }
-
-
 
             public override void OnWarning(LSLSourceCodeRange location, string message)
             {
@@ -931,14 +872,10 @@ namespace LSLCCEditor
         {
             private readonly TabbedMainWindow _parent;
 
-
-
             public WindowSyntaxErrorListener(TabbedMainWindow parent)
             {
                 _parent = parent;
             }
-
-
 
             public override void OnError(LSLSourceCodeRange location, string message)
             {
@@ -947,6 +884,4 @@ namespace LSLCCEditor
             }
         }
     }
-
-
 }

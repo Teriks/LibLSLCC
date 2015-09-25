@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: Program.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -7,11 +36,11 @@ using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers;
 
+#endregion
+
 namespace lslcc
 {
-
-
-    class Program
+    internal class Program
     {
         private static void WriteHelp()
         {
@@ -21,7 +50,6 @@ namespace lslcc
             Console.WriteLine("-h: help");
             Console.WriteLine("-v: lslcc, version and info");
         }
-
 
         private static DateTime RetrieveLinkerTimestamp()
         {
@@ -52,7 +80,6 @@ namespace lslcc
             return dt;
         }
 
-
         private static void WriteAbout()
         {
             Console.WriteLine("=================================");
@@ -69,7 +96,6 @@ namespace lslcc
             Console.WriteLine("State: Pre-Alpha, combined build");
             Console.WriteLine("=================================");
         }
-
 
         public static void Main(string[] args)
         {
@@ -146,9 +172,6 @@ namespace lslcc
             Console.WriteLine();
 
 
-
-
-
             var validator = new LSLCodeValidator();
             ILSLCompilationUnitNode validated;
 
@@ -157,11 +180,8 @@ namespace lslcc
             {
                 try
                 {
-
-
                     using (var infile = new StreamReader(inFile))
                     {
-
                         validated = validator.Validate(infile);
 
                         if (validator.HasSyntaxErrors)
@@ -171,8 +191,6 @@ namespace lslcc
                             return;
                         }
                     }
-
-
                 }
                 catch (LSLCodeValidatorInternalError error)
                 {

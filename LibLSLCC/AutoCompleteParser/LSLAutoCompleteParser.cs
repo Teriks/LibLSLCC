@@ -1,7 +1,32 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: LSLAutoCompleteParser.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:23 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
-using System.Collections;
+#endregion
+
+#region Imports
+
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -10,11 +35,7 @@ using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Primitives;
 
-
 #endregion
-
-
-
 
 namespace LibLSLCC.AutoCompleteParser
 {
@@ -23,11 +44,14 @@ namespace LibLSLCC.AutoCompleteParser
     {
         private readonly Dictionary<string, GlobalFunction> _globalFunctions = new Dictionary<string, GlobalFunction>();
         private readonly Dictionary<string, GlobalVariable> _globalVariables = new Dictionary<string, GlobalVariable>();
+        private readonly Regex _jumpRegex = new Regex("jump\\s*(" + LSLLexer.IDRegex + ")");
+        private readonly Regex _labelRegex = new Regex("@\\s*(" + LSLLexer.IDRegex + ")");
 
         private readonly Stack<Dictionary<string, LocalVariable>> _localVariables =
             new Stack<Dictionary<string, LocalVariable>>();
 
         private readonly Dictionary<string, LocalParameter> _parameters = new Dictionary<string, LocalParameter>();
+        private readonly Dictionary<string, LocalLabel> _scopeLabels = new Dictionary<string, LocalLabel>();
         private readonly List<StateBlock> _stateBlocks = new List<StateBlock>();
         private bool _inEventCodeBody;
         private bool _inFunctionCodeBody;
@@ -35,16 +59,10 @@ namespace LibLSLCC.AutoCompleteParser
         private bool _inState;
         private int _toOffset;
 
-        private readonly Dictionary<string, LocalLabel> _scopeLabels = new Dictionary<string, LocalLabel>();
-
-
-
         public LSLAutoCompleteParser()
         {
             InGlobalScope = true;
         }
-
-
 
         public string CurrentState { get; private set; }
         public string CurrentFunction { get; private set; }
@@ -166,7 +184,6 @@ namespace LibLSLCC.AutoCompleteParser
             get { return _globalFunctions; }
         }
 
-
         public IDictionary<string, GlobalVariable> GlobalVariablesDictionary
         {
             get { return _globalVariables; }
@@ -245,7 +262,7 @@ namespace LibLSLCC.AutoCompleteParser
         }
 
         /// <summary>
-        /// Only true if InGlobalVariableDeclarationExpression is true
+        ///     Only true if InGlobalVariableDeclarationExpression is true
         /// </summary>
         public bool InGlobalExpressionArea
         {
@@ -253,11 +270,10 @@ namespace LibLSLCC.AutoCompleteParser
         }
 
         /// <summary>
-        /// InGlobalExpressionArea || InLocalExpressionArea
-        /// 
-        /// If the offset is in a global variable declaration expression, or the start of one.  Or
-        /// a local expression area such as an expression statement, loop condition, function call parameters, for loop clauses ect.
-        /// 
+        ///     InGlobalExpressionArea || InLocalExpressionArea
+        ///     If the offset is in a global variable declaration expression, or the start of one.  Or
+        ///     a local expression area such as an expression statement, loop condition, function call parameters, for loop clauses
+        ///     ect.
         /// </summary>
         public bool InExpressionArea
         {
@@ -289,7 +305,6 @@ namespace LibLSLCC.AutoCompleteParser
         public bool CanSuggestLibraryConstant
         {
             get { return InExpressionArea || InAssignmentRightExpression; }
-            
         }
 
         public bool CanSuggestFunction
@@ -339,9 +354,8 @@ namespace LibLSLCC.AutoCompleteParser
             }
         }
 
-
-        private readonly Regex _labelRegex = new Regex("@\\s*("+LSLLexer.IDRegex+")");
-        private readonly Regex _jumpRegex = new Regex("jump\\s*(" + LSLLexer.IDRegex + ")");
+        public ScopeAddress ScopeAddressAtOffset { get; private set; }
+        public LSLSourceCodeRange CurrentCodeAreaRange { get; private set; }
 
         public IEnumerable<LocalLabel> GetLocalLabels(string sourceCode)
         {
@@ -354,8 +368,6 @@ namespace LibLSLCC.AutoCompleteParser
 
             while (match.Success)
             {
-
-
                 var name = match.Groups[1].ToString();
 
                 match = match.NextMatch();
@@ -363,16 +375,11 @@ namespace LibLSLCC.AutoCompleteParser
                 if (names.Contains(name))
                 {
                     continue;
-
                 }
                 names.Add(name);
                 yield return new LocalLabel(name);
-
-
             }
         }
-
-
 
         public IEnumerable<LocalJump> GetLocalJumps(string sourceCode)
         {
@@ -385,8 +392,6 @@ namespace LibLSLCC.AutoCompleteParser
 
             while (match.Success)
             {
-
-
                 var name = match.Groups[1].ToString();
 
                 match = match.NextMatch();
@@ -394,23 +399,11 @@ namespace LibLSLCC.AutoCompleteParser
                 if (names.Contains(name))
                 {
                     continue;
-
                 }
                 names.Add(name);
                 yield return new LocalJump(name);
-
-
             }
         }
-
-
-
-        public ScopeAddress ScopeAddressAtOffset { get; private set; }
-
-
-        public LSLSourceCodeRange CurrentCodeAreaRange { get; private set; }
-
-
 
         public void Parse(TextReader stream, int toOffset)
         {
@@ -439,16 +432,13 @@ namespace LibLSLCC.AutoCompleteParser
 
             x.Visit(parser.compilationUnit());
 
-            this.ScopeAddressAtOffset =  new ScopeAddress(x.CodeAreaId,x.ScopeId,x.ScopeLevel);
+            ScopeAddressAtOffset = new ScopeAddress(x.CodeAreaId, x.ScopeId, x.ScopeLevel);
         }
-
-
 
         public class GlobalVariable
         {
-
-
-            public GlobalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange)
+            public GlobalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
+                LSLSourceCodeRange nameRange)
             {
                 Name = name;
                 Type = type;
@@ -459,13 +449,10 @@ namespace LibLSLCC.AutoCompleteParser
                 TypeSourceCodeRange = typeRange;
             }
 
-
             public string Name { get; private set; }
             public string Type { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
-
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
-
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
         }
 
@@ -477,15 +464,14 @@ namespace LibLSLCC.AutoCompleteParser
                 SourceCodeRange = range;
             }
 
-
-
             public string Name { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
         public class GlobalFunction
         {
-            public GlobalFunction(string name, string type, LSLSourceCodeRange range,  LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange,
+            public GlobalFunction(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
+                LSLSourceCodeRange nameRange,
                 IReadOnlyList<LocalParameter> parameters)
             {
                 Parameters = parameters;
@@ -500,9 +486,8 @@ namespace LibLSLCC.AutoCompleteParser
                 HasReturnType = true;
             }
 
-
-            public GlobalFunction(string name,  LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
-    IReadOnlyList<LocalParameter> parameters)
+            public GlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
+                IReadOnlyList<LocalParameter> parameters)
             {
                 Parameters = parameters;
                 Name = name;
@@ -516,21 +501,17 @@ namespace LibLSLCC.AutoCompleteParser
                 HasReturnType = false;
             }
 
-
             public bool HasReturnType { get; private set; }
-
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
-
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
-
-            public string Name { get; private set; }
-            public string ReturnType { get; private set; }
+            public string Name { get; }
+            public string ReturnType { get; }
 
             public string Signature
             {
                 get
                 {
-                    string sig = "";
+                    var sig = "";
                     if (ReturnType != "")
                     {
                         sig += ReturnType + " ";
@@ -548,7 +529,7 @@ namespace LibLSLCC.AutoCompleteParser
                 }
             }
 
-            public IReadOnlyList<LocalParameter> Parameters { get; private set; }
+            public IReadOnlyList<LocalParameter> Parameters { get; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
@@ -561,8 +542,6 @@ namespace LibLSLCC.AutoCompleteParser
                 ScopeLevel = scopeLevel;
             }
 
-
-
             public int CodeAreaId { get; private set; }
             public int ScopeLevel { get; private set; }
             public int ScopeId { get; private set; }
@@ -570,7 +549,8 @@ namespace LibLSLCC.AutoCompleteParser
 
         public class LocalVariable
         {
-            public LocalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange, ScopeAddress address)
+            public LocalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
+                LSLSourceCodeRange nameRange, ScopeAddress address)
             {
                 Name = name;
                 Type = type;
@@ -582,9 +562,7 @@ namespace LibLSLCC.AutoCompleteParser
             }
 
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
-
-            public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
-
+            public LSLSourceCodeRange TypeSourceCodeRange { get; }
             public ScopeAddress ScopeAddress { get; private set; }
             public string Name { get; private set; }
             public string Type { get; private set; }
@@ -601,7 +579,6 @@ namespace LibLSLCC.AutoCompleteParser
             public string Name { get; private set; }
         }
 
-
         public class LocalJump
         {
             public LocalJump(string target)
@@ -612,10 +589,10 @@ namespace LibLSLCC.AutoCompleteParser
             public string Target { get; private set; }
         }
 
-
         public class LocalParameter
         {
-            public LocalParameter(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange, ScopeAddress address)
+            public LocalParameter(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
+                LSLSourceCodeRange nameRange, ScopeAddress address)
             {
                 Name = name;
                 Type = type;
@@ -627,30 +604,25 @@ namespace LibLSLCC.AutoCompleteParser
             }
 
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
-
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
-
             public ScopeAddress ScopeAddress { get; private set; }
-            public string Name { get; private set; }
-            public string Type { get; private set; }
+            public string Name { get; }
+            public string Type { get; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
         private class Visitor : LSLBaseVisitor<bool>
         {
             private readonly LSLAutoCompleteParser _parent;
-            public int CodeAreaId { get; private set; }
-            public int ScopeId { get; private set; }
-            public int ScopeLevel { get; private set; }
-
-
 
             public Visitor(LSLAutoCompleteParser parent)
             {
                 _parent = parent;
             }
 
-
+            public int CodeAreaId { get; private set; }
+            public int ScopeId { get; private set; }
+            public int ScopeLevel { get; private set; }
 
             public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
             {
@@ -658,7 +630,8 @@ namespace LibLSLCC.AutoCompleteParser
                 if (context.label_prefix == null) return true;
 
                 if (context.semi_colon == null || (_parent._toOffset > context.label_prefix.StopIndex &&
-                    (context.semi_colon.Text != ";" || _parent._toOffset < context.semi_colon.StartIndex)))
+                                                   (context.semi_colon.Text != ";" ||
+                                                    _parent._toOffset < context.semi_colon.StartIndex)))
                 {
                     _parent.InLabelDefinitionNameArea = true;
                 }
@@ -666,15 +639,14 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitLabelStatement(context);
             }
 
-
-
             public override bool VisitJumpStatement(LSLParser.JumpStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
                 if (context.jump_keyword == null) return true;
 
-                if (context.semi_colon == null || ( _parent._toOffset > context.jump_keyword.StopIndex &&
-                    (context.semi_colon.Text != ";" || _parent._toOffset < context.semi_colon.StartIndex)))
+                if (context.semi_colon == null || (_parent._toOffset > context.jump_keyword.StopIndex &&
+                                                   (context.semi_colon.Text != ";" ||
+                                                    _parent._toOffset < context.semi_colon.StartIndex)))
                 {
                     _parent.InJumpStatementLabelNameArea = true;
                 }
@@ -682,23 +654,20 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitJumpStatement(context);
             }
 
-
-
             public override bool VisitStateChangeStatement(LSLParser.StateChangeStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
                 if (context.state_keyword == null) return true;
 
                 if (context.semi_colon == null || (_parent._toOffset > context.state_keyword.StopIndex &&
-                    (context.semi_colon.Text != ";" || _parent._toOffset < context.semi_colon.StartIndex)))
+                                                   (context.semi_colon.Text != ";" ||
+                                                    _parent._toOffset < context.semi_colon.StartIndex)))
                 {
                     _parent.InStateChangeStatementStateNameArea = true;
                 }
 
                 return base.VisitStateChangeStatement(context);
             }
-
-
 
             public override bool VisitListLiteral(LSLParser.ListLiteralContext context)
             {
@@ -712,8 +681,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitListLiteral(context);
             }
 
-
-
             public override bool VisitVectorLiteral(LSLParser.VectorLiteralContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -726,8 +693,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitVectorLiteral(context);
             }
 
-
-
             public override bool VisitRotationLiteral(LSLParser.RotationLiteralContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -739,8 +704,6 @@ namespace LibLSLCC.AutoCompleteParser
 
                 return base.VisitRotationLiteral(context);
             }
-
-
 
             public override bool VisitGlobalVariableDeclaration(LSLParser.GlobalVariableDeclarationContext context)
             {
@@ -755,7 +718,8 @@ namespace LibLSLCC.AutoCompleteParser
                     new GlobalVariable(
                         context.variable_name.Text,
                         context.variable_type.Text,
-                        new LSLSourceCodeRange(context), new LSLSourceCodeRange(context.variable_type),  new LSLSourceCodeRange(context.variable_name));
+                        new LSLSourceCodeRange(context), new LSLSourceCodeRange(context.variable_type),
+                        new LSLSourceCodeRange(context.variable_name));
 
 
                 if (!_parent._globalVariables.ContainsKey(context.variable_name.Text))
@@ -780,8 +744,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitGlobalVariableDeclaration(context);
             }
 
-
-
             public override bool VisitExpr_Assignment(LSLParser.Expr_AssignmentContext context)
             {
                 if (context.operation != null && _parent._toOffset > context.operation.StopIndex &&
@@ -804,8 +766,6 @@ namespace LibLSLCC.AutoCompleteParser
                 }
                 return base.VisitExpr_Assignment(context);
             }
-
-
 
             public override bool VisitExpr_ModifyingAssignment(LSLParser.Expr_ModifyingAssignmentContext context)
             {
@@ -835,8 +795,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitExpr_ModifyingAssignment(context);
             }
 
-
-
             public override bool VisitReturnStatement(LSLParser.ReturnStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -858,8 +816,6 @@ namespace LibLSLCC.AutoCompleteParser
 
                 return base.VisitReturnStatement(context);
             }
-
-
 
             public override bool VisitIfStatement(LSLParser.IfStatementContext context)
             {
@@ -888,8 +844,6 @@ namespace LibLSLCC.AutoCompleteParser
 
                 return base.VisitIfStatement(context);
             }
-
-
 
             public override bool VisitWhileLoop(LSLParser.WhileLoopContext context)
             {
@@ -921,8 +875,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitWhileLoop(context);
             }
 
-
-
             public override bool VisitForLoop(LSLParser.ForLoopContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -953,8 +905,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitForLoop(context);
             }
 
-
-
             public override bool VisitDoLoop(LSLParser.DoLoopContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -984,8 +934,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitDoLoop(context);
             }
 
-
-
             public override bool VisitElseIfStatement(LSLParser.ElseIfStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1011,8 +959,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitElseIfStatement(context);
             }
 
-
-
             public override bool VisitExpr_FunctionCall(LSLParser.Expr_FunctionCallContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1032,8 +978,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitExpr_FunctionCall(context);
             }
 
-
-
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1048,7 +992,7 @@ namespace LibLSLCC.AutoCompleteParser
                     context.variable_type.Text,
                     new LSLSourceCodeRange(context),
                     new LSLSourceCodeRange(context.variable_type),
-                    new LSLSourceCodeRange(context.variable_name),  
+                    new LSLSourceCodeRange(context.variable_name),
                     new ScopeAddress(CodeAreaId, ScopeId, ScopeLevel));
 
 
@@ -1090,12 +1034,9 @@ namespace LibLSLCC.AutoCompleteParser
                 return base.VisitLocalVariableDeclaration(context);
             }
 
-
-
             public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
             {
-
-                string returnTypeText = context.return_type == null ? "" : context.return_type.Text;
+                var returnTypeText = context.return_type == null ? "" : context.return_type.Text;
 
                 _parent._parameters.Clear();
 
@@ -1110,7 +1051,7 @@ namespace LibLSLCC.AutoCompleteParser
                         foreach (var child in list.children)
                         {
                             var i = child as LSLParser.ParameterDefinitionContext;
-                            if(i==null ) continue;
+                            if (i == null) continue;
                             if (i.parameter_name == null || i.parameter_name.Type == -1) continue;
                             if (i.parameter_type == null || i.parameter_type.Type == -1) continue;
 
@@ -1121,7 +1062,7 @@ namespace LibLSLCC.AutoCompleteParser
                                 i.parameter_type.Text,
                                 new LSLSourceCodeRange(i),
                                 new LSLSourceCodeRange(i.parameter_type),
-                                new LSLSourceCodeRange(i.parameter_name),  
+                                new LSLSourceCodeRange(i.parameter_name),
                                 new ScopeAddress(CodeAreaId, ScopeId + 1, ScopeLevel + 1));
 
                             parms.Add(parm);
@@ -1146,13 +1087,11 @@ namespace LibLSLCC.AutoCompleteParser
                     {
                         _parent._globalFunctions.Add(
                             context.function_name.Text,
-                            new GlobalFunction(context.function_name.Text, 
+                            new GlobalFunction(context.function_name.Text,
                                 new LSLSourceCodeRange(context),
                                 new LSLSourceCodeRange(context.function_name), parms));
                     }
                 }
-
-
 
 
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1196,8 +1135,6 @@ namespace LibLSLCC.AutoCompleteParser
 
                 return true;
             }
-
-
 
             public override bool VisitEventHandler(LSLParser.EventHandlerContext context)
             {
@@ -1246,7 +1183,7 @@ namespace LibLSLCC.AutoCompleteParser
                                 i.parameter_type.Text,
                                 new LSLSourceCodeRange(i),
                                 new LSLSourceCodeRange(i.parameter_type),
-                                new LSLSourceCodeRange(i.parameter_name), 
+                                new LSLSourceCodeRange(i.parameter_name),
                                 new ScopeAddress(CodeAreaId, ScopeId + 1, ScopeLevel + 1));
 
                             _parent._parameters.Add(parm.Name, parm);
@@ -1272,8 +1209,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return true;
             }
 
-
-
             public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
             {
                 _parent.DefaultState = new StateBlock("default", new LSLSourceCodeRange(context));
@@ -1296,7 +1231,6 @@ namespace LibLSLCC.AutoCompleteParser
                     return true;
                 }
 
-                
 
                 CodeAreaId++;
                 ScopeLevel++;
@@ -1321,8 +1255,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return true;
             }
 
-
-
             public override bool VisitDefinedState(LSLParser.DefinedStateContext context)
             {
                 if (context.state_name == null || context.state_name.Type == -1) return true;
@@ -1346,7 +1278,6 @@ namespace LibLSLCC.AutoCompleteParser
                     return true;
                 }
 
-                
 
                 CodeAreaId++;
                 ScopeLevel++;
@@ -1369,12 +1300,8 @@ namespace LibLSLCC.AutoCompleteParser
                 return true;
             }
 
-
-
             public override bool VisitCodeStatement(LSLParser.CodeStatementContext context)
             {
-
-
                 if (context.Parent is LSLParser.CodeScopeOrSingleBlockStatementContext)
                 {
                     if (context.semi_colon == null || context.semi_colon.Text != ";" ||
@@ -1405,8 +1332,6 @@ namespace LibLSLCC.AutoCompleteParser
                 return true;
             }
 
-
-
             public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1420,7 +1345,8 @@ namespace LibLSLCC.AutoCompleteParser
 
                 foreach (var i in context.codeStatement())
                 {
-                    if (i.Start.StartIndex > _parent._toOffset) {
+                    if (i.Start.StartIndex > _parent._toOffset)
+                    {
                         return true;
                     }
                     VisitCodeStatement(i);

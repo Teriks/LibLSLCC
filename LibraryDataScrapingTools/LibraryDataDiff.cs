@@ -1,11 +1,36 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: LibraryDataDiff.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
-
 
 #endregion
 
@@ -23,9 +48,8 @@ namespace LibraryDataScrapingTools
 
         public ILSLMainLibraryDataProvider Left { get; set; }
         public ILSLMainLibraryDataProvider Right { get; set; }
-
-        public LSLXmlLibraryDataProvider NotInLeft { get; private set; }
-        public LSLXmlLibraryDataProvider NotInRight { get; private set; }
+        public LSLXmlLibraryDataProvider NotInLeft { get; }
+        public LSLXmlLibraryDataProvider NotInRight { get; }
 
         private void DiffFunctions()
         {
@@ -82,7 +106,6 @@ namespace LibraryDataScrapingTools
             }
         }
 
-
         private void DiffConstants()
         {
             if (Left.LibraryConstants.Count() != Right.LibraryConstants.Count())
@@ -124,7 +147,6 @@ namespace LibraryDataScrapingTools
             }
         }
 
-
         private void DiffEvents()
         {
             if (Left.SupportedEventHandlers.Count() != Right.SupportedEventHandlers.Count())
@@ -165,7 +187,6 @@ namespace LibraryDataScrapingTools
                 }
             }
         }
-
 
         public void Diff()
         {

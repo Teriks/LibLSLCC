@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: LSLEditorControl.xaml.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -22,11 +48,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LSLCCEditor.Utility;
 
-
 #endregion
-
-
-
 
 namespace LSLCCEditor.LSLEditor
 {
@@ -96,7 +118,6 @@ namespace LSLCCEditor.LSLEditor
 
 
         private class LSLIdentStrategy :
-
             IIndentationStrategy
         {
             public void IndentLine(TextDocument document, DocumentLine line)
@@ -105,12 +126,12 @@ namespace LSLCCEditor.LSLEditor
                     throw new ArgumentNullException("document");
                 if (line == null)
                     throw new ArgumentNullException("line");
-                DocumentLine previousLine = line.PreviousLine;
+                var previousLine = line.PreviousLine;
                 if (previousLine != null)
                 {
-                    ISegment indentationSegment = TextUtilities.GetWhitespaceAfter(document, previousLine.Offset);
-                    string indentation = document.GetText(indentationSegment);
-                    int offset = line.Offset - 1;
+                    var indentationSegment = TextUtilities.GetWhitespaceAfter(document, previousLine.Offset);
+                    var indentation = document.GetText(indentationSegment);
+                    var offset = line.Offset - 1;
                     while (offset > 0 && offset > previousLine.Offset)
                     {
                         var lastChar = document.GetText(offset, 1);
@@ -135,7 +156,6 @@ namespace LSLCCEditor.LSLEditor
 
             public void IndentLines(TextDocument document, int beginLine, int endLine)
             {
-
             }
         }
 
@@ -152,14 +172,13 @@ namespace LSLCCEditor.LSLEditor
             Editor.MouseHover += TextEditor_MouseHover;
             Editor.MouseHover += TextEditor_MouseHoverStopped;
 
-            this.Editor.TextArea.IndentationStrategy =
+            Editor.TextArea.IndentationStrategy =
                 new LSLIdentStrategy();
 
 #if DEBUG_FASTPARSER
             _debugObjectView.Show();
             #endif
         }
-
 
 
         public CompletionWindow CurrentCompletionWindow { get; private set; }
@@ -195,12 +214,10 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void AutoCompleteLibraryConstantsCommand(object o)
         {
             SuggestLibraryConstants();
         }
-
 
 
         private void AutoCompleteUserDefinedCommand(object o)
@@ -216,12 +233,10 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void AutoCompleteLibraryFunctionsCommand(object o)
         {
             SuggestLibraryFunctions();
         }
-
 
 
         private static void TextPropertyChangedCallback(DependencyObject dependencyObject,
@@ -237,7 +252,6 @@ namespace LSLCCEditor.LSLEditor
                 t._textPropertyChangingText = false;
             }
         }
-
 
 
         private void TextEditor_OnTextChanged(object sender, EventArgs e)
@@ -261,10 +275,8 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         public event TextChangedEventHandler UserChangedText;
         public event TextChangedEventHandler TextChanged;
-
 
 
         protected virtual void OnTextChanged()
@@ -274,13 +286,11 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         protected virtual void OnUserChangedText()
         {
             var handler = UserChangedText;
             if (handler != null) handler(this, EventArgs.Empty);
         }
-
 
 
         private static void LibraryDataProviderPropertyChangedCallback(DependencyObject dependencyObject,
@@ -294,7 +304,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private static string GetIdUnderMouse(TextDocument document, TextViewPosition position)
         {
             try
@@ -306,7 +315,6 @@ namespace LSLCCEditor.LSLEditor
                 return "";
             }
         }
-
 
 
         private static string _GetIDUnderMouse(TextDocument document, TextViewPosition position)
@@ -365,7 +373,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void TextEditor_MouseHover(object sender, MouseEventArgs e)
         {
             var pos = Editor.GetPositionFromPoint(e.GetPosition(Editor));
@@ -417,13 +424,11 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void TextEditor_MouseHoverStopped(object sender, MouseEventArgs e)
         {
             _hoverToolTip.IsOpen = false;
             e.Handled = true;
         }
-
 
 
         private CompletionWindow CreateNewCompletionWindow()
@@ -439,7 +444,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         public void CloseCurrentCompletionWindow()
         {
             lock (_completionLock)
@@ -452,14 +456,13 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private bool LSLTypeNameBehindOffset(string text, int caretOffset)
         {
-            int behindOffset = caretOffset > 1 ? caretOffset - 1 : -1;
+            var behindOffset = caretOffset > 1 ? caretOffset - 1 : -1;
 
             while (behindOffset > 0)
             {
-                char c = text[behindOffset];
+                var c = text[behindOffset];
 
                 if (char.IsWhiteSpace(text[behindOffset]))
                 {
@@ -513,7 +516,7 @@ namespace LSLCCEditor.LSLEditor
                 }
                 else if (behindOffset >= 7 && c == 'n')
                 {
-                    string t = text.Substring(behindOffset - 7, 8);
+                    var t = text.Substring(behindOffset - 7, 8);
                     if (t == "rotation")
                     {
                         return true;
@@ -525,7 +528,6 @@ namespace LSLCCEditor.LSLEditor
 
             return false;
         }
-
 
 
         // ReSharper disable once FunctionComplexityOverflow
@@ -552,10 +554,10 @@ namespace LSLCCEditor.LSLEditor
 
             if (e.Text == "}" && textArea.Document.GetText(caretOffset - 1, 1) == "\t")
             {
-                int offset = caretOffset - 1;
+                var offset = caretOffset - 1;
                 while (offset > 0)
                 {
-                    string text = textArea.Document.GetText(offset, 1);
+                    var text = textArea.Document.GetText(offset, 1);
                     if (text == ";" || text == "{")
                     {
                         textArea.Document.Remove(caretOffset - 1, 1);
@@ -568,7 +570,6 @@ namespace LSLCCEditor.LSLEditor
 
                     offset--;
                 }
-
             }
 
             var behind = "";
@@ -601,7 +602,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.CanSuggestEventHandler)
                 {
-                    bool possibleEventName = false;
+                    var possibleEventName = false;
                     foreach (var eventHandler in EventSignatures.Where(x => x.Name.StartsWith(e.Text)))
                     {
                         data.Add(new LSLCompletionData(
@@ -657,7 +658,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.CanSuggestLabelNameJumpTarget)
                 {
-                    bool possibleLabelName = false;
+                    var possibleLabelName = false;
                     foreach (var label in fastVarParser.GetLocalLabels(Editor.Text))
                     {
                         data.Add(new LSLCompletionData(label.Name, label.Name, "In scope label", 0)
@@ -681,7 +682,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.CanSuggestLabelNameDefinition)
                 {
-                    bool possibleLabelName = false;
+                    var possibleLabelName = false;
                     foreach (var label in fastVarParser.GetLocalJumps(Editor.Text))
                     {
                         data.Add(new LSLCompletionData(label.Target, label.Target, "In scope jump", 0)
@@ -703,10 +704,10 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                bool possibleLibraryFunction = false;
-                bool possibleUserDefinedItem = false;
-                bool possibleType = false;
-                bool possibleConstant = false;
+                var possibleLibraryFunction = false;
+                var possibleUserDefinedItem = false;
+                var possibleType = false;
+                var possibleConstant = false;
 
 
                 if (fastVarParser.CanSuggestTypeName)
@@ -772,7 +773,7 @@ namespace LSLCCEditor.LSLEditor
                 {
                     foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(e.Text)))
                     {
-                        string doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
+                        var doc = "Global variable:\n" + v.Type + " " + v.Name + ";";
                         data.Add(new LSLCompletionData(v.Name, v.Name,
                             doc, 1)
                         {
@@ -787,7 +788,7 @@ namespace LSLCCEditor.LSLEditor
                 {
                     foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(e.Text)))
                     {
-                        string doc = "Global function:\n" + func.Signature;
+                        var doc = "Global function:\n" + func.Signature;
 
                         data.Add(new LSLCompletionData(func.Name, func.Name, doc, 2)
                         {
@@ -804,7 +805,7 @@ namespace LSLCCEditor.LSLEditor
                 {
                     foreach (var v in fastVarParser.LocalParameters.Where(x => x.Name.StartsWith(e.Text)))
                     {
-                        string doc = "Local parameter:\n" + v.Type + " " + v.Name + ";";
+                        var doc = "Local parameter:\n" + v.Type + " " + v.Name + ";";
 
                         data.Add(new LSLCompletionData(v.Name, v.Name, doc, 3)
                         {
@@ -816,7 +817,7 @@ namespace LSLCCEditor.LSLEditor
                     foreach (var v in fastVarParser.LocalVariables
                         .Where(x => x.Name.StartsWith(e.Text)))
                     {
-                        string doc = "Local variable:\n" + v.Type + " " + v.Name + ";";
+                        var doc = "Local variable:\n" + v.Type + " " + v.Name + ";";
 
                         data.Add(new LSLCompletionData(v.Name, v.Name, doc, 4)
                         {
@@ -873,9 +874,7 @@ namespace LSLCCEditor.LSLEditor
 
                 CurrentCompletionWindow.Show();
             }
-
         }
-
 
 
         private void SuggestUserDefinedOrEvent()
@@ -924,7 +923,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.CanSuggestEventHandler)
                 {
-                    bool possibleEventName = false;
+                    var possibleEventName = false;
 
                     foreach (var eventHandler in EventSignatures)
                     {
@@ -981,7 +980,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.CanSuggestLabelNameJumpTarget)
                 {
-                    bool possibleLabelName = false;
+                    var possibleLabelName = false;
                     foreach (var label in fastVarParser.GetLocalLabels(Editor.Text))
                     {
                         data.Add(new LSLCompletionData(label.Name, label.Name, "In scope label", 0)
@@ -1005,7 +1004,7 @@ namespace LSLCCEditor.LSLEditor
 
                 if (fastVarParser.CanSuggestLabelNameDefinition)
                 {
-                    bool possibleLabelName = false;
+                    var possibleLabelName = false;
                     foreach (var label in fastVarParser.GetLocalJumps(Editor.Text))
                     {
                         data.Add(new LSLCompletionData(label.Target, label.Target, "In scope jump", 0)
@@ -1027,7 +1026,7 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                bool possibleUserDefinedItem = false;
+                var possibleUserDefinedItem = false;
 
                 if (fastVarParser.CanSuggestGlobalVariable)
                 {
@@ -1093,7 +1092,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void SuggestLibraryFunctions()
         {
             var textArea = Editor.TextArea;
@@ -1135,7 +1133,7 @@ namespace LSLCCEditor.LSLEditor
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
 
-                bool possibleGlobalFunctions = false;
+                var possibleGlobalFunctions = false;
 
 
                 if (fastVarParser.CanSuggestFunction)
@@ -1168,7 +1166,6 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow.Show();
             }
         }
-
 
 
         private void SuggestLibraryConstants()
@@ -1217,7 +1214,7 @@ namespace LSLCCEditor.LSLEditor
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
 
 
-                bool possibleLibraryConstants = false;
+                var possibleLibraryConstants = false;
 
 
                 if (fastVarParser.CanSuggestLibraryConstant)
@@ -1248,12 +1245,10 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         public void UpdateHighlightingFromDataProvider()
         {
             UpdateHighlightingFromDataProvider(LibraryDataProvider);
         }
-
 
 
         public void UpdateHighlightingFromDataProvider(ILSLMainLibraryDataProvider provider)
@@ -1312,12 +1307,10 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private void TextEditor_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             _hoverToolTip.IsOpen = false;
         }
-
 
 
         private void TextEditor_OnMouseLeave(object sender, MouseEventArgs e)
@@ -1326,14 +1319,11 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         public class CustomIndentationStrategy : IIndentationStrategy
         {
             public void IndentLine(TextDocument document, DocumentLine line)
             {
             }
-
-
 
             public void IndentLines(TextDocument document, int beginLine, int endLine)
             {
@@ -1351,19 +1341,16 @@ namespace LSLCCEditor.LSLEditor
                 LibraryDataProviderPropertyChangedCallback));
 
 
-
         private void EditorContext_ClickSuggestUserDefinedOrEvent(object sender, RoutedEventArgs e)
         {
             SuggestUserDefinedOrEvent();
         }
 
 
-
         private void EditorContext_ClickSuggestLibraryFunctions(object sender, RoutedEventArgs e)
         {
             SuggestLibraryFunctions();
         }
-
 
 
         private void EditorContext_ClickSuggestLibraryConstants(object sender, RoutedEventArgs e)
@@ -1379,28 +1366,31 @@ namespace LSLCCEditor.LSLEditor
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-
             if (_contextMenuOpenPosition != null)
             {
                 if (_contextMenuFunction != null)
                 {
                     Editor.ScrollTo(_contextMenuFunction.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuFunction.NameSourceCodeRange.StartIndex, _contextMenuFunction.NameSourceCodeRange.Length);
+                    Editor.Select(_contextMenuFunction.NameSourceCodeRange.StartIndex,
+                        _contextMenuFunction.NameSourceCodeRange.Length);
                 }
                 else if (_contextMenuLocalVar != null)
                 {
                     Editor.ScrollTo(_contextMenuLocalVar.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuLocalVar.NameSourceCodeRange.StartIndex, _contextMenuLocalVar.NameSourceCodeRange.Length);
+                    Editor.Select(_contextMenuLocalVar.NameSourceCodeRange.StartIndex,
+                        _contextMenuLocalVar.NameSourceCodeRange.Length);
                 }
                 else if (_contextMenuLocalParam != null)
                 {
                     Editor.ScrollTo(_contextMenuLocalParam.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuLocalParam.NameSourceCodeRange.StartIndex, _contextMenuLocalParam.NameSourceCodeRange.Length);
+                    Editor.Select(_contextMenuLocalParam.NameSourceCodeRange.StartIndex,
+                        _contextMenuLocalParam.NameSourceCodeRange.Length);
                 }
-                else if(_contextMenuVar != null)
+                else if (_contextMenuVar != null)
                 {
                     Editor.ScrollTo(_contextMenuVar.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuVar.NameSourceCodeRange.StartIndex, _contextMenuVar.NameSourceCodeRange.Length);
+                    Editor.Select(_contextMenuVar.NameSourceCodeRange.StartIndex,
+                        _contextMenuVar.NameSourceCodeRange.Length);
                 }
             }
         }
@@ -1410,14 +1400,13 @@ namespace LSLCCEditor.LSLEditor
         {
             _contextMenuOpenPosition = Editor.GetPositionFromPoint(Mouse.GetPosition(Editor));
 
-            
-
 
             if (_contextMenuOpenPosition == null) return;
 
-            LSLAutoCompleteParser x = new LSLAutoCompleteParser();
+            var x = new LSLAutoCompleteParser();
             var fastVarParser = new LSLAutoCompleteParser();
-            fastVarParser.Parse(new StringReader(Editor.Text), Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location));
+            fastVarParser.Parse(new StringReader(Editor.Text),
+                Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location));
 
             var wordHovered = GetIdUnderMouse(Editor.Document, _contextMenuOpenPosition.Value);
 
@@ -1441,11 +1430,13 @@ namespace LSLCCEditor.LSLEditor
 
 
             GotoDefinitionContextMenuButton.Visibility = (
-                _contextMenuFunction != null||
-                _contextMenuVar != null||
+                _contextMenuFunction != null ||
+                _contextMenuVar != null ||
                 _contextMenuLocalVar != null ||
                 _contextMenuLocalParam != null
-                ) ? Visibility.Visible : Visibility.Collapsed;
+                )
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
     }
 }

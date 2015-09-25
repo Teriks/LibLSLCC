@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLFunctionCallNode.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
@@ -7,6 +36,8 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 {
     public class LSLFunctionCallNode : ILSLFunctionCallNode, ILSLExprNode
@@ -14,8 +45,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         private readonly bool _libraryFunction;
         private readonly LSLFunctionSignature _librarySignature;
         private readonly LSLPreDefinedFunctionSignature _preDefinition;
-
-
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
@@ -24,8 +53,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             SourceCodeRange = sourceCodeRange;
             HasErrors = true;
         }
-
-
 
         internal LSLFunctionCallNode(LSLParser.Expr_FunctionCallContext context,
             LSLPreDefinedFunctionSignature preDefinition,
@@ -51,8 +78,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
         }
 
-
-
         internal LSLFunctionCallNode(LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature signature,
             LSLExpressionListNode parameterList)
@@ -76,17 +101,14 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
         }
 
-
-
-        internal LSLParser.Expr_FunctionCallContext ParserContext { get; private set; }
-
+        internal LSLParser.Expr_FunctionCallContext ParserContext { get; }
 
         public IReadOnlyList<ILSLExprNode> ParameterExpressions
         {
             get { return ParameterListNode.ExpressionNodes; }
         }
 
-        public LSLExpressionListNode ParameterListNode { get; private set; }
+        public LSLExpressionListNode ParameterListNode { get; }
 
         public LSLFunctionDeclarationNode DefinitionNode
         {
@@ -101,19 +123,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             }
         }
 
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
-
-        public LSLSourceCodeRange CloseParenthSourceCodeRange
-        {
-            get;
-            private set;
-        }
-
-        public LSLSourceCodeRange FunctionNameSourceCodeRange
-        {
-            get;
-            private set;
-        }
+        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        public LSLSourceCodeRange FunctionNameSourceCodeRange { get; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -125,12 +137,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return ParserContext.function_name.Text; }
         }
 
-
         IReadOnlyList<ILSLReadOnlyExprNode> ILSLFunctionCallNode.ParameterExpressions
         {
             get { return ParameterExpressions; }
         }
-
 
         public LSLFunctionSignature Signature
         {
@@ -144,23 +154,31 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             }
         }
 
-
         ILSLExpressionListNode ILSLFunctionCallNode.ParameterListNode
         {
             get { return ParameterListNode; }
         }
-
 
         ILSLFunctionDeclarationNode ILSLFunctionCallNode.DefinitionNode
         {
             get { return DefinitionNode; }
         }
 
+        public static LSLFunctionCallNode GetError(LSLSourceCodeRange sourceCodeRange)
+        {
+            return new LSLFunctionCallNode(sourceCodeRange, Err.Err);
+        }
 
+        #region Nested type: Err
 
+        protected enum Err
+        {
+            Err
+        }
+
+        #endregion
 
         #region ILSLExprNode Members
-
 
         public ILSLExprNode Clone()
         {
@@ -188,14 +206,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
-
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
-
+        public LSLSourceCodeRange SourceCodeRange { get; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
@@ -215,7 +231,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
-
         public LSLType Type
         {
             get { return Signature.ReturnType; }
@@ -232,12 +247,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
-
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");
         }
-
 
 
         ILSLReadOnlyExprNode ILSLReadOnlyExprNode.Clone()
@@ -245,29 +258,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             return Clone();
         }
 
-
         #endregion
-
-
-
-
-        #region Nested type: Err
-
-
-        protected enum Err
-        {
-            Err
-        }
-
-
-        #endregion
-
-
-
-
-        public static LSLFunctionCallNode GetError(LSLSourceCodeRange sourceCodeRange)
-        {
-            return new LSLFunctionCallNode(sourceCodeRange, Err.Err);
-        }
     }
 }

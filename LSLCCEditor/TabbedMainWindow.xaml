@@ -6,16 +6,21 @@
         xmlns:converters="clr-namespace:LSLCCEditor.Converters"
         xmlns:lslccEditor="clr-namespace:LSLCCEditor"
         mc:Ignorable="d"
-        Title="LSLCCEditor"  Height="640.358" Width="897.987"  Closing="TabbedMainWindow_OnClosing" Loaded="TabbedMainWindow_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}" Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325">
+        Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing"
+        Loaded="TabbedMainWindow_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileNew}" Executed="NewFile_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpenNewTab}" Executed="Open_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" Executed="Save_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" Executed="SaveAs_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}" Executed="CompileForOpenSim_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}" Executed="ClearCompilerMessages_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}" Executed="CheckSyntax_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}"
+                        Executed="CompileForOpenSim_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}"
+                        Executed="ClearCompilerMessages_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}"
+                        Executed="CheckSyntax_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" Executed="Format_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchFind}" Executed="Find_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchReplace}" Executed="Replace_OnClick" />
@@ -26,22 +31,24 @@
         <KeyBinding Modifiers="Control" Key="N" Command="{x:Static lslccEditor:TabbedMainWindow.FileNew}" />
         <KeyBinding Modifiers="Control" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" />
         <KeyBinding Modifiers="Control+Alt" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" />
-        <KeyBinding Modifiers="Control+Shift" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}" />
+        <KeyBinding Modifiers="Control+Shift" Key="S"
+                    Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}" />
         <KeyBinding Modifiers="Control+Shift" Key="F" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" />
         <KeyBinding Modifiers="Control+Alt" Key="C" Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}" />
-        <KeyBinding Modifiers="Control+Shift" Key="C" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}" />
+        <KeyBinding Modifiers="Control+Shift" Key="C"
+                    Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}" />
         <KeyBinding Modifiers="Control" Key="F" Command="{x:Static lslccEditor:TabbedMainWindow.SearchFind}" />
         <KeyBinding Modifiers="Control" Key="H" Command="{x:Static lslccEditor:TabbedMainWindow.SearchReplace}" />
     </Window.InputBindings>
     <Grid>
         <Grid.Resources>
-            <converters:BooleanToVisibilityConverter 
-                        x:Key="InverseBooleanToVisibilityConverter" 
-                        True="Collapsed" False="Visible"/>
-            <converters:IntegerNotZeroToVisibilityConverter x:Key="IntegerNotZeroToVisibilityConverter"/>
-            <converters:IntegerNotZeroToBoolConverter x:Key="IntegerNotZeroToBoolConverter"/>
+            <converters:BooleanToVisibilityConverter
+                x:Key="InverseBooleanToVisibilityConverter"
+                True="Collapsed" False="Visible" />
+            <converters:IntegerNotZeroToVisibilityConverter x:Key="IntegerNotZeroToVisibilityConverter" />
+            <converters:IntegerNotZeroToBoolConverter x:Key="IntegerNotZeroToBoolConverter" />
         </Grid.Resources>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -50,39 +57,53 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewFile_OnClick"/>
-                <MenuItem Header="Save" InputGestureText="Ctrl+S" Click="Save_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
-                <MenuItem Header="Save As" InputGestureText="Ctrl+Alt+S" Click="SaveAs_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
-                <MenuItem Header="Open" InputGestureText="Ctrl+O" Click="OpenInThisTab_OnClick" Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}"/>
-                <MenuItem Header="Open New Tab" InputGestureText="Ctrl+Alt+O" Click="Open_OnClick"/>
+                <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewFile_OnClick" />
+                <MenuItem Header="Save" InputGestureText="Ctrl+S" Click="Save_OnClick"
+                          Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}" />
+                <MenuItem Header="Save As" InputGestureText="Ctrl+Alt+S" Click="SaveAs_OnClick"
+                          Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}" />
+                <MenuItem Header="Open" InputGestureText="Ctrl+O" Click="OpenInThisTab_OnClick"
+                          Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}" />
+                <MenuItem Header="Open New Tab" InputGestureText="Ctrl+Alt+O" Click="Open_OnClick" />
             </MenuItem>
-            <MenuItem Header="Compile" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" >
-                <MenuItem Header="For OpenSim" InputGestureText="Ctrl+Alt+C" Click="CompileForOpenSim_OnClick"/>
+            <MenuItem Header="Compile"
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
+                <MenuItem Header="For OpenSim" InputGestureText="Ctrl+Alt+C" Click="CompileForOpenSim_OnClick" />
             </MenuItem>
-            
-            <MenuItem Header="Tools" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
+
+            <MenuItem Header="Tools"
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
                 <MenuItem Header="Clear Messages" InputGestureText="Ctrl+Shift+C" Click="ClearCompilerMessages_OnClick" />
-                <MenuItem Header="Check Syntax" InputGestureText="Ctrl+Shift+S" Click="CheckSyntax_OnClick"/>
+                <MenuItem Header="Check Syntax" InputGestureText="Ctrl+Shift+S" Click="CheckSyntax_OnClick" />
                 <MenuItem Header="Format" InputGestureText="Ctrl+Shift+F" Click="Format_OnClick" />
 
             </MenuItem>
-            <MenuItem Header="Tab Library Data" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" >
-                <MenuItem Name="LindenLsl" Header="Linden LSL" IsChecked="True" IsCheckable="true" Unchecked="LindenLsl_OnUnchecked" Checked="LindenLsl_OnChecked" />
-                <MenuItem Name="OpenSimLsl" Header="OpenSim LSL" IsCheckable="true" Unchecked="OpenSimLsl_OnUnchecked" Checked="OpenSimLsl_OnChecked"  />
-                <MenuItem Name="OsslFunctions" Header="OSSL Functions" IsCheckable="true" Unchecked="OsslFunctions_OnUnchecked" Checked="OsslFunctions_OnChecked" />
-                <MenuItem Name="OsWindlight" Header="OS Windlight" IsCheckable="true" Unchecked="OsWindlight_OnUnchecked" Checked="OsWindlight_OnChecked" />
-                <MenuItem Name="OsModInvoke" Header="OS Mod Invoke" IsCheckable="true" Checked="OsModInvoke_OnChecked" Unchecked="OsModInvoke_OnUnChecked"/>
-                <MenuItem Name="OsBulletPhysics" Header="OS Bullet Physics" IsCheckable="true" Unchecked="OsBulletPhysics_OnUnchecked" Checked="OsBulletPhysics_OnChecked" />
+            <MenuItem Header="Tab Library Data"
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
+                <MenuItem Name="LindenLsl" Header="Linden LSL" IsChecked="True" IsCheckable="true"
+                          Unchecked="LindenLsl_OnUnchecked" Checked="LindenLsl_OnChecked" />
+                <MenuItem Name="OpenSimLsl" Header="OpenSim LSL" IsCheckable="true" Unchecked="OpenSimLsl_OnUnchecked"
+                          Checked="OpenSimLsl_OnChecked" />
+                <MenuItem Name="OsslFunctions" Header="OSSL Functions" IsCheckable="true"
+                          Unchecked="OsslFunctions_OnUnchecked" Checked="OsslFunctions_OnChecked" />
+                <MenuItem Name="OsWindlight" Header="OS Windlight" IsCheckable="true"
+                          Unchecked="OsWindlight_OnUnchecked" Checked="OsWindlight_OnChecked" />
+                <MenuItem Name="OsModInvoke" Header="OS Mod Invoke" IsCheckable="true" Checked="OsModInvoke_OnChecked"
+                          Unchecked="OsModInvoke_OnUnChecked" />
+                <MenuItem Name="OsBulletPhysics" Header="OS Bullet Physics" IsCheckable="true"
+                          Unchecked="OsBulletPhysics_OnUnchecked" Checked="OsBulletPhysics_OnChecked" />
 
             </MenuItem>
-            <MenuItem Header="Search"  IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
-                <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick"/>
-                <MenuItem Header="Replace" InputGestureText="Ctrl+H" Click="Replace_OnClick"/>
+            <MenuItem Header="Search"
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
+                <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick" />
+                <MenuItem Header="Replace" InputGestureText="Ctrl+H" Click="Replace_OnClick" />
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">
-            <TabControl  ItemsSource="{Binding EditorTabs}" x:Name="TabControl" SelectionChanged="TabControl_OnSelectionChanged" Margin="0,10,0,0">
-                
+            <TabControl ItemsSource="{Binding EditorTabs}" x:Name="TabControl"
+                        SelectionChanged="TabControl_OnSelectionChanged" Margin="0,10,0,0">
+
                 <TabControl.Template>
                     <ControlTemplate TargetType="TabControl">
                         <Grid>
@@ -90,58 +111,60 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <ScrollViewer HorizontalScrollBarVisibility="Auto"  VerticalScrollBarVisibility="Hidden" >
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
                                 <TabPanel x:Name="HeaderPanel"
-                          Panel.ZIndex ="1" 
-                          KeyboardNavigation.TabIndex="1"
-                          Grid.Column="0"
-                          Grid.Row="0"
-                          Margin="0,2,0,0"
-                          IsItemsHost="true"/>
+                                          Panel.ZIndex="1"
+                                          KeyboardNavigation.TabIndex="1"
+                                          Grid.Column="0"
+                                          Grid.Row="0"
+                                          Margin="0,2,0,0"
+                                          IsItemsHost="true" />
                             </ScrollViewer>
                             <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="#8C8E94" Background="#F9F9F9">
 
-                            <ContentPresenter x:Name="PART_SelectedContentHost"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      Margin="{TemplateBinding Padding}"
-                                      ContentSource="SelectedContent" />
+                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  ContentSource="SelectedContent" />
                             </Border>
                         </Grid>
                     </ControlTemplate>
                 </TabControl.Template>
-                
+
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" PreviewMouseDown="TabStackPanelPreviewMouseDown" MouseUp="TabStackPanelOnPreviewMouseUp" Drop="TabOnDrop" AllowDrop="True">
+                        <StackPanel Orientation="Horizontal" PreviewMouseDown="TabStackPanelPreviewMouseDown"
+                                    MouseUp="TabStackPanelOnPreviewMouseUp" Drop="TabOnDrop" AllowDrop="True">
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
-                                    <MenuItem Header="Close" Command="{Binding CloseCommand}"/>
-                                    <MenuItem Header="Close All Others" Command="{Binding CloseAllExceptMeCommand}"/>
-                                    <MenuItem Header="Close All Right" Command="{Binding CloseAllRightCommand}"/>
-                                    <MenuItem Header="Close All Left" Command="{Binding CloseAllLeftCommand}"/>
-                                    <MenuItem Header="Save As" Command="{Binding SaveAsCommand}" 
-                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                    <MenuItem Header="Rename" Command="{Binding RenameCommand}" 
-                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                    <MenuItem Header="Save" Command="{Binding SaveCommand}" />
+                                    <MenuItem Header="Close" Command="{Binding CloseCommand}" />
+                                    <MenuItem Header="Close All Others" Command="{Binding CloseAllExceptMeCommand}" />
+                                    <MenuItem Header="Close All Right" Command="{Binding CloseAllRightCommand}" />
+                                    <MenuItem Header="Close All Left" Command="{Binding CloseAllLeftCommand}" />
+                                    <MenuItem Header="Save As" Command="{Binding SaveAsCommand}"
+                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                                    <MenuItem Header="Rename" Command="{Binding RenameCommand}"
+                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
-                                    <Separator Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                                    <Separator
+                                        Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
-                                    <MenuItem Header="Copy Full Path" Command="{Binding CopyFullPathCommand}" 
-                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                    <MenuItem Header="Open Containing Folder" Command="{Binding OpenFolderCommand}" 
-                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                                    <MenuItem Header="Copy Full Path" Command="{Binding CopyFullPathCommand}"
+                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                                    <MenuItem Header="Open Containing Folder" Command="{Binding OpenFolderCommand}"
+                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <TextBlock Text="{Binding TabHeader}" />
-                            <Button Margin="5,1.5,0,0" 
+                            <Button Margin="5,1.5,0,0"
                                     Height="15" Width="15"
-                                    Content="X" 
-                                    FontSize="8" 
+                                    Content="X"
+                                    FontSize="8"
                                     Padding="0"
-                                    HorizontalContentAlignment="Center" 
-                                    VerticalContentAlignment="Center" 
-                                    Command="{Binding CloseCommand}"/>
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Command="{Binding CloseCommand}" />
                         </StackPanel>
                     </DataTemplate>
                 </TabControl.ItemTemplate>

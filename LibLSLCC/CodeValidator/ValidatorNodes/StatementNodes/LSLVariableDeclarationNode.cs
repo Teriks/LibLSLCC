@@ -1,4 +1,33 @@
-﻿using System.Collections.Generic;
+﻿#region FileInfo
+
+// 
+// File: LSLVariableDeclarationNode.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
@@ -6,6 +35,8 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 {
@@ -21,14 +52,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             HasErrors = true;
         }
 
-
-
         private LSLVariableDeclarationNode()
         {
             IsSingleBlockStatement = false;
         }
-
-
 
         /// <summary>
         ///     The variable node that was created upon construction of
@@ -38,11 +65,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public ILSLExprNode DeclarationExpression { get; private set; }
 
+        public IReadOnlyList<LSLVariableNode> References
+        {
+            get { return _references; }
+        }
+
         public ILSLCodeStatement ReturnPath { get; set; }
-
-
         public LSLDeadCodeType DeadCodeType { get; set; }
-
 
         public string Name
         {
@@ -54,7 +83,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return VariableNode.Type; }
         }
 
-
         public string TypeString
         {
             get { return VariableNode.TypeString; }
@@ -64,7 +92,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         {
             get { return VariableNode; }
         }
-
 
         public bool HasDeclarationExpression
         {
@@ -86,7 +113,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return VariableNode.IsParameter; }
         }
 
-
         public bool IsLibraryConstant
         {
             get { return VariableNode.IsLibraryConstant; }
@@ -102,21 +128,18 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return ReturnPath; }
         }
 
-
         public ulong ScopeId { get; set; }
 
-
+        IReadOnlyList<ILSLVariableNode> ILSLVariableDeclarationNode.References
+        {
+            get { return References; }
+        }
 
         public static
             LSLVariableDeclarationNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLVariableDeclarationNode(sourceRange, Err.Err);
         }
-
-        public IReadOnlyList<LSLVariableNode> References { get { return _references; } }
-
-        IReadOnlyList<ILSLVariableNode> ILSLVariableDeclarationNode.References { get { return References; } } 
-
 
         /// <summary>
         ///     Creates a reference to VariableNode by cloning and setting its SourceCodeRange
@@ -135,8 +158,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return v;
         }
 
-
-
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.GlobalVariableDeclarationContext context)
         {
             var n = new LSLVariableDeclarationNode();
@@ -151,11 +172,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             {
                 n.OperationSourceCodeRange = new LSLSourceCodeRange(context.operation);
             }
-            
+
             return n;
         }
-
-
 
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.GlobalVariableDeclarationContext context,
             ILSLExprNode declarationExpression)
@@ -179,8 +198,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return n;
         }
 
-
-
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.LocalVariableDeclarationContext context,
             ILSLExprNode declarationExpression)
         {
@@ -203,8 +220,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return n;
         }
 
-
-
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.LocalVariableDeclarationContext context)
         {
             var n = new LSLVariableDeclarationNode();
@@ -223,8 +238,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return n;
         }
 
-
-
         internal static LSLVariableDeclarationNode CreateLibraryConstant(LSLType type, string name)
         {
             var n = new LSLVariableDeclarationNode
@@ -237,8 +250,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
             return n;
         }
-
-
 
         internal static LSLVariableDeclarationNode CreateParameter(LSLParser.ParameterDefinitionContext context)
         {
@@ -253,8 +264,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return n;
         }
 
-
-
         public LSLVariableDeclarationNode Clone()
         {
             if (HasErrors)
@@ -262,7 +271,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
                 return GetError(SourceCodeRange);
             }
 
-            var r= new LSLVariableDeclarationNode
+            var r = new LSLVariableDeclarationNode
             {
                 HasErrors = HasErrors,
                 Parent = Parent,
@@ -276,11 +285,16 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return r;
         }
 
+        #region Nested type: Err
 
+        protected enum Err
+        {
+            Err
+        }
 
+        #endregion
 
         #region ILSLCodeStatement Members
-
 
         public bool IsConstant
         {
@@ -337,7 +351,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange OperatorSourceCodeRange { get { return OperationSourceCodeRange; } }
+        public LSLSourceCodeRange OperatorSourceCodeRange
+        {
+            get { return OperationSourceCodeRange; }
+        }
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
@@ -347,21 +364,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             }
             return visitor.VisitLocalVariableDeclaration(this);
         }
-
-
-        #endregion
-
-
-
-
-        #region Nested type: Err
-
-
-        protected enum Err
-        {
-            Err
-        }
-
 
         #endregion
     }

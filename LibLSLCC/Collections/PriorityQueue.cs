@@ -1,6 +1,37 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: PriorityQueue.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:25 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
+
+#endregion
 
 namespace LibLSLCC.Collections
 {
@@ -15,11 +46,7 @@ namespace LibLSLCC.Collections
         private readonly List<KeyValuePair<TPriority, TValue>> _baseHeap;
         private readonly IComparer<TPriority> _comparer;
 
-
-
-
         #region Constructors
-
 
         /// <summary>
         ///     Initializes a new instance of priority queue with default initial capacity and default priority comparer
@@ -30,7 +57,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Initializes a new instance of priority queue with specified initial capacity and default priority comparer
         /// </summary>
@@ -39,7 +65,6 @@ namespace LibLSLCC.Collections
             : this(capacity, Comparer<TPriority>.Default)
         {
         }
-
 
 
         /// <summary>
@@ -57,7 +82,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Initializes a new instance of priority queue with default initial capacity and specified priority comparer
         /// </summary>
@@ -72,7 +96,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Initializes a new instance of priority queue with specified data and default priority comparer
         /// </summary>
@@ -81,7 +104,6 @@ namespace LibLSLCC.Collections
             : this(data, Comparer<TPriority>.Default)
         {
         }
-
 
 
         /// <summary>
@@ -101,14 +123,9 @@ namespace LibLSLCC.Collections
                 HeapifyFromBeginningToEnd(pos);
         }
 
-
         #endregion
 
-
-
-
         #region Merging
-
 
         /// <summary>
         ///     Merges two priority queues
@@ -129,7 +146,6 @@ namespace LibLSLCC.Collections
                 throw new InvalidOperationException("Priority queues to be merged must have equal comparers");
             return MergeQueues(pq1, pq2, pq1._comparer);
         }
-
 
 
         /// <summary>
@@ -161,14 +177,9 @@ namespace LibLSLCC.Collections
             return result;
         }
 
-
         #endregion
 
-
-
-
         #region Priority queue operations
-
 
         /// <summary>
         ///     Gets whether priority queue is empty
@@ -177,7 +188,6 @@ namespace LibLSLCC.Collections
         {
             get { return _baseHeap.Count == 0; }
         }
-
 
 
         /// <summary>
@@ -189,7 +199,6 @@ namespace LibLSLCC.Collections
         {
             Insert(priority, value);
         }
-
 
 
         /// <summary>
@@ -212,7 +221,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Dequeues element with minimum priority and return its value
         /// </summary>
@@ -224,7 +232,6 @@ namespace LibLSLCC.Collections
         {
             return Dequeue().Value;
         }
-
 
 
         /// <summary>
@@ -242,7 +249,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Returns value of the element with minimun priority, without removing it from the queue
         /// </summary>
@@ -255,14 +261,9 @@ namespace LibLSLCC.Collections
             return Peek().Value;
         }
 
-
         #endregion
 
-
-
-
         #region Heap operations
-
 
         private void ExchangeElements(int pos1, int pos2)
         {
@@ -270,7 +271,6 @@ namespace LibLSLCC.Collections
             _baseHeap[pos1] = _baseHeap[pos2];
             _baseHeap[pos2] = val;
         }
-
 
 
         private void Insert(TPriority priority, TValue value)
@@ -283,7 +283,6 @@ namespace LibLSLCC.Collections
             // heapify after insert, from end to beginning
             HeapifyFromEndToBeginning(_baseHeap.Count - 1);
         }
-
 
 
         private int HeapifyFromEndToBeginning(int pos)
@@ -304,7 +303,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         private void DeleteRoot()
         {
             if (_baseHeap.Count <= 1)
@@ -319,7 +317,6 @@ namespace LibLSLCC.Collections
             // heapify
             HeapifyFromBeginningToEnd(0);
         }
-
 
 
         private void HeapifyFromBeginningToEnd(int pos)
@@ -348,14 +345,9 @@ namespace LibLSLCC.Collections
             }
         }
 
-
         #endregion
 
-
-
-
         #region ICollection<KeyValuePair<TPriority, TValue>> implementation
-
 
         /// <summary>
         ///     Enqueus element into priority queue
@@ -367,7 +359,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Clears the collection
         /// </summary>
@@ -375,7 +366,6 @@ namespace LibLSLCC.Collections
         {
             _baseHeap.Clear();
         }
-
 
 
         /// <summary>
@@ -389,7 +379,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Gets number of elements in the priority queue
         /// </summary>
@@ -397,7 +386,6 @@ namespace LibLSLCC.Collections
         {
             get { return _baseHeap.Count; }
         }
-
 
 
         /// <summary>
@@ -417,7 +405,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Gets a value indicating whether the collection is read-only.
         /// </summary>
@@ -428,7 +415,6 @@ namespace LibLSLCC.Collections
         {
             get { return false; }
         }
-
 
 
         /// <summary>
@@ -458,7 +444,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -472,7 +457,6 @@ namespace LibLSLCC.Collections
         }
 
 
-
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
         /// </summary>
@@ -484,7 +468,6 @@ namespace LibLSLCC.Collections
         {
             return GetEnumerator();
         }
-
 
         #endregion
     }

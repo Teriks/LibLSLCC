@@ -1,8 +1,39 @@
-﻿using System.Collections.Generic;
+﻿#region FileInfo
+
+// 
+// File: LSLDefaultStringPreProcessor.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using LibLSLCC.CodeValidator.Components.Interfaces;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Components
 {
@@ -11,15 +42,11 @@ namespace LibLSLCC.CodeValidator.Components
         private readonly List<LSLStringCharacterError> _illegalCharacters = new List<LSLStringCharacterError>();
         private readonly List<LSLStringCharacterError> _invalidEscapeCodes = new List<LSLStringCharacterError>();
 
-
-
         public LSLDefaultStringPreProcessor()
         {
             HasErrors = false;
             Result = "";
         }
-
-
 
         public bool HasErrors { get; private set; }
 
@@ -34,8 +61,6 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         public string Result { get; private set; }
-
-
 
         public void ProcessString(string stringLiteral)
         {
@@ -54,8 +79,6 @@ namespace LibLSLCC.CodeValidator.Components
             Result = HasErrors ? "" : result.ToString();
         }
 
-
-
         public void Reset()
         {
             _invalidEscapeCodes.Clear();
@@ -63,8 +86,6 @@ namespace LibLSLCC.CodeValidator.Components
             HasErrors = false;
             Result = "";
         }
-
-
 
         private IEnumerable<string> CStringUnescape(string str)
         {
@@ -111,8 +132,6 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
-
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "index")]
         private static string FilterCharacter(int index, char chr)
         {
@@ -127,8 +146,6 @@ namespace LibLSLCC.CodeValidator.Components
 
             return chr.ToString(CultureInfo.InvariantCulture);
         }
-
-
 
         private string ReplaceEscapeCode(int index, char code)
         {

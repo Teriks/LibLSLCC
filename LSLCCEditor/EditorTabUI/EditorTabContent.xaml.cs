@@ -1,9 +1,40 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: EditorTabContent.xaml.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LibLSLCC.CodeValidator.Components.Interfaces;
+
+#endregion
 
 namespace LSLCCEditor.EditorTabUI
 {
@@ -22,17 +53,12 @@ namespace LSLCCEditor.EditorTabUI
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         private readonly EditorTab _ownerTab;
-        private ObservableCollection<CompilerMessage> _compilerMessages = new ObservableCollection<CompilerMessage>();
-
-
 
         public EditorTabContent(EditorTab owner)
         {
             InitializeComponent();
             _ownerTab = owner;
         }
-
-
 
         public ILSLMainLibraryDataProvider LibraryDataProvider
         {
@@ -46,13 +72,8 @@ namespace LSLCCEditor.EditorTabUI
             set { SetValue(SourceCodeProperty, value); }
         }
 
-        public ObservableCollection<CompilerMessage> CompilerMessages
-        {
-            get { return _compilerMessages; }
-            set { _compilerMessages = value; }
-        }
-
-
+        public ObservableCollection<CompilerMessage> CompilerMessages { get; set; } =
+            new ObservableCollection<CompilerMessage>();
 
         private void CompilerMessageItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -83,8 +104,8 @@ namespace LSLCCEditor.EditorTabUI
             }
 
 
-            int l = 0;
-            for (int i = line; i <= lineend; i++)
+            var l = 0;
+            for (var i = line; i <= lineend; i++)
             {
                 l += Editor.Editor.Document.GetLineByNumber(i).TotalLength;
             }
@@ -94,8 +115,6 @@ namespace LSLCCEditor.EditorTabUI
 
             Editor.Editor.Select(linestart.Offset, l);
         }
-
-
 
         private void Editor_OnTextChanged(object sender, EventArgs e)
         {

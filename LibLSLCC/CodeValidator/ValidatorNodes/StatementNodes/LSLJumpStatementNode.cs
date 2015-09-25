@@ -1,9 +1,40 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLJumpStatementNode.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 {
@@ -17,8 +48,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             SourceCodeRange = sourceRange;
             HasErrors = true;
         }
-
-
 
         internal LSLJumpStatementNode(LSLParser.JumpStatementContext context, LSLLabelStatementNode jumpTarget,
             bool isSingleBlockStatement)
@@ -44,16 +73,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
         }
 
-
-
-        internal LSLParser.JumpStatementContext ParserContext { get; private set; }
+        internal LSLParser.JumpStatementContext ParserContext { get; }
         public LSLLabelStatementNode JumpTarget { get; set; }
 
-
-
-
         #region ILSLCodeStatement Members
-
 
         public bool IsSingleBlockStatement { get; private set; }
         public ILSLSyntaxTreeNode Parent { get; set; }
@@ -80,8 +103,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
-
+        public LSLSourceCodeRange SourceCodeRange { get; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
@@ -89,25 +111,16 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return visitor.VisitJumpStatement(this);
         }
 
-
         #endregion
 
-
-
-
         #region Nested type: Err
-
 
         protected enum Err
         {
             Err
         }
 
-
         #endregion
-
-
-
 
         public ILSLCodeStatement ReturnPath { get; set; }
 
@@ -134,7 +147,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         public ulong ScopeId { get; set; }
 
 
-
         public static
             LSLJumpStatementNode GetError(LSLSourceCodeRange sourceRange)
         {
@@ -142,22 +154,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
 
-        public LSLSourceCodeRange JumpKeywordSourceCodeRange
-        {
-            get;
-            private set;
-        }
+        public LSLSourceCodeRange JumpKeywordSourceCodeRange { get; }
 
-        public LSLSourceCodeRange LabelNameSourceCodeRange
-        {
-            get;
-            private set;
-        }
+        public LSLSourceCodeRange LabelNameSourceCodeRange { get; }
 
-        public LSLSourceCodeRange SemiColonSourceCodeRange
-        {
-            get;
-            private set;
-        }
+        public LSLSourceCodeRange SemiColonSourceCodeRange { get; }
     }
 }

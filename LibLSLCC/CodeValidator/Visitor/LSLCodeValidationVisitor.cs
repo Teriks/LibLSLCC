@@ -1,5 +1,31 @@
-#region
+#region FileInfo
 
+// 
+// File: LSLCodeValidationVisitor.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:25 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +45,6 @@ using LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 
-
 #endregion
 
 namespace LibLSLCC.CodeValidator.Visitor
@@ -30,14 +55,12 @@ namespace LibLSLCC.CodeValidator.Visitor
         private ILSLSyntaxErrorListener _syntaxErrorListenerOveride;
         private ILSLSyntaxWarningListener _syntaxWarningListenerOveride;
 
-
         public LSLCodeValidationVisitor()
         {
             _validatorServices = new LSLDefaultValidatorServiceProvider();
 
             ScopingManager = new LSLVisitorScopeTracker(_validatorServices);
         }
-
 
         public LSLCodeValidationVisitor(ILSLValidatorServiceProvider validatorServices)
         {
@@ -51,9 +74,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             ScopingManager = new LSLVisitorScopeTracker(_validatorServices);
         }
 
-
-        private LSLVisitorScopeTracker ScopingManager { get; set; }
-
+        private LSLVisitorScopeTracker ScopingManager { get; }
 
         public ILSLSyntaxWarningListener SyntaxWarningListener
         {
@@ -71,7 +92,6 @@ namespace LibLSLCC.CodeValidator.Visitor
         {
             get { return _validatorServices.ExpressionValidator; }
         }
-
 
         public ILSLSyntaxErrorListener SyntaxErrorListener
         {
@@ -95,36 +115,30 @@ namespace LibLSLCC.CodeValidator.Visitor
             get { return _validatorServices.StringLiteralPreProcessor; }
         }
 
-
         private bool InSingleStatementBlock
         {
             get { return ScopingManager.InSingleStatementBlock; }
         }
-
 
         private void OverrideSyntaxWarningListener(ILSLSyntaxWarningListener listener)
         {
             _syntaxWarningListenerOveride = listener;
         }
 
-
         private void RemoveSyntaxWarningListenerOverride()
         {
             _syntaxWarningListenerOveride = null;
         }
-
 
         private void OverrideSyntaxErrorListener(ILSLSyntaxErrorListener listener)
         {
             _syntaxErrorListenerOveride = listener;
         }
 
-
         private void RemoveSyntaxErrorListenerOverride()
         {
             _syntaxErrorListenerOveride = null;
         }
-
 
         public LSLCompilationUnitNode ValidateAndBuildTree(LSLParser.CompilationUnitContext tree)
         {
@@ -135,7 +149,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (x == null)
                 {
                     throw LSLCodeValidatorInternalError.VisitReturnTypeException("VisitCompilationUnit",
-                        typeof(LSLCompilationUnitNode));
+                        typeof (LSLCompilationUnitNode));
                 }
             }
             finally
@@ -145,7 +159,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             return x;
         }
-
 
         private void Reset()
         {
@@ -160,7 +173,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             ScopingManager.Reset();
             StringLiteralPreProcessor.Reset();
         }
-
 
         private ILSLSyntaxTreeNode VisitListLiteralInitializerList(LSLParser.OptionalExpressionListContext context)
         {
@@ -185,13 +197,13 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
+            IEnumerable<IParseTree> subtrees = new[] {(LSLParser.ExpressionContext) expressionList.children[0]};
 
             if (expressionList.children.Count > 1)
             {
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
-                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    var listTail = ((LSLParser.ExpressionListTailContext) x);
                     result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
@@ -202,7 +214,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             for (var i = 0; i < expressionContexts.Count; i++)
             {
-                var expression = VisitTopOfExpression((LSLParser.ExpressionContext)expressionContexts[i]);
+                var expression = VisitTopOfExpression((LSLParser.ExpressionContext) expressionContexts[i]);
 
                 result.AddExpression(expression);
 
@@ -221,7 +233,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             return ReturnFromVisit(context, result);
         }
-
 
         private ILSLSyntaxTreeNode VisitForLoopAfterthoughts(LSLParser.OptionalExpressionListContext context)
         {
@@ -246,13 +257,13 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .VisitContextInvalidState("VisitForLoopAfterthoughts");
             }
 
-            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
+            IEnumerable<IParseTree> subtrees = new[] {(LSLParser.ExpressionContext) expressionList.children[0]};
 
             if (expressionList.children.Count > 1)
             {
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
-                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    var listTail = ((LSLParser.ExpressionListTailContext) x);
                     result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
@@ -265,7 +276,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             foreach (var expressionContext in expressionContexts)
             {
-                var ctx = (LSLParser.ExpressionContext)expressionContext;
+                var ctx = (LSLParser.ExpressionContext) expressionContext;
                 var expressionHasEffect = DoesExpressionHaveEffect(ctx);
 
                 if (!expressionHasEffect)
@@ -289,9 +300,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             return ReturnFromVisit(context, result);
         }
-
-
-
 
         private ILSLSyntaxTreeNode VisitForLoopInitExpressions(LSLParser.OptionalExpressionListContext context)
         {
@@ -317,15 +325,13 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-
-
-            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
+            IEnumerable<IParseTree> subtrees = new[] {(LSLParser.ExpressionContext) expressionList.children[0]};
 
             if (expressionList.children.Count > 1)
             {
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
-                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    var listTail = ((LSLParser.ExpressionListTailContext) x);
                     result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
@@ -334,12 +340,11 @@ namespace LibLSLCC.CodeValidator.Visitor
             var expressionContexts = subtrees.ToList();
 
 
-
             var expressionIndex = 0;
 
             foreach (var expressionContext in expressionContexts)
             {
-                var ctx = (LSLParser.ExpressionContext)expressionContext;
+                var ctx = (LSLParser.ExpressionContext) expressionContext;
                 var expressionHasEffect = DoesExpressionHaveEffect(ctx);
 
                 if (!expressionHasEffect)
@@ -363,7 +368,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             return ReturnFromVisit(context, result);
         }
-
 
         private ILSLSyntaxTreeNode VisitFunctionCallParameters(LSLParser.OptionalExpressionListContext context,
             LSLExpressionListType type)
@@ -398,14 +402,13 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-
-            IEnumerable<IParseTree> subtrees = new[] { (LSLParser.ExpressionContext)expressionList.children[0] };
+            IEnumerable<IParseTree> subtrees = new[] {(LSLParser.ExpressionContext) expressionList.children[0]};
 
             if (expressionList.children.Count > 1)
             {
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
-                    var listTail = ((LSLParser.ExpressionListTailContext)x);
+                    var listTail = ((LSLParser.ExpressionListTailContext) x);
                     result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
@@ -414,10 +417,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             var expressionContexts = subtrees.ToList();
 
 
-
             foreach (var expressionContext in expressionContexts)
             {
-                var expression = VisitTopOfExpression((LSLParser.ExpressionContext)expressionContext);
+                var expression = VisitTopOfExpression((LSLParser.ExpressionContext) expressionContext);
                 if (expression.HasErrors)
                 {
                     result.HasErrors = true;
@@ -429,18 +431,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             return ReturnFromVisit(context, result);
         }
 
-
         public override ILSLSyntaxTreeNode VisitExpressionList(LSLParser.ExpressionListContext context)
         {
             throw new LSLCodeValidatorInternalError("Expression list are not expected to be visited directly");
         }
 
-
         public override ILSLSyntaxTreeNode VisitTerminal(ITerminalNode node)
         {
             throw new LSLCodeValidatorInternalError("Terminals are not expected to be visited");
         }
-
 
         public override ILSLSyntaxTreeNode VisitCompilationUnit(LSLParser.CompilationUnitContext context)
         {
@@ -475,7 +474,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (child == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitGlobalVariableDeclaration", typeof(LSLVariableDeclarationNode));
+                        .VisitReturnTypeException("VisitGlobalVariableDeclaration", typeof (LSLVariableDeclarationNode));
                 }
 
                 if (child.HasErrors)
@@ -499,7 +498,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (child == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitFunctionDeclaration", typeof(LSLFunctionDeclarationNode));
+                        .VisitReturnTypeException("VisitFunctionDeclaration", typeof (LSLFunctionDeclarationNode));
                 }
 
                 if (child.HasErrors)
@@ -519,7 +518,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (defaultState == null)
             {
                 throw LSLCodeValidatorInternalError
-                    .VisitReturnTypeException("VisitDefaultState", typeof(LSLStateScopeNode));
+                    .VisitReturnTypeException("VisitDefaultState", typeof (LSLStateScopeNode));
             }
 
 
@@ -538,7 +537,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (child == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitDefinedState", typeof(LSLStateScopeNode));
+                        .VisitReturnTypeException("VisitDefinedState", typeof (LSLStateScopeNode));
                 }
 
 
@@ -650,14 +649,12 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (declarationScope == LSLVariableScope.Local)
                 {
                     variable = LSLVariableDeclarationNode.CreateVar(
-                        (LSLParser.LocalVariableDeclarationContext)context, expression);
+                        (LSLParser.LocalVariableDeclarationContext) context, expression);
                 }
                 else
                 {
                     variable = LSLVariableDeclarationNode.CreateVar(
-                        (LSLParser.GlobalVariableDeclarationContext)context, expression);
-
-                    
+                        (LSLParser.GlobalVariableDeclarationContext) context, expression);
                 }
 
 
@@ -674,8 +671,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                     return LSLVariableDeclarationNode.GetError(new LSLSourceCodeRange(context));
                 }
-
-               
             }
             else
             {
@@ -683,12 +678,12 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (declarationScope == LSLVariableScope.Local)
                 {
                     variable = LSLVariableDeclarationNode.CreateVar(
-                        (LSLParser.LocalVariableDeclarationContext)context);
+                        (LSLParser.LocalVariableDeclarationContext) context);
                 }
                 else
                 {
                     variable = LSLVariableDeclarationNode.CreateVar(
-                        (LSLParser.GlobalVariableDeclarationContext)context);
+                        (LSLParser.GlobalVariableDeclarationContext) context);
                 }
             }
 
@@ -771,7 +766,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (child == null)
                 {
                     throw LSLCodeValidatorInternalError.
-                        VisitReturnTypeException("VisitEventHandler", typeof(LSLEventHandlerNode));
+                        VisitReturnTypeException("VisitEventHandler", typeof (LSLEventHandlerNode));
                 }
 
                 if (child.HasErrors)
@@ -816,7 +811,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (child == null)
                 {
                     throw LSLCodeValidatorInternalError.
-                        VisitReturnTypeException("VisitEventHandler", typeof(LSLEventHandlerNode));
+                        VisitReturnTypeException("VisitEventHandler", typeof (LSLEventHandlerNode));
                 }
 
 
@@ -890,7 +885,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && expression.IsConstant)
                 {
-                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition), LSLConditionalStatementType.If);
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition),
+                        LSLConditionalStatementType.If);
                 }
             }
 
@@ -908,7 +904,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 throw LSLCodeValidatorInternalError
                     .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
-                        typeof(LSLCodeScopeNode));
+                        typeof (LSLCodeScopeNode));
             }
 
 
@@ -977,10 +973,11 @@ namespace LibLSLCC.CodeValidator.Visitor
                     isError = true;
                 }
 
-                
+
                 if (!isError && expression.IsConstant)
                 {
-                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition), LSLConditionalStatementType.ElseIf);
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition),
+                        LSLConditionalStatementType.ElseIf);
                 }
             }
 
@@ -998,7 +995,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 throw LSLCodeValidatorInternalError
                     .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
-                        typeof(LSLCodeScopeNode));
+                        typeof (LSLCodeScopeNode));
             }
 
 
@@ -1042,7 +1039,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 throw LSLCodeValidatorInternalError
                     .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
-                        typeof(LSLCodeScopeNode));
+                        typeof (LSLCodeScopeNode));
             }
 
 
@@ -1261,7 +1258,8 @@ namespace LibLSLCC.CodeValidator.Visitor
             ScopingManager.IncrementScopeId();
 
 
-            var result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId, ScopingManager.CurrentCodeScopeType);
+            var result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId,
+                ScopingManager.CurrentCodeScopeType);
 
 
             var codeStatementContexts = context.codeStatement();
@@ -1274,7 +1272,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (child == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitCodeStatement", typeof(ILSLCodeStatement));
+                        .VisitReturnTypeException("VisitCodeStatement", typeof (ILSLCodeStatement));
                 }
 
                 if (child.HasErrors)
@@ -1329,7 +1327,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (code == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitCodeScope", typeof(LSLCodeScopeNode));
+                        .VisitReturnTypeException("VisitCodeScope", typeof (LSLCodeScopeNode));
                 }
 
                 return ReturnFromVisit(context, code);
@@ -1347,7 +1345,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (code == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitCodeStatement", typeof(ILSLCodeStatement));
+                        .VisitReturnTypeException("VisitCodeStatement", typeof (ILSLCodeStatement));
                 }
 
 
@@ -1455,14 +1453,14 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (codeScope == null)
             {
                 throw LSLCodeValidatorInternalError.VisitReturnTypeException("VisitCodeScope",
-                    typeof(LSLCodeScopeNode));
+                    typeof (LSLCodeScopeNode));
             }
 
 
             isError = codeScope.HasErrors || isError;
 
 
-            var result = new LSLEventHandlerNode(context, parameterList, codeScope) { HasErrors = isError };
+            var result = new LSLEventHandlerNode(context, parameterList, codeScope) {HasErrors = isError};
             ScopingManager.ResetScopeId();
 
             return ReturnFromVisit(context, result);
@@ -1523,7 +1521,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (codeScope == null)
             {
                 throw LSLCodeValidatorInternalError
-                    .VisitReturnTypeException("VisitCodeScope", typeof(LSLCodeScopeNode));
+                    .VisitReturnTypeException("VisitCodeScope", typeof (LSLCodeScopeNode));
             }
 
 
@@ -1578,7 +1576,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
                 else
                 {
-                    _referencesToNotYetDefinedFunctions.Add(functionSignature.Name, new List<LSLFunctionCallNode> { node });
+                    _referencesToNotYetDefinedFunctions.Add(functionSignature.Name, new List<LSLFunctionCallNode> {node});
                 }
             }
         }
@@ -1657,7 +1655,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && loopCondition.IsConstant)
                 {
-                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.DoWhile);
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange,
+                        LSLConditionalStatementType.DoWhile);
                 }
             }
             else
@@ -1690,7 +1689,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (code == null)
             {
                 throw LSLCodeValidatorInternalError
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement", typeof(LSLCodeScopeNode));
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement", typeof (LSLCodeScopeNode));
             }
 
 
@@ -1739,7 +1738,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && loopCondition.IsConstant)
                 {
-                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.While);
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange,
+                        LSLConditionalStatementType.While);
                 }
             }
             else
@@ -1774,7 +1774,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 throw LSLCodeValidatorInternalError
                     .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
-                        typeof(LSLCodeScopeNode));
+                        typeof (LSLCodeScopeNode));
             }
 
 
@@ -1811,7 +1811,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 {
                     throw LSLCodeValidatorInternalError
                         .VisitReturnTypeException("VisitOptionalExpressionList",
-                            typeof(LSLExpressionListNode));
+                            typeof (LSLExpressionListNode));
                 }
 
                 if (loopInit.HasErrors)
@@ -1841,7 +1841,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && loopCondition.IsConstant)
                 {
-                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange, LSLConditionalStatementType.For);
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(loopCondition.SourceCodeRange,
+                        LSLConditionalStatementType.For);
                 }
             }
 
@@ -1855,7 +1856,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 throw LSLCodeValidatorInternalError
                     .VisitReturnTypeException("VisitForLoopAfterthoughts",
-                        typeof(LSLExpressionListNode));
+                        typeof (LSLExpressionListNode));
             }
 
             if (expressionList.HasErrors)
@@ -1877,7 +1878,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 throw LSLCodeValidatorInternalError
                     .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
-                        typeof(LSLCodeScopeNode));
+                        typeof (LSLCodeScopeNode));
             }
 
 
@@ -2016,7 +2017,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         {
             if (InSingleStatementBlock && context.children[0] is LSLParser.LocalVariableDeclarationContext)
             {
-                var ctx = (LSLParser.LocalVariableDeclarationContext)context.children[0];
+                var ctx = (LSLParser.LocalVariableDeclarationContext) context.children[0];
 
                 SyntaxErrorListener.DefinedVariableInNonScopeBlock(new LSLSourceCodeRange(ctx));
                 return false;
@@ -2217,7 +2218,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 var checkAssign = result.LeftExpression as LSLBinaryExpressionNode;
                 if ((checkAssign != null && !checkAssign.Operation.IsAssignOrModifyAssign()) || checkAssign == null)
                 {
-
                     SyntaxErrorListener.
                         AssignmentToCompoundExpression(location);
 
@@ -2247,7 +2247,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .VisitContextInvalidState("VisitExpr_ModifyingAssignment");
             }
 
-           
+
             var result = VisitBinaryExpression(
                 new BinaryExpressionContext(context.expr_lvalue, context.operation, context.expr_rvalue, context,
                     true));
@@ -2600,11 +2600,11 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             var result = new LSLBinaryExpressionNode(
-                context.OriginalContext, 
-                context.OperationToken, 
+                context.OriginalContext,
+                context.OperationToken,
                 exprLvalue,
-                exprRvalue, 
-                validate.ResultType, 
+                exprRvalue,
+                validate.ResultType,
                 operationString)
             {
                 HasErrors = !validate.IsValid
@@ -2715,8 +2715,9 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
             }
 
-            var checkUpToIndex = functionSignature.HasVariadicParameter ? 
-                functionSignature.VariadicParameterIndex : expressions.Count;
+            var checkUpToIndex = functionSignature.HasVariadicParameter
+                ? functionSignature.VariadicParameterIndex
+                : expressions.Count;
 
             for (; parameterNumber < checkUpToIndex; parameterNumber++)
             {
@@ -2783,7 +2784,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (expressionList == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof(LSLExpressionListNode));
+                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof (LSLExpressionListNode));
                 }
 
 
@@ -2815,7 +2816,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (expressionList == null)
                 {
                     throw LSLCodeValidatorInternalError
-                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof(LSLExpressionListNode));
+                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof (LSLExpressionListNode));
                 }
 
 
@@ -2859,7 +2860,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (functionSignatures.Count() == 1)
             {
                 var signature = functionSignatures.First();
-                bool match = ValidateFunctionCallSignatureMatch(context, signature, expressionNodes);
+                var match = ValidateFunctionCallSignatureMatch(context, signature, expressionNodes);
 
                 if (match)
                 {
@@ -2870,10 +2871,10 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             foreach (var lslLibraryFunctionSignature in functionSignatures)
             {
-                bool overloadMatch = true;
+                var overloadMatch = true;
                 if (lslLibraryFunctionSignature.ParameterCount == expressionNodes.Count)
                 {
-                    int pindex = 0;
+                    var pindex = 0;
                     foreach (var expression in expressionNodes)
                     {
                         if (ExpressionValidator.ValidFunctionParameter(lslLibraryFunctionSignature, pindex, expression))
@@ -3094,7 +3095,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 throw LSLCodeValidatorInternalError.VisitReturnTypeException(
                     "VisitListLiteralExpressionList",
-                    typeof(LSLExpressionListNode));
+                    typeof (LSLExpressionListNode));
             }
 
             var result = new LSLListLiteralNode(context, expressionList)
@@ -3208,7 +3209,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             return false;
         }
-
 
 
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "context")]

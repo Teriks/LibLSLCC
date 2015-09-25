@@ -1,5 +1,31 @@
-#region
+#region FileInfo
 
+// 
+// File: FirestormDocumentationScraper.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Text.RegularExpressions;
@@ -8,7 +34,6 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Primitives;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.ScraperInterfaces;
-
 
 #endregion
 
@@ -32,12 +57,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public string DocumentFunction(LSLLibraryFunctionSignature function)
         {
-            bool scriptLibraryHasFunction = _scriptLibrary.Functions.Contains(function.Name);
+            var scriptLibraryHasFunction = _scriptLibrary.Functions.Contains(function.Name);
             if (scriptLibraryHasFunction)
             {
-                string doc = "";
-                bool hasDocSig = false;
-                bool hasMatchingDocSig = false;
+                var doc = "";
+                var hasDocSig = false;
+                var hasMatchingDocSig = false;
 
                 foreach (var f in _scriptLibrary.Functions.Get(function.Name))
                 {
@@ -131,7 +156,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             var match = _eventSig.Regex.Match(e.Desc);
             if (match.Success)
             {
-                LSLLibraryEventSignature sig = LSLLibraryEventSignature.Parse(match.ToString());
+                var sig = LSLLibraryEventSignature.Parse(match.ToString());
                 if (!sig.SignatureMatches(eventHandler))
                 {
                     Log.WriteLine(

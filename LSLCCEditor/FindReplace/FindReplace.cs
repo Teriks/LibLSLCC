@@ -1,4 +1,33 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: FindReplace.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,6 +39,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 
+#endregion
+
 namespace FindReplace
 {
     /// <summary>
@@ -20,8 +51,6 @@ namespace FindReplace
     {
         private FindReplaceDialog _dialog;
 
-
-
         public FindReplaceMgr()
         {
             ReplacementText = "";
@@ -29,8 +58,6 @@ namespace FindReplace
             SearchIn = SearchScope.CurrentDocument;
             ShowSearchIn = true;
         }
-
-
 
         /// <summary>
         ///     Instance of the dialog window
@@ -50,8 +77,6 @@ namespace FindReplace
             }
         }
 
-
-
         private IEditor GetCurrentEditor()
         {
             if (CurrentEditor == null)
@@ -65,15 +90,13 @@ namespace FindReplace
                 InterfaceConverter.Convert(CurrentEditor, typeof (IEditor), null, CultureInfo.CurrentCulture) as IEditor;
         }
 
-
-
         private IEditor GetNextEditor(bool previous = false)
         {
             if (!ShowSearchIn || SearchIn == SearchScope.CurrentDocument || Editors == null)
                 return GetCurrentEditor();
 
-            List<object> l = new List<object>(Editors.Cast<object>());
-            int i = l.IndexOf(CurrentEditor);
+            var l = new List<object>(Editors.Cast<object>());
+            var i = l.IndexOf(CurrentEditor);
             if (i >= 0)
             {
                 i = (i + (previous ? l.Count - 1 : +1))%l.Count;
@@ -81,8 +104,6 @@ namespace FindReplace
             }
             return GetCurrentEditor();
         }
-
-
 
         /// <summary>
         ///     Constructs a regular expression according to the currently selected search parameters.
@@ -94,7 +115,7 @@ namespace FindReplace
             try
             {
                 Regex r;
-                RegexOptions o = RegexOptions.None;
+                var o = RegexOptions.None;
                 if (SearchUp && !ForceLeftToRight)
                     o = o | RegexOptions.RightToLeft;
                 if (!CaseSensitive)
@@ -104,7 +125,7 @@ namespace FindReplace
                     r = new Regex(TextToFind, o);
                 else
                 {
-                    string s = Regex.Escape(TextToFind);
+                    var s = Regex.Escape(TextToFind);
                     if (UseWildcards)
                         s = s.Replace("\\*", ".*").Replace("\\?", ".");
                     if (WholeWord)
@@ -119,13 +140,11 @@ namespace FindReplace
             }
         }
 
-
-
         public void ReplaceAll(bool AskBefore = true)
         {
             try
             {
-                IEditor CE = GetCurrentEditor();
+                var CE = GetCurrentEditor();
                 if (CE == null) return;
 
                 if (!AskBefore ||
@@ -135,12 +154,12 @@ namespace FindReplace
                         "Replace all", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation) ==
                     MessageBoxResult.Yes)
                 {
-                    object InitialEditor = CurrentEditor;
+                    var InitialEditor = CurrentEditor;
                     // loop through all editors, until we are back at the starting editor                
                     do
                     {
-                        Regex r = GetRegEx(true); // force left to right, otherwise indices are screwed up
-                        int offset = 0;
+                        var r = GetRegEx(true); // force left to right, otherwise indices are screwed up
+                        var offset = 0;
                         CE.BeginChange();
                         foreach (Match m in r.Matches(CE.Text))
                         {
@@ -158,8 +177,6 @@ namespace FindReplace
             }
         }
 
-
-
         /// <summary>
         ///     Shows this instance of FindReplaceDialog, with the Find page active
         /// </summary>
@@ -173,15 +190,11 @@ namespace FindReplace
             dialog.txtFind.SelectAll();
         }
 
-
-
         public void ShowAsFind(TextEditor target, Window owner)
         {
             CurrentEditor = target;
             ShowAsFind(owner);
         }
-
-
 
         /// <summary>
         ///     Shows this instance of FindReplaceDialog, with the Replace page active
@@ -196,15 +209,11 @@ namespace FindReplace
             dialog.txtFind2.SelectAll();
         }
 
-
-
         public void ShowAsReplace(TextEditor target, Window owner)
         {
             CurrentEditor = target;
             ShowAsReplace(owner);
         }
-
-
 
         //static TextEditor txtCode;
         public void FindNext(object target, bool InvertLeftRight = false)
@@ -213,13 +222,11 @@ namespace FindReplace
             FindNext(InvertLeftRight);
         }
 
-
-
         public void FindNext(bool InvertLeftRight = false)
         {
             try
             {
-                IEditor CE = GetCurrentEditor();
+                var CE = GetCurrentEditor();
                 if (CE == null) return;
                 Regex r;
                 if (InvertLeftRight)
@@ -231,7 +238,7 @@ namespace FindReplace
                 else
                     r = GetRegEx();
 
-                Match m = r.Match(CE.Text,
+                var m = r.Match(CE.Text,
                     r.Options.HasFlag(RegexOptions.RightToLeft)
                         ? CE.SelectionStart
                         : CE.SelectionStart + CE.SelectionLength);
@@ -243,7 +250,7 @@ namespace FindReplace
                 {
                     // we have reached the end of the document
                     // start again from the beginning/end,
-                    object OldEditor = CurrentEditor;
+                    var OldEditor = CurrentEditor;
                     do
                     {
                         if (ShowSearchIn)
@@ -269,26 +276,22 @@ namespace FindReplace
             }
         }
 
-
-
         public void FindPrevious()
         {
             FindNext(true);
         }
 
-
-
         public void Replace()
         {
             try
             {
-                IEditor CE = GetCurrentEditor();
+                var CE = GetCurrentEditor();
                 if (CE == null) return;
 
                 // if currently selected text matches -> replace; anyways, find the next match
-                Regex r = GetRegEx();
-                string s = CE.Text.Substring(CE.SelectionStart, CE.SelectionLength); // CE.SelectedText;
-                Match m = r.Match(s);
+                var r = GetRegEx();
+                var s = CE.Text.Substring(CE.SelectionStart, CE.SelectionLength); // CE.SelectedText;
+                var m = r.Match(s);
                 if (m.Success && m.Index == 0 && m.Length == s.Length)
                 {
                     CE.Replace(CE.SelectionStart, CE.SelectionLength, ReplacementText);
@@ -303,8 +306,6 @@ namespace FindReplace
             }
         }
 
-
-
         /// <summary>
         ///     Closes the Find/Replace dialog, if it is open
         /// </summary>
@@ -312,8 +313,6 @@ namespace FindReplace
         {
             dialog.Close();
         }
-
-
 
         [Serializable]
         public class FindReplaceMalformedRegex : Exception
@@ -329,19 +328,13 @@ namespace FindReplace
             {
             }
 
-
-
             public FindReplaceMalformedRegex(string message) : base(message)
             {
             }
 
-
-
             public FindReplaceMalformedRegex(string message, Exception inner) : base(message, inner)
             {
             }
-
-
 
             protected FindReplaceMalformedRegex(
                 SerializationInfo info,
@@ -350,11 +343,7 @@ namespace FindReplace
             }
         }
 
-
-
-
         #region Exposed CommandBindings
-
 
         public CommandBinding FindBinding
         {
@@ -374,18 +363,14 @@ namespace FindReplace
         {
             get
             {
-                return new CommandBinding(ApplicationCommands.Replace, (s, e) => { if (AllowReplace) ShowAsReplace(dialog.Owner); });
+                return new CommandBinding(ApplicationCommands.Replace,
+                    (s, e) => { if (AllowReplace) ShowAsReplace(dialog.Owner); });
             }
         }
 
-
         #endregion
 
-
-
-
         #region Public Properties
-
 
         /// <summary>
         ///     The list of editors in which the search should take place.
@@ -592,7 +577,6 @@ namespace FindReplace
             DependencyProperty.Register("OwnerWindow", typeof (Window), typeof (FindReplaceMgr),
                 new UIPropertyMetadata(null));
 
-
         #endregion
     }
 
@@ -602,8 +586,6 @@ namespace FindReplace
         {
             return (int) value;
         }
-
-
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -620,8 +602,6 @@ namespace FindReplace
             return 0;
         }
 
-
-
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();
@@ -634,8 +614,6 @@ namespace FindReplace
         int SelectionStart { get; }
         int SelectionLength { get; }
 
-
-
         /// <summary>
         ///     Selects the specified portion of Text and scrolls that part into view.
         /// </summary>
@@ -643,18 +621,12 @@ namespace FindReplace
         /// <param name="length"></param>
         void Select(int start, int length);
 
-
-
         void Replace(int start, int length, string ReplaceWith);
-
-
 
         /// <summary>
         ///     This method is called before a replace all operation.
         /// </summary>
         void BeginChange();
-
-
 
         /// <summary>
         ///     This method is called after a replace all operation.

@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: LSLLibraryConstantSignature.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -9,7 +35,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.Collections;
-
 
 #endregion
 
@@ -66,14 +91,12 @@ namespace LibLSLCC.CodeValidator.Components
             get { return _properties; }
         }
 
-
         public string SignatureString
         {
             get { return LSLTypeTools.ToLSLTypeString(Type) + " " + Name + " = " + ValueString; }
         }
 
         public string DocumentationString { get; set; }
-
 
         public string SignatureAndDocumentation
         {
@@ -89,11 +112,9 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
-        public LSLType Type { get; private set; }
-        public string Name { get; private set; }
+        public LSLType Type { get; }
+        public string Name { get; }
         public string ValueString { get; private set; }
-
 
         /// <summary>
         ///     This method is reserved and should not be used. When implementing the IXmlSerializable interface, you should return
@@ -111,7 +132,6 @@ namespace LibLSLCC.CodeValidator.Components
             return null;
         }
 
-
         /// <summary>
         ///     Generates an object from its XML representation.
         /// </summary>
@@ -120,10 +140,10 @@ namespace LibLSLCC.CodeValidator.Components
         {
             reader.MoveToContent();
 
-            bool hasSubsets = false;
-            bool hasType = false;
-            bool hasName = false;
-            bool hasValue = false;
+            var hasSubsets = false;
+            var hasType = false;
+            var hasName = false;
+            var hasValue = false;
 
             var lineNumberInfo = (IXmlLineInfo) reader;
 
@@ -131,7 +151,7 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 if (reader.Name == "Value")
                 {
-                    string val = reader.Value;
+                    var val = reader.Value;
                     if (!string.IsNullOrWhiteSpace(val))
                     {
                         hasValue = true;
@@ -252,7 +272,6 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
         /// <summary>
         ///     Converts an object into its XML representation.
         /// </summary>
@@ -274,7 +293,6 @@ namespace LibLSLCC.CodeValidator.Components
             return SignatureString;
         }
 
-
         public void SetSubsets(IEnumerable<string> subsets)
         {
             _subsets = new HashSet<string>(subsets);
@@ -295,14 +313,12 @@ namespace LibLSLCC.CodeValidator.Components
             _subsets.UnionWith(subsets);
         }
 
-
         public static LSLLibraryConstantSignature FromXmlFragment(XmlReader reader)
         {
             var x = new LSLLibraryConstantSignature();
             x.ReadXml(reader);
             return x;
         }
-
 
         public override int GetHashCode()
         {
@@ -312,7 +328,6 @@ namespace LibLSLCC.CodeValidator.Components
 
             return hash;
         }
-
 
         public override bool Equals(object obj)
         {

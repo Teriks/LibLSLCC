@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0"?>
+
 <LSLLibraryData>
   <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="val" Type="Integer" />
@@ -2814,12 +2815,12 @@
   </EventHandler>
   <EventHandler Name="experience_permissions" Subsets="lsl,os-lsl">
     <Parameter Name="agent_id" Type="Key" />
-    <DocumentationString >The agent has approved an experience permissions request. This may be through interaction with the experience permission dialog or the experience profile, or automatically if the agent has previously approved the experience.</DocumentationString>
+    <DocumentationString>The agent has approved an experience permissions request. This may be through interaction with the experience permission dialog or the experience profile, or automatically if the agent has previously approved the experience.</DocumentationString>
   </EventHandler>
   <EventHandler Name="experience_permissions_denied" Subsets="lsl,os-lsl">
     <Parameter Name="agent_id" Type="Key" />
     <Parameter Name="reason" Type="Integer" />
-    <DocumentationString >The agent has denied experience permission.</DocumentationString>
+    <DocumentationString>The agent has denied experience permission.</DocumentationString>
   </EventHandler>
   <EventHandler Name="http_request" Subsets="lsl,os-lsl">
     <Parameter Name="request_id" Type="Key" />
@@ -3283,31 +3284,31 @@
     <DocumentationString>Used with llSetClickAction to set touch as the default action when object is clicked</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_ATOM" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/atom+xml".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/atom+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_FORM" Type="Integer" Value="7" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/x-www-form-urlencoded".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/x-www-form-urlencoded".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_HTML" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "text/html".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "text/html".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_JSON" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/json".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/json".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_LLSD" Type="Integer" Value="6" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/llsd+xml".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/llsd+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_RSS" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/rss+xml".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/rss+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_TEXT" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "text/plain".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "text/plain".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_XHTML" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/xhtml+xml".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/xhtml+xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTENT_TYPE_XML" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString >Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/xml".</DocumentationString>
+    <DocumentationString>Sets the Internet media type "Content-Type" header of any subsequent LSL HTTP server response via llHTTPResponse to "application/xml".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CONTROL_BACK" Type="Integer" Value="2" Subsets="lsl,os-lsl">
     <DocumentationString>Passed to llTakeControls library function and used control event handler to test for agent back control</DocumentationString>
@@ -3409,7 +3410,7 @@
     <DocumentationString>integer_constant for Boolean operations</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="FORCE_DIRECT_PATH" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString >Used with llNavigateTo( vector pos, list options );  Makes character navigate in a straight line toward pos. May be set to TRUE or FALSE</DocumentationString>
+    <DocumentationString>Used with llNavigateTo( vector pos, list options );  Makes character navigate in a straight line toward pos. May be set to TRUE or FALSE</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="HORIZONTAL" Type="Integer" Value="1" Subsets="lsl">
     <DocumentationString>Constant to indicate that the orientation of the capsule for a Pathfinding character is horizontal.</DocumentationString>
@@ -3477,31 +3478,49 @@
   <LibraryConstant Name="JSON_APPEND" Type="Integer" Value="-1" Subsets="lsl">
     <DocumentationString>Used with llJsonSetValue as a specifier to indicate appending the value to the end of the array at that level.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_ARRAY" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD2&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD2;&amp;#13;llUnescapeUrl(%EF%B7%92);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·’&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_ARRAY" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD2&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD2;&amp;#13;llUnescapeUrl(%EF%B7%92);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·’&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Represents a json datatype mappable to the LSL datatype "list"</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_DELETE" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD8&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD8;&amp;#13;llUnescapeUrl(%EF%B7%98);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_DELETE" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD8&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD8;&amp;#13;llUnescapeUrl(%EF%B7%98);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Used to delete a value within a JSON text string.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_FALSE" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD7&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD7;&amp;#13;llUnescapeUrl(%EF%B7%97);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_FALSE" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD7&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD7;&amp;#13;llUnescapeUrl(%EF%B7%97);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Represents the constant "false" of a json value.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_INVALID" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDDO&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD0;&amp;#13;llUnescapeUrl(%EF%B7%90);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_INVALID" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDDO&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD0;&amp;#13;llUnescapeUrl(%EF%B7%90);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>A return value that indicates an invalid type was specified to an llJson* function</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_NULL" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD5&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD5;&amp;#13;llUnescapeUrl(%EF%B7%95);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_NULL" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD5&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD5;&amp;#13;llUnescapeUrl(%EF%B7%95);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Represents the constant "null" of a json value.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_NUMBER" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD3&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD3;&amp;#13;llUnescapeUrl(%EF%B7%93);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_NUMBER" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD3&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD3;&amp;#13;llUnescapeUrl(%EF%B7%93);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Represents a json datatype mappable to the LSL datatypes "integer" and "float"</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_OBJECT" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD1&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD1;&amp;#13;llUnescapeUrl(%EF%B7%91);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·‘&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_OBJECT" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD1&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD1;&amp;#13;llUnescapeUrl(%EF%B7%91);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï·‘&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Represents a json datatype represented in LSL as a strided list of name/value pairs</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_STRING" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD4&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD4;&amp;#13;llUnescapeUrl(%EF%B7%94);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_STRING" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD4&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD4;&amp;#13;llUnescapeUrl(%EF%B7%94);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Represents a json datatype mappable to the LSL datatype "string"</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="JSON_TRUE" Type="String" Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD6&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD6;&amp;#13;llUnescapeUrl(%EF%B7%96);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;" Subsets="lsl">
+  <LibraryConstant Name="JSON_TRUE" Type="String"
+                   Value="&lt;span title=&quot;Special Unicode Character&amp;#13;Unicode:&amp;#9;U+FDD6&amp;#13;HTML:&amp;#9;&amp;amp;#xFDD6;&amp;#13;llUnescapeUrl(%EF%B7%96);&quot; style=&quot;border-bottom:1px dotted; cursor:help;&quot;&gt;&quot;ï¿½&quot;&lt;/span&gt;"
+                   Subsets="lsl">
     <DocumentationString>Represents the constant "true" of a json value.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="KFM_CMD_PAUSE" Type="Integer" Value="2" Subsets="lsl,os-lsl">
@@ -3621,14 +3640,15 @@
   <LibraryConstant Name="MASK_OWNER" Type="Integer" Value="1" Subsets="lsl,os-lsl">
     <DocumentationString>Owner permissions</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="NULL_KEY" Type="String" Value="&quot;00000000-0000-0000-0000-000000000000&quot;" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="NULL_KEY" Type="String" Value="&quot;00000000-0000-0000-0000-000000000000&quot;"
+                   Subsets="lsl,os-lsl">
     <DocumentationString>Indicates an empty key</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_ATTACHED_POINT" Type="Integer" Value="19" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's attachment point.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_BODY_SHAPE_TYPE" Type="Integer" Value="26" Subsets="lsl">
-    <DocumentationString >This is a flag used with llGetObjectDetails to get the "gender" setting of an avatar's currently worn shape.</DocumentationString>
+    <DocumentationString>This is a flag used with llGetObjectDetails to get the "gender" setting of an avatar's currently worn shape.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_CHARACTER_TIME" Type="Integer" Value="17" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's average CPU time (in seconds) used by the object for navigation, if the object is a pathfinding character. Returns 0 for non-characters.</DocumentationString>
@@ -3643,10 +3663,10 @@
     <DocumentationString>Used with llGetObjectDetails to get an object's group's key</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_HOVER_HEIGHT" Type="Float" Value="25" Subsets="lsl">
-    <DocumentationString >This is a flag used with llGetObjectDetails to get the hover height of the avatar.</DocumentationString>
+    <DocumentationString>This is a flag used with llGetObjectDetails to get the hover height of the avatar.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_LAST_OWNER_ID" Type="Integer" Value="27" Subsets="lsl">
-    <DocumentationString >This is a flag used with llGetObjectDetails to get the last object owner key (if known).</DocumentationString>
+    <DocumentationString>This is a flag used with llGetObjectDetails to get the last object owner key (if known).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_NAME" Type="Integer" Value="1" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llGetObjectDetails to get an object's name</DocumentationString>
@@ -4431,16 +4451,20 @@
   <LibraryConstant Name="STRING_TRIM_TAIL" Type="Integer" Value="2" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llStringTrim to trim trailing spaces from a string</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_BLANK" Type="String" Value="&quot;5748decc-f629-461c-9a36-a35a221fe21f&quot;" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_BLANK" Type="String" Value="&quot;5748decc-f629-461c-9a36-a35a221fe21f&quot;"
+                   Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the "Blank" texture</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_MEDIA" Type="String" Value="&quot;8b5fec65-8d8d-9dc5-cda8-8fdf2716e361&quot;" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_MEDIA" Type="String" Value="&quot;8b5fec65-8d8d-9dc5-cda8-8fdf2716e361&quot;"
+                   Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the "Default Media" texture</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_PLYWOOD" Type="String" Value="&quot;89556747-24cb-43ed-920b-47caed15465f&quot;" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_PLYWOOD" Type="String" Value="&quot;89556747-24cb-43ed-920b-47caed15465f&quot;"
+                   Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the default "Plywood" texture</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_TRANSPARENT" Type="String" Value="&quot;8dcd4a48-2d37-4909-9f78-f7a9eb4ef903&quot;" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_TRANSPARENT" Type="String" Value="&quot;8dcd4a48-2d37-4909-9f78-f7a9eb4ef903&quot;"
+                   Subsets="lsl,os-lsl">
     <DocumentationString>UUID for the "White - Transparent" texture</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="TOUCH_INVALID_FACE" Type="Integer" Value="-1" Subsets="lsl,os-lsl">
@@ -4582,22 +4606,22 @@
     <DocumentationString>Rotation of vehicle axes relative to local frame</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_AIRPLANE" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString >Uses linear deflection for lift, no hover, and banking to turn.</DocumentationString>
+    <DocumentationString>Uses linear deflection for lift, no hover, and banking to turn.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_BALLOON" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString >Hover, and friction, but no deflection.</DocumentationString>
+    <DocumentationString>Hover, and friction, but no deflection.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_BOAT" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString >Hovers over water with lots of friction and some anglar deflection.</DocumentationString>
+    <DocumentationString>Hovers over water with lots of friction and some anglar deflection.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_CAR" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString >Another vehicle that bounces along the ground but needs the motors to be driven from external controls or timer events.</DocumentationString>
+    <DocumentationString>Another vehicle that bounces along the ground but needs the motors to be driven from external controls or timer events.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_NONE" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString >Turns off vehicle support</DocumentationString>
+    <DocumentationString>Turns off vehicle support</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_TYPE_SLED" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString >Simple vehicle that bumps along the ground, and likes to move along it’s local x-axis.</DocumentationString>
+    <DocumentationString>Simple vehicle that bumps along the ground, and likes to move along it’s local x-axis.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_VERTICAL_ATTRACTION_EFFICIENCY" Type="Integer" Value="36" Subsets="lsl,os-lsl">
     <DocumentationString>A slider between 0 (bouncy) and 1 (critically damped) attraction of vehicle z-axis to world z-axis (vertical)</DocumentationString>
@@ -4612,163 +4636,163 @@
     <DocumentationString>&lt;0.0, 0.0, 0.0&gt;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_FLAGS" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString >Various flags controlling the behavior of the particle system</DocumentationString>
+    <DocumentationString>Various flags controlling the behavior of the particle system</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BOUNCE_MASK" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, specifies particles will bounce off a plane at the region Z height of the emitter. On "bounce", each particle reverses velocity and angle. This only works for particles above the plane falling down on it.</DocumentationString>
+    <DocumentationString>When set, specifies particles will bounce off a plane at the region Z height of the emitter. On "bounce", each particle reverses velocity and angle. This only works for particles above the plane falling down on it.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_EMISSIVE_MASK" Type="Integer" Value="256" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, particles are full-bright and are unaffected by global lighting (sunlight). Otherwise, particles will be lit depending on the current global lighting conditions. Note that point lights do illuminate non-emissive particles.</DocumentationString>
+    <DocumentationString>When set, particles are full-bright and are unaffected by global lighting (sunlight). Otherwise, particles will be lit depending on the current global lighting conditions. Note that point lights do illuminate non-emissive particles.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_FOLLOW_SRC_MASK" Type="Integer" Value="16" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, particles move relative to the position of the emitter. Otherwise, particle position and movement are unaffected by the position/movement of the emitter. This flag disables the PSYS_SRC_BURST_RADIUS rule.</DocumentationString>
+    <DocumentationString>When set, particles move relative to the position of the emitter. Otherwise, particle position and movement are unaffected by the position/movement of the emitter. This flag disables the PSYS_SRC_BURST_RADIUS rule.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_FOLLOW_VELOCITY_MASK" Type="Integer" Value="32" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, particles rotate to orient their "top" towards the direction of movement or emission. Otherwise, particles are oriented vertically as their textures would appear (top of texture at top, left at left).</DocumentationString>
+    <DocumentationString>When set, particles rotate to orient their "top" towards the direction of movement or emission. Otherwise, particles are oriented vertically as their textures would appear (top of texture at top, left at left).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_INTERP_COLOR_MASK" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, particle color and alpha transition from their START settings to their END settings during the particle's lifetime. The transition is a smooth interpolation.</DocumentationString>
+    <DocumentationString>When set, particle color and alpha transition from their START settings to their END settings during the particle's lifetime. The transition is a smooth interpolation.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_INTERP_SCALE_MASK" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, particle size/scale transitions from its START setting to its END setting during the particle's lifetime.</DocumentationString>
+    <DocumentationString>When set, particle size/scale transitions from its START setting to its END setting during the particle's lifetime.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_RIBBON_MASK" Type="Integer" Value="1024" Subsets="lsl,os-lsl">
-    <DocumentationString >Joins a stream of particles together into a continuous strip. Particle textures are stretched (or squeezed) to join their right edges to their predecessor's left. Ribbon 'width' is controlled by the 'x' values of start and end scale. (The 'y' values are ignored. The distance between particles controls the 'length' of each ribbon segment). Unlike other particle effects, ribbon segments are not rendered facing the viewer's camera. The Z axis of each new particle mimics the Z axis of the emitter prim. Ribbon segments will not render if they have no 'length' - this happens when particles move only 'up' or 'down' the local Z-axis of their emitter prim. PSYS_PART_FOLLOW_VELOCITY_MASK has no effect on ribbons. For a simple ribbon effect, try using the DROP pattern, TEXTURE_BLANK, ACCEL and/or WIND.</DocumentationString>
+    <DocumentationString>Joins a stream of particles together into a continuous strip. Particle textures are stretched (or squeezed) to join their right edges to their predecessor's left. Ribbon 'width' is controlled by the 'x' values of start and end scale. (The 'y' values are ignored. The distance between particles controls the 'length' of each ribbon segment). Unlike other particle effects, ribbon segments are not rendered facing the viewer's camera. The Z axis of each new particle mimics the Z axis of the emitter prim. Ribbon segments will not render if they have no 'length' - this happens when particles move only 'up' or 'down' the local Z-axis of their emitter prim. PSYS_PART_FOLLOW_VELOCITY_MASK has no effect on ribbons. For a simple ribbon effect, try using the DROP pattern, TEXTURE_BLANK, ACCEL and/or WIND.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_TARGET_LINEAR_MASK" Type="Integer" Value="128" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, emitted particles move in a straight evenly-spaced line towards the target specified by the PSYS_SRC_TARGET_KEY rule. This option ignores all Non-DROP patterns and their dependent attributes (radius, burst speeds, angles, and omega). PSYS_SRC_ACCEL and PSYS_PART_WIND_MASK are ignored as well. Using PSYS_PART_BOUNCE_MASK while the target is 'below' the emitter will cause the linear particle stream to deflect upwards, terminating above the target.</DocumentationString>
+    <DocumentationString>When set, emitted particles move in a straight evenly-spaced line towards the target specified by the PSYS_SRC_TARGET_KEY rule. This option ignores all Non-DROP patterns and their dependent attributes (radius, burst speeds, angles, and omega). PSYS_SRC_ACCEL and PSYS_PART_WIND_MASK are ignored as well. Using PSYS_PART_BOUNCE_MASK while the target is 'below' the emitter will cause the linear particle stream to deflect upwards, terminating above the target.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_TARGET_POS_MASK" Type="Integer" Value="64" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, emitted particles change course during their lifetime, attempting to move towards the target specified by the PSYS_SRC_TARGET_KEY rule by the time they expire. Note that if no target is specified, the target moves out of range, or an invalid target is specified, the particles target the prim itself.</DocumentationString>
+    <DocumentationString>When set, emitted particles change course during their lifetime, attempting to move towards the target specified by the PSYS_SRC_TARGET_KEY rule by the time they expire. Note that if no target is specified, the target moves out of range, or an invalid target is specified, the particles target the prim itself.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_WIND_MASK" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString >When set, particle movement is affected by the wind. It is applied as a secondary force on the particles.</DocumentationString>
+    <DocumentationString>When set, particle movement is affected by the wind. It is applied as a secondary force on the particles.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BEAM_MASK" Type="Integer" Value="512" Subsets="lsl">
-    <DocumentationString >(unimplemented) mask but in the enum</DocumentationString>
+    <DocumentationString>(unimplemented) mask but in the enum</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LL_PART_HUD" Type="Integer" Value="1073741824" Subsets="lsl">
-    <DocumentationString >Used by the viewer to keep HUD and World particle sources separate.</DocumentationString>
+    <DocumentationString>Used by the viewer to keep HUD and World particle sources separate.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LL_PART_DEAD_MASK" Type="Integer" Value="-2147483648" Subsets="lsl">
-    <DocumentationString >Removes particles, not compatible with any other PSYS_PART_*_MASK</DocumentationString>
+    <DocumentationString>Removes particles, not compatible with any other PSYS_PART_*_MASK</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_PATTERN" Type="Integer" Value="9" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the general emission pattern.</DocumentationString>
+    <DocumentationString>Specifies the general emission pattern.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_PATTERN_EXPLODE" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString >Sprays particles outwards in a spherical area. The Initial velocity of each particle is determined by PSYS_SRC_BURST_SPEED_MIN and PSYS_SRC_BURST_SPEED_MAX. The EXPLODE pattern ignores the ANGLE parameters.</DocumentationString>
+    <DocumentationString>Sprays particles outwards in a spherical area. The Initial velocity of each particle is determined by PSYS_SRC_BURST_SPEED_MIN and PSYS_SRC_BURST_SPEED_MAX. The EXPLODE pattern ignores the ANGLE parameters.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE_CONE" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString >Sprays particles outwards in a spherical, sub-spherical, conical or ring shaped area, as defined by the ANGLE parameters PSYS_SRC_ANGLE_BEGIN and PSYS_SRC_ANGLE_END. The ANGLE_CONE pattern can be used to imitate the EXPLODE pattern by explicitly setting PSYS_SRC_ANGLE_BEGIN to 0.00000 and PSYS_SRC_ANGLE_END to 3.14159 (or PI) (or vice versa).</DocumentationString>
+    <DocumentationString>Sprays particles outwards in a spherical, sub-spherical, conical or ring shaped area, as defined by the ANGLE parameters PSYS_SRC_ANGLE_BEGIN and PSYS_SRC_ANGLE_END. The ANGLE_CONE pattern can be used to imitate the EXPLODE pattern by explicitly setting PSYS_SRC_ANGLE_BEGIN to 0.00000 and PSYS_SRC_ANGLE_END to 3.14159 (or PI) (or vice versa).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString >Sprays particles outward in a flat circular, semi-circular, arc or ray shaped areas, as defined by PSYS_SRC_ANGLE_BEGIN and PSYS_SRC_ANGLE_END. The circular pattern radiates outwards around the prim's local X axis line.</DocumentationString>
+    <DocumentationString>Sprays particles outward in a flat circular, semi-circular, arc or ray shaped areas, as defined by PSYS_SRC_ANGLE_BEGIN and PSYS_SRC_ANGLE_END. The circular pattern radiates outwards around the prim's local X axis line.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_PATTERN_DROP" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString >Creates particles with no initial velocity. The DROP pattern will override any values given for PSYS_SRC_BURST_RADIUS, PSYS_SRC_BURST_SPEED_MIN, and PSYS_SRC_BURST_SPEED_MAX, setting each to 0.00000. (All patterns will behave like the DROP pattern, if RADIUS, SPEED_MIN and SPEED_MAX are explicitly set to 0.0000.)</DocumentationString>
+    <DocumentationString>Creates particles with no initial velocity. The DROP pattern will override any values given for PSYS_SRC_BURST_RADIUS, PSYS_SRC_BURST_SPEED_MIN, and PSYS_SRC_BURST_SPEED_MAX, setting each to 0.00000. (All patterns will behave like the DROP pattern, if RADIUS, SPEED_MIN and SPEED_MAX are explicitly set to 0.0000.)</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY" Type="Integer" Value="16" Subsets="lsl,os-lsl">
-    <DocumentationString >(incomplete implementation) acts the same as the PSYS_SRC_PATTERN_DROP pattern, it is believed that the original intention for this pattern was to invert the effect of the ANGLE parameters, making them delineate an area where particles were NOT to be sprayed. (effectively the inverse or opposite of the behavior of the ANGLE_CONE pattern).</DocumentationString>
+    <DocumentationString>(incomplete implementation) acts the same as the PSYS_SRC_PATTERN_DROP pattern, it is believed that the original intention for this pattern was to invert the effect of the ANGLE parameters, making them delineate an area where particles were NOT to be sprayed. (effectively the inverse or opposite of the behavior of the ANGLE_CONE pattern).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_BURST_RADIUS" Type="Integer" Value="16" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the distance from the emitter where particles will be created. This rule is ignored when the PSYS_PART_FOLLOW_SRC_MASK flag is set.  Maximum value is 50.00</DocumentationString>
+    <DocumentationString>Specifies the distance from the emitter where particles will be created. This rule is ignored when the PSYS_PART_FOLLOW_SRC_MASK flag is set.  Maximum value is 50.00</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_ANGLE_BEGIN" Type="Integer" Value="22" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies a half angle, in radians, of a circular or spherical "dimple" or conic section (starting from the emitter facing) within which particles will NOT be emitted. Valid values are the same as for PSYS_SRC_ANGLE_END, though the effects are reversed accordingly. If the pattern is PSYS_SRC_PATTERN_ANGLE, the presentation is a 2D flat circular section. If PSYS_SRC_PATTERN_ANGLE_CONE or PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY is used, the presentation is a 3D spherical section. Note that the value of this parameter and PSYS_SRC_ANGLE_END are internally re-ordered such that this parameter gets the smaller of the two values.</DocumentationString>
+    <DocumentationString>Specifies a half angle, in radians, of a circular or spherical "dimple" or conic section (starting from the emitter facing) within which particles will NOT be emitted. Valid values are the same as for PSYS_SRC_ANGLE_END, though the effects are reversed accordingly. If the pattern is PSYS_SRC_PATTERN_ANGLE, the presentation is a 2D flat circular section. If PSYS_SRC_PATTERN_ANGLE_CONE or PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY is used, the presentation is a 3D spherical section. Note that the value of this parameter and PSYS_SRC_ANGLE_END are internally re-ordered such that this parameter gets the smaller of the two values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_ANGLE_END" Type="Integer" Value="23" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies a half angle, in radians, of a circular or spherical "dimple" or conic section (starting from the emitter facing) within which particles WILL be emitted. Valid values are 0.0, which will result in particles being emitted in a straight line in the direction of the emitter facing, to PI, which will result in particles being emitted in a full circular or spherical arc around the emitter, not including the "dimple" or conic section defined by PSYS_SRC_ANGLE_BEGIN. If the pattern is PSYS_SRC_PATTERN_ANGLE, the presentation is a 2D flat circular section. If PSYS_SRC_PATTERN_ANGLE_CONE or PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY is used, the presentation is a 3D spherical section. Note that the value of this parameter and PSYS_SRC_ANGLE_BEGIN are internally re-ordered such that this parameter gets the larger of the two values.</DocumentationString>
+    <DocumentationString>Specifies a half angle, in radians, of a circular or spherical "dimple" or conic section (starting from the emitter facing) within which particles WILL be emitted. Valid values are 0.0, which will result in particles being emitted in a straight line in the direction of the emitter facing, to PI, which will result in particles being emitted in a full circular or spherical arc around the emitter, not including the "dimple" or conic section defined by PSYS_SRC_ANGLE_BEGIN. If the pattern is PSYS_SRC_PATTERN_ANGLE, the presentation is a 2D flat circular section. If PSYS_SRC_PATTERN_ANGLE_CONE or PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY is used, the presentation is a 3D spherical section. Note that the value of this parameter and PSYS_SRC_ANGLE_BEGIN are internally re-ordered such that this parameter gets the larger of the two values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_INNERANGLE" Type="Integer" Value="10" Subsets="lsl,os-lsl">
-    <DocumentationString >DEPRECATED: Use PSYS_SRC_ANGLE_BEGIN instead. Works similar to its replacement rule, except the edge of the section is aligned with the emitter facing, rather than its center.</DocumentationString>
+    <DocumentationString>DEPRECATED: Use PSYS_SRC_ANGLE_BEGIN instead. Works similar to its replacement rule, except the edge of the section is aligned with the emitter facing, rather than its center.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_OUTERANGLE" Type="Integer" Value="11" Subsets="lsl,os-lsl">
-    <DocumentationString >DEPRECATED: Use PSYS_SRC_ANGLE_END instead. Works similar to its replacement rule, except the edge of the section is aligned with the emitter facing, rather than the section's center.</DocumentationString>
+    <DocumentationString>DEPRECATED: Use PSYS_SRC_ANGLE_END instead. Works similar to its replacement rule, except the edge of the section is aligned with the emitter facing, rather than the section's center.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_TARGET_KEY" Type="Integer" Value="20" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the key of a target object, prim, or agent towards which the particles will change course and move (if PSYS_PART_TARGET_POS_MASK is specified) or will move in a straight line (if PSYS_PART_TARGET_LINEAR_MASK is specified). They will attempt to end up at the geometric center of the target at the end of their lifetime. Requires the PSYS_PART_TARGET_POS_MASK or PSYS_PART_TARGET_LINEAR_MASK flag be set.</DocumentationString>
+    <DocumentationString>Specifies the key of a target object, prim, or agent towards which the particles will change course and move (if PSYS_PART_TARGET_POS_MASK is specified) or will move in a straight line (if PSYS_PART_TARGET_LINEAR_MASK is specified). They will attempt to end up at the geometric center of the target at the end of their lifetime. Requires the PSYS_PART_TARGET_POS_MASK or PSYS_PART_TARGET_LINEAR_MASK flag be set.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_START_COLOR" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString >A vector specifying the color of the particles upon emission.</DocumentationString>
+    <DocumentationString>A vector specifying the color of the particles upon emission.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_END_COLOR" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString >A vector specifying the color the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_COLOR_MASK flag is set.</DocumentationString>
+    <DocumentationString>A vector specifying the color the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_COLOR_MASK flag is set.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_START_ALPHA" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the alpha of the particles upon emission. Valid values are in the range 0.0 to 1.0. Lower values are more transparent; higher ones are more opaque.</DocumentationString>
+    <DocumentationString>Specifies the alpha of the particles upon emission. Valid values are in the range 0.0 to 1.0. Lower values are more transparent; higher ones are more opaque.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_END_ALPHA" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the alpha the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_COLOR_MASK flag is set. Valid values are the same as PSYS_PART_START_ALPHA.</DocumentationString>
+    <DocumentationString>Specifies the alpha the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_COLOR_MASK flag is set. Valid values are the same as PSYS_PART_START_ALPHA.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_START_SCALE" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the scale or size of the particles upon emission. Valid values for each direction are 0.03125 to 4.0, in meters. The actual particle size is always a multiple of 0.03125. Smaller changes don't have any effect. Since particles are essentially 2D sprites, the Z component of the vector is ignored and can be set to 0.0.</DocumentationString>
+    <DocumentationString>Specifies the scale or size of the particles upon emission. Valid values for each direction are 0.03125 to 4.0, in meters. The actual particle size is always a multiple of 0.03125. Smaller changes don't have any effect. Since particles are essentially 2D sprites, the Z component of the vector is ignored and can be set to 0.0.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_END_SCALE" Type="Integer" Value="6" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the scale or size the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_SCALE_MASK flag is set. Valid values are the same as PSYS_PART_START_SCALE.</DocumentationString>
+    <DocumentationString>Specifies the scale or size the particles transition to during their lifetime. Only used if the PSYS_PART_INTERP_SCALE_MASK flag is set. Valid values are the same as PSYS_PART_START_SCALE.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_TEXTURE" Type="Integer" Value="12" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the name of a texture in the emitter prim's inventory to use for each particle. Alternatively, you may specify an asset key UUID for a texture. If using llLinkParticleSystem and texture is not a UUID, texture must be in the emitter prim (not necessarily with the script).</DocumentationString>
+    <DocumentationString>Specifies the name of a texture in the emitter prim's inventory to use for each particle. Alternatively, you may specify an asset key UUID for a texture. If using llLinkParticleSystem and texture is not a UUID, texture must be in the emitter prim (not necessarily with the script).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_START_GLOW" Type="Integer" Value="26" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the glow of the particles upon emission. Valid values are in the range of 0.0 (no glow) to 1.0 (full glow).</DocumentationString>
+    <DocumentationString>Specifies the glow of the particles upon emission. Valid values are in the range of 0.0 (no glow) to 1.0 (full glow).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_END_GLOW" Type="Integer" Value="27" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the glow that the particles transition to during their lifetime. Valid values are the same as PSYS_PART_START_GLOW.</DocumentationString>
+    <DocumentationString>Specifies the glow that the particles transition to during their lifetime. Valid values are the same as PSYS_PART_START_GLOW.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BLEND_FUNC_SOURCE" Type="Integer" Value="24" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies how blending function uses the incoming particle's color and alpha information to produce the rendered result. Defaults to PSYS_PART_BF_SOURCE_ALPHA.</DocumentationString>
+    <DocumentationString>Specifies how blending function uses the incoming particle's color and alpha information to produce the rendered result. Defaults to PSYS_PART_BF_SOURCE_ALPHA.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BLEND_FUNC_DEST" Type="Integer" Value="25" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies how blending function uses the current framebuffer's color and alpha information to produce the rendered result. Defaults to PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA. To make particles blend with the background in a less opaque and more luminescent way use PSYS_PART_BF_ONE for dest and the default for source. Most other blending combinations will render the invisible/alpha portion of your particle texture, unless the invisible area of your texture is all black (or, in some cases, unless it is all white).</DocumentationString>
+    <DocumentationString>Specifies how blending function uses the current framebuffer's color and alpha information to produce the rendered result. Defaults to PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA. To make particles blend with the background in a less opaque and more luminescent way use PSYS_PART_BF_ONE for dest and the default for source. Most other blending combinations will render the invisible/alpha portion of your particle texture, unless the invisible area of your texture is all black (or, in some cases, unless it is all white).</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE" Type="Integer" Value="0" Subsets="lsl,os-lsl">
-    <DocumentationString >Do not scale the source or destination RGBA values.</DocumentationString>
+    <DocumentationString>Do not scale the source or destination RGBA values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ZERO" Type="Integer" Value="1" Subsets="lsl,os-lsl">
-    <DocumentationString >Zero out the source or destination RGBA values.</DocumentationString>
+    <DocumentationString>Zero out the source or destination RGBA values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_DEST_COLOR" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString >Scale the RGBA values by the RGBA values of the destination.</DocumentationString>
+    <DocumentationString>Scale the RGBA values by the RGBA values of the destination.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_SOURCE_COLOR" Type="Integer" Value="3" Subsets="lsl,os-lsl">
-    <DocumentationString >Scale the RGBA values by the RGBA values of the particle source.</DocumentationString>
+    <DocumentationString>Scale the RGBA values by the RGBA values of the particle source.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE_MINUS_DEST_COLOR" Type="Integer" Value="4" Subsets="lsl,os-lsl">
-    <DocumentationString >Scale the RGBA values by the inverted RGBA values of the destination.</DocumentationString>
+    <DocumentationString>Scale the RGBA values by the inverted RGBA values of the destination.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE_MINUS_SOURCE_COLOR" Type="Integer" Value="5" Subsets="lsl,os-lsl">
-    <DocumentationString >Scale the RGBA values by the inverted RGBA values of the particle source.</DocumentationString>
+    <DocumentationString>Scale the RGBA values by the inverted RGBA values of the particle source.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_SOURCE_ALPHA" Type="Integer" Value="7" Subsets="lsl,os-lsl">
-    <DocumentationString >Scale the RGBA values by the alpha values of the particle source.</DocumentationString>
+    <DocumentationString>Scale the RGBA values by the alpha values of the particle source.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA" Type="Integer" Value="9" Subsets="lsl,os-lsl">
-    <DocumentationString >Scale the RGBA values by the inverted alpha values of the particle source.</DocumentationString>
+    <DocumentationString>Scale the RGBA values by the inverted alpha values of the particle source.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_MAX_AGE" Type="Integer" Value="19" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the length of time, in seconds, that the emitter will operate upon coming into view range (if the particle system is already set) or upon execution of this function (if already in view range). Upon expiration, no more particles will be emitted, except as specified above. Zero will give the particle system an infinite duration.</DocumentationString>
+    <DocumentationString>Specifies the length of time, in seconds, that the emitter will operate upon coming into view range (if the particle system is already set) or upon execution of this function (if already in view range). Upon expiration, no more particles will be emitted, except as specified above. Zero will give the particle system an infinite duration.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_PART_MAX_AGE" Type="Integer" Value="7" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the lifetime of each particle emitted, in seconds. Maximum is 30.0 seconds. During this time, the particle will appear, change appearance and move according to the parameters specified in the other sections, and then disappear.</DocumentationString>
+    <DocumentationString>Specifies the lifetime of each particle emitted, in seconds. Maximum is 30.0 seconds. During this time, the particle will appear, change appearance and move according to the parameters specified in the other sections, and then disappear.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_BURST_RATE" Type="Integer" Value="13" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the time interval, in seconds, between "bursts" of particles being emitted. Specifying a value of 0.0 will cause the emission of particles as fast as the viewer can do so.</DocumentationString>
+    <DocumentationString>Specifies the time interval, in seconds, between "bursts" of particles being emitted. Specifying a value of 0.0 will cause the emission of particles as fast as the viewer can do so.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_BURST_PART_COUNT" Type="Integer" Value="15" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the number of particles emitted in each "burst".</DocumentationString>
+    <DocumentationString>Specifies the number of particles emitted in each "burst".</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_ACCEL" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies a directional acceleration vector applied to each particle as it is emitted, in meters per second squared. Valid values are 0.0 to 100.0 for each direction both positive and negative, as region coordinates.</DocumentationString>
+    <DocumentationString>Specifies a directional acceleration vector applied to each particle as it is emitted, in meters per second squared. Valid values are 0.0 to 100.0 for each direction both positive and negative, as region coordinates.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_OMEGA" Type="Integer" Value="21" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the rotational spin of the emitter in radians per second along each axis. This "unsticks" the emitter facing from the prim's positive Z axis and is noticeable in directional presentations. Prim spin (via llTargetOmega) has no effect on emitter spin.</DocumentationString>
+    <DocumentationString>Specifies the rotational spin of the emitter in radians per second along each axis. This "unsticks" the emitter facing from the prim's positive Z axis and is noticeable in directional presentations. Prim spin (via llTargetOmega) has no effect on emitter spin.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_BURST_SPEED_MIN" Type="Integer" Value="17" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the minimum value of a random range of values which is selected for each particle in a burst as its initial speed upon emission, in meters per second. Note that the value of this parameter and PSYS_SRC_BURST_SPEED_MAX are internally re-ordered such that this parameter gets the smaller of the two values.</DocumentationString>
+    <DocumentationString>Specifies the minimum value of a random range of values which is selected for each particle in a burst as its initial speed upon emission, in meters per second. Note that the value of this parameter and PSYS_SRC_BURST_SPEED_MAX are internally re-ordered such that this parameter gets the smaller of the two values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_BURST_SPEED_MAX" Type="Integer" Value="18" Subsets="lsl,os-lsl">
-    <DocumentationString >Specifies the maximum value of a random range of values which is selected for each particle in a burst as its initial speed upon emission, in meters per second. Note that the value of this parameter and PSYS_SRC_BURST_SPEED_MIN are internally re-ordered such that this parameter gets the larger of the two values.</DocumentationString>
+    <DocumentationString>Specifies the maximum value of a random range of values which is selected for each particle in a burst as its initial speed upon emission, in meters per second. Note that the value of this parameter and PSYS_SRC_BURST_SPEED_MIN are internally re-ordered such that this parameter gets the larger of the two values.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CLICK_ACTION_ZOOM" Type="Integer" Value="7" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llSetClickAction to set zoom in as the default action when object is clicked</DocumentationString>
@@ -4777,7 +4801,7 @@
     <DocumentationString>The set of animations playing on the avatar to whom this object is attached has been changed.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="DATA_SIM_RELEASE" Type="Integer" Value="128" Subsets="ossl">
-    <DocumentationString >returns the version of the simulator the script is running in; the string parameter of llRequestSimulatorData is ignored.</DocumentationString>
+    <DocumentationString>returns the version of the simulator the script is running in; the string parameter of llRequestSimulatorData is ignored.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OS_NPC" Type="Integer" Value="16777216" Subsets="ossl">
     <DocumentationString>Target is NPC. Use this instead of NPC, Value 0x01000000</DocumentationString>
@@ -4837,28 +4861,28 @@
     <DocumentationString>Sets camera z focus (target position) in region coordinates</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_OK" Type="Integer" Value="0" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  Result of function call was success</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  Result of function call was success</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_MALFORMED_PARAMS" Type="Integer" Value="1000" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  Function was called with malformed parameters</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  Function was called with malformed parameters</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_TYPE_MISMATCH" Type="Integer" Value="1001" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  Argument(s) passed to function had a type mismatch</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  Argument(s) passed to function had a type mismatch</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_BOUNDS_ERROR" Type="Integer" Value="1002" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  Argument(s) passed to function had a bounds error</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  Argument(s) passed to function had a bounds error</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_NOT_FOUND" Type="Integer" Value="1003" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  Object or other item was not found</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  Object or other item was not found</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_NOT_SUPPORTED" Type="Integer" Value="1004" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  Feature not supported</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  Feature not supported</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_INTERNAL_ERROR" Type="Integer" Value="1999" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  An internal error occurred</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  An internal error occurred</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="LSL_STATUS_WHITELIST_FAILED" Type="Integer" Value="2001" Subsets="lsl,ossl">
-    <DocumentationString >llClearPrimMedia success/failure flag.  Whitelist Failed</DocumentationString>
+    <DocumentationString>llClearPrimMedia success/failure flag.  Whitelist Failed</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="STATS_TIME_DILATION" Type="Integer" Value="0" Subsets="ossl">
     <DocumentationString>Time Dilation, Value 0</DocumentationString>
@@ -5292,22 +5316,22 @@
     <Parameter Name="parms" Type="List" />
     <DocumentationString>Bulletsim: Change link params</DocumentationString>
   </LibraryFunction>
-  
-  
+
+
   <LibraryConstant Name="ATTACH_LPEC" Type="Integer" Value="30" Subsets="lsl,os-lsl">
-    <DocumentationString >Integer constant equal to 30, this is not equivalent to ATTACH_LEFT_PEC (29) and does not seem to be used anywhere in linden secondlife.</DocumentationString>
+    <DocumentationString>Integer constant equal to 30, this is not equivalent to ATTACH_LEFT_PEC (29) and does not seem to be used anywhere in linden secondlife.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="ATTACH_RPEC" Type="Integer" Value="29" Subsets="lsl,os-lsl">
-    <DocumentationString >Integer constant equal to 29, this is not equivalent to ATTACH_RIGHT_PEC (30) and does not seem to be used anywhere in linden secondlife.</DocumentationString>
+    <DocumentationString>Integer constant equal to 29, this is not equivalent to ATTACH_RIGHT_PEC (30) and does not seem to be used anywhere in linden secondlife.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="AVOID_CHARACTERS" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString >Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
+    <DocumentationString>Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="AVOID_DYNAMIC_OBSTACLES" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString >Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
+    <DocumentationString>Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="AVOID_NONE" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString >Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
+    <DocumentationString>Bit flag used with CHARACTER_AVOIDANCE_MODE in llCreateCharacter and llUpdateCharacter</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CHARACTER_CMD_JUMP" Type="Integer" Value="1" Subsets="lsl">
     <DocumentationString>Used with  llExecCharacterCmd(). Stops any current pathfinding operation.</DocumentationString>
@@ -5325,10 +5349,10 @@
     <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the friction.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="GCNP_RADIUS" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString >Used with LLGetClosestNavPoint(vector point, list options); Limits how far out to search for a navigation point.  Parameters are [ float distance ]</DocumentationString>
+    <DocumentationString>Used with LLGetClosestNavPoint(vector point, list options); Limits how far out to search for a navigation point.  Parameters are [ float distance ]</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="GCNP_STATIC" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString >Used with LLGetClosestNavPoint(vector point, list options); Specifies whether the test should use the static or dynamic nav mesh. In the static case, all dynamic obstacles are ignored.  Parameters are [ integer use_static_mesh ]</DocumentationString>
+    <DocumentationString>Used with LLGetClosestNavPoint(vector point, list options); Specifies whether the test should use the static or dynamic nav mesh. In the static case, all dynamic obstacles are ignored.  Parameters are [ integer use_static_mesh ]</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="GRAVITY_MULTIPLIER" Type="Integer" Value="8" Subsets="lsl,os-lsl">
     <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the gravity multiplier.</DocumentationString>
@@ -5346,19 +5370,19 @@
     <DocumentationString>Passed to llModifyLand to modify small land areas</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OPT_CHARACTER" Type="Integer" Value="2" Subsets="lsl,os-lsl">
-    <DocumentationString >Possible return value of llGetObjectDetails when OBJECT_PATHFINDING_TYPE is requested.</DocumentationString>
+    <DocumentationString>Possible return value of llGetObjectDetails when OBJECT_PATHFINDING_TYPE is requested.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PERMISSION_CHANGE_JOINTS" Type="Integer" Value="256" Subsets="lsl,os-lsl">
-    <DocumentationString >Permission to change joints.</DocumentationString>
+    <DocumentationString>Permission to change joints.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PERMISSION_CHANGE_PERMISSIONS" Type="Integer" Value="512" Subsets="lsl,os-lsl">
-    <DocumentationString >Permission to change asset permissions.</DocumentationString>
+    <DocumentationString>Permission to change asset permissions.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PERMISSION_RELEASE_OWNERSHIP" Type="Integer" Value="64" Subsets="lsl,os-lsl">
-    <DocumentationString >Permission to release ownership.  The concept of public objects has been removed from SL</DocumentationString>
+    <DocumentationString>Permission to release ownership.  The concept of public objects has been removed from SL</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PERMISSION_REMAP_CONTROLS" Type="Integer" Value="8" Subsets="lsl,os-lsl">
-    <DocumentationString >permission to remap agent's controls.</DocumentationString>
+    <DocumentationString>permission to remap agent's controls.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_CAST_SHADOWS" Type="Integer" Value="24" Subsets="lsl,os-lsl">
     <DocumentationString>DEPRECATED. Takes 1 parameter, an integer, but has no effect when set and always returns 0 if used in llGetPrimitiveParams</DocumentationString>
@@ -5450,20 +5474,21 @@
   <LibraryConstant Name="RESTITUTION" Type="Integer" Value="4" Subsets="lsl,os-lsl">
     <DocumentationString>For use with llSetPhysicsMaterial() as a bitwise value in its material_bits parameter, to set the restitution.</DocumentationString>
   </LibraryConstant>
-  <LibraryConstant Name="TEXTURE_DEFAULT" Type="String" Value="89556747-24cb-43ed-920b-47caed15465f" Subsets="lsl,os-lsl">
+  <LibraryConstant Name="TEXTURE_DEFAULT" Type="String" Value="89556747-24cb-43ed-920b-47caed15465f"
+                   Subsets="lsl,os-lsl">
     <DocumentationString>Alias for TEXTURE_PLYWOOD</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="TRAVERSAL_TYPE_FAST" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString >Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
+    <DocumentationString>Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="TRAVERSAL_TYPE_NONE" Type="Integer" Value="2" Subsets="lsl">
-    <DocumentationString >Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
+    <DocumentationString>Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="TRAVERSAL_TYPE_SLOW" Type="Integer" Value="0" Subsets="lsl">
-    <DocumentationString >Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
+    <DocumentationString>Bit flag used with TRAVERSAL_TYPE in llCreateCharacter and llUpdateCharacter.  Controls the speed at which characters moves on terrain that is less than 100% walkable.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_FLAG_NO_FLY_UP" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString >DEPRECATED name for VEHICLE_FLAG_NO_DEFLECTION_UP</DocumentationString>
+    <DocumentationString>DEPRECATED name for VEHICLE_FLAG_NO_DEFLECTION_UP</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="WANDER_PAUSE_AT_WAYPOINTS" Type="Integer" Value="0" Subsets="lsl">
     <DocumentationString>Used with llWanderWithin(). Defines if characters should pause after reaching each wander waypoint.</DocumentationString>
@@ -5472,9 +5497,9 @@
     <DocumentationString>&lt;0.0, 0.0, 0.0, 1.0&gt;</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="NPC" Type="Integer" Value="32" Subsets="os-lsl">
-    <DocumentationString >Used with llSensor and llAgentSensor to detect NPC characters in OpenSim.</DocumentationString>
+    <DocumentationString>Used with llSensor and llAgentSensor to detect NPC characters in OpenSim.</DocumentationString>
   </LibraryConstant>
-  
+
   <!-- requested feature 
   <LibraryConstant Name="PRIM_PHYSICS_MATERIAL" Type="Integer" Value="31" Subsets="os-lsl">
     <DocumentationString />

@@ -1,4 +1,32 @@
-﻿using System;
+﻿#region FileInfo
+
+// 
+// File: LSLVisitorScopeTracker.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:25 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.AntlrTreeUtilitys;
@@ -8,6 +36,8 @@ using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Visitor
 {
@@ -20,19 +50,8 @@ namespace LibLSLCC.CodeValidator.Visitor
     {
         private readonly Stack<LSLControlStatementNode> _controlStatementStack = new Stack<LSLControlStatementNode>();
 
-        private readonly Dictionary<string, LSLStateScopeNode> _definedStates =
-            new Dictionary<string, LSLStateScopeNode>();
-
-        private readonly Dictionary<string, LSLPreDefinedFunctionSignature> _functionDefinitions =
-            new Dictionary<string, LSLPreDefinedFunctionSignature>();
-
-        private readonly Dictionary<string, LSLVariableDeclarationNode> _globalVariables =
-            new Dictionary<string, LSLVariableDeclarationNode>();
-
-
         private readonly Dictionary<LSLParser.CodeScopeContext, Dictionary<string, LSLLabelStatementNode>> _labelScopes
             = new Dictionary<LSLParser.CodeScopeContext, Dictionary<string, LSLLabelStatementNode>>();
-
 
         private readonly Dictionary<string, LSLVariableDeclarationNode> _parameterScopeVariables =
             new Dictionary<string, LSLVariableDeclarationNode>();
@@ -45,20 +64,13 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private readonly Stack<bool> _singleBlockStatementTrackingStack = new Stack<bool>();
 
-
-
         public LSLVisitorScopeTracker(ILSLValidatorServiceProvider validatorServiceProvider)
         {
             ValidatorServiceProvider = validatorServiceProvider;
         }
 
-
-
-        public UInt64 CurrentScopeId { get; private set; }
-
-
-        public ILSLValidatorServiceProvider ValidatorServiceProvider { get; private set; }
-
+        public ulong CurrentScopeId { get; private set; }
+        public ILSLValidatorServiceProvider ValidatorServiceProvider { get; }
 
         public bool InSingleStatementBlock
         {
@@ -73,21 +85,14 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
         }
 
+        public Dictionary<string, LSLStateScopeNode> DefinedStates { get; } =
+            new Dictionary<string, LSLStateScopeNode>();
 
-        public Dictionary<string, LSLStateScopeNode> DefinedStates
-        {
-            get { return _definedStates; }
-        }
+        public Dictionary<string, LSLPreDefinedFunctionSignature> FunctionDefinitions { get; } =
+            new Dictionary<string, LSLPreDefinedFunctionSignature>();
 
-        public Dictionary<string, LSLPreDefinedFunctionSignature> FunctionDefinitions
-        {
-            get { return _functionDefinitions; }
-        }
-
-        public Dictionary<string, LSLVariableDeclarationNode> GlobalVariables
-        {
-            get { return _globalVariables; }
-        }
+        public Dictionary<string, LSLVariableDeclarationNode> GlobalVariables { get; } =
+            new Dictionary<string, LSLVariableDeclarationNode>();
 
         public bool InsideEventHandlerBody
         {
@@ -133,9 +138,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
         public LSLPreDefinedFunctionSignature CurrentFunctionBodySignature { get; private set; }
-
         internal LSLParser.FunctionDeclarationContext CurrentFunctionContext { get; private set; }
-
         internal LSLParser.EventHandlerContext CurrentEventHandlerContext { get; private set; }
 
         public LSLControlStatementNode CurrentControlStatement
@@ -148,42 +151,46 @@ namespace LibLSLCC.CodeValidator.Visitor
             get { return !InsideFunctionBody && !InsideEventHandlerBody; }
         }
 
+        /// <summary>
+        ///     All local variables in the current scope, excluding parameters
+        /// </summary>
+        public IEnumerable<LSLVariableDeclarationNode> AllLocalVariablesInScope
+        {
+            get { return _scopeVariables.Peek().Values; }
+        }
 
+        /// <summary>
+        ///     All parameters defined in the current scope
+        /// </summary>
+        public IEnumerable<LSLVariableDeclarationNode> AllParametersInScope
+        {
+            get { return _parameterScopeVariables.Values; }
+        }
 
         public void IncrementScopeId()
         {
             CurrentScopeId++;
         }
 
-
-
         public bool StatePreDefined(string name)
         {
             return DefinedStates.ContainsKey(name);
         }
-
-
 
         public void SetStateNode(string name, LSLStateScopeNode value)
         {
             DefinedStates[name] = value;
         }
 
-
-
         public bool FunctionIsPreDefined(string name)
         {
             return FunctionDefinitions.ContainsKey(name);
         }
 
-
-
         public LSLPreDefinedFunctionSignature ResolveFunctionPreDefine(string name)
         {
             return FunctionDefinitions[name];
         }
-
-
 
         public ILSLTreePreePass EnterFunctionScope(LSLParser.FunctionDeclarationContext context,
             LSLPreDefinedFunctionSignature functionSignature)
@@ -213,8 +220,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             return labelCollector;
         }
 
-
-
         public void ExitFunctionScope()
         {
             CurrentFunctionBodySignature = null;
@@ -223,22 +228,16 @@ namespace LibLSLCC.CodeValidator.Visitor
             _labelScopes.Clear();
         }
 
-
-
         public ILSLTreePreePass EnterCompilationUnit(LSLParser.CompilationUnitContext context)
         {
             var compilationUnitPrepass = DoFunctionAndStateDefinitionPrePass(context);
             return compilationUnitPrepass;
         }
 
-
-
         public void ExitCompilationUnit()
         {
             Reset();
         }
-
-
 
         public ILSLTreePreePass EnterEventScope(LSLParser.EventHandlerContext context,
             LSLParsedEventHandlerSignature eventSig)
@@ -267,21 +266,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             return labelCollector;
         }
 
-
-
         public void EnterControlStatement(LSLControlStatementNode statement)
         {
             _controlStatementStack.Push(statement);
         }
 
-
-
         public void ExitControlStatement()
         {
             _controlStatementStack.Pop();
         }
-
-
 
         public void ExitEventScope()
         {
@@ -293,8 +286,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             _labelScopes.Clear();
         }
 
-
-
         public void EnterCodeScopeAfterPrePass(LSLParser.CodeScopeContext context)
         {
             _scopeTypeStack.Push(LSLAntlrTreeIntrospector.ResolveCodeScopeNodeType(context));
@@ -302,8 +293,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             _scopeStack.Push(context);
             EnterLocalVariableScope();
         }
-
-
 
         public void ExitCodeScopeAfterPrePass()
         {
@@ -313,9 +302,8 @@ namespace LibLSLCC.CodeValidator.Visitor
             ExitLocalVariableScope();
         }
 
-
         /// <summary>
-        /// Determines if given the current scoping state, can a variable be defined without causing a conflict
+        ///     Determines if given the current scoping state, can a variable be defined without causing a conflict
         /// </summary>
         /// <param name="name">name of the variable</param>
         /// <param name="scope">the scope level of the variable to be defined</param>
@@ -331,23 +319,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 return _scopeVariables.Any(s => s.ContainsKey(name));
             }
             return false;
-        }
-
-
-        /// <summary>
-        /// All local variables in the current scope, excluding parameters
-        /// </summary>
-        public IEnumerable<LSLVariableDeclarationNode> AllLocalVariablesInScope
-        {
-            get { return _scopeVariables.Peek().Values; }
-        }
-
-        /// <summary>
-        /// All parameters defined in the current scope
-        /// </summary>
-        public IEnumerable<LSLVariableDeclarationNode> AllParametersInScope
-        {
-            get { return _parameterScopeVariables.Values; }
         }
 
         public void DefineVariable(LSLVariableDeclarationNode decl, LSLVariableScope scope)
@@ -366,17 +337,13 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public bool GlobalVariableDefined(string name)
         {
-            return _globalVariables.ContainsKey(name);
+            return GlobalVariables.ContainsKey(name);
         }
-
-
 
         public bool ParameterDefined(string name)
         {
             return _parameterScopeVariables.ContainsKey(name);
         }
-
-
 
         public LSLVariableDeclarationNode ResolveParameter(string name)
         {
@@ -385,7 +352,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public LSLVariableDeclarationNode ResolveGlobalVariable(string name)
         {
-            return _globalVariables[name];
+            return GlobalVariables[name];
         }
 
         public LSLVariableDeclarationNode ResolveVariable(string name)
@@ -415,21 +382,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             return null;
         }
 
-
-
         public bool LabelPreDefinedAnywhere(string name)
         {
             return _labelScopes.Values.Any(x => x.ContainsKey(name));
         }
 
-
-
         public bool LabelPreDefinedInScope(string name)
         {
             return _scopeStack.Any(x => _labelScopes[x].ContainsKey(name));
         }
-
-
 
         public LSLLabelStatementNode ResolvePreDefinedLabelNode(string name)
         {
@@ -438,17 +399,15 @@ namespace LibLSLCC.CodeValidator.Visitor
                 select _labelScopes[codeScopeContext][name]).FirstOrDefault();
         }
 
-
-
         public void Reset()
         {
             CurrentEventHandlerSignature = null;
             CurrentEventHandlerContext = null;
             CurrentFunctionBodySignature = null;
             CurrentFunctionContext = null;
-            _functionDefinitions.Clear();
-            _globalVariables.Clear();
-            _definedStates.Clear();
+            FunctionDefinitions.Clear();
+            GlobalVariables.Clear();
+            DefinedStates.Clear();
             _parameterScopeVariables.Clear();
             _scopeStack.Clear();
             _scopeTypeStack.Clear();
@@ -458,21 +417,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             CurrentScopeId = 0;
         }
 
-
-
         public void PreDefineState(string name)
         {
             DefinedStates.Add(name, null);
         }
 
-
-
         public void PreDefineFunction(LSLPreDefinedFunctionSignature lslFunctionSignature)
         {
             FunctionDefinitions.Add(lslFunctionSignature.Name, lslFunctionSignature);
         }
-
-
 
         public void EnterCodeScopeDuringPrePass(LSLParser.CodeScopeContext context)
         {
@@ -482,23 +435,17 @@ namespace LibLSLCC.CodeValidator.Visitor
             _labelScopes.Add(context, new Dictionary<string, LSLLabelStatementNode>());
         }
 
-
-
         public void EnterSingleStatementBlock(LSLParser.CodeStatementContext statement)
         {
             _scopeTypeStack.Push(LSLAntlrTreeIntrospector.ResolveCodeScopeNodeType(statement));
             _singleBlockStatementTrackingStack.Push(true);
         }
 
-
-
         public void ExitSingleStatementBlock()
         {
             _scopeTypeStack.Pop();
             _singleBlockStatementTrackingStack.Pop();
         }
-
-
 
         public void ExitCodeScopeDuringPrePass()
         {
@@ -507,28 +454,20 @@ namespace LibLSLCC.CodeValidator.Visitor
             _scopeStack.Pop();
         }
 
-
-
         private void EnterLocalVariableScope()
         {
             _scopeVariables.Push(new Dictionary<string, LSLVariableDeclarationNode>());
         }
-
-
 
         private void ExitLocalVariableScope()
         {
             _scopeVariables.Pop();
         }
 
-
-
         public void PreDefineLabel(string name, LSLLabelStatementNode statement)
         {
             _labelScopes[CurrentCodeScopeContext][name] = statement;
         }
-
-
 
         private FunctionAndStateDefinitionPrePass DoFunctionAndStateDefinitionPrePass(
             LSLParser.CompilationUnitContext context)
@@ -538,8 +477,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             return r;
         }
 
-
-
         private LabelCollectorPrePass DoLabelCollectorPrePass(
             LSLParser.EventHandlerContext context)
         {
@@ -547,8 +484,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             r.Visit(context);
             return r;
         }
-
-
 
         private LabelCollectorPrePass DoLabelCollectorPrePass(
             LSLParser.FunctionDeclarationContext context)
@@ -559,22 +494,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             return r;
         }
 
-
-
         public void ResetScopeId()
         {
             CurrentScopeId = 0;
         }
 
-
-
         public class FunctionAndStateDefinitionPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
         {
             private readonly LSLVisitorScopeTracker _scopingManager;
-
             private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
-
-
 
             public FunctionAndStateDefinitionPrePass(LSLVisitorScopeTracker scopingManager,
                 ILSLValidatorServiceProvider validatorServiceProvider)
@@ -583,11 +511,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 _validatorServiceProvider = validatorServiceProvider;
             }
 
-
-
             public bool HasErrors { get; private set; }
-
-
 
             public override bool VisitCompilationUnit(LSLParser.CompilationUnitContext context)
             {
@@ -621,8 +545,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 return true;
             }
-
-
 
             public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
             {
@@ -670,8 +592,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 return true;
             }
-
-
 
             public override bool VisitDefinedState(LSLParser.DefinedStateContext context)
             {
@@ -741,8 +661,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 return true;
             }
 
-
-
             public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
             {
                 if (context == null || Utility.AnyNull(context.function_name, context.code))
@@ -753,7 +671,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (_validatorServiceProvider.MainLibraryDataProvider.LibraryFunctionExist(context.function_name.Text))
                 {
                     _validatorServiceProvider.SyntaxErrorListener.RedefinedStandardLibraryFunction(
-                        new LSLSourceCodeRange(context.function_name),context.function_name.Text,
+                        new LSLSourceCodeRange(context.function_name), context.function_name.Text,
                         _validatorServiceProvider.MainLibraryDataProvider.GetLibraryFunctionSignatures(
                             context.function_name.Text));
                     HasErrors = true;
@@ -803,18 +721,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
         }
 
-
         public class LabelCollectorPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
         {
             private readonly LSLVisitorScopeTracker _scopingManager;
 
-            private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
-
-            private UInt64 _currentScopeId;
             private readonly Stack<StatementIndexContainer> _statementIndexStack =
                 new Stack<StatementIndexContainer>();
 
-
+            private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
+            private ulong _currentScopeId;
 
             public LabelCollectorPrePass(LSLVisitorScopeTracker scopingManager,
                 ILSLValidatorServiceProvider validatorServiceProvider)
@@ -824,11 +739,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = 0});
             }
 
-
-
             public bool HasErrors { get; private set; }
-
-
 
             public override bool VisitCodeStatement(LSLParser.CodeStatementContext context)
             {
@@ -836,8 +747,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 _statementIndexStack.Peek().Index++;
                 return false;
             }
-
-
 
             public override bool VisitCodeScopeOrSingleBlockStatement(
                 LSLParser.CodeScopeOrSingleBlockStatementContext context)
@@ -869,8 +778,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 return true;
             }
 
-
-
             public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
             {
                 if (context == null || context.children == null)
@@ -887,8 +794,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 return result;
             }
 
-
-
             public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
             {
                 if (context == null || context.label_name == null)
@@ -900,7 +805,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (_scopingManager.LabelPreDefinedAnywhere(context.label_name.Text))
                 {
                     _validatorServiceProvider.SyntaxErrorListener.RedefinedLabel(
-                        new LSLSourceCodeRange(context), 
+                        new LSLSourceCodeRange(context),
                         context.label_name.Text);
                     HasErrors = true;
                     return false;
@@ -921,12 +826,10 @@ namespace LibLSLCC.CodeValidator.Visitor
                 return base.VisitLabelStatement(context);
             }
 
-
-
             private class StatementIndexContainer
             {
                 public int Index;
-                public UInt64 ScopeId;
+                public ulong ScopeId;
             }
         }
     }

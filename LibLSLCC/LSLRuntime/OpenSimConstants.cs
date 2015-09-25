@@ -1,4 +1,31 @@
-﻿namespace LibLSLCC.LSLRuntime
+﻿#region FileInfo
+
+// 
+// File: OpenSimConstants.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:26 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+namespace LibLSLCC.LSLRuntime
 {
     public class OpenSimConstants
     {
@@ -40,11 +67,6 @@
         public const int WL_CLOUD_SCROLL_X_LOCK = 34;
         public const int WL_DRAW_CLASSIC_CLOUDS = 35;
         public const int WL_SUN_MOON_POSITION = 36;
-
-        // LSL CONSTANTS
-        public static readonly LSL_Types.LSLInteger TRUE = new LSL_Types.LSLInteger(1);
-        public static readonly LSL_Types.LSLInteger FALSE = new LSL_Types.LSLInteger(0);
-
         public const int STATUS_PHYSICS = 1;
         public const int STATUS_ROTATE_X = 2;
         public const int STATUS_ROTATE_Y = 4;
@@ -55,7 +77,6 @@
         public const int STATUS_DIE_AT_EDGE = 128;
         public const int STATUS_RETURN_AT_EDGE = 256;
         public const int STATUS_CAST_SHADOWS = 512;
-
         public const int AGENT = 1;
         public const int AGENT_BY_LEGACY_NAME = 1;
         public const int AGENT_BY_USERNAME = 0x10;
@@ -64,7 +85,6 @@
         public const int PASSIVE = 4;
         public const int SCRIPTED = 8;
         public const int OS_NPC = 0x01000000;
-
         public const int CONTROL_FWD = 1;
         public const int CONTROL_BACK = 2;
         public const int CONTROL_LEFT = 4;
@@ -75,7 +95,6 @@
         public const int CONTROL_ROT_RIGHT = 512;
         public const int CONTROL_LBUTTON = 268435456;
         public const int CONTROL_ML_LBUTTON = 1073741824;
-
         //Permissions
         public const int PERMISSION_DEBIT = 2;
         public const int PERMISSION_TAKE_CONTROLS = 4;
@@ -88,7 +107,6 @@
         public const int PERMISSION_CHANGE_PERMISSIONS = 512;
         public const int PERMISSION_TRACK_CAMERA = 1024;
         public const int PERMISSION_CONTROL_CAMERA = 2048;
-
         public const int AGENT_FLYING = 1;
         public const int AGENT_ATTACHMENTS = 2;
         public const int AGENT_SCRIPTED = 4;
@@ -102,7 +120,6 @@
         public const int AGENT_CROUCHING = 1024;
         public const int AGENT_BUSY = 2048;
         public const int AGENT_ALWAYS_RUN = 4096;
-
         //Particle Systems
         public const int PSYS_PART_INTERP_COLOR_MASK = 1;
         public const int PSYS_PART_INTERP_SCALE_MASK = 2;
@@ -154,7 +171,6 @@
         public const int PSYS_SRC_PATTERN_ANGLE = 4;
         public const int PSYS_SRC_PATTERN_ANGLE_CONE = 8;
         public const int PSYS_SRC_PATTERN_ANGLE_CONE_EMPTY = 16;
-
         public const int VEHICLE_TYPE_NONE = 0;
         public const int VEHICLE_TYPE_SLED = 1;
         public const int VEHICLE_TYPE_CAR = 2;
@@ -202,7 +218,6 @@
         public const int VEHICLE_FLAG_LOCK_HOVER_HEIGHT = 8192;
         public const int VEHICLE_FLAG_NO_DEFLECTION = 16392;
         public const int VEHICLE_FLAG_LOCK_ROTATION = 32784;
-
         public const int INVENTORY_ALL = -1;
         public const int INVENTORY_NONE = -1;
         public const int INVENTORY_TEXTURE = 0;
@@ -215,7 +230,6 @@
         public const int INVENTORY_BODYPART = 13;
         public const int INVENTORY_ANIMATION = 20;
         public const int INVENTORY_GESTURE = 21;
-
         public const int ATTACH_CHEST = 1;
         public const int ATTACH_HEAD = 2;
         public const int ATTACH_LSHOULDER = 3;
@@ -246,8 +260,12 @@
         public const int ATTACH_BELLY = 28;
         public const int ATTACH_RPEC = 29;
         public const int ATTACH_LPEC = 30;
-        public const int ATTACH_LEFT_PEC = 29; // Same value as ATTACH_RPEC, see https://jira.secondlife.com/browse/SVC-580
-        public const int ATTACH_RIGHT_PEC = 30; // Same value as ATTACH_LPEC, see https://jira.secondlife.com/browse/SVC-580
+        public const int ATTACH_LEFT_PEC = 29;
+        // Same value as ATTACH_RPEC, see https://jira.secondlife.com/browse/SVC-580
+
+        public const int ATTACH_RIGHT_PEC = 30;
+        // Same value as ATTACH_LPEC, see https://jira.secondlife.com/browse/SVC-580
+
         public const int ATTACH_HUD_CENTER_2 = 31;
         public const int ATTACH_HUD_TOP_RIGHT = 32;
         public const int ATTACH_HUD_TOP_CENTER = 33;
@@ -258,59 +276,6 @@
         public const int ATTACH_HUD_BOTTOM_RIGHT = 38;
         public const int ATTACH_NECK = 39;
         public const int ATTACH_AVATAR_CENTER = 40;
-
-        #region osMessageAttachments constants
-
-        /// <summary>
-        /// Instructs osMessageAttachements to send the message to attachments
-        ///     on every point.
-        /// </summary>
-        /// <remarks>
-        /// One might expect this to be named OS_ATTACH_ALL, but then one might
-        ///     also expect functions designed to attach or detach or get
-        ///     attachments to work with it too. Attaching a no-copy item to
-        ///     many attachments could be dangerous.
-        /// when combined with OS_ATTACH_MSG_INVERT_POINTS, will prevent the
-        ///     message from being sent.
-        /// if combined with OS_ATTACH_MSG_OBJECT_CREATOR or
-        ///     OS_ATTACH_MSG_SCRIPT_CREATOR, could result in no message being
-        ///     sent- this is expected behaviour.
-        /// </remarks>
-        public const int OS_ATTACH_MSG_ALL = -65535;
-
-        /// <summary>
-        /// Instructs osMessageAttachements to invert how the attachment points
-        ///     list should be treated (e.g. go from inclusive operation to
-        ///     exclusive operation).
-        /// </summary>
-        /// <remarks>
-        /// This might be used if you want to deliver a message to one set of
-        ///     attachments and a different message to everything else. With
-        ///     this flag, you only need to build one explicit list for both calls.
-        /// </remarks>
-        public const int OS_ATTACH_MSG_INVERT_POINTS = 1;
-
-        /// <summary>
-        /// Instructs osMessageAttachments to only send the message to
-        ///     attachments with a CreatorID that matches the host object CreatorID
-        /// </summary>
-        /// <remarks>
-        /// This would be used if distributed in an object vendor/updater server.
-        /// </remarks>
-        public const int OS_ATTACH_MSG_OBJECT_CREATOR = 2;
-
-        /// <summary>
-        /// Instructs osMessageAttachments to only send the message to
-        ///     attachments with a CreatorID that matches the sending script CreatorID
-        /// </summary>
-        /// <remarks>
-        /// This might be used if the script is distributed independently of a
-        ///     containing object.
-        /// </remarks>
-        public const int OS_ATTACH_MSG_SCRIPT_CREATOR = 4;
-
-        #endregion
-
         public const int LAND_LEVEL = 0;
         public const int LAND_RAISE = 1;
         public const int LAND_LOWER = 2;
@@ -320,7 +285,6 @@
         public const int LAND_SMALL_BRUSH = 1;
         public const int LAND_MEDIUM_BRUSH = 2;
         public const int LAND_LARGE_BRUSH = 3;
-
         //Agent Dataserver
         public const int DATA_ONLINE = 1;
         public const int DATA_NAME = 2;
@@ -331,7 +295,6 @@
         public const int DATA_SIM_RATING = 7;
         public const int DATA_PAYINFO = 8;
         public const int DATA_SIM_RELEASE = 128;
-
         public const int ANIM_ON = 1;
         public const int LOOP = 2;
         public const int REVERSE = 4;
@@ -366,12 +329,10 @@
         public const int TYPE_KEY = 4;
         public const int TYPE_VECTOR = 5;
         public const int TYPE_ROTATION = 6;
-
         //XML RPC Remote Data Channel
         public const int REMOTE_DATA_CHANNEL = 1;
         public const int REMOTE_DATA_REQUEST = 2;
         public const int REMOTE_DATA_REPLY = 3;
-
         //llHTTPRequest
         public const int HTTP_METHOD = 0;
         public const int HTTP_MIMETYPE = 1;
@@ -380,7 +341,6 @@
         public const int HTTP_VERBOSE_THROTTLE = 4;
         public const int HTTP_CUSTOM_HEADER = 5;
         public const int HTTP_PRAGMA_NO_CACHE = 6;
-
         // llSetContentType
         public const int CONTENT_TYPE_TEXT = 0; //text/plain
         public const int CONTENT_TYPE_HTML = 1; //text/html
@@ -391,7 +351,6 @@
         public const int CONTENT_TYPE_LLSD = 6; //application/llsd+xml
         public const int CONTENT_TYPE_FORM = 7; //application/x-www-form-urlencoded
         public const int CONTENT_TYPE_RSS = 8; //application/rss+xml
-
         public const int PRIM_MATERIAL = 2;
         public const int PRIM_PHYSICS = 3;
         public const int PRIM_TEMP_ON_REZ = 4;
@@ -419,7 +378,6 @@
         public const int PRIM_SLICE = 35;
         public const int PRIM_TEXGEN_DEFAULT = 0;
         public const int PRIM_TEXGEN_PLANAR = 1;
-
         public const int PRIM_TYPE_BOX = 0;
         public const int PRIM_TYPE_CYLINDER = 1;
         public const int PRIM_TYPE_PRISM = 2;
@@ -428,12 +386,10 @@
         public const int PRIM_TYPE_TUBE = 5;
         public const int PRIM_TYPE_RING = 6;
         public const int PRIM_TYPE_SCULPT = 7;
-
         public const int PRIM_HOLE_DEFAULT = 0;
         public const int PRIM_HOLE_CIRCLE = 16;
         public const int PRIM_HOLE_SQUARE = 32;
         public const int PRIM_HOLE_TRIANGLE = 48;
-
         public const int PRIM_MATERIAL_STONE = 0;
         public const int PRIM_MATERIAL_METAL = 1;
         public const int PRIM_MATERIAL_GLASS = 2;
@@ -442,7 +398,6 @@
         public const int PRIM_MATERIAL_PLASTIC = 5;
         public const int PRIM_MATERIAL_RUBBER = 6;
         public const int PRIM_MATERIAL_LIGHT = 7;
-
         public const int PRIM_SHINY_NONE = 0;
         public const int PRIM_SHINY_LOW = 1;
         public const int PRIM_SHINY_MEDIUM = 2;
@@ -465,29 +420,24 @@
         public const int PRIM_BUMP_STUCCO = 15;
         public const int PRIM_BUMP_SUCTION = 16;
         public const int PRIM_BUMP_WEAVE = 17;
-
         public const int PRIM_SCULPT_TYPE_SPHERE = 1;
         public const int PRIM_SCULPT_TYPE_TORUS = 2;
         public const int PRIM_SCULPT_TYPE_PLANE = 3;
         public const int PRIM_SCULPT_TYPE_CYLINDER = 4;
         public const int PRIM_SCULPT_FLAG_INVERT = 64;
         public const int PRIM_SCULPT_FLAG_MIRROR = 128;
-
         public const int PROFILE_NONE = 0;
         public const int PROFILE_SCRIPT_MEMORY = 1;
-
         public const int MASK_BASE = 0;
         public const int MASK_OWNER = 1;
         public const int MASK_GROUP = 2;
         public const int MASK_EVERYONE = 3;
         public const int MASK_NEXT = 4;
-
         public const int PERM_TRANSFER = 8192;
         public const int PERM_MODIFY = 16384;
         public const int PERM_COPY = 32768;
         public const int PERM_MOVE = 524288;
         public const int PERM_ALL = 2147483647;
-
         public const int PARCEL_MEDIA_COMMAND_STOP = 0;
         public const int PARCEL_MEDIA_COMMAND_PAUSE = 1;
         public const int PARCEL_MEDIA_COMMAND_PLAY = 2;
@@ -501,34 +451,37 @@
         public const int PARCEL_MEDIA_COMMAND_TYPE = 10;
         public const int PARCEL_MEDIA_COMMAND_SIZE = 11;
         public const int PARCEL_MEDIA_COMMAND_DESC = 12;
+        public const int PARCEL_FLAG_ALLOW_FLY = 0x1; // parcel allows flying
+        public const int PARCEL_FLAG_ALLOW_SCRIPTS = 0x2; // parcel allows outside scripts
+        public const int PARCEL_FLAG_ALLOW_LANDMARK = 0x8; // parcel allows landmarks to be created
+        public const int PARCEL_FLAG_ALLOW_TERRAFORM = 0x10; // parcel allows anyone to terraform the land
+        public const int PARCEL_FLAG_ALLOW_DAMAGE = 0x20; // parcel allows damage
+        public const int PARCEL_FLAG_ALLOW_CREATE_OBJECTS = 0x40; // parcel allows anyone to create objects
+        public const int PARCEL_FLAG_USE_ACCESS_GROUP = 0x100; // parcel limits access to a group
+        public const int PARCEL_FLAG_USE_ACCESS_LIST = 0x200; // parcel limits access to a list of residents
+        public const int PARCEL_FLAG_USE_BAN_LIST = 0x400;
+        // parcel uses a ban list, including restricting access based on payment info
 
-        public const int PARCEL_FLAG_ALLOW_FLY = 0x1;                           // parcel allows flying
-        public const int PARCEL_FLAG_ALLOW_SCRIPTS = 0x2;                       // parcel allows outside scripts
-        public const int PARCEL_FLAG_ALLOW_LANDMARK = 0x8;                      // parcel allows landmarks to be created
-        public const int PARCEL_FLAG_ALLOW_TERRAFORM = 0x10;                    // parcel allows anyone to terraform the land
-        public const int PARCEL_FLAG_ALLOW_DAMAGE = 0x20;                       // parcel allows damage
-        public const int PARCEL_FLAG_ALLOW_CREATE_OBJECTS = 0x40;               // parcel allows anyone to create objects
-        public const int PARCEL_FLAG_USE_ACCESS_GROUP = 0x100;                  // parcel limits access to a group
-        public const int PARCEL_FLAG_USE_ACCESS_LIST = 0x200;                   // parcel limits access to a list of residents
-        public const int PARCEL_FLAG_USE_BAN_LIST = 0x400;                      // parcel uses a ban list, including restricting access based on payment info
-        public const int PARCEL_FLAG_USE_LAND_PASS_LIST = 0x800;                // parcel allows passes to be purchased
-        public const int PARCEL_FLAG_LOCAL_SOUND_ONLY = 0x8000;                 // parcel restricts spatialized sound to the parcel
-        public const int PARCEL_FLAG_RESTRICT_PUSHOBJECT = 0x200000;            // parcel restricts llPushObject
-        public const int PARCEL_FLAG_ALLOW_GROUP_SCRIPTS = 0x2000000;           // parcel allows scripts owned by group
-        public const int PARCEL_FLAG_ALLOW_CREATE_GROUP_OBJECTS = 0x4000000;    // parcel allows group object creation
-        public const int PARCEL_FLAG_ALLOW_ALL_OBJECT_ENTRY = 0x8000000;        // parcel allows objects owned by any user to enter
-        public const int PARCEL_FLAG_ALLOW_GROUP_OBJECT_ENTRY = 0x10000000;     // parcel allows with the same group to enter
+        public const int PARCEL_FLAG_USE_LAND_PASS_LIST = 0x800; // parcel allows passes to be purchased
+        public const int PARCEL_FLAG_LOCAL_SOUND_ONLY = 0x8000; // parcel restricts spatialized sound to the parcel
+        public const int PARCEL_FLAG_RESTRICT_PUSHOBJECT = 0x200000; // parcel restricts llPushObject
+        public const int PARCEL_FLAG_ALLOW_GROUP_SCRIPTS = 0x2000000; // parcel allows scripts owned by group
+        public const int PARCEL_FLAG_ALLOW_CREATE_GROUP_OBJECTS = 0x4000000; // parcel allows group object creation
+        public const int PARCEL_FLAG_ALLOW_ALL_OBJECT_ENTRY = 0x8000000;
+        // parcel allows objects owned by any user to enter
 
-        public const int REGION_FLAG_ALLOW_DAMAGE = 0x1;                        // region is entirely damage enabled
-        public const int REGION_FLAG_FIXED_SUN = 0x10;                          // region has a fixed sun position
-        public const int REGION_FLAG_BLOCK_TERRAFORM = 0x40;                    // region terraforming disabled
-        public const int REGION_FLAG_SANDBOX = 0x100;                           // region is a sandbox
-        public const int REGION_FLAG_DISABLE_COLLISIONS = 0x1000;               // region has disabled collisions
-        public const int REGION_FLAG_DISABLE_PHYSICS = 0x4000;                  // region has disabled physics
-        public const int REGION_FLAG_BLOCK_FLY = 0x80000;                       // region blocks flying
-        public const int REGION_FLAG_ALLOW_DIRECT_TELEPORT = 0x100000;          // region allows direct teleports
-        public const int REGION_FLAG_RESTRICT_PUSHOBJECT = 0x400000;            // region restricts llPushObject
+        public const int PARCEL_FLAG_ALLOW_GROUP_OBJECT_ENTRY = 0x10000000;
+        // parcel allows with the same group to enter
 
+        public const int REGION_FLAG_ALLOW_DAMAGE = 0x1; // region is entirely damage enabled
+        public const int REGION_FLAG_FIXED_SUN = 0x10; // region has a fixed sun position
+        public const int REGION_FLAG_BLOCK_TERRAFORM = 0x40; // region terraforming disabled
+        public const int REGION_FLAG_SANDBOX = 0x100; // region is a sandbox
+        public const int REGION_FLAG_DISABLE_COLLISIONS = 0x1000; // region has disabled collisions
+        public const int REGION_FLAG_DISABLE_PHYSICS = 0x4000; // region has disabled physics
+        public const int REGION_FLAG_BLOCK_FLY = 0x80000; // region blocks flying
+        public const int REGION_FLAG_ALLOW_DIRECT_TELEPORT = 0x100000; // region allows direct teleports
+        public const int REGION_FLAG_RESTRICT_PUSHOBJECT = 0x400000; // region restricts llPushObject
         //llManageEstateAccess
         public const int ESTATE_ACCESS_ALLOWED_AGENT_ADD = 0;
         public const int ESTATE_ACCESS_ALLOWED_AGENT_REMOVE = 1;
@@ -536,10 +489,6 @@
         public const int ESTATE_ACCESS_ALLOWED_GROUP_REMOVE = 3;
         public const int ESTATE_ACCESS_BANNED_AGENT_ADD = 4;
         public const int ESTATE_ACCESS_BANNED_AGENT_REMOVE = 5;
-
-        public static readonly LSL_Types.LSLInteger PAY_HIDE = new LSL_Types.LSLInteger(-1);
-        public static readonly LSL_Types.LSLInteger PAY_DEFAULT = new LSL_Types.LSLInteger(-2);
-
         public const string NULL_KEY = "00000000-0000-0000-0000-000000000000";
         public const string EOF = "\n\n\n";
         public const double PI = 3.14159274f;
@@ -562,7 +511,6 @@
         public const int LIST_STAT_NUM_COUNT = 8;
         public const int LIST_STAT_GEOMETRIC_MEAN = 9;
         public const int LIST_STAT_HARMONIC_MEAN = 100;
-
         //ParcelPrim Categories
         public const int PARCEL_COUNT_TOTAL = 0;
         public const int PARCEL_COUNT_OWNER = 1;
@@ -570,10 +518,8 @@
         public const int PARCEL_COUNT_OTHER = 3;
         public const int PARCEL_COUNT_SELECTED = 4;
         public const int PARCEL_COUNT_TEMP = 5;
-
         public const int DEBUG_CHANNEL = 0x7FFFFFFF;
         public const int PUBLIC_CHANNEL = 0x00000000;
-
         // Constants for llGetObjectDetails
         public const int OBJECT_UNKNOWN_DETAIL = -1;
         public const int OBJECT_NAME = 1;
@@ -599,7 +545,6 @@
         public const int OBJECT_PHYSICS = 21;
         public const int OBJECT_PHANTOM = 22;
         public const int OBJECT_TEMP_ON_REZ = 23;
-
         // Pathfinding types
         public const int OPT_OTHER = -1;
         public const int OPT_LEGACY_LINKSET = 0;
@@ -609,16 +554,10 @@
         public const int OPT_STATIC_OBSTACLE = 4;
         public const int OPT_MATERIAL_VOLUME = 5;
         public const int OPT_EXCLUSION_VOLUME = 6;
-
         // for llGetAgentList
         public const int AGENT_LIST_PARCEL = 1;
         public const int AGENT_LIST_PARCEL_OWNER = 2;
         public const int AGENT_LIST_REGION = 4;
-
-        // Can not be public const?
-        public static readonly LSL_Types.Vector3 ZERO_VECTOR = new LSL_Types.Vector3(0.0, 0.0, 0.0);
-        public static readonly LSL_Types.Quaternion ZERO_ROTATION = new LSL_Types.Quaternion(0.0, 0.0, 0.0, 1.0);
-
         // constants for llSetCameraParams
         public const int CAMERA_PITCH = 0;
         public const int CAMERA_FOCUS_OFFSET = 1;
@@ -643,7 +582,6 @@
         public const int CAMERA_FOCUS_Z = 20;
         public const int CAMERA_POSITION_LOCKED = 21;
         public const int CAMERA_FOCUS_LOCKED = 22;
-
         // constants for llGetParcelDetails
         public const int PARCEL_DETAILS_NAME = 0;
         public const int PARCEL_DETAILS_DESC = 1;
@@ -652,10 +590,8 @@
         public const int PARCEL_DETAILS_AREA = 4;
         public const int PARCEL_DETAILS_ID = 5;
         public const int PARCEL_DETAILS_SEE_AVATARS = 6; // not implemented
-
         //osSetParcelDetails
         public const int PARCEL_DETAILS_CLAIMDATE = 10;
-
         // constants for llSetClickAction
         public const int CLICK_ACTION_NONE = 0;
         public const int CLICK_ACTION_TOUCH = 0;
@@ -666,12 +602,8 @@
         public const int CLICK_ACTION_PLAY = 5;
         public const int CLICK_ACTION_OPEN_MEDIA = 6;
         public const int CLICK_ACTION_ZOOM = 7;
-
         // constants for the llDetectedTouch* functions
         public const int TOUCH_INVALID_FACE = -1;
-        public static readonly LSL_Types.Vector3 TOUCH_INVALID_TEXCOORD = new LSL_Types.Vector3(-1.0, -1.0, 0.0);
-        public static readonly LSL_Types.Vector3 TOUCH_INVALID_VECTOR = ZERO_VECTOR;
-
         // constants for llGetPrimMediaParams/llSetPrimMediaParams
         public const int PRIM_MEDIA_ALT_IMAGE_ENABLE = 0;
         public const int PRIM_MEDIA_CONTROLS = 1;
@@ -688,43 +620,27 @@
         public const int PRIM_MEDIA_WHITELIST = 12;
         public const int PRIM_MEDIA_PERMS_INTERACT = 13;
         public const int PRIM_MEDIA_PERMS_CONTROL = 14;
-
         public const int PRIM_MEDIA_CONTROLS_STANDARD = 0;
         public const int PRIM_MEDIA_CONTROLS_MINI = 1;
-
         public const int PRIM_MEDIA_PERM_NONE = 0;
         public const int PRIM_MEDIA_PERM_OWNER = 1;
         public const int PRIM_MEDIA_PERM_GROUP = 2;
         public const int PRIM_MEDIA_PERM_ANYONE = 4;
-
         public const int PRIM_PHYSICS_SHAPE_TYPE = 30;
         public const int PRIM_PHYSICS_SHAPE_PRIM = 0;
         public const int PRIM_PHYSICS_SHAPE_CONVEX = 2;
         public const int PRIM_PHYSICS_SHAPE_NONE = 1;
-
         public const int PRIM_PHYSICS_MATERIAL = 31;
         public const int DENSITY = 1;
         public const int FRICTION = 2;
         public const int RESTITUTION = 4;
         public const int GRAVITY_MULTIPLIER = 8;
-
-        // extra constants for llSetPrimMediaParams
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_OK = new LSL_Types.LSLInteger(0);
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_MALFORMED_PARAMS = new LSL_Types.LSLInteger(1000);
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_TYPE_MISMATCH = new LSL_Types.LSLInteger(1001);
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_BOUNDS_ERROR = new LSL_Types.LSLInteger(1002);
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_NOT_FOUND = new LSL_Types.LSLInteger(1003);
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_NOT_SUPPORTED = new LSL_Types.LSLInteger(1004);
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_INTERNAL_ERROR = new LSL_Types.LSLInteger(1999);
-        public static readonly LSL_Types.LSLInteger LSL_STATUS_WHITELIST_FAILED = new LSL_Types.LSLInteger(2001);
-
         // Constants for default textures
         public const string TEXTURE_BLANK = "5748decc-f629-461c-9a36-a35a221fe21f";
         public const string TEXTURE_DEFAULT = "89556747-24cb-43ed-920b-47caed15465f";
         public const string TEXTURE_PLYWOOD = "89556747-24cb-43ed-920b-47caed15465f";
         public const string TEXTURE_TRANSPARENT = "8dcd4a48-2d37-4909-9f78-f7a9eb4ef903";
         public const string TEXTURE_MEDIA = "8b5fec65-8d8d-9dc5-cda8-8fdf2716e361";
-
         // Constants for osGetRegionStats
         public const int STATS_TIME_DILATION = 0;
         public const int STATS_SIM_FPS = 1;
@@ -747,40 +663,17 @@
         public const int STATS_PENDING_UPLOADS = 18;
         public const int STATS_ACTIVE_SCRIPTS = 19;
         public const int STATS_SCRIPT_LPS = 20;
-
         // Constants for osNpc* functions
         public const int OS_NPC_FLY = 0;
         public const int OS_NPC_NO_FLY = 1;
         public const int OS_NPC_LAND_AT_TARGET = 2;
         public const int OS_NPC_RUNNING = 4;
-
         public const int OS_NPC_SIT_NOW = 0;
-
         public const int OS_NPC_CREATOR_OWNED = 0x1;
         public const int OS_NPC_NOT_OWNED = 0x2;
         public const int OS_NPC_SENSE_AS_AGENT = 0x4;
-
         public const string URL_REQUEST_GRANTED = "URL_REQUEST_GRANTED";
         public const string URL_REQUEST_DENIED = "URL_REQUEST_DENIED";
-
-        public static readonly LSL_Types.LSLInteger RC_REJECT_TYPES = 0;
-        public static readonly LSL_Types.LSLInteger RC_DETECT_PHANTOM = 1;
-        public static readonly LSL_Types.LSLInteger RC_DATA_FLAGS = 2;
-        public static readonly LSL_Types.LSLInteger RC_MAX_HITS = 3;
-                                        
-        public static readonly LSL_Types.LSLInteger RC_REJECT_AGENTS = 1;
-        public static readonly LSL_Types.LSLInteger RC_REJECT_PHYSICAL = 2;
-        public static readonly LSL_Types.LSLInteger RC_REJECT_NONPHYSICAL = 4;
-        public static readonly LSL_Types.LSLInteger RC_REJECT_LAND = 8;
-                                        
-        public static readonly LSL_Types.LSLInteger RC_GET_NORMAL = 1;
-        public static readonly LSL_Types.LSLInteger RC_GET_ROOT_KEY = 2;
-        public static readonly LSL_Types.LSLInteger RC_GET_LINK_NUM = 4;
-                                        
-        public static readonly LSL_Types.LSLInteger RCERR_UNKNOWN = -1;
-        public static readonly LSL_Types.LSLInteger RCERR_SIM_PERF_LOW = -2;
-        public static readonly LSL_Types.LSLInteger RCERR_CAST_TIME_EXCEEDED = 3;
-
         public const int KFM_MODE = 1;
         public const int KFM_LOOP = 1;
         public const int KFM_REVERSE = 3;
@@ -795,13 +688,99 @@
         public const int KFM_CMD_PAUSE = 2;
 
         /// <summary>
-        /// process name parameter as regex
+        ///     process name parameter as regex
         /// </summary>
         public const int OS_LISTEN_REGEX_NAME = 0x1;
 
         /// <summary>
-        /// process message parameter as regex
+        ///     process message parameter as regex
         /// </summary>
         public const int OS_LISTEN_REGEX_MESSAGE = 0x2;
+
+        // LSL CONSTANTS
+        public static readonly LSL_Types.LSLInteger TRUE = new LSL_Types.LSLInteger(1);
+        public static readonly LSL_Types.LSLInteger FALSE = new LSL_Types.LSLInteger(0);
+        public static readonly LSL_Types.LSLInteger PAY_HIDE = new LSL_Types.LSLInteger(-1);
+        public static readonly LSL_Types.LSLInteger PAY_DEFAULT = new LSL_Types.LSLInteger(-2);
+        // Can not be public const?
+        public static readonly LSL_Types.Vector3 ZERO_VECTOR = new LSL_Types.Vector3(0.0, 0.0, 0.0);
+        public static readonly LSL_Types.Quaternion ZERO_ROTATION = new LSL_Types.Quaternion(0.0, 0.0, 0.0, 1.0);
+        public static readonly LSL_Types.Vector3 TOUCH_INVALID_TEXCOORD = new LSL_Types.Vector3(-1.0, -1.0, 0.0);
+        public static readonly LSL_Types.Vector3 TOUCH_INVALID_VECTOR = ZERO_VECTOR;
+        // extra constants for llSetPrimMediaParams
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_OK = new LSL_Types.LSLInteger(0);
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_MALFORMED_PARAMS = new LSL_Types.LSLInteger(1000);
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_TYPE_MISMATCH = new LSL_Types.LSLInteger(1001);
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_BOUNDS_ERROR = new LSL_Types.LSLInteger(1002);
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_NOT_FOUND = new LSL_Types.LSLInteger(1003);
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_NOT_SUPPORTED = new LSL_Types.LSLInteger(1004);
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_INTERNAL_ERROR = new LSL_Types.LSLInteger(1999);
+        public static readonly LSL_Types.LSLInteger LSL_STATUS_WHITELIST_FAILED = new LSL_Types.LSLInteger(2001);
+        public static readonly LSL_Types.LSLInteger RC_REJECT_TYPES = 0;
+        public static readonly LSL_Types.LSLInteger RC_DETECT_PHANTOM = 1;
+        public static readonly LSL_Types.LSLInteger RC_DATA_FLAGS = 2;
+        public static readonly LSL_Types.LSLInteger RC_MAX_HITS = 3;
+        public static readonly LSL_Types.LSLInteger RC_REJECT_AGENTS = 1;
+        public static readonly LSL_Types.LSLInteger RC_REJECT_PHYSICAL = 2;
+        public static readonly LSL_Types.LSLInteger RC_REJECT_NONPHYSICAL = 4;
+        public static readonly LSL_Types.LSLInteger RC_REJECT_LAND = 8;
+        public static readonly LSL_Types.LSLInteger RC_GET_NORMAL = 1;
+        public static readonly LSL_Types.LSLInteger RC_GET_ROOT_KEY = 2;
+        public static readonly LSL_Types.LSLInteger RC_GET_LINK_NUM = 4;
+        public static readonly LSL_Types.LSLInteger RCERR_UNKNOWN = -1;
+        public static readonly LSL_Types.LSLInteger RCERR_SIM_PERF_LOW = -2;
+        public static readonly LSL_Types.LSLInteger RCERR_CAST_TIME_EXCEEDED = 3;
+
+        #region osMessageAttachments constants
+
+        /// <summary>
+        ///     Instructs osMessageAttachements to send the message to attachments
+        ///     on every point.
+        /// </summary>
+        /// <remarks>
+        ///     One might expect this to be named OS_ATTACH_ALL, but then one might
+        ///     also expect functions designed to attach or detach or get
+        ///     attachments to work with it too. Attaching a no-copy item to
+        ///     many attachments could be dangerous.
+        ///     when combined with OS_ATTACH_MSG_INVERT_POINTS, will prevent the
+        ///     message from being sent.
+        ///     if combined with OS_ATTACH_MSG_OBJECT_CREATOR or
+        ///     OS_ATTACH_MSG_SCRIPT_CREATOR, could result in no message being
+        ///     sent- this is expected behaviour.
+        /// </remarks>
+        public const int OS_ATTACH_MSG_ALL = -65535;
+
+        /// <summary>
+        ///     Instructs osMessageAttachements to invert how the attachment points
+        ///     list should be treated (e.g. go from inclusive operation to
+        ///     exclusive operation).
+        /// </summary>
+        /// <remarks>
+        ///     This might be used if you want to deliver a message to one set of
+        ///     attachments and a different message to everything else. With
+        ///     this flag, you only need to build one explicit list for both calls.
+        /// </remarks>
+        public const int OS_ATTACH_MSG_INVERT_POINTS = 1;
+
+        /// <summary>
+        ///     Instructs osMessageAttachments to only send the message to
+        ///     attachments with a CreatorID that matches the host object CreatorID
+        /// </summary>
+        /// <remarks>
+        ///     This would be used if distributed in an object vendor/updater server.
+        /// </remarks>
+        public const int OS_ATTACH_MSG_OBJECT_CREATOR = 2;
+
+        /// <summary>
+        ///     Instructs osMessageAttachments to only send the message to
+        ///     attachments with a CreatorID that matches the sending script CreatorID
+        /// </summary>
+        /// <remarks>
+        ///     This might be used if the script is distributed independently of a
+        ///     containing object.
+        /// </remarks>
+        public const int OS_ATTACH_MSG_SCRIPT_CREATOR = 4;
+
+        #endregion
     }
 }

@@ -1,182 +1,165 @@
+#region FileInfo
+
+// 
+// File: LSLSourceCodeRange.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.ValidatorNodes;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
     public class LSLSourceCodeRange
     {
-        private readonly int _columnStart;
-        private readonly int _lineStart;
-        private int _columnEnd;
-        private int _lineEnd;
-        private readonly int _startIndex;
-        private  int _stopIndex;
-
-
         public LSLSourceCodeRange()
         {
-            _lineStart = 0;
-            _columnStart = 0;
+            LineStart = 0;
+            ColumnStart = 0;
 
-            _lineEnd = 0;
-            _columnEnd = 0;
+            LineEnd = 0;
+            ColumnEnd = 0;
         }
-
-
 
         internal LSLSourceCodeRange(IToken ctx)
         {
-            _lineStart = ctx.Line;
-            _columnStart = ctx.Column;
-            _startIndex = ctx.StartIndex;
-            _stopIndex = ctx.StopIndex;
+            LineStart = ctx.Line;
+            ColumnStart = ctx.Column;
+            StartIndex = ctx.StartIndex;
+            StopIndex = ctx.StopIndex;
 
-            _lineEnd = ctx.Line;
-            _columnEnd = ctx.Column + ctx.Text.Length;
+            LineEnd = ctx.Line;
+            ColumnEnd = ctx.Column + ctx.Text.Length;
             HasIndexInfo = true;
         }
-
-
-
-
 
         internal LSLSourceCodeRange(ParserRuleContext ctx)
         {
-            _lineStart = ctx.Start.Line;
-            _columnStart = ctx.Start.Column;
-            _startIndex = ctx.Start.StartIndex;
+            LineStart = ctx.Start.Line;
+            ColumnStart = ctx.Start.Column;
+            StartIndex = ctx.Start.StartIndex;
 
             if (ctx.Stop != null)
             {
-                _stopIndex = ctx.Stop.StopIndex;
-                _lineEnd = ctx.Stop.Line;
-                _columnEnd = ctx.Stop.Column;
+                StopIndex = ctx.Stop.StopIndex;
+                LineEnd = ctx.Stop.Line;
+                ColumnEnd = ctx.Stop.Column;
             }
             else
             {
-                _stopIndex = _startIndex;
-                _columnEnd = _columnStart;
-                _lineEnd = _lineStart;
+                StopIndex = StartIndex;
+                ColumnEnd = ColumnStart;
+                LineEnd = LineStart;
             }
             HasIndexInfo = true;
         }
 
-
-
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode start)
         {
-            _lineStart = start.SourceCodeRange.LineStart;
-            _columnStart = start.SourceCodeRange.ColumnStart;
-            _startIndex = start.SourceCodeRange.StartIndex;
-            _stopIndex = start.SourceCodeRange.StopIndex;
-            _lineEnd = start.SourceCodeRange.LineEnd;
-            _columnEnd = start.SourceCodeRange.ColumnEnd;
+            LineStart = start.SourceCodeRange.LineStart;
+            ColumnStart = start.SourceCodeRange.ColumnStart;
+            StartIndex = start.SourceCodeRange.StartIndex;
+            StopIndex = start.SourceCodeRange.StopIndex;
+            LineEnd = start.SourceCodeRange.LineEnd;
+            ColumnEnd = start.SourceCodeRange.ColumnEnd;
             HasIndexInfo = true;
         }
-
-
 
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode start, ILSLReadOnlySyntaxTreeNode end)
         {
-            _lineStart = start.SourceCodeRange.LineStart;
-            _columnStart = start.SourceCodeRange.ColumnStart;
-            _startIndex = start.SourceCodeRange.StartIndex;
-            _stopIndex = end.SourceCodeRange.StopIndex;
-            _lineEnd = end.SourceCodeRange.LineEnd;
-            _columnEnd = end.SourceCodeRange.ColumnEnd;
+            LineStart = start.SourceCodeRange.LineStart;
+            ColumnStart = start.SourceCodeRange.ColumnStart;
+            StartIndex = start.SourceCodeRange.StartIndex;
+            StopIndex = end.SourceCodeRange.StopIndex;
+            LineEnd = end.SourceCodeRange.LineEnd;
+            ColumnEnd = end.SourceCodeRange.ColumnEnd;
             HasIndexInfo = true;
         }
 
-
-
-        public LSLSourceCodeRange(int lineStart, int columnStart, int lineEnd, int columnEnd, int startIndex, int stopIndex)
+        public LSLSourceCodeRange(int lineStart, int columnStart, int lineEnd, int columnEnd, int startIndex,
+            int stopIndex)
         {
-            _lineStart = lineStart;
-            _columnStart = columnStart;
-            _lineEnd = lineEnd;
-            _columnEnd = columnEnd;
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            LineStart = lineStart;
+            ColumnStart = columnStart;
+            LineEnd = lineEnd;
+            ColumnEnd = columnEnd;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             HasIndexInfo = true;
         }
-
-
 
         public LSLSourceCodeRange(int lineStart, int columnStart, int columnLength)
         {
-            _lineStart = lineStart;
-            _columnStart = columnStart;
-            _lineEnd = lineStart;
-            _columnEnd = columnStart + columnLength;
-            _startIndex = 0;
-            _stopIndex = 0;
+            LineStart = lineStart;
+            ColumnStart = columnStart;
+            LineEnd = lineStart;
+            ColumnEnd = columnStart + columnLength;
+            StartIndex = 0;
+            StopIndex = 0;
             HasIndexInfo = false;
         }
-
-
 
         public LSLSourceCodeRange(int lineStart, int columnStart)
         {
-            _lineStart = lineStart;
-            _columnStart = columnStart;
-            _lineEnd = lineStart;
-            _columnEnd = columnStart;
-            _startIndex = 0;
-            _stopIndex = 0;
+            LineStart = lineStart;
+            ColumnStart = columnStart;
+            LineEnd = lineStart;
+            ColumnEnd = columnStart;
+            StartIndex = 0;
+            StopIndex = 0;
             HasIndexInfo = false;
         }
 
-        public bool HasIndexInfo { get; private set; }
+        public bool HasIndexInfo { get; }
 
         public bool IsSingleLine
         {
-            get { return _lineEnd == _lineStart; }
+            get { return LineEnd == LineStart; }
         }
 
-
-        public int LineStart
-        {
-            get { return _lineStart; }
-        }
-
-        public int LineEnd
-        {
-            get { return _lineEnd; }
-        }
-
-        public int ColumnStart
-        {
-            get { return _columnStart; }
-        }
-
-        public int ColumnEnd
-        {
-            get { return _columnEnd; }
-        }
-
-        public int StartIndex
-        {
-            get { return _startIndex; }
-        }
-
-        public int StopIndex
-        {
-            get { return _stopIndex; }
-        }
+        public int LineStart { get; }
+        public int LineEnd { get; private set; }
+        public int ColumnStart { get; }
+        public int ColumnEnd { get; private set; }
+        public int StartIndex { get; }
+        public int StopIndex { get; private set; }
 
         public int Length
         {
-            get {  return (_stopIndex - _startIndex)+1;}
+            get { return (StopIndex - StartIndex) + 1; }
         }
-
 
         public override bool Equals(object obj)
         {
             var x = obj as LSLSourceCodeRange;
             if (x == null) return false;
 
-            return this.HasIndexInfo == x.HasIndexInfo && this.ColumnStart == x.ColumnStart &&
-                   this.ColumnEnd == x.ColumnEnd && this.LineStart == x.LineStart && this.StartIndex == x.StartIndex;
+            return HasIndexInfo == x.HasIndexInfo && ColumnStart == x.ColumnStart &&
+                   ColumnEnd == x.ColumnEnd && LineStart == x.LineStart && StartIndex == x.StartIndex;
         }
 
         public LSLSourceCodeRange GetFirstCharRange()
@@ -191,9 +174,9 @@ namespace LibLSLCC.CodeValidator.Primitives
 
         public void ExtendTo(ILSLReadOnlySyntaxTreeNode statement)
         {
-            _lineEnd = statement.SourceCodeRange.LineEnd;
-            _columnEnd = statement.SourceCodeRange.ColumnEnd;
-            _stopIndex = statement.SourceCodeRange.StopIndex;
+            LineEnd = statement.SourceCodeRange.LineEnd;
+            ColumnEnd = statement.SourceCodeRange.ColumnEnd;
+            StopIndex = statement.SourceCodeRange.StopIndex;
         }
     }
 }

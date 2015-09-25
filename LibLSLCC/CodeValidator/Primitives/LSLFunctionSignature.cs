@@ -1,19 +1,44 @@
+#region FileInfo
+
+// 
+// File: LSLFunctionSignature.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Primitives
 {
-
-
-
     public class LSLFunctionSignature
     {
         private readonly List<LSLParameter> _parameters;
-
-
-
 
         protected LSLFunctionSignature()
         {
@@ -21,14 +46,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             Name = "";
             ReturnType = LSLType.Void;
         }
-
-        public override string ToString()
-        {
-            return SignatureString;
-        }
-
-        
-
 
         public LSLFunctionSignature(LSLFunctionSignature other)
         {
@@ -38,18 +55,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             HasVariadicParameter = other.HasVariadicParameter;
             VariadicParameterIndex = other.VariadicParameterIndex;
         }
-
-        public static LSLFunctionSignature Parse(string cSignature)
-        {
-            var regex = new LSLFunctionSignatureRegex("",";*");
-            var m = regex.GetSignature(cSignature);
-            if (m == null)
-            {
-                throw new ArgumentException("Syntax error parsing function signature", "cSignature");
-            }
-            return m;
-        }
-
 
         public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null)
         {
@@ -73,26 +78,25 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
-
         /// <summary>
         ///     Returns the number of parameters the function signature has including variadic parameters
         /// </summary>
         public int ParameterCount { get; set; }
 
         /// <summary>
-        ///     Returns the number of non variadic parameters the function signature has 
+        ///     Returns the number of non variadic parameters the function signature has
         /// </summary>
         public int ConcreteParameterCount { get; set; }
 
         /// <summary>
         ///     The functions LSL return type
         /// </summary>
-        public LSLType ReturnType { get; protected set; }
+        public LSLType ReturnType { get; }
 
         /// <summary>
         ///     The functions name
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; }
 
         /// <summary>
         ///     Indexable list of objects describing the functions parameters
@@ -112,7 +116,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                     returnString = LSLTypeTools.ToLSLTypeString(ReturnType) + " ";
                 }
 
-                var paramNames=Parameters.Select(x =>
+                var paramNames = Parameters.Select(x =>
                 {
                     if (!x.Variadic)
                     {
@@ -121,15 +125,28 @@ namespace LibLSLCC.CodeValidator.Primitives
                     return "params " + x.Name + "...";
                 });
 
-                return returnString + Name + "(" +string.Join(", ", paramNames)+")";
+                return returnString + Name + "(" + string.Join(", ", paramNames) + ")";
             }
         }
 
         public bool HasVariadicParameter { get; private set; }
-
         public int VariadicParameterIndex { get; private set; }
 
+        public override string ToString()
+        {
+            return SignatureString;
+        }
 
+        public static LSLFunctionSignature Parse(string cSignature)
+        {
+            var regex = new LSLFunctionSignatureRegex("", ";*");
+            var m = regex.GetSignature(cSignature);
+            if (m == null)
+            {
+                throw new ArgumentException("Syntax error parsing function signature", "cSignature");
+            }
+            return m;
+        }
 
         public void AddParameter(LSLParameter parameter)
         {
@@ -137,7 +154,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             {
                 if (!HasVariadicParameter)
                 {
-                   
                     HasVariadicParameter = true;
                     VariadicParameterIndex = _parameters.Count;
                 }
@@ -159,8 +175,6 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             _parameters.Add(parameter);
         }
-
-
 
         /// <summary>
         ///     Determines if two function signatures match exactly, parameter names do not matter but parameter
@@ -192,10 +206,9 @@ namespace LibLSLCC.CodeValidator.Primitives
             return true;
         }
 
-
         /// <summary>
-        /// This implementation of get hash code uses LSLParameter.Type.GetHashCode and LSLParameter.Type.Variadic
-        /// in order to get a hash for the signature parameters. this makes parameters unique by type and variadic'ness
+        ///     This implementation of get hash code uses LSLParameter.Type.GetHashCode and LSLParameter.Type.Variadic
+        ///     in order to get a hash for the signature parameters. this makes parameters unique by type and variadic'ness
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -206,15 +219,14 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             return Parameters.Aggregate(hash, (current, lslParameter) =>
             {
-                var c=current*31 + lslParameter.Type.GetHashCode();
+                var c = current*31 + lslParameter.Type.GetHashCode();
                 c = c*31 + lslParameter.Variadic.GetHashCode();
                 return c;
             });
         }
 
-
         /// <summary>
-        /// Delegates SignatureMatches after checking type equality
+        ///     Delegates SignatureMatches after checking type equality
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>

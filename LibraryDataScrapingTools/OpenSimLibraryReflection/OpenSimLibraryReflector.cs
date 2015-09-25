@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: OpenSimLibraryReflector.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +33,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using LibLSLCC.CodeValidator.Enums;
-
 
 #endregion
 
@@ -41,20 +66,17 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         /// </summary>
         IEnumerable<Type> ScriptConstantContainerClasses { get; }
 
-
         /// <summary>
         ///     The type of attribute used to mark methods as public lsl functions inside
         ///     AttributedModuleClasses
         /// </summary>
         Type ScriptModuleFunctionAttribute { get; }
 
-
         /// <summary>
         ///     The type of attribute used to mark methods as public lsl constants inside
         ///     AttributedModuleClasses
         /// </summary>
         Type ScriptModuleConstantAttribute { get; }
-
 
         /// <summary>
         ///     Runtime type for floats inside generated code
@@ -178,39 +200,35 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             AppDomain.CurrentDomain.AssemblyResolve -= _currentDomainOnAssemblyResolve;
         }
 
-
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.Api.Runtime.dll
         /// </summary>
-        public Assembly ScriptRuntimeAssembly { get; private set; }
+        public Assembly ScriptRuntimeAssembly { get; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.dll
         /// </summary>
-        public Assembly ScriptApiAssembly { get; private set; }
+        public Assembly ScriptApiAssembly { get; }
 
         /// <summary>
         ///     OpenSim.Region.OptionalModules.dll
         /// </summary>
-        public Assembly OptionalScriptModulesAssembly { get; private set; }
+        public Assembly OptionalScriptModulesAssembly { get; }
 
         /// <summary>
         ///     OpenSim.Region.Framework.dll
         /// </summary>
-        public Assembly RegionFrameworkAssembly { get; private set; }
-
+        public Assembly RegionFrameworkAssembly { get; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.ScriptBase.ScriptBaseClass
         /// </summary>
-        public Type ScriptBaseClass { get; private set; }
-
+        public Type ScriptBaseClass { get; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.Api.Interfaces.*
         /// </summary>
-        public IEnumerable<Type> FunctionContainingInterfaces { get; private set; }
-
+        public IEnumerable<Type> FunctionContainingInterfaces { get; }
 
         public Type GetFunctionContainingInterface(string name)
         {
@@ -227,28 +245,25 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             return ScriptConstantContainerClasses.SingleOrDefault(x => x.Name == name);
         }
 
-
         /// <summary>
         ///     INonSharedRegionModule that use ScriptConstantAttribute or ScriptInvocationAttribute anywhere in the class
         /// </summary>
-        public IEnumerable<Type> AttributedModuleClasses { get; private set; }
-
+        public IEnumerable<Type> AttributedModuleClasses { get; }
 
         /// <summary>
         ///     ScriptBaseClass
         /// </summary>
-        public IEnumerable<Type> ScriptConstantContainerClasses { get; private set; }
-
+        public IEnumerable<Type> ScriptConstantContainerClasses { get; }
 
         /// <summary>
         ///     OpenSim.Region.Framework.Interfaces.ScriptInvocationAttribute
         /// </summary>
-        public Type ScriptModuleFunctionAttribute { get; private set; }
+        public Type ScriptModuleFunctionAttribute { get; }
 
         /// <summary>
         ///     OpenSim.Region.Framework.Interfaces.ScriptConstantAttribute
         /// </summary>
-        public Type ScriptModuleConstantAttribute { get; private set; }
+        public Type ScriptModuleConstantAttribute { get; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.LSL_Types.LSLFloat
@@ -441,12 +456,12 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
                 return null;
 
 
-            string path = Path.Combine(_openSimBinDirectory, aname.Name + ".dll");
+            var path = Path.Combine(_openSimBinDirectory, aname.Name + ".dll");
 
             if (!File.Exists(path))
                 return null;
 
-            Assembly assembly = Assembly.LoadFrom(path);
+            var assembly = Assembly.LoadFrom(path);
             _loaded.Add(aname, assembly);
             return assembly;
         }

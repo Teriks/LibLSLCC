@@ -1,5 +1,31 @@
-﻿#region
+﻿#region FileInfo
 
+// 
+// File: FirestormLibraryData.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:27 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
 
 using System;
 using System.Collections;
@@ -13,7 +39,6 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.ScraperInterfaces;
-
 
 #endregion
 
@@ -317,16 +342,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         public class Function : IEquatable<Function>
         {
             [XmlAttribute(AttributeName = "sleep")]
-            public string Sleep { get; set; }
+            public string Sleep { get; }
 
             [XmlAttribute(AttributeName = "energy")]
-            public string Energy { get; set; }
+            public string Energy { get; }
 
             [XmlAttribute(AttributeName = "name")]
-            public string Name { get; set; }
+            public string Name { get; }
 
             [XmlAttribute(AttributeName = "desc")]
-            public string Desc { get; set; }
+            public string Desc { get; }
 
             public bool Equals(Function other)
             {
@@ -345,7 +370,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 unchecked
                 {
-                    int hashCode = (Sleep != null ? Sleep.GetHashCode() : 0);
+                    var hashCode = (Sleep != null ? Sleep.GetHashCode() : 0);
                     hashCode = (hashCode*397) ^ (Energy != null ? Energy.GetHashCode() : 0);
                     hashCode = (hashCode*397) ^ (Name != null ? Name.GetHashCode() : 0);
                     hashCode = (hashCode*397) ^ (Desc != null ? Desc.GetHashCode() : 0);
@@ -425,8 +450,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         {
             public LSLLibraryConstantSignature GetSignature(IReadOnlyList<string> subsets)
             {
-                string[] s = Desc.Split(',');
-                LSLType t = s.Length == 3 ? LSLType.Vector : LSLType.Rotation;
+                var s = Desc.Split(',');
+                var t = s.Length == 3 ? LSLType.Vector : LSLType.Rotation;
                 var f = new LSLLibraryConstantSignature(t, Name) {DocumentationString = Desc};
                 f.SetSubsets(subsets);
                 return f;
@@ -613,9 +638,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         [XmlRoot(ElementName = "script_library")]
         public class ScriptLibrary
         {
-            private FunctionCollection _functions = new FunctionCollection();
-            private KeywordCollection _keywords = new KeywordCollection();
-
             [XmlAttribute(AttributeName = "name")]
             public string Name { get; set; }
 
@@ -631,19 +653,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             [XmlArrayItem("comment", Type = typeof (Comment))]
             [XmlArrayItem("block_comment", Type = typeof (BlockComment))]
             [XmlArrayItem("event", Type = typeof (Event))]
-            public KeywordCollection Keywords
-            {
-                get { return _keywords; }
-                set { _keywords = value; }
-            }
+            public KeywordCollection Keywords { get; set; } = new KeywordCollection();
 
             [XmlArray(ElementName = "functions")]
             [XmlArrayItem(ElementName = "function")]
-            public FunctionCollection Functions
-            {
-                get { return _functions; }
-                set { _functions = value; }
-            }
+            public FunctionCollection Functions { get; set; } = new FunctionCollection();
 
             public static ScriptLibrary Read(XmlReader reader)
             {

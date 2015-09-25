@@ -1,4 +1,35 @@
-﻿using System.Collections.Generic;
+﻿#region FileInfo
+
+// 
+// File: ILSLMainLibraryDataProvider.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
@@ -12,19 +43,15 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers { get; }
 
-
         /// <summary>
         ///     Enumerable of the LibraryFunctions defined according to this data provider
         /// </summary>
         IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions { get; }
 
-
         /// <summary>
         ///     Enumerable of the LibraryConstants defined according to this data provider
         /// </summary>
         IEnumerable<LSLLibraryConstantSignature> LibraryConstants { get; }
-
-
 
         /// <summary>
         ///     Return true if an event handler with the given name exists in the default library.
@@ -32,8 +59,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="name">Name of the event handler.</param>
         /// <returns>True if the event handler with given name exists.</returns>
         bool EventHandlerExist(string name);
-
-
 
         /// <summary>
         ///     Return an LSLEventHandlerSignature object describing an event handler signature;
@@ -46,16 +71,12 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </returns>
         LSLLibraryEventSignature GetEventHandlerSignature(string name);
 
-
-
         /// <summary>
         ///     Return true if a library function with the given name exists.
         /// </summary>
         /// <param name="name">Name of the library function.</param>
         /// <returns>True if the library function with given name exists.</returns>
         bool LibraryFunctionExist(string name);
-
-
 
         /// <summary>
         ///     Return an LSLFunctionSignature list object describing the function call signatures of a library function;
@@ -68,16 +89,12 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </returns>
         IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name);
 
-
-
         /// <summary>
         ///     Return true if a library constant with the given name exists.
         /// </summary>
         /// <param name="name">Name of the library constant.</param>
         /// <returns>True if a library constant with the given name exists.</returns>
         bool LibraryConstantExist(string name);
-
-
 
         /// <summary>
         ///     Return an LSLLibraryConstantSignature object describing the signature of a library constant

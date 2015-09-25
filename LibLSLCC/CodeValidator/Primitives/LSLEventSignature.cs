@@ -1,7 +1,38 @@
+#region FileInfo
+
+// 
+// File: LSLEventSignature.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
@@ -20,15 +51,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             _parameters = new List<LSLParameter>();
             Name = "";
         }
-
-        public override string ToString()
-        {
-            return SignatureString;
-        }
-
-  
-
-
 
         public LSLEventSignature(string name, IEnumerable<LSLParameter> parameters)
         {
@@ -51,9 +73,8 @@ namespace LibLSLCC.CodeValidator.Primitives
         protected LSLEventSignature(string name)
         {
             Name = name;
-            _parameters=new List<LSLParameter>();
+            _parameters = new List<LSLParameter>();
         }
-
 
         /// <summary>
         ///     The number of parameters the event handler signature has
@@ -66,8 +87,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     The event handlers name
         /// </summary>
-        public string Name { get; protected set; }
-
+        public string Name { get; }
 
         /// <summary>
         ///     Indexable list of objects describing the event handlers parameters
@@ -87,8 +107,10 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
-
-
+        public override string ToString()
+        {
+            return SignatureString;
+        }
 
         /// <summary>
         ///     Determines if two event handler signatures match exactly, parameter names do not matter but parameter
@@ -116,8 +138,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             return true;
         }
 
-
-
         public override int GetHashCode()
         {
             var hash = 17;
@@ -125,8 +145,6 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             return Parameters.Aggregate(hash, (current, lslParameter) => current*31 + lslParameter.GetHashCode());
         }
-
-
 
         public override bool Equals(object obj)
         {
@@ -138,7 +156,6 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             return SignatureMatches(o);
         }
-
 
         public void AddParameter(LSLParameter parameter)
         {

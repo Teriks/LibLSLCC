@@ -1,4 +1,35 @@
-﻿using System.Collections.Generic;
+﻿#region FileInfo
+
+// 
+// File: ILSLStringPreProcessor.cs
+// 
+// Author/Copyright:  Teriks
+// 
+// Last Compile: 24/09/2015 @ 9:24 PM
+// 
+// Creation Date: 21/08/2015 @ 12:22 AM
+// 
+// 
+// This file is part of LibLSLCC.
+// LibLSLCC is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// LibLSLCC is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with LibLSLCC.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#endregion
+
+#region Imports
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
@@ -7,18 +38,25 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     /// </summary>
     public struct LSLStringCharacterError
     {
+        public LSLStringCharacterError(char causingCharacter, int stringIndex) : this()
+        {
+            StringIndex = stringIndex;
+            CausingCharacter = causingCharacter;
+        }
+
+        public char CausingCharacter { get; }
+        public int StringIndex { get; }
+
         public bool Equals(LSLStringCharacterError other)
         {
             return CausingCharacter == other.CausingCharacter && StringIndex == other.StringIndex;
         }
 
-
-
         /// <summary>
-        /// Indicates whether this instance and a specified object are equal.
+        ///     Indicates whether this instance and a specified object are equal.
         /// </summary>
         /// <returns>
-        /// true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise, false.
+        ///     true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false.
         /// </returns>
         /// <param name="obj">Another object to compare to. </param>
         public override bool Equals(object obj)
@@ -27,13 +65,11 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             return obj is LSLStringCharacterError && Equals((LSLStringCharacterError) obj);
         }
 
-
-
         /// <summary>
-        /// Returns the hash code for this instance.
+        ///     Returns the hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A 32-bit signed integer that is the hash code for this instance.
+        ///     A 32-bit signed integer that is the hash code for this instance.
         /// </returns>
         public override int GetHashCode()
         {
@@ -41,14 +77,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             {
                 return (CausingCharacter.GetHashCode()*397) ^ StringIndex;
             }
-        }
-
-
-
-        public LSLStringCharacterError(char causingCharacter, int stringIndex) : this()
-        {
-            StringIndex = stringIndex;
-            CausingCharacter = causingCharacter;
         }
 
         public static bool operator ==(LSLStringCharacterError left, LSLStringCharacterError right)
@@ -60,11 +88,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         {
             return left.CausingCharacter != right.CausingCharacter && left.StringIndex != right.StringIndex;
         }
-
-        public char CausingCharacter { get; private set; }
-        public int StringIndex { get; private set; }
     }
-
 
 
     /// <summary>
@@ -75,14 +99,9 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     public interface ILSLStringPreProcessor
     {
         bool HasErrors { get; }
-
         IEnumerable<LSLStringCharacterError> InvalidEscapeCodes { get; }
-
         IEnumerable<LSLStringCharacterError> IllegalCharacters { get; }
-
         string Result { get; }
-
-
 
         /// <summary>
         ///     Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,
@@ -90,8 +109,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="stringLiteral">The string literal to be processed, with quotes still at the ends</param>
         void ProcessString(string stringLiteral);
-
-
 
         /// <summary>
         ///     Reset the pre processor so it can process another string
