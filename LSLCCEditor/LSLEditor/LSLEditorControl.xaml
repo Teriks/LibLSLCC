@@ -14,7 +14,7 @@
             FontFamily="Courier New"
             FontSize="10pt"
 
-            ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening"
+            ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" 
             MouseLeave="TextEditor_OnMouseLeave" TextChanged="TextEditor_OnTextChanged">
             <avalonedit:TextEditor.InputBindings>
                 <KeyBinding Key="Space" Modifiers="Control"
@@ -26,7 +26,7 @@
             </avalonedit:TextEditor.InputBindings>
             <avalonedit:TextEditor.ContextMenu>
 
-                <ContextMenu Opened="ContextMenu_OnOpened">
+                <ContextMenu Opened="TextArea_ContextMenu_OnOpened" Closed="TextArea_ContextMenu_OnClosed">
                     <MenuItem Command="Cut" Header="Cut" />
                     <MenuItem Command="Copy" Header="Copy" />
                     <MenuItem Command="Paste" Header="Paste" />
@@ -35,7 +35,7 @@
                     <Separator />
                     <MenuItem Command="Undo" Header="Undo" />
                     <MenuItem Command="Redo" Header="Redo" />
-                    <MenuItem Header="Go To Definition" Click="MenuItem_OnClick" Name="GotoDefinitionContextMenuButton" />
+                    <MenuItem Header="Go To Definition" Click="TextArea_ContextMenu_GotoDefinitionClick" Name="GotoDefinitionContextMenuButton" Visibility="Collapsed"/>
                     <MenuItem Header="Auto Complete">
                         <MenuItem Click="EditorContext_ClickSuggestLibraryConstants" Header="Suggest Library Constants"
                                   InputGestureText="Ctrl+Q" />

@@ -43,13 +43,16 @@ using System.Xml;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
+using ICSharpCode.AvalonEdit.Rendering;
 using LibLSLCC.AutoCompleteParser;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LSLCCEditor.Utility;
+using ListBox = System.Windows.Forms.ListBox;
 
 #endregion
 
@@ -165,11 +168,16 @@ namespace LSLCCEditor.LSLEditor
 
         public LSLEditorControl()
         {
+
             AutoCompleteUserDefined = new RelayCommand(AutoCompleteUserDefinedCommand);
             AutoCompleteLibraryFunctions = new RelayCommand(AutoCompleteLibraryFunctionsCommand);
             AutoCompleteLibraryConstants = new RelayCommand(AutoCompleteLibraryConstantsCommand);
 
             InitializeComponent();
+
+            _selectionForgroundCache = Editor.TextArea.SelectionForeground;
+            _selectionBrushCache = Editor.TextArea.SelectionBrush;
+            _selectionBorderCache = Editor.TextArea.SelectionBorder;
 
             Editor.TextArea.TextEntering += TextArea_TextEntering;
             Editor.MouseHover += TextEditor_MouseHover;
@@ -307,42 +315,47 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-        private static string GetIdUnderMouse(TextDocument document, TextViewPosition position)
+
+        private readonly Regex _idCharacterRegex = new Regex("[_a-zA-Z0-9]");
+        private readonly Regex _idRegex = new Regex("^[_a-zA-Z]+[_a-zA-Z0-9]*$");
+
+
+
+        private TextSegment _GetIDSegmentUnderMouse(TextDocument document, TextViewPosition position)
         {
-            try
-            {
-                return _GetIDUnderMouse(document, position);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return "";
-            }
-        }
-
-
-        private static string _GetIDUnderMouse(TextDocument document, TextViewPosition position)
-        {
-            var wordHovered = string.Empty;
-
             var line = position.Line;
             var column = position.Column;
 
             var offset = document.GetOffset(line, column);
+
+
+            LSLCommentStringSkipper parser = new LSLCommentStringSkipper();
+            parser.ParseUpTo(Editor.Text, offset);
+            if(parser.InComment || parser.InString)
+            {
+                return null;
+            }
+
             if (offset >= document.TextLength)
                 offset--;
 
             var textAtOffset = document.GetText(offset, 1);
 
+            int startOffset = 0;
+            int endOffset = 0;
 
             // Get text backward of the mouse position, until the first space
-            while (!(string.IsNullOrWhiteSpace(textAtOffset) || !Regex.Match(textAtOffset, "[_a-zA-Z0-9]").Success))
+            while (!(string.IsNullOrWhiteSpace(textAtOffset) || !_idCharacterRegex.Match(textAtOffset).Success))
             {
-                wordHovered = textAtOffset + wordHovered;
+                //wordHovered = textAtOffset + wordHovered;
 
                 offset--;
 
+                startOffset = offset;
                 if (offset < 0)
                     break;
+
+                
 
                 textAtOffset = document.GetText(offset, 1);
             }
@@ -355,25 +368,60 @@ namespace LSLCCEditor.LSLEditor
 
                 textAtOffset = document.GetText(offset, 1);
 
-                while (!(string.IsNullOrWhiteSpace(textAtOffset) || !Regex.Match(textAtOffset, "[_a-zA-Z0-9]").Success))
+                while (!(string.IsNullOrWhiteSpace(textAtOffset) || !_idCharacterRegex.Match(textAtOffset).Success))
                 {
-                    wordHovered = wordHovered + textAtOffset;
+                    //wordHovered = wordHovered + textAtOffset;
 
                     offset++;
-
+                    endOffset = offset;
                     if (offset >= document.TextLength)
                         break;
+
+                    
 
                     textAtOffset = document.GetText(offset, 1);
                 }
             }
 
-            if (Regex.Match(wordHovered, "^[_a-zA-Z]+[_a-zA-Z0-9]*$").Success)
+            if (startOffset == endOffset || startOffset > endOffset) return null;
+
+            var wordHovered = document.GetText(startOffset + 1, (endOffset - startOffset) - 1);
+
+            if (_idRegex.Match(wordHovered).Success)
             {
-                return wordHovered;
+                var x = new TextSegment
+                {
+                    Length = (endOffset - startOffset) - 1,
+                    StartOffset = startOffset + 1,
+                    EndOffset = endOffset
+                };
+                return x;
             }
-            return "";
+            return null;
         }
+        private TextSegment GetIdSegmentUnderMouse(TextDocument document, TextViewPosition position)
+        {
+            try
+            {
+                return _GetIDSegmentUnderMouse(document, position);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return null;
+            }
+        }
+
+        private string GetIdUnderMouse(TextDocument document, TextViewPosition position)
+        {
+            var sec = GetIdSegmentUnderMouse(document, position);
+
+            if (sec == null) return "";
+
+            var text = document.GetText(sec);
+            return text;
+        }
+
+
 
 
         private void TextEditor_MouseHover(object sender, MouseEventArgs e)
@@ -382,13 +430,17 @@ namespace LSLCCEditor.LSLEditor
 
             if (pos != null)
             {
-                var wordHovered = GetIdUnderMouse(Editor.Document, pos.Value);
-                if (string.IsNullOrWhiteSpace(wordHovered))
+                var hoveredSegment = GetIdSegmentUnderMouse(Editor.Document, pos.Value);
+                if (hoveredSegment == null)
                 {
                     e.Handled = true;
                     _hoverToolTip.IsOpen = false;
                     return;
                 }
+
+                var wordHovered = Editor.Document.GetText(hoveredSegment);
+
+
 
                 var hoverText = "";
                 if (LibraryDataProvider.LibraryFunctionExist(wordHovered))
@@ -1364,8 +1416,13 @@ namespace LSLCCEditor.LSLEditor
         private LSLAutoCompleteParser.LocalVariable _contextMenuLocalVar;
         private LSLAutoCompleteParser.LocalParameter _contextMenuLocalParam;
 
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void TextArea_ContextMenu_GotoDefinitionClick(object sender, RoutedEventArgs e)
         {
+
+            Editor.TextArea.SelectionBorder = _selectionBorderCache;
+            Editor.TextArea.SelectionBrush = _selectionBrushCache;
+            Editor.TextArea.SelectionForeground = _selectionForgroundCache;
+
             if (_contextMenuOpenPosition != null)
             {
                 if (_contextMenuFunction != null)
@@ -1395,20 +1452,47 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
+        private Pen _selectionBorderCache;
+        private Brush _selectionBrushCache;
+        private Brush _selectionForgroundCache;
 
-        private void ContextMenu_OnOpened(object sender, RoutedEventArgs e)
+        private void TextArea_ContextMenu_OnOpened(object sender, RoutedEventArgs e)
         {
+            _contextMenuOpenPosition = null;
             _contextMenuOpenPosition = Editor.GetPositionFromPoint(Mouse.GetPosition(Editor));
 
 
-            if (_contextMenuOpenPosition == null) return;
+            if (_contextMenuOpenPosition == null)
+            {
+                return;
+            }
 
             var x = new LSLAutoCompleteParser();
             var fastVarParser = new LSLAutoCompleteParser();
             fastVarParser.Parse(new StringReader(Editor.Text),
                 Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location));
 
-            var wordHovered = GetIdUnderMouse(Editor.Document, _contextMenuOpenPosition.Value);
+            var segment = GetIdSegmentUnderMouse(Editor.Document, _contextMenuOpenPosition.Value);
+            if (segment == null)
+            {
+                _contextMenuOpenPosition = null;
+                return;
+            }
+
+
+            _contextMenuFunction = null;
+            _contextMenuVar = null;
+            _contextMenuLocalVar = null;
+            _contextMenuLocalParam = null;
+
+            _selectionBorderCache = Editor.TextArea.SelectionBorder;
+            _selectionBrushCache = Editor.TextArea.SelectionBrush;
+            _selectionForgroundCache = Editor.TextArea.SelectionForeground;
+
+
+            
+
+            var wordHovered = Editor.Document.GetText(segment.StartOffset, segment.Length);
 
             fastVarParser.GlobalFunctionsDictionary.TryGetValue(wordHovered, out _contextMenuFunction);
             _contextMenuLocalVar = fastVarParser.LocalVariables.FirstOrDefault(y => y.Name == wordHovered);
@@ -1428,15 +1512,46 @@ namespace LSLCCEditor.LSLEditor
                 _contextMenuLocalParam = null;
             }
 
-
-            GotoDefinitionContextMenuButton.Visibility = (
+            bool isSymbol=(
                 _contextMenuFunction != null ||
                 _contextMenuVar != null ||
                 _contextMenuLocalVar != null ||
                 _contextMenuLocalParam != null
-                )
-                ? Visibility.Visible
+                );
+
+            if (isSymbol)
+            {
+                Editor.Select(segment.StartOffset, segment.Length);
+                var style = new DashStyle(new double[] {2, 2}, 2.0);
+                var pen = new Pen(Brushes.Black, 1);
+                pen.DashStyle = style;
+                Editor.TextArea.SelectionBorder = pen;
+                Editor.TextArea.SelectionBrush = Brushes.Transparent;
+                Editor.TextArea.SelectionForeground = Brushes.Red;
+            }
+            else
+            {
+                _contextMenuOpenPosition = null;
+            }
+
+            GotoDefinitionContextMenuButton.Visibility =
+               isSymbol ? Visibility.Visible
                 : Visibility.Collapsed;
+        }
+
+        private void TextArea_ContextMenu_OnClosed(object sender, RoutedEventArgs e)
+        {
+            GotoDefinitionContextMenuButton.Visibility = Visibility.Collapsed;
+
+            _contextMenuOpenPosition = null;
+            _contextMenuFunction = null;
+            _contextMenuVar = null;
+            _contextMenuLocalVar = null;
+            _contextMenuLocalParam = null;
+
+            Editor.TextArea.SelectionBorder = _selectionBorderCache;
+            Editor.TextArea.SelectionBrush = _selectionBrushCache;
+            Editor.TextArea.SelectionForeground = _selectionForgroundCache;
         }
     }
 }
