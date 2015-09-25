@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     The parameter index, which gets set when the parameter is added to an LSLFunctionSignature or LSLEventSignature
         /// </summary>
-        public int ParameterIndex { get; }
+        public int ParameterIndex { get; set; }
 
         public override int GetHashCode()
         {

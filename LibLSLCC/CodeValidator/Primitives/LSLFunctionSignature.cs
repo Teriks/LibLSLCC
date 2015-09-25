@@ -91,12 +91,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     The functions LSL return type
         /// </summary>
-        public LSLType ReturnType { get; }
+        public LSLType ReturnType { get; set; }
 
         /// <summary>
         ///     The functions name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         ///     Indexable list of objects describing the functions parameters

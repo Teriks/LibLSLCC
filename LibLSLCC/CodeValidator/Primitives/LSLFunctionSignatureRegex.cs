@@ -161,8 +161,8 @@ namespace LibLSLCC.CodeValidator.Primitives
                 Parameters = new List<KeyValuePair<string, string>>();
             }
 
-            public string Name { get; }
-            public string ReturnType { get; }
+            public string Name { get; set; }
+            public string ReturnType { get; set; }
             public List<KeyValuePair<string, string>> Parameters { get; }
 
             public bool Equals(SimpleSignature other)

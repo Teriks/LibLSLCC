@@ -112,8 +112,8 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-        public LSLType Type { get; }
-        public string Name { get; }
+        public LSLType Type { get; set; }
+        public string Name { get; set; }
         public string ValueString { get; private set; }
 
         /// <summary>

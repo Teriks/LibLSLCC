@@ -87,7 +87,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     The event handlers name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         ///     Indexable list of objects describing the event handlers parameters
