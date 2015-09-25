@@ -81,7 +81,7 @@
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">
-            <TabControl  ItemsSource="{Binding EditorTabs}" x:Name="TabControl" SelectionChanged="TabControl_OnSelectionChanged">
+            <TabControl  ItemsSource="{Binding EditorTabs}" x:Name="TabControl" SelectionChanged="TabControl_OnSelectionChanged" Margin="0,10,0,0">
                 
                 <TabControl.Template>
                     <ControlTemplate TargetType="TabControl">

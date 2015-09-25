@@ -22,7 +22,7 @@
             </avalonedit:TextEditor.InputBindings>
             <avalonedit:TextEditor.ContextMenu>
                 
-                <ContextMenu>
+                <ContextMenu Opened="ContextMenu_OnOpened">
                     <MenuItem Command="Cut" Header="Cut"/>
                     <MenuItem Command="Copy" Header="Copy"/>
                     <MenuItem Command="Paste" Header="Paste"/>
@@ -31,6 +31,7 @@
                     <Separator />
                     <MenuItem Command="Undo" Header="Undo"/>
                     <MenuItem Command="Redo" Header="Redo"/>
+                    <MenuItem Header="Go To Definition" Click="MenuItem_OnClick" Name="GotoDefinitionContextMenuButton"></MenuItem>
                     <MenuItem Header="Auto Complete">
                     <MenuItem Click="EditorContext_ClickSuggestLibraryConstants" Header="Suggest Library Constants" InputGestureText="Ctrl+Q"/>
                     <MenuItem Click="EditorContext_ClickSuggestLibraryFunctions" Header="Suggest Library Functions" InputGestureText="Ctrl+W"/>

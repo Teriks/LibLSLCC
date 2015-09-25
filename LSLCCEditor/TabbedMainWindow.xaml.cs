@@ -240,7 +240,7 @@ namespace LSLCCEditor
             }
 
             tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
-                "Program compiled successfully"));
+                "Program compiled successfully") {Clickable = false});
         }
 
 
@@ -536,7 +536,7 @@ namespace LSLCCEditor
 
             FindDialogManager.TextToFind = tab.Content.Editor.Editor.SelectedText;
 
-            FindDialogManager.ShowAsFind();
+            FindDialogManager.ShowAsFind(this);
         }
 
 
@@ -548,7 +548,7 @@ namespace LSLCCEditor
 
             FindDialogManager.TextToFind = tab.Content.Editor.Editor.SelectedText;
 
-            FindDialogManager.ShowAsReplace();
+            FindDialogManager.ShowAsReplace(this);
         }
 
 

@@ -95,6 +95,50 @@ namespace LSLCCEditor.LSLEditor
         private bool _userChangingText;
 
 
+        private class LSLIdentStrategy :
+
+            IIndentationStrategy
+        {
+            public void IndentLine(TextDocument document, DocumentLine line)
+            {
+                if (document == null)
+                    throw new ArgumentNullException("document");
+                if (line == null)
+                    throw new ArgumentNullException("line");
+                DocumentLine previousLine = line.PreviousLine;
+                if (previousLine != null)
+                {
+                    ISegment indentationSegment = TextUtilities.GetWhitespaceAfter(document, previousLine.Offset);
+                    string indentation = document.GetText(indentationSegment);
+                    int offset = line.Offset - 1;
+                    while (offset > 0 && offset > previousLine.Offset)
+                    {
+                        var lastChar = document.GetText(offset, 1);
+                        if (lastChar == "{")
+                        {
+                            indentation += "\t";
+                            break;
+                        }
+                        if (!string.IsNullOrWhiteSpace(lastChar))
+                        {
+                            break;
+                        }
+                        offset--;
+                    }
+
+                    // copy indentation to line
+                    indentationSegment = TextUtilities.GetWhitespaceAfter(document, line.Offset);
+
+                    document.Replace(indentationSegment, indentation);
+                }
+            }
+
+            public void IndentLines(TextDocument document, int beginLine, int endLine)
+            {
+
+            }
+        }
+
 
         public LSLEditorControl()
         {
@@ -107,6 +151,9 @@ namespace LSLCCEditor.LSLEditor
             Editor.TextArea.TextEntering += TextArea_TextEntering;
             Editor.MouseHover += TextEditor_MouseHover;
             Editor.MouseHover += TextEditor_MouseHoverStopped;
+
+            this.Editor.TextArea.IndentationStrategy =
+                new LSLIdentStrategy();
 
 #if DEBUG_FASTPARSER
             _debugObjectView.Show();
@@ -408,31 +455,28 @@ namespace LSLCCEditor.LSLEditor
 
         private bool LSLTypeNameBehindOffset(string text, int caretOffset)
         {
-            bool foundWord = false;
             int behindOffset = caretOffset > 1 ? caretOffset - 1 : -1;
 
             while (behindOffset > 0)
             {
                 char c = text[behindOffset];
-                if (!foundWord && char.IsWhiteSpace(text[behindOffset]))
+
+                if (char.IsWhiteSpace(text[behindOffset]))
                 {
                     behindOffset--;
                     continue;
                 }
-                if (foundWord && char.IsWhiteSpace(text[behindOffset]))
-                {
-                    break;
-                }
+                if (c == ';' || c == '=' || c == ')') return false;
 
-                foundWord = true;
 
-                if (c == 'r' || c == 'g')
+                if ((c == 'r' || c == 'g'))
                 {
                     string t;
 
                     if (behindOffset >= 6)
                     {
                         t = text.Substring(behindOffset - 6, 7);
+
                         if (t == "integer")
                         {
                             return true;
@@ -504,6 +548,28 @@ namespace LSLCCEditor.LSLEditor
 
             var textArea = Editor.TextArea;
             var caretOffset = textArea.Caret.Offset;
+
+
+            if (e.Text == "}" && textArea.Document.GetText(caretOffset - 1, 1) == "\t")
+            {
+                int offset = caretOffset - 1;
+                while (offset > 0)
+                {
+                    string text = textArea.Document.GetText(offset, 1);
+                    if (text == ";" || text == "{")
+                    {
+                        textArea.Document.Remove(caretOffset - 1, 1);
+                        break;
+                    }
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                        break;
+                    }
+
+                    offset--;
+                }
+
+            }
 
             var behind = "";
 
@@ -807,6 +873,7 @@ namespace LSLCCEditor.LSLEditor
 
                 CurrentCompletionWindow.Show();
             }
+
         }
 
 
@@ -1302,6 +1369,83 @@ namespace LSLCCEditor.LSLEditor
         private void EditorContext_ClickSuggestLibraryConstants(object sender, RoutedEventArgs e)
         {
             SuggestLibraryConstants();
+        }
+
+        private TextViewPosition? _contextMenuOpenPosition;
+        private LSLAutoCompleteParser.GlobalFunction _contextMenuFunction;
+        private LSLAutoCompleteParser.GlobalVariable _contextMenuVar;
+        private LSLAutoCompleteParser.LocalVariable _contextMenuLocalVar;
+        private LSLAutoCompleteParser.LocalParameter _contextMenuLocalParam;
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+
+            if (_contextMenuOpenPosition != null)
+            {
+                if (_contextMenuFunction != null)
+                {
+                    Editor.ScrollTo(_contextMenuFunction.SourceCodeRange.LineStart, 0);
+                    Editor.Select(_contextMenuFunction.NameSourceCodeRange.StartIndex, _contextMenuFunction.NameSourceCodeRange.Length);
+                }
+                else if (_contextMenuLocalVar != null)
+                {
+                    Editor.ScrollTo(_contextMenuLocalVar.SourceCodeRange.LineStart, 0);
+                    Editor.Select(_contextMenuLocalVar.NameSourceCodeRange.StartIndex, _contextMenuLocalVar.NameSourceCodeRange.Length);
+                }
+                else if (_contextMenuLocalParam != null)
+                {
+                    Editor.ScrollTo(_contextMenuLocalParam.SourceCodeRange.LineStart, 0);
+                    Editor.Select(_contextMenuLocalParam.NameSourceCodeRange.StartIndex, _contextMenuLocalParam.NameSourceCodeRange.Length);
+                }
+                else if(_contextMenuVar != null)
+                {
+                    Editor.ScrollTo(_contextMenuVar.SourceCodeRange.LineStart, 0);
+                    Editor.Select(_contextMenuVar.NameSourceCodeRange.StartIndex, _contextMenuVar.NameSourceCodeRange.Length);
+                }
+            }
+        }
+
+
+        private void ContextMenu_OnOpened(object sender, RoutedEventArgs e)
+        {
+            _contextMenuOpenPosition = Editor.GetPositionFromPoint(Mouse.GetPosition(Editor));
+
+            
+
+
+            if (_contextMenuOpenPosition == null) return;
+
+            LSLAutoCompleteParser x = new LSLAutoCompleteParser();
+            var fastVarParser = new LSLAutoCompleteParser();
+            fastVarParser.Parse(new StringReader(Editor.Text), Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location));
+
+            var wordHovered = GetIdUnderMouse(Editor.Document, _contextMenuOpenPosition.Value);
+
+            fastVarParser.GlobalFunctionsDictionary.TryGetValue(wordHovered, out _contextMenuFunction);
+            _contextMenuLocalVar = fastVarParser.LocalVariables.FirstOrDefault(y => y.Name == wordHovered);
+
+            if (_contextMenuLocalVar == null)
+            {
+                _contextMenuLocalParam = fastVarParser.LocalParameters.FirstOrDefault(y => y.Name == wordHovered);
+
+                if (_contextMenuLocalParam == null)
+                {
+                    _contextMenuVar = null;
+                    fastVarParser.GlobalVariablesDictionary.TryGetValue(wordHovered, out _contextMenuVar);
+                }
+            }
+            else
+            {
+                _contextMenuLocalParam = null;
+            }
+
+
+            GotoDefinitionContextMenuButton.Visibility = (
+                _contextMenuFunction != null||
+                _contextMenuVar != null||
+                _contextMenuLocalVar != null ||
+                _contextMenuLocalParam != null
+                ) ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

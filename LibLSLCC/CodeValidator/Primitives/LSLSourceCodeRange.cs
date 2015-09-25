@@ -164,6 +164,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             get { return _stopIndex; }
         }
 
+        public int Length
+        {
+            get {  return (_stopIndex - _startIndex)+1;}
+        }
+
 
         public override bool Equals(object obj)
         {

@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LSLCCEditor")]
-[assembly: AssemblyCopyright("Teriks")]
+[assembly: AssemblyCopyright("Teriks (Eric Quine)")]
 [assembly: AssemblyTrademark("Neigh")]
 [assembly: AssemblyCulture("")]
 

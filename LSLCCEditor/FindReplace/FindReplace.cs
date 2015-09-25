@@ -163,8 +163,9 @@ namespace FindReplace
         /// <summary>
         ///     Shows this instance of FindReplaceDialog, with the Find page active
         /// </summary>
-        public void ShowAsFind()
+        public void ShowAsFind(Window owner)
         {
+            dialog.Owner = owner;
             dialog.tabMain.SelectedIndex = 0;
             dialog.Show();
             dialog.Activate();
@@ -174,10 +175,10 @@ namespace FindReplace
 
 
 
-        public void ShowAsFind(TextEditor target)
+        public void ShowAsFind(TextEditor target, Window owner)
         {
             CurrentEditor = target;
-            ShowAsFind();
+            ShowAsFind(owner);
         }
 
 
@@ -185,8 +186,9 @@ namespace FindReplace
         /// <summary>
         ///     Shows this instance of FindReplaceDialog, with the Replace page active
         /// </summary>
-        public void ShowAsReplace()
+        public void ShowAsReplace(Window owner)
         {
+            dialog.Owner = owner;
             dialog.tabMain.SelectedIndex = 1;
             dialog.Show();
             dialog.Activate();
@@ -196,10 +198,10 @@ namespace FindReplace
 
 
 
-        public void ShowAsReplace(object target)
+        public void ShowAsReplace(TextEditor target, Window owner)
         {
             CurrentEditor = target;
-            ShowAsReplace();
+            ShowAsReplace(owner);
         }
 
 
@@ -356,7 +358,7 @@ namespace FindReplace
 
         public CommandBinding FindBinding
         {
-            get { return new CommandBinding(ApplicationCommands.Find, (s, e) => ShowAsFind()); }
+            get { return new CommandBinding(ApplicationCommands.Find, (s, e) => ShowAsFind(dialog.Owner)); }
         }
 
         public CommandBinding FindNextBinding
@@ -372,7 +374,7 @@ namespace FindReplace
         {
             get
             {
-                return new CommandBinding(ApplicationCommands.Replace, (s, e) => { if (AllowReplace) ShowAsReplace(); });
+                return new CommandBinding(ApplicationCommands.Replace, (s, e) => { if (AllowReplace) ShowAsReplace(dialog.Owner); });
             }
         }
 

@@ -5,7 +5,7 @@
         <Package InstallerVersion="300" Compressed="yes" InstallPrivileges="elevated" InstallScope="perMachine" />
         <Media Id="1" Cabinet="application.cab" EmbedCab="yes"  />
 
-      <Icon Id="icon.ico" SourceFile="$(var.SourceDir)lsl_script_icon.ico"/>
+      <Icon Id="icon.ico" SourceFile="$(var.SourceDir)..\..\lsl_script_icon.ico"/>
       <Property Id="ARPPRODUCTICON" Value="icon.ico" />
       <MajorUpgrade AllowSameVersionUpgrades="yes" Disallow="no" AllowDowngrades="no" DowngradeErrorMessage="A newer version of this software is already installed." />
 
@@ -40,7 +40,7 @@
               <File Id="AntlrRuntime" Source="$(var.SourceDir)Antlr4.Runtime.dll" />
               <File Id="LibLSLCC" Source="$(var.SourceDir)LibLSLCC.dll" />
               <File Id="LSLCCEditor.exe.config" Source="$(var.SourceDir)LSLCCEditor.exe.config" />
-              <File Id="Icon" Source="$(var.SourceDir)lsl_script_icon.ico" />
+              <File Id="Icon" Source="$(var.SourceDir)..\..\lsl_script_icon.ico" />
             </Component>
         </DirectoryRef>
 

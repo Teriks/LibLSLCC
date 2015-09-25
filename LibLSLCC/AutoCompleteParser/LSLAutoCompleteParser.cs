@@ -161,6 +161,22 @@ namespace LibLSLCC.AutoCompleteParser
             get { return _localVariables.SelectMany(x => x.Values); }
         }
 
+        public IDictionary<string, GlobalFunction> GlobalFunctionsDictionary
+        {
+            get { return _globalFunctions; }
+        }
+
+
+        public IDictionary<string, GlobalVariable> GlobalVariablesDictionary
+        {
+            get { return _globalVariables; }
+        }
+
+        public IDictionary<string, LocalParameter> LocalParametersDictionary
+        {
+            get { return _parameters; }
+        }
+
         public IEnumerable<GlobalFunction> GlobalFunctions
         {
             get { return _globalFunctions.Values; }
@@ -430,18 +446,27 @@ namespace LibLSLCC.AutoCompleteParser
 
         public class GlobalVariable
         {
-            public GlobalVariable(string name, string type, LSLSourceCodeRange range)
+
+
+            public GlobalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange)
             {
                 Name = name;
                 Type = type;
                 SourceCodeRange = range;
-            }
 
+                NameSourceCodeRange = nameRange;
+
+                TypeSourceCodeRange = typeRange;
+            }
 
 
             public string Name { get; private set; }
             public string Type { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+            public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
+
+            public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
         }
 
         public class StateBlock
@@ -460,16 +485,43 @@ namespace LibLSLCC.AutoCompleteParser
 
         public class GlobalFunction
         {
-            public GlobalFunction(string name, string type, LSLSourceCodeRange range,
+            public GlobalFunction(string name, string type, LSLSourceCodeRange range,  LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange,
                 IReadOnlyList<LocalParameter> parameters)
             {
                 Parameters = parameters;
                 Name = name;
                 ReturnType = type;
                 SourceCodeRange = range;
+
+                NameSourceCodeRange = nameRange;
+
+                TypeSourceCodeRange = typeRange;
+
+                HasReturnType = true;
             }
 
 
+            public GlobalFunction(string name,  LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
+    IReadOnlyList<LocalParameter> parameters)
+            {
+                Parameters = parameters;
+                Name = name;
+                ReturnType = "";
+                SourceCodeRange = range;
+
+                NameSourceCodeRange = nameRange;
+
+                TypeSourceCodeRange = null;
+
+                HasReturnType = false;
+            }
+
+
+            public bool HasReturnType { get; private set; }
+
+            public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
+
+            public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
 
             public string Name { get; private set; }
             public string ReturnType { get; private set; }
@@ -518,15 +570,20 @@ namespace LibLSLCC.AutoCompleteParser
 
         public class LocalVariable
         {
-            public LocalVariable(string name, string type, LSLSourceCodeRange range, ScopeAddress address)
+            public LocalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange, ScopeAddress address)
             {
                 Name = name;
                 Type = type;
                 SourceCodeRange = range;
                 ScopeAddress = address;
+                NameSourceCodeRange = nameRange;
+
+                TypeSourceCodeRange = TypeSourceCodeRange;
             }
 
+            public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
 
+            public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
 
             public ScopeAddress ScopeAddress { get; private set; }
             public string Name { get; private set; }
@@ -558,15 +615,20 @@ namespace LibLSLCC.AutoCompleteParser
 
         public class LocalParameter
         {
-            public LocalParameter(string name, string type, LSLSourceCodeRange range, ScopeAddress address)
+            public LocalParameter(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange, ScopeAddress address)
             {
                 Name = name;
                 Type = type;
                 SourceCodeRange = range;
                 ScopeAddress = address;
+
+                TypeSourceCodeRange = typeRange;
+                NameSourceCodeRange = nameRange;
             }
 
+            public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
 
+            public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
 
             public ScopeAddress ScopeAddress { get; private set; }
             public string Name { get; private set; }
@@ -693,7 +755,7 @@ namespace LibLSLCC.AutoCompleteParser
                     new GlobalVariable(
                         context.variable_name.Text,
                         context.variable_type.Text,
-                        new LSLSourceCodeRange(context));
+                        new LSLSourceCodeRange(context), new LSLSourceCodeRange(context.variable_type),  new LSLSourceCodeRange(context.variable_name));
 
 
                 if (!_parent._globalVariables.ContainsKey(context.variable_name.Text))
@@ -985,6 +1047,8 @@ namespace LibLSLCC.AutoCompleteParser
                     context.variable_name.Text,
                     context.variable_type.Text,
                     new LSLSourceCodeRange(context),
+                    new LSLSourceCodeRange(context.variable_type),
+                    new LSLSourceCodeRange(context.variable_name),  
                     new ScopeAddress(CodeAreaId, ScopeId, ScopeLevel));
 
 
@@ -1056,6 +1120,8 @@ namespace LibLSLCC.AutoCompleteParser
                                 i.parameter_name.Text,
                                 i.parameter_type.Text,
                                 new LSLSourceCodeRange(i),
+                                new LSLSourceCodeRange(i.parameter_type),
+                                new LSLSourceCodeRange(i.parameter_name),  
                                 new ScopeAddress(CodeAreaId, ScopeId + 1, ScopeLevel + 1));
 
                             parms.Add(parm);
@@ -1068,10 +1134,22 @@ namespace LibLSLCC.AutoCompleteParser
 
                 if (!_parent._globalFunctions.ContainsKey(context.function_name.Text))
                 {
-                    _parent._globalFunctions.Add(
-                        context.function_name.Text,
-                        new GlobalFunction(context.function_name.Text, returnTypeText,
-                            new LSLSourceCodeRange(context), parms));
+                    if (context.return_type != null)
+                    {
+                        _parent._globalFunctions.Add(
+                            context.function_name.Text,
+                            new GlobalFunction(context.function_name.Text, returnTypeText,
+                                new LSLSourceCodeRange(context), new LSLSourceCodeRange(context.return_type),
+                                new LSLSourceCodeRange(context.function_name), parms));
+                    }
+                    else
+                    {
+                        _parent._globalFunctions.Add(
+                            context.function_name.Text,
+                            new GlobalFunction(context.function_name.Text, 
+                                new LSLSourceCodeRange(context),
+                                new LSLSourceCodeRange(context.function_name), parms));
+                    }
                 }
 
 
@@ -1167,6 +1245,8 @@ namespace LibLSLCC.AutoCompleteParser
                                 i.parameter_name.Text,
                                 i.parameter_type.Text,
                                 new LSLSourceCodeRange(i),
+                                new LSLSourceCodeRange(i.parameter_type),
+                                new LSLSourceCodeRange(i.parameter_name), 
                                 new ScopeAddress(CodeAreaId, ScopeId + 1, ScopeLevel + 1));
 
                             _parent._parameters.Add(parm.Name, parm);

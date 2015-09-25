@@ -30,8 +30,10 @@ namespace LSLCCEditor
             MessageText = message;
             MessageHeader = header;
             LineText = "("+ CodeLocation.LineStart + ", " + CodeLocation.ColumnStart+")";
-
+            Clickable = true;
             SetColors(type);
+
+
         }
 
         private void SetColors(CompilerMessageType type)
@@ -59,7 +61,7 @@ namespace LSLCCEditor
             MessageText = message;
             MessageHeader = header;
             LineText = "(" + CodeLocation.LineStart + ", " + CodeLocation.ColumnStart + ")";
-
+            Clickable = true;
             SetColors(type);
         }
 

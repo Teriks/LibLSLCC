@@ -483,7 +483,7 @@ namespace LSLCCEditor.EditorTabUI
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (_fileWatcher != null)
                 {
