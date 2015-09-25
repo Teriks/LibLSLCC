@@ -132,7 +132,7 @@ namespace LSLCCEditor.LSLEditor
                     var indentationSegment = TextUtilities.GetWhitespaceAfter(document, previousLine.Offset);
                     var indentation = document.GetText(indentationSegment);
                     var offset = line.Offset - 1;
-                    while (offset > 0 && offset > previousLine.Offset)
+                    while (offset > 0 && offset >= previousLine.Offset)
                     {
                         var lastChar = document.GetText(offset, 1);
                         if (lastChar == "{")
@@ -561,7 +561,7 @@ namespace LSLCCEditor.LSLEditor
                     if (text == ";" || text == "{")
                     {
                         textArea.Document.Remove(caretOffset - 1, 1);
-                        break;
+                        return;
                     }
                     if (!string.IsNullOrWhiteSpace(text))
                     {
@@ -578,7 +578,10 @@ namespace LSLCCEditor.LSLEditor
             if (caretOffset > 0) behind = Editor.Document.GetText(caretOffset - 1, 1);
 
 
-            if (!_validSuggestionPrefixes.Contains(behind)) return;
+            if (!_validSuggestionPrefixes.Contains(behind))
+            {
+                return;
+            }
 
 
             lock (_completionLock)

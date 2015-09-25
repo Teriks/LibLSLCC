@@ -82,7 +82,9 @@ namespace LSLCCEditor
 
         public TabbedMainWindow()
         {
+#if !DEBUG
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+#endif
 
             InitializeComponent();
 
