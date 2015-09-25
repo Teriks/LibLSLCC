@@ -383,17 +383,36 @@ namespace LSLCCEditor.LSLEditor
                 }
             }
 
-            if (startOffset == endOffset || startOffset > endOffset) return null;
+            if (startOffset == endOffset) return null;
+            string wordHovered = null;
+            int length = 0;
 
-            var wordHovered = document.GetText(startOffset + 1, (endOffset - startOffset) - 1);
+            if (startOffset == -1)
+            {
+                startOffset = 0;
+                length = endOffset - startOffset;
+                wordHovered = document.GetText(0, length);
+            }
+            else if (startOffset < endOffset)
+            {
+                startOffset = startOffset + 1;
+                length = (endOffset - startOffset);
+                wordHovered = document.GetText(startOffset, length);
+            }
+            else if (endOffset == 0)
+            {
+                startOffset = startOffset + 1;
+                length = 1;
+                wordHovered = document.GetText(startOffset, length);
+            }
 
             if (_idRegex.Match(wordHovered).Success)
             {
                 var x = new TextSegment
                 {
-                    Length = (endOffset - startOffset) - 1,
-                    StartOffset = startOffset + 1,
-                    EndOffset = endOffset
+                    Length = length,
+                    StartOffset = startOffset,
+                    EndOffset = startOffset+length
                 };
                 return x;
             }
