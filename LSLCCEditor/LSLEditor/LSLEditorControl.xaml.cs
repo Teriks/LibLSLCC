@@ -95,7 +95,7 @@ namespace LSLCCEditor.LSLEditor
         private readonly ToolTip _hoverToolTip = new ToolTip();
         private readonly Brush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
         private readonly Brush _libraryFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
-        private readonly Brush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(102, 153, 0));
+        private readonly Brush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 0));
         private readonly Brush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
 
         private readonly Brush _labelNameDefinitionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
@@ -525,10 +525,14 @@ namespace LSLCCEditor.LSLEditor
         {
             var c = new CompletionWindow(Editor.TextArea);
 
+
             c.Width = c.Width + 160;
 
 
-            c.Closed += (sender, args) => { CloseCurrentCompletionWindow(); };
+            c.Closed += (sender, args) =>
+            {
+                CloseCurrentCompletionWindow(); 
+            };
 
             return c;
         }
