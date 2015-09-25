@@ -1,4 +1,4 @@
-See GPL-LICENSE.txt for license. 
+See LICENSE for license. 
  
  
 The LibLSLCC Library was designed to be a drop in replacement for OpenSim's default compiler, 
