@@ -368,7 +368,7 @@ namespace LibLSLCC.AutoCompleteParser
                 return (InGlobalScope
                         || InExpressionStatementArea
                         || InEventParameterList
-                        || InFunctionDeclarationParameterList || CanSuggestTypeCast)
+                        || InFunctionDeclarationParameterList /*|| CanSuggestTypeCast*/)
                        && !InSingleStatementCodeScopeTopLevel;
             }
         }
@@ -1411,6 +1411,6 @@ namespace LibLSLCC.AutoCompleteParser
             }
         };
 
-        public bool CanSuggestTypeCast { get; protected  set; }
+        //public bool CanSuggestTypeCast { get; protected  set; }
     }
 }
