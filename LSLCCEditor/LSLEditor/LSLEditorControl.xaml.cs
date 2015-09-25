@@ -122,6 +122,7 @@ namespace LSLCCEditor.LSLEditor
             "}",
             "[",
             "(",
+            ")",
             "<",
             ",",
             ";",
@@ -359,7 +360,7 @@ namespace LSLCCEditor.LSLEditor
 
             int startOffset = 0;
             int endOffset = 0;
-
+            
             // Get text backward of the mouse position, until the first space
             while (!(string.IsNullOrWhiteSpace(textAtOffset) || !_idCharacterRegex.Match(textAtOffset).Success))
             {

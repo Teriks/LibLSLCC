@@ -368,7 +368,7 @@ namespace LibLSLCC.AutoCompleteParser
                 return (InGlobalScope
                         || InExpressionStatementArea
                         || InEventParameterList
-                        || InFunctionDeclarationParameterList)
+                        || InFunctionDeclarationParameterList || CanSuggestTypeCast)
                        && !InSingleStatementCodeScopeTopLevel;
             }
         }
@@ -642,6 +642,17 @@ namespace LibLSLCC.AutoCompleteParser
             public int CodeAreaId { get; private set; }
             public int ScopeId { get; private set; }
             public int ScopeLevel { get; private set; }
+
+            public override bool VisitExpr_TypeCast(LSLParser.Expr_TypeCastContext context)
+            {
+                return base.VisitExpr_TypeCast(context);
+            }
+
+            public override bool VisitParenthesizedExpression(LSLParser.ParenthesizedExpressionContext context)
+            {
+
+                return base.VisitParenthesizedExpression(context);
+            }
 
             public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
             {
@@ -1399,5 +1410,7 @@ namespace LibLSLCC.AutoCompleteParser
                 return true;
             }
         };
+
+        public bool CanSuggestTypeCast { get; protected  set; }
     }
 }
