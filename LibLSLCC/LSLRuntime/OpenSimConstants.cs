@@ -44,6 +44,7 @@
 // 
 // 
 #endregion
+// ReSharper disable InconsistentNaming
 namespace LibLSLCC.LSLRuntime
 {
     public class OpenSimConstants

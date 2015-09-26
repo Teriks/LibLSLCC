@@ -132,7 +132,7 @@ namespace LSLCCEditor
                 i = i.InnerException;
             }
 
-            MessageBox.Show("An unexpected error has occurred.  The progam will need to exit.\n" +
+            MessageBox.Show("An unexpected error has occurred.  The program will need to exit.\n" +
                             "Error details:\n\n" + details,
                 "Unexpected error", MessageBoxButton.OK);
 

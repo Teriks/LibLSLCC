@@ -1910,7 +1910,7 @@
   </LibraryFunction>
   <LibraryFunction Name="llVolumeDetect" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="detect" Type="Integer" />
-    <DocumentationString>If detect = TRUE, object works much like Phantom, but triggers collision_start and collision_end events when other objects start and stop interpenetrating.;Must be applied to the root prim.</DocumentationString>
+    <DocumentationString>If detect = TRUE, object works much like Phantom, but triggers collision_start and collision_end events when other objects start and stop inter-penetrating.;Must be applied to the root prim.</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llWanderWithin" ReturnType="Void" Subsets="lsl">
     <Parameter Name="origin" Type="Vector" />
