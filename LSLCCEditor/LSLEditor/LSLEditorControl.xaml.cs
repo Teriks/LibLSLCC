@@ -636,15 +636,6 @@ namespace LSLCCEditor.LSLEditor
             }
 
 
-            lock (_completionLock)
-            {
-                if (CurrentCompletionWindow != null)
-                {
-                    return;
-                }
-            }
-
-
             var textArea = Editor.TextArea;
             var caretOffset = textArea.Caret.Offset;
 
@@ -668,6 +659,31 @@ namespace LSLCCEditor.LSLEditor
                     offset--;
                 }
             }
+
+
+            if (_validSuggestionPrefixes.Contains(e.Text))
+            {
+                lock (_completionLock)
+                {
+                    if (CurrentCompletionWindow == null) return;
+
+                    CurrentCompletionWindow.Close();
+                    CurrentCompletionWindow = null;
+                }
+                return;
+            }
+
+
+
+            lock (_completionLock)
+            {
+                if (CurrentCompletionWindow != null)
+                {
+                    return;
+                }
+            }
+
+
 
             var behind = "";
 
