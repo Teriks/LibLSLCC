@@ -1446,29 +1446,30 @@ namespace LSLCCEditor.LSLEditor
             SuggestLibraryConstants();
         }
 
+
         private TextViewPosition? _contextMenuOpenPosition;
         private LSLAutoCompleteParser.GlobalFunction _contextMenuFunction;
         private LSLAutoCompleteParser.GlobalVariable _contextMenuVar;
         private LSLAutoCompleteParser.LocalVariable _contextMenuLocalVar;
         private LSLAutoCompleteParser.LocalParameter _contextMenuLocalParam;
 
+
+
         private void TextArea_ContextMenu_GotoDefinitionClick(object sender, RoutedEventArgs e)
         {
-
-            //Editor.TextArea.SelectionBorder = _selectionBorderCache;
-            //Editor.TextArea.SelectionBrush = _selectionBrushCache;
-            //Editor.TextArea.SelectionForeground = _selectionForgroundCache;
-
+                
             if (_contextMenuOpenPosition != null)
             {
                 if (_contextMenuFunction != null)
                 {
+
                     Editor.ScrollTo(_contextMenuFunction.SourceCodeRange.LineStart, 0);
                     Editor.Select(_contextMenuFunction.NameSourceCodeRange.StartIndex,
                         _contextMenuFunction.NameSourceCodeRange.Length);
                 }
                 else if (_contextMenuLocalVar != null)
                 {
+
                     Editor.ScrollTo(_contextMenuLocalVar.SourceCodeRange.LineStart, 0);
                     Editor.Select(_contextMenuLocalVar.NameSourceCodeRange.StartIndex,
                         _contextMenuLocalVar.NameSourceCodeRange.Length);
@@ -1486,34 +1487,19 @@ namespace LSLCCEditor.LSLEditor
                         _contextMenuVar.NameSourceCodeRange.Length);
                 }
             }
-        }
-
-        /*
-        private Pen _selectionBorderCache;
-        private Brush _selectionBrushCache;
-        private Brush _selectionForgroundCache;
-
-        private void CacheSelectionStyle()
-        {
-            _selectionBorderCache = Editor.TextArea.SelectionBorder;
-            _selectionForgroundCache = Editor.TextArea.SelectionBrush;
-            _selectionBrushCache = Editor.TextArea.SelectionForeground;
-        }
-
-        private void ResetContextMenuGotoDefinitionState()
-        {
-           Editor.TextArea.SelectionBorder = _selectionBorderCache;
-           Editor.TextArea.SelectionBrush  = _selectionForgroundCache;
-           Editor.TextArea.SelectionForeground =  _selectionForgroundCache;
 
 
-            _contextMenuOpenPosition = null;
-            GotoDefinitionContextMenuButton.Visibility = Visibility.Collapsed;
+            Editor.TextArea.SelectionBorder = new Pen(SystemColors.HighlightBrush, 1);
+            Editor.TextArea.SelectionBrush = new SolidColorBrush(SystemColors.HighlightColor) { Opacity = 0.7 };
+            Editor.TextArea.SelectionForeground = SystemColors.HighlightTextBrush;
+
             _contextMenuFunction = null;
             _contextMenuVar = null;
             _contextMenuLocalVar = null;
             _contextMenuLocalParam = null;
-        }*/
+        }
+
+
 
         private void TextArea_ContextMenu_OnOpened(object sender, RoutedEventArgs e)
         {
@@ -1566,10 +1552,9 @@ namespace LSLCCEditor.LSLEditor
                 _contextMenuLocalVar != null ||
                 _contextMenuLocalParam != null
                 );
-            /*
+            
             if (isSymbol)
             {
-                //CacheSelectionStyle();
 
                 Editor.Select(segment.StartOffset, segment.Length);
 
@@ -1580,12 +1565,14 @@ namespace LSLCCEditor.LSLEditor
 
                 Editor.TextArea.SelectionBrush = Brushes.Transparent;
                 Editor.TextArea.SelectionForeground = Brushes.Red;
-            }*/
+            }
 
             GotoDefinitionContextMenuButton.Visibility =
                isSymbol ? Visibility.Visible
                 : Visibility.Collapsed;
         }
+
+
 
         private void TextArea_ContextMenu_OnClosed(object sender, RoutedEventArgs e)
         {
@@ -1593,11 +1580,15 @@ namespace LSLCCEditor.LSLEditor
             _contextMenuOpenPosition = null;
             GotoDefinitionContextMenuButton.Visibility = Visibility.Collapsed;
 
-            /*
+
+            Editor.TextArea.SelectionBorder = new Pen(SystemColors.HighlightBrush, 1);
+            Editor.TextArea.SelectionBrush = new SolidColorBrush(SystemColors.HighlightColor) {Opacity = 0.7};
+            Editor.TextArea.SelectionForeground = SystemColors.HighlightTextBrush;
+
             _contextMenuFunction = null;
             _contextMenuVar = null;
             _contextMenuLocalVar = null;
-            _contextMenuLocalParam = null;*/
+            _contextMenuLocalParam = null;
         }
     }
 }
