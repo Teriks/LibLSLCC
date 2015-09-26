@@ -916,6 +916,18 @@ namespace LSLCCEditor.LSLEditor
                         });
                         possibleType = true;
                     }
+                    else if (e.Text.StartsWith("l"))
+                    {
+                        CurrentCompletionWindow = LazyInitCompletionWindow();
+                        data = CurrentCompletionWindow.CompletionList.CompletionData;
+
+                        data.Add(new LSLCompletionData("list", "list",
+                            "list type", 0)
+                        {
+                            ColorBrush = _builtInTypeCompleteColor
+                        });
+                        possibleType = true;
+                    }
                 }
 
 
