@@ -555,12 +555,12 @@ namespace LSLCCEditor.LSLEditor
             {
                 var c = text[behindOffset];
 
-                if (char.IsWhiteSpace(text[behindOffset]))
+                if (char.IsWhiteSpace(c))
                 {
                     behindOffset--;
                     continue;
                 }
-                if (c == ';' || c == '=' || c == ')') return false;
+                
 
 
                 if ((c == 'r' || c == 'g'))
@@ -612,6 +612,10 @@ namespace LSLCCEditor.LSLEditor
                     {
                         return true;
                     }
+                }
+                else if (!char.IsWhiteSpace(c))
+                {
+                    return false;
                 }
 
                 behindOffset--;
