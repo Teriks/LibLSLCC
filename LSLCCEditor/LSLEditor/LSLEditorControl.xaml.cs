@@ -188,7 +188,6 @@ namespace LSLCCEditor.LSLEditor
             InitializeComponent();
 
 
-
             Editor.TextArea.TextEntering += TextArea_TextEntering;
             Editor.MouseHover += TextEditor_MouseHover;
             Editor.MouseHover += TextEditor_MouseHoverStopped;
@@ -626,16 +625,22 @@ namespace LSLCCEditor.LSLEditor
         {
             if (string.IsNullOrWhiteSpace(e.Text))
             {
+                lock (_completionLock)
+                {
+                    if (CurrentCompletionWindow == null) return;
+
+                    CurrentCompletionWindow.Close();
+                    CurrentCompletionWindow = null;
+                }
                 return;
             }
 
 
             lock (_completionLock)
             {
-                if (CurrentCompletionWindow != null && CurrentCompletionWindow.CompletionList.ListBox.Items.Count == 0)
+                if (CurrentCompletionWindow != null)
                 {
-                    CurrentCompletionWindow.Close();
-                    CurrentCompletionWindow = null;
+                    return;
                 }
             }
 

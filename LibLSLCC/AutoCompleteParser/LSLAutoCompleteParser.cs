@@ -66,7 +66,7 @@ namespace LibLSLCC.AutoCompleteParser
             new Stack<Dictionary<string, LocalVariable>>();
 
         private readonly Dictionary<string, LocalParameter> _parameters = new Dictionary<string, LocalParameter>();
-        private readonly Dictionary<string, LocalLabel> _scopeLabels = new Dictionary<string, LocalLabel>();
+
         private readonly List<StateBlock> _stateBlocks = new List<StateBlock>();
         private bool _inEventCodeBody;
         private bool _inFunctionCodeBody;
@@ -78,6 +78,8 @@ namespace LibLSLCC.AutoCompleteParser
         {
             InGlobalScope = true;
         }
+
+        
 
         public string CurrentState { get; private set; }
         public string CurrentFunction { get; private set; }
@@ -638,6 +640,8 @@ namespace LibLSLCC.AutoCompleteParser
             public int CodeAreaId { get; private set; }
             public int ScopeId { get; private set; }
             public int ScopeLevel { get; private set; }
+
+            public int CodeScopeLevel { get; private set; }
 
             public override bool VisitExpr_TypeCast(LSLParser.Expr_TypeCastContext context)
             {
@@ -1374,11 +1378,16 @@ namespace LibLSLCC.AutoCompleteParser
                 return true;
             }
 
+            
+
             public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
+                
                 _parent.InMultiStatementCodeScopeTopLevel = true;
+                CodeScopeLevel++;
+              
 
                 ScopeLevel++;
                 ScopeId++;
@@ -1398,9 +1407,12 @@ namespace LibLSLCC.AutoCompleteParser
 
                 _parent._localVariables.Pop();
 
-                _parent._scopeLabels.Clear();
 
-                _parent.InMultiStatementCodeScopeTopLevel = false;
+                CodeScopeLevel--;
+                if (CodeScopeLevel == 0)
+                {
+                    _parent.InMultiStatementCodeScopeTopLevel = false;
+                }
 
                 ScopeLevel--;
                 return true;
