@@ -3,7 +3,7 @@ See LICENSE for license.
  
 The LibLSLCC Library was designed to be a drop in replacement for OpenSim's default compiler.
 LibLSLCC implements an true compiler for LSL with full front end syntax checking, true to Linden LSL 
-Operator precedence, and compatibility fixes for issues that the default OpenSim compiler and LSL runtime suffers from. 
+Operator precedence, and compatibility fixes for issues that the default OpenSim compiler and OpenSim LSL runtime suffers from. 
  
 The LibLSLCC compiler also provides helpful extended syntax warnings, errors and code validations not present in the Linden compiler. 
  
