@@ -18,7 +18,7 @@
         <avalonedit:TextEditor
             Name="Editor"
             FontFamily="Courier New"
-            FontSize="10pt"
+            FontSize="10pt" 
 
             ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" 
             MouseLeave="TextEditor_OnMouseLeave" TextChanged="TextEditor_OnTextChanged">
