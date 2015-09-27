@@ -58,6 +58,7 @@ using System.Xml;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
@@ -508,81 +509,7 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-        private bool LSLTypeNameBehindOffset(string text, int caretOffset)
-        {
-            var behindOffset = caretOffset > 1 ? caretOffset - 1 : -1;
 
-            while (behindOffset > 0)
-            {
-                var c = text[behindOffset];
-
-                if (char.IsWhiteSpace(c))
-                {
-                    behindOffset--;
-                    continue;
-                }
-
-
-                if ((c == 'r' || c == 'g'))
-                {
-                    string t;
-
-                    if (behindOffset >= 6)
-                    {
-                        t = text.Substring(behindOffset - 6, 7);
-
-                        if (t == "integer")
-                        {
-                            return true;
-                        }
-                    }
-                    if (behindOffset >= 5)
-                    {
-                        t = text.Substring(behindOffset - 5, 6);
-                        if (t == "vector" || t == "string")
-                        {
-                            return true;
-                        }
-                    }
-                }
-                else if (c == 't')
-                {
-                    string t;
-                    if (behindOffset >= 4)
-                    {
-                        t = text.Substring(behindOffset - 4, 5);
-                        if (t == "float")
-                        {
-                            return true;
-                        }
-                    }
-                    if (behindOffset >= 3)
-                    {
-                        t = text.Substring(behindOffset - 3, 4);
-                        if (t == "list")
-                        {
-                            return true;
-                        }
-                    }
-                }
-                else if (behindOffset >= 7 && c == 'n')
-                {
-                    var t = text.Substring(behindOffset - 7, 8);
-                    if (t == "rotation")
-                    {
-                        return true;
-                    }
-                }
-                else if (!char.IsWhiteSpace(c))
-                {
-                    return false;
-                }
-
-                behindOffset--;
-            }
-
-            return false;
-        }
 
 
         private CompletionWindow CreateNewCompletionWindow()
@@ -620,9 +547,111 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
+
+
+        private bool DoAutoDedentOnTextEntering(TextCompositionEventArgs enteringArgs, int caretOffset)
+        {
+            TextArea textArea = this.Editor.TextArea;
+
+            if (enteringArgs.Text == "}" && textArea.Document.GetText(caretOffset - 1, 1) == "\t")
+            {
+                var offset = caretOffset - 1;
+                while (offset > 0)
+                {
+                    var text = textArea.Document.GetText(offset, 1);
+                    if (text == ";" || text == "{" || text == "}")
+                    {
+                        textArea.Document.Remove(caretOffset - 1, 1);
+                        return true;
+                    }
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                        break;
+                    }
+
+                    offset--;
+                }
+            }
+            return false;
+        }
+
+
+        private string FindKeywordWordBehindOffset(string text, int caretOffset)
+        {
+            var behindOffset = caretOffset > 1 ? caretOffset - 1 : -1;
+
+            bool inWord = false;
+            string word = "";
+            while (behindOffset >= 0)
+            {
+                var c = text[behindOffset];
+
+                if (char.IsWhiteSpace(c) && inWord == false)
+                {
+                    behindOffset--;
+                    continue;
+                }
+
+
+                inWord = true;
+
+
+                //take advantage of the fact LSL keywords have no special symbols in them
+                if (char.IsLetter(c))
+                {
+                    word = c+word;
+                }
+                else
+                {
+                    return word == "" ? null : word;
+                }
+
+                behindOffset--;
+            }
+
+            return word == "" ? null : word;
+        }
+
+
+
+        private bool KeywordPriorBlocksCompletion(int caretOffset)
+        {
+            var keywordBehindOffset = FindKeywordWordBehindOffset(Editor.Text, caretOffset);
+
+            if (keywordBehindOffset == null) return false;
+
+            //prune out a full parse up to the cursor using context clues, the word behind the cursor.
+            //right now, typing stuff after these keywords should not result in a suggestion
+            switch (keywordBehindOffset)
+            {
+                case "integer":
+                case "float":
+                case "string":
+                case "vector":
+                case "rotation":
+                case "key":
+                case "list":
+                case "else":
+                case "if":
+                case "default":
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+
+
         // ReSharper disable once FunctionComplexityOverflow
         private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
         {
+            if (_hoverToolTip.IsOpen)
+            {
+                _hoverToolTip.IsOpen = false;
+            }
+
+
             if (string.IsNullOrWhiteSpace(e.Text))
             {
                 lock (_completionLock)
@@ -640,25 +669,7 @@ namespace LSLCCEditor.LSLEditor
             var caretOffset = textArea.Caret.Offset;
 
 
-            if (e.Text == "}" && textArea.Document.GetText(caretOffset - 1, 1) == "\t")
-            {
-                var offset = caretOffset - 1;
-                while (offset > 0)
-                {
-                    var text = textArea.Document.GetText(offset, 1);
-                    if (text == ";" || text == "{" || text == "}")
-                    {
-                        textArea.Document.Remove(caretOffset - 1, 1);
-                        return;
-                    }
-                    if (!string.IsNullOrWhiteSpace(text))
-                    {
-                        break;
-                    }
-
-                    offset--;
-                }
-            }
+            if (DoAutoDedentOnTextEntering(e, caretOffset)) return;
 
 
             if (_validSuggestionPrefixes.Contains(e.Text))
@@ -674,7 +685,6 @@ namespace LSLCCEditor.LSLEditor
             }
 
 
-
             lock (_completionLock)
             {
                 if (CurrentCompletionWindow != null)
@@ -682,7 +692,6 @@ namespace LSLCCEditor.LSLEditor
                     return;
                 }
             }
-
 
 
             var behind = "";
@@ -702,17 +711,16 @@ namespace LSLCCEditor.LSLEditor
                 var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
 
-                if (commentSkipper.InComment || commentSkipper.InString ||
-                    LSLTypeNameBehindOffset(Editor.Text, caretOffset))
+                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
                 {
                     return;
                 }
 
-
                 var fastVarParser = new LSLAutoCompleteParser();
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
+
 #if DEBUG_FASTPARSER
-                //_debugObjectView.ViewObject("", fastVarParser);
+    //_debugObjectView.ViewObject("", fastVarParser);
 #endif
 
                 IList<ICompletionData> data = null;
@@ -1060,8 +1068,15 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
+
+
         private void SuggestUserDefinedOrEvent()
         {
+            if (_hoverToolTip.IsOpen)
+            {
+                _hoverToolTip.IsOpen = false;
+            }
+
             var textArea = Editor.TextArea;
             var caretOffset = textArea.Caret.Offset;
 
@@ -1090,9 +1105,10 @@ namespace LSLCCEditor.LSLEditor
 
                 var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
-
-                if (commentSkipper.InComment || commentSkipper.InString ||
-                    LSLTypeNameBehindOffset(Editor.Text, caretOffset)) return;
+                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
+                {
+                    return;
+                }
 
 
                 CurrentCompletionWindow = CreateNewCompletionWindow();
@@ -1277,6 +1293,12 @@ namespace LSLCCEditor.LSLEditor
 
         private void SuggestLibraryFunctions()
         {
+            if (_hoverToolTip.IsOpen)
+            {
+                _hoverToolTip.IsOpen = false;
+            }
+
+
             var textArea = Editor.TextArea;
             var caretOffset = textArea.Caret.Offset;
 
@@ -1306,8 +1328,10 @@ namespace LSLCCEditor.LSLEditor
                 var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
 
-                if (commentSkipper.InComment || commentSkipper.InString ||
-                    LSLTypeNameBehindOffset(Editor.Text, caretOffset)) return;
+                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
+                {
+                    return;
+                }
 
 
                 CurrentCompletionWindow = CreateNewCompletionWindow();
@@ -1353,6 +1377,12 @@ namespace LSLCCEditor.LSLEditor
 
         private void SuggestLibraryConstants()
         {
+            if (_hoverToolTip.IsOpen)
+            {
+                _hoverToolTip.IsOpen = false;
+            }
+
+
             var textArea = Editor.TextArea;
             var caretOffset = textArea.Caret.Offset;
 
@@ -1386,8 +1416,10 @@ namespace LSLCCEditor.LSLEditor
                 var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
 
-                if (commentSkipper.InComment || commentSkipper.InString ||
-                    LSLTypeNameBehindOffset(Editor.Text, caretOffset)) return;
+                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
+                {
+                    return;
+                }
 
 
                 CurrentCompletionWindow = CreateNewCompletionWindow();
