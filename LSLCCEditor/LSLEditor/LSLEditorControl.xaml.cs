@@ -197,7 +197,7 @@ namespace LSLCCEditor.LSLEditor
 
 #if DEBUG_FASTPARSER
             _debugObjectView.Show();
-            #endif
+#endif
         }
 
 
@@ -711,7 +711,9 @@ namespace LSLCCEditor.LSLEditor
 
                 var fastVarParser = new LSLAutoCompleteParser();
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset);
+#if DEBUG_FASTPARSER
                 //_debugObjectView.ViewObject("", fastVarParser);
+#endif
 
                 IList<ICompletionData> data = null;
 
@@ -1358,7 +1360,7 @@ namespace LSLCCEditor.LSLEditor
             var P = new LSLFastEditorParse();
             P.Parse(new StringReader(Editor.Text), caretOffset);
             _debugObjectView.ViewObject("", P);
-            #endif
+#endif
 
             lock (_completionLock)
             {
