@@ -273,7 +273,8 @@ namespace LibLSLCC.AutoCompleteParser
             {
                 return InLocalVariableDeclarationExpression || InIfConditionExpression ||
                        InElseIfConditionExpression || InFunctionCallParameterList || InFunctionReturnExpression ||
-                       InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression &&
+                       InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression ||
+                       InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent &&
                        !BetweenControlStatementKeywords;
             }
         }
@@ -703,10 +704,7 @@ namespace LibLSLCC.AutoCompleteParser
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                if (context.Stop.StartIndex >= _parent._toOffset)
-                {
-                    _parent.InListLiteralContent = true;
-                }
+                _parent.InListLiteralContent = context.Stop.StartIndex >= _parent._toOffset;
 
                 return base.VisitListLiteral(context);
             }
@@ -715,10 +713,7 @@ namespace LibLSLCC.AutoCompleteParser
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                if (context.Stop.StartIndex >= _parent._toOffset)
-                {
-                    _parent.InVectorLiteralContent = true;
-                }
+                _parent.InVectorLiteralContent = context.Stop.StartIndex >= _parent._toOffset;
 
                 return base.VisitVectorLiteral(context);
             }
@@ -727,13 +722,12 @@ namespace LibLSLCC.AutoCompleteParser
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                if (context.Stop.StartIndex >= _parent._toOffset)
-                {
-                    _parent.InRotationLiteralContent = true;
-                }
+                _parent.InRotationLiteralContent = context.Stop.StartIndex >= _parent._toOffset;
+
 
                 return base.VisitRotationLiteral(context);
             }
+
 
             public override bool VisitGlobalVariableDeclaration(LSLParser.GlobalVariableDeclarationContext context)
             {
