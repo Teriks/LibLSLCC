@@ -1322,8 +1322,10 @@ namespace LSLCCEditor.LSLEditor
 
             var data = new LSLCompletionData(func, func, docs, 6)
             {
-                AppendOnInsert = "(",
-                ColorBrush = _libraryFunctionCompleteColor
+                AppendOnInsert = "()",
+                ColorBrush = _libraryFunctionCompleteColor,
+                OffsetCaretAfterInsert = true,
+                CaretOffsetAfterInsert = -1,
             };
 
 
@@ -1383,9 +1385,13 @@ namespace LSLCCEditor.LSLEditor
         {
             var data= new LSLCompletionData(func.Name, func.Name, "Global function:\n" + func.Signature, 2)
             {
-                AppendOnInsert = "(",
-                ColorBrush = _globalFunctionCompleteColor
+                AppendOnInsert = "()",
+                ColorBrush = _globalFunctionCompleteColor,
+                OffsetCaretAfterInsert = true,
+                CaretOffsetAfterInsert = -1,
             };
+
+
 
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
