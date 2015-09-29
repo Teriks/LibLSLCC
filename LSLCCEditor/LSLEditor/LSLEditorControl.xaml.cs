@@ -1359,17 +1359,22 @@ namespace LSLCCEditor.LSLEditor
 
         private LSLCompletionData CreateLSLLibraryFunctionCompletionData(string func, LSLAutoCompleteParser autoCompleteParser)
         {
-            var docs = string.Join(Environment.NewLine + Environment.NewLine,
-                LibraryDataProvider.GetLibraryFunctionSignatures(func)
-                    .Select(x => x.SignatureAndDocumentation));
+            var sigs = LibraryDataProvider.GetLibraryFunctionSignatures(func);
+            var docs = string.Join(Environment.NewLine + Environment.NewLine, sigs.Select(x => x.SignatureAndDocumentation));
+
+            
 
             var data = new LSLCompletionData(func, func, docs, 6)
             {
                 AppendOnInsert = "()",
                 ColorBrush = _libraryFunctionCompleteColor,
-                OffsetCaretAfterInsert = true,
-                CaretOffsetAfterInsert = -1,
             };
+
+            if (sigs.Any(x => x.HasVariadicParameter || x.ParameterCount > 0))
+            {
+                data.OffsetCaretAfterInsert = true;
+                data.CaretOffsetAfterInsert = -1;
+            }
 
 
 
@@ -1426,14 +1431,23 @@ namespace LSLCCEditor.LSLEditor
 
         private LSLCompletionData CreateLSLGlobalUserFunctionCompletionData(LSLAutoCompleteParser.GlobalFunction func, LSLAutoCompleteParser autoCompleteParser)
         {
+
+
+            
+
             var data= new LSLCompletionData(func.Name, func.Name, "Global function:\n" + func.Signature, 2)
             {
                 AppendOnInsert = "()",
                 ColorBrush = _globalFunctionCompleteColor,
-                OffsetCaretAfterInsert = true,
-                CaretOffsetAfterInsert = -1,
+
             };
 
+
+            if (func.Parameters.Count > 0)
+            {
+                data.OffsetCaretAfterInsert = true;
+                data.CaretOffsetAfterInsert = -1;
+            }
 
 
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
