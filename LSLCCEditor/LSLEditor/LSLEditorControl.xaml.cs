@@ -676,7 +676,7 @@ namespace LSLCCEditor.LSLEditor
             if (DoAutoDedentOnTextEntering(e, caretOffset)) return;
 
 
-            if (e.Text != "@" && _validSuggestionPrefixes.Contains(e.Text))
+            if ( _validSuggestionPrefixes.Contains(e.Text))
             {
                 lock (_completionLock)
                 {
@@ -970,13 +970,14 @@ namespace LSLCCEditor.LSLEditor
                 data.Add(CreateLSLStateChangeStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
                 possibleControlStruct = true;
             }
+            /*
             else if (insertedText.StartsWith("@") && !fastVarParser.InSingleStatementCodeScopeTopLevel)
             {
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
                 data.Add(CreateLSLLabelStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
                 possibleControlStruct = true;
-            }
+            }*/
 
             return possibleControlStruct;
         }
@@ -1533,7 +1534,7 @@ namespace LSLCCEditor.LSLEditor
 
 
 
-
+        /*
         private LSLCompletionData CreateLSLLabelStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
         {
             var data = new LSLCompletionData("@", "@", "label statement", 0)
@@ -1548,7 +1549,7 @@ namespace LSLCCEditor.LSLEditor
             };
 
             return data;
-        }
+        }*/
 
 
         private LSLCompletionData CreateLSLJumpStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
