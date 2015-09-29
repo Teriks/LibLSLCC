@@ -826,12 +826,12 @@ namespace LSLCCEditor.LSLEditor
             data = CurrentCompletionWindow.CompletionList.CompletionData;
 
 
-            var functionSuggestions = LibraryFunctionNames.Where(x => x.StartsWith(insertedText));
+            var functionSuggestions = LibraryFunctionNames.Where(x => x.StartsWith(insertedText)).OrderBy(x=>x.Length);
 
             foreach (var func in functionSuggestions)
             {
                 var completionData = CreateLSLLibraryFunctionCompletionData(func, fastVarParser);
-
+                completionData.Priority = -data.Count;
                 data.Add(completionData);
 
 
@@ -847,11 +847,13 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleGlobalFunctions = false;
 
-            foreach (var func in LibraryFunctionNames)
+            foreach (var func in LibraryFunctionNames.OrderBy(x=>x.Length))
             {
                 CurrentCompletionWindow = LazyInitCompletionWindow();
 
-                CurrentCompletionWindow.CompletionList.CompletionData.Add(CreateLSLLibraryFunctionCompletionData(func, fastVarParser));
+                var data = CreateLSLLibraryFunctionCompletionData(func, fastVarParser);
+                data.Priority = -CurrentCompletionWindow.CompletionList.CompletionData.Count;
+                CurrentCompletionWindow.CompletionList.CompletionData.Add(data);
 
                 possibleGlobalFunctions = true;
             }
@@ -869,9 +871,11 @@ namespace LSLCCEditor.LSLEditor
             data = CurrentCompletionWindow.CompletionList.CompletionData;
 
 
-            foreach (var sig in ConstantSignatures.Where(x => x.Name.StartsWith(insertedText)))
+            foreach (var sig in ConstantSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLConstantCompletionData(sig, fastVarParser));
+                var cdata=CreateLSLConstantCompletionData(sig, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
 
                 possibleConstant = true;
             }
@@ -889,9 +893,12 @@ namespace LSLCCEditor.LSLEditor
             data = CurrentCompletionWindow.CompletionList.CompletionData;
 
 
-            foreach (var v in fastVarParser.LocalParameters.Where(x => x.Name.StartsWith(insertedText)))
+            foreach (var v in fastVarParser.LocalParameters.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLLocalParameterCompletionData(v, fastVarParser));
+                var cdata = CreateLSLLocalParameterCompletionData(v, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleUserDefinedItem = true;
             }
 
@@ -918,7 +925,10 @@ namespace LSLCCEditor.LSLEditor
 
             foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(insertedText)))
             {
-                data.Add(CreateLSLGlobalUserFunctionCompletionData(func, fastVarParser));
+                var cdata = CreateLSLGlobalUserFunctionCompletionData(func, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleUserDefinedItem = true;
             }
             return possibleUserDefinedItem;
@@ -934,9 +944,15 @@ namespace LSLCCEditor.LSLEditor
             CurrentCompletionWindow = LazyInitCompletionWindow();
             data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-            foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(insertedText)))
+            
+
+            foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLGlobalUserVariableCompletionData(v, fastVarParser));
+
+                var cdata = CreateLSLGlobalUserVariableCompletionData(v, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleUserDefinedItem = true;
             }
             return possibleUserDefinedItem;
@@ -1101,9 +1117,12 @@ namespace LSLCCEditor.LSLEditor
 
 
             var possibleLabelName = false;
-            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text))
+            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x=>x.Target.Length))
             {
-                data.Add(CreateLSLLabelDefinitionCompletionData(label, fastVarParser));
+                var cdata = CreateLSLLabelDefinitionCompletionData(label, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleLabelName = true;
             }
 
@@ -1128,9 +1147,13 @@ namespace LSLCCEditor.LSLEditor
 
 
             var possibleLabelName = false;
-            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text))
+            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLLabelJumpTargetCompletionData(label, fastVarParser));
+
+                var cdata = CreateLSLLabelJumpTargetCompletionData(label, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleLabelName = true;
             }
 
@@ -1156,9 +1179,11 @@ namespace LSLCCEditor.LSLEditor
 
             data.Add(CreateLSLDefaultStateNameCompletionData(fastVarParser));
 
-            foreach (var state in fastVarParser.StateBlocks)
+            foreach (var state in fastVarParser.StateBlocks.OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLStateNameCompletionData(state, fastVarParser));
+                var cdata = CreateLSLStateNameCompletionData(state, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
             }
 
             CurrentCompletionWindow.Show();
@@ -1176,9 +1201,12 @@ namespace LSLCCEditor.LSLEditor
 
 
             var possibleEventName = false;
-            foreach (var eventHandler in EventSignatures.Where(x => x.Name.StartsWith(insertedText)))
+            foreach (var eventHandler in EventSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLEventCompletionData(eventHandler, fastVarParser));
+                var cdata = CreateLSLEventCompletionData(eventHandler, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleEventName = true;
             }
 
@@ -1784,15 +1812,21 @@ namespace LSLCCEditor.LSLEditor
             CurrentCompletionWindow = LazyInitCompletionWindow();
             var data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-            foreach (var i in fastVarParser.LocalParameters)
+            foreach (var i in fastVarParser.LocalParameters.OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLLocalParameterCompletionData(i, fastVarParser));
+                var cdata = CreateLSLLocalParameterCompletionData(i, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleUserDefinedItem = true;
             }
 
-            foreach (var i in fastVarParser.LocalVariables)
+            foreach (var i in fastVarParser.LocalVariables.OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLLocalVariableCompletionData(i, fastVarParser));
+                var cdata = CreateLSLLocalVariableCompletionData(i, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleUserDefinedItem = true;
             }
 
@@ -1809,9 +1843,12 @@ namespace LSLCCEditor.LSLEditor
             CurrentCompletionWindow = LazyInitCompletionWindow();
             var data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-            foreach (var i in fastVarParser.GlobalFunctions)
+            foreach (var i in fastVarParser.GlobalFunctions.OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLGlobalUserFunctionCompletionData(i, fastVarParser));
+                var cdata = CreateLSLGlobalUserFunctionCompletionData(i, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleUserDefinedItem = true;
             }
             return possibleUserDefinedItem;
@@ -1826,9 +1863,12 @@ namespace LSLCCEditor.LSLEditor
             CurrentCompletionWindow = LazyInitCompletionWindow();
             var data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-            foreach (var i in fastVarParser.GlobalVariables)
+            foreach (var i in fastVarParser.GlobalVariables.OrderBy(x=>x.Name.Length))
             {
-                data.Add(CreateLSLGlobalUserVariableCompletionData(i, fastVarParser));
+                var cdata = CreateLSLGlobalUserVariableCompletionData(i, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleUserDefinedItem = true;
             }
             return possibleUserDefinedItem;
@@ -1844,9 +1884,12 @@ namespace LSLCCEditor.LSLEditor
             var data = CurrentCompletionWindow.CompletionList.CompletionData;
 
             var possibleLabelName = false;
-            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text))
+            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x=>x.Target.Length))
             {
-                data.Add(CreateLSLLabelDefinitionCompletionData(label, fastVarParser));
+                var cdata = CreateLSLLabelDefinitionCompletionData(label, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
+
                 possibleLabelName = true;
             }
 
@@ -1868,9 +1911,12 @@ namespace LSLCCEditor.LSLEditor
                 var data = CurrentCompletionWindow.CompletionList.CompletionData;
 
                 var possibleLabelName = false;
-                foreach (var label in fastVarParser.GetLocalLabels(Editor.Text))
+                foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x=>x.Name.Length))
                 {
-                    data.Add(CreateLSLLabelJumpTargetCompletionData(label, fastVarParser));
+                    var cdata = CreateLSLLabelJumpTargetCompletionData(label, fastVarParser);
+                    cdata.Priority = -data.Count;
+                    data.Add(cdata);
+
                     possibleLabelName = true;
                 }
 
@@ -1895,8 +1941,12 @@ namespace LSLCCEditor.LSLEditor
 
                 data.Add(CreateLSLDefaultStateNameCompletionData(fastVarParser));
 
-                foreach (var state in fastVarParser.StateBlocks)
+                foreach (var state in fastVarParser.StateBlocks.OrderBy(x=>x.Name.Length))
                 {
+                    var cdata = CreateLSLStateNameCompletionData(state, fastVarParser);
+                    cdata.Priority = -data.Count;
+                    data.Add(cdata);
+
                     data.Add(CreateLSLStateNameCompletionData(state, fastVarParser));
                 }
 
@@ -1915,9 +1965,12 @@ namespace LSLCCEditor.LSLEditor
 
                 var possibleEventName = false;
 
-                foreach (var eventHandler in EventSignatures)
+                foreach (var eventHandler in EventSignatures.OrderBy(x=>x.Name.Length))
                 {
-                    data.Add(CreateLSLEventCompletionData(eventHandler, fastVarParser));
+                    var cdata = CreateLSLEventCompletionData(eventHandler, fastVarParser);
+                    cdata.Priority = -data.Count;
+                    data.Add(cdata);
+
                     possibleEventName = true;
                 }
 
@@ -2074,11 +2127,13 @@ namespace LSLCCEditor.LSLEditor
 
             CurrentCompletionWindow = LazyInitCompletionWindow();
 
+            var data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-            foreach (var con in ConstantSignatures)
+            foreach (var con in ConstantSignatures.OrderBy(x=>x.Name.Length))
             {
-                CurrentCompletionWindow.CompletionList.CompletionData.Add(
-                    CreateLSLConstantCompletionData(con, fastVarParser));
+                var cdata = CreateLSLConstantCompletionData(con, fastVarParser);
+                cdata.Priority = -data.Count;
+                data.Add(cdata);
 
                 possibleLibraryConstants = true;
             }

@@ -523,7 +523,7 @@ namespace LibLSLCC.AutoCompleteParser
                 TypeSourceCodeRange = typeRange;
             }
 
-            public string Name { get; private set; }
+            public string Name { get; }
             public string Type { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
@@ -954,7 +954,7 @@ namespace LibLSLCC.AutoCompleteParser
                         _parent.NestableExpressionElementStack.Clear();
                         _parent.InIfConditionExpression = false;
                         _parent.InSingleStatementCodeScopeTopLevel = true;
-                        _startIfControlChainCodeScope = this.CodeScopeLevel;
+                        _startIfControlChainCodeScope = CodeScopeLevel;
                         _startIfControlChain = true;
                         ScopeLevel++;
                         CodeScopeLevel++;
@@ -1589,7 +1589,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                     var isControlStatementOneLiner = (context.control_structure != null || context.loop_structure != null) && context.Stop.Text == ";";
 
-                    if (_startIfControlChainCodeScope == this.CodeScopeLevel 
+                    if (_startIfControlChainCodeScope == CodeScopeLevel 
                         && !_parent.InSingleStatementCodeScopeTopLevel 
                         && !isControlStatementOneLiner)
                     {

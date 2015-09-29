@@ -220,7 +220,7 @@ namespace LSLCCEditor.LSLEditor
             get { return new TextBlock {Text = _description, MaxWidth = 500, TextWrapping = TextWrapping.Wrap}; }
         }
 
-        public double Priority { get; }
+        public double Priority { get; set; }
         public bool OffsetCaretRelativeToDocument { get; set; }
     }
 }
