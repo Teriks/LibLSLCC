@@ -512,13 +512,22 @@ namespace LSLCCEditor.LSLEditor
                     {
                         hoverText = "global user function:\n" + globalFunction.Signature;
                     }
-                    if (parser.GlobalVariablesDictionary.TryGetValue(wordHovered, out globalVariable))
+                    else if (parser.GlobalVariablesDictionary.TryGetValue(wordHovered, out globalVariable))
                     {
                         hoverText = "global variable:\n" + globalVariable.Type + " " + globalVariable.Name + ";";
                     }
-                    if (parser.LocalParametersDictionary.TryGetValue(wordHovered, out localParameter))
+                    else if (parser.LocalParametersDictionary.TryGetValue(wordHovered, out localParameter))
                     {
                         hoverText = "local parameter:\n" + localParameter.Type + " " + localParameter.Name + ";";
+                    }
+                    else
+                    {
+
+                        var localVar = parser.LocalVariables.LastOrDefault(x => x.Name == wordHovered);
+                        if (localVar != null)
+                        {
+                            hoverText = "local variable:\n" + localVar.Type + " " + localVar.Name + ";";
+                        }
                     }
                 }
 
