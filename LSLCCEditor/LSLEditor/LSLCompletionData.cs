@@ -163,7 +163,19 @@ namespace LSLCCEditor.LSLEditor
 
             if (OffsetCaretAfterInsert)
             {
-                textArea.Caret.Offset = (OffsetCaretFromBegining ? begining : textArea.Caret.Offset) + CaretOffsetAfterInsert;
+
+                if (OffsetCaretFromBegining)
+                {
+                    textArea.Caret.Offset = begining + CaretOffsetAfterInsert;
+                }
+                else if (OffsetCaretRelativeToDocument)
+                {
+                    textArea.Caret.Offset = CaretOffsetAfterInsert;
+                }
+                else
+                {
+                    textArea.Caret.Offset = textArea.Caret.Offset + CaretOffsetAfterInsert;
+                }
 
                 if (InsertTextAtCaretAfterOffset)
                 {
@@ -209,5 +221,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
         public double Priority { get; }
+        public bool OffsetCaretRelativeToDocument { get; set; }
     }
 }
