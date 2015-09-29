@@ -1446,13 +1446,12 @@ namespace LSLCCEditor.LSLEditor
         {
             return new LSLCompletionData("do", "do", "do statement", 0)
             {
-                AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
+                AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}\nwhile()"),
                 ColorBrush = _controlStatementCompleteColor,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
-                OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
-                CaretOffsetAfterInsert = 4 + scopeLevel,
+                CaretOffsetAfterInsert = -1,
                 InsertTextAtCaretAfterOffset = false,
                 IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
             };
