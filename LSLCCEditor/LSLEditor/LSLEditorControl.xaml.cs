@@ -54,6 +54,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
@@ -477,7 +478,11 @@ namespace LSLCCEditor.LSLEditor
                 var wordHovered = Editor.Document.GetText(hoveredSegment);
 
 
+
+
                 var hoverText = "";
+
+
                 if (LibraryDataProvider.LibraryFunctionExist(wordHovered))
                 {
                     hoverText =
@@ -485,13 +490,36 @@ namespace LSLCCEditor.LSLEditor
                             LibraryDataProvider.GetLibraryFunctionSignatures(wordHovered)
                                 .Select(x => x.SignatureAndDocumentation));
                 }
-                if (LibraryDataProvider.EventHandlerExist(wordHovered))
+                else if (LibraryDataProvider.EventHandlerExist(wordHovered))
                 {
                     hoverText = LibraryDataProvider.GetEventHandlerSignature(wordHovered).SignatureAndDocumentation;
                 }
-                if (LibraryDataProvider.LibraryConstantExist(wordHovered))
+                else if (LibraryDataProvider.LibraryConstantExist(wordHovered))
                 {
                     hoverText = LibraryDataProvider.GetLibraryConstantSignature(wordHovered).SignatureAndDocumentation;
+                }
+                else
+                {
+                    LSLAutoCompleteParser parser = new LSLAutoCompleteParser();
+                    parser.Parse(new StringReader(this.Editor.Text), hoveredSegment.EndOffset);
+
+
+                    LSLAutoCompleteParser.GlobalVariable globalVariable;
+                    LSLAutoCompleteParser.GlobalFunction globalFunction;
+                    LSLAutoCompleteParser.LocalParameter localParameter;
+
+                    if (parser.GlobalFunctionsDictionary.TryGetValue(wordHovered, out globalFunction))
+                    {
+                        hoverText = "global user function:\n" + globalFunction.Signature;
+                    }
+                    if (parser.GlobalVariablesDictionary.TryGetValue(wordHovered, out globalVariable))
+                    {
+                        hoverText = "global variable:\n" + globalVariable.Type + " " + globalVariable.Name + ";";
+                    }
+                    if (parser.LocalParametersDictionary.TryGetValue(wordHovered, out localParameter))
+                    {
+                        hoverText = "local parameter:\n" + localParameter.Type + " " + localParameter.Name + ";";
+                    }
                 }
 
                 if (string.IsNullOrWhiteSpace(hoverText))
@@ -501,6 +529,8 @@ namespace LSLCCEditor.LSLEditor
                     return;
                 }
 
+                _symbolHoverToolTip.IsOpen = false;
+
                 _symbolHoverToolTip.PlacementTarget = this; // required for property inheritance
                 _symbolHoverToolTip.Content = new TextBlock
                 {
@@ -508,7 +538,10 @@ namespace LSLCCEditor.LSLEditor
                     TextWrapping = TextWrapping.Wrap,
                     Text = hoverText
                 };
+                _symbolHoverToolTip.Placement = PlacementMode.Mouse;
                 _symbolHoverToolTip.IsOpen = true;
+                
+                
                 e.Handled = true;
             }
         }
