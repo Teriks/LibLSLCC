@@ -134,6 +134,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (InLocalVariableDeclarationExpression) InLocalVariableDeclarationExpression = false;
                 if (InMultiStatementCodeScopeTopLevel) InMultiStatementCodeScopeTopLevel = false;
                 if (InSingleStatementCodeScopeTopLevel) InSingleStatementCodeScopeTopLevel = false;
+                if (AfterIfOrElseIfStatement) AfterIfOrElseIfStatement = false;
             }
         }
 
@@ -160,6 +161,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (InLocalVariableDeclarationExpression) InLocalVariableDeclarationExpression = false;
                 if (InMultiStatementCodeScopeTopLevel) InMultiStatementCodeScopeTopLevel = false;
                 if (InSingleStatementCodeScopeTopLevel) InSingleStatementCodeScopeTopLevel = false;
+                if (AfterIfOrElseIfStatement) AfterIfOrElseIfStatement = false;
             }
         }
 
@@ -990,10 +992,15 @@ namespace LibLSLCC.AutoCompleteParser
 
             public override bool VisitElseStatement(LSLParser.ElseStatementContext context)
             {
+                if (context.Start.StartIndex >= _parent._toOffset) return true;
+
+
                 _startIfControlChainCodeScope = -1;
                 _startIfControlChain = false;
                 _parent.AfterIfOrElseIfStatement = false;
                 _parent.InSingleStatementCodeScopeTopLevel = true;
+
+
                 ScopeLevel++;
                 CodeScopeLevel++;
                 ScopeId++;
