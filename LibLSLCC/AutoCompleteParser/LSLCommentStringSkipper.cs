@@ -55,6 +55,7 @@ namespace LibLSLCC.AutoCompleteParser
             ParseUpTo(text, parseUpTo);
         }
 
+        public int ScopeLevel { get; set; }
         // ReSharper disable once MemberCanBePrivate.Global
         public bool InBlockComment { get; private set; }
         // ReSharper disable once MemberCanBePrivate.Global
@@ -139,6 +140,13 @@ namespace LibLSLCC.AutoCompleteParser
                         InString = false;
                     }
                 }
+            }
+
+
+            if (!InComment && !InString)
+            {
+                if (text[i] == '{') ScopeLevel++;
+                if (text[i] == '}') ScopeLevel--;
             }
         }
     }

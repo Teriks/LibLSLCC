@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -78,6 +79,8 @@ namespace LSLCCEditor.LSLEditor
         public int IndentLevel { get; set; }
         public int TextSubStringStart { get; set; }
         public int CaretOffsetAfterInsert { get; set; }
+
+        public bool OffsetCaretFromBegining { get; set; }
         public bool OffsetCaretAfterInsert { get; set; }
         public bool InsertTextAtCaretAfterOffset { get; set; }
         public string CaretOffsetInsertionText { get; set; }
@@ -90,6 +93,8 @@ namespace LSLCCEditor.LSLEditor
             var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
 
             var text = prep + Text + app;
+
+            bool indentBreakOccured = false;
 
             if (ForceIndent)
             {
@@ -116,6 +121,7 @@ namespace LSLCCEditor.LSLEditor
                                 end = j;
                                 if (c != '\n')
                                 {
+                                    indentBreakOccured = true;
                                     linePrefix += c + "\n";
                                 }
                                 else
@@ -151,11 +157,13 @@ namespace LSLCCEditor.LSLEditor
                 text = result;
             }
 
+            int begining = completionSegment.Offset + IndentLevel + (indentBreakOccured ? 2 : 1);
+
             textArea.Document.Replace(completionSegment, text);
 
             if (OffsetCaretAfterInsert)
             {
-                textArea.Caret.Offset = textArea.Caret.Offset + CaretOffsetAfterInsert;
+                textArea.Caret.Offset = (OffsetCaretFromBegining ? begining : textArea.Caret.Offset) + CaretOffsetAfterInsert;
 
                 if (InsertTextAtCaretAfterOffset)
                 {

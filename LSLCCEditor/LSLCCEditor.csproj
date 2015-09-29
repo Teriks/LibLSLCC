@@ -99,6 +99,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DebugObjectView.xaml.cs">
+      <DependentUpon>DebugObjectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditorTabUI\CompilerMessage.cs" />
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
@@ -119,6 +122,10 @@
     <Compile Include="TabbedMainWindow.xaml.cs">
       <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="DebugObjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FindReplace\FindReplaceDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
