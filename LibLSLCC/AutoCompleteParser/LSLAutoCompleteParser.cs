@@ -1186,6 +1186,8 @@ namespace LibLSLCC.AutoCompleteParser
                 return v;
             }
 
+            readonly Stack<List<GlobalVariable>> _globalVariablesHidden = new Stack<List<GlobalVariable>>(); 
+
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1210,8 +1212,10 @@ namespace LibLSLCC.AutoCompleteParser
 
                 var scopeVars = _parent._localVariables.Peek();
 
-                if (_parent._globalVariables.ContainsKey(context.variable_name.Text))
+                GlobalVariable hiddenGlobalVariable;
+                if (_parent._globalVariables.TryGetValue(context.variable_name.Text, out hiddenGlobalVariable))
                 {
+                    _globalVariablesHidden.Peek().Add(hiddenGlobalVariable);
                     _parent._globalVariables.Remove(context.variable_name.Text);
                 }
 
@@ -1348,6 +1352,10 @@ namespace LibLSLCC.AutoCompleteParser
 
                 if ((context.Stop.StartIndex) >= _parent._toOffset) return true;
 
+
+
+
+
                 _parent.CurrentFunction = null;
                 _parent.CurrentFunctionReturnType = LSLType.Void;
 
@@ -1410,6 +1418,7 @@ namespace LibLSLCC.AutoCompleteParser
                                 new LSLSourceCodeRange(i.parameter_name),
                                 new ScopeAddress(CodeAreaId, ScopeId + 1, ScopeLevel + 1));
 
+
                             _parent._parameters.Add(parm.Name, parm);
                         }
                     }
@@ -1425,6 +1434,8 @@ namespace LibLSLCC.AutoCompleteParser
                 base.VisitEventHandler(context);
 
                 if ((context.Stop.StartIndex) >= _parent._toOffset) return true;
+
+
 
                 _parent.CurrentEvent = null;
 
@@ -1607,6 +1618,22 @@ namespace LibLSLCC.AutoCompleteParser
                 _parent.InSingleStatementCodeScopeTopLevel = false;
                 _parent.InMultiStatementCodeScopeTopLevel = true;
 
+                _globalVariablesHidden.Push(new List<GlobalVariable>());
+
+
+                if (context.Parent is LSLParser.FunctionDeclarationContext ||
+                    context.Parent is LSLParser.EventHandlerContext)
+                {
+                    foreach (var parameters in _parent.LocalParameters)
+                    {
+                        GlobalVariable val;
+                        if (_parent._globalVariables.TryGetValue(parameters.Name, out val))
+                        {
+                            _parent._globalVariables.Remove(val.Name);
+                            _globalVariablesHidden.Peek().Add(val);
+                        }
+                    }
+                }
 
                 _parent._localVariables.Push(new Dictionary<string, LocalVariable>());
 
@@ -1620,6 +1647,15 @@ namespace LibLSLCC.AutoCompleteParser
                 }
 
                 if ((context.Stop.StartIndex) >= _parent._toOffset) return true;
+
+
+                foreach (var var in _globalVariablesHidden.Peek())
+                {
+                    _parent._globalVariables.Add(var.Name, var);
+                }
+
+                _globalVariablesHidden.Pop();
+
 
                 _parent._localVariables.Pop();
 
