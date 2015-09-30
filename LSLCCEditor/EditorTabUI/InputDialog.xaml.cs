@@ -46,7 +46,7 @@ using System.Windows;
 
 #endregion
 
-namespace LSLCCEditor
+namespace LSLCCEditor.EditorTabUI
 {
     /// <summary>
     ///     Interaction logic for InputDialog.xaml

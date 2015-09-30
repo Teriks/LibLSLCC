@@ -70,22 +70,38 @@ namespace LSLCCEditor
         private string _messageText;
         private Brush _messageTypeColor;
 
-        public CompilerMessage(CompilerMessageType type, string header, LSLSourceCodeRange location, string message)
+        public CompilerMessage(CompilerMessageType type, string header, LSLSourceCodeRange location, string message, bool showLineInfo = true)
         {
             CodeLocation = location;
             MessageText = message;
             MessageHeader = header;
-            LineText = "(" + CodeLocation.LineStart + ", " + CodeLocation.ColumnStart + ")";
+
+            if (showLineInfo)
+            {
+                LineText = "(" + CodeLocation.LineStart + ", " + CodeLocation.ColumnStart + "):";
+            }
+            else
+            {
+                LineText = ":";
+            }
+
             Clickable = true;
             SetColors(type);
         }
 
-        public CompilerMessage(CompilerMessageType type, string header, string message)
+        public CompilerMessage(CompilerMessageType type, string header, string message, bool showLineInfo = true)
         {
             CodeLocation = new LSLSourceCodeRange(0, 0);
             MessageText = message;
             MessageHeader = header;
-            LineText = "(" + CodeLocation.LineStart + ", " + CodeLocation.ColumnStart + ")";
+            if (showLineInfo)
+            {
+                LineText = "(" + CodeLocation.LineStart + ", " + CodeLocation.ColumnStart + "):";
+            }
+            else
+            {
+                LineText = ":";
+            }
             Clickable = true;
             SetColors(type);
         }

@@ -264,7 +264,7 @@ namespace LSLCCEditor
             }
 
             tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
-                "Program compiled successfully") {Clickable = false});
+                "Program compiled successfully", false) {Clickable = false});
         }
 
         private void SaveAs_OnClick(object sender, RoutedEventArgs e)
@@ -342,7 +342,7 @@ namespace LSLCCEditor
             if (validated != null)
             {
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
-                    "No Syntax errors detected.")
+                    "No Syntax errors detected.", false)
                 {
                     Clickable = false
                 });
@@ -387,7 +387,7 @@ namespace LSLCCEditor
             if (validated != null)
             {
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
-                    "No Syntax errors detected.")
+                    "No Syntax errors detected.", false)
                 {
                     Clickable = false
                 });

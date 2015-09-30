@@ -1,4 +1,4 @@
-﻿<Window x:Class="LSLCCEditor.InputDialog"
+﻿<Window x:Class="LSLCCEditor.EditorTabUI.InputDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="InputDialog" Height="98" Width="385" ResizeMode="NoResize" WindowStartupLocation="Manual"
