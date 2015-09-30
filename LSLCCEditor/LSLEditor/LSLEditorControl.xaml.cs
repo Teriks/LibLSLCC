@@ -69,6 +69,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LSLCCEditor.Utility;
+using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
 
 #endregion
 
@@ -574,6 +575,10 @@ namespace LSLCCEditor.LSLEditor
             c.Closed += (sender, args) => { CloseCurrentCompletionWindow(); };
 
             c.CloseWhenCaretAtBeginning = true;
+
+            c.CompletionList.SubstringSearchWhileFiltering = false;
+
+            c.CompletionList.CamelCaseMatching = false;
 
             return c;
         }
