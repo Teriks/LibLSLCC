@@ -573,6 +573,8 @@ namespace LSLCCEditor.LSLEditor
 
             c.Closed += (sender, args) => { CloseCurrentCompletionWindow(); };
 
+            c.CloseWhenCaretAtBeginning = true;
+
             return c;
         }
 
