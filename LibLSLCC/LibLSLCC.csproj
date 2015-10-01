@@ -79,7 +79,8 @@
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
-    <Compile Include="Extensions\StringTools.cs" />
+    <Compile Include="Util\TokenTools.cs" />
+    <Compile Include="Util\StringTools.cs" />
     <Compile Include="AutoCompleteParser\LSLCommentStringSkipper.cs" />
     <Compile Include="AutoCompleteParser\LSLAutoCompleteParser.cs" />
     <Compile Include="CodeValidator\Primitives\LSLBinaryOperationSignature.cs" />

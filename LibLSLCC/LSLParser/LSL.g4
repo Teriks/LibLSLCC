@@ -43,11 +43,22 @@ grammar LSL;
 
     /// <summary>
 	/// This should be updated when the ID token rule in LSL.g4 is changed, so that the rule and this regex match
-	/// This regex is used as a utility in the auto complete parser
+	/// This regex matches/validates LSL ID Tokens, IE: variable names, state names, label names, function names
 	/// </summary>
-	public static string IDRegex = "(?:[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])(?:[_0-9A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u00B7\u0300-\u036F\u203F-\u2040])*";
+	internal static string IDRegex = "(?:[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])(?:[_0-9A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u00B7\u0300-\u036F\u203F-\u2040])*";
 	
 
+	/// <summary>
+	/// This should be updated when the ID token rule in LSL.g4 is changed, so that the rule and this regex match
+	/// This regex matches/validates that a character is a valid starting character for an ID Token
+	/// </summary>
+	internal static string IDStartCharRegex = "(?:[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])";
+
+	/// <summary>
+	/// This should be updated when the ID token rule in LSL.g4 is changed, so that the rule and this regex match
+	/// This regex matches/validates that a character is a valid trailing character after the first character of an ID Token
+	/// </summary>
+	internal static string IDMiddleCharRegex = "(?:[_0-9A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u00B7\u0300-\u036F\u203F-\u2040])";
 }
 
 TYPE:  'list' | 'vector' | 'float' | 'integer' | 'string' | 'rotation' | 'quaternion' | 'key';

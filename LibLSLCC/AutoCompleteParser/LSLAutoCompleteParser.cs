@@ -53,6 +53,7 @@ using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Util;
 
 #endregion
 
@@ -63,8 +64,8 @@ namespace LibLSLCC.AutoCompleteParser
     {
         private readonly Dictionary<string, GlobalFunction> _globalFunctions = new Dictionary<string, GlobalFunction>();
         private readonly Dictionary<string, GlobalVariable> _globalVariables = new Dictionary<string, GlobalVariable>();
-        private readonly Regex _jumpRegex = new Regex("jump\\s*(" + LSLLexer.IDRegex + ")");
-        private readonly Regex _labelRegex = new Regex("@\\s*(" + LSLLexer.IDRegex + ")");
+        private readonly Regex _jumpRegex = new Regex("jump\\s*(" + TokenTools.IDRegex + ")");
+        private readonly Regex _labelRegex = new Regex("@\\s*(" + TokenTools.IDRegex + ")");
 
         private readonly Stack<Dictionary<string, LocalVariable>> _localVariables =
             new Stack<Dictionary<string, LocalVariable>>();
@@ -177,7 +178,7 @@ namespace LibLSLCC.AutoCompleteParser
             }
         }
 
-        public IEnumerable<StateBlock> StateBlocks
+        public IReadOnlyList<StateBlock> StateBlocks
         {
             get { return _stateBlocks; }
         }

@@ -50,7 +50,7 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
-using LibLSLCC.Extensions;
+using LibLSLCC.Util;
 
 #endregion
 

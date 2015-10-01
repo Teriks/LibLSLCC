@@ -52,7 +52,7 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
-using LibLSLCC.Extensions;
+using LibLSLCC.Util;
 
 #endregion
 
