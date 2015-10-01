@@ -268,6 +268,9 @@ namespace LibLSLCC.AutoCompleteParser
             }
         }
 
+
+       
+
         public bool InLocalExpressionArea
         {
             get
@@ -275,7 +278,7 @@ namespace LibLSLCC.AutoCompleteParser
                 return (InLocalVariableDeclarationExpression || InIfConditionExpression ||
                        InElseIfConditionExpression || InFunctionCallParameterList || InFunctionReturnExpression ||
                        InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression ||
-                       InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent) &&
+                       InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent || InVariableAssignmentExpression ) &&
                        !BetweenControlStatementKeywords;
             }
         }
@@ -300,14 +303,14 @@ namespace LibLSLCC.AutoCompleteParser
         }
 
         public bool InFunctionReturnExpression { get; private set; }
-        public bool InPlainAssignmentRightExpression { get; private set; }
+        public bool InPlainVariableAssignmentExpression { get; private set; }
 
-        public bool InAssignmentRightExpression
+        public bool InVariableAssignmentExpression
         {
-            get { return InPlainAssignmentRightExpression || InModifyingAssignmentRightExpression; }
+            get { return InPlainVariableAssignmentExpression || InModifyingVariableAssignmentExpression; }
         }
 
-        public bool InModifyingAssignmentRightExpression { get; private set; }
+        public bool InModifyingVariableAssignmentExpression { get; private set; }
         public bool InStateChangeStatementStateNameArea { get; private set; }
         public bool InJumpStatementLabelNameArea { get; private set; }
         public bool InLabelDefinitionNameArea { get; private set; }
@@ -356,7 +359,7 @@ namespace LibLSLCC.AutoCompleteParser
 
         public bool CanSuggestLibraryConstant
         {
-            get { return InExpressionArea || InAssignmentRightExpression; }
+            get { return InExpressionArea;  }
         }
 
         public bool CanSuggestFunction
@@ -863,7 +866,7 @@ namespace LibLSLCC.AutoCompleteParser
             public override bool VisitExpr_Assignment(LSLParser.Expr_AssignmentContext context)
             {
                 if (context.operation != null && _parent._toOffset > context.operation.StopIndex &&
-                    _parent._toOffset <= context.Stop.StopIndex)
+                    ((_parent._toOffset <= context.Stop.StopIndex) || (context.operation.StopIndex == context.Stop.StopIndex)))
                 {
                     if (context.expr_lvalue == null) return true;
 
@@ -877,7 +880,7 @@ namespace LibLSLCC.AutoCompleteParser
                         _parent._localVariables.Any(x => x.ContainsKey(atom.variable.Text)) ||
                         _parent._globalVariables.ContainsKey(atom.variable.Text))
                     {
-                        _parent.InPlainAssignmentRightExpression = true;
+                        _parent.InPlainVariableAssignmentExpression = true;
                     }
                 }
                 return base.VisitExpr_Assignment(context);
@@ -886,7 +889,7 @@ namespace LibLSLCC.AutoCompleteParser
             public override bool VisitExpr_ModifyingAssignment(LSLParser.Expr_ModifyingAssignmentContext context)
             {
                 if (context.operation != null && _parent._toOffset > context.operation.StopIndex &&
-                    _parent._toOffset <= context.Stop.StopIndex)
+                    ((_parent._toOffset <= context.Stop.StopIndex) || (context.operation.StopIndex == context.Stop.StopIndex)))
                 {
                     if (context.expr_lvalue == null) return true;
 
@@ -900,12 +903,12 @@ namespace LibLSLCC.AutoCompleteParser
                             _parent._localVariables.Any(x => x.ContainsKey(atom.variable.Text)) ||
                             _parent._globalVariables.ContainsKey(atom.variable.Text))
                         {
-                            _parent.InModifyingAssignmentRightExpression = true;
+                            _parent.InModifyingVariableAssignmentExpression = true;
                         }
                     }
                     else if (atom.list_literal != null || atom.string_literal != null)
                     {
-                        _parent.InModifyingAssignmentRightExpression = true;
+                        _parent.InModifyingVariableAssignmentExpression = true;
                     }
                 }
                 return base.VisitExpr_ModifyingAssignment(context);
