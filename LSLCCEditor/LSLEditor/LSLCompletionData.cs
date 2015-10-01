@@ -53,6 +53,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using LibLSLCC.Util;
+using LibLSLCC.Utility;
 
 #endregion
 

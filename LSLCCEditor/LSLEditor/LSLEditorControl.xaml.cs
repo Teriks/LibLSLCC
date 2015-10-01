@@ -49,6 +49,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -570,7 +571,7 @@ namespace LSLCCEditor.LSLEditor
         private CompletionWindow CreateNewCompletionWindow()
         {
             var c = new CompletionWindow(Editor.TextArea);
-
+            Debug.WriteLine("CWindow Created");
 
             c.Width = c.Width + 160;
 
