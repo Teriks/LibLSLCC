@@ -19,7 +19,7 @@
      <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="$(var.ProgramsFileFolder)">
+      <Directory Id="$(var.ProgramFilesFolder)">
         <Directory Id="CompanyFolder" Name="LSLcc">
           <Directory Id="INSTALLLOCATION" Name="LSLCCEditor" />
         </Directory>
