@@ -177,6 +177,12 @@ namespace LibLSLCC.CodeValidator.Primitives
                    ColumnEnd == x.ColumnEnd && LineStart == x.LineStart && StartIndex == x.StartIndex;
         }
 
+
+        public override int GetHashCode()
+        {
+            return (((this.HasIndexInfo.GetHashCode() * 251) + this.ColumnStart) * 251 + this.LineStart) * 251 + this.StartIndex;
+        }
+
         public LSLSourceCodeRange GetFirstCharRange()
         {
             return new LSLSourceCodeRange(LineStart, ColumnStart, LineStart, ColumnStart, StartIndex, StartIndex);
