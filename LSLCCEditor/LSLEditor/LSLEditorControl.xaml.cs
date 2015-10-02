@@ -70,7 +70,7 @@ using LibLSLCC.AutoCompleteParser;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.Util;
+using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
 

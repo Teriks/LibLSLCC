@@ -99,7 +99,7 @@ namespace lslcc
         {
             Console.WriteLine("=================================");
             Console.WriteLine("Author: Teriks");
-            Console.WriteLine("License: GNU GPLv3");
+            Console.WriteLine("License: Three Clause BSD");
             Console.WriteLine();
             Console.WriteLine("Compile Date: " + RetrieveLinkerTimestamp());
 #if DEBUG
@@ -107,8 +107,7 @@ namespace lslcc
 #else
             Console.WriteLine("Build Type: Release");
 #endif
-            Console.WriteLine("Version: 0.0.0");
-            Console.WriteLine("State: Pre-Alpha, combined build");
+            Console.WriteLine("Version: 1.0.0");
             Console.WriteLine("=================================");
         }
 
@@ -121,10 +120,11 @@ namespace lslcc
                 var arg = args[i];
 
 
-                if (arg.Substring(0, 1) == "-")
+                if (arg.Substring(0, 1) != "-") continue;
+
+                switch (arg.Substring(1))
                 {
-                    if (arg.Substring(1) == "i")
-                    {
+                    case "i":
                         if (File.Exists(args[i + 1]) && inFile == null)
                         {
                             inFile = args[i + 1];
@@ -139,9 +139,8 @@ namespace lslcc
                             Console.WriteLine("Input file specified multiple times, use -h for help");
                             return;
                         }
-                    }
-                    else if (arg.Substring(1) == "o")
-                    {
+                        break;
+                    case "o":
                         if (outFile == null)
                         {
                             outFile = args[i + 1];
@@ -151,22 +150,16 @@ namespace lslcc
                             Console.WriteLine("Output file specified multiple times, use -h for help");
                             return;
                         }
-                    }
-                    else if (arg.Substring(1) == "h")
-                    {
+                        break;
+                    case "h":
                         WriteHelp();
                         return;
-                    }
-                    else if (arg.Substring(1) == "v")
-                    {
+                    case "v":
                         WriteAbout();
                         return;
-                    }
-                    else
-                    {
+                    default:
                         Console.WriteLine("Unknown switch:" + arg + ", use -h for help");
                         return;
-                    }
                 }
             }
 
