@@ -251,9 +251,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProviderOld.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvider.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
