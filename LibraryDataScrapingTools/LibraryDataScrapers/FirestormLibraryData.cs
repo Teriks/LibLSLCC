@@ -653,6 +653,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         [XmlRoot(ElementName = "script_library")]
         public class ScriptLibrary
         {
+            private KeywordCollection _keywords = new KeywordCollection();
+            private FunctionCollection _functions = new FunctionCollection();
+
             [XmlAttribute(AttributeName = "name")]
             public string Name { get; set; }
 
@@ -668,11 +671,19 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             [XmlArrayItem("comment", Type = typeof (Comment))]
             [XmlArrayItem("block_comment", Type = typeof (BlockComment))]
             [XmlArrayItem("event", Type = typeof (Event))]
-            public KeywordCollection Keywords { get; set; } = new KeywordCollection();
+            public KeywordCollection Keywords
+            {
+                get { return _keywords; }
+                set { _keywords = value; }
+            }
 
             [XmlArray(ElementName = "functions")]
             [XmlArrayItem(ElementName = "function")]
-            public FunctionCollection Functions { get; set; } = new FunctionCollection();
+            public FunctionCollection Functions
+            {
+                get { return _functions; }
+                set { _functions = value; }
+            }
 
             public static ScriptLibrary Read(XmlReader reader)
             {
