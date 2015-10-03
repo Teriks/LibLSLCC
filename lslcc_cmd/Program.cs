@@ -43,10 +43,13 @@
 #region Imports
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using LibLSLCC.CodeValidator;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers;
@@ -59,9 +62,18 @@ namespace lslcc
     {
         private static void WriteHelp()
         {
-            Console.WriteLine("Usage: lslcc -i script.lsl -o script.cs");
+            Console.WriteLine("======================================" + Environment.NewLine);
+            Console.WriteLine("Usage: lslcc -i script.lsl -o script.cs" + Environment.NewLine);
             Console.WriteLine("-i: input file");
-            Console.WriteLine("-o: output file");
+            Console.WriteLine("-o: output file" + Environment.NewLine);
+            Console.WriteLine("======================================" + Environment.NewLine);
+            Console.WriteLine("-baselibrary:" + Environment.NewLine);
+            Console.WriteLine("Set the available base LSL library. can either be: 'standard' or 'opensim' without quotes." + Environment.NewLine);
+            Console.WriteLine("======================================" + Environment.NewLine);
+            Console.WriteLine("-addonlibrarys:"+Environment.NewLine);
+            Console.WriteLine("Set the available add-on library's when compiling ( Separated by semi-colons ; )");
+            Console.WriteLine("All acceptable values are: ossl;os-mod-api;os-lightshare;os-bullet-physics" + Environment.NewLine);
+            Console.WriteLine("======================================" + Environment.NewLine);
             Console.WriteLine("-h: help");
             Console.WriteLine("-v: lslcc, version and info");
         }
@@ -113,6 +125,9 @@ namespace lslcc
 
         public static void Main(string[] args)
         {
+            HashSet<string> libraries = new HashSet<string>();
+            LSLLibraryBaseData baseLibraryData = LSLLibraryBaseData.StandardLsl;
+
             string inFile = null;
             string outFile = null;
             for (var i = 0; i < args.Length; i++)
@@ -140,6 +155,38 @@ namespace lslcc
                             return;
                         }
                         break;
+
+                    case "baselibrary":
+                        var baseLib = args[i + 1].Trim();
+
+                        if (string.IsNullOrWhiteSpace(baseLib))
+                        {
+                            Console.WriteLine("-baselibrary switched used but left blank, use -h for help");
+                            return;
+                        }
+                        switch (baseLib)
+                        {
+                            case "standard":
+                                baseLibraryData = LSLLibraryBaseData.StandardLsl;
+                                break;
+                            case "opensim":
+                                baseLibraryData = LSLLibraryBaseData.OpensimLsl;
+                                break;
+                            default:
+                                Console.WriteLine(string.Format("Base library name '{0}' not recognized, use -h for help", baseLib));
+                                return;
+                        }
+                        break;
+
+                    case "addonlibrarys":
+                        var libs = args[i + 1];
+
+                        foreach (var lib in libs.Split(';').Select(x => x.Trim()))
+                        {
+                            libraries.Add(lib);
+                        }
+                        break;
+
                     case "o":
                         if (outFile == null)
                         {
@@ -180,7 +227,46 @@ namespace lslcc
             Console.WriteLine();
 
 
-            var validator = new LSLCodeValidator();
+
+            var validatorServices = new LSLCustomValidatorServiceProvider
+            {
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                SyntaxErrorListener = new LSLDefaultSyntaxErrorListener(),
+                SyntaxWarningListener = new LSLDefaultSyntaxWarningListener()
+            };
+
+
+
+
+            LSLLibraryDataAdditions libraryDataAdditions = LSLLibraryDataAdditions.None;
+
+            if (libraries.Contains("os-mod-api"))
+            {
+                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimModInvoke;
+            }
+
+            if (libraries.Contains("ossl"))
+            {
+                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimOssl;
+            }
+
+            if (libraries.Contains("os-bullet-physics"))
+            {
+                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimBulletPhysics;
+            }
+
+            if (libraries.Contains("os-lightshare"))
+            {
+                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimWindlight;
+            }
+
+
+            validatorServices.MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(false, baseLibraryData, libraryDataAdditions);
+
+            var validator = new LSLCodeValidator(validatorServices);
+
+
             ILSLCompilationUnitNode validated;
 
 
