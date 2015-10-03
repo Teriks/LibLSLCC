@@ -38,7 +38,7 @@ instead of information about the java executable's command line options then jav
 install it before the build will work.
 
 You can build the entire solution on Windows using Microsoft Visual Studio express and up (2015 is what I am using).
-LSLCCEditor, LSLCCEditor.CompletionUI and LSLCCEditor installer are only buildable on Windows as they depend on WPF, AvalonEdit
+LSLCCEditor, LSLCCEditor.CompletionUI and LSLCCEditorInstaller are only buildable on Windows as they depend on WPF, AvalonEdit
 and WiX Installer framework,  but the LibLSLCC library is cross platform.
 
 In order to build the LSLCCEditorInstaller project on Windows you must install the WiX Installer Toolset from http://wixtoolset.org/
