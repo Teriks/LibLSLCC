@@ -257,8 +257,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 
 
-  <Target Name="BeforeBuild" Outputs="$(ProjectDir)/LSLParser/LSLParser.cs;$(ProjectDir)/LSLParser/LSLVisitor.cs;$(ProjectDir)/LSLParser/LSLListener.cs;$(ProjectDir)/LSLParser/LSLLexer.cs;$(ProjectDir)/LSLParser/LSLLexer.tokens;$(ProjectDir)/LSLParser/LSL.tokens;$(ProjectDir)/LSLParser/LSLBaseVisitor.cs;$(ProjectDir)/LSLParser/LSLBaseListener.cs;">
-    <Exec Command="java -classpath $(ProjectDir)/antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC -o $(ProjectDir)/LSLParser $(ProjectDir)/LSLParser/LSL.g4">
+  <Target Name="BeforeBuild" Outputs="$(ProjectDir)LSLParser\LSLParser.cs;$(ProjectDir)LSLParser\LSLVisitor.cs;$(ProjectDir)LSLParser\LSLListener.cs;$(ProjectDir)LSLParser\LSLLexer.cs;$(ProjectDir)LSLParser\LSLLexer.tokens;$(ProjectDir)LSLParser\LSL.tokens;$(ProjectDir)LSLParser\LSLBaseVisitor.cs;$(ProjectDir)LSLParser\LSLBaseListener.cs;">
+    <Exec Command="java -classpath $(ProjectDir)antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC -o $(ProjectDir)LSLParser $(ProjectDir)LSLParser\LSL.g4">
 
     </Exec>
   </Target>
