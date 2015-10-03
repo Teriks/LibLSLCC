@@ -54,9 +54,7 @@ next to every project in the solution besides LibLSLCC.  You must first set the 
 type (Release or Debug), and the active solution platform to the desired architecture before doing this, so that the settings acutally
 apply to the type of build you want.
  
-Binaries for all projects are placed in their project directory under bin/(Architecture x86|x64)/(Build Type Release|Debug)
- 
- 
+
  
 #Building LibLSLCC on *Nix Platforms with xbuild/monodevelop 
  
