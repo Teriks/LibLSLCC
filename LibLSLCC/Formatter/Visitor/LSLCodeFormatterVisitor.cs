@@ -60,7 +60,6 @@ namespace LibLSLCC.Formatter.Visitor
     {
         private readonly Stack<bool> _binaryExpressionWrappingEnabledStack = new Stack<bool>();
         private readonly LinkedList<LSLComment> _comments = new LinkedList<LSLComment>();
-        private readonly Stack<bool> _expressionWrappingStack = new Stack<bool>();
         private int _indentLevel;
         private string _sourceReference;
         private int _writeColumn;
