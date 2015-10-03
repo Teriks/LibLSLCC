@@ -85,8 +85,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-        internal LSLParser.Expr_TypeCastContext ParserContext { get; }
-        public ILSLExprNode CastedExpression { get; }
+        internal LSLParser.Expr_TypeCastContext ParserContext { get; private set; }
+        public ILSLExprNode CastedExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -145,7 +145,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
@@ -154,7 +154,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
-        public LSLType Type { get; }
+        public LSLType Type { get; private set; }
 
         public LSLExpressionType ExpressionType
         {

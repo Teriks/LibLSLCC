@@ -94,8 +94,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         }
 
         internal LSLParser.DoLoopContext ParserContext { get; private set; }
-        public LSLCodeScopeNode Code { get; }
-        public ILSLExprNode ConditionExpression { get; }
+        public LSLCodeScopeNode Code { get; private set; }
+        public ILSLExprNode ConditionExpression { get; private set; }
         public ILSLCodeStatement ReturnPath { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -119,11 +119,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         }
 
         public ulong ScopeId { get; set; }
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
-        public LSLSourceCodeRange DoKeywordSourceCodeRange { get; }
-        public LSLSourceCodeRange WhileKeywordSourceCodeRange { get; }
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange DoKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange WhileKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
 
         public static
             LSLDoLoopNode GetError(LSLSourceCodeRange sourceRange)
@@ -154,7 +154,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

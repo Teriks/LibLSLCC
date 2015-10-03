@@ -73,17 +73,17 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     Name of the parameter
         /// </summary>
-        public string Name { get; }
+        public string Name { get; private set; }
 
         /// <summary>
         ///     Does this parameter represent a variadic place holder
         /// </summary>
-        public bool Variadic { get; }
+        public bool Variadic { get; private set; }
 
         /// <summary>
         ///     The parameter type
         /// </summary>
-        public LSLType Type { get; }
+        public LSLType Type { get; private set; }
 
         /// <summary>
         ///     The parameter index, which gets set when the parameter is added to an LSLFunctionSignature or LSLEventSignature

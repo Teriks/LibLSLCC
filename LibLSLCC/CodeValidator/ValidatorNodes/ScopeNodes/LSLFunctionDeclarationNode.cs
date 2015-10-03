@@ -93,7 +93,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-        internal LSLParser.FunctionDeclarationContext ParserContext { get; }
+        internal LSLParser.FunctionDeclarationContext ParserContext { get; private set; }
 
         public IReadOnlyList<LSLParameterNode> ParameterNodes
         {
@@ -106,7 +106,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         }
 
         public LSLParameterListNode ParameterListNode { get; set; }
-        public LSLCodeScopeNode FunctionBodyNode { get; }
+        public LSLCodeScopeNode FunctionBodyNode { get; private set; }
 
         IReadOnlyList<ILSLFunctionCallNode> ILSLFunctionDeclarationNode.References
         {
@@ -193,7 +193,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

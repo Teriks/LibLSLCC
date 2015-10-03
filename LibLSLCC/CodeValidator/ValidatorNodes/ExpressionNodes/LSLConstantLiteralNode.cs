@@ -104,7 +104,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
-        public LSLType Type { get; }
+        public LSLType Type { get; private set; }
 
 
         public LSLExpressionType ExpressionType

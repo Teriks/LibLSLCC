@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
         }
 
-        internal LSLParser.JumpStatementContext ParserContext { get; }
+        internal LSLParser.JumpStatementContext ParserContext { get; private set; }
         public LSLLabelStatementNode JumpTarget { get; set; }
 
         #region ILSLCodeStatement Members
@@ -118,7 +118,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
@@ -169,10 +169,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
 
-        public LSLSourceCodeRange JumpKeywordSourceCodeRange { get; }
+        public LSLSourceCodeRange JumpKeywordSourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange LabelNameSourceCodeRange { get; }
+        public LSLSourceCodeRange LabelNameSourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
     }
 }

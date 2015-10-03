@@ -83,8 +83,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-        internal LSLParser.ParenthesizedExpressionContext ParserContext { get; }
-        public ILSLExprNode InnerExpression { get; }
+        internal LSLParser.ParenthesizedExpressionContext ParserContext { get; private set; }
+        public ILSLExprNode InnerExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -133,7 +133,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_target);
         }
 
-        internal LSLParser.StateChangeStatementContext ParserContext { get; }
+        internal LSLParser.StateChangeStatementContext ParserContext { get; private set; }
         public ILSLCodeStatement ReturnPath { get; set; }
         public LSLDeadCodeType DeadCodeType { get; set; }
 
@@ -83,9 +83,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         public ulong ScopeId { get; set; }
-        public LSLSourceCodeRange StateKeywordSourceCodeRange { get; }
-        public LSLSourceCodeRange StateNameSourceCodeRange { get; }
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        public LSLSourceCodeRange StateKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange StateNameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
 
         public static
             LSLStateChangeStatementNode GetError(LSLSourceCodeRange sourceRange)
@@ -135,7 +135,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

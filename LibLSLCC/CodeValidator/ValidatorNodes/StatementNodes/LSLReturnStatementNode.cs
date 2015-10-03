@@ -98,7 +98,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         internal LSLParser.ReturnStatementContext ParserContext { get; private set; }
-        public ILSLExprNode ReturnExpression { get; }
+        public ILSLExprNode ReturnExpression { get; private set; }
         public ILSLCodeStatement ReturnPath { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -119,8 +119,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         public ulong ScopeId { get; set; }
-        public LSLSourceCodeRange ReturnKeywordSourceCodeRange { get; }
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        public LSLSourceCodeRange ReturnKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
 
         public static
             LSLReturnStatementNode GetError(LSLSourceCodeRange sourceRange)
@@ -139,7 +139,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         public ILSLSyntaxTreeNode Parent { get; set; }
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

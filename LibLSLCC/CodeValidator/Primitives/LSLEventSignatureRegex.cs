@@ -82,7 +82,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
-        public Regex Regex { get; }
+        public Regex Regex { get; private set; }
 
         public LSLEventSignature GetSignature(string inString)
         {

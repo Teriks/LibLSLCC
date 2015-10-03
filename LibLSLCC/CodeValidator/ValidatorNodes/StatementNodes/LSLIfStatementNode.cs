@@ -102,8 +102,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         internal LSLParser.IfStatementContext ParserContext { get; private set; }
-        public LSLCodeScopeNode Code { get; }
-        public ILSLExprNode ConditionExpression { get; }
+        public LSLCodeScopeNode Code { get; private set; }
+        public ILSLExprNode ConditionExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -138,9 +138,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         #endregion
 
-        public LSLSourceCodeRange IfKeywordSourceCodeRange { get; }
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        public LSLSourceCodeRange IfKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
 
         public static
             LSLIfStatementNode GetError(LSLSourceCodeRange sourceRange)
@@ -161,7 +161,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

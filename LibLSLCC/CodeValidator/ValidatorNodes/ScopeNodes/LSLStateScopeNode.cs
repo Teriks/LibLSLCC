@@ -158,9 +158,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return Parent; }
         }
 
-        public string StateName { get; }
-        public bool IsDefinedState { get; }
-        public bool IsDefaultState { get; }
+        public string StateName { get; private set; }
+        public bool IsDefinedState { get; private set; }
+        public bool IsDefaultState { get; private set; }
 
         IReadOnlyList<ILSLEventHandlerNode> ILSLStateScopeNode.EventHandlers
         {
@@ -197,13 +197,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange OpenBraceSourceCodeRange { get; }
+        public LSLSourceCodeRange OpenBraceSourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange CloseBraceSourceCodeRange { get; }
+        public LSLSourceCodeRange CloseBraceSourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange StateNameSourceCodeRange { get; }
+        public LSLSourceCodeRange StateNameSourceCodeRange { get; private set; }
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {

@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-        internal LSLParser.ParameterDefinitionContext ParserContext { get; }
+        internal LSLParser.ParameterDefinitionContext ParserContext { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -93,7 +93,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public int ParameterIndex { get; set; }
         public bool HasErrors { get; set; }
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {

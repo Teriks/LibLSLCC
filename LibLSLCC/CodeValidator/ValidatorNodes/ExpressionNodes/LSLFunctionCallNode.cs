@@ -116,14 +116,14 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
         }
 
-        internal LSLParser.Expr_FunctionCallContext ParserContext { get; }
+        internal LSLParser.Expr_FunctionCallContext ParserContext { get; private set; }
 
         public IReadOnlyList<ILSLExprNode> ParameterExpressions
         {
             get { return ParameterListNode.ExpressionNodes; }
         }
 
-        public LSLExpressionListNode ParameterListNode { get; }
+        public LSLExpressionListNode ParameterListNode { get; private set; }
 
         public LSLFunctionDeclarationNode DefinitionNode
         {
@@ -138,9 +138,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             }
         }
 
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
-        public LSLSourceCodeRange FunctionNameSourceCodeRange { get; }
+        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange FunctionNameSourceCodeRange { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -226,7 +226,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

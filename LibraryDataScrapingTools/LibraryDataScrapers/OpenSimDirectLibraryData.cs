@@ -93,7 +93,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         public IReadOnlyDictionary<Type, LSLType> DataTypeMapping { get; set; }
         public Type OptionalScriptModuleConstantAttribute { get; set; }
         public Type OptionalScriptModuleFunctionAttribute { get; set; }
-        public IReflectedLibraryData ReflectedData { get; }
+        public IReflectedLibraryData ReflectedData { get; private set; }
 
         public bool LSLFunctionExist(string name)
         {

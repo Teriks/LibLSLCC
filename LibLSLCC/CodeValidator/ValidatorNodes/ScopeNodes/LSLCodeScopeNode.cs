@@ -130,7 +130,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return false; }
         }
 
-        public LSLCodeScopeType CodeScopeType { get; }
+        public LSLCodeScopeType CodeScopeType { get; private set; }
 
         #region ILSLReturnPathNode Members
 
@@ -160,13 +160,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         ///     Is this scope a single statement scope, like a brace-less 'if' branch.
         ///     true if IsCodeScope is false
         /// </summary>
-        public bool IsSingleStatement { get; }
+        public bool IsSingleStatement { get; private set; }
 
         /// <summary>
         ///     Is this a normal braced code scope.
         ///     true if IsSingleStatement is false
         /// </summary>
-        public bool IsCodeScope { get; }
+        public bool IsCodeScope { get; private set; }
 
         /// <summary>
         ///     Code statements that are children of this code scope
@@ -567,7 +567,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// <summary>
         ///     The source code range this statement occupies in the source code
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

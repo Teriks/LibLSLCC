@@ -55,7 +55,14 @@ namespace LibLSLCC.Collections
     public class UniqueValueDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         private readonly HashSet<TValue> _usedValues = new HashSet<TValue>();
-        public Dictionary<TKey, TValue> Items { get; } = new Dictionary<TKey, TValue>();
+        private Dictionary<TKey, TValue> _items = new Dictionary<TKey, TValue>();
+
+        public Dictionary<TKey, TValue> Items
+        {
+            get { return _items; }
+            private set { _items = value; }
+        }
+
 
         public ReadOnlyHashSet<TValue> ValueSet
         {

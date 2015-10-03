@@ -63,10 +63,10 @@ namespace LibLSLCC.CodeValidator.Components
             StringLiteralPreProcessor = new LSLDefaultStringPreProcessor();
         }
 
-        public ILSLExpressionValidator ExpressionValidator { get; }
-        public ILSLMainLibraryDataProvider MainLibraryDataProvider { get; }
-        public ILSLStringPreProcessor StringLiteralPreProcessor { get; }
-        public ILSLSyntaxErrorListener SyntaxErrorListener { get; }
-        public ILSLSyntaxWarningListener SyntaxWarningListener { get; }
+        public ILSLExpressionValidator ExpressionValidator { get; private set; }
+        public ILSLMainLibraryDataProvider MainLibraryDataProvider { get; private set; }
+        public ILSLStringPreProcessor StringLiteralPreProcessor { get; private set; }
+        public ILSLSyntaxErrorListener SyntaxErrorListener { get; private set; }
+        public ILSLSyntaxWarningListener SyntaxWarningListener { get; private set; }
     }
 }

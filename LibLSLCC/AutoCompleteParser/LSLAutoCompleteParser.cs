@@ -527,7 +527,7 @@ namespace LibLSLCC.AutoCompleteParser
                 TypeSourceCodeRange = typeRange;
             }
 
-            public string Name { get; }
+            public string Name { get; private set; }
             public string Type { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
@@ -582,8 +582,8 @@ namespace LibLSLCC.AutoCompleteParser
             public bool HasReturnType { get; private set; }
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
-            public string Name { get; }
-            public string ReturnType { get; }
+            public string Name { get; private set; }
+            public string ReturnType { get; private set; }
 
             public string Signature
             {
@@ -607,7 +607,7 @@ namespace LibLSLCC.AutoCompleteParser
                 }
             }
 
-            public IReadOnlyList<LocalParameter> Parameters { get; }
+            public IReadOnlyList<LocalParameter> Parameters { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
@@ -640,7 +640,7 @@ namespace LibLSLCC.AutoCompleteParser
             }
 
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
-            public LSLSourceCodeRange TypeSourceCodeRange { get; }
+            public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
             public ScopeAddress ScopeAddress { get; private set; }
             public string Name { get; private set; }
             public string Type { get; private set; }
@@ -684,8 +684,8 @@ namespace LibLSLCC.AutoCompleteParser
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
             public ScopeAddress ScopeAddress { get; private set; }
-            public string Name { get; }
-            public string Type { get; }
+            public string Name { get; private set; }
+            public string Type { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 

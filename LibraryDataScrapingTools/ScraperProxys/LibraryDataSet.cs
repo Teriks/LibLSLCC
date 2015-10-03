@@ -89,12 +89,12 @@ namespace LibraryDataScrapingTools.ScraperProxys
             }
         }
 
-        public UniqueValueDictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>> OverloadsDictionary { get; }
-        public UniqueValueDictionary<string, LSLLibraryConstantSignature> ConstantDictionary { get; }
-        public UniqueValueDictionary<string, LSLLibraryEventSignature> EventDictionary { get; }
-        public ISet<LSLLibraryFunctionSignature> FunctionSet { get; }
-        public ISet<LSLLibraryEventSignature> EventSet { get; }
-        public ISet<LSLLibraryConstantSignature> ConstantSet { get; }
+        public UniqueValueDictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>> OverloadsDictionary { get; private set; }
+        public UniqueValueDictionary<string, LSLLibraryConstantSignature> ConstantDictionary { get; private set; }
+        public UniqueValueDictionary<string, LSLLibraryEventSignature> EventDictionary { get; private set; }
+        public ISet<LSLLibraryFunctionSignature> FunctionSet { get; private set; }
+        public ISet<LSLLibraryEventSignature> EventSet { get; private set; }
+        public ISet<LSLLibraryConstantSignature> ConstantSet { get; private set; }
 
         public bool LSLFunctionExist(string name)
         {

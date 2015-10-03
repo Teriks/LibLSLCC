@@ -357,16 +357,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         public class Function : IEquatable<Function>
         {
             [XmlAttribute(AttributeName = "sleep")]
-            public string Sleep { get; }
+            public string Sleep { get; private set; }
 
             [XmlAttribute(AttributeName = "energy")]
-            public string Energy { get; }
+            public string Energy { get; private set; }
 
             [XmlAttribute(AttributeName = "name")]
-            public string Name { get; }
+            public string Name { get; private set; }
 
             [XmlAttribute(AttributeName = "desc")]
-            public string Desc { get; }
+            public string Desc { get; private set; }
 
             public bool Equals(Function other)
             {

@@ -81,7 +81,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
-        public Regex Regex { get; }
+        public Regex Regex { get; private set; }
 
         public LSLFunctionSignature GetSignature(string inString)
         {
@@ -178,7 +178,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             public string Name { get; set; }
             public string ReturnType { get; set; }
-            public List<KeyValuePair<string, string>> Parameters { get; }
+            public List<KeyValuePair<string, string>> Parameters { get; private set; }
 
             public bool Equals(SimpleSignature other)
             {

@@ -68,7 +68,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             PreProccessedText = preProccessedText;
         }
 
-        public string PreProccessedText { get; }
+        public string PreProccessedText { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

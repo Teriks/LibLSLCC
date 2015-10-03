@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             IsSingleBlockStatement = isSingleBlockStatement;
         }
 
-        internal LSLParser.CodeStatementContext ParserContext { get; }
+        internal LSLParser.CodeStatementContext ParserContext { get; private set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public bool HasReturnStatementNode

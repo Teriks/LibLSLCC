@@ -89,7 +89,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             ScopingManager = new LSLVisitorScopeTracker(_validatorServices);
         }
 
-        private LSLVisitorScopeTracker ScopingManager { get; }
+        private LSLVisitorScopeTracker ScopingManager { get; set; }
 
         public ILSLSyntaxWarningListener SyntaxWarningListener
         {

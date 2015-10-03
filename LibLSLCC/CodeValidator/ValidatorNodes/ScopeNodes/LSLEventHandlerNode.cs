@@ -88,15 +88,15 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-        internal LSLParser.EventHandlerContext ParserContext { get; }
+        internal LSLParser.EventHandlerContext ParserContext { get; private set; }
 
         public IReadOnlyList<LSLParameterNode> ParameterNodes
         {
             get { return ParameterListNode.Parameters; }
         }
 
-        public LSLCodeScopeNode EventBodyNode { get; }
-        public LSLParameterListNode ParameterListNode { get; }
+        public LSLCodeScopeNode EventBodyNode { get; private set; }
+        public LSLParameterListNode ParameterListNode { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

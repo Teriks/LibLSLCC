@@ -218,32 +218,32 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.Api.Runtime.dll
         /// </summary>
-        public Assembly ScriptRuntimeAssembly { get; }
+        public Assembly ScriptRuntimeAssembly { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.dll
         /// </summary>
-        public Assembly ScriptApiAssembly { get; }
+        public Assembly ScriptApiAssembly { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.OptionalModules.dll
         /// </summary>
-        public Assembly OptionalScriptModulesAssembly { get; }
+        public Assembly OptionalScriptModulesAssembly { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.Framework.dll
         /// </summary>
-        public Assembly RegionFrameworkAssembly { get; }
+        public Assembly RegionFrameworkAssembly { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.ScriptBase.ScriptBaseClass
         /// </summary>
-        public Type ScriptBaseClass { get; }
+        public Type ScriptBaseClass { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.Api.Interfaces.*
         /// </summary>
-        public IEnumerable<Type> FunctionContainingInterfaces { get; }
+        public IEnumerable<Type> FunctionContainingInterfaces { get; private set; }
 
         public Type GetFunctionContainingInterface(string name)
         {
@@ -263,22 +263,22 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         /// <summary>
         ///     INonSharedRegionModule that use ScriptConstantAttribute or ScriptInvocationAttribute anywhere in the class
         /// </summary>
-        public IEnumerable<Type> AttributedModuleClasses { get; }
+        public IEnumerable<Type> AttributedModuleClasses { get; private set; }
 
         /// <summary>
         ///     ScriptBaseClass
         /// </summary>
-        public IEnumerable<Type> ScriptConstantContainerClasses { get; }
+        public IEnumerable<Type> ScriptConstantContainerClasses { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.Framework.Interfaces.ScriptInvocationAttribute
         /// </summary>
-        public Type ScriptModuleFunctionAttribute { get; }
+        public Type ScriptModuleFunctionAttribute { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.Framework.Interfaces.ScriptConstantAttribute
         /// </summary>
-        public Type ScriptModuleConstantAttribute { get; }
+        public Type ScriptModuleConstantAttribute { get; private set; }
 
         /// <summary>
         ///     OpenSim.Region.ScriptEngine.Shared.LSL_Types.LSLFloat

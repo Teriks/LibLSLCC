@@ -116,7 +116,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
-        public LSLExpressionListType ListType { get; }
+        public LSLExpressionListType ListType { get; private set; }
 
         IReadOnlyList<ILSLReadOnlyExprNode> ILSLExpressionListNode.ExpressionNodes
         {
@@ -193,7 +193,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         #region ILSLTreeNode Members
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public bool HasErrors { get; set; }

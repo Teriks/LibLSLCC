@@ -67,10 +67,10 @@ namespace LibLSLCC.CodeValidator.Primitives
             Operation = operation;
         }
 
-        public LSLType Returns { get; }
-        public LSLType Left { get; }
-        public LSLType Right { get; }
-        public LSLBinaryOperationType Operation { get; }
+        public LSLType Returns { get; private set; }
+        public LSLType Left { get; private set; }
+        public LSLType Right { get; private set; }
+        public LSLBinaryOperationType Operation { get; private set; }
 
         public override int GetHashCode()
         {

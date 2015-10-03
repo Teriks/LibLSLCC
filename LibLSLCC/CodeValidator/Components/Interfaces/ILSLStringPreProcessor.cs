@@ -59,8 +59,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             CausingCharacter = causingCharacter;
         }
 
-        public char CausingCharacter { get; }
-        public int StringIndex { get; }
+        public char CausingCharacter { get; private set; }
+        public int StringIndex { get; private set; }
 
         public bool Equals(LSLStringCharacterError other)
         {
@@ -113,10 +113,10 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     /// </summary>
     public interface ILSLStringPreProcessor
     {
-        bool HasErrors { get; }
-        IEnumerable<LSLStringCharacterError> InvalidEscapeCodes { get; }
-        IEnumerable<LSLStringCharacterError> IllegalCharacters { get; }
-        string Result { get; }
+        bool HasErrors { get;  }
+        IEnumerable<LSLStringCharacterError> InvalidEscapeCodes { get;  }
+        IEnumerable<LSLStringCharacterError> IllegalCharacters { get;  }
+        string Result { get;  }
 
         /// <summary>
         ///     Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,

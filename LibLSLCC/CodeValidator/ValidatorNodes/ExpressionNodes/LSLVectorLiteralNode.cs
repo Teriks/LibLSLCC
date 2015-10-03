@@ -103,10 +103,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             CommaTwoSourceCodeRange = new LSLSourceCodeRange(context.comma_two);
         }
 
-        internal LSLParser.VectorLiteralContext ParserContext { get; }
-        public ILSLExprNode XExpression { get; }
-        public ILSLExprNode YExpression { get; }
-        public ILSLExprNode ZExpression { get; }
+        internal LSLParser.VectorLiteralContext ParserContext { get; private set; }
+        public ILSLExprNode XExpression { get; private set; }
+        public ILSLExprNode YExpression { get; private set; }
+        public ILSLExprNode ZExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -165,11 +165,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange CommaOneSourceCodeRange { get; }
+        public LSLSourceCodeRange CommaOneSourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange CommaTwoSourceCodeRange { get; }
+        public LSLSourceCodeRange CommaTwoSourceCodeRange { get; private set; }
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {

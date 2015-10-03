@@ -111,10 +111,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         }
 
         internal LSLParser.ForLoopContext ParserContext { get; private set; }
-        public ILSLExpressionListNode InitExpressionsList { get; }
-        public ILSLExprNode ConditionExpression { get; }
-        public LSLExpressionListNode AfterthoughExpressions { get; }
-        public LSLCodeScopeNode Code { get; }
+        public ILSLExpressionListNode InitExpressionsList { get; private set; }
+        public ILSLExprNode ConditionExpression { get; private set; }
+        public LSLExpressionListNode AfterthoughExpressions { get; private set; }
+        public LSLCodeScopeNode Code { get; private set; }
         public ILSLCodeStatement ReturnPath { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -193,20 +193,20 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange ForKeywordSourceCodeRange { get; }
+        public LSLSourceCodeRange ForKeywordSourceCodeRange { get; private set; }
 
-        public LSLSourceCodeRange FirstSemiColonSourceCodeRange { get; }
-
-
-        public LSLSourceCodeRange SecondSemiColonSourceCodeRange { get; }
+        public LSLSourceCodeRange FirstSemiColonSourceCodeRange { get; private set; }
 
 
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+        public LSLSourceCodeRange SecondSemiColonSourceCodeRange { get; private set; }
 
 
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+
+
+        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

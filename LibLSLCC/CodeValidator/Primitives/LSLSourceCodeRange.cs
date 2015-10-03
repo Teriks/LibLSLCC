@@ -149,18 +149,18 @@ namespace LibLSLCC.CodeValidator.Primitives
             HasIndexInfo = false;
         }
 
-        public bool HasIndexInfo { get; }
+        public bool HasIndexInfo { get; private set; }
 
         public bool IsSingleLine
         {
             get { return LineEnd == LineStart; }
         }
 
-        public int LineStart { get; }
+        public int LineStart { get; private set; }
         public int LineEnd { get; private set; }
-        public int ColumnStart { get; }
+        public int ColumnStart { get; private set; }
         public int ColumnEnd { get; private set; }
-        public int StartIndex { get; }
+        public int StartIndex { get; private set; }
         public int StopIndex { get; private set; }
 
         public int Length

@@ -91,8 +91,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-        internal LSLParser.Expr_DotAccessorContext ParserContext { get; }
-        public ILSLExprNode AccessedExpression { get; }
+        internal LSLParser.Expr_DotAccessorContext ParserContext { get; private set; }
+        public ILSLExprNode AccessedExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -104,8 +104,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return ParserContext.member.Text; }
         }
 
-        public LSLTupleComponent AccessedComponent { get; }
-        public LSLType AccessedType { get; }
+        public LSLTupleComponent AccessedComponent { get; private set; }
+        public LSLType AccessedType { get; private set; }
 
         ILSLReadOnlyExprNode ILSLTupleAccessorNode.AccessedExpression
         {
@@ -157,7 +157,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

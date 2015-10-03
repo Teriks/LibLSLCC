@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         ///     part of that node, otherwise EffectiveJumpStatement and DeterminingJump will be references to the same
         ///     object.
         /// </summary>
-        public ILSLJumpStatementNode DeterminingJump { get; }
+        public ILSLJumpStatementNode DeterminingJump { get; private set; }
 
         /// <summary>
         ///     The label node that DeterminingJump jumps to,

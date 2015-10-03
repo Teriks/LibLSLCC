@@ -107,11 +107,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             OperationSourceCodeRange = new LSLSourceCodeRange(operationToken);
         }
 
-        internal IToken OperationToken { get; }
-        internal LSLParser.ExpressionContext ParserContext { get; }
-        public ILSLExprNode LeftExpression { get; }
-        public ILSLExprNode RightExpression { get; }
-        public LSLSourceCodeRange OperationSourceCodeRange { get; }
+        internal IToken OperationToken { get; private set; }
+        internal LSLParser.ExpressionContext ParserContext { get; private set; }
+        public ILSLExprNode LeftExpression { get; private set; }
+        public ILSLExprNode RightExpression { get; private set; }
+        public LSLSourceCodeRange OperationSourceCodeRange { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -119,7 +119,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
         public LSLBinaryOperationType Operation { get; private set; }
-        public string OperationString { get; }
+        public string OperationString { get; private set; }
 
         ILSLReadOnlyExprNode ILSLBinaryExpressionNode.LeftExpression
         {
@@ -170,7 +170,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
-        public LSLType Type { get; }
+        public LSLType Type { get; private set; }
 
 
         public LSLExpressionType ExpressionType

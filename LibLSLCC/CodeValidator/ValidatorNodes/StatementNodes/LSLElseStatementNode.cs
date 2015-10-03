@@ -95,13 +95,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return Code.ConstantJumps; }
         }
 
-        public LSLCodeScopeNode Code { get; }
+        public LSLCodeScopeNode Code { get; private set; }
         internal LSLParser.ElseStatementContext ParserContext { get; private set; }
-        public LSLSourceCodeRange ElseKeywordSourceCodeRange { get; }
+        public LSLSourceCodeRange ElseKeywordSourceCodeRange { get; private set; }
 
         #region ILSLBranchStatementNode Members
 
-        public bool IsConstantBranch { get; }
+        public bool IsConstantBranch { get; private set; }
 
         #endregion
 
@@ -142,7 +142,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         #region ILSLTreeNode Members
 
         public ILSLSyntaxTreeNode Parent { get; set; }
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public bool HasErrors { get; set; }

@@ -63,8 +63,8 @@ namespace LibraryDataScrapingTools
 
         public ILSLMainLibraryDataProvider Left { get; set; }
         public ILSLMainLibraryDataProvider Right { get; set; }
-        public LSLXmlLibraryDataProvider NotInLeft { get; }
-        public LSLXmlLibraryDataProvider NotInRight { get; }
+        public LSLXmlLibraryDataProvider NotInLeft { get; private set; }
+        public LSLXmlLibraryDataProvider NotInRight { get; private set; }
 
         private void DiffFunctions()
         {

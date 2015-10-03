@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             IsSingleBlockStatement = isSingleBlockStatement;
         }
 
-        internal LSLParser.CodeStatementContext ParserContext { get; }
+        internal LSLParser.CodeStatementContext ParserContext { get; private set; }
         public bool IsSingleBlockStatement { get; private set; }
         public ILSLCodeStatement ReturnPath { get; set; }
         public ILSLSyntaxTreeNode Parent { get; set; }

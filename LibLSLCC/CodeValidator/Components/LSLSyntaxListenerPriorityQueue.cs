@@ -67,8 +67,8 @@ namespace LibLSLCC.CodeValidator.Components
             SyntaxWarningListener = invokeWarningsOn;
         }
 
-        public ILSLSyntaxErrorListener SyntaxErrorListener { get; }
-        public ILSLSyntaxWarningListener SyntaxWarningListener { get; }
+        public ILSLSyntaxErrorListener SyntaxErrorListener { get; private set; }
+        public ILSLSyntaxWarningListener SyntaxWarningListener { get; private set; }
 
         void ILSLSyntaxErrorListener.GrammarLevelSyntaxError(int line, int column, string message)
         {

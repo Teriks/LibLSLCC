@@ -79,13 +79,18 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private readonly Stack<bool> _singleBlockStatementTrackingStack = new Stack<bool>();
 
+        private Dictionary<string, LSLStateScopeNode> _definedStates = new Dictionary<string, LSLStateScopeNode>();
+        private Dictionary<string, LSLPreDefinedFunctionSignature> _functionDefinitions = new Dictionary<string, LSLPreDefinedFunctionSignature>();
+        private Dictionary<string, LSLVariableDeclarationNode> _globalVariables = new Dictionary<string, LSLVariableDeclarationNode>();
+
         public LSLVisitorScopeTracker(ILSLValidatorServiceProvider validatorServiceProvider)
         {
+
             ValidatorServiceProvider = validatorServiceProvider;
         }
 
         public ulong CurrentScopeId { get; private set; }
-        public ILSLValidatorServiceProvider ValidatorServiceProvider { get; }
+        public ILSLValidatorServiceProvider ValidatorServiceProvider { get; private set; }
 
         public bool InSingleStatementBlock
         {
@@ -100,14 +105,23 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
         }
 
-        public Dictionary<string, LSLStateScopeNode> DefinedStates { get; } =
-            new Dictionary<string, LSLStateScopeNode>();
+        public Dictionary<string, LSLStateScopeNode> DefinedStates
+        {
+            get { return _definedStates; }
+            private set { _definedStates = value; }
+        }
 
-        public Dictionary<string, LSLPreDefinedFunctionSignature> FunctionDefinitions { get; } =
-            new Dictionary<string, LSLPreDefinedFunctionSignature>();
+        public Dictionary<string, LSLPreDefinedFunctionSignature> FunctionDefinitions
+        {
+            get { return _functionDefinitions; }
+            private set { _functionDefinitions = value; }
+        }
 
-        public Dictionary<string, LSLVariableDeclarationNode> GlobalVariables { get; } =
-            new Dictionary<string, LSLVariableDeclarationNode>();
+        public Dictionary<string, LSLVariableDeclarationNode> GlobalVariables
+        {
+            get { return _globalVariables; }
+            private set { _globalVariables = value; }
+        }
 
         public bool InsideEventHandlerBody
         {

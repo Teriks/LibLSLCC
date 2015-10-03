@@ -95,8 +95,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
 
         internal LSLParser.WhileLoopContext ParserContext { get; private set; }
         public bool IsSingleBlockStatement { get; private set; }
-        public ILSLExprNode ConditionExpression { get; }
-        public LSLCodeScopeNode Code { get; }
+        public ILSLExprNode ConditionExpression { get; private set; }
+        public LSLCodeScopeNode Code { get; private set; }
         public ILSLCodeStatement ReturnPath { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -131,9 +131,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         public int StatementIndex { get; set; }
         public bool IsLastStatementInScope { get; set; }
         public bool IsDeadCode { get; set; }
-        public LSLSourceCodeRange WhileKeywordSourceCodeRange { get; }
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        public LSLSourceCodeRange WhileKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
 
         public static
             LSLWhileLoopNode GetError(LSLSourceCodeRange sourceRange)
@@ -156,7 +156,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
 
         public bool HasErrors { get; set; }
 
-        public LSLSourceCodeRange SourceCodeRange { get; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

@@ -78,8 +78,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             ResultType = resultType;
         }
 
-        public LSLType ResultType { get; }
-        public bool IsValid { get; }
+        public LSLType ResultType { get; private set; }
+        public bool IsValid { get; private set; }
 
         public bool Equals(LSLExpressionValidatorResult other)
         {
