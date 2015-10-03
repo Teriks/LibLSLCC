@@ -51,7 +51,7 @@ and the project will be ignored when you try to build.
  
 If you only wish to build the LibLSLCC library, you can go to Build -> Configuration Manager in Visual Studios and uncheck 'Build'
 next to every project in the solution besides LibLSLCC.  You must first set the active solution configuration to the desired build
-type (Release or Debug), and the active solution platform to the desired architecture before doing this, so that the settings acutally
+type (Release or Debug), and the active solution platform to the desired architecture before doing this, so that the settings actually
 apply to the type of build you want.
  
 
