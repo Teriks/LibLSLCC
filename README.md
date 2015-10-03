@@ -62,15 +62,11 @@ apply to the type of build you want.
 Java is also required when building on *Nix platforms so that the ANTRL 4 tool can run.  Make sure you have the latest
 version of Java available for your distribution installed and that it is runnable from the command line.
  
-Only the LibLSLCC, lslcc_cmd and LibraryDataScrapingTools projects are buildable on Mono.
+Only the LibLSLCC, lslcc_cmd and LibraryDataScrapingTools projects are buildable on Mono and the MonoDevelop-LibLSLCC.sln includes
+only these projects for convenience.
  
-You can open the provided Visual Studio solution on Linux using the latest version of MonoDevelop.
-You will need to unload or remove the LibLSLCCEditor, LSLCCEditor.CompletionUI and LSLCCEditorInstaller projects before building
-the solution with MonoDevelop as they will not build.  This is because the editor is built using the WPF UI Framework which currently
-has no implementation in Mono, and the installer is Windows MSI based.
- 
-MonoDevelop will complain some about trying to load the LSLCCEditorInstaller project, but you can just click through the error and then
-remove or unload the project as well as the other incompatible projects from the solution before building.
+You can open the provided MonoDevelop-LibLSLCC.sln solution on Linux using the latest version of MonoDevelop,
+Or you can build it from the command line using the xbuild command.
  
 Other than some of the projects in the solution being un-buildable under Mono, the build on *Nix platforms behaves the exact same way
-under XBuild as it does under MSBuild on Windows.
+under xbuild/monodevelop as it does under MSBuild on Windows.
