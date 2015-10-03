@@ -248,21 +248,21 @@
     <None Include="LSLParser\LSL.g4">
       <CustomToolNamespace>LibLSLCC</CustomToolNamespace>
       <ForceAtn>False</ForceAtn>
+     
     </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvider.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>cd $(ProjectDir)
-cscript.exe build_parser.vbs</PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+
+
+  <Target Name="BeforeBuild" Outputs="$(ProjectDir)/LSLParser/LSLParser.cs;$(ProjectDir)/LSLParser/LSLVisitor.cs;$(ProjectDir)/LSLParser/LSLListener.cs;$(ProjectDir)/LSLParser/LSLLexer.cs;$(ProjectDir)/LSLParser/LSLLexer.tokens;$(ProjectDir)/LSLParser/LSL.tokens;$(ProjectDir)/LSLParser/LSLBaseVisitor.cs;$(ProjectDir)/LSLParser/LSLBaseListener.cs;">
+    <Exec Command="java -classpath $(ProjectDir)/antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC -o $(ProjectDir)/LSLParser $(ProjectDir)/LSLParser/LSL.g4">
+
+    </Exec>
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  -->
+ 
 </Project>
