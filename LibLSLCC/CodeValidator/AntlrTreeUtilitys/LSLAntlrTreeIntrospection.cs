@@ -57,27 +57,27 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
             {
                 if (context.Parent.Parent is LSLParser.IfStatementContext)
                 {
-                    return LSLCodeScopeType.IfCodeRoot;
+                    return LSLCodeScopeType.If;
                 }
                 if (context.Parent.Parent is LSLParser.ElseIfStatementContext)
                 {
-                    return LSLCodeScopeType.ElseIfCodeRoot;
+                    return LSLCodeScopeType.ElseIf;
                 }
                 if (context.Parent.Parent is LSLParser.ElseStatementContext)
                 {
-                    return LSLCodeScopeType.ElseCodeRoot;
+                    return LSLCodeScopeType.Else;
                 }
                 if (context.Parent.Parent is LSLParser.DoLoopContext)
                 {
-                    return LSLCodeScopeType.DoLoopCodeRoot;
+                    return LSLCodeScopeType.DoLoop;
                 }
                 if (context.Parent.Parent is LSLParser.WhileLoopContext)
                 {
-                    return LSLCodeScopeType.WhileLoopCodeRoot;
+                    return LSLCodeScopeType.WhileLoop;
                 }
                 if (context.Parent.Parent is LSLParser.ForLoopContext)
                 {
-                    return LSLCodeScopeType.ForLoopCodeRoot;
+                    return LSLCodeScopeType.ForLoop;
                 }
             }
             else
@@ -99,40 +99,40 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
             {
                 if (context.Parent.Parent is LSLParser.IfStatementContext)
                 {
-                    return LSLCodeScopeType.IfCodeRoot;
+                    return LSLCodeScopeType.If;
                 }
                 if (context.Parent.Parent is LSLParser.ElseIfStatementContext)
                 {
-                    return LSLCodeScopeType.ElseIfCodeRoot;
+                    return LSLCodeScopeType.ElseIf;
                 }
                 if (context.Parent.Parent is LSLParser.ElseStatementContext)
                 {
-                    return LSLCodeScopeType.ElseCodeRoot;
+                    return LSLCodeScopeType.Else;
                 }
                 if (context.Parent.Parent is LSLParser.DoLoopContext)
                 {
-                    return LSLCodeScopeType.DoLoopCodeRoot;
+                    return LSLCodeScopeType.DoLoop;
                 }
                 if (context.Parent.Parent is LSLParser.WhileLoopContext)
                 {
-                    return LSLCodeScopeType.WhileLoopCodeRoot;
+                    return LSLCodeScopeType.WhileLoop;
                 }
                 if (context.Parent.Parent is LSLParser.ForLoopContext)
                 {
-                    return LSLCodeScopeType.ForLoopCodeRoot;
+                    return LSLCodeScopeType.ForLoop;
                 }
             }
             else if (context.Parent is LSLParser.FunctionDeclarationContext)
             {
-                return LSLCodeScopeType.FunctionCodeRoot;
+                return LSLCodeScopeType.Function;
             }
             else if (context.Parent is LSLParser.EventHandlerContext)
             {
-                return LSLCodeScopeType.EventHandlerCodeRoot;
+                return LSLCodeScopeType.EventHandler;
             }
             else if (context.Parent is LSLParser.CodeStatementContext)
             {
-                return LSLCodeScopeType.StatementBlockRoot;
+                return LSLCodeScopeType.AnonymousBlock;
             }
 
             throw new InvalidOperationException(

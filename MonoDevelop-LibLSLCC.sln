@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibLSLCC", "LibLSLCC\LibLSLCC.csproj", "{19F2CAF5-7C57-4A11-8AA3-DFD58F7AE289}"
@@ -26,6 +26,7 @@ Global
 		{19F2CAF5-7C57-4A11-8AA3-DFD58F7AE289}.Release|x86.ActiveCfg = Release|x86
 		{19F2CAF5-7C57-4A11-8AA3-DFD58F7AE289}.Release|x86.Build.0 = Release|x86
 		{896F62B7-9A0F-40AE-B1D2-44167585D05E}.Debug|x64.ActiveCfg = Debug|x64
+		{896F62B7-9A0F-40AE-B1D2-44167585D05E}.Debug|x64.Build.0 = Debug|x64
 		{896F62B7-9A0F-40AE-B1D2-44167585D05E}.Debug|x86.ActiveCfg = Debug|x86
 		{896F62B7-9A0F-40AE-B1D2-44167585D05E}.Debug|x86.Build.0 = Debug|x86
 		{896F62B7-9A0F-40AE-B1D2-44167585D05E}.Release|x64.ActiveCfg = Release|x64
@@ -33,6 +34,7 @@ Global
 		{896F62B7-9A0F-40AE-B1D2-44167585D05E}.Release|x86.ActiveCfg = Release|x86
 		{896F62B7-9A0F-40AE-B1D2-44167585D05E}.Release|x86.Build.0 = Release|x86
 		{E87079FD-D178-48A0-B761-68169760B8C4}.Debug|x64.ActiveCfg = Debug|x64
+		{E87079FD-D178-48A0-B761-68169760B8C4}.Debug|x64.Build.0 = Debug|x64
 		{E87079FD-D178-48A0-B761-68169760B8C4}.Debug|x86.ActiveCfg = Debug|x86
 		{E87079FD-D178-48A0-B761-68169760B8C4}.Debug|x86.Build.0 = Debug|x86
 		{E87079FD-D178-48A0-B761-68169760B8C4}.Release|x64.ActiveCfg = Release|x64
@@ -40,10 +42,10 @@ Global
 		{E87079FD-D178-48A0-B761-68169760B8C4}.Release|x86.ActiveCfg = Release|x86
 		{E87079FD-D178-48A0-B761-68169760B8C4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = LibLSLCC\LibLSLCC.csproj
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = LibLSLCC\LibLSLCC.csproj
 	EndGlobalSection
 EndGlobal

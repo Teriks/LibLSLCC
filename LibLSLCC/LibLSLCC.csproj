@@ -94,7 +94,7 @@
     <Compile Include="CodeValidator\Components\LSLXMLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultSyntaxErrorListener.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultSyntaxWarningListener.cs" />
-    <Compile Include="CodeValidator\Enums\LSLCodeScopeNodeType.cs" />
+    <Compile Include="CodeValidator\Enums\LSLCodeScopeType.cs" />
     <Compile Include="CodeValidator\Enums\LSLType.cs" />
     <Compile Include="CodeValidator\Enums\LSLExpressionType.cs" />
     <Compile Include="CodeValidator\Enums\LSLRotationComponent.cs" />
@@ -248,21 +248,16 @@
     <None Include="LSLParser\LSL.g4">
       <CustomToolNamespace>LibLSLCC</CustomToolNamespace>
       <ForceAtn>False</ForceAtn>
-     
     </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvider.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
-
   <Target Name="BeforeBuild" Outputs="$(ProjectDir)LSLParser\LSLParser.cs;$(ProjectDir)LSLParser\LSLVisitor.cs;$(ProjectDir)LSLParser\LSLListener.cs;$(ProjectDir)LSLParser\LSLLexer.cs;$(ProjectDir)LSLParser\LSLLexer.tokens;$(ProjectDir)LSLParser\LSL.tokens;$(ProjectDir)LSLParser\LSLBaseVisitor.cs;$(ProjectDir)LSLParser\LSLBaseListener.cs;">
     <Exec Command="java -classpath $(ProjectDir)antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC -o $(ProjectDir)LSLParser $(ProjectDir)LSLParser\LSL.g4">
-
     </Exec>
   </Target>
   <Target Name="AfterBuild">
   </Target>
- 
 </Project>

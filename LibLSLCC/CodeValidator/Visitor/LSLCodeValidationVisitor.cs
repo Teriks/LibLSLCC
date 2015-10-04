@@ -1301,12 +1301,12 @@ namespace LibLSLCC.CodeValidator.Visitor
             result.EndScope();
 
 
-            if (ScopingManager.CurrentCodeScopeType == LSLCodeScopeType.FunctionCodeRoot)
+            if (ScopingManager.CurrentCodeScopeType == LSLCodeScopeType.Function)
             {
                 WarnUnusedVariablesInFunction();
                 result.HasErrors = ValidateFunctionReturnPath(result) || result.HasErrors;
             }
-            else if (ScopingManager.CurrentCodeScopeType == LSLCodeScopeType.EventHandlerCodeRoot)
+            else if (ScopingManager.CurrentCodeScopeType == LSLCodeScopeType.EventHandler)
             {
                 WarnUnusedVariablesInScope();
                 result.HasErrors = ValidateEventHandlerReturnPath(result) || result.HasErrors;

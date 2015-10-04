@@ -995,6 +995,24 @@ private static class UTILITIES
 
             _indentLevel++;
 
+            if (Settings.InsertCoOpTerminationCalls)
+            {
+                //if the co-op termination setting is enabled, insert call stubs
+                //at the top of user defined functions, event handlers, and loop constructs
+                switch (node.CodeScopeType)
+                {
+                    case LSLCodeScopeType.EventHandler:
+                    case LSLCodeScopeType.Function:
+                    case LSLCodeScopeType.DoLoop:
+                    case LSLCodeScopeType.WhileLoop:
+                    case LSLCodeScopeType.ForLoop:
+
+                        Writer.WriteLine(GenIndent() + Settings.CoOpTerminationFunctionCall + ";");
+                        break;
+                }
+            }
+
+          
             foreach (var statement in node.CodeStatements)
             {
                 Visit(statement);
@@ -1363,8 +1381,15 @@ private static class UTILITIES
         {
             if (node.IsDeadCode) return false;
 
-            Writer.Write(GenIndent() + "LSLLabel_" + node.LabelName + ":" +
-                         (node.IsLastStatementInScope ? ";" : ""));
+            if (Settings.InsertCoOpTerminationCalls)
+            {
+                Writer.WriteLine(GenIndent() + "LSLLabel_" + node.LabelName + ":" + Settings.CoOpTerminationFunctionCall + ";");
+            }
+            else
+            {
+                Writer.Write(GenIndent() + "LSLLabel_" + node.LabelName + ":" +
+                             (node.IsLastStatementInScope ? ";" : ""));
+            }
 
             return false;
         }

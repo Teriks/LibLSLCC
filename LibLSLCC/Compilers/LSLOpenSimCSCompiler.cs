@@ -63,14 +63,61 @@ namespace LibLSLCC.Compilers
             GeneratedClassInherit = null;
             GeneratedConstructorDefinition = null;
             LibraryData = libraryData;
+            InsertCoOpTerminationCalls = false;
+            CoOpTerminationFunctionCall = "opensim_reserved_CheckForCoopTermination()";
         }
 
+        /// <summary>
+        /// The call signature to use for co-op termination calls when InsertCoOpTerminationCalls is set to true
+        /// it defaults to "opensim_reserved_CheckForCoopTermination()"
+        /// 
+        /// Note that you should not add a semi-colon to the end of the signature string.
+        /// </summary>
+        public string CoOpTerminationFunctionCall { get; set; }
+
+        /// <summary>
+        /// If this is set to true, the function signature string specified by CoOpTerminationFunctionCall will be inserted
+        /// (called) at the top of user defined functions, state events, for loops, while loops, do while loops and immediately
+        /// after defined labels in generated code.
+        /// </summary>
+        public bool InsertCoOpTerminationCalls { get; set; }
+
+        /// <summary>
+        /// Whether or not to generate a class around the generated code, defaults to false.
+        /// </summary>
         public bool GenerateClass { get; set; }
+
+        /// <summary>
+        /// This string should contain the module imports you want to appear at the top of the generated code, the string will be inserted verbatim.
+        /// </summary>
         public string GeneratedUsingSection { get; set; }
+
+        /// <summary>
+        /// The name of the namespace the class should reside in if GenerateClass is set to true.
+        /// </summary>
         public string GenerateClassNamespace { get; set; }
+
+        /// <summary>
+        /// The name of the class around the generated code if GeneratedClass is set to true.
+        /// </summary>
         public string GeneratedClassName { get; set; }
+
+        /// <summary>
+        /// The name of the class the generated class should inherit from if GenerateClass is set to true, or null/empty if you don't want the
+        /// generated class to derive from anything.
+        /// </summary>
         public string GeneratedClassInherit { get; set; }
+
+
+        /// <summary>
+        /// The constructor definition to be inserted into the generated class if GenerateClass is set to true, this string is copied verbatim.
+        /// </summary>
         public string GeneratedConstructorDefinition { get; set; }
+
+        /// <summary>
+        /// The library data provider to use for the compilation process, it is used to lookup library function calls
+        /// and determine if the use of ModInvoke is necessary to invoke a particular function from the source script.
+        /// </summary>
         public ILSLMainLibraryDataProvider LibraryData { get; private set; }
 
         public static LSLOpenSimCSCompilerSettings OpenSimServerSideDefault(ILSLMainLibraryDataProvider libraryData)
@@ -79,9 +126,9 @@ namespace LibLSLCC.Compilers
             {
                 GenerateClass = true,
                 GenerateClassNamespace = "SecondLife",
-                GeneratedClassName = "Script",
-                GeneratedClassInherit = "OpenSim.Region.ScriptEngine.Shared.ScriptBase.ScriptBaseClass",
-                GeneratedConstructorDefinition = "public Script() : base() {}",
+                GeneratedClassName = "XEngineScript",
+                GeneratedClassInherit = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
+                GeneratedConstructorDefinition = "public XEngineScript(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle) {}",
                 GeneratedUsingSection = "using OpenSim.Region.ScriptEngine.Shared;\r\nusing System.Collections.Generic;"
             };
 
