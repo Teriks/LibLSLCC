@@ -386,6 +386,9 @@ private static class UTILITIES
                 {LSLType.Rotation, "modInvokeR"}
             };
 
+
+        private bool _inModInvokeParameters;
+
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
             var libDataNode =
@@ -402,7 +405,10 @@ private static class UTILITIES
 
                 Writer.Write(modInvokeFunction + "(\"" + node.Name + "\"" + afterName);
 
+
+                _inModInvokeParameters = true;
                 VisitFunctionCallParameters(node.ParameterListNode);
+                _inModInvokeParameters = false;
 
                 Writer.Write(")");
             }
@@ -425,6 +431,8 @@ private static class UTILITIES
             }
             return false;
         }
+
+
 
         #endregion
 
@@ -583,7 +591,7 @@ private static class UTILITIES
 
         public override bool VisitFloatLiteral(ILSLFloatLiteralNode node)
         {
-            var box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
+            var box = (!(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode)) || _inModInvokeParameters;
 
             if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
             {
@@ -620,7 +628,7 @@ private static class UTILITIES
 
         public override bool VisitIntegerLiteral(ILSLIntegerLiteralNode node)
         {
-            var box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
+            var box = (!(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode)) || _inModInvokeParameters;
 
             if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
             {
@@ -690,7 +698,7 @@ private static class UTILITIES
 
         public override bool VisitStringLiteral(ILSLStringLiteralNode node)
         {
-            var box = !(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode);
+            var box = (!(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode)) || _inModInvokeParameters;
 
             if (box)
             {
