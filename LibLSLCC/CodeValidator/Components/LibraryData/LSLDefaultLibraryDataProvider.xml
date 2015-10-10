@@ -2455,6 +2455,8 @@
     <Parameter Name="pos2" Type="Vector" />
     <DocumentationString>Subdivides a parcel into two adjacent parcels within the same region</DocumentationString>
   </LibraryFunction>
+  
+  <!--
   <LibraryFunction Name="osParseJSON" ReturnType="Void" Subsets="ossl">
     <Parameter Name="JSON" Type="String" />
     <DocumentationString>Returns a hashtable containing the structured JSON contents</DocumentationString>
@@ -2462,7 +2464,8 @@
   <LibraryFunction Name="osParseJSONNew" ReturnType="Void" Subsets="ossl">
     <Parameter Name="JSON" Type="String" />
     <DocumentationString>Returns a hashtable containing the structured JSON contents</DocumentationString>
-  </LibraryFunction>
+  </LibraryFunction> -->
+  
   <LibraryFunction Name="osRegexIsMatch" ReturnType="Integer" Subsets="ossl">
     <Parameter Name="input" Type="String" />
     <Parameter Name="pattern" Type="String" />

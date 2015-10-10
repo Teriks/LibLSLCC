@@ -285,12 +285,13 @@ namespace LibLSLCC.CodeValidator.Components
 
         public bool ValidRotationContent(ILSLExprNode type)
         {
-            return !type.HasErrors && (type.Type == LSLType.Float || type.Type == LSLType.Integer);
+            return !type.HasErrors &&  (type.Type == LSLType.Float || type.Type == LSLType.Integer);
         }
 
         public bool ValidListContent(ILSLExprNode type)
         {
-            return !type.HasErrors && type.Type != LSLType.List;
+            //check for void required, we do not want functions returning void in a list
+            return !type.HasErrors && type.Type != LSLType.List && type.Type != LSLType.Void;
         }
 
         public bool ValidBooleanConditional(ILSLExprNode type)
