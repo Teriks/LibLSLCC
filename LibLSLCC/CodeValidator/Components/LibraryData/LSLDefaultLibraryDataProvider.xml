@@ -2734,9 +2734,7 @@
   <LibraryFunction Name="lsClearWindlightScene" ReturnType="Void" Subsets="os-lightshare">
     <DocumentationString>Remove Windlight settings from a region</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="physGetEngineType" ReturnType="String" Subsets="os-bullet-physics">
-    <DocumentationString>Get physics engine type</DocumentationString>
-  </LibraryFunction>
+
   <LibraryFunction Name="modInvokeN" ReturnType="Void" Subsets="os-mod-api">
     <Parameter Name="fname" Type="String" />
     <Parameter Name="parms" Type="Void" Variadic="true" />
@@ -5311,31 +5309,41 @@
     <DocumentationString>Bulletsim;Z angular axis</DocumentationString>
   </LibraryConstant>
 
-
+  
+  <LibraryFunction Name="physGetEngineType" ReturnType="String" Subsets="os-bullet-physics">
+    <DocumentationString>Get physics engine type</DocumentationString>
+    <Property Name="ModInvoke" Value="true"/>
+  </LibraryFunction>
   <LibraryFunction Name="physSetLinksetType" ReturnType="Integer" Subsets="os-bullet-physics">
     <Parameter Name="linksetType" Type="Integer" />
     <DocumentationString>:Bulletsim: Set linkset type</DocumentationString>
+    <Property Name="ModInvoke" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="physGetLinksetType" ReturnType="Integer" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="ModInvoke" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="physChangeLinkType" ReturnType="Integer" Subsets="os-bullet-physics">
     <Parameter Name="linkNum" Type="Integer" />
     <Parameter Name="typeCode" Type="Integer" />
     <DocumentationString />
+    <Property Name="ModInvoke" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="physGetLinkType" ReturnType="Integer" Subsets="os-bullet-physics">
     <Parameter Name="linkNum" Type="Integer" />
     <DocumentationString />
+    <Property Name="ModInvoke" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="physChangeLinkFixed" ReturnType="Integer" Subsets="os-bullet-physics">
     <Parameter Name="linkNum" Type="Integer" />
     <DocumentationString />
+    <Property Name="ModInvoke" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="physChangeLinkParams" ReturnType="Integer" Subsets="os-bullet-physics">
     <Parameter Name="linkNum" Type="Integer" />
     <Parameter Name="parms" Type="List" />
     <DocumentationString>Bulletsim: Change link params</DocumentationString>
+    <Property Name="ModInvoke" Value="true"/>
   </LibraryFunction>
 
 
