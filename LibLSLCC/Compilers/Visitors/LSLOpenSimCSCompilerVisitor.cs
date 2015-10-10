@@ -134,7 +134,6 @@ private static class UTILITIES
             _creatingGlobalsClass = false;
             _indentLevel = 0;
             _binOpsUsed.Clear();
-            _modInvokeCache.Clear();
         }
 
         #region Expressions
@@ -388,8 +387,6 @@ private static class UTILITIES
             };
 
 
-        //a cache of function names for which ModInvoke is required
-        readonly HashSet<string> _modInvokeCache = new HashSet<string>(); 
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
@@ -408,7 +405,6 @@ private static class UTILITIES
                 Writer.Write(modInvokeFunction + "(\"" + node.Name + "\"" + afterName);
 
 
-                _modInvokeCache.Add(libDataNode.Name);
                 VisitFunctionCallParameters(node.ParameterListNode);
 
                 Writer.Write(")");
