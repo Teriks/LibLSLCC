@@ -108,7 +108,7 @@ namespace LibLSLCC.CodeValidator.Components
 
         public string SignatureString
         {
-            get { return LSLTypeTools.ToLSLTypeString(Type) + " " + Name + " = " + ValueString; }
+            get { return Type.ToLSLTypeString() + " " + Name + " = " + ValueString; }
         }
 
         public string DocumentationString { get; set; }

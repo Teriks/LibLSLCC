@@ -97,6 +97,7 @@ namespace LibLSLCC.CodeValidator.Components
             get { return _properties; }
         }
 
+
         public string DocumentationString { get; set; }
 
         public string SignatureAndDocumentation
@@ -380,6 +381,23 @@ namespace LibLSLCC.CodeValidator.Components
             var x = new LSLLibraryFunctionSignature();
             x.ReadXml(fragment);
             return x;
+        }
+    }
+
+
+
+    public static class  LSLLibraryFunctionSignatureExtensions
+    {
+        public static bool IsDeprecated(this LSLLibraryFunctionSignature signature)
+        {
+            string deprecatedStatus = null;
+            return (signature.Properties.TryGetValue("Deprecated", out deprecatedStatus) || signature.Properties.TryGetValue("deprecated",out deprecatedStatus)) && deprecatedStatus.ToLower()=="true";
+        }
+
+        public static bool UsesOsModInvoke(this LSLLibraryFunctionSignature signature)
+        {
+            string modInvokeStatus = null;
+            return (signature.Properties.TryGetValue("ModInvoke", out modInvokeStatus) || signature.Properties.TryGetValue("modinvoke", out modInvokeStatus)) && modInvokeStatus.ToLower() == "true";
         }
     }
 }

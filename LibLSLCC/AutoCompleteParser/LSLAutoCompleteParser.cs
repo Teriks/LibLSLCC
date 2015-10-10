@@ -585,7 +585,7 @@ namespace LibLSLCC.AutoCompleteParser
             public string Name { get; private set; }
             public string ReturnType { get; private set; }
 
-            public string Signature
+            public string FullSignature
             {
                 get
                 {
@@ -595,13 +595,23 @@ namespace LibLSLCC.AutoCompleteParser
                         sig += ReturnType + " ";
                     }
 
-                    sig += Name + "(";
+                    sig += ParametersSignature + ";";
+
+                    return sig;
+                }
+            }
+
+            public string ParametersSignature
+            {
+                get
+                {
+                    var sig = "()";
+                    
 
                     if (Parameters.Count > 0)
                     {
-                        sig += string.Join(", ", Parameters.Select(x => x.Type + " " + x.Name));
+                        sig = string.Join(", ", Parameters.Select(x => x.Type + " " + x.Name));
                     }
-                    sig += ");";
 
                     return sig;
                 }

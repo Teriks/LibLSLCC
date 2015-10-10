@@ -138,7 +138,7 @@ namespace LibLSLCC.CodeValidator.Enums
         /// <param name="type">LSLType to convert.</param>
         /// <returns>LSL type string representation.</returns>
         /// <exception cref="ArgumentException">If LSLType is LSLType.Void.</exception>
-        public static string ToLSLTypeString(LSLType type)
+        public static string ToLSLTypeString(this LSLType type)
         {
             if (type == LSLType.Void)
             {

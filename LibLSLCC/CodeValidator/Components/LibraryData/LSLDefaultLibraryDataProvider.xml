@@ -125,6 +125,7 @@
   <LibraryFunction Name="llCloud" ReturnType="Float" Subsets="lsl,os-lsl">
     <Parameter Name="offset" Type="Vector" />
     <DocumentationString>Returns the cloud density at the object position + offset</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llCollisionFilter" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="name" Type="String" />
@@ -366,6 +367,10 @@
   </LibraryFunction>
   <LibraryFunction Name="llGetAttached" ReturnType="Integer" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the object's attachment point, or 0 if not attached</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llGetAttachedList" ReturnType="List" Subsets="lsl">
+    <Parameter Name="user_id" Type="Key" />
+    <DocumentationString>Returns a list of keys of all visible (not HUD) attachments on the avatar identified by the user_id argument</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetBoundingBox" ReturnType="List" Subsets="lsl,os-lsl">
     <Parameter Name="object" Type="Key" />
@@ -806,7 +811,7 @@
   </LibraryFunction>
   <LibraryFunction Name="llIntegerToBase64" ReturnType="String" Subsets="lsl,os-lsl">
     <Parameter Name="number" Type="Integer" />
-    <DocumentationString> Returns a string that is a Base64 big endian encode of number</DocumentationString>
+    <DocumentationString>Returns a string that is a Base64 big endian encode of number</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llJson2List" ReturnType="List" Subsets="lsl">
     <Parameter Name="src" Type="String" />
@@ -997,6 +1002,7 @@
     <Parameter Name="texture" Type="String" />
     <Parameter Name="offset" Type="Vector" />
     <DocumentationString>Makes a round explosion of particles</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llMakeFire" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="particles" Type="Integer" />
@@ -1007,6 +1013,7 @@
     <Parameter Name="texture" Type="String" />
     <Parameter Name="offset" Type="Vector" />
     <DocumentationString>Makes fire like particles</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llMakeFountain" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="particles" Type="Integer" />
@@ -1019,6 +1026,7 @@
     <Parameter Name="offset" Type="Vector" />
     <Parameter Name="bounce_offset" Type="Float" />
     <DocumentationString>Makes a fountain of particles</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llMakeSmoke" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="particles" Type="Integer" />
@@ -1029,6 +1037,7 @@
     <Parameter Name="texture" Type="String" />
     <Parameter Name="offset" Type="Vector" />
     <DocumentationString>Makes smoke like particles</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llManageEstateAccess" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="action" Type="Integer" />
@@ -1150,6 +1159,7 @@
   <LibraryFunction Name="llPointAt" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="pos" Type="Vector" />
     <DocumentationString>Makes agent that owns object point at pos</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llPow" ReturnType="Float" Subsets="lsl,os-lsl">
     <Parameter Name="base" Type="Float" />
@@ -1178,6 +1188,7 @@
   </LibraryFunction>
   <LibraryFunction Name="llRefreshPrimURL" ReturnType="Void" Subsets="lsl,os-lsl">
     <DocumentationString>Reloads the web page shown on the sides of the object</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llRegionSay" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="channel" Type="Integer" />
@@ -1193,6 +1204,7 @@
   <LibraryFunction Name="llReleaseCamera" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="avatar" Type="Key" />
     <DocumentationString>Returns camera to agent avatar</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llReleaseControls" ReturnType="Void" Subsets="lsl,os-lsl">
     <DocumentationString>Stops taking inputs that were taken with llTakeControls</DocumentationString>
@@ -1210,6 +1222,7 @@
   </LibraryFunction>
   <LibraryFunction Name="llRemoteDataSetRegion" ReturnType="Void" Subsets="lsl,os-lsl">
     <DocumentationString>DEPRECATED!  Please use llOpenRemoteDataChannel instead.;If an object using remote data channels changes regions, you must call this function to reregister the remote data channels. This call is not needed if the prim does not change regions</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llRemoteLoadScript" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="target" Type="Key" />
@@ -1217,6 +1230,7 @@
     <Parameter Name="running" Type="Integer" />
     <Parameter Name="start_param" Type="Integer" />
     <DocumentationString />
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llRemoteLoadScriptPin" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="target" Type="Key" />
@@ -1619,6 +1633,7 @@
   <LibraryFunction Name="llSetPrimURL" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="url" Type="String" />
     <DocumentationString>Updates the URL for the web page shown on the sides of the object</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llSetRegionPos" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="position" Type="Vector" />
@@ -1748,10 +1763,12 @@
     <Parameter Name="queue" Type="Integer" />
     <Parameter Name="loop" Type="Integer" />
     <DocumentationString>Plays sound at volume and whether it should loop or not</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llSoundPreload" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="sound" Type="String" />
     <DocumentationString>Preloads a sound on viewers within range</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llSqrt" ReturnType="Float" Subsets="lsl,os-lsl">
     <Parameter Name="val" Type="Float" />
@@ -1776,6 +1793,7 @@
   </LibraryFunction>
   <LibraryFunction Name="llStopPointAt" ReturnType="Void" Subsets="lsl,os-lsl">
     <DocumentationString>Stops pointing agent that owns object</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llStopSound" ReturnType="Void" Subsets="lsl,os-lsl">
     <DocumentationString>Stops currently attached sound</DocumentationString>
@@ -1801,6 +1819,7 @@
   <LibraryFunction Name="llTakeCamera" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="avatar" Type="Key" />
     <DocumentationString>Moves avatar's viewpoint to task</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llTakeControls" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="controls" Type="Integer" />
@@ -1940,11 +1959,13 @@
     <Parameter Name="str1" Type="String" />
     <Parameter Name="str2" Type="String" />
     <DocumentationString />
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llXorBase64StringsCorrect" ReturnType="String" Subsets="lsl,os-lsl">
     <Parameter Name="str1" Type="String" />
     <Parameter Name="str2" Type="String" />
     <DocumentationString>Correctly performs an exclusive or on two Base64 strings.;s2 repeats if it is shorter than s1</DocumentationString>
+    <Property Name="Deprecated" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="osAgentSaveAppearance" ReturnType="Key" Subsets="ossl">
     <Parameter Name="agentId" Type="Key" />
@@ -2936,7 +2957,7 @@
     <Parameter Name="id" Type="Key" />
     <Parameter Name="success" Type="Integer" />
     <Parameter Name="data" Type="String" />
-    <DocumentationString> Triggered when L$ is given to task</DocumentationString>
+    <DocumentationString>Triggered when L$ is given to task</DocumentationString>
   </EventHandler>
   <LibraryConstant Name="ACTIVE" Type="Integer" Value="2" Subsets="lsl,os-lsl">
     <DocumentationString>Passed in llSensor library function to look for moving objects</DocumentationString>
@@ -4422,7 +4443,7 @@
     <DocumentationString>Passed in the llSetStatus library function.  If TRUE, object moves physically</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="STATUS_RETURN_AT_EDGE" Type="Integer" Value="256" Subsets="lsl,os-lsl">
-    <DocumentationString> Passed in the llSetStatus library function.  If TRUE, script rezzed objects that reach the edge of the world;are returned rather than killed;STATUS_RETURN_AT_EDGE trumps STATUS_DIE_AT_EDGE if both are set</DocumentationString>
+    <DocumentationString>Passed in the llSetStatus library function.  If TRUE, script rezzed objects that reach the edge of the world;are returned rather than killed;STATUS_RETURN_AT_EDGE trumps STATUS_DIE_AT_EDGE if both are set</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="STATUS_ROTATE_X" Type="Integer" Value="2" Subsets="lsl,os-lsl">
     <DocumentationString>Passed in the llSetStatus library function.  If FALSE, object doesn't rotate around local X axis</DocumentationString>

@@ -43,6 +43,7 @@
 #region Imports
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
@@ -88,9 +89,9 @@ namespace LibLSLCC.Compilers
         public bool GenerateClass { get; set; }
 
         /// <summary>
-        /// This string should contain the module imports you want to appear at the top of the generated code, the string will be inserted verbatim.
+        /// This hashed set should contain all the namespaces that the generated code should import
         /// </summary>
-        public string GeneratedUsingSection { get; set; }
+        public HashSet<string> GeneratedNamespaceImports { get; set; }
 
         /// <summary>
         /// The name of the namespace the class should reside in if GenerateClass is set to true.
@@ -129,7 +130,7 @@ namespace LibLSLCC.Compilers
                 GeneratedClassName = "XEngineScript",
                 GeneratedClassInherit = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
                 GeneratedConstructorDefinition = "public XEngineScript(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle) {}",
-                GeneratedUsingSection = "using OpenSim.Region.ScriptEngine.Shared;\r\nusing System.Collections.Generic;"
+                GeneratedNamespaceImports = new HashSet<string> { "OpenSim.Region.ScriptEngine.Shared","System.Collections.Generic" }
             };
 
             return compilerSettings;
@@ -143,7 +144,8 @@ namespace LibLSLCC.Compilers
                 GenerateClassNamespace = "SecondLife",
                 GeneratedClassName = "LSLScript",
                 GeneratedClassInherit = "LSLScriptBase",
-                GeneratedConstructorDefinition = "public LSLScript() : base() {}"
+                GeneratedConstructorDefinition = "public LSLScript() : base() {}",
+                GeneratedNamespaceImports = new HashSet<string> { "LibLSLCC.LSLRuntime", "System.Collections.Generic" }
             };
 
             return compilerSettings;

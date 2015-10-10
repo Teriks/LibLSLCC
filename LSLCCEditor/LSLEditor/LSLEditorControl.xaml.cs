@@ -41,8 +41,6 @@
 // 
 // 
 
-//#define DEBUG_FASTPARSER
-
 #endregion
 
 #region Imports
@@ -56,6 +54,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
@@ -65,7 +64,6 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
-using LibLSLCC;
 using LibLSLCC.AutoCompleteParser;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
@@ -95,11 +93,18 @@ namespace LSLCCEditor.LSLEditor
         private readonly ToolTip _symbolHoverToolTip = new ToolTip();
 
         private readonly Brush _eventHandlerCompleteColor = new SolidColorBrush(Color.FromRgb(0, 76, 127));
+
         private readonly Brush _globalFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(153, 0, 204));
+
         private readonly Brush _globalVariableCompleteColor = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-        
+
         private readonly Brush _libraryConstantCompleteColor = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+
         private readonly Brush _libraryFunctionCompleteColor = new SolidColorBrush(Color.FromRgb(127, 0, 38));
+
+        private readonly Brush _libraryFunctionDeprecatedCompleteColor = new SolidColorBrush(Color.FromRgb(232, 19, 174));
+
+
         private readonly Brush _localParameterCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 0));
         private readonly Brush _localVariableCompleteColor = new SolidColorBrush(Color.FromRgb(0, 102, 255));
 
@@ -121,7 +126,7 @@ namespace LSLCCEditor.LSLEditor
             ')',
             ';',
             '{',
-            '}' 
+            '}'
         };
 
         private readonly object _userChangingTextLock = new object();
@@ -280,15 +285,15 @@ namespace LSLCCEditor.LSLEditor
         private static void TextPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var t = (LSLEditorControl) dependencyObject;
-            if (!t._userChangingText && t.Editor.Document != null)
-            {
-                t._textPropertyChangingText = true;
-                t.Editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue == null
-                    ? ""
-                    : dependencyPropertyChangedEventArgs.NewValue.ToString();
-                t._textPropertyChangingText = false;
-            }
+            var editor = (LSLEditorControl) dependencyObject;
+
+            if (editor._userChangingText || editor.Editor.Document == null) return;
+
+            editor._textPropertyChangingText = true;
+            editor.Editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue == null
+                ? ""
+                : dependencyPropertyChangedEventArgs.NewValue.ToString();
+            editor._textPropertyChangingText = false;
         }
 
 
@@ -443,6 +448,7 @@ namespace LSLCCEditor.LSLEditor
             return null;
         }
 
+
         private TextSegment GetIdSegmentUnderMouse(TextDocument document, TextViewPosition position)
         {
             try
@@ -483,30 +489,30 @@ namespace LSLCCEditor.LSLEditor
                 var wordHovered = Editor.Document.GetText(hoveredSegment);
 
 
-
-
-                var hoverText = "";
+                TextBlock hoverText = null;
 
 
                 if (LibraryDataProvider.LibraryFunctionExist(wordHovered))
                 {
                     hoverText =
-                        string.Join(Environment.NewLine + Environment.NewLine,
-                            LibraryDataProvider.GetLibraryFunctionSignatures(wordHovered)
-                                .Select(x => x.SignatureAndDocumentation));
+                        CreateDescriptionTextBlock_LibraryFunction(
+                            LibraryDataProvider.GetLibraryFunctionSignatures(wordHovered));
                 }
                 else if (LibraryDataProvider.EventHandlerExist(wordHovered))
                 {
-                    hoverText = LibraryDataProvider.GetEventHandlerSignature(wordHovered).SignatureAndDocumentation;
+                    hoverText =
+                        CreateDescriptionTextBlock_EventHandler(LibraryDataProvider.GetEventHandlerSignature(wordHovered));
                 }
                 else if (LibraryDataProvider.LibraryConstantExist(wordHovered))
                 {
-                    hoverText = LibraryDataProvider.GetLibraryConstantSignature(wordHovered).SignatureAndDocumentation;
+                    hoverText =
+                        CreateDescriptionTextBlock_LibraryConstant(
+                            LibraryDataProvider.GetLibraryConstantSignature(wordHovered));
                 }
                 else
                 {
-                    LSLAutoCompleteParser parser = new LSLAutoCompleteParser();
-                    parser.Parse(new StringReader(this.Editor.Text), hoveredSegment.EndOffset);
+                    var parser = new LSLAutoCompleteParser();
+                    parser.Parse(new StringReader(Editor.Text), hoveredSegment.EndOffset);
 
 
                     LSLAutoCompleteParser.GlobalVariable globalVariable;
@@ -515,28 +521,27 @@ namespace LSLCCEditor.LSLEditor
 
                     if (parser.GlobalFunctionsDictionary.TryGetValue(wordHovered, out globalFunction))
                     {
-                        hoverText = "global user function:\n" + globalFunction.Signature;
+                        hoverText = CreateDescriptionTextBlock_GlobalUserFunction(globalFunction);
                     }
                     else if (parser.GlobalVariablesDictionary.TryGetValue(wordHovered, out globalVariable))
                     {
-                        hoverText = "global variable:\n" + globalVariable.Type + " " + globalVariable.Name + ";";
+                        hoverText = CreateGlobalVariableDescriptionTextBlock(globalVariable);
                     }
                     else if (parser.LocalParametersDictionary.TryGetValue(wordHovered, out localParameter))
                     {
-                        hoverText = "local parameter:\n" + localParameter.Type + " " + localParameter.Name + ";";
+                        hoverText = CreateDescriptionTextBlock_LocalParameter(localParameter);
                     }
                     else
                     {
-
                         var localVar = parser.LocalVariables.LastOrDefault(x => x.Name == wordHovered);
                         if (localVar != null)
                         {
-                            hoverText = "local variable:\n" + localVar.Type + " " + localVar.Name + ";";
+                            hoverText = CreateDescriptionTextBlock_LocalVariable(localVar);
                         }
                     }
                 }
 
-                if (string.IsNullOrWhiteSpace(hoverText))
+                if (hoverText == null)
                 {
                     e.Handled = true;
                     _symbolHoverToolTip.IsOpen = false;
@@ -546,16 +551,11 @@ namespace LSLCCEditor.LSLEditor
                 _symbolHoverToolTip.IsOpen = false;
 
                 _symbolHoverToolTip.PlacementTarget = this; // required for property inheritance
-                _symbolHoverToolTip.Content = new TextBlock
-                {
-                    MaxWidth = 500,
-                    TextWrapping = TextWrapping.Wrap,
-                    Text = hoverText
-                };
+                _symbolHoverToolTip.Content = hoverText;
                 _symbolHoverToolTip.Placement = PlacementMode.Mouse;
                 _symbolHoverToolTip.IsOpen = true;
-                
-                
+
+
                 e.Handled = true;
             }
         }
@@ -729,7 +729,7 @@ namespace LSLCCEditor.LSLEditor
             if (DoAutoDedentOnTextEntering(e, caretOffset)) return;
 
 
-            if ( _validSuggestionPrefixes.Contains(e.Text))
+            if (_validSuggestionPrefixes.Contains(e.Text))
             {
                 lock (_completionLock)
                 {
@@ -833,8 +833,7 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleLibraryFunction = false;
 
-            
- 
+
             foreach (var func in LibraryFunctionNames.Where(x => x.StartsWith(insertedText)).OrderBy(x => x.Length))
             {
                 if (!possibleLibraryFunction)
@@ -844,12 +843,10 @@ namespace LSLCCEditor.LSLEditor
                     possibleLibraryFunction = true;
                 }
 
-                
 
-                var completionData = CreateLSLLibraryFunctionCompletionData(func, fastVarParser);
+                var completionData = CreateCompletionData_LibraryFunction(func, fastVarParser);
                 completionData.Priority = -data.Count;
                 data.Add(completionData);
-
             }
 
             return possibleLibraryFunction;
@@ -864,7 +861,7 @@ namespace LSLCCEditor.LSLEditor
 
             IList<ICompletionData> data = null;
 
-            foreach (var func in LibraryFunctionNames.OrderBy(x=>x.Length))
+            foreach (var func in LibraryFunctionNames.OrderBy(x => x.Length))
             {
                 if (!possibleGlobalFunctions)
                 {
@@ -873,15 +870,13 @@ namespace LSLCCEditor.LSLEditor
                     possibleGlobalFunctions = true;
                 }
 
-                var cdata = CreateLSLLibraryFunctionCompletionData(func, fastVarParser);
+                var cdata = CreateCompletionData_LibraryFunction(func, fastVarParser);
 
                 cdata.Priority = -CurrentCompletionWindow.CompletionList.CompletionData.Count;
                 data.Add(cdata);
-
             }
             return possibleGlobalFunctions;
         }
-
 
 
         private bool TryCompletionForLibraryConstant(string insertedText, LSLAutoCompleteParser fastVarParser,
@@ -893,7 +888,8 @@ namespace LSLCCEditor.LSLEditor
             var possibleConstant = false;
 
 
-            foreach (var sig in ConstantSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
+            foreach (
+                var sig in ConstantSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x => x.Name.Length))
             {
                 if (!possibleConstant)
                 {
@@ -903,7 +899,7 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                var cdata=CreateLSLConstantCompletionData(sig, fastVarParser);
+                var cdata = CreateCompletionData_Constant(sig, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -919,7 +915,10 @@ namespace LSLCCEditor.LSLEditor
             var possibleUserDefinedItem = false;
 
 
-            foreach (var v in fastVarParser.LocalParameters.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
+            foreach (
+                var v in
+                    fastVarParser.LocalParameters.Where(x => x.Name.StartsWith(insertedText))
+                        .OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -929,10 +928,9 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                var cdata = CreateLSLLocalParameterCompletionData(v, fastVarParser);
+                var cdata = CreateCompletionData_LocalParameter(v, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             foreach (var v in fastVarParser.LocalVariables
@@ -945,7 +943,7 @@ namespace LSLCCEditor.LSLEditor
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateLSLLocalVariableCompletionData(v, fastVarParser);
+                var cdata = CreateCompletionData_LocalVariable(v, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -971,10 +969,9 @@ namespace LSLCCEditor.LSLEditor
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateLSLGlobalUserFunctionCompletionData(func, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserFunction(func, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
             return possibleUserDefinedItem;
         }
@@ -988,7 +985,10 @@ namespace LSLCCEditor.LSLEditor
             var possibleUserDefinedItem = false;
 
 
-            foreach (var v in fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
+            foreach (
+                var v in
+                    fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(insertedText))
+                        .OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -997,16 +997,16 @@ namespace LSLCCEditor.LSLEditor
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateLSLGlobalUserVariableCompletionData(v, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserVariable(v, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             return possibleUserDefinedItem;
         }
 
-        private bool TryCompletionForControlStatement(string insertedText, LSLAutoCompleteParser fastVarParser, ref IList<ICompletionData> data)
+        private bool TryCompletionForControlStatement(string insertedText, LSLAutoCompleteParser fastVarParser,
+            ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestControlStatement) return false;
 
@@ -1017,7 +1017,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLIfStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel,  fastVarParser));
+                data.Add(CreateCompletionData_IfStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
                 possibleControlStruct = true;
             }
             else if (insertedText.StartsWith("e") && fastVarParser.AfterIfOrElseIfStatement)
@@ -1025,8 +1025,10 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLElseStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel,  fastVarParser));
-                data.Add(CreateLSLElseIfStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel,   fastVarParser));
+                data.Add(CreateCompletionData_ElseStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
+                    fastVarParser));
+                data.Add(CreateCompletionData_ElseIfStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
+                    fastVarParser));
                 possibleControlStruct = true;
             }
             else if (insertedText.StartsWith("w"))
@@ -1034,7 +1036,8 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLWhileStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
+                data.Add(CreateCompletionData_WhileStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
+                    fastVarParser));
                 possibleControlStruct = true;
             }
             else if (insertedText.StartsWith("d"))
@@ -1042,7 +1045,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLDoStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
+                data.Add(CreateCompletionData_DoStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
                 possibleControlStruct = true;
             }
             else if (insertedText.StartsWith("f"))
@@ -1050,7 +1053,8 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLForStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
+                data.Add(CreateCompletionData_ForStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
+                    fastVarParser));
                 possibleControlStruct = true;
             }
             else if (insertedText.StartsWith("j"))
@@ -1058,35 +1062,29 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLJumpStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
+                data.Add(CreateCompletionData_JumpStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
+                    fastVarParser));
                 possibleControlStruct = true;
             }
             else if (insertedText.StartsWith("r"))
             {
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
-                data.Add(CreateLSLReturnStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
+                data.Add(CreateCompletionData_ReturnStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
+                    fastVarParser));
                 possibleControlStruct = true;
             }
             else if (insertedText.StartsWith("s"))
             {
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
-                data.Add(CreateLSLStateChangeStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
+                data.Add(CreateCompletionData_StateChangeStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
+                    fastVarParser));
                 possibleControlStruct = true;
             }
-            /*
-            else if (insertedText.StartsWith("@") && !fastVarParser.InSingleStatementCodeScopeTopLevel)
-            {
-                CurrentCompletionWindow = LazyInitCompletionWindow();
-                data = CurrentCompletionWindow.CompletionList.CompletionData;
-                data.Add(CreateLSLLabelStatementCompletionData(fastVarParser.ScopeAddressAtOffset.ScopeLevel, fastVarParser));
-                possibleControlStruct = true;
-            }*/
 
             return possibleControlStruct;
         }
-
 
 
         private bool TryCompletionForTypeName(string insertedText, LSLAutoCompleteParser fastVarParser,
@@ -1102,7 +1100,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLTypeCompletionData(LSLType.Integer, fastVarParser));
+                data.Add(CreateCompletionData_Type(LSLType.Integer, fastVarParser));
                 possibleType = true;
             }
             else if (insertedText.StartsWith("s"))
@@ -1110,7 +1108,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLTypeCompletionData(LSLType.String, fastVarParser));
+                data.Add(CreateCompletionData_Type(LSLType.String, fastVarParser));
                 possibleType = true;
             }
             else if (insertedText.StartsWith("v"))
@@ -1118,7 +1116,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLTypeCompletionData(LSLType.Vector, fastVarParser));
+                data.Add(CreateCompletionData_Type(LSLType.Vector, fastVarParser));
                 possibleType = true;
             }
             else if (insertedText.StartsWith("r"))
@@ -1126,7 +1124,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLTypeCompletionData(LSLType.Rotation, fastVarParser));
+                data.Add(CreateCompletionData_Type(LSLType.Rotation, fastVarParser));
                 possibleType = true;
             }
             else if (insertedText.StartsWith("k"))
@@ -1134,7 +1132,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLTypeCompletionData(LSLType.Key, fastVarParser));
+                data.Add(CreateCompletionData_Type(LSLType.Key, fastVarParser));
                 possibleType = true;
             }
             else if (insertedText.StartsWith("f"))
@@ -1142,7 +1140,7 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLTypeCompletionData(LSLType.Float, fastVarParser));
+                data.Add(CreateCompletionData_Type(LSLType.Float, fastVarParser));
                 possibleType = true;
             }
             else if (insertedText.StartsWith("l"))
@@ -1150,22 +1148,22 @@ namespace LSLCCEditor.LSLEditor
                 CurrentCompletionWindow = LazyInitCompletionWindow();
                 data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateLSLTypeCompletionData(LSLType.List, fastVarParser));
+                data.Add(CreateCompletionData_Type(LSLType.List, fastVarParser));
                 possibleType = true;
             }
             return possibleType;
         }
 
-        private bool TryCompletionForLabelNameDefinition(string insertedText, LSLAutoCompleteParser fastVarParser, ref IList<ICompletionData> data)
+        private bool TryCompletionForLabelNameDefinition(string insertedText, LSLAutoCompleteParser fastVarParser,
+            ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestLabelNameDefinition) return false;
             if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
 
 
-
             var possibleLabelName = false;
 
-            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x=>x.Target.Length))
+            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x => x.Target.Length))
             {
                 if (!possibleLabelName)
                 {
@@ -1174,7 +1172,7 @@ namespace LSLCCEditor.LSLEditor
                     possibleLabelName = true;
                 }
 
-                var cdata = CreateLSLLabelDefinitionCompletionData(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelDefinition(label, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1189,16 +1187,16 @@ namespace LSLCCEditor.LSLEditor
             return true;
         }
 
-        private bool TryCompletionForLabelNameJumpTarget(string insertedText, LSLAutoCompleteParser fastVarParser, ref IList<ICompletionData> data)
+        private bool TryCompletionForLabelNameJumpTarget(string insertedText, LSLAutoCompleteParser fastVarParser,
+            ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestLabelNameJumpTarget) return false;
             if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
 
 
             var possibleLabelName = false;
-            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x=>x.Name.Length))
+            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x => x.Name.Length))
             {
-
                 if (!possibleLabelName)
                 {
                     CurrentCompletionWindow = LazyInitCompletionWindow();
@@ -1206,10 +1204,9 @@ namespace LSLCCEditor.LSLEditor
                     possibleLabelName = true;
                 }
 
-                var cdata = CreateLSLLabelJumpTargetCompletionData(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelJumpTarget(label, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             if (!possibleLabelName)
@@ -1223,7 +1220,9 @@ namespace LSLCCEditor.LSLEditor
             return true;
         }
 
-        private bool TryCompletionForStateName(string insertedText, LSLAutoCompleteParser fastVarParser, ref IList<ICompletionData> data)
+
+        private bool TryCompletionForStateName(string insertedText, LSLAutoCompleteParser fastVarParser,
+            ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestStateName) return false;
             if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
@@ -1236,12 +1235,11 @@ namespace LSLCCEditor.LSLEditor
             data = CurrentCompletionWindow.CompletionList.CompletionData;
 
 
-            data.Add(CreateLSLDefaultStateNameCompletionData(fastVarParser));
+            data.Add(CreateCompletionData_DefaultStateName(fastVarParser));
 
-            foreach (var state in fastVarParser.StateBlocks.OrderBy(x=>x.Name.Length))
+            foreach (var state in fastVarParser.StateBlocks.OrderBy(x => x.Name.Length))
             {
-
-                var cdata = CreateLSLStateNameCompletionData(state, fastVarParser);
+                var cdata = CreateCompletionData_StateName(state, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1249,6 +1247,7 @@ namespace LSLCCEditor.LSLEditor
             CurrentCompletionWindow.Show();
             return true;
         }
+
 
         private bool TryCompletionForEventHandler(string insertedText, LSLAutoCompleteParser fastVarParser,
             ref IList<ICompletionData> data)
@@ -1259,7 +1258,9 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleEventName = false;
 
-            foreach (var eventHandler in EventSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x=>x.Name.Length))
+            foreach (
+                var eventHandler in
+                    EventSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x => x.Name.Length))
             {
                 if (!possibleEventName)
                 {
@@ -1268,7 +1269,7 @@ namespace LSLCCEditor.LSLEditor
                     possibleEventName = true;
                 }
 
-                var cdata = CreateLSLEventCompletionData(eventHandler, fastVarParser);
+                var cdata = CreateCompletionData_EventHandler(eventHandler, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1283,15 +1284,17 @@ namespace LSLCCEditor.LSLEditor
             return true;
         }
 
-        private LSLCompletionData CreateLSLDefaultStateNameCompletionData(LSLAutoCompleteParser autoCompleteParser)
+
+        private LSLCompletionData CreateCompletionData_DefaultStateName(LSLAutoCompleteParser autoCompleteParser)
         {
-            var data = new LSLCompletionData("default", "default", "Default script state", 0)
+            var data = new LSLCompletionData("default", "default", 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = _stateNameCompleteColor
+                ColorBrush = _stateNameCompleteColor,
+                Description = CreateDescriptionTextBlock_DefaultState()
             };
 
-            int offset = autoCompleteParser.ParseToOffset;
+            var offset = autoCompleteParser.ParseToOffset;
 
             while (true)
             {
@@ -1303,32 +1306,50 @@ namespace LSLCCEditor.LSLEditor
                     data.AppendOnInsert = "";
                     data.OffsetCaretRelativeToDocument = true;
                     data.OffsetCaretAfterInsert = true;
-                    data.CaretOffsetAfterInsert = offset+8;
+                    data.CaretOffsetAfterInsert = offset + 8;
                     break;
                 }
                 if (!b)
                 {
-                    
                     break;
                 }
 
                 offset++;
-                
             }
 
             return data;
         }
 
-        private LSLCompletionData CreateLSLStateNameCompletionData(LSLAutoCompleteParser.StateBlock state, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_DefaultState()
         {
-            var data= new LSLCompletionData(state.Name, state.Name, "Script state", 0)
+            var description = new TextBlock();
+            description.Inlines.Add(CreateHighlightedRunFromXshd("State", "default"));
+            description.Inlines.Add(" script state");
+            return description;
+        }
+
+
+        private TextBlock CreateDescriptionTextBlock_DefinedState(LSLAutoCompleteParser.StateBlock state)
+        {
+            var description = new TextBlock();
+            description.Inlines.Add(new Run(state.Name) {FontWeight = FontWeights.Bold});
+            description.Inlines.Add(" script state");
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_StateName(LSLAutoCompleteParser.StateBlock state,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData(state.Name, state.Name, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = _stateNameCompleteColor
+                ColorBrush = _stateNameCompleteColor,
+                Description = CreateDescriptionTextBlock_DefinedState(state)
             };
 
 
-            int offset = autoCompleteParser.ParseToOffset;
+            var offset = autoCompleteParser.ParseToOffset;
 
 
             while (true)
@@ -1346,26 +1367,27 @@ namespace LSLCCEditor.LSLEditor
                 }
                 if (!b)
                 {
-
                     break;
                 }
 
                 offset++;
-
             }
 
             return data;
         }
 
-        private LSLCompletionData CreateLSLLabelDefinitionCompletionData(LSLAutoCompleteParser.LocalJump label, LSLAutoCompleteParser autoCompleteParser)
+
+        private LSLCompletionData CreateCompletionData_LabelDefinition(LSLAutoCompleteParser.LocalJump label,
+            LSLAutoCompleteParser autoCompleteParser)
         {
-            var data = new LSLCompletionData(label.Target, label.Target, "In scope jump", 0)
+            var data = new LSLCompletionData(label.Target, label.Target, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = _labelNameDefinitionCompleteColor
+                ColorBrush = _labelNameDefinitionCompleteColor,
+                Description = CreateDescriptionTextBlock_LabelDefinition()
             };
 
-            int offset = autoCompleteParser.ParseToOffset;
+            var offset = autoCompleteParser.ParseToOffset;
 
             while (true)
             {
@@ -1382,26 +1404,32 @@ namespace LSLCCEditor.LSLEditor
                 }
                 if (!b)
                 {
-
                     break;
                 }
 
                 offset++;
-
             }
 
             return data;
         }
 
-        private LSLCompletionData CreateLSLLabelJumpTargetCompletionData(LSLAutoCompleteParser.LocalLabel label, LSLAutoCompleteParser autoCompleteParser)
+        private static TextBlock CreateDescriptionTextBlock_LabelDefinition()
         {
-            var data = new LSLCompletionData(label.Name, label.Name, "In scope label", 0)
+            return new TextBlock {Text = "In scope jump"};
+        }
+
+
+        private LSLCompletionData CreateCompletionData_LabelJumpTarget(LSLAutoCompleteParser.LocalLabel label,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData(label.Name, label.Name, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = _labelNameJumpTargetCompleteColor
+                ColorBrush = _labelNameJumpTargetCompleteColor,
+                Description = CreateDescriptionTextBlock_LabelJumpTarget()
             };
 
-            int offset = autoCompleteParser.ParseToOffset;
+            var offset = autoCompleteParser.ParseToOffset;
 
             while (true)
             {
@@ -1418,25 +1446,28 @@ namespace LSLCCEditor.LSLEditor
                 }
                 if (!b)
                 {
-
                     break;
                 }
 
                 offset++;
-
             }
 
             return data;
         }
 
-
-
-        private LSLCompletionData CreateLSLGlobalUserVariableCompletionData(LSLAutoCompleteParser.GlobalVariable v, LSLAutoCompleteParser autoCompleteParser)
+        private static TextBlock CreateDescriptionTextBlock_LabelJumpTarget()
         {
-            var data = new LSLCompletionData(v.Name, v.Name,
-                "Global variable:\n" + v.Type + " " + v.Name + ";", 1)
+            return new TextBlock {Text = "In scope label"};
+        }
+
+
+        private LSLCompletionData CreateCompletionData_GlobalUserVariable(LSLAutoCompleteParser.GlobalVariable v,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData(v.Name, v.Name, 1)
             {
-                ColorBrush = _globalVariableCompleteColor
+                ColorBrush = _globalVariableCompleteColor,
+                Description = CreateGlobalVariableDescriptionTextBlock(v)
             };
 
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
@@ -1448,18 +1479,43 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-        private LSLCompletionData CreateLSLLibraryFunctionCompletionData(string func, LSLAutoCompleteParser autoCompleteParser)
+
+        private TextBlock CreateGlobalVariableDescriptionTextBlock(LSLAutoCompleteParser.GlobalVariable v)
+        {
+            var description = new TextBlock();
+
+            description.Inlines.Add(new Run("Global Variable:" + StringTools.CreateNewLinesString(2))
+            {
+                FontWeight = FontWeights.Bold
+            });
+
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.Type));
+            description.Inlines.Add(" " + v.Name);
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_LibraryFunction(string func,
+            LSLAutoCompleteParser autoCompleteParser)
         {
             var sigs = LibraryDataProvider.GetLibraryFunctionSignatures(func);
-            var docs = string.Join(Environment.NewLine + Environment.NewLine, sigs.Select(x => x.SignatureAndDocumentation));
 
-            
+            var allOverloadsDeprecated = sigs.All(x => x.IsDeprecated());
 
-            var data = new LSLCompletionData(func, func, docs, 6)
+            var colorBrush = _libraryFunctionCompleteColor;
+
+            if (allOverloadsDeprecated)
+            {
+                colorBrush = _libraryFunctionDeprecatedCompleteColor;
+            }
+
+            var data = new LSLCompletionData(func, func, 6)
             {
                 AppendOnInsert = "()",
-                ColorBrush = _libraryFunctionCompleteColor,
+                ColorBrush = colorBrush,
+                Description = CreateDescriptionTextBlock_LibraryFunction(sigs)
             };
+
 
             if (sigs.Any(x => x.HasVariadicParameter || x.ParameterCount > 0))
             {
@@ -1467,8 +1523,6 @@ namespace LSLCCEditor.LSLEditor
                 data.CaretOffsetAfterInsert = -1;
             }
 
-
-
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
             data.ForceIndent = true;
@@ -1478,21 +1532,52 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-        private LSLCompletionData CreateLSLConstantCompletionData(LSLLibraryConstantSignature sig, LSLAutoCompleteParser autoCompleteParser)
+
+        private LSLCompletionData CreateCompletionData_Constant(LSLLibraryConstantSignature sig,
+            LSLAutoCompleteParser autoCompleteParser)
         {
-            return new LSLCompletionData(sig.Name, sig.Name,
-                sig.SignatureAndDocumentation, 5)
+            var data = new LSLCompletionData(sig.Name, sig.Name, 5)
             {
                 ColorBrush = _libraryConstantCompleteColor
             };
+
+            data.Description = CreateDescriptionTextBlock_LibraryConstant(sig);
+
+            return data;
         }
 
-        private LSLCompletionData CreateLSLLocalVariableCompletionData(LSLAutoCompleteParser.LocalVariable v, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_LibraryConstant(LSLLibraryConstantSignature sig)
         {
-            var data = new LSLCompletionData(v.Name, v.Name, "Local variable:\n" + v.Type + " " + v.Name + ";", 4)
+            var description = new TextBlock();
+            description.TextWrapping = TextWrapping.Wrap;
+            description.MaxWidth = 500;
+
+            description.Inlines.Add(new Run("Library Constant:" + StringTools.CreateNewLinesString(2))
             {
-                ColorBrush = _localVariableCompleteColor
+                FontWeight = FontWeights.Bold
+            });
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Constants", sig.Name));
+            description.Inlines.Add(" = ");
+            description.Inlines.Add(sig.ValueString + ";");
+
+            if (!string.IsNullOrWhiteSpace(sig.DocumentationString))
+            {
+                description.Inlines.Add(StringTools.CreateNewLinesString(2) + sig.DocumentationString);
+            }
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_LocalVariable(LSLAutoCompleteParser.LocalVariable v,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData(v.Name, v.Name, 4)
+            {
+                ColorBrush = _localVariableCompleteColor,
             };
+
+
+            data.Description = CreateDescriptionTextBlock_LocalVariable(v);
 
 
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
@@ -1504,13 +1589,34 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-        private LSLCompletionData CreateLSLLocalParameterCompletionData(LSLAutoCompleteParser.LocalParameter v, LSLAutoCompleteParser autoCompleteParser)
+
+        private TextBlock CreateDescriptionTextBlock_LocalVariable(LSLAutoCompleteParser.LocalVariable v)
         {
-            var data = new LSLCompletionData(v.Name, v.Name, "Local parameter:\n" + v.Type + " " + v.Name + ";", 3)
+            var description = new TextBlock();
+
+            description.Inlines.Add(new Run("Local Variable:" + StringTools.CreateNewLinesString(2))
+            {
+                FontWeight = FontWeights.Bold
+            });
+
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.Type));
+            description.Inlines.Add(" " + v.Name);
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_LocalParameter(LSLAutoCompleteParser.LocalParameter v,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData(v.Name, v.Name, 3)
             {
                 ColorBrush = _localParameterCompleteColor
             };
 
+
+            data.Description = CreateDescriptionTextBlock_LocalParameter(v);
+
+
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
             data.ForceIndent = true;
@@ -1520,17 +1626,30 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-        private LSLCompletionData CreateLSLGlobalUserFunctionCompletionData(LSLAutoCompleteParser.GlobalFunction func, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_LocalParameter(LSLAutoCompleteParser.LocalParameter v)
         {
+            var description = new TextBlock();
+
+            description.Inlines.Add(new Run("Local Parameter:" + StringTools.CreateNewLinesString(2))
+            {
+                FontWeight = FontWeights.Bold
+            });
+
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.Type));
+            description.Inlines.Add(" " + v.Name);
+            return description;
+        }
 
 
-            
 
-            var data= new LSLCompletionData(func.Name, func.Name, "Global function:\n" + func.Signature, 2)
+        private LSLCompletionData CreateCompletionData_GlobalUserFunction(LSLAutoCompleteParser.GlobalFunction func,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData(func.Name, func.Name, 2)
             {
                 AppendOnInsert = "()",
                 ColorBrush = _globalFunctionCompleteColor,
-
+                Description = CreateDescriptionTextBlock_GlobalUserFunction(func)
             };
 
 
@@ -1550,14 +1669,138 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-
-
-
-
-
-        private LSLCompletionData CreateLSLForStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_GlobalUserFunction(LSLAutoCompleteParser.GlobalFunction func)
         {
-            return new LSLCompletionData("for", "for(;;)", "else if statement", 0)
+            var description = new TextBlock();
+
+            var nameRun = new Run(func.Name)
+            {
+                FontWeight = FontWeights.Bold,
+                Foreground = _globalFunctionCompleteColor
+            };
+
+            description.Inlines.Add(new Run("Global Function:" + StringTools.CreateNewLinesString(2))
+            {
+                FontWeight = FontWeights.Bold
+            });
+
+            if (func.HasReturnType)
+            {
+                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", func.ReturnType + " "));
+            }
+
+            description.Inlines.Add(nameRun);
+            description.Inlines.Add(new Run("(") {FontWeight = FontWeights.Bold});
+
+            var pIndex = 1;
+            foreach (var param in func.Parameters)
+            {
+                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.Type + " "));
+                description.Inlines.Add(param.Name);
+                if (pIndex < func.Parameters.Count)
+                {
+                    description.Inlines.Add(", ");
+                }
+                pIndex++;
+            }
+
+            description.Inlines.Add(new Run(")") {FontWeight = FontWeights.Bold});
+            description.Inlines.Add(new Run(";"));
+            return description;
+        }
+
+
+        private TextBlock CreateDescriptionTextBlock_LibraryFunction(
+            IReadOnlyList<LSLLibraryFunctionSignature> funcOverloads)
+        {
+            var description = new TextBlock();
+
+            description.TextWrapping = TextWrapping.Wrap;
+            description.MaxWidth = 500;
+
+            description.Inlines.Add(new Run("Library Function:" + StringTools.CreateNewLinesString(2))
+            {
+                FontWeight = FontWeights.Bold
+            });
+
+            var overloadCnt = 1;
+            foreach (var func in funcOverloads)
+            {
+                var nameRun = new Run(func.Name)
+                {
+                    FontWeight = FontWeights.Bold
+                };
+
+                if (func.IsDeprecated())
+                {
+                    description.Inlines.Add(new Run("(DEPRECATED) ")
+                    {
+                        Foreground = Brushes.Red,
+                        FontWeight = FontWeights.Bold
+                    });
+
+                    nameRun.Foreground = _libraryFunctionDeprecatedCompleteColor;
+                }
+                else
+                {
+                    nameRun.Foreground = _libraryFunctionCompleteColor;
+                }
+
+                if (func.ReturnType != LSLType.Void)
+                {
+                    description.Inlines.Add(CreateHighlightedRunFromXshd("Type", func.ReturnType.ToLSLTypeString() + " "));
+                }
+
+                description.Inlines.Add(nameRun);
+                description.Inlines.Add(new Run("(") {FontWeight = FontWeights.Bold});
+
+
+                var pIndex = 1;
+                foreach (var param in func.Parameters.Where(x => !x.Variadic))
+                {
+                    description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.Type.ToLSLTypeString() + " "));
+                    description.Inlines.Add(param.Name);
+                    if (pIndex < func.ConcreteParameterCount)
+                    {
+                        description.Inlines.Add(", ");
+                    }
+                    pIndex++;
+                }
+
+                if (func.HasVariadicParameter)
+                {
+                    if (func.ConcreteParameterCount != 0)
+                    {
+                        description.Inlines.Add(", ");
+
+                    }
+ 
+                    description.Inlines.Add(new Run("params") { FontWeight = FontWeights.Bold });
+                    description.Inlines.Add(" ...");
+                }
+
+                description.Inlines.Add(new Run(")") {FontWeight = FontWeights.Bold});
+                description.Inlines.Add(new Run(";"));
+
+                if (!string.IsNullOrWhiteSpace(func.DocumentationString))
+                {
+                    description.Inlines.Add(StringTools.CreateNewLinesString(2) + func.DocumentationString);
+                }
+
+                if (overloadCnt < funcOverloads.Count)
+                {
+                    description.Inlines.Add(StringTools.CreateNewLinesString(2));
+                }
+            }
+
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_ForStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData("for", "for(;;)", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
                 ColorBrush = _controlStatementCompleteColor,
@@ -1567,13 +1810,28 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 4,
                 InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_ForStatement()
             };
+
+            return data;
         }
 
-        private LSLCompletionData CreateLSLWhileStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_ForStatement()
         {
-            return new LSLCompletionData("while", "while()", "else if statement", 0)
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "for");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
+        }
+
+        private LSLCompletionData CreateCompletionData_WhileStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData("while", "while()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
                 ColorBrush = _controlStatementCompleteColor,
@@ -1583,15 +1841,30 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 6,
                 InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_WhileStatement()
             };
+
+
+            return data;
+        }
+
+        private TextBlock CreateDescriptionTextBlock_WhileStatement()
+        {
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "while");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
         }
 
 
-
-        private LSLCompletionData CreateLSLDoStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private LSLCompletionData CreateCompletionData_DoStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
         {
-            return new LSLCompletionData("do", "do", "do statement", 0)
+            var data = new LSLCompletionData("do", "do", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}\nwhile()"),
                 ColorBrush = _controlStatementCompleteColor,
@@ -1600,13 +1873,29 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = -1,
                 InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_DoStatement()
             };
+
+
+            return data;
         }
 
-        private LSLCompletionData CreateLSLIfStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_DoStatement()
         {
-            return new LSLCompletionData("if", "if()", "if statement", 0)
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "do");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
+        }
+
+        private LSLCompletionData CreateCompletionData_IfStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData("if", "if()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
                 ColorBrush = _controlStatementCompleteColor,
@@ -1616,13 +1905,28 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 3,
                 InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_IfStatement()
             };
+
+            return data;
         }
 
-        private LSLCompletionData CreateLSLElseIfStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_IfStatement()
         {
-            return new LSLCompletionData("else if", "else if()", "else if statement", 0)
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "if");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
+        }
+
+        private LSLCompletionData CreateCompletionData_ElseIfStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData("else if", "else if()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
                 ColorBrush = _controlStatementCompleteColor,
@@ -1632,13 +1936,30 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 8,
                 InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_ElseIfStatement()
             };
+
+            return data;
         }
 
-        private LSLCompletionData CreateLSLElseStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+
+        private TextBlock CreateDescriptionTextBlock_ElseIfStatement()
         {
-            return new LSLCompletionData("else", "else", "else statement", 0)
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "else if");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_ElseStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData("else", "else", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
                 ColorBrush = _controlStatementCompleteColor,
@@ -1648,17 +1969,32 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 6 + scopeLevel,
                 InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_ElseStatement()
             };
+            return data;
         }
 
 
-        private LSLCompletionData CreateLSLReturnStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_ElseStatement()
+        {
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "else");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_ReturnStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
         {
             var inReturningFunction = autoCompleteParser.InFunctionCodeBody &&
                                       autoCompleteParser.CurrentFunctionReturnType != LSLType.Void;
 
-            var data = new LSLCompletionData("return", "return", "return statement", 0)
+            var data = new LSLCompletionData("return", "return", 0)
             {
                 AppendOnInsert = inReturningFunction ? " ;" : ";",
                 ColorBrush = _controlStatementCompleteColor,
@@ -1666,7 +2002,9 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 6,
                 InsertTextAtCaretAfterOffset = false,
+                Description = CreateDescriptionTextBlock_ReturnStatement()
             };
+
 
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
@@ -1678,33 +2016,22 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-
-
-        /*
-        private LSLCompletionData CreateLSLLabelStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_ReturnStatement()
         {
-            var data = new LSLCompletionData("@", "@", "label statement", 0)
-            {
-                AppendOnInsert = ";",
-                ColorBrush = _controlStatementCompleteColor,
-                OffsetCaretFromBegining = true,
-                OffsetCaretAfterInsert = true,
-                CaretOffsetAfterInsert = 0,
-                InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
-            };
+            var description = new TextBlock();
 
-            return data;
-        }*/
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "return");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
+        }
 
 
-        private LSLCompletionData CreateLSLJumpStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private LSLCompletionData CreateCompletionData_JumpStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
         {
-
-            
-
-
-            var data = new LSLCompletionData("jump", "jump", "jump statement", 0)
+            var data = new LSLCompletionData("jump", "jump", 0)
             {
                 AppendOnInsert = " ;",
                 ColorBrush = _controlStatementCompleteColor,
@@ -1712,7 +2039,8 @@ namespace LSLCCEditor.LSLEditor
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 4,
                 InsertTextAtCaretAfterOffset = false,
-                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _controlStatementAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_JumpStatement()
             };
 
 
@@ -1726,19 +2054,31 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-
-        private LSLCompletionData CreateLSLStateChangeStatementCompletionData(int scopeLevel, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_JumpStatement()
         {
-            var data =  new LSLCompletionData("state", "state", "state change statement", 0)
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("ControlFlow", "jump");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" statement");
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_StateChangeStatement(int scopeLevel,
+            LSLAutoCompleteParser autoCompleteParser)
+        {
+            var data = new LSLCompletionData("state", "state", 0)
             {
                 AppendOnInsert = " ;",
                 ColorBrush = _controlStatementCompleteColor,
                 OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 5,
-                InsertTextAtCaretAfterOffset = false
+                InsertTextAtCaretAfterOffset = false,
+                Description = CreateDescriptionTextBlock_StateChangeStatment()
             };
-
 
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
@@ -1750,30 +2090,71 @@ namespace LSLCCEditor.LSLEditor
             return data;
         }
 
-
-
-
-        private LSLCompletionData CreateLSLTypeCompletionData(LSLType type, LSLAutoCompleteParser autoCompleteParser)
+        private TextBlock CreateDescriptionTextBlock_StateChangeStatment()
         {
-            var name = LSLTypeTools.ToLSLTypeString(type);
-            return new LSLCompletionData(name, name,
-                name + "type", 0)
+            var description = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("State", "state");
+
+            description.Inlines.Add(typeRun);
+            description.Inlines.Add(" change statement");
+            return description;
+        }
+
+
+        private LSLCompletionData CreateCompletionData_Type(LSLType type, LSLAutoCompleteParser autoCompleteParser)
+        {
+            var name = type.ToLSLTypeString();
+
+            var desc = new TextBlock();
+
+            var typeRun = CreateHighlightedRunFromXshd("Type", name);
+
+
+            desc.Inlines.Add(typeRun);
+            desc.Inlines.Add(" type");
+
+
+            return new LSLCompletionData(name, name, 0)
             {
-                ColorBrush = _builtInTypeCompleteColor
+                ColorBrush = _builtInTypeCompleteColor,
+                Description = desc
             };
         }
 
 
+        private Run CreateHighlightedRunFromXshd(string xshdColorName, string text)
+        {
+            var typeHighlightColor = Editor.SyntaxHighlighting.GetNamedColor(xshdColorName);
+
+            var typeRun = new Run(text);
+
+            if (typeHighlightColor.FontStyle != null) typeRun.FontStyle = typeHighlightColor.FontStyle.Value;
+            if (typeHighlightColor.FontWeight != null) typeRun.FontWeight = typeHighlightColor.FontWeight.Value;
 
 
+            try
+            {
+                //it will work, the parameter is unused in Avalon edit, I have no idea why its even in the API 
+                //of this function call
+                typeRun.Foreground = typeHighlightColor.Foreground.GetBrush(null);
+            }
+            catch
+            {
+                // ignored
+            }
+            return typeRun;
+        }
 
-        private LSLCompletionData CreateLSLEventCompletionData(LSLLibraryEventSignature eventHandler, LSLAutoCompleteParser autoCompleteParser)
+
+        private LSLCompletionData CreateCompletionData_EventHandler(LSLLibraryEventSignature eventHandler,
+            LSLAutoCompleteParser autoCompleteParser)
         {
             var parameters = eventHandler.SignatureString.Substring(eventHandler.Name.Length);
 
             var stateCompletionData = new LSLCompletionData(
                 eventHandler.Name,
-                eventHandler.Name, eventHandler.SignatureAndDocumentation, 0)
+                eventHandler.Name, 0)
             {
                 AppendOnInsert = parameters + "\n{\n\t\n}",
                 ColorBrush = _eventHandlerCompleteColor,
@@ -1784,9 +2165,57 @@ namespace LSLCCEditor.LSLEditor
                 CaretOffsetAfterInsert = 1 + eventHandler.Name.Length + parameters.Length + 4,
                 InsertTextAtCaretAfterOffset = true,
                 CaretOffsetInsertionText = "\t",
-                IndentBreakCharacters = _stateAutocompleteIndentBreakCharacters
+                IndentBreakCharacters = _stateAutocompleteIndentBreakCharacters,
+                Description = CreateDescriptionTextBlock_EventHandler(eventHandler)
             };
             return stateCompletionData;
+        }
+
+
+        private TextBlock CreateDescriptionTextBlock_EventHandler(LSLLibraryEventSignature eventHandler)
+        {
+            var description = new TextBlock();
+
+            description.TextWrapping = TextWrapping.Wrap;
+            description.MaxWidth = 500;
+
+            description.Inlines.Add(new Run("Event Handler:" + StringTools.CreateNewLinesString(2))
+            {
+                FontWeight = FontWeights.Bold
+            });
+
+
+            var nameRun = new Run(eventHandler.Name)
+            {
+                FontWeight = FontWeights.Bold,
+                Foreground = _eventHandlerCompleteColor
+            };
+
+            description.Inlines.Add(nameRun);
+            description.Inlines.Add(new Run("(") {FontWeight = FontWeights.Bold});
+
+
+            var pIndex = 1;
+            foreach (var param in eventHandler.Parameters)
+            {
+                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.Type.ToLSLTypeString() + " "));
+                description.Inlines.Add(param.Name);
+                if (pIndex < eventHandler.ParameterCount)
+                {
+                    description.Inlines.Add(", ");
+                }
+                pIndex++;
+            }
+
+            description.Inlines.Add(new Run(")") {FontWeight = FontWeights.Bold});
+            description.Inlines.Add(new Run(";"));
+
+            if (!string.IsNullOrWhiteSpace(eventHandler.DocumentationString))
+            {
+                description.Inlines.Add(StringTools.CreateNewLinesString(2) + eventHandler.DocumentationString);
+            }
+
+            return description;
         }
 
 
@@ -1865,7 +2294,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private bool TryCompletionForLocalVariableOrParameter(LSLAutoCompleteParser fastVarParser)
         {
             if (!fastVarParser.CanSuggestLocalVariableOrParameter) return false;
@@ -1875,7 +2303,7 @@ namespace LSLCCEditor.LSLEditor
             IList<ICompletionData> data = null;
 
 
-            foreach (var i in fastVarParser.LocalParameters.OrderBy(x=>x.Name.Length))
+            foreach (var i in fastVarParser.LocalParameters.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -1884,13 +2312,12 @@ namespace LSLCCEditor.LSLEditor
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateLSLLocalParameterCompletionData(i, fastVarParser);
+                var cdata = CreateCompletionData_LocalParameter(i, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
-            foreach (var i in fastVarParser.LocalVariables.OrderBy(x=>x.Name.Length))
+            foreach (var i in fastVarParser.LocalVariables.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -1899,10 +2326,9 @@ namespace LSLCCEditor.LSLEditor
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateLSLLocalVariableCompletionData(i, fastVarParser);
+                var cdata = CreateCompletionData_LocalVariable(i, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             return possibleUserDefinedItem;
@@ -1918,7 +2344,7 @@ namespace LSLCCEditor.LSLEditor
             IList<ICompletionData> data = null;
 
 
-            foreach (var i in fastVarParser.GlobalFunctions.OrderBy(x=>x.Name.Length))
+            foreach (var i in fastVarParser.GlobalFunctions.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -1927,10 +2353,9 @@ namespace LSLCCEditor.LSLEditor
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateLSLGlobalUserFunctionCompletionData(i, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserFunction(i, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             return possibleUserDefinedItem;
@@ -1944,7 +2369,7 @@ namespace LSLCCEditor.LSLEditor
 
             IList<ICompletionData> data = null;
 
-            foreach (var i in fastVarParser.GlobalVariables.OrderBy(x=>x.Name.Length))
+            foreach (var i in fastVarParser.GlobalVariables.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -1954,10 +2379,9 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                var cdata = CreateLSLGlobalUserVariableCompletionData(i, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserVariable(i, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
             return possibleUserDefinedItem;
         }
@@ -1972,7 +2396,7 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleLabelName = false;
 
-            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x=>x.Target.Length))
+            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x => x.Target.Length))
             {
                 if (!possibleLabelName)
                 {
@@ -1982,10 +2406,9 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                var cdata = CreateLSLLabelDefinitionCompletionData(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelDefinition(label, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             if (!possibleLabelName)
@@ -2006,7 +2429,7 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleLabelName = false;
 
-            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x=>x.Name.Length))
+            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x => x.Name.Length))
             {
                 if (!possibleLabelName)
                 {
@@ -2015,10 +2438,9 @@ namespace LSLCCEditor.LSLEditor
                     possibleLabelName = true;
                 }
 
-                var cdata = CreateLSLLabelJumpTargetCompletionData(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelJumpTarget(label, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             if (!possibleLabelName)
@@ -2039,15 +2461,15 @@ namespace LSLCCEditor.LSLEditor
             CurrentCompletionWindow = LazyInitCompletionWindow();
             var data = CurrentCompletionWindow.CompletionList.CompletionData;
 
-            data.Add(CreateLSLDefaultStateNameCompletionData(fastVarParser));
+            data.Add(CreateCompletionData_DefaultStateName(fastVarParser));
 
-            foreach (var state in fastVarParser.StateBlocks.OrderBy(x=>x.Name.Length))
+            foreach (var state in fastVarParser.StateBlocks.OrderBy(x => x.Name.Length))
             {
-                var cdata = CreateLSLStateNameCompletionData(state, fastVarParser);
+                var cdata = CreateCompletionData_StateName(state, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
 
-                data.Add(CreateLSLStateNameCompletionData(state, fastVarParser));
+                data.Add(CreateCompletionData_StateName(state, fastVarParser));
             }
 
             CurrentCompletionWindow.Show();
@@ -2062,7 +2484,7 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleEventName = false;
 
-            foreach (var eventHandler in EventSignatures.OrderBy(x=>x.Name.Length))
+            foreach (var eventHandler in EventSignatures.OrderBy(x => x.Name.Length))
             {
                 if (!possibleEventName)
                 {
@@ -2071,10 +2493,9 @@ namespace LSLCCEditor.LSLEditor
                     possibleEventName = true;
                 }
 
-                var cdata = CreateLSLEventCompletionData(eventHandler, fastVarParser);
+                var cdata = CreateCompletionData_EventHandler(eventHandler, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             if (!possibleEventName)
@@ -2219,17 +2640,15 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-
         private bool TryCompletionForLibraryConstant(LSLAutoCompleteParser fastVarParser)
         {
-            
             if (!fastVarParser.CanSuggestLibraryConstant) return false;
-            bool possibleLibraryConstants = false;
+            var possibleLibraryConstants = false;
 
 
             IList<ICompletionData> data = null;
 
-            foreach (var con in ConstantSignatures.OrderBy(x=>x.Name.Length))
+            foreach (var con in ConstantSignatures.OrderBy(x => x.Name.Length))
             {
                 if (!possibleLibraryConstants)
                 {
@@ -2239,10 +2658,9 @@ namespace LSLCCEditor.LSLEditor
                 }
 
 
-                var cdata = CreateLSLConstantCompletionData(con, fastVarParser);
+                var cdata = CreateCompletionData_Constant(con, fastVarParser);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
-
             }
 
             return possibleLibraryConstants;
@@ -2267,16 +2685,26 @@ namespace LSLCCEditor.LSLEditor
 
 
                     foreach (
-                        var func in
-                            (from s in provider.LibraryFunctions.Where(x => x.Count > 0).Select(x => x.First().Name)
-                                orderby s.Length descending
+                        var funcs in
+                            (from s in provider.LibraryFunctions.Where(x => x.Count > 0)
+                                orderby s.First().Name.Length descending
                                 select s))
                     {
+                        var name = funcs.First().Name;
+
+                        var colorName = "Functions";
+
+                        if (funcs.All(f => f.IsDeprecated()))
+                        {
+                            colorName = "DeprecatedFunctions";
+                        }
+
                         var rule = new HighlightingRule
                         {
-                            Regex = new Regex("\\b" + func + "\\b"),
-                            Color = Editor.SyntaxHighlighting.GetNamedColor("Functions")
+                            Regex = new Regex("\\b" + name + "\\b"),
+                            Color = Editor.SyntaxHighlighting.GetNamedColor(colorName)
                         };
+
                         Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
                     }
 
@@ -2357,7 +2785,6 @@ namespace LSLCCEditor.LSLEditor
         private LSLAutoCompleteParser.GlobalVariable _contextMenuVar;
         private LSLAutoCompleteParser.LocalVariable _contextMenuLocalVar;
         private LSLAutoCompleteParser.LocalParameter _contextMenuLocalParam;
-        
 
 
         private void TextArea_ContextMenu_GotoDefinitionClick(object sender, RoutedEventArgs e)

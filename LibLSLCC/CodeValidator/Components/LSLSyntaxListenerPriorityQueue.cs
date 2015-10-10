@@ -606,6 +606,13 @@ namespace LibLSLCC.CodeValidator.Components
                         localVariable, globalVariable));
         }
 
+        public void UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.UseOfDeprecatedLibraryFunction(location, functionSignature));
+        }
+
         public void ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
             LSLConditionalStatementType conditionalStatementType)
         {

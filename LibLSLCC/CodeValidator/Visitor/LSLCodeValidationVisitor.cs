@@ -2803,10 +2803,13 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
 
 
+
+
+
                 var functionSignatures = MainLibraryDataProvider.GetLibraryFunctionSignatures(functionName);
 
 
-                LSLFunctionSignature functionSignature = null;
+                LSLLibraryFunctionSignature functionSignature = null;
                 if (!expressionList.HasErrors)
                 {
                     functionSignature = ValidateLibraryFunctionCallSignatureMatch(context, functionSignatures,
@@ -2816,6 +2819,12 @@ namespace LibLSLCC.CodeValidator.Visitor
                     {
                         return LSLFunctionCallNode.GetError(new LSLSourceCodeRange(context));
                     }
+
+
+                    if (functionSignature.IsDeprecated())
+                    {
+                        SyntaxWarningListener.UseOfDeprecatedLibraryFunction(new LSLSourceCodeRange(context),functionSignature);
+                    }  
                 }
 
                 result = new LSLFunctionCallNode(context, functionSignature, expressionList)
@@ -2865,11 +2874,11 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        private LSLFunctionSignature ValidateLibraryFunctionCallSignatureMatch(
+        private LSLLibraryFunctionSignature ValidateLibraryFunctionCallSignatureMatch(
             LSLParser.Expr_FunctionCallContext context, IReadOnlyList<LSLLibraryFunctionSignature> functionSignatures,
             IReadOnlyList<ILSLExprNode> expressionNodes)
         {
-            LSLFunctionSignature functionSignature = null;
+            LSLLibraryFunctionSignature functionSignature = null;
 
 
             if (functionSignatures.Count() == 1)
@@ -2905,11 +2914,10 @@ namespace LibLSLCC.CodeValidator.Visitor
                     overloadMatch = false;
                 }
 
-                if (overloadMatch)
-                {
-                    functionSignature = lslLibraryFunctionSignature;
-                    break;
-                }
+                if (!overloadMatch) continue;
+
+                functionSignature = lslLibraryFunctionSignature;
+                break;
             }
 
             if (functionSignature == null)

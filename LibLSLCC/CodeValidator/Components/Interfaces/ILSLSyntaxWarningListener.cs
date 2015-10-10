@@ -103,5 +103,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature, LSLVariableDeclarationNode localVariable,
             LSLVariableDeclarationNode globalVariable);
+
+        void UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature);
     }
 }

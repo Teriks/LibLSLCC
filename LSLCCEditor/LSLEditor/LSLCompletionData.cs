@@ -60,13 +60,11 @@ namespace LSLCCEditor.LSLEditor
 {
     public class LSLCompletionData : ICompletionData
     {
-        private readonly string _description;
         private readonly string _label;
         private readonly string _text;
 
-        public LSLCompletionData(string label, string text, string description, double priority)
+        public LSLCompletionData(string label, string text, double priority)
         {
-            _description = description;
             Priority = priority;
             _text = text;
             _label = label;
@@ -215,10 +213,12 @@ namespace LSLCCEditor.LSLEditor
             }
         }
 
-        public object Description
-        {
-            get { return new TextBlock {Text = _description, MaxWidth = 500, TextWrapping = TextWrapping.Wrap}; }
-        }
+
+        public string SignatureString { get; set; }
+
+        public string DocumentationString { get; set; }
+
+        public object Description { get; set; }
 
         public double Priority { get; set; }
         public bool OffsetCaretRelativeToDocument { get; set; }

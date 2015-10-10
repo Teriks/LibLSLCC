@@ -244,6 +244,13 @@ namespace LibLSLCC.CodeValidator.Components
                     globalVariable.SourceCodeRange.LineStart));
         }
 
+        public void UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature)
+        {
+            OnWarning(location,
+                string.Format(
+                    "The library function \"{0}\" is deprecated, it is recommended you use an alternative or remove it.", functionSignature.Name));
+        }
+
         public void ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
             LSLConditionalStatementType conditionalStatementType)
         {

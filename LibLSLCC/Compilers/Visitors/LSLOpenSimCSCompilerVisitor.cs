@@ -48,6 +48,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
@@ -391,7 +392,9 @@ private static class UTILITIES
                 Settings.LibraryData.GetLibraryFunctionSignatures(node.Name)
                     .First(x => x.SignatureMatches(node.Signature));
 
-            if (libDataNode.Properties.ContainsKey("ModInvoke") && libDataNode.Properties["ModInvoke"] == "true")
+
+
+            if (libDataNode.UsesOsModInvoke())
             {
                 var modInvokeFunction = "this." + _modInvokeFunctionMap[node.Signature.ReturnType];
 
@@ -1080,11 +1083,13 @@ private static class UTILITIES
         {
             if (Settings.GenerateClass)
             {
-                if (!string.IsNullOrWhiteSpace(Settings.GeneratedUsingSection))
+                foreach (var ns in Settings.GeneratedNamespaceImports)
                 {
-                    Writer.WriteLine(Settings.GeneratedUsingSection);
+                    Writer.WriteLine("using "+ns+";");
                     Writer.Write(Environment.NewLine);
                 }
+
+                Writer.Write(Environment.NewLine);
 
                 if (!string.IsNullOrWhiteSpace(Settings.GenerateClassNamespace))
                 {
@@ -1114,8 +1119,7 @@ private static class UTILITIES
             else
             {
                 Writer.WriteLine(GenIndent() + "//C#");
-                Writer.WriteLine(GenIndent() +
-                                 "//OpenSim CSharp code, CSharp scripting must be enabled on the server to run.");
+                Writer.WriteLine(GenIndent() + "//OpenSim CSharp code, CSharp scripting must be enabled on the server to run.");
                 Writer.WriteLine(GenIndent() + "//Do not remove the first comment.");
                 Writer.WriteLine(GenIndent() + "//Compiled by LibLSLCC, Date: {0}", DateTime.Now);
 

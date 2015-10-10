@@ -119,7 +119,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 }
                 if (IsLibraryConstant)
                 {
-                    return LSLTypeTools.ToLSLTypeString(Type);
+                    return Type.ToLSLTypeString();
                 }
 
 

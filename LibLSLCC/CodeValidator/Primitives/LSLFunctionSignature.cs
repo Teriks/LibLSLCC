@@ -128,14 +128,14 @@ namespace LibLSLCC.CodeValidator.Primitives
                 var returnString = "";
                 if (ReturnType != LSLType.Void)
                 {
-                    returnString = LSLTypeTools.ToLSLTypeString(ReturnType) + " ";
+                    returnString = ReturnType.ToLSLTypeString() + " ";
                 }
 
                 var paramNames = Parameters.Select(x =>
                 {
                     if (!x.Variadic)
                     {
-                        return LSLTypeTools.ToLSLTypeString(x.Type) + " " + x.Name;
+                        return x.Type.ToLSLTypeString() + " " + x.Name;
                     }
                     return "params " + x.Name + "...";
                 });

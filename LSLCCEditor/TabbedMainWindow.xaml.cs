@@ -87,21 +87,30 @@ namespace LSLCCEditor
         public static RoutedCommand SearchFind = new RoutedCommand();
         public static RoutedCommand SearchReplace = new RoutedCommand();
 
-        private readonly LSLDefaultLibraryDataProvider _libraryDataProvider = new LSLDefaultLibraryDataProvider(true,
-            LSLLibraryBaseData.StandardLsl);
+        private LSLDefaultLibraryDataProvider _libraryDataProvider;
 
-        private readonly LSLCustomValidatorServiceProvider _validatorServices;
+        private LSLCustomValidatorServiceProvider _validatorServices;
+
         private bool _droppingTab;
         private bool _settingLibraryMenuFromTab;
         private Timer _tabDragTimer;
 
         public TabbedMainWindow()
         {
+
 #if !DEBUG
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 #endif
 
+            Loaded += OnLoaded;
             InitializeComponent();
+            
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            _libraryDataProvider = new LSLDefaultLibraryDataProvider(true,
+            LSLLibraryBaseData.StandardLsl);
 
             _validatorServices = new LSLCustomValidatorServiceProvider
             {
