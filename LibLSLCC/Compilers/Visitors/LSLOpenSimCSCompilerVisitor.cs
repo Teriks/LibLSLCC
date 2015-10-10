@@ -134,6 +134,7 @@ private static class UTILITIES
             _creatingGlobalsClass = false;
             _indentLevel = 0;
             _binOpsUsed.Clear();
+            _modInvokeCache.Clear();
         }
 
         #region Expressions
@@ -387,7 +388,8 @@ private static class UTILITIES
             };
 
 
-        private bool _inModInvokeParameters;
+        //a cache of function names for which ModInvoke is required
+        readonly HashSet<string> _modInvokeCache = new HashSet<string>(); 
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
@@ -406,9 +408,8 @@ private static class UTILITIES
                 Writer.Write(modInvokeFunction + "(\"" + node.Name + "\"" + afterName);
 
 
-                _inModInvokeParameters = true;
+                _modInvokeCache.Add(libDataNode.Name);
                 VisitFunctionCallParameters(node.ParameterListNode);
-                _inModInvokeParameters = false;
 
                 Writer.Write(")");
             }
@@ -591,7 +592,31 @@ private static class UTILITIES
 
         public override bool VisitFloatLiteral(ILSLFloatLiteralNode node)
         {
-            var box = (!(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode)) || _inModInvokeParameters;
+            bool parentIsFunctionCall = false;
+            var parentExpressionList = node.Parent as LSLExpressionListNode;
+            LSLFunctionCallNode parentFunctionCallNode = null;
+            if (parentExpressionList != null)
+            {
+                parentFunctionCallNode = node.Parent.Parent as LSLFunctionCallNode;
+                if (parentFunctionCallNode != null)
+                {
+                    parentIsFunctionCall = true;
+                }
+            }
+
+            bool inModInvokeTopLevel = false;
+
+            if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
+            {
+                var libDataNode =
+                    Settings.LibraryData.GetLibraryFunctionSignatures(parentFunctionCallNode.Name)
+                        .First(x => x.SignatureMatches(parentFunctionCallNode.Signature));
+
+                inModInvokeTopLevel = libDataNode.UsesOsModInvoke();
+            }
+
+            var box = !parentIsFunctionCall || inModInvokeTopLevel;
+
 
             if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
             {
@@ -628,7 +653,31 @@ private static class UTILITIES
 
         public override bool VisitIntegerLiteral(ILSLIntegerLiteralNode node)
         {
-            var box = (!(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode)) || _inModInvokeParameters;
+            bool parentIsFunctionCall = false;
+            var parentExpressionList = node.Parent as LSLExpressionListNode;
+            LSLFunctionCallNode parentFunctionCallNode = null;
+            if (parentExpressionList != null)
+            {
+                parentFunctionCallNode = node.Parent.Parent as LSLFunctionCallNode;
+                if (parentFunctionCallNode != null)
+                {
+                    parentIsFunctionCall = true;
+                }
+            }
+
+            bool inModInvokeTopLevel = false;
+
+            if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
+            {
+                var libDataNode =
+                    Settings.LibraryData.GetLibraryFunctionSignatures(parentFunctionCallNode.Name)
+                        .First(x => x.SignatureMatches(parentFunctionCallNode.Signature));
+
+                inModInvokeTopLevel = libDataNode.UsesOsModInvoke();
+            }
+
+            var box = !parentIsFunctionCall || inModInvokeTopLevel;
+
 
             if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
             {
@@ -698,7 +747,31 @@ private static class UTILITIES
 
         public override bool VisitStringLiteral(ILSLStringLiteralNode node)
         {
-            var box = (!(node.Parent is LSLExpressionListNode && node.Parent.Parent is LSLFunctionCallNode)) || _inModInvokeParameters;
+            bool parentIsFunctionCall = false;
+            var parentExpressionList = node.Parent as LSLExpressionListNode;
+            LSLFunctionCallNode parentFunctionCallNode = null;
+            if (parentExpressionList != null)
+            {
+                parentFunctionCallNode = node.Parent.Parent as LSLFunctionCallNode;
+                if (parentFunctionCallNode != null)
+                {
+                    parentIsFunctionCall = true;
+                }
+            }
+
+            bool inModInvokeTopLevel = false;
+
+            if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
+            {
+                var libDataNode =
+                    Settings.LibraryData.GetLibraryFunctionSignatures(parentFunctionCallNode.Name)
+                        .First(x => x.SignatureMatches(parentFunctionCallNode.Signature));
+
+                inModInvokeTopLevel = libDataNode.UsesOsModInvoke();
+            }
+
+            var box = !parentIsFunctionCall || inModInvokeTopLevel;
+
 
             if (box)
             {
