@@ -72,7 +72,7 @@ namespace lslcc
             Console.WriteLine("======================================" + Environment.NewLine);
             Console.WriteLine("-addonlibrarys:"+Environment.NewLine);
             Console.WriteLine("Set the available add-on library's when compiling ( Separated by semi-colons ; )");
-            Console.WriteLine("All acceptable values are: ossl;os-mod-api;os-lightshare;os-bullet-physics" + Environment.NewLine);
+            Console.WriteLine("All acceptable values are: ossl;os-mod-api;os-lightshare;os-bullet-physics;os-json-store" + Environment.NewLine);
             Console.WriteLine("======================================" + Environment.NewLine);
             Console.WriteLine("-h: help");
             Console.WriteLine("-v: lslcc, version and info");
