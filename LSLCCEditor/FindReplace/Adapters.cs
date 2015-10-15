@@ -55,55 +55,55 @@ using TextBox = System.Windows.Controls.TextBox;
 
 #endregion
 
-namespace FindReplace
+namespace LSLCCEditor.FindReplace
 {
     /// <summary>
     ///     Adapter for Avalonedit TextEditor
     /// </summary>
     public class TextEditorAdapter : IEditor
     {
-        private readonly TextEditor te;
+        private readonly TextEditor _te;
 
         public TextEditorAdapter(TextEditor editor)
         {
-            te = editor;
+            _te = editor;
         }
 
         public string Text
         {
-            get { return te.Text; }
+            get { return _te.Text; }
         }
 
         public int SelectionStart
         {
-            get { return te.SelectionStart; }
+            get { return _te.SelectionStart; }
         }
 
         public int SelectionLength
         {
-            get { return te.SelectionLength; }
+            get { return _te.SelectionLength; }
         }
 
         public void BeginChange()
         {
-            te.BeginChange();
+            _te.BeginChange();
         }
 
         public void EndChange()
         {
-            te.EndChange();
+            _te.EndChange();
         }
 
         public void Select(int start, int length)
         {
-            te.Select(start, length);
-            var loc = te.Document.GetLocation(start);
-            te.ScrollTo(loc.Line, loc.Column);
+            _te.Select(start, length);
+            var loc = _te.Document.GetLocation(start);
+            _te.ScrollTo(loc.Line, loc.Column);
         }
 
-        public void Replace(int start, int length, string ReplaceWith)
+        public void Replace(int start, int length, string replaceWith)
         {
-            te.Document.Replace(start, length, ReplaceWith);
+            _te.Document.Replace(start, length, replaceWith);
         }
     }
 
@@ -113,46 +113,46 @@ namespace FindReplace
     /// </summary>
     public class TextBoxAdapter : IEditor
     {
-        private readonly TextBox te;
+        private readonly TextBox _te;
 
         public TextBoxAdapter(TextBox editor)
         {
-            te = editor;
+            _te = editor;
         }
 
         public string Text
         {
-            get { return te.Text; }
+            get { return _te.Text; }
         }
 
         public int SelectionStart
         {
-            get { return te.SelectionStart; }
+            get { return _te.SelectionStart; }
         }
 
         public int SelectionLength
         {
-            get { return te.SelectionLength; }
+            get { return _te.SelectionLength; }
         }
 
         public void BeginChange()
         {
-            te.BeginChange();
+            _te.BeginChange();
         }
 
         public void EndChange()
         {
-            te.EndChange();
+            _te.EndChange();
         }
 
         public void Select(int start, int length)
         {
-            te.Select(start, length);
+            _te.Select(start, length);
         }
 
-        public void Replace(int start, int length, string ReplaceWith)
+        public void Replace(int start, int length, string replaceWith)
         {
-            te.Text = te.Text.Substring(0, start) + ReplaceWith + te.Text.Substring(start + length);
+            _te.Text = _te.Text.Substring(0, start) + replaceWith + _te.Text.Substring(start + length);
         }
     }
 
@@ -163,60 +163,60 @@ namespace FindReplace
     /// </summary>
     public class RichTextBoxAdapter : IEditor
     {
-        private readonly RichTextBox rtb;
-        private TextRange oldsel;
+        private readonly RichTextBox _rtb;
+        private TextRange _oldsel;
 
         public RichTextBoxAdapter(RichTextBox editor)
         {
-            rtb = editor;
+            _rtb = editor;
         }
 
         public string Text
         {
-            get { return new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd).Text; }
+            get { return new TextRange(_rtb.Document.ContentStart, _rtb.Document.ContentEnd).Text; }
         }
 
         public int SelectionStart
         {
-            get { return GetPos(rtb.Document.ContentStart, rtb.Selection.Start); }
+            get { return GetPos(_rtb.Document.ContentStart, _rtb.Selection.Start); }
         }
 
         public int SelectionLength
         {
-            get { return rtb.Selection.Text.Length; }
+            get { return _rtb.Selection.Text.Length; }
         }
 
         public void BeginChange()
         {
-            rtb.BeginChange();
+            _rtb.BeginChange();
         }
 
         public void EndChange()
         {
-            rtb.EndChange();
+            _rtb.EndChange();
         }
 
         public void Select(int start, int length)
         {
-            var tp = rtb.Document.ContentStart;
-            rtb.Selection.Select(GetPoint(tp, start), GetPoint(tp, start + length));
-            rtb.ScrollToVerticalOffset(rtb.Selection.Start.GetCharacterRect(LogicalDirection.Forward).Top);
-            rtb.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, Brushes.Yellow);
-            oldsel = new TextRange(rtb.Selection.Start, rtb.Selection.End);
-            rtb.SelectionChanged += rtb_SelectionChanged;
+            var tp = _rtb.Document.ContentStart;
+            _rtb.Selection.Select(GetPoint(tp, start), GetPoint(tp, start + length));
+            _rtb.ScrollToVerticalOffset(_rtb.Selection.Start.GetCharacterRect(LogicalDirection.Forward).Top);
+            _rtb.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, Brushes.Yellow);
+            _oldsel = new TextRange(_rtb.Selection.Start, _rtb.Selection.End);
+            _rtb.SelectionChanged += rtb_SelectionChanged;
         }
 
-        public void Replace(int start, int length, string ReplaceWith)
+        public void Replace(int start, int length, string replaceWith)
         {
-            var tp = rtb.Document.ContentStart;
+            var tp = _rtb.Document.ContentStart;
             var tr = new TextRange(GetPoint(tp, start), GetPoint(tp, start + length));
-            tr.Text = ReplaceWith;
+            tr.Text = replaceWith;
         }
 
         private void rtb_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            oldsel.ApplyPropertyValue(TextElement.BackgroundProperty, null);
-            rtb.SelectionChanged -= rtb_SelectionChanged;
+            _oldsel.ApplyPropertyValue(TextElement.BackgroundProperty, null);
+            _rtb.SelectionChanged -= rtb_SelectionChanged;
         }
 
         /*private static TextPointer GetPointOld(TextPointer start, int x)
@@ -256,26 +256,26 @@ namespace FindReplace
 
     internal class WFTextBoxAdapter : IEditor
     {
-        private readonly TextBoxBase tb;
+        private readonly TextBoxBase _tb;
 
         public WFTextBoxAdapter(TextBoxBase ttb)
         {
-            tb = ttb;
+            _tb = ttb;
         }
 
         public string Text
         {
-            get { return tb.Text; }
+            get { return _tb.Text; }
         }
 
         public int SelectionStart
         {
-            get { return tb.SelectionStart; }
+            get { return _tb.SelectionStart; }
         }
 
         public int SelectionLength
         {
-            get { return tb.SelectionLength; }
+            get { return _tb.SelectionLength; }
         }
 
         public void BeginChange()
@@ -288,13 +288,13 @@ namespace FindReplace
 
         public void Select(int start, int length)
         {
-            tb.Select(start, length);
-            tb.ScrollToCaret();
+            _tb.Select(start, length);
+            _tb.ScrollToCaret();
         }
 
-        public void Replace(int start, int length, string ReplaceWith)
+        public void Replace(int start, int length, string replaceWith)
         {
-            tb.Text = tb.Text.Substring(0, start) + ReplaceWith + tb.Text.Substring(start + length);
+            _tb.Text = _tb.Text.Substring(0, start) + replaceWith + _tb.Text.Substring(start + length);
         }
     }
 
@@ -302,12 +302,15 @@ namespace FindReplace
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is TextEditor)
-                return new TextEditorAdapter(value as TextEditor);
-            if (value is TextBox)
-                return new TextBoxAdapter(value as TextBox);
-            if (value is RichTextBox)
-                return new RichTextBoxAdapter(value as RichTextBox);
+            var editor = value as TextEditor;
+            if (editor != null)
+                return new TextEditorAdapter(editor);
+            var box = value as TextBox;
+            if (box != null)
+                return new TextBoxAdapter(box);
+            var textBox = value as RichTextBox;
+            if (textBox != null)
+                return new RichTextBoxAdapter(textBox);
             return null;
         }
 

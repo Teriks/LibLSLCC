@@ -47,34 +47,34 @@ using System.Windows.Input;
 
 #endregion
 
-namespace FindReplace
+namespace LSLCCEditor.FindReplace
 {
     /// <summary>
     ///     Interaction logic for FindReplaceDialog.xaml
     /// </summary>
     public partial class FindReplaceDialog : Window
     {
-        private readonly FindReplaceMgr TheVM;
+        private readonly FindReplaceMgr _theVm;
 
-        public FindReplaceDialog(FindReplaceMgr theVM)
+        public FindReplaceDialog(FindReplaceMgr theVm)
         {
-            DataContext = TheVM = theVM;
+            DataContext = _theVm = theVm;
             InitializeComponent();
         }
 
         private void FindNextClick(object sender, RoutedEventArgs e)
         {
-            TheVM.FindNext();
+            _theVm.FindNext();
         }
 
         private void ReplaceClick(object sender, RoutedEventArgs e)
         {
-            TheVM.Replace();
+            _theVm.Replace();
         }
 
         private void ReplaceAllClick(object sender, RoutedEventArgs e)
         {
-            TheVM.ReplaceAll();
+            _theVm.ReplaceAll();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)

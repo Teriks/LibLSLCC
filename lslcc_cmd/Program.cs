@@ -173,7 +173,7 @@ namespace lslcc
                                 baseLibraryData = LSLLibraryBaseData.OpensimLsl;
                                 break;
                             default:
-                                Console.WriteLine(string.Format("Base library name '{0}' not recognized, use -h for help", baseLib));
+                                Console.WriteLine("Base library name '{0}' not recognized, use -h for help", baseLib);
                                 return;
                         }
                         break;
@@ -259,6 +259,11 @@ namespace lslcc
             if (libraries.Contains("os-lightshare"))
             {
                 libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimWindlight;
+            }
+
+            if (libraries.Contains("os-json-store"))
+            {
+                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimJsonStore;
             }
 
 

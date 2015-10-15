@@ -55,8 +55,7 @@ namespace LibLSLCC.CodeValidator.Components
             ExpressionValidator = new LSLDefaultExpressionValidator();
 
             MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(false,
-                LSLLibraryBaseData.StandardLsl,
-                LSLLibraryDataAdditions.None);
+                LSLLibraryBaseData.StandardLsl);
 
             SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
             SyntaxWarningListener = new LSLDefaultSyntaxWarningListener();

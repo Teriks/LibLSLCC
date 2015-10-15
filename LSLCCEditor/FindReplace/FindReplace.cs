@@ -56,7 +56,7 @@ using ICSharpCode.AvalonEdit;
 
 #endregion
 
-namespace FindReplace
+namespace LSLCCEditor.FindReplace
 {
     /// <summary>
     ///     This class ensures that the settings and text to be found is preserved when the find/replace dialog is closed
@@ -77,7 +77,7 @@ namespace FindReplace
         /// <summary>
         ///     Instance of the dialog window
         /// </summary>
-        private FindReplaceDialog dialog
+        private FindReplaceDialog Dialog
         {
             get
             {
@@ -123,15 +123,15 @@ namespace FindReplace
         /// <summary>
         ///     Constructs a regular expression according to the currently selected search parameters.
         /// </summary>
-        /// <param name="ForceLeftToRight"></param>
+        /// <param name="forceLeftToRight"></param>
         /// <returns>The regular expression.</returns>
-        public Regex GetRegEx(bool ForceLeftToRight = false)
+        public Regex GetRegEx(bool forceLeftToRight = false)
         {
             try
             {
                 Regex r;
                 var o = RegexOptions.None;
-                if (SearchUp && !ForceLeftToRight)
+                if (SearchUp && !forceLeftToRight)
                     o = o | RegexOptions.RightToLeft;
                 if (!CaseSensitive)
                     o = o | RegexOptions.IgnoreCase;
@@ -155,35 +155,35 @@ namespace FindReplace
             }
         }
 
-        public void ReplaceAll(bool AskBefore = true)
+        public void ReplaceAll(bool askBefore = true)
         {
             try
             {
-                var CE = GetCurrentEditor();
-                if (CE == null) return;
+                var ce = GetCurrentEditor();
+                if (ce == null) return;
 
-                if (!AskBefore ||
+                if (!askBefore ||
                     MessageBox.Show(
                         "Do you really want to replace all occurrences of '" + TextToFind + "' with '" + ReplacementText +
                         "'?",
                         "Replace all", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation) ==
                     MessageBoxResult.Yes)
                 {
-                    var InitialEditor = CurrentEditor;
+                    var initialEditor = CurrentEditor;
                     // loop through all editors, until we are back at the starting editor                
                     do
                     {
                         var r = GetRegEx(true); // force left to right, otherwise indices are screwed up
                         var offset = 0;
-                        CE.BeginChange();
-                        foreach (Match m in r.Matches(CE.Text))
+                        ce.BeginChange();
+                        foreach (Match m in r.Matches(ce.Text))
                         {
-                            CE.Replace(offset + m.Index, m.Length, ReplacementText);
+                            ce.Replace(offset + m.Index, m.Length, ReplacementText);
                             offset += ReplacementText.Length - m.Length;
                         }
-                        CE.EndChange();
-                        CE = GetNextEditor();
-                    } while (CurrentEditor != InitialEditor);
+                        ce.EndChange();
+                        ce = GetNextEditor();
+                    } while (CurrentEditor != initialEditor);
                 }
             }
             catch (FindReplaceMalformedRegex e)
@@ -197,12 +197,12 @@ namespace FindReplace
         /// </summary>
         public void ShowAsFind(Window owner)
         {
-            dialog.Owner = owner;
-            dialog.tabMain.SelectedIndex = 0;
-            dialog.Show();
-            dialog.Activate();
-            dialog.txtFind.Focus();
-            dialog.txtFind.SelectAll();
+            Dialog.Owner = owner;
+            Dialog.tabMain.SelectedIndex = 0;
+            Dialog.Show();
+            Dialog.Activate();
+            Dialog.txtFind.Focus();
+            Dialog.txtFind.SelectAll();
         }
 
         public void ShowAsFind(TextEditor target, Window owner)
@@ -216,12 +216,12 @@ namespace FindReplace
         /// </summary>
         public void ShowAsReplace(Window owner)
         {
-            dialog.Owner = owner;
-            dialog.tabMain.SelectedIndex = 1;
-            dialog.Show();
-            dialog.Activate();
-            dialog.txtFind2.Focus();
-            dialog.txtFind2.SelectAll();
+            Dialog.Owner = owner;
+            Dialog.tabMain.SelectedIndex = 1;
+            Dialog.Show();
+            Dialog.Activate();
+            Dialog.txtFind2.Focus();
+            Dialog.txtFind2.SelectAll();
         }
 
         public void ShowAsReplace(TextEditor target, Window owner)
@@ -231,20 +231,20 @@ namespace FindReplace
         }
 
         //static TextEditor txtCode;
-        public void FindNext(object target, bool InvertLeftRight = false)
+        public void FindNext(object target, bool invertLeftRight = false)
         {
             CurrentEditor = target;
-            FindNext(InvertLeftRight);
+            FindNext(invertLeftRight);
         }
 
-        public void FindNext(bool InvertLeftRight = false)
+        public void FindNext(bool invertLeftRight = false)
         {
             try
             {
-                var CE = GetCurrentEditor();
-                if (CE == null) return;
+                var ce = GetCurrentEditor();
+                if (ce == null) return;
                 Regex r;
-                if (InvertLeftRight)
+                if (invertLeftRight)
                 {
                     SearchUp = !SearchUp;
                     r = GetRegEx();
@@ -253,36 +253,36 @@ namespace FindReplace
                 else
                     r = GetRegEx();
 
-                var m = r.Match(CE.Text,
+                var m = r.Match(ce.Text,
                     r.Options.HasFlag(RegexOptions.RightToLeft)
-                        ? CE.SelectionStart
-                        : CE.SelectionStart + CE.SelectionLength);
+                        ? ce.SelectionStart
+                        : ce.SelectionStart + ce.SelectionLength);
                 if (m.Success)
                 {
-                    CE.Select(m.Index, m.Length);
+                    ce.Select(m.Index, m.Length);
                 }
                 else
                 {
                     // we have reached the end of the document
                     // start again from the beginning/end,
-                    var OldEditor = CurrentEditor;
+                    var oldEditor = CurrentEditor;
                     do
                     {
                         if (ShowSearchIn)
                         {
-                            CE = GetNextEditor(r.Options.HasFlag(RegexOptions.RightToLeft));
-                            if (CE == null) return;
+                            ce = GetNextEditor(r.Options.HasFlag(RegexOptions.RightToLeft));
+                            if (ce == null) return;
                         }
                         if (r.Options.HasFlag(RegexOptions.RightToLeft))
-                            m = r.Match(CE.Text, CE.Text.Length);
+                            m = r.Match(ce.Text, ce.Text.Length);
                         else
-                            m = r.Match(CE.Text, 0);
+                            m = r.Match(ce.Text, 0);
                         if (m.Success)
                         {
-                            CE.Select(m.Index, m.Length);
+                            ce.Select(m.Index, m.Length);
                             break;
                         }
-                    } while (CurrentEditor != OldEditor);
+                    } while (CurrentEditor != oldEditor);
                 }
             }
             catch (FindReplaceMalformedRegex e)
@@ -300,16 +300,16 @@ namespace FindReplace
         {
             try
             {
-                var CE = GetCurrentEditor();
-                if (CE == null) return;
+                var ce = GetCurrentEditor();
+                if (ce == null) return;
 
                 // if currently selected text matches -> replace; anyways, find the next match
                 var r = GetRegEx();
-                var s = CE.Text.Substring(CE.SelectionStart, CE.SelectionLength); // CE.SelectedText;
+                var s = ce.Text.Substring(ce.SelectionStart, ce.SelectionLength); // CE.SelectedText;
                 var m = r.Match(s);
                 if (m.Success && m.Index == 0 && m.Length == s.Length)
                 {
-                    CE.Replace(CE.SelectionStart, CE.SelectionLength, ReplacementText);
+                    ce.Replace(ce.SelectionStart, ce.SelectionLength, ReplacementText);
                     //CE.SelectedText = ReplacementText;
                 }
 
@@ -326,7 +326,7 @@ namespace FindReplace
         /// </summary>
         public void CloseWindow()
         {
-            dialog.Close();
+            Dialog.Close();
         }
 
         [Serializable]
@@ -362,7 +362,7 @@ namespace FindReplace
 
         public CommandBinding FindBinding
         {
-            get { return new CommandBinding(ApplicationCommands.Find, (s, e) => ShowAsFind(dialog.Owner)); }
+            get { return new CommandBinding(ApplicationCommands.Find, (s, e) => ShowAsFind(Dialog.Owner)); }
         }
 
         public CommandBinding FindNextBinding
@@ -379,7 +379,7 @@ namespace FindReplace
             get
             {
                 return new CommandBinding(ApplicationCommands.Replace,
-                    (s, e) => { if (AllowReplace) ShowAsReplace(dialog.Owner); });
+                    (s, e) => { if (AllowReplace) ShowAsReplace(Dialog.Owner); });
             }
         }
 
@@ -636,7 +636,7 @@ namespace FindReplace
         /// <param name="length"></param>
         void Select(int start, int length);
 
-        void Replace(int start, int length, string ReplaceWith);
+        void Replace(int start, int length, string replaceWith);
 
         /// <summary>
         ///     This method is called before a replace all operation.

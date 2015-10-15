@@ -105,22 +105,22 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
         }
 
+        // ReSharper disable once ConvertToAutoProperty
         public Dictionary<string, LSLStateScopeNode> DefinedStates
         {
             get { return _definedStates; }
-            private set { _definedStates = value; }
         }
 
+        // ReSharper disable once ConvertToAutoProperty
         public Dictionary<string, LSLPreDefinedFunctionSignature> FunctionDefinitions
         {
             get { return _functionDefinitions; }
-            private set { _functionDefinitions = value; }
         }
 
+        // ReSharper disable once ConvertToAutoProperty
         public Dictionary<string, LSLVariableDeclarationNode> GlobalVariables
         {
             get { return _globalVariables; }
-            private set { _globalVariables = value; }
         }
 
         public bool InsideEventHandlerBody

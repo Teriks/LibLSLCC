@@ -57,10 +57,10 @@ namespace LibLSLCC.Collections
         private readonly HashSet<TValue> _usedValues = new HashSet<TValue>();
         private Dictionary<TKey, TValue> _items = new Dictionary<TKey, TValue>();
 
+        // ReSharper disable once ConvertToAutoProperty
         public Dictionary<TKey, TValue> Items
         {
             get { return _items; }
-            private set { _items = value; }
         }
 
 
@@ -81,8 +81,8 @@ namespace LibLSLCC.Collections
 
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            _usedValues.Add(item.Value);
             Items.Add(item.Key, item.Value);
+            _usedValues.Add(item.Value);
             InvokeOnAdd(item.Key, item.Value);
         }
 

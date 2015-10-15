@@ -45,10 +45,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
@@ -74,8 +76,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private readonly Regex _clickActionConstants =
             new Regex("<span title=\"integer [A-Z_]*? = (.*?);.*?\">([A-Z_]*?)</span>");
 
-        private readonly WebClient _client = new WebClient();
-
         private readonly Regex _constantInKeywordsAll =
             new Regex(
                 "(integer|float|string|vector|rotation|list|key)\\s+<a\\s+href\\s*=\\s*\".*?\"\\s+title=\".*?\">(.*?)</a> = (.*)");
@@ -97,8 +97,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "Constant: <a href=\"/wiki/.*?\" title=\"(.*?)\" class=\"mw-redirect\">(?:integer|float|vector|string|list|key|quaternion)</a> <strong class=\"selflink\"><span title=\".*?\">(.*?)</span></strong>\\s*=\\s*(.*?); </span>");
 
-        private readonly Regex _eventPageCategory =
-            new Regex("<h2>Pages in category \"LSL Events\"</h2>((?:.|(?:\n|\r|\r\n))*?)</tr></table>");
+        private readonly Regex _deprecatedMarker  = new Regex("<td style=\"color:white;background:#990000; border-width:1px;\" title=\".*?\" width=\"100%\"> <b>Deprecated");
+
 
         private readonly Regex _eventPageNavigation =
             new Regex(
@@ -114,8 +114,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "(integer|float|string|vector|rotation|list|key|void)\\s+<a\\s+href\\s*=\\s*\".*?\"\\s+title=\".*?\">(.*?)</a>((?:.*?)\\))");
 
-        private readonly Regex _functionPageCategory =
-            new Regex("<h2>Pages in category \"LSL Functions\"</h2>((?:.|(?:\n|\r|\r\n))*?)</tr></table>");
 
         private readonly Regex _functionPageNavigation =
             new Regex(
@@ -131,6 +129,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             ";)");
 
         private readonly Regex _hrefLink = new Regex("href=\"(/wiki/.*?)\"");
+        private readonly Regex _matchConstantllUnescapeUrl = new Regex(@"llUnescapeUrl\((.*?)\)");
+        private readonly Regex _mwPagesContent = new Regex("<div id=\"mw-pages\">(.*?)</table>", RegexOptions.Singleline);
 
         private readonly Regex _physicsConstantTableRow =
             new Regex(
@@ -138,8 +138,28 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         private readonly IEnumerable<string> _subsets;
 
+        private readonly CachedWebDownloader _client;
+
+        public static readonly string WebCacheFileDirectory;
+
+        static SecondlifeWikiLibraryData()
+        {
+            var appDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (appDirectory != null)
+            {
+                WebCacheFileDirectory = Path.Combine(appDirectory, "SecondlifeWikiLibraryDataCache");
+            }
+            else
+            {
+                throw new Exception("Could not find the directory of the executing assembly in order to store Cache Data for type (SecondlifeWikiLibraryData.");
+            }
+        }
+
         public SecondlifeWikiLibraryData(IDocumentationProvider documentationProvider, IEnumerable<string> subsets)
         {
+            
+            _client = new CachedWebDownloader(WebCacheFileDirectory);
+
             var documentationProvider1 = documentationProvider;
             _subsets = subsets.ToList();
 
@@ -147,7 +167,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             Log.WriteLine("============================");
             Log.WriteLine("Starting scrape of " + SecondlifeWikiDomain + " ... ");
             Log.WriteLine("============================");
-
 
             foreach (var lslLibraryConstantSignature in GetLSLConstants())
             {
@@ -266,58 +285,72 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             var hexNotation = new Regex("<span title=\"Hexadecimal notation for: (.*?)\"");
 
             var match = _constantSignature.Match(page);
-            if (match.Success)
+
+            if (!match.Success) return null;
+
+
+            var val = match.Groups[3].ToString();
+            string strValue;
+
+
+            var type = LSLTypeTools.FromLSLTypeString(match.Groups[1].ToString());
+
+
+            if (type == LSLType.Integer || type == LSLType.Float)
             {
-                var val = match.Groups[3].ToString();
-                string strValue;
-
-
-                var type = LSLTypeTools.FromLSLTypeString(match.Groups[1].ToString());
-
-
-                if (type == LSLType.Integer || type == LSLType.Float)
+                var hxMatch = hexNotation.Match(val);
+                if (hxMatch.Success)
                 {
-                    var hxMatch = hexNotation.Match(val);
-                    if (hxMatch.Success)
-                    {
-                        strValue = hxMatch.Groups[1].ToString();
-                    }
-                    else if (val.Contains("x"))
-                    {
-                        strValue = Convert.ToInt32(val, 16).ToString(CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        strValue = val;
-                    }
+                    strValue = hxMatch.Groups[1].ToString();
                 }
-                else if (type == LSLType.Rotation || type == LSLType.Vector)
+                else if (val.Contains("x"))
                 {
-                    strValue = val.Replace("&lt;", "").Replace("&gt;", "");
-                }
-                else if (type == LSLType.String || type == LSLType.Key)
-                {
-                    strValue = val.Replace("&quot;", "");
+                    strValue = Convert.ToInt32(val, 16).ToString(CultureInfo.InvariantCulture);
                 }
                 else
                 {
                     strValue = val;
                 }
-
-
-                var constantSignature =
-                    new LSLLibraryConstantSignature(type,
-                        match.Groups[2].ToString(), strValue);
-
-
-                constantSignature.SetSubsets(_subsets);
-
-                Log.WriteLine("SecondlifeWikiLibraryData: retrieved constant {0}; from {1}",
-                    constantSignature.SignatureString, url);
-
-                return constantSignature;
             }
-            return null;
+            else if (type == LSLType.Rotation || type == LSLType.Vector)
+            {
+                strValue = val.Replace("&lt;", "").
+                               Replace("&gt;", "").
+                               Replace("<","").
+                               Replace(">","");
+            }
+            else if (type == LSLType.String || type == LSLType.Key)
+            {
+                strValue = val.Replace("&quot;", "").
+                               Replace("\"","");
+
+                var specialUnicode = _matchConstantllUnescapeUrl.Match(strValue);
+                if (specialUnicode.Success)
+                {
+                    strValue = HttpUtility.UrlDecode(specialUnicode.Groups[1].ToString());
+                }
+            }
+            else
+            {
+                strValue = val;
+            }
+
+
+            var constantSignature =
+                new LSLLibraryConstantSignature(type,
+                    match.Groups[2].ToString(), strValue) {Deprecated = _deprecatedMarker.IsMatch(page)};
+
+
+
+
+            constantSignature.SetSubsets(_subsets);
+
+            Log.WriteLineWithHeader(
+                "[SecondlifeWikiLibraryData]: ", "Retrieved" + (constantSignature.Deprecated ? " (DEPRECATED) " : "") +
+                "constant {0}; from {1}",
+                constantSignature.SignatureString, url);
+
+            return constantSignature;
         }
 
         private LSLLibraryFunctionSignature GetSigFromFunctionPage(string url)
@@ -325,22 +358,29 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             var page = _client.DownloadString(url);
 
             var matches = _functionSignature.Regex.Matches(page);
-            if (matches.Count != 0)
-            {
-                foreach (Match match in matches)
-                {
-                    var functionSignature = LSLLibraryFunctionSignature.Parse(match.Groups[1].ToString());
-                    functionSignature.SetSubsets(_subsets);
-                    if (url.ToLower() == SecondlifeWikiBaseUrl + functionSignature.Name.ToLower())
-                    {
-                        Log.WriteLine("SecondlifeWikiLibraryData: retrieved function {0}; from {1}",
-                            functionSignature.SignatureString,
-                            url);
+            if (matches.Count == 0) return null;
 
-                        return functionSignature;
-                    }
-                }
-                return null;
+
+            foreach (Match match in matches)
+            {
+                var functionSignature = LSLLibraryFunctionSignature.Parse(match.Groups[1].ToString());
+
+
+                functionSignature.Deprecated = _deprecatedMarker.IsMatch(page);
+
+                functionSignature.SetSubsets(_subsets);
+
+
+                if (url.ToLower() != SecondlifeWikiBaseUrl + functionSignature.Name.ToLower()) continue;
+
+
+                Log.WriteLineWithHeader(
+                "[SecondlifeWikiLibraryData]: ", "Retrieved" + (functionSignature.Deprecated ? " (DEPRECATED) " : "") +
+                    "function {0}; from {1}",
+                    functionSignature.SignatureString,
+                    url);
+
+                return functionSignature;
             }
             return null;
         }
@@ -355,7 +395,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var eventSignature = LSLLibraryEventSignature.Parse(match.Groups[1].ToString());
                 eventSignature.SetSubsets(_subsets);
 
-                Log.WriteLine("SecondlifeWikiLibraryData: retrieved event {0}; from {1}",
+                Log.WriteLineWithHeader(
+                "[SecondlifeWikiLibraryData]: ", "Retrieved event {0}; from {1}",
                     eventSignature.SignatureString, url);
 
                 return eventSignature;
@@ -367,7 +408,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         {
             var currentPage = SecondlifeWikiBaseUrl + "Category:LSL_Events";
 
-            Log.WriteLine("SecondlifeWikiLibraryData: navigating to events page {0}", currentPage);
+            Log.WriteLineWithHeader(
+                "[SecondlifeWikiLibraryData]: ", "Navigating to events page {0}", currentPage);
 
             var page = _client.DownloadString(currentPage);
 
@@ -378,7 +420,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             do
             {
-                var searchContent = _eventPageCategory.Match(page).Groups[1].ToString();
+                var searchContent = _mwPagesContent.Match(page).Value;
 
                 foreach (Match linkMatch in _hrefLink.Matches(searchContent))
                 {
@@ -389,7 +431,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                         {
                             var pageUrl = SecondlifeWikiDomain + linkRel;
 
-                            Log.WriteLine("SecondlifeWikiLibraryData: discovered events page {0}", pageUrl);
+                            Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Discovered events page {0}", pageUrl);
 
                             yield return pageUrl;
                             givenLinks.Add(linkRel);
@@ -401,10 +443,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 match = _eventPageNavigation.Match(page);
                 currentPage = SecondlifeWikiDomain + match.Groups[1].ToString().Replace("&amp;", "&");
 
-                Log.WriteLine("SecondlifeWikiLibraryData: navigating to events page {0}", currentPage);
+                if (currentPage.Trim() == SecondlifeWikiDomain) break;
 
+                Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Navigating to events page {0}", currentPage);
 
                 page = Encoding.UTF8.GetString(_client.DownloadData(currentPage));
+
             } while (match.Success);
         }
 
@@ -413,7 +457,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             var currentPage = SecondlifeWikiBaseUrl + "Category:LSL_Functions";
             var givenLinks = new HashSet<string>();
 
-            Log.WriteLine("SecondlifeWikiLibraryData: navigating to functions page {0}", currentPage);
+            Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Navigating to functions page {0}", currentPage);
             var page = _client.DownloadString(currentPage);
 
 
@@ -421,16 +465,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             while (match.Success)
             {
-                var searchContent = _functionPageCategory.Match(page).Groups[1].ToString();
+                var searchContent = _mwPagesContent.Match(page);
 
-                foreach (Match linkMatch in  _hrefLink.Matches(searchContent))
+                foreach (Match linkMatch in  _hrefLink.Matches(searchContent.Value))
                 {
                     var linkRel = linkMatch.Groups[1].ToString();
 
                     if (!givenLinks.Contains(linkRel))
                     {
                         var pageUrl = SecondlifeWikiDomain + linkRel;
-                        Log.WriteLine("SecondlifeWikiLibraryData: discovered function page {0}", pageUrl);
+                        Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Discovered function page {0}", pageUrl);
                         yield return pageUrl;
                         givenLinks.Add(linkRel);
                     }
@@ -440,7 +484,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 match = _functionPageNavigation.Match(page);
                 currentPage = SecondlifeWikiDomain + match.Groups[1].ToString().Replace("&amp;", "&");
 
-                Log.WriteLine("SecondlifeWikiLibraryData: navigating to functions page {0}", currentPage);
+                if (currentPage.Trim() == SecondlifeWikiDomain) break;
+
+                Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Navigating to functions page {0}", currentPage);
 
                 page = Encoding.UTF8.GetString(_client.DownloadData(currentPage));
             }
@@ -552,6 +598,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                         strVal = webVal.Replace("&lt;", "").Replace("&gt;", "");
                     }
 
+                    if (type == LSLType.String || type == LSLType.Key)
+                    {
+                        strVal = webVal.Replace("&quot;", "").Replace("\"","");
+                    }
+
                     LSLLibraryConstantSignature result;
                     if (string.IsNullOrWhiteSpace(strVal))
                     {
@@ -586,7 +637,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             var givenLinks = new HashSet<string>();
 
-            Log.WriteLine("SecondlifeWikiLibraryData: navigating to constants page {0}", currentPage);
+            Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Navigating to constants page {0}", currentPage);
 
             var page = _client.DownloadString(currentPage);
 
@@ -594,14 +645,17 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             while (match.Success)
             {
-                foreach (Match link in _constantPageLinks.Matches(page))
+                var content = _mwPagesContent.Match(page);
+
+
+                foreach (Match link in _constantPageLinks.Matches(content.Value))
                 {
                     var linkRel = link.Groups[1].ToString();
                     if (!givenLinks.Contains(linkRel))
                     {
-                        var pageUrl = "http://wiki.secondlife.com" + linkRel;
+                        var pageUrl = SecondlifeWikiDomain + linkRel;
 
-                        Log.WriteLine("SecondlifeWikiLibraryData: discovered constant page {0}", pageUrl);
+                        Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Discovered constant page {0}", pageUrl);
                         yield return pageUrl;
 
                         givenLinks.Add(linkRel);
@@ -610,9 +664,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
 
                 match = _constantPageNavigation.Match(page);
-                currentPage = "http://wiki.secondlife.com" + match.Groups[1].ToString().Replace("&amp;", "&");
+                currentPage = SecondlifeWikiDomain + match.Groups[1].ToString().Replace("&amp;", "&");
 
-                Log.WriteLine("SecondlifeWikiLibraryData: navigating to constants page {0}", currentPage);
+                if (currentPage.Trim() == SecondlifeWikiDomain) break;
+
+                Log.WriteLineWithHeader("[SecondlifeWikiLibraryData]: ", "Navigating to constants page {0}", currentPage);
 
                 page = Encoding.UTF8.GetString(_client.DownloadData(currentPage));
             }
@@ -646,7 +702,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     .Union(LSLConstantsFromKeywordsAll())
                     .Union(LSLConstantsFromParticlePage())
                     .Union(LSLConstantsFromClickActionPage())
-                    .Union(LSLConstantsFromChangedEventPage());
+                    .Union(LSLConstantsFromChangedEventPage()).Select(x =>
+                    {
+
+                        x.Name = x.Name.Replace(' ', '_');
+                        return x;
+                    });
         }
     }
 }

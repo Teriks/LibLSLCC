@@ -58,6 +58,9 @@ using LibraryDataScrapingTools.ScraperProxys;
 
 namespace LibraryDataScrapingTools.LibraryDataScrapers
 {
+    /// <summary>
+    /// DEPRECATED
+    /// </summary>
     public class OsslWikiLibraryDataScraper : ILibraryData
     {
         private readonly WebClient _client = new WebClient();
@@ -297,7 +300,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                         if (badParam)
                         {
-                            Log.WriteLine("OssFunctionScraper: function parameter type on wiki not recognized {0)",
+                            Log.WriteLineWithHeader("[OsslWikiLibraryDataScraper]: ", "function parameter type on wiki not recognized {0)",
                                 badParamType);
                         }
                         else
@@ -310,7 +313,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     }
                     else
                     {
-                        Log.WriteLine("OssFunctionScraper: function return type on wiki not recognized {0)",
+                        Log.WriteLineWithHeader("[OsslWikiLibraryDataScraper]: ", "function return type on wiki not recognized {0)",
                             sig.ReturnType);
                     }
                 }
@@ -325,12 +328,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             downloadString = _functionPageAllFunctionsCatagory.Match(downloadString).ToString();
 
-            Log.WriteLine("OsslWikiLibraryDataScraper: traversing function page links on {0}", functionsPage);
+            Log.WriteLineWithHeader("[OsslWikiLibraryDataScraper]: ", "traversing function page links on {0}", functionsPage);
 
             foreach (Match link in _functionPageLinks.Matches(downloadString))
             {
                 var page = "http://opensimulator.org" + link.Groups[1];
-                Log.WriteLine("OsslWikiLibraryDataScraper: discovered function page {0}", page);
+                Log.WriteLineWithHeader("[OsslWikiLibraryDataScraper]: ", "discovered function page {0}", page);
                 yield return page;
             }
         }
@@ -341,7 +344,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             var constantsList = _client.DownloadString(constantsPage);
 
-            Log.WriteLine("OsslWikiLibraryDataScraper: scraping constants from {0}", constantsPage);
+            Log.WriteLineWithHeader("[OsslWikiLibraryDataScraper]: ", "scraping constants from {0}", constantsPage);
 
             foreach (Match constant in _constantPageNames.Matches(constantsList))
             {

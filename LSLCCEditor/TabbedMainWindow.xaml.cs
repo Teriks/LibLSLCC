@@ -53,7 +53,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using FindReplace;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Exceptions;
@@ -62,6 +61,7 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers;
 using LibLSLCC.Formatter.Visitor;
 using LSLCCEditor.EditorTabUI;
+using LSLCCEditor.FindReplace;
 using Microsoft.Win32;
 
 #endregion
@@ -99,7 +99,7 @@ namespace LSLCCEditor
         {
 
 #if !DEBUG
-            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+           Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 #endif
 
             Loaded += OnLoaded;
@@ -247,34 +247,51 @@ namespace LSLCCEditor
                 File.Delete(destinationFile);
             }
 
+            bool compileSuccess = false;
             using (var outfile = File.OpenWrite(destinationFile))
             {
                 var compiler = new LSLOpenSimCSCompiler(LSLOpenSimCSCompilerSettings
                     .OpenSimClientUploadable(_validatorServices.MainLibraryDataProvider));
+
+#if !DEBUG
+
                 try
                 {
-                    try
-                    {
-                        compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
-                    }
-                    catch (LSLCompilerInternalException error)
-                    {
-                        MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
-                            "Internal Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        throw;
-                    }
+                    compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
+                    compileSuccess = true;
+                }
+                catch (LSLCompilerInternalException error)
+                {
+                    MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
+                        "Internal Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 }
                 catch (Exception error)
                 {
                     MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
                         "Unknown Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    throw;
+                    
                 }
+#else
+                compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
+#endif
+
+
             }
 
-            tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
-                "Program compiled successfully", false) {Clickable = false});
+            if (compileSuccess)
+            {
+                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
+                    "Program compiled successfully", false) {Clickable = false});
+            }
+            else
+            {
+                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error",
+                    "An internal compiler exception occurred, please report the code that caused this.", false) { Clickable = false });
+            }
         }
+
+
 
         private void SaveAs_OnClick(object sender, RoutedEventArgs e)
         {
@@ -306,22 +323,19 @@ namespace LSLCCEditor
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(tab.SourceCode));
 
-
+#if !DEBUG
             try
             {
-                try
+                using (var infile = new StreamReader(memoryStream, Encoding.UTF8))
                 {
-                    using (var infile = new StreamReader(memoryStream, Encoding.UTF8))
-                    {
-                        validated = validator.Validate(infile);
-                    }
+                    validated = validator.Validate(infile);
                 }
-                catch (LSLCodeValidatorInternalError error)
-                {
-                    MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
-                        "Internal Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    validated = null;
-                }
+            }
+            catch (LSLCodeValidatorInternalError error)
+            {
+                MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
+                    "Internal Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                validated = null;
             }
             catch (Exception error)
             {
@@ -329,10 +343,13 @@ namespace LSLCCEditor
                     "Unknown Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 validated = null;
             }
-            finally
+#else
+            using (var infile = new StreamReader(memoryStream, Encoding.UTF8))
             {
-                memoryStream.Close();
+                validated = validator.Validate(infile);
             }
+#endif
+
             return validated;
         }
 
@@ -703,13 +720,17 @@ namespace LSLCCEditor
         {
             if (tab == null)
             {
-                throw new ArgumentNullException("tab");
+                throw new ArgumentNullException(nameof(tab));
             }
 
             _settingLibraryMenuFromTab = true;
 
             LindenLsl.IsChecked = tab.BaseLibraryDataCache == LSLLibraryBaseData.StandardLsl;
             OpenSimLsl.IsChecked = !LindenLsl.IsChecked;
+
+            OsJsonStore.IsChecked = ((tab.LibraryDataAdditionsCache & LSLLibraryDataAdditions.OpenSimJsonStore) ==
+                                     LSLLibraryDataAdditions.OpenSimJsonStore);
+
 
             OsBulletPhysics.IsChecked = ((tab.LibraryDataAdditionsCache & LSLLibraryDataAdditions.OpenSimBulletPhysics) ==
                                          LSLLibraryDataAdditions.OpenSimBulletPhysics);
@@ -856,6 +877,34 @@ namespace LSLCCEditor
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
 
+
+        private void OsJsonStore_OnChecked(object sender, RoutedEventArgs e)
+        {
+            if (TabControl == null || _settingLibraryMenuFromTab) return;
+
+            var tab = TabControl.SelectedItem as EditorTab;
+            if (tab == null) return;
+
+            tab.LibraryDataAdditionsCache |= LSLLibraryDataAdditions.OpenSimJsonStore;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
+            tab.Content.Editor.UpdateHighlightingFromDataProvider();
+        }
+
+
+        private void OsJsonStore_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (TabControl == null || _settingLibraryMenuFromTab) return;
+
+            var tab = TabControl.SelectedItem as EditorTab;
+            if (tab == null) return;
+
+            tab.LibraryDataAdditionsCache &= ~LSLLibraryDataAdditions.OpenSimJsonStore;
+            tab.LibraryDataProvider.LiveFilteringLibraryDataAdditions = tab.LibraryDataAdditionsCache;
+            tab.Content.Editor.UpdateHighlightingFromDataProvider();
+        }
+
+
+
         private void OsModInvoke_OnChecked(object sender, RoutedEventArgs e)
         {
             if (TabControl == null || _settingLibraryMenuFromTab) return;
@@ -911,5 +960,7 @@ namespace LSLCCEditor
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error", location, message));
             }
         }
+
+
     }
 }

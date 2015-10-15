@@ -96,6 +96,7 @@ namespace LibLSLCC.CodeValidator.Enums
     {
         /// <summary>
         ///     Convert an LSL type name into an LSLType representation (case insensitive).
+        ///     void is not recognized
         /// </summary>
         /// <param name="typeName">LSL Type name as string.</param>
         /// <returns>An LSLType representation of said type name.</returns>

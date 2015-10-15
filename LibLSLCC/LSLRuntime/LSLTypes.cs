@@ -38,6 +38,7 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
+
 // ReSharper disable InconsistentNaming
 
 #endregion
@@ -45,7 +46,7 @@ using System.Text.RegularExpressions;
 namespace LibLSLCC.LSLRuntime
 {
     [Serializable]
-    public class LSL_Types
+    internal class LSL_Types
     {
         // Types are kept is separate .dll to avoid having to add whatever .dll it is in it to script AppDomain
 

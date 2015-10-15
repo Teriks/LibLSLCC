@@ -35,7 +35,7 @@
 // ReSharper disable InconsistentNaming
 namespace LibLSLCC.LSLRuntime
 {
-    public class OpenSimConstants
+    internal class OpenSimConstants
     {
         // Constants for cmWindlight*
         public const int WL_WATER_COLOR = 0;

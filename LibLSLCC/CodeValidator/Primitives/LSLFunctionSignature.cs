@@ -76,9 +76,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             ReturnType = returnType;
             Name = name;
 
-            ParameterCount = 0;
-            ConcreteParameterCount = 0;
-
             if (parameters == null)
             {
                 _parameters = new List<LSLParameter>();
@@ -96,12 +93,20 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     Returns the number of parameters the function signature has including variadic parameters
         /// </summary>
-        public int ParameterCount { get; set; }
+        public int ParameterCount {
+            get
+            {
+                return _parameters.Count;
+            }
+        }
 
         /// <summary>
         ///     Returns the number of non variadic parameters the function signature has
         /// </summary>
-        public int ConcreteParameterCount { get; set; }
+        public int ConcreteParameterCount
+        {
+            get { return _parameters.Count - (HasVariadicParameter ? 1 : 0); }
+        }
 
         /// <summary>
         ///     The functions LSL return type
@@ -121,6 +126,14 @@ namespace LibLSLCC.CodeValidator.Primitives
             get { return _parameters; }
         }
 
+        public IEnumerable<LSLParameter> ConcreteParameters
+        {
+            get
+            {
+                return Parameters.Take(ConcreteParameterCount);
+            }
+        } 
+
         public string SignatureString
         {
             get
@@ -131,14 +144,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                     returnString = ReturnType.ToLSLTypeString() + " ";
                 }
 
-                var paramNames = Parameters.Select(x =>
-                {
-                    if (!x.Variadic)
-                    {
-                        return x.Type.ToLSLTypeString() + " " + x.Name;
-                    }
-                    return "params " + x.Name + "...";
-                });
+                var paramNames = Parameters.Select(x => x.SignatureString);
 
                 return returnString + Name + "(" + string.Join(", ", paramNames) + ")";
             }
@@ -179,12 +185,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                         "parameter");
                 }
             }
-            else
-            {
-                ConcreteParameterCount++;
-            }
-
-            ParameterCount++;
+            
 
             parameter.ParameterIndex = _parameters.Count;
 
@@ -192,40 +193,45 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        ///     Determines if two function signatures match exactly, parameter names do not matter but parameter
-        ///     types do.
+        ///     Determines if two function signatures match exactly (including return type), parameter names do not matter but parameter types do.
         /// </summary>
         /// <param name="otherSignature">The other function signature to compare to</param>
         /// <returns>True if the two signatures are identical</returns>
-        public bool SignatureMatches(LSLFunctionSignature otherSignature)
+        public bool SignatureEquivalent(LSLFunctionSignature otherSignature)
         {
-            if (ReturnType != otherSignature.ReturnType)
-            {
-                return false;
-            }
-            if (Name != otherSignature.Name)
-            {
-                return false;
-            }
-            if (ParameterCount != otherSignature.ParameterCount)
-            {
-                return false;
-            }
-            for (var i = 0; i < ParameterCount; i++)
-            {
-                if (Parameters[i].Type != otherSignature.Parameters[i].Type)
-                {
-                    return false;
-                }
-            }
-            return true;
+
+            return LSLFunctionSignatureMatcher.SignaturesEquivalent(this, otherSignature);
         }
 
+
         /// <summary>
-        ///     This implementation of get hash code uses LSLParameter.Type.GetHashCode and LSLParameter.Type.Variadic
-        ///     in order to get a hash for the signature parameters. this makes parameters unique by type and variadic'ness
+        ///     Determines if a given LSLFunctionSignature is a duplicate definition of this function signature.
+        ///     The logic behind this is a bit different than SignatureMatches().
+        ///     
+        ///     If the given function signature has the same name, a differing return type and both functions have no parameters; than this function will return true
+        ///     and SignatureMatches() will not. 
+        /// 
+        ///     If the other signature is an overload that is ambiguous in all cases due to variadic parameters, this function returns true.
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="otherSignature">The other function signature to compare to</param>
+        /// <returns>True if the two signatures are duplicate definitions of each other, taking static overloading ambiguities into account.</returns>
+        public bool DefinitionIsDuplicate(LSLFunctionSignature otherSignature)
+        {
+            return LSLFunctionSignatureMatcher.DefinitionIsDuplicate(this, otherSignature);
+        }
+
+
+
+        /// <summary>
+        /// This implementation of GetHashCode() uses the name of the LSLFunctionSignature, the ReturnType and the LSL Type/Variadic status of
+        /// the parameters, this means the Hash Code is linked the Function name, return Type and the Types/Variadic'ness of all its parameters.
+        /// 
+        /// Inherently, uniqueness is also determined by the number of parameters.
+        /// </summary>
+        /// <returns>Hash code for this LSLFunctionSignature</returns>
         public override int GetHashCode()
         {
             var hash = 17;
@@ -241,10 +247,10 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        ///     Delegates SignatureMatches after checking type equality
+        /// Equals(object obj) delegates to SignatureMatches(LSLFunctionSignature other)
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <param name="obj">The other function signature</param>
+        /// <returns>Equality</returns>
         public override bool Equals(object obj)
         {
             var o = obj as LSLFunctionSignature;
@@ -253,7 +259,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 return false;
             }
 
-            return SignatureMatches(o);
+            return SignatureEquivalent(o);
         }
     }
 }

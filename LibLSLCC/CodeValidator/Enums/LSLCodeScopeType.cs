@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLCodeScopeNodeType.cs
+// File: LSLCodeScopeType.cs
 // 
 // 
 // ============================================================

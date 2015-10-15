@@ -276,7 +276,7 @@ namespace LSLCCEditor.EditorTabUI
 
         private void WatchNewFile(string fileName)
         {
-            if (fileName == null) throw new ArgumentNullException("fileName");
+            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
 
             RemoveFileWatcher();
 

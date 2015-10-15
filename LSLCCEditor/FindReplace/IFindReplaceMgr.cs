@@ -46,7 +46,7 @@ using System.Collections;
 
 #endregion
 
-namespace FindReplace
+namespace LSLCCEditor.FindReplace
 {
     /// <summary>
     ///     The design is like this:

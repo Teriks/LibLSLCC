@@ -44,6 +44,7 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Serialization;
 
 #endregion
 
@@ -143,21 +144,21 @@ namespace LibLSLCC.CodeValidator.Components
             foreach (var func in libraryFunctions)
             {
                 writer.WriteStartElement("LibraryFunction");
-                func.WriteXml(writer);
+                ((IXmlSerializable)func).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
-            foreach (var func in libraryEventSignatures)
+            foreach (var ev in libraryEventSignatures)
             {
                 writer.WriteStartElement("EventHandler");
-                func.WriteXml(writer);
+                ((IXmlSerializable)ev).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
-            foreach (var func in libraryConstants)
+            foreach (var con in libraryConstants)
             {
                 writer.WriteStartElement("LibraryConstant");
-                func.WriteXml(writer);
+                ((IXmlSerializable)con).WriteXml(writer);
                 writer.WriteEndElement();
             }
 

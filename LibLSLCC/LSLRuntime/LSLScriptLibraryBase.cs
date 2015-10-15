@@ -35,7 +35,7 @@
 // ReSharper disable InconsistentNaming
 namespace LibLSLCC.LSLRuntime
 {
-    public abstract class LSLScriptLibraryBase
+    internal abstract class LSLScriptLibraryBase
     {
         public static readonly LSL_Types.LSLInteger PSYS_PART_START_ALPHA = 2;
         public static readonly LSL_Types.LSLInteger PSYS_PART_END_ALPHA = 4;

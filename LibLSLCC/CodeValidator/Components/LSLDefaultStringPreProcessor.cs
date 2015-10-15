@@ -54,7 +54,7 @@ namespace LibLSLCC.CodeValidator.Components
 {
     public class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
     {
-        private readonly List<LSLStringCharacterError> _illegalCharacters = new List<LSLStringCharacterError>();
+
         private readonly List<LSLStringCharacterError> _invalidEscapeCodes = new List<LSLStringCharacterError>();
 
         public LSLDefaultStringPreProcessor()
@@ -72,7 +72,8 @@ namespace LibLSLCC.CodeValidator.Components
 
         public IEnumerable<LSLStringCharacterError> IllegalCharacters
         {
-            get { return _illegalCharacters; }
+            //None that I know of so far
+            get { return new List<LSLStringCharacterError>(); }
         }
 
         public string Result { get; private set; }
@@ -97,7 +98,7 @@ namespace LibLSLCC.CodeValidator.Components
         public void Reset()
         {
             _invalidEscapeCodes.Clear();
-            _illegalCharacters.Clear();
+            //_illegalCharacters.Clear();
             HasErrors = false;
             Result = "";
         }
@@ -135,7 +136,7 @@ namespace LibLSLCC.CodeValidator.Components
                     if (HasErrors) yield break;
 
 
-                    var result = FilterCharacter(i, chr);
+                    var result = FilterCharacter(chr);
 
                     if (HasErrors) yield break;
 
@@ -147,20 +148,21 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "index")]
-        private static string FilterCharacter(int index, char chr)
+
+        private static string FilterCharacter(char chr)
         {
-            if (chr == '\n')
+            switch (chr)
             {
-                return "\\n";
-            }
-            if (chr == '\r')
-            {
-                return "\\r";
+                case '\n':
+                    return "\\n";
+                case '\r':
+                    return "\\r";
             }
 
             return chr.ToString(CultureInfo.InvariantCulture);
         }
+
+
 
         private string ReplaceEscapeCode(int index, char code)
         {
@@ -176,7 +178,11 @@ namespace LibLSLCC.CodeValidator.Components
 
             if (code == 'r')
             {
-                return "r"; //don't even ask, I have no fucking idea why
+                //don't even ask, I have no fucking idea why
+                //the Linden LSL compiler turns "\r" into "r"
+                //try it with llOwnerSay("\r");
+                //or llOwnerSay((string)("\r"=="r"));
+                return "r"; 
             }
 
             HasErrors = true;

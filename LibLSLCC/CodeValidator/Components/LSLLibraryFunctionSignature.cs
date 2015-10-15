@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Schema;
@@ -70,8 +71,9 @@ namespace LibLSLCC.CodeValidator.Components
             DocumentationString = "";
         }
 
-        private LSLLibraryFunctionSignature()
+        public LSLLibraryFunctionSignature()
         {
+            
         }
 
         public LSLLibraryFunctionSignature(LSLLibraryFunctionSignature other)
@@ -79,9 +81,10 @@ namespace LibLSLCC.CodeValidator.Components
         {
             DocumentationString = other.DocumentationString;
             _subsets = new HashSet<string>(other._subsets);
+            _properties = other._properties.ToDictionary(x=>x.Key,y=>y.Value);
         }
 
-        public LSLLibraryFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters) :
+        public LSLLibraryFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null) :
             base(returnType, name, parameters)
         {
             DocumentationString = "";
@@ -92,11 +95,12 @@ namespace LibLSLCC.CodeValidator.Components
             get { return new ReadOnlyHashSet<string>(_subsets); }
         }
 
-        public IReadOnlyDictionary<string, string> Properties
+        public IDictionary<string, string> Properties
         {
             get { return _properties; }
         }
 
+ 
 
         public string DocumentationString { get; set; }
 
@@ -125,7 +129,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
-        public XmlSchema GetSchema()
+        XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
         }
@@ -133,8 +137,8 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         ///     Generates an object from its XML representation.
         /// </summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
-        public void ReadXml(XmlReader reader)
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is de-serialized. </param>
+        void IXmlSerializable.ReadXml(XmlReader reader)
         {
             var parameterNames = new HashSet<string>();
 
@@ -225,6 +229,7 @@ namespace LibLSLCC.CodeValidator.Components
                             GetType().Name + ", Parameter Type attribute invalid");
                     }
 
+
                     var pName = reader.GetAttribute("Name");
 
                     if (string.IsNullOrWhiteSpace(pName))
@@ -247,27 +252,22 @@ namespace LibLSLCC.CodeValidator.Components
                         if (variadic.ToLower() == "true")
                         {
                             isVariadic = true;
-
-                            if (pType != LSLType.Void)
-                            {
-                                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                                    string.Format(
-                                        "{0}, Variadic parameter {1} in Function {2} must have a Type equal to Void",
-                                        GetType().Name, pName, Name));
-                            }
                         }
                         else if (variadic.ToLower() != "false")
                         {
                             throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                                string.Format(
-                                    "{0}, Variadic attribute in parameter {1} of Function {2} must equal True or False",
+                                string.Format("{0}, Variadic attribute in parameter {1} of Function {2} must equal True or False (Case Insensitive)",
                                     GetType().Name, pName, Name));
                         }
                     }
 
+                    if (pType == LSLType.Void && !isVariadic)
+                    {
+                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                            GetType().Name + ", Parameter Type invalid, function parameters cannot be Void unless they are declared variadic.");
+                    }
 
                     parameterNames.Add(pName);
-
                     AddParameter(new LSLParameter(pType, pName, isVariadic));
 
                     canRead = reader.Read();
@@ -326,7 +326,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
-        public void WriteXml(XmlWriter writer)
+        void IXmlSerializable.WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Name", Name);
             writer.WriteAttributeString("ReturnType", ReturnType.ToString());
@@ -343,6 +343,14 @@ namespace LibLSLCC.CodeValidator.Components
                     writer.WriteAttributeString("Variadic", "true");
                 }
 
+                writer.WriteEndElement();
+            }
+
+            foreach (var prop in Properties)
+            {
+                writer.WriteStartElement("Property");
+                writer.WriteAttributeString("Name", prop.Key);
+                writer.WriteAttributeString("Value", prop.Value);
                 writer.WriteEndElement();
             }
 
@@ -378,26 +386,59 @@ namespace LibLSLCC.CodeValidator.Components
 
         public static LSLLibraryFunctionSignature FromXmlFragment(XmlReader fragment)
         {
-            var x = new LSLLibraryFunctionSignature();
+            var func = new LSLLibraryFunctionSignature();
+            IXmlSerializable x = func;
             x.ReadXml(fragment);
-            return x;
-        }
-    }
-
-
-
-    public static class  LSLLibraryFunctionSignatureExtensions
-    {
-        public static bool IsDeprecated(this LSLLibraryFunctionSignature signature)
-        {
-            string deprecatedStatus = null;
-            return (signature.Properties.TryGetValue("Deprecated", out deprecatedStatus) || signature.Properties.TryGetValue("deprecated",out deprecatedStatus)) && deprecatedStatus.ToLower()=="true";
+            return func;
         }
 
-        public static bool UsesOsModInvoke(this LSLLibraryFunctionSignature signature)
+
+        public bool Deprecated
         {
-            string modInvokeStatus = null;
-            return (signature.Properties.TryGetValue("ModInvoke", out modInvokeStatus) || signature.Properties.TryGetValue("modinvoke", out modInvokeStatus)) && modInvokeStatus.ToLower() == "true";
+            get
+            {
+                string deprecatedStatus;
+                return (Properties.TryGetValue("Deprecated", out deprecatedStatus) &&
+                        deprecatedStatus.ToLower() == "true");
+            }
+            set
+            {
+                if (value == false)
+                {
+                    if (Properties.ContainsKey("Deprecated"))
+                    {
+                        Properties.Remove("Deprecated");
+                    }
+                }
+                else
+                {
+                    Properties["Deprecated"] = "true";
+                }
+            }
+        }
+
+
+        public bool ModInvoke
+        {
+            get
+            {
+                string modInvokeStatus;
+                return (Properties.TryGetValue("ModInvoke", out modInvokeStatus) && modInvokeStatus.ToLower() == "true");
+            }
+            set
+            {
+                if (value == false)
+                {
+                    if (Properties.ContainsKey("ModInvoke"))
+                    {
+                        Properties.Remove("ModInvoke");
+                    }
+                }
+                else
+                {
+                    Properties["ModInvoke"] = "true";
+                }
+            }
         }
     }
 }

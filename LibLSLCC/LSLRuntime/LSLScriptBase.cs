@@ -48,7 +48,7 @@ using System;
 
 namespace LibLSLCC.LSLRuntime
 {
-    public class LSLScriptBase : LSLScriptLibraryBase
+    internal class LSLScriptBase : LSLScriptLibraryBase
     {
         public override void at_target(LSL_Types.LSLInteger tnum, LSL_Types.Vector3 targetpos, LSL_Types.Vector3 ourpos)
         {

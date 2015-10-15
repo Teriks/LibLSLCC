@@ -57,17 +57,18 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="type">The parameter type</param>
         /// <param name="name">The parameter name</param>
         /// <param name="variadic">Is the parameter variadic</param>
-        /// <exception cref="ArgumentException">If variadic is true and type does not equal LSLType.Void</exception>
+        /// <exception cref="ArgumentException">If type is LSLType.Void and variadic is false.</exception>
         public LSLParameter(LSLType type, string name, bool variadic)
         {
+            if (type == LSLType.Void && variadic == false)
+            {
+                throw new ArgumentException("LSLParameter's type currently cannot be LSLType.Void unless it is variadic.");
+            }
+
             Type = type;
             Name = name;
             Variadic = variadic;
 
-            if (variadic && type != LSLType.Void)
-            {
-                throw new ArgumentException("LSLType must be Void for variadic parameters", "type");
-            }
         }
 
         /// <summary>
@@ -89,6 +90,21 @@ namespace LibLSLCC.CodeValidator.Primitives
         ///     The parameter index, which gets set when the parameter is added to an LSLFunctionSignature or LSLEventSignature
         /// </summary>
         public int ParameterIndex { get; set; }
+
+
+        public string SignatureString
+        {
+            get
+            {
+                if (Variadic)
+                {
+                    return "params " + (Type == LSLType.Void ? "any" : Type.ToLSLTypeString()) + "[] " + Name;
+                }
+
+                //the any part is just for future proofing at the moment
+                return (Type == LSLType.Void ? "any" : Type.ToLSLTypeString())  +" "+ Name;
+            }
+        }
 
         public override int GetHashCode()
         {

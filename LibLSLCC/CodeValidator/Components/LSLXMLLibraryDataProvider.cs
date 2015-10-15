@@ -49,6 +49,7 @@ using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
 #endregion
@@ -63,64 +64,15 @@ namespace LibLSLCC.CodeValidator.Components
     public class LSLXmlLibraryDataProvider : LSLLibraryDataProvider,
         IXmlSerializable
     {
-        private HashSet<string> _subsets = new HashSet<string>();
 
-        public IReadOnlySet<string> Subsets
+        public LSLXmlLibraryDataProvider(bool liveFiltering = true) : base(liveFiltering)
         {
-            get { return new ReadOnlyHashSet<string>(_subsets); }
+            
         }
 
-        public bool LiveFiltering { get; protected set; }
-        public IReadOnlySet<string> LiveFilteringSubsets { get; protected set; }
-
-        /// <summary>
-        ///     Enumerable of the LibraryConstants defined according to this data provider
-        /// </summary>
-        public override IEnumerable<LSLLibraryConstantSignature> LibraryConstants
+        public LSLXmlLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true) : base(activeSubsets, liveFiltering)
         {
-            get
-            {
-                if (LiveFiltering)
-                {
-                    return base.LibraryConstants.Where(x => x.Subsets.Overlaps(LiveFilteringSubsets));
-                }
 
-                return base.LibraryConstants;
-            }
-        }
-
-        /// <summary>
-        ///     Enumerable of the LibraryFunctions defined according to this data provider
-        /// </summary>
-        public override IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions
-        {
-            get
-            {
-                if (LiveFiltering)
-                {
-                    return
-                        base.LibraryFunctions.Select(
-                            x => { return x.Where(y => y.Subsets.Overlaps(LiveFilteringSubsets)).ToList(); });
-                }
-
-                return base.LibraryFunctions;
-            }
-        }
-
-        /// <summary>
-        ///     Enumerable of event handlers supported according to this data provider
-        /// </summary>
-        public override IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
-        {
-            get
-            {
-                if (LiveFiltering)
-                {
-                    return base.SupportedEventHandlers.Where(x => x.Subsets.Overlaps(LiveFilteringSubsets));
-                }
-
-                return base.SupportedEventHandlers;
-            }
         }
 
         /// <summary>
@@ -134,7 +86,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
-        public XmlSchema GetSchema()
+        XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
         }
@@ -143,7 +95,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Generates an object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
-        public void ReadXml(XmlReader reader)
+        void IXmlSerializable.ReadXml(XmlReader reader)
         {
             var lineInfo = (IXmlLineInfo) reader;
             try
@@ -152,30 +104,21 @@ namespace LibLSLCC.CodeValidator.Components
 
                 serializer.ReadLibraryFunctionDefinition += signature =>
                 {
-                    if (AccumulateDuplicates || signature.Subsets.Any(subset => Subsets.Contains(subset)))
-                    {
                         lineInfo = serializer.CurrentLineInfo;
-                        AddValidLibraryFunction(signature);
-                    }
+                        DefineFunction(signature);
                 };
 
                 serializer.ReadLibraryEventHandlerDefinition += signature =>
                 {
-                    if (AccumulateDuplicates || signature.Subsets.Any(subset => Subsets.Contains(subset)))
-                    {
                         lineInfo = serializer.CurrentLineInfo;
-                        AddValidEventHandler(signature);
-                    }
+                        DefineEventHandler(signature);
                 };
 
 
                 serializer.ReadLibraryConstantDefinition += signature =>
                 {
-                    if (AccumulateDuplicates || signature.Subsets.Any(subset => Subsets.Contains(subset)))
-                    {
                         lineInfo = serializer.CurrentLineInfo;
-                        AddValidConstant(signature);
-                    }
+                        DefineConstant(signature);
                 };
 
 
@@ -191,150 +134,33 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
-        public void WriteXml(XmlWriter writer)
+        void IXmlSerializable.WriteXml(XmlWriter writer)
         {
             LSLLibraryDataXmlSerializer.WriteXml(LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
                 LibraryConstants, writer, false);
         }
 
-        /// <summary>
-        ///     Return an LSLEventHandlerSignature object describing an event handler signature;
-        ///     if the event handler with the given name exists, otherwise null.
-        /// </summary>
-        /// <param name="name">Name of the event handler</param>
-        /// <returns>
-        ///     An LSLEventHandlerSignature object describing the given event handlers signature,
-        ///     or null if the event handler does not exist.
-        /// </returns>
-        public override LSLLibraryEventSignature GetEventHandlerSignature(string name)
-        {
-            if (LiveFiltering)
-            {
-                var r = base.GetEventHandlerSignature(name);
-
-                if (r == null) return null;
-
-                if (r.Subsets.Overlaps(LiveFilteringSubsets))
-                {
-                    return r;
-                }
-
-                return null;
-            }
-
-            return base.GetEventHandlerSignature(name);
-        }
 
         /// <summary>
-        ///     Return the library constant if it exists, otherwise null.
+        ///     Converts an object into its XML representation.
         /// </summary>
-        /// <param name="name">Name of the library constant.</param>
-        /// <returns>
-        ///     The library constants signature
-        /// </returns>
-        public override LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
+        /// <param name="writeRootElement">Whether or not to write the root element for this object</param>
+        public void WriteXml(XmlWriter writer, bool writeRootElement)
         {
-            if (LiveFiltering)
-            {
-                var r = base.GetLibraryConstantSignature(name);
-
-                if (r == null) return null;
-
-                if (r.Subsets.Overlaps(LiveFilteringSubsets))
-                {
-                    return r;
-                }
-
-                return null;
-            }
-
-            return base.GetLibraryConstantSignature(name);
+            LSLLibraryDataXmlSerializer.WriteXml(LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
+                LibraryConstants, writer, writeRootElement);
         }
-
-        /// <summary>
-        ///     Return an LSLFunctionSignature list object describing the function call signatures of a library function;
-        ///     if the function with the given name exists as a singular or overloaded function, otherwise null.
-        /// </summary>
-        /// <param name="name">Name of the library function.</param>
-        /// <returns>
-        ///     An LSLFunctionSignature list object describing the given library functions signatures,
-        ///     or null if the library function does not exist.
-        /// </returns>
-        public override IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
-        {
-            if (LiveFiltering)
-            {
-                var r = base.GetLibraryFunctionSignatures(name);
-
-                if (r == null) return null;
-
-
-                var sigs = r.Where(x => x.Subsets.Overlaps(LiveFilteringSubsets)).ToList();
-                return sigs.Count == 0 ? null : sigs;
-            }
-
-            return base.GetLibraryFunctionSignatures(name);
-        }
-
-        /// <summary>
-        ///     Return true if a library constant with the given name exists.
-        /// </summary>
-        /// <param name="name">Name of the library constant.</param>
-        /// <returns>True if a library constant with the given name exists.</returns>
-        public override bool LibraryConstantExist(string name)
-        {
-            if (LiveFiltering)
-            {
-                return GetLibraryConstantSignature(name) != null;
-            }
-            return base.LibraryConstantExist(name);
-        }
-
-        /// <summary>
-        ///     Return true if a library function with the given name exists.
-        /// </summary>
-        /// <param name="name">Name of the library function.</param>
-        /// <returns>True if the library function with given name exists.</returns>
-        public override bool LibraryFunctionExist(string name)
-        {
-            if (LiveFiltering)
-            {
-                var sigs = GetLibraryFunctionSignatures(name);
-                return sigs != null;
-            }
-
-            return base.LibraryFunctionExist(name);
-        }
-
-        /// <summary>
-        ///     Return true if an event handler with the given name exists in the default library.
-        /// </summary>
-        /// <param name="name">Name of the event handler.</param>
-        /// <returns>True if the event handler with given name exists.</returns>
-        public override bool EventHandlerExist(string name)
-        {
-            if (LiveFiltering)
-            {
-                return GetEventHandlerSignature(name) != null;
-            }
-
-            return base.EventHandlerExist(name);
-        }
+       
 
         /// <summary>
         ///     Fills a library data provider from an XML reader object
         /// </summary>
         /// <param name="data">The xml reader to read from</param>
-        /// <param name="subsets">
-        ///     Data nodes must contain one of these subset strings in their Subsets property, otherwise they are discarded.
-        ///     when "all" is used, all nodes are added and duplicates are accumulated into DuplicateEventsDefined,
-        ///     DuplicateConstantsDefined
-        ///     and DuplicateFunctionsDefined
-        /// </param>
         /// <exception cref="ArgumentNullException">When data is null</exception>
         /// <exception cref="XmlException">When a syntax error is encountered</exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public void FillFromXml(XmlReader data, IReadOnlySet<string> subsets)
+        public void FillFromXml(XmlReader data)
         {
             if (data == null)
             {
@@ -345,18 +171,13 @@ namespace LibLSLCC.CodeValidator.Components
             ClearLibraryConstants();
             ClearLibraryFunctions();
 
-            _subsets = new HashSet<string>(subsets);
-
-            if (_subsets.Contains("all"))
-            {
-                AccumulateDuplicates = true;
-            }
-
             data.ReadStartElement(LSLXmlLibraryDataRootAttribute.RootElementName);
 
-            ReadXml(data);
+            IXmlSerializable serializable = this;
+            serializable.ReadXml(data);
 
             data.ReadEndElement();
         }
+
     }
 }

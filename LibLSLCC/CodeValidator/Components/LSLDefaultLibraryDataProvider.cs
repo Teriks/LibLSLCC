@@ -62,12 +62,10 @@ namespace LibLSLCC.CodeValidator.Components
         private LSLLibraryBaseData _liveFilteringBaseLibraryData;
         private LSLLibraryDataAdditions _liveFilteringLibraryDataAdditions;
 
-        protected LSLDefaultLibraryDataProvider()
-        {
-        }
+
 
         public LSLDefaultLibraryDataProvider(bool liveFiltering, LSLLibraryBaseData libraryBaseData,
-            LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None)
+            LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None) : base(GetSubsets(libraryBaseData,dataAdditions),liveFiltering)
         {
             using (
                 var libraryData =
@@ -83,26 +81,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                 var reader = new XmlTextReader(libraryData);
 
-                if (libraryBaseData == LSLLibraryBaseData.All)
-                {
-                    AccumulateDuplicates = true;
-                    FillFromXml(reader, new HashSet<string> {"all"}.AsReadOnly());
-                    return;
-                }
-
-                if (liveFiltering)
-                {
-                    AccumulateDuplicates = true;
-                    LiveFiltering = true;
-                    LiveFilteringSubsets = GetSubsets(libraryBaseData, dataAdditions);
-                    _liveFilteringLibraryDataAdditions = dataAdditions;
-                    _liveFilteringBaseLibraryData = libraryBaseData;
-                    FillFromXml(reader, new HashSet<string> {"all"}.AsReadOnly());
-                }
-                else
-                {
-                    FillFromXml(reader, GetSubsets(libraryBaseData, dataAdditions));
-                }
+                FillFromXml(reader);
             }
         }
 
@@ -111,12 +90,11 @@ namespace LibLSLCC.CodeValidator.Components
             get { return _liveFilteringBaseLibraryData; }
             set
             {
-                if (value != _liveFilteringBaseLibraryData)
-                {
-                    LiveFilteringSubsets = GetSubsets(value, LiveFilteringLibraryDataAdditions);
+                if (value == _liveFilteringBaseLibraryData) return;
 
-                    _liveFilteringBaseLibraryData = value;
-                }
+                ActiveSubsets.SetSubsets(GetSubsets(value, LiveFilteringLibraryDataAdditions));
+
+                _liveFilteringBaseLibraryData = value;
             }
         }
 
@@ -125,44 +103,24 @@ namespace LibLSLCC.CodeValidator.Components
             get { return _liveFilteringLibraryDataAdditions; }
             set
             {
-                if (value != _liveFilteringLibraryDataAdditions)
-                {
-                    LiveFilteringSubsets = GetSubsets(LiveFilteringBaseLibraryData, value);
+                if (value == _liveFilteringLibraryDataAdditions) return;
 
-                    _liveFilteringLibraryDataAdditions = value;
-                }
+                ActiveSubsets.SetSubsets(GetSubsets(LiveFilteringBaseLibraryData, value));
+
+                _liveFilteringLibraryDataAdditions = value;
             }
         }
 
-        private ReadOnlyHashSet<string> GetSubsets(LSLLibraryBaseData libraryBaseData,
-            LSLLibraryDataAdditions dataAdditions)
+        private static IEnumerable<string> GetSubsets(LSLLibraryBaseData libraryBaseData, LSLLibraryDataAdditions dataAdditions)
         {
-            var subsets = new HashSet<string>();
+            yield return libraryBaseData.ToSubsetName();
 
-            subsets.Add(libraryBaseData == LSLLibraryBaseData.OpensimLsl ? "os-lsl" : "lsl");
+            if(libraryBaseData == LSLLibraryBaseData.All) yield break;
 
-            if ((dataAdditions & LSLLibraryDataAdditions.OpenSimOssl) == LSLLibraryDataAdditions.OpenSimOssl)
+            foreach (var name in dataAdditions.ToSubsetNames())
             {
-                subsets.Add("ossl");
+                yield return name;
             }
-
-            if ((dataAdditions & LSLLibraryDataAdditions.OpenSimWindlight) == LSLLibraryDataAdditions.OpenSimWindlight)
-            {
-                subsets.Add("os-lightshare");
-            }
-
-            if ((dataAdditions & LSLLibraryDataAdditions.OpenSimBulletPhysics) ==
-                LSLLibraryDataAdditions.OpenSimBulletPhysics)
-            {
-                subsets.Add("os-bullet-physics");
-            }
-
-            if ((dataAdditions & LSLLibraryDataAdditions.OpenSimModInvoke) == LSLLibraryDataAdditions.OpenSimModInvoke)
-            {
-                subsets.Add("os-mod-api");
-            }
-
-            return new ReadOnlyHashSet<string>(subsets);
         }
     }
 
@@ -173,7 +131,41 @@ namespace LibLSLCC.CodeValidator.Components
         OpenSimOssl = 1,
         OpenSimWindlight = 2,
         OpenSimBulletPhysics = 4,
-        OpenSimModInvoke = 8
+        OpenSimModInvoke = 8,
+        OpenSimJsonStore = 16
+    }
+
+
+    public static class LSLLibraryDataAdditionEnumExtensions
+    {
+        public static IEnumerable<string> ToSubsetNames(this LSLLibraryDataAdditions flags)
+        {
+            if ((flags & LSLLibraryDataAdditions.OpenSimOssl) == LSLLibraryDataAdditions.OpenSimOssl)
+            {
+                yield return ("ossl");
+            }
+
+            if ((flags & LSLLibraryDataAdditions.OpenSimWindlight) == LSLLibraryDataAdditions.OpenSimWindlight)
+            {
+                yield return ("os-lightshare");
+            }
+
+            if ((flags & LSLLibraryDataAdditions.OpenSimBulletPhysics) == LSLLibraryDataAdditions.OpenSimBulletPhysics)
+            {
+                yield return ("os-bullet-physics");
+            }
+
+            if ((flags & LSLLibraryDataAdditions.OpenSimModInvoke) == LSLLibraryDataAdditions.OpenSimModInvoke)
+            {
+                yield return ("os-mod-api");
+            }
+
+
+            if ((flags & LSLLibraryDataAdditions.OpenSimJsonStore) == LSLLibraryDataAdditions.OpenSimJsonStore)
+            {
+                yield return ("os-json-store");
+            }
+        } 
     }
 
     public enum LSLLibraryBaseData
@@ -181,5 +173,23 @@ namespace LibLSLCC.CodeValidator.Components
         StandardLsl,
         OpensimLsl,
         All
+    }
+
+    public static class LSLLibraryBaseDataEnumExtensions
+    {
+        public static string ToSubsetName(this LSLLibraryBaseData flag)
+        {
+            switch (flag)
+            {
+                case LSLLibraryBaseData.StandardLsl:
+                    return "lsl";
+                case LSLLibraryBaseData.OpensimLsl:
+                    return "os-lsl";
+                case LSLLibraryBaseData.All:
+                    return "all";
+                default:
+                    throw new ArgumentOutOfRangeException("flag", flag, null);
+            }
+        }
     }
 }

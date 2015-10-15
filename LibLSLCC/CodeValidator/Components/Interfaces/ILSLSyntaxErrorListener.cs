@@ -155,5 +155,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
             IReadOnlyList<ILSLExprNode> givenParameters);
+
+        void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName, 
+            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> expressionsUsedInCall);
     }
 }

@@ -96,7 +96,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         public int ParameterCount
         {
-            get { return _parameters.Count(); }
+            get { return _parameters.Count; }
         }
 
         /// <summary>
@@ -153,14 +153,26 @@ namespace LibLSLCC.CodeValidator.Primitives
             return true;
         }
 
+        /// <summary>
+        /// This implementation of GetHashCode() uses the name of the LSLEventSignature and the LSL Types of
+        /// the parameters, this means the Hash Code is determined by the event name, and the Types of all its parameters.
+        /// 
+        /// Inherently, uniqueness is also determined by the number of parameters. 
+        /// </summary>
+        /// <returns>Hash code for this LSLEventSignature</returns>
         public override int GetHashCode()
         {
             var hash = 17;
             hash = hash*31 + Name.GetHashCode();
 
-            return Parameters.Aggregate(hash, (current, lslParameter) => current*31 + lslParameter.GetHashCode());
+            return Parameters.Aggregate(hash, (current, lslParameter) => current*31 + lslParameter.Type.GetHashCode());
         }
 
+        /// <summary>
+        /// Equals(object obj) delegates to SignatureMatches(LSLEventSignature other)
+        /// </summary>
+        /// <param name="obj">The other event signature</param>
+        /// <returns>Equality</returns>
         public override bool Equals(object obj)
         {
             var o = obj as LSLEventSignature;

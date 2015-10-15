@@ -365,7 +365,7 @@ namespace LibLSLCC.Collections
         #region ICollection<KeyValuePair<TPriority, TValue>> implementation
 
         /// <summary>
-        ///     Enqueus element into priority queue
+        ///     Enqueues element into priority queue
         /// </summary>
         /// <param name="item">element to add</param>
         public void Add(KeyValuePair<TPriority, TValue> item)

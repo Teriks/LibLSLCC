@@ -449,6 +449,14 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(location, functionName, givenParameters));
         }
 
+        public void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName,
+            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> givenParameters)
+        {
+            _errorActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbigious(location, functionName, ambigiousMatches, givenParameters));
+        }
+
         void ILSLSyntaxWarningListener.MultipleListAssignmentsInExpression(LSLSourceCodeRange location)
         {
             _warningActionQueue.Enqueue(location.StartIndex,

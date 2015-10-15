@@ -44,13 +44,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Serialization;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibraryDataScrapingTools.LibraryDataScrapers;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.OpenSimLibraryReflection;
@@ -61,211 +61,28 @@ using LibraryDataScrapingTools.ScraperProxys;
 
 namespace LibraryDataScrapingTools
 {
-    public static class Log
-    {
-        public static List<TextWriter> LogWriters = new List<TextWriter>();
-
-        public static void WriteLine(string format, params object[] args)
-        {
-            foreach (var textWriter in LogWriters)
-            {
-                textWriter.WriteLine(format, args);
-            }
-        }
-
-        public static void Write(string format, params object[] args)
-        {
-            foreach (var textWriter in LogWriters)
-            {
-                textWriter.Write(format, args);
-            }
-        }
-    }
-
     internal class Program
     {
-        public static LSLXmlLibraryDataProvider ScrapeData(IDocumentationProvider documentation,
-            OpenSimLibraryReflectedTypeData openSimScriptFramework)
+
+
+        private static void Run(TextWriter logFile)
         {
-            var data = new LSLXmlLibraryDataProvider();
+            Log.LogWriters.Add(Console.Out);
 
-            var osslLibraryWikiData = new OsslWikiLibraryDataScraper(
-                documentation, new[] {"ossl"});
-
-
-            var lslLibraryData = new SecondlifeWikiLibraryData(documentation,
-                new[] {"lsl"});
-
-
-            var openSimLightShare = new OpenSimDirectLibraryData(openSimScriptFramework, documentation);
-
-            openSimLightShare.IncludeFunctionContainingInterface("ILS_Api",
-                new[] {"os-lightshare"});
-
-
-            var openSimLindenSubset = new OpenSimDirectLibraryData(openSimScriptFramework, documentation);
-
-
-            openSimLindenSubset.IncludeScriptConstantContainerClass(openSimScriptFramework.ScriptBaseClass,
-                new[] {"os-lsl"});
-            openSimLindenSubset.IncludeFunctionContainingInterface("ILSL_Api",
-                new[] {"os-lsl"});
-
-
-            var openSimOsslSubset = new OpenSimDirectLibraryData(openSimScriptFramework, documentation);
-
-            openSimOsslSubset.IncludeScriptConstantContainerClass(openSimScriptFramework.ScriptBaseClass,
-                new[] {"ossl"});
-            openSimOsslSubset.IncludeFunctionContainingInterface("IOSSL_Api",
-                new[] {"ossl"});
-
-
-            var extendedPhysicsSubset = new OpenSimDirectLibraryData(openSimScriptFramework, documentation);
-
-            extendedPhysicsSubset.IncludeAttributedModuleClass("ExtendedPhysics",
-                new[] {"os-bullet-physics"});
-
-            var modInvokeSubset = new OpenSimDirectLibraryData(openSimScriptFramework, documentation);
-
-            modInvokeSubset.IncludeFunctionContainingInterface("IMOD_Api",
-                new[] {"os-mod-api"});
-
-
-            var allData = new CompoundLibraryData(
-                lslLibraryData, osslLibraryWikiData,
-                openSimLightShare, extendedPhysicsSubset,
-                modInvokeSubset);
-
-
-            foreach (var f in allData.LSLConstants())
+            if (logFile != null)
             {
-                if (f.Name.StartsWith("WL"))
-                {
-                    f.SetSubsets("os-lightshare");
-                    Log.WriteLine(
-                        "General: Constant {0} is light share specific, setting subset to os-lightshare",
-                        f.Name);
-                }
-                else if (openSimLindenSubset.LSLConstantExist(f.Name))
-                {
-                    if (!f.Subsets.Contains("ossl"))
-                    {
-                        f.AddSubsets("os-lsl");
-                    }
-                    Log.WriteLine(
-                        "General: Linden constant {0} exist in the OpenSim codebase, adding os-lsl subset",
-                        f.Name);
-                }
-
-                else
-                {
-                    if (f.Subsets.Contains("ossl") && openSimOsslSubset.LSLConstantExist(f.Name))
-                    {
-                        Log.WriteLine(
-                            "General: Opensim constant {0} exist in the OpenSim codebase",
-                            f.Name);
-                    }
-                    else
-                    {
-                        Log.WriteLine(
-                            "General: Linden constant {0} DOES NOT exist in the OpenSim codebase",
-                            f.Name);
-                    }
-                }
-                data.AddValidConstant(f);
-            }
-
-            foreach (var f in allData.LSLFunctions())
-            {
-                if (openSimLindenSubset.LSLFunctionExist(f.Name))
-                {
-                    f.AddSubsets("os-lsl");
-                    Log.WriteLine(
-                        "General: Linden function {0} exist in the OpenSim codebase, adding os-lsl subset",
-                        f.Name);
-                }
-                else
-                {
-                    if (f.Subsets.Contains("ossl") && openSimOsslSubset.LSLFunctionExist(f.Name))
-                    {
-                        Log.WriteLine(
-                            "General: Opensim function {0} exist in the OpenSim codebase",
-                            f.Name);
-                    }
-                    else
-                    {
-                        Log.WriteLine(
-                            "General: Linden function {0} DOES NOT exist in the OpenSim codebase",
-                            f.Name);
-                    }
-                }
-                data.AddValidLibraryFunction(f);
+                Log.LogWriters.Add(logFile);
             }
 
 
-            foreach (var f in lslLibraryData.LSLEvents())
-            {
-                f.AddSubsets("os-lsl");
+            MessageBox.Show("Select the OpenSim the binary 'bin' folder of your OpenSim build so library data can be gathered from it.  (Must be Built First)",
+                "Select OpenSim Binary Directory", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                data.AddValidEventHandler(f);
-            }
+            retrySelectOpenSimBinDirectory:
 
-
-            return data;
-        }
-
-        private static void CheckMissingOpensimKeywords(OpenSimLibraryReflectedTypeData openSimLibraryReflectedTypeData,
-            LSLLibraryDataProvider existingData)
-        {
-            var openSim = new OpenSimDirectLibraryData(openSimLibraryReflectedTypeData);
-            openSim.IncludeScriptConstantContainerClass(openSimLibraryReflectedTypeData.ScriptBaseClass,
-                new[] {"os-lsl"});
-            openSim.IncludeFunctionContainingInterface("ILS_Api", new[] {"os-lightshare"});
-            openSim.IncludeFunctionContainingInterface("ILSL_Api", new[] {"os-lsl"});
-            openSim.IncludeFunctionContainingInterface("IOSSL_Api", new[] {"ossl"});
-            openSim.IncludeAttributedModuleClass("ExtendedPhysics", new[] {"os-bullet-physics"});
-
-            foreach (var f in openSim.LSLFunctions().Where(x => !existingData.LibraryFunctionExist(x.Name)))
-            {
-                Log.WriteLine("OpensimCodeBaseCheck: Function {0} is defined in OpenSim code, but not library data",
-                    f.SignatureString);
-            }
-
-            foreach (var c in openSim.LSLConstants().Where(x => !existingData.LibraryConstantExist(x.Name)))
-            {
-                Log.WriteLine("OpensimCodeBaseCheck: Constant {0} is defined in OpenSim code, but not library data",
-                    c.SignatureString);
-            }
-
-            var subsetFilter = new HashSet<string> {"ossl", "os-lsl", "os-bullet-physics", "os-lightshare"};
-
-            foreach (var f in existingData.LibraryFunctions.SelectMany(x => x)
-                .Where(x => x.Subsets.IsSubsetOf(subsetFilter)))
-            {
-                if (!openSim.LSLFunctionExist(f.Name))
-                {
-                    Log.WriteLine("OpensimCodeBaseCheck: Function {0} is defined in Library Data, but not opensim code",
-                        f.SignatureString);
-                }
-            }
-
-
-            foreach (var c in existingData.LibraryConstants.Where(x => x.Subsets.IsSubsetOf(subsetFilter)))
-            {
-                if (!openSim.LSLConstantExist(c.Name))
-                {
-                    Log.WriteLine("OpensimCodeBaseCheck: Constant {0} is defined in Library Data, but not opensim code",
-                        c.SignatureString);
-                }
-            }
-        }
-
-        [STAThread]
-        private static void Main(string[] args)
-        {
             var folderBrowserDialog = new FolderBrowserDialog
             {
-                Description = "Select OpenSim bin directory"
+                Description = "Select OpenSim bin directory to gather OpenSim library data from."
             };
 
             var result = folderBrowserDialog.ShowDialog();
@@ -273,110 +90,718 @@ namespace LibraryDataScrapingTools
 
             if (result != DialogResult.OK)
             {
+                var dialogResult = MessageBox.Show("Selecting an OpenSim bin directory is required, "+
+                    "click Retry to select again or Cancel to exit the program.", "Directory Required",
+                    MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation);
+
+                if (dialogResult == DialogResult.Retry)
+                {
+                    goto retrySelectOpenSimBinDirectory;
+                }
                 return;
             }
 
 
-            Log.LogWriters.Add(Console.Out);
+            List<ScriptLibrary> firestormScriptLibraries = new List<ScriptLibrary>();
 
 
-            ScriptLibrary firestormLSL;
-            ScriptLibrary firestormOssl;
-
-            using (
-                var firestormLSLDocs =
-                    typeof (Program).Assembly.GetManifestResourceStream(
-                        "LibraryDataScrapingTools.FirestormDropIn.scriptlibrary_lsl.xml"))
-            using (
-                var firestormOsslDocs =
-                    typeof (Program).Assembly.GetManifestResourceStream(
-                        "LibraryDataScrapingTools.FirestormDropIn.scriptlibrary_ossl.xml"))
+            while (
+                MessageBox.Show("Select additional firestorm scriptlibrary_* data to draw documentation from or click no to continue.",
+                    "Select Firestorm Library Data", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
             {
-                if (firestormLSLDocs == null)
+                OpenFileDialog dialog = new OpenFileDialog
                 {
-                    Log.WriteLine("Could not read firestorm LSL keywords file");
-                    return;
-                }
+                    Filter = "Firestorm Highlight File (*.xml) | *.xml",
+                    CheckFileExists = true,
+                    Multiselect = true
+                };
 
-                if (firestormOsslDocs == null)
+                dialog.ShowDialog();
+
+                foreach (var filename in dialog.FileNames)
                 {
-                    Log.WriteLine("Could not read firestorm OSSL keywords file");
-                    return;
+                    using (var reader = new XmlTextReader(File.OpenRead(filename)))
+                    {
+                        firestormScriptLibraries.Add(ScriptLibrary.Read(reader));
+                    }
                 }
-
-
-                firestormLSL = ScriptLibrary.Read(new XmlTextReader(firestormLSLDocs));
-                firestormOssl = ScriptLibrary.Read(new XmlTextReader(firestormOsslDocs));
             }
 
 
-            var compoundDocumentor = new CompoundDocumentationScraper();
-            compoundDocumentor.AddProvider(new FirestormDocumentationScraper(firestormLSL));
-            compoundDocumentor.AddProvider(new FirestormDocumentationScraper(firestormOssl));
+            IDocumentationProvider docProvider = null;
 
 
-            var openSimScriptFramework = new OpenSimLibraryReflectedTypeData(folderBrowserDialog.SelectedPath);
-
-
-            using (var logStream = File.Create("log.txt"))
-            using (var libraryDataStream = File.Create("LibraryData.xml.txt"))
-
+            foreach (var lib in firestormScriptLibraries)
             {
-                var logWriter = new StreamWriter(logStream) {AutoFlush = true};
-
-                Log.LogWriters.Add(logWriter);
-
-                Log.WriteLine("");
-                Log.WriteLine("");
-                Log.WriteLine("Scraping library data... ");
-                Log.WriteLine("");
-                Log.WriteLine("");
-
-                var data = ScrapeData(compoundDocumentor, openSimScriptFramework);
-
-                var serializer = new XmlSerializer(data.GetType());
-                serializer.Serialize(libraryDataStream, data);
-
-
-                Log.WriteLine("");
-                Log.WriteLine("");
-                Log.WriteLine("Checking for missing OpenSim defines... ");
-                Log.WriteLine("");
-                Log.WriteLine("");
-
-
-                CheckMissingOpensimKeywords(openSimScriptFramework, data);
-
-                Log.WriteLine("");
-                Log.WriteLine("");
-                Log.WriteLine("Doing Diff...");
-                Log.WriteLine("");
-                Log.WriteLine("");
-
-                var diff = new LibraryDataDiff(data, new LSLDefaultLibraryDataProvider(false,
-                    LSLLibraryBaseData.All));
-
-                diff.Diff();
-
-
-                using (var notInLeft = File.Create("notInLeft.xml.txt"))
+                var p = new FirestormDocumentationScraper(lib);
+                if (docProvider == null)
                 {
-                    serializer.Serialize(notInLeft, diff.NotInLeft);
-                    notInLeft.Flush();
+                    docProvider = p;
                 }
-
-                using (var notInRight = File.Create("notInRight.xml.txt"))
+                else
                 {
-                    serializer.Serialize(notInRight, diff.NotInRight);
-                    notInRight.Flush();
+                    docProvider = new CompoundDocumentationScraper(docProvider, p);
                 }
-
-                logWriter.Flush();
             }
-            Process.Start("log.txt");
-            Process.Start("LibraryData.xml.txt");
-            Process.Start("notInLeft.xml.txt");
-            Process.Start("notInRight.xml.txt");
+
+
+
+
+            MessageBox.Show("Select the keywords_lsl_default.xml from an up to date viewers program folder under the app_settings folder.",
+                "Select LLSD File", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            retryOpenLLSD:
+
+            OpenFileDialog openLLSDDialog = new OpenFileDialog
+            {
+                Filter = "LLSD File (*.xml) | *.xml",
+                CheckFileExists = true,
+                Title = "Select the keywords_lsl_default.xml or other library data LLSD file"
+            };
+
+
+
+            if (openLLSDDialog.ShowDialog() != DialogResult.OK || string.IsNullOrWhiteSpace(openLLSDDialog.FileName))
+            {
+                var dialogResult = MessageBox.Show(
+                    "Selecting a keywords_lsl_default.xml file from your viewer install is required, "+
+                    "click Retry to select again or Cancel to exit the program.", "File Required", 
+                    MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation);
+
+                if (dialogResult == DialogResult.Retry)
+                {
+                    goto retryOpenLLSD;
+                }
+
+                return;
+            }
+
+
+
+            if (docProvider == null)
+            {
+                docProvider = new LLSDDocumentationScraper(openLLSDDialog.FileName);
+            }
+            else
+            {
+                docProvider = new CompoundDocumentationScraper(docProvider, new LLSDDocumentationScraper(openLLSDDialog.FileName));
+            }
+
+
+            var llsdData = new LLSDLibraryData(openLLSDDialog.FileName, new[] { "lsl" });
+
+
+
+
+            var openSimLibraryReflectedTypeData = new OpenSimLibraryReflectedTypeData(folderBrowserDialog.SelectedPath);
+
+            var openSimData = new OpenSimDirectLibraryData(openSimLibraryReflectedTypeData);
+
+
+            openSimData.IncludeScriptConstantContainerClass(openSimLibraryReflectedTypeData.ScriptBaseClass, new[] { "os-lsl" });
+            openSimData.IncludeFunctionContainingInterface("ILS_Api", new[] { "os-lightshare" });
+            openSimData.IncludeFunctionContainingInterface("ILSL_Api", new[] { "os-lsl" });
+            openSimData.IncludeFunctionContainingInterface("IOSSL_Api", new[] { "ossl" });
+            openSimData.IncludeFunctionContainingInterface("IMOD_Api", new[] { "os-mod-api" });
+            openSimData.IncludeAttributedModuleClass("ExtendedPhysics", new[] { "os-bullet-physics" });
+            openSimData.IncludeAttributedModuleClass("JsonStoreScriptModule", new[] { "os-json-store" });
+
+
+
+            var openSim = new LibraryDataSet(openSimData);
+
+
+            LSLXmlLibraryDataProvider provider = new LSLXmlLibraryDataProvider();
+            provider.ActiveSubsets.AddSubset("lsl");
+            provider.ActiveSubsets.AddSubset("os-lsl");
+            provider.ActiveSubsets.AddSubset("ossl");
+            provider.ActiveSubsets.AddSubset("os-mod-api");
+            provider.ActiveSubsets.AddSubset("os-bullet-physics");
+            provider.ActiveSubsets.AddSubset("os-json-store");
+
+            foreach (var c in llsdData.LSLConstants())
+            {
+                if (provider.LibraryConstantExist(c.Name)) continue;
+
+                if (openSim.LSLConstantExist(c.Name))
+                {
+                    var constant = openSim.LSLConstant(c.Name);
+                    c.AddSubsets(constant.Subsets);
+                }
+
+                provider.DefineConstant(c);
+            }
+
+            foreach (var c in llsdData.LSLFunctions())
+            {
+                if (provider.GetLibraryFunctionSignature(c) != null) continue;
+
+                if (openSim.LSLFunctionExist(c.Name))
+                {
+                    var overloads = openSim.LSLFunctionOverloads(c.Name);
+                    c.AddSubsets(overloads.First().Subsets);
+                }
+
+                provider.DefineFunction(c);
+            }
+
+            foreach (var c in llsdData.LSLEvents())
+            {
+                if (provider.EventHandlerExist(c.Name)) continue;
+
+                if (openSimLibraryReflectedTypeData.EventNames.Contains(c.Name))
+                {
+                    c.AddSubsets("os-lsl");
+                }
+
+                provider.DefineEventHandler(c);
+            }
+
+
+            SecondlifeWikiLibraryData wikiData = new SecondlifeWikiLibraryData(new[] { "lsl" });
+
+
+            foreach (var func in wikiData.LSLFunctions())
+            {
+
+                var signatures = provider.GetLibraryFunctionSignatures(func.Name);
+                //found existing overloads of this function
+                if (signatures != null)
+                {
+                    //found an exact match
+                    var sigMatch = signatures.FirstOrDefault(x => x.SignatureEquivalent(func));
+
+                    if (sigMatch != null)
+                    {
+                        if (func.Deprecated && !sigMatch.Deprecated)
+                        {
+                            Log.WriteLineWithHeader("[NOTICE, LSL WIKI FUNCTION DEPRECATED]:",
+                                "The function {0} is stated to be deprecated on the LSL Wiki and not set to deprecated in the current set of functions, making it deprecated.",
+                                func.SignatureString);
+
+                            sigMatch.Deprecated = true;
+                        }
+                        else
+                        {
+                            Log.WriteLineWithHeader("[NOTICE, LSL WIKI FUNCTION ALREADY DEFINED]:",
+                                "The function {0} is scraped from the wiki was already accurately defined in the current set of functions, discarding it.",
+                                func.SignatureString);
+                        }
+
+                        continue;
+                    }
+
+                    var duplicate = signatures.FirstOrDefault(x => x.DefinitionIsDuplicate(func));
+                    //found a signature that would cause a duplicate definition error
+                    if (duplicate != null)
+                    {
+                        Log.WriteLineWithHeader("[WARNING, LSL WIKI FUNCTION DUPLICATE DEFINITION]:",
+                            "The function {0}; was found on the LSL Wiki is considered a duplicate definition to {1}; which already exists in the current set of functions, discarding it." +
+                            " Fix this manually if this is not right.",
+                            func.SignatureString, duplicate.SignatureString);
+
+                        continue;
+                    }
+
+                    Log.WriteLineWithHeader("[WARNING, LSL WIKI FUNCTION OVERLOAD ADDED]:",
+                        "The function {0}; was found on the LSL Wiki and has a different signature than the one in the current set of functions, CREATING OVERLOAD" +
+                        " Fix manually if this is not right.",
+                        func.SignatureString);
+
+                }
+                else
+                {
+                    Log.WriteLineWithHeader("[NOTICE, LSL WIKI FUNCTION ADDED]:",
+                        "The function {0}; was found on the LSL Wiki that was in not in the current set of functions, adding it.",
+                        func.SignatureString);
+                }
+
+
+                if (openSim.LSLFunctionExist(func.Name))
+                {
+                    func.AddSubsets("os-lsl");
+                }
+
+                provider.DefineFunction(func);
+            }
+
+
+            foreach (var con in wikiData.LSLConstants())
+            {
+                var signature = provider.GetLibraryConstantSignature(con.Name);
+                if (signature != null)
+                {
+
+                    if (con.Type != signature.Type)
+                    {
+                        Log.WriteLineWithHeader("[WARNING, LSL WIKI CONSTANT MISMATCHED TYPE]:",
+                            "The constant {0}; was found on the LSL Wiki but has a different TYPE than the version in the current set of constants, the current signature {1}" +
+                            Environment.NewLine + "will be kept and the Wiki version discarded, you should check manually that the signature is correct.",
+                            con.SignatureString, signature.SignatureString);
+                    }
+
+
+                    if (con.ValueString != signature.ValueString)
+                    {
+                        Log.WriteLineWithHeader("[WARNING, LSL WIKI CONSTANT MISMATCHED VALUE]:",
+                            "The constant {0}; was found on the LSL Wiki but has a different VALUE than the version in the current set of constants, the current signature {1}" +
+                            Environment.NewLine + "will be kept and the Wiki version discarded, you should check manually that the signature is correct.",
+                            con.SignatureString, signature.SignatureString);
+                    }
+
+                    if (con.Deprecated && !signature.Deprecated)
+                    {
+                        Log.WriteLineWithHeader("[NOTICE, LSL WIKI CONSTANT DEPRECATED]:",
+                            "The constant {0}; is stated to be deprecated on the LSL Wiki and not set to deprecated in the current set of constants, making it deprecated.", 
+                            con.SignatureString);
+
+                        signature.Deprecated = true;
+                    }
+
+                    continue;
+                }
+
+                Log.WriteLineWithHeader("[NOTICE, LSL WIKI CONSTANT ADDED]:",
+                    "The constant {0}; was found on the LSL Wiki that was not in the current set of constants, adding it.",
+                    con.SignatureString);
+
+                if (openSim.LSLConstantExist(con.Name))
+                {
+                    con.AddSubsets("os-lsl");
+                }
+
+                provider.DefineConstant(con);
+            }
+
+
+            foreach (var ev in wikiData.LSLEvents())
+            {
+                var signature = provider.GetEventHandlerSignature(ev.Name);
+                if (signature != null)
+                {
+
+                    if (!ev.SignatureMatches(signature))
+                    {
+                        Log.WriteLineWithHeader("[WARNING, LSL WIKI EVENT SIGNATURE MISMATCH]:",
+                            "The event {0}; was found on the LSL Wiki but has a different call signature than the version in the current set of events, the current signature" 
+                            + Environment.NewLine+
+                            "will be kept and the Wiki version {1} discarded, you should check manually that the signature is correct.",
+                            ev.SignatureString, signature.SignatureString);
+                    }
+
+                    if (ev.Deprecated && !signature.Deprecated)
+                    {
+                        Log.WriteLineWithHeader("[NOTICE, LSL WIKI EVENT DEPRECATED]:",
+                            "The event {0}; is stated to be deprecated on the LSL Wiki and not set to deprecated in the current set of events, making it deprecated.", 
+                            ev.SignatureString);
+
+                        signature.Deprecated = true;
+                    }
+
+                    continue;
+                }
+
+                
+
+                Log.WriteLineWithHeader("[NOTICE, LSL WIKI EVENT ADDED]:",
+                    "The event {0}; was found on the LSL Wiki that was not in the current set of events, adding it.",
+                    ev.SignatureString);
+
+
+                if (openSimLibraryReflectedTypeData.EventNames.Contains(ev.Name))
+                {
+                    ev.AddSubsets("os-lsl");
+                }
+
+                provider.DefineEventHandler(ev);
+            }
+
+
+
+
+            foreach (var c in openSim.LSLConstants().Where(x => !provider.LibraryConstantExist(x.Name)))
+            {
+                Log.WriteLineWithHeader("[NOTICE, OPENSIM CONSTANT ADDED]:",
+                    "The constant {0}; was found in the OpenSim binaries but was not in the current set of constants, adding it to the current set of data.",
+                    c.SignatureString);
+
+                c.DocumentationString = docProvider.DocumentConstant(c);
+                provider.DefineConstant(c);
+            }
+
+
+            //this will work as long as open sim does not start creating function overloads
+            //for standard linden functions..
+            foreach (var c in openSim.LSLFunctions().Where(x => !provider.LibraryFunctionExist(x.Name)).ToList())
+            {
+                if(provider.LibraryFunctionExist(c.Name))
+                {
+                    Log.WriteLineWithHeader("[NOTICE, OPENSIM FUNCTION OVERLOADED]:",
+                    "The function {0}; was found in the OpenSim binaries but already existed in the current set of functions with a different signature, creating overload.",
+                    c.SignatureString);
+                }
+                else
+                {
+                    Log.WriteLineWithHeader("[NOTICE, OPENSIM FUNCTION ADDED]:",
+                        "The function {0}; was found in the OpenSim binaries but was not in the current set of functions, adding it to the current set of data.",
+                        c.SignatureString);
+                }
+
+                c.DocumentationString = docProvider.DocumentFunction(c);
+                provider.DefineFunction(c);
+            }
+
+
+
+            MessageBox.Show("Select a place to save the generated LibLSLCC library data.",
+                "Select Library Data Save Path", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            retrySave:
+
+            var saveGeneratedLibraryDataDialog = new SaveFileDialog
+            {
+                CreatePrompt = true,
+                Filter = "Library Data (*.xml) | *.xml",
+                OverwritePrompt = true,
+                Title = "Select a place to save the library data",
+                FileName = "LibLSLCC_LibraryData.xml"
+            };
+
+            string libraryDataOutputFilePath = null;
+
+            if (saveGeneratedLibraryDataDialog.ShowDialog() != DialogResult.OK || string.IsNullOrWhiteSpace(saveGeneratedLibraryDataDialog.FileName))
+            {
+                var dialogResult =
+                    MessageBox.Show(
+                        "Are you sure you wish to discard the generated library data? you did not select a file to save it in.",
+                        "Discard Data?", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+
+                if (dialogResult == DialogResult.No)
+                {
+                    goto retrySave;
+                }
+            }
+            else
+            {
+                libraryDataOutputFilePath = saveGeneratedLibraryDataDialog.FileName;
+
+                using (
+                    var writer = new XmlTextWriter(saveGeneratedLibraryDataDialog.OpenFile(), Encoding.Unicode)
+                    {
+                        Formatting = Formatting.Indented
+                    })
+                {
+
+                    provider.WriteXml(writer, true);
+                }
+            }
+
+
+
+
+            var generateConstantTestScript =
+                MessageBox.Show(
+                "Would you like to generate an LSL script to test the values of the generated library constants in-world?",
+                "Generate Constant Test Script", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (generateConstantTestScript != DialogResult.No)
+            {
+
+
+                var saveFile = new SaveFileDialog
+                {
+                    CreatePrompt = true,
+                    Filter = "LSL Script (*.lsl) | *.lsl",
+                    OverwritePrompt = true,
+                    Title = "Select a place to save the script",
+                    FileName = "LibLSLCC_Constants_Test.lsl"
+                };
+
+
+                if (saveFile.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(saveFile.FileName))
+                {
+
+                    using (var writer = new StreamWriter(saveFile.OpenFile()))
+                    {
+                        writer.AutoFlush = true;
+
+                        GenerateLSLConstantTestScript(provider,writer);
+
+                        writer.Flush();
+                    }
+                }
+            }
+
+
+
+
+
+            var runDiffDialogResult=  
+                MessageBox.Show(
+                "Would you like to DIFF the generated data with another set of LibLSLCC Library Data? (The data you just generated will be the 'Left' file).",
+                "Run Library Data DIFF", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if(runDiffDialogResult == DialogResult.No) return;
+
+
+
+
+            
+            MessageBox.Show("Select a LibLSLCC Library Data XML File to be on the Right side of the DIFF.", "Select the 'Right' Library File",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            retrySelectRightDiffOutput:
+
+            OpenFileDialog selectRightDialog = new OpenFileDialog
+            {
+                Filter = "LibLSLCC Library Data (*.xml) | *.xml",
+                CheckFileExists = true,
+                Title = "Select a LibLSLCC Library data file"
+            };
+
+            
+
+            if (selectRightDialog.ShowDialog() !=  DialogResult.OK || string.IsNullOrWhiteSpace(selectRightDialog.FileName))
+            {
+                var dialogResult =
+                  MessageBox.Show(
+                      "You must select a LibLSLCC Library data file to be on the right side of the DIFF, "+
+                       "click Retry to select again or Cancel to exit the program.",
+                  "File Required", MessageBoxButtons.RetryCancel, MessageBoxIcon.Stop);
+
+                if (dialogResult == DialogResult.Retry)
+                {
+                    goto retrySelectRightDiffOutput;
+                }
+
+                return;
+            }
+
+
+            var rightDiffLibraryDataProvider = new LSLXmlLibraryDataProvider();
+
+            using (var file = new XmlTextReader(selectRightDialog.OpenFile()))
+            {
+                rightDiffLibraryDataProvider.FillFromXml(file);
+            }
+
+            var diff = new LibraryDataDiff(provider, rightDiffLibraryDataProvider);
+
+            diff.Diff();
+
+
+            var saveNotRightButInLeft =
+                MessageBox.Show(
+                    "Would you like to save a library data file representing what was in the generated data, but not in the Right DIFF File?",
+                    "Save Added Library Element Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (saveNotRightButInLeft == DialogResult.Yes)
+            {
+                retryNotInRightSave:
+
+                var saveFileLibraryData = new SaveFileDialog
+                {
+                    CreatePrompt = true,
+                    Filter = "LibLSLCC Library Data (*.xml) | *.xml",
+                    OverwritePrompt = true,
+                    Title = "Select a place to save the added library elements data.",
+                    FileName = "GeneratedDataNotIn_"+ selectRightDialog.SafeFileName
+                };
+
+                if (libraryDataOutputFilePath != null)
+                {
+                    saveFileLibraryData.FileName =
+                        "DataIn_"
+                        + Path.GetFileNameWithoutExtension(libraryDataOutputFilePath) +
+                        "_ButNotIn_"
+                        + selectRightDialog.SafeFileName;
+                }
+                else
+                {
+                    saveFileLibraryData.FileName =
+                        "DataIn_GeneratedData_ButNotIn_"+selectRightDialog.SafeFileName;
+                }
+
+
+                if (saveFileLibraryData.ShowDialog() != DialogResult.OK || string.IsNullOrWhiteSpace(saveFileLibraryData.FileName))
+                {
+                    var dialogResult =
+                        MessageBox.Show(
+                            "Are you sure you wish to discard the DIFF file representing elements added to the generated library data? " +
+                            "you did not select a file to save it in.",
+                            "Discard Data?", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+
+                    if (dialogResult == DialogResult.No)
+                    {
+                        goto retryNotInRightSave;
+                    }
+                }
+                else
+                {
+                    using (var file = new XmlTextWriter(saveFileLibraryData.OpenFile(), Encoding.Unicode))
+                    {
+                        file.Formatting = Formatting.Indented;
+                        diff.NotInRight.WriteXml(file, true);
+                    }
+                }
+            }
+
+
+
+            var saveNotLeftButInRight =
+            MessageBox.Show(
+                "Would you like to save a library data file representing what was in the Right DIFF file, but not in the generated library data?",
+                "Save Removed Library Element Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (saveNotLeftButInRight == DialogResult.Yes)
+            {
+                retryNotInLeftSave:
+
+                var saveFileLibraryData = new SaveFileDialog
+                {
+                    CreatePrompt = true,
+                    Filter = "LibLSLCC Library Data (*.xml) | *.xml",
+                    OverwritePrompt = true,
+                    Title = "Select a place to save the removed library elements data.",
+                    
+                };
+
+                if (libraryDataOutputFilePath != null)
+                {
+                    saveFileLibraryData.FileName =
+                        "DataIn_"
+                        + Path.GetFileNameWithoutExtension(selectRightDialog.SafeFileName) +
+                        "_ButNotIn_"
+                        + Path.GetFileNameWithoutExtension(libraryDataOutputFilePath) + ".xml";
+                }
+                else
+                {
+                    saveFileLibraryData.FileName =
+                        "DataIn_"
+                        + Path.GetFileNameWithoutExtension(selectRightDialog.FileName) +
+                        "_ButNotIn_GeneratedData" + ".xml";
+                }
+
+                if (saveFileLibraryData.ShowDialog() != DialogResult.OK || string.IsNullOrWhiteSpace(saveFileLibraryData.FileName))
+                {
+                    var dialogResult =
+                        MessageBox.Show(
+                            "Are you sure you wish to discard the DIFF file representing elements removed from the generated library data? " +
+                            "you did not select a file to save it in.",
+                            "Discard Data?", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+
+                    if (dialogResult == DialogResult.No)
+                    {
+                        goto retryNotInLeftSave;
+                    }
+                }
+                else
+                {
+                    using (var file = new XmlTextWriter(saveFileLibraryData.OpenFile(), Encoding.Unicode))
+                    {
+                        file.Formatting = Formatting.Indented;
+                        diff.NotInLeft.WriteXml(file, true);
+                    }
+                }
+            }
+        }
+        private static List<List<T>> ChunkBy<T>(List<T> source, int chunkSize)
+        {
+            return source
+                .Select((x, i) => new { Index = i, Value = x })
+                .GroupBy(x => x.Index / chunkSize)
+                .Select(x => x.Select(v => v.Value).ToList())
+                .ToList();
+        }
+
+        private static void GenerateLSLConstantTestScript(ILSLMainLibraryDataProvider dataProvider, TextWriter writer)
+        {
+
+            writer.WriteLine();
+            writer.WriteLine("default {");
+            
+            writer.WriteLine("\tstate_entry(){");
+
+
+            int index = 0;
+
+
+            foreach (var constantGroup in ChunkBy(dataProvider.LibraryConstants.Where(x => x.Subsets.Contains("lsl")).ToList(), 200))
+            {
+                writer.WriteLine("\t\t#ifdef GROUP_"+index);
+
+                foreach (var constant in constantGroup)
+                {
+                    writer.WriteLine("\t\tif(" + constant.Name + " != " + constant.ValueStringAsCodeLiteral + ") llOwnerSay(\"" + constant.Name + " value is \"+(string)" + constant.Name + "+\", LibLSLCC value is \"+(string)" + constant.ValueStringAsCodeLiteral + ");");
+                }
+                writer.WriteLine("\t\tllOwnerSay(\"GROUP_"+index+" Test Complete.\");");
+                writer.WriteLine("\t\t#endif");
+
+                index++;
+            }
+
+
+            writer.WriteLine("\t}");
+            writer.WriteLine("}");
+        }
+
+
+
+        [STAThread]
+        private static void Main(string[] args)
+        {
+
+
+            if (Directory.Exists(SecondlifeWikiLibraryData.WebCacheFileDirectory))
+            {
+                var deleteWebCacheDialogResult = MessageBox.Show("Would you to clear the web cache for the LSL Wiki from the previous run?",
+                    "Clear Web Cache", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (deleteWebCacheDialogResult == DialogResult.Yes)
+                {
+                    Directory.Delete(SecondlifeWikiLibraryData.WebCacheFileDirectory, true);
+                }
+            }
+
+
+
+
+
+            var saveLogFileDialogResult = MessageBox.Show("Would you like to save a log file?","Save Log",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+
+
+            if (saveLogFileDialogResult == DialogResult.Yes)
+            {
+                SaveFileDialog saveFile = new SaveFileDialog
+                {
+                    CreatePrompt = true,
+                    Filter = "Log File (*.txt) | *.txt",
+                    OverwritePrompt = true,
+                    Title = "Select a place to save the log file",
+                    FileName = "library_scraper_log.txt"
+                };
+
+
+                if (saveFile.ShowDialog() != DialogResult.OK || string.IsNullOrWhiteSpace(saveFile.FileName))
+                {
+                    Run(null);
+                }
+                else
+                {
+                    using (var log = new StreamWriter(saveFile.OpenFile(), Encoding.Unicode))
+                    {
+                        log.AutoFlush = true;
+                        Run(log);
+                        log.Flush();
+                    }
+                }
+
+            }
+            else
+            {
+                Run(null);
+            }
+
         }
     }
 }

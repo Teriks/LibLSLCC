@@ -48,6 +48,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -73,7 +74,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         ///     if the attribute is equal to ScriptModuleConstantAttribute, then the field is a public LSL
         ///     constant
         /// </summary>
-        IEnumerable<Type> AttributedModuleClasses { get; }
+        IEnumerable<Type> ScriptModuleClasses { get; }
 
         /// <summary>
         ///     Classes in which all public static fields are to be considered public LSL constants
@@ -149,7 +150,12 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         /// <returns>type</returns>
         Type GetScriptConstantContainer(string name);
 
-        /// <summary>
+
+
+        IReadOnlySet<string> EventNames { get; }
+
+
+            /// <summary>
         ///     Maps native return types/parameters for functions, and field types for constants
         ///     to an LSLType
         /// </summary>
@@ -160,26 +166,46 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
     public class OpenSimLibraryReflectedTypeData : IReflectedLibraryData
     {
         private readonly Dictionary<AssemblyName, Assembly> _loaded = new Dictionary<AssemblyName, Assembly>();
+
+        public IReadOnlyDictionary<string, Assembly> AllOpenSimAssemblies
+        {
+            get { return _allOpenSimAssemblies; }
+        }
+
         private readonly string _openSimBinDirectory;
+        private readonly Dictionary<string, Assembly> _allOpenSimAssemblies = new Dictionary<string, Assembly>();
+        private readonly List<Type> _scriptModuleClasses = new List<Type>();
+        private readonly HashSet<string> _eventNames; 
 
         public OpenSimLibraryReflectedTypeData(string openSimBinDirectory)
         {
             _openSimBinDirectory = openSimBinDirectory;
 
-            OptionalScriptModulesAssembly = Assembly.LoadFrom(Path.Combine(openSimBinDirectory,
-                "OpenSim.Region.OptionalModules.dll"));
-
-            ScriptApiAssembly = Assembly.LoadFrom(Path.Combine(openSimBinDirectory,
-                "OpenSim.Region.ScriptEngine.Shared.dll"));
 
 
-            ScriptRuntimeAssembly =
-                Assembly.LoadFile(Path.Combine(openSimBinDirectory,
-                    "OpenSim.Region.ScriptEngine.Shared.Api.Runtime.dll"));
+            foreach (var assemblyPath in Directory.EnumerateFiles(openSimBinDirectory, "*.dll", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    string assemblyName = Path.GetFileName(assemblyPath);
+                    if (assemblyName != null && !_allOpenSimAssemblies.ContainsKey(assemblyName))
+                        _allOpenSimAssemblies.Add(assemblyName, Assembly.LoadFrom(assemblyPath));
+                }
+                catch 
+                {
+                    //this is sparta
+                }
+            }
+            
 
-            RegionFrameworkAssembly =
-                Assembly.LoadFile(Path.Combine(openSimBinDirectory,
-                    "OpenSim.Region.Framework.dll"));
+            ScriptApiAssembly = _allOpenSimAssemblies["OpenSim.Region.ScriptEngine.Shared.dll"];
+
+
+            ScriptRuntimeAssembly = _allOpenSimAssemblies["OpenSim.Region.ScriptEngine.Shared.Api.Runtime.dll"];
+
+            RegionFrameworkAssembly = _allOpenSimAssemblies["OpenSim.Region.Framework.dll"];
+
+            OpenMetaverseTypesAssembly = _allOpenSimAssemblies["OpenMetaverseTypes.dll"];
 
 
             ScriptModuleFunctionAttribute =
@@ -190,15 +216,31 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
 
             AppDomain.CurrentDomain.AssemblyResolve += _currentDomainOnAssemblyResolve;
 
-            AttributedModuleClasses = OptionalScriptModulesAssembly.GetTypes()
-                .Where(x => x.GetInterfaces().Any(y => y.Name == "INonSharedRegionModule"))
-                .Where(t => t.GetFields().Any(h => h.GetCustomAttributes(true).Any(
-                    x =>
-                    {
-                        var n = x.GetType().Name;
-                        return n == "ScriptConstantAttribute" || n == "ScriptInvocationAttribute"
-                            ;
-                    }))).ToList();
+
+            _eventNames = new HashSet<string>(
+                ScriptRuntimeAssembly.GetType("OpenSim.Region.ScriptEngine.Shared.ScriptBase.Executor")
+                    .GetNestedType("scriptEvents")
+                    .GetMembers(BindingFlags.Public | BindingFlags.Static)
+                    .Where(x=>x.Name!="None")
+                    .Select(x => x.Name)
+                    );
+
+
+            foreach (var assembly in AllOpenSimAssemblies.Values)
+            {
+                _scriptModuleClasses.AddRange(
+                    assembly.GetTypes()
+                    .Where(x => x.GetInterfaces().Any(y => y.Name == "INonSharedRegionModule"))
+                    .Where(t => t.GetFields().Any(h => h.GetCustomAttributes(true).Any(
+                        x =>
+                        {
+                            var n = x.GetType().Name;
+                            return n == "ScriptConstantAttribute" || n == "ScriptInvocationAttribute"
+                                ;
+                        }))).ToList()
+                    );
+            }
+
 
 
             FunctionContainingInterfaces =
@@ -225,10 +267,12 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         /// </summary>
         public Assembly ScriptApiAssembly { get; private set; }
 
+
         /// <summary>
-        ///     OpenSim.Region.OptionalModules.dll
+        ///     OpenMetaverseTypes.dll
         /// </summary>
-        public Assembly OptionalScriptModulesAssembly { get; private set; }
+        public Assembly OpenMetaverseTypesAssembly { get; private set; }
+
 
         /// <summary>
         ///     OpenSim.Region.Framework.dll
@@ -252,7 +296,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
 
         public Type GetAttributedModuleClass(string name)
         {
-            return AttributedModuleClasses.SingleOrDefault(x => x.Name == name);
+            return ScriptModuleClasses.SingleOrDefault(x => x.Name == name);
         }
 
         public Type GetScriptConstantContainer(string name)
@@ -260,10 +304,18 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             return ScriptConstantContainerClasses.SingleOrDefault(x => x.Name == name);
         }
 
+        public IReadOnlySet<string> EventNames
+        {
+            get { return new ReadOnlyHashSet<string>(_eventNames); }
+        }
+
         /// <summary>
-        ///     INonSharedRegionModule that use ScriptConstantAttribute or ScriptInvocationAttribute anywhere in the class
+        ///     INonSharedRegionModule's that use ScriptConstantAttribute or ScriptInvocationAttribute anywhere in the class
         /// </summary>
-        public IEnumerable<Type> AttributedModuleClasses { get; private set; }
+        public IEnumerable<Type> ScriptModuleClasses
+        {
+            get { return _scriptModuleClasses; }
+        }
 
         /// <summary>
         ///     ScriptBaseClass
@@ -378,10 +430,80 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             }
         }
 
+
+        /// <summary>
+        ///     OpenMetaverse.UUID
+        /// </summary>
+        public Type OpenMetaverseKey
+        {
+            get
+            {
+                var t =
+                    OpenMetaverseTypesAssembly.GetType("OpenMetaverse.UUID");
+                return t;
+            }
+        }
+
+        /// <summary>
+        ///     OpenMetaverse.Vector3
+        /// </summary>
+        public Type OpenMetaverseVector3
+        {
+            get
+            {
+                var t =
+                    OpenMetaverseTypesAssembly.GetType("OpenMetaverse.Vector3");
+                return t;
+            }
+        }
+
+        /// <summary>
+        ///     OpenMetaverse.Vector3d
+        /// </summary>
+        public Type OpenMetaverseVector3D
+        {
+            get
+            {
+                var t =
+                    OpenMetaverseTypesAssembly.GetType("OpenMetaverse.Vector3d");
+                return t;
+            }
+        }
+
+        /// <summary>
+        ///     OpenMetaverse.Vector3d
+        /// </summary>
+        public Type OpenMetaverseVector4
+        {
+            get
+            {
+                var t =
+                    OpenMetaverseTypesAssembly.GetType("OpenMetaverse.Vector4");
+                return t;
+            }
+        }
+
+        /// <summary>
+        ///     OpenMetaverse.Quaternion
+        /// </summary>
+        public Type OpenMetaverseQuaternion
+        {
+            get
+            {
+                var t =
+                    OpenMetaverseTypesAssembly.GetType("OpenMetaverse.Quaternion");
+                return t;
+            }
+        }
+
         public IReadOnlyDictionary<Type, LSLType> OpenSimToLSLTypeMapping()
         {
             var r = new Dictionary<Type, LSLType>
             {
+                {
+                    typeof(object[]),
+                    LSLType.List
+                },
                 {
                     typeof (void),
                     LSLType.Void
@@ -450,6 +572,31 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
                 {
                     RuntimeString,
                     LSLType.String
+                }
+                ,
+                {
+                    OpenMetaverseKey,
+                    LSLType.Key
+                }
+                ,
+                {
+                    OpenMetaverseQuaternion,
+                    LSLType.Rotation
+                }
+                ,
+                {
+                    OpenMetaverseVector3,
+                    LSLType.Vector
+                }
+                ,
+                {
+                    OpenMetaverseVector3D,
+                    LSLType.Vector
+                }
+                ,
+                {
+                    OpenMetaverseVector4,
+                    LSLType.Rotation
                 }
             };
 

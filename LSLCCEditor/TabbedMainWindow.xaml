@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:LSLCCEditor.Converters"
         xmlns:lslccEditor="clr-namespace:LSLCCEditor"
-        xmlns:ae="clr-namespace:ICSharpCode.AvalonEdit.CodeCompletion;assembly=ICSharpCode.AvalonEdit"
         mc:Ignorable="d"
         Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing"
         Loaded="TabbedMainWindow_OnLoaded" DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -98,6 +97,8 @@
                           Unchecked="OsModInvoke_OnUnChecked" />
                 <MenuItem Name="OsBulletPhysics" Header="OS Bullet Physics" IsCheckable="true"
                           Unchecked="OsBulletPhysics_OnUnchecked" Checked="OsBulletPhysics_OnChecked" />
+                <MenuItem Name="OsJsonStore" Header="OS Json Store" IsCheckable="true"
+                          Unchecked="OsJsonStore_OnUnchecked" Checked="OsJsonStore_OnChecked" />
 
             </MenuItem>
             <MenuItem Header="Search"
@@ -121,8 +122,6 @@
                                 <TabPanel x:Name="HeaderPanel"
                                           Panel.ZIndex="1"
                                           KeyboardNavigation.TabIndex="1"
-                                          Grid.Column="0"
-                                          Grid.Row="0"
                                           Margin="0,2,0,0"
                                           IsItemsHost="true" />
                             </ScrollViewer>

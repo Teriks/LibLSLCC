@@ -58,6 +58,11 @@ namespace LibLSLCC.Collections
             _items = items;
         }
 
+        public ReadOnlyHashSet(IEnumerable<T> items)
+        {
+            _items = new HashSet<T>(items);
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             return _items.GetEnumerator();

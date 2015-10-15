@@ -1,320 +1,408 @@
-﻿#region FileInfo
-// 
-// File: LSLLibraryDataProvider.cs
-// 
-// 
-// ============================================================
-// ============================================================
-// 
-// 
-// Copyright (c) 2015, Teriks
-// 
-// All rights reserved.
-// 
-// 
-// This file is part of LibLSLCC.
-// 
-// LibLSLCC is distributed under the following BSD 3-Clause License
-// 
-// 
-// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-// 
-// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-// 
-// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
-//     in the documentation and/or other materials provided with the distribution.
-// 
-// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived
-//     from this software without specific prior written permission.
-// 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-// ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
-// 
-// ============================================================
-// ============================================================
-// 
-// 
-#endregion
-#region Imports
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using LibLSLCC.CodeValidator.Components.Interfaces;
-using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.ThreadSafeEnumeration;
-
-#endregion
 
 namespace LibLSLCC.CodeValidator.Components
 {
     public class LSLLibraryDataProvider : ILSLMainLibraryDataProvider
     {
-        private readonly List<LSLLibraryConstantSignature> _duplicateConstantsDefined =
-            new List<LSLLibraryConstantSignature>();
 
-        private readonly List<LSLLibraryEventSignature> _duplicateEventsDefined = new List<LSLLibraryEventSignature>();
+        public bool LiveFiltering { get; private set; } 
 
-        private readonly List<LSLLibraryFunctionSignature> _duplicateFunctionsDefined =
-            new List<LSLLibraryFunctionSignature>();
 
-        private readonly Dictionary<string, LSLLibraryConstantSignature> _validConstants
-            = new Dictionary<string, LSLLibraryConstantSignature>();
+        public LSLLibraryDataSubsetCollection ActiveSubsets { get; private set;}
 
-        private readonly Dictionary<string, LSLLibraryEventSignature> _validEventHandlers =
-            new Dictionary<string, LSLLibraryEventSignature>();
 
-        private readonly Dictionary<string, List<LSLLibraryFunctionSignature>> _validLibraryFunctions
-            = new Dictionary<string, List<LSLLibraryFunctionSignature>>();
-
-        /// <summary>
-        ///     Only useful when Subsets contains the "all" keyword
-        /// </summary>
-        public IEnumerable<LSLLibraryEventSignature> DuplicateEventsDefined
+        public IEnumerable<string> PossibleSubsets
         {
-            get { return _duplicateEventsDefined; }
-        }
-
-        /// <summary>
-        ///     Only useful when Subsets contains the "all" keyword
-        /// </summary>
-        public IEnumerable<LSLLibraryConstantSignature> DuplicateConstantsDefined
-        {
-            get { return _duplicateConstantsDefined; }
-        }
-
-        /// <summary>
-        ///     Only useful when Subsets contains the "all" keyword
-        /// </summary>
-        public IEnumerable<LSLLibraryFunctionSignature> DuplicateFunctionsDefined
-        {
-            get { return _duplicateFunctionsDefined; }
-        }
-
-        public bool AccumulateDuplicates { get; protected set; }
-
-        public virtual IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
-        {
-            get { return _validEventHandlers.Values.AsLocked(_validEventHandlers); }
-        }
-
-        public virtual IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions
-        {
-            get { return _validLibraryFunctions.Values.AsLocked(_validLibraryFunctions); }
-        }
-
-        public virtual IEnumerable<LSLLibraryConstantSignature> LibraryConstants
-        {
-            get { return _validConstants.Values.AsLocked(_validLibraryFunctions); }
-        }
-
-        /// <summary>
-        ///     Return true if an event handler with the given name exists in the default library.
-        /// </summary>
-        /// <param name="name">Name of the event handler.</param>
-        /// <returns>True if the event handler with given name exists.</returns>
-        public virtual bool EventHandlerExist(string name)
-        {
-            return _validEventHandlers.ContainsKey(name);
-        }
-
-        /// <summary>
-        ///     Return an LSLEventHandlerSignature object describing an event handler signature;
-        ///     if the event handler with the given name exists, otherwise null.
-        /// </summary>
-        /// <param name="name">Name of the event handler</param>
-        /// <returns>
-        ///     An LSLEventHandlerSignature object describing the given event handlers signature,
-        ///     or null if the event handler does not exist.
-        /// </returns>
-        public virtual LSLLibraryEventSignature GetEventHandlerSignature(string name)
-        {
-            LSLLibraryEventSignature result;
-
-            if (_validEventHandlers.TryGetValue(name, out result))
+            get
             {
-                return result;
+                return
+                    _eventSignaturesBySubsetAndName.Keys.Union(_constantSignaturesBySubsetAndName.Keys)
+                        .Union(_functionSignaturesBySubsetAndName.Keys);
             }
-            return null;
-        }
+        } 
 
-        /// <summary>
-        ///     Return true if a library function with the given name exists.
-        /// </summary>
-        /// <param name="name">Name of the library function.</param>
-        /// <returns>True if the library function with given name exists.</returns>
-        public virtual bool LibraryFunctionExist(string name)
+        public IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
         {
-            return _validLibraryFunctions.ContainsKey(name);
-        }
-
-        /// <summary>
-        ///     Return an LSLFunctionSignature list object describing the function call signatures of a library function;
-        ///     if the function with the given name exists as a singular or overloaded function, otherwise null.
-        /// </summary>
-        /// <param name="name">Name of the library function.</param>
-        /// <returns>
-        ///     An LSLFunctionSignature list object describing the given library functions signatures,
-        ///     or null if the library function does not exist.
-        /// </returns>
-        public virtual IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
-        {
-            List<LSLLibraryFunctionSignature> result;
-
-            if (_validLibraryFunctions.TryGetValue(name, out result))
+            get
             {
-                return result;
-            }
-            return null;
-        }
-
-        /// <summary>
-        ///     Return true if a library constant with the given name exists.
-        /// </summary>
-        /// <param name="name">Name of the library constant.</param>
-        /// <returns>True if a library constant with the given name exists.</returns>
-        public virtual bool LibraryConstantExist(string name)
-        {
-            return _validConstants.ContainsKey(name);
-        }
-
-        /// <summary>
-        ///     Return the library constant if it exists, otherwise null.
-        /// </summary>
-        /// <param name="name">Name of the library constant.</param>
-        /// <returns>
-        ///     The library constants signature
-        /// </returns>
-        public virtual LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
-        {
-            LSLLibraryConstantSignature result;
-
-            if (_validConstants.TryGetValue(name, out result))
-            {
-                return result;
-            }
-            return null;
-        }
-
-        protected void ClearLibraryConstants()
-        {
-            _validConstants.Clear();
-        }
-
-        protected void ClearLibraryFunctions()
-        {
-            _validLibraryFunctions.Clear();
-        }
-
-        protected void ClearEventHandlers()
-        {
-            _validEventHandlers.Clear();
-        }
-
-        public virtual void AddValidConstant(LSLLibraryConstantSignature signature)
-        {
-            if (_validConstants.ContainsKey(signature.Name))
-            {
-                if (!AccumulateDuplicates)
+                return ActiveSubsets.Subsets.SelectMany<string, LSLLibraryEventSignature>(x =>
                 {
-                    throw new LSLDuplicateSignatureException("Constant with name \"" + signature.Name +
-                                                             "\" is already defined");
-                }
-                _duplicateConstantsDefined.Add(signature);
-            }
-            else
-            {
-                _validConstants.Add(signature.Name, signature);
-            }
-        }
-
-        public virtual void AddValidEventHandler(LSLLibraryEventSignature signature)
-        {
-            if (_validEventHandlers.ContainsKey(signature.Name))
-            {
-                if (!AccumulateDuplicates)
-                {
-                    throw new LSLDuplicateSignatureException("Event handler with name \"" + signature.Name +
-                                                             "\" is already defined");
-                }
-                _duplicateEventsDefined.Add(signature);
-            }
-            else
-            {
-                _validEventHandlers.Add(signature.Name, signature);
-            }
-        }
-
-        public virtual void AddValidLibraryFunction(LSLLibraryFunctionSignature signature)
-        {
-            if (_validLibraryFunctions.ContainsKey(signature.Name))
-            {
-                if (_validLibraryFunctions[signature.Name].Any(y => y.SignatureMatches(signature)))
-                {
-                    if (!AccumulateDuplicates)
+                    Dictionary<string, LSLLibraryEventSignature> subsetContent;
+                    if (_eventSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
                     {
-                        throw new LSLDuplicateSignatureException("Library function with name \"" + signature.Name +
-                                                                 "\" is already defined");
+                        return subsetContent.Values;
                     }
-                    _duplicateFunctionsDefined.Add(signature);
+                    return new List<LSLLibraryEventSignature>();
+                });
+            }
+        }
+
+        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions
+        {
+            get
+            {
+                return ActiveSubsets.Subsets.SelectMany<string, List<LSLLibraryFunctionSignature>>(x =>
+                {
+                    Dictionary<string, List<LSLLibraryFunctionSignature>> subsetContent;
+                    if (_functionSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
+                    {
+                        return subsetContent.Values;
+                    }
+                    return new List<List<LSLLibraryFunctionSignature>>();
+                });
+            }
+        }
+
+
+
+        public IEnumerable<LSLLibraryConstantSignature> LibraryConstants
+        {
+            get
+            {
+                return ActiveSubsets.Subsets.SelectMany<string, LSLLibraryConstantSignature>(x =>
+                {
+                    Dictionary<string, LSLLibraryConstantSignature> subsetContent;
+                    if (_constantSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
+                    {
+                        return subsetContent.Values;
+                    }
+                    return new List<LSLLibraryConstantSignature>();
+                });
+            }
+        }
+
+        private readonly Dictionary<string, Dictionary<string, List<LSLLibraryFunctionSignature>>>
+            _functionSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, List<LSLLibraryFunctionSignature>>>();
+
+        private readonly Dictionary<string, Dictionary<string, LSLLibraryConstantSignature>>
+            _constantSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, LSLLibraryConstantSignature>>();
+
+        private readonly Dictionary<string, Dictionary<string, LSLLibraryEventSignature>>
+           _eventSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, LSLLibraryEventSignature>>();
+
+
+
+        
+
+        public void ClearLibraryFunctions()
+        {
+            _functionSignaturesBySubsetAndName.Clear();
+        }
+
+        public void ClearEventHandlers()
+        {
+            _eventSignaturesBySubsetAndName.Clear();
+        }
+
+        public void ClearLibraryConstants()
+        {
+            _constantSignaturesBySubsetAndName.Clear();
+        }
+
+
+        public void DefineEventHandler(LSLLibraryEventSignature signature)
+        {
+            var sig = GetEventHandlerSignature(signature.Name, PossibleSubsets);
+            if (sig != null)
+            {
+                if (sig.Subsets.Overlaps(signature.Subsets))
+                {
+                    throw new LSLDuplicateSignatureException(
+                        "Cannot defined an event handler with the same name more than once in the same subset, see: " +
+                        sig.SignatureString);
+                }
+            }
+
+            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets.Subsets))
+            {
+                //dont add it
+                return;
+            }
+
+            foreach (var subset in signature.Subsets)
+            {
+                if (_eventSignaturesBySubsetAndName.ContainsKey(subset))
+                {
+                    _eventSignaturesBySubsetAndName[subset][signature.Name] = signature;
                 }
                 else
                 {
-                    _validLibraryFunctions[signature.Name].Add(signature);
+                    _eventSignaturesBySubsetAndName[subset] = new Dictionary<string, LSLLibraryEventSignature> { {signature.Name,signature} };
                 }
             }
-            else
+            
+        }
+
+
+        public void DefineConstant(LSLLibraryConstantSignature signature)
+        {
+            var sig = GetLibraryConstantSignature(signature.Name, PossibleSubsets);
+            if (sig != null)
             {
-                _validLibraryFunctions.Add(signature.Name, new List<LSLLibraryFunctionSignature> {signature});
+                if (sig.Subsets.Overlaps(signature.Subsets))
+                {
+                    throw new LSLDuplicateSignatureException(
+                        "Cannot defined an constant with the same name more than once in the same subset, see: " +
+                        sig.SignatureString);
+                }
+            }
+
+            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets.Subsets))
+            {
+                //dont add it
+                return;
+            }
+
+
+            foreach (var subset in signature.Subsets)
+            {
+                if (_constantSignaturesBySubsetAndName.ContainsKey(subset))
+                {
+                    _constantSignaturesBySubsetAndName[subset][signature.Name] = signature;
+                }
+                else
+                {
+                    _constantSignaturesBySubsetAndName[subset] = new Dictionary<string, LSLLibraryConstantSignature> { { signature.Name, signature } };
+                }
+            }
+            
+        }
+
+
+
+        public void DefineFunction(LSLLibraryFunctionSignature signature)
+        {
+            var sigs = GetLibraryFunctionSignatures(signature.Name, PossibleSubsets);
+
+            if (sigs != null)
+            {
+                var duplicate = sigs.FirstOrDefault(x => x.DefinitionIsDuplicate(signature));
+
+                if (duplicate != null)
+                {
+                    if (duplicate.Subsets.Overlaps(signature.Subsets))
+                    {
+                        throw new LSLDuplicateSignatureException(
+                            "Cannot define function as it is a duplicate of or ambiguous with another function in the same subset, attempted to add: " +
+                            signature.SignatureString + ";, but: " + duplicate.SignatureString +
+                            "; is considered a duplicate or ambiguous definition.");
+                    }
+                }
+
+            }
+
+            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets.Subsets))
+            {
+                //dont add it
+                return;
+            }
+
+
+            foreach (var subset in signature.Subsets)
+            {
+                if (!_functionSignaturesBySubsetAndName.ContainsKey(subset))
+                {
+                    _functionSignaturesBySubsetAndName[subset] = new Dictionary<string, List<LSLLibraryFunctionSignature>>();
+                }
+
+                if (_functionSignaturesBySubsetAndName[subset].ContainsKey(signature.Name))
+                {
+                    _functionSignaturesBySubsetAndName[subset][signature.Name].Add(signature);
+                }
+                else
+                {
+                    _functionSignaturesBySubsetAndName[subset][signature.Name] = new List<LSLLibraryFunctionSignature> {signature};
+                }
             }
         }
 
-        public virtual void AddValidConstant(LSLType type, string name)
+
+
+        public LSLLibraryDataProvider(bool liveFiltering = true)
         {
-            AddValidConstant(new LSLLibraryConstantSignature(type, name));
+            LiveFiltering = liveFiltering;
+            ActiveSubsets = new LSLLibraryDataSubsetCollection();
+
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnOnSubsetsChanged;
         }
 
-        public virtual void AddValidEventHandler(string name, IEnumerable<LSLParameter> parameters)
+
+        public LSLLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true)
         {
-            AddValidEventHandler(new LSLLibraryEventSignature(name, parameters));
+            LiveFiltering = liveFiltering;
+            ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
+
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnOnSubsetsChanged;
         }
 
-        public virtual void AddValidLibraryFunction(LSLType returnType, string name,
-            IEnumerable<LSLParameter> parameters)
-        {
-            AddValidLibraryFunction(new LSLLibraryFunctionSignature(returnType, name, parameters));
-        }
-    }
 
-    [Serializable]
-    public class LSLDuplicateSignatureException : Exception
-    {
-        public LSLDuplicateSignatureException()
+
+        private void ActiveSubsetsOnOnSubsetsChanged(object o, string s)
         {
+            if (!LiveFiltering)
+            {
+                throw new InvalidOperationException("Cannot change the active subsets of a LSLLibraryDataProvider when the object is not in LiveFiltering mode.");
+            }
         }
 
-        public LSLDuplicateSignatureException(string message)
-            : base(message)
+
+
+        public bool EventHandlerExist(string name)
         {
+            var match = 
+                ActiveSubsets.Subsets.Where(x=>_eventSignaturesBySubsetAndName.ContainsKey(x))
+                .FirstOrDefault(x => _eventSignaturesBySubsetAndName[x].ContainsKey(name));
+
+            return match != null;
         }
 
-        public LSLDuplicateSignatureException(string message, Exception inner)
-            : base(message, inner)
+
+        public LSLLibraryEventSignature GetEventHandlerSignature(string name)
         {
+            return GetEventHandlerSignature(name, ActiveSubsets.Subsets);
         }
 
-        protected LSLDuplicateSignatureException(
-            SerializationInfo info,
-            StreamingContext context)
-            : base(info, context)
+
+
+        private LSLLibraryEventSignature GetEventHandlerSignature(string name, IEnumerable<string> subsets)
         {
+            foreach (var subset in subsets.Where(y => _eventSignaturesBySubsetAndName.ContainsKey(y)))
+            {
+                LSLLibraryEventSignature ev;
+                if (_eventSignaturesBySubsetAndName[subset].TryGetValue(name, out ev))
+                {
+                    return ev;
+                }
+            }
+
+            return null;
+        }
+
+
+        public bool LibraryFunctionExist(string name)
+        {
+            var match =
+                ActiveSubsets.Subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+                .FirstOrDefault(x => _functionSignaturesBySubsetAndName[x].ContainsKey(name));
+
+            return match != null;
+        }
+
+
+
+        public bool IsConsideredOverload(LSLFunctionSignature signatureToTest)
+        {
+            var match =
+               ActiveSubsets.Subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+               .FirstOrDefault(x =>
+               {
+                   var subsetDict = _functionSignaturesBySubsetAndName[x];
+                   //its not an overload its the first definition
+                   if (!subsetDict.ContainsKey(signatureToTest.Name)) return false;
+
+                   //if there is a duplicate this cannot be an overload, otherwise it is an overload
+                   var duplicate = _functionSignaturesBySubsetAndName[x][signatureToTest.Name].FirstOrDefault(f=>f.DefinitionIsDuplicate(signatureToTest));
+                   return duplicate == null;
+               });
+
+            return match != null;
+        }
+
+
+
+        public bool LibraryFunctionExist(LSLFunctionSignature signatureToTest)
+        {
+            var match =
+               ActiveSubsets.Subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+               .FirstOrDefault(x =>
+               {
+                   var subsetDict = _functionSignaturesBySubsetAndName[x];
+                   //its does not exist
+                   if (!subsetDict.ContainsKey(signatureToTest.Name)) return false;
+
+                   //return true if a signature equivalent exists
+                   return _functionSignaturesBySubsetAndName[x][signatureToTest.Name].FirstOrDefault(f => f.SignatureEquivalent(signatureToTest)) != null;
+               });
+
+            return match != null;
+        }
+
+
+
+        public IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
+        {
+            return GetLibraryFunctionSignatures(name, ActiveSubsets.Subsets);
+        }
+
+
+        private IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name, IEnumerable<string> subsets)
+        {
+            var results = new List<LSLLibraryFunctionSignature>();
+
+            foreach (var subset in subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x) && _functionSignaturesBySubsetAndName[x].ContainsKey(name)))
+            {
+                foreach (var overload in _functionSignaturesBySubsetAndName[subset][name])
+                {
+
+                    var overload1 = overload;
+                    var duplicate = results.FirstOrDefault(x => x.DefinitionIsDuplicate(overload1));
+
+                    //if its a reference to the same object, then the function was added with multiple subsets, its not an error
+                    if (duplicate != null && !ReferenceEquals(overload,duplicate))
+                    {
+                        throw new LSLDuplicateSignatureException(
+                            string.Format(
+                                "GetLibraryFunctionSignatures for {0} failed because the more than one ActiveSubset had a duplicate/ambiguous definition of it.",
+                                name));
+
+                    }
+                    results.Add(overload);
+                }
+            }
+
+            return results.Count == 0 ? null : results;
+        }
+
+
+        public LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest)
+        {
+            var sigs = GetLibraryFunctionSignatures(signatureToTest.Name);
+
+            if (sigs == null) return null;
+
+            return sigs.FirstOrDefault(x=>x.SignatureEquivalent(signatureToTest));
+        }
+
+
+        public bool LibraryConstantExist(string name)
+        {
+            var match =
+                ActiveSubsets.Subsets.Where(x => _constantSignaturesBySubsetAndName.ContainsKey(x))
+                .FirstOrDefault(x => _constantSignaturesBySubsetAndName[x].ContainsKey(name));
+
+            return match != null;
+        }
+
+
+        public LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
+        {
+            return GetLibraryConstantSignature(name, ActiveSubsets.Subsets);
+        }
+
+
+        private LSLLibraryConstantSignature GetLibraryConstantSignature(string name, IEnumerable<string> possibleSubsets)
+        {
+            return
+                possibleSubsets.Where(
+                    x =>
+                        _constantSignaturesBySubsetAndName.ContainsKey(x) &&
+                        _constantSignaturesBySubsetAndName[x].ContainsKey(name))
+                    .Select(x => _constantSignaturesBySubsetAndName[x][name])
+                    .FirstOrDefault();
         }
     }
 }

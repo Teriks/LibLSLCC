@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Resources;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LibLSLCC.CodeValidator.Components;
@@ -808,7 +809,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             if (!ScopingManager.StatePreDefined(context.state_name.Text))
             {
-                //state was not defined in the pre-pass the predefines all states
+                //state was not defined in the pre-pass that predefines all states
                 //in the compilation unit, this is an internal error and should never happen.
                 throw new LSLCodeValidatorInternalError(
                     "VisitDefinedState, ScopingManager.StateDefined returned that state was undefined " +
@@ -2694,73 +2695,94 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
+
+
+        /// <summary>
+        /// Validate that a LSLFunctionSignature matches up with the parameters that are attempting to be passed into it.
+        /// This function generates SyntaxErrorListener events
+        /// </summary>
+        /// <param name="context">The ANTLR context for the parsed function call.</param>
+        /// <param name="functionSignature">The function signature of the function call being tested.</param>
+        /// <param name="expressions">The expressions that are proposed to be passed into the function with the given signature.</param>
+        /// <returns>True if the function call signature matches the provided arguments,  False if it does not.</returns>
         private bool ValidateFunctionCallSignatureMatch(
             LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature functionSignature,
             IReadOnlyList<ILSLExprNode> expressions)
         {
-            var parameterTypeMismatch = false;
-            var parameterNumber = 0;
-
 
             var location = new LSLSourceCodeRange(context);
 
-            if (!functionSignature.HasVariadicParameter)
+
+            var match = LSLFunctionSignatureMatcher.TryMatch( functionSignature, expressions, ExpressionValidator);
+
+            if (match.ImproperParameterCount)
             {
-                if (expressions.Count() != functionSignature.ParameterCount)
-                {
-                    SyntaxErrorListener.ImproperParameterCountInFunctionCall(
-                        location,
-                        functionSignature,
-                        expressions.ToArray());
-
-                    return false;
-                }
-            }
-            else
-            {
-                if (expressions.Count < functionSignature.ConcreteParameterCount)
-                {
-                    SyntaxErrorListener.ImproperParameterCountInFunctionCall(
-                        location,
-                        functionSignature,
-                        expressions.ToArray());
-
-                    return false;
-                }
-            }
-
-            var checkUpToIndex = functionSignature.HasVariadicParameter
-                ? functionSignature.VariadicParameterIndex
-                : expressions.Count;
-
-            for (; parameterNumber < checkUpToIndex; parameterNumber++)
-            {
-                if (!ExpressionValidator.ValidFunctionParameter(
-                    functionSignature,
-                    parameterNumber,
-                    expressions[parameterNumber]))
-                {
-                    parameterTypeMismatch = true;
-                    break;
-                }
-            }
-
-
-            if (parameterTypeMismatch)
-            {
-                SyntaxErrorListener.ParameterTypeMismatchInFunctionCall(
+                SyntaxErrorListener.ImproperParameterCountInFunctionCall(
                     location,
-                    parameterNumber,
                     functionSignature,
                     expressions.ToArray());
-
 
                 return false;
             }
 
-            return true;
+
+            if (!match.TypeMismatch) return true;
+
+
+            SyntaxErrorListener.ParameterTypeMismatchInFunctionCall(
+                location,
+                match.TypeMismatchIndex,
+                functionSignature,
+                expressions.ToArray());
+
+
+            return false;
         }
+
+
+
+        /// <summary>
+        /// Find a matching overload from a list of function signatures, generate SyntaxErrors using the SyntaxErrorListener if none is found.
+        /// 
+        /// Returns null if no overload is found.
+        /// </summary>
+        /// <param name="context">The ANTLR context for the function call expression.</param>
+        /// <param name="functionSignatures">Function signatures to check for overload matches in.</param>
+        /// <param name="expressions">The expressions that are proposed to be passed into the function with the given signature.</param>
+        /// <returns>A matching LSLLibraryFunctionSignature overload or null</returns>
+        private LSLLibraryFunctionSignature ValidateLibraryFunctionCallSignatureMatch(
+            LSLParser.Expr_FunctionCallContext context, IReadOnlyList<LSLLibraryFunctionSignature> functionSignatures,
+            IReadOnlyList<ILSLExprNode> expressions)
+        {
+            if (functionSignatures.Count() == 1)
+            {
+                var signature = functionSignatures.First();
+                var match = ValidateFunctionCallSignatureMatch(context, signature, expressions);
+
+                return match ? signature : null;
+            }
+
+            var matchResults = LSLFunctionSignatureMatcher.MatchOverloads(functionSignatures, expressions, ExpressionValidator);
+
+
+            if (matchResults.Success) return matchResults.MatchingOverload;
+
+            if (matchResults.Ambiguous)
+            {
+                SyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbigious(new LSLSourceCodeRange(context),
+                    context.function_name.Text, matchResults.Matches, expressions);
+            }
+            else
+            {
+                SyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(new LSLSourceCodeRange(context),
+                    context.function_name.Text, expressions);
+            }
+
+            return null;
+        }
+
+
 
 
         public override ILSLSyntaxTreeNode VisitExpr_FunctionCall(LSLParser.Expr_FunctionCallContext context)
@@ -2804,8 +2826,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
 
-
-
                 var functionSignatures = MainLibraryDataProvider.GetLibraryFunctionSignatures(functionName);
 
 
@@ -2821,7 +2841,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     }
 
 
-                    if (functionSignature.IsDeprecated())
+                    if (functionSignature.Deprecated)
                     {
                         SyntaxWarningListener.UseOfDeprecatedLibraryFunction(new LSLSourceCodeRange(context),functionSignature);
                     }  
@@ -2874,60 +2894,11 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        private LSLLibraryFunctionSignature ValidateLibraryFunctionCallSignatureMatch(
-            LSLParser.Expr_FunctionCallContext context, IReadOnlyList<LSLLibraryFunctionSignature> functionSignatures,
-            IReadOnlyList<ILSLExprNode> expressionNodes)
-        {
-            LSLLibraryFunctionSignature functionSignature = null;
 
 
-            if (functionSignatures.Count() == 1)
-            {
-                var signature = functionSignatures.First();
-                var match = ValidateFunctionCallSignatureMatch(context, signature, expressionNodes);
 
-                if (match)
-                {
-                    return signature;
-                }
-                return null;
-            }
 
-            foreach (var lslLibraryFunctionSignature in functionSignatures)
-            {
-                var overloadMatch = true;
-                if (lslLibraryFunctionSignature.ParameterCount == expressionNodes.Count)
-                {
-                    var pindex = 0;
-                    foreach (var expression in expressionNodes)
-                    {
-                        if (ExpressionValidator.ValidFunctionParameter(lslLibraryFunctionSignature, pindex, expression))
-                        {
-                            overloadMatch = false;
-                            break;
-                        }
-                        pindex++;
-                    }
-                }
-                else
-                {
-                    overloadMatch = false;
-                }
 
-                if (!overloadMatch) continue;
-
-                functionSignature = lslLibraryFunctionSignature;
-                break;
-            }
-
-            if (functionSignature == null)
-            {
-                SyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(new LSLSourceCodeRange(context),
-                    context.function_name.Text, expressionNodes);
-            }
-
-            return functionSignature;
-        }
 
 
         public override ILSLSyntaxTreeNode VisitExpr_LogicalAnd(LSLParser.Expr_LogicalAndContext context)

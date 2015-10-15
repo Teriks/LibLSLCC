@@ -42,7 +42,6 @@
 #endregion
 #region Imports
 
-using System;
 using System.Text.RegularExpressions;
 using System.Xml;
 using LibLSLCC.CodeValidator.Components;
@@ -93,57 +92,49 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                             doc = _functionSig.Regex.Replace(f.Desc, "");
 
-                            if (sig.SignatureMatches(function))
-                            {
-                                hasMatchingDocSig = true;
+                            if (!sig.SignatureEquivalent(function)) continue;
 
-                                break;
-                            }
+                            hasMatchingDocSig = true;
+
+                            break;
                         }
-                        else
-                        {
-                            doc = f.Desc;
-                            hasDocSig = false;
-                        }
+
+                        doc = f.Desc;
+                        hasDocSig = false;
                     }
                 }
-
+                /*
                 if (function.Name == "lsSetWindlightScene")
                 {
                     Console.WriteLine("test");
-                }
+                }*/
 
                 if (hasDocSig)
                 {
                     if (hasMatchingDocSig)
                     {
-                        Log.WriteLine(
-                            "FirestormDocumentationScraper script_library name={0}: Matching docstring signature found for function {1}",
+                        Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Matching docstring signature found for function {1}",
                             _scriptLibrary.Name, function.Name);
                         return doc;
                     }
-                    Log.WriteLine(
-                        "FirestormDocumentationScraper script_library name={0}: Docstring signature found for function {1} mismatches passed function signature",
+                    Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring signature found for function {1} mismatches passed function signature",
                         _scriptLibrary.Name, function.Name);
                     return doc;
                 }
 
                 if (string.IsNullOrWhiteSpace(doc))
                 {
-                    Log.WriteLine(
-                        "FirestormDocumentationScraper script_library name={0}: Docstring for function {1} is empty",
+                    Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring for function {1} is empty",
                         _scriptLibrary.Name, function.Name);
                     return null;
                 }
 
-                Log.WriteLine(
-                    "FirestormDocumentationScraper script_library name={0}: Docstring found for function {1} did not contain a signature",
+                Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring found for function {1} did not contain a signature",
                     _scriptLibrary.Name, function.Name);
                 return doc;
             }
 
-            Log.WriteLine(
-                "FirestormDocumentationScraper script_library name={0}: Function {1} not defined in firestorm data",
+            Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Function {1} not defined in firestorm data",
                 _scriptLibrary.Name, function.Name);
 
             return null;
@@ -153,8 +144,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         {
             if (!_scriptLibrary.Keywords.Contains(eventHandler.Name))
             {
-                Log.WriteLine(
-                    "FirestormDocumentationScraper script_library name={0}: Event {1} not defined in firestorm script library",
+                Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Event {1} not defined in firestorm script library",
                     _scriptLibrary.Name, eventHandler.Name);
                 return null;
             }
@@ -163,7 +153,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             var e = _scriptLibrary.Keywords.Get(eventHandler.Name);
             if (string.IsNullOrWhiteSpace(e.Desc))
             {
-                Log.WriteLine("FirestormDocumentationScraper script_library name={0}: Docstring for event {1} is empty",
+                Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring for event {1} is empty",
                     _scriptLibrary.Name, eventHandler.Name);
                 return null;
             }
@@ -174,21 +164,18 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var sig = LSLLibraryEventSignature.Parse(match.ToString());
                 if (!sig.SignatureMatches(eventHandler))
                 {
-                    Log.WriteLine(
-                        "FirestormDocumentationScraper script_library name={0}: Docstring signature for event {1} mismatches passed event signature",
+                    Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring signature for event {1} mismatches passed event signature",
                         _scriptLibrary.Name, e.Name);
                 }
                 else
                 {
-                    Log.WriteLine(
-                        "FirestormDocumentationScraper script_library name={0}: Docstring signature for event {1} matches passed event signature",
+                    Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring signature for event {1} matches passed event signature",
                         _scriptLibrary.Name, e.Name);
                 }
                 return _functionSig.Regex.Replace(e.Desc, "");
             }
 
-            Log.WriteLine(
-                "FirestormDocumentationScraper script_library name={0}: Docstring for event {1} does not contain a signature",
+            Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring for event {1} does not contain a signature",
                 _scriptLibrary.Name, e.Name);
 
 
@@ -202,19 +189,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var c = _scriptLibrary.Keywords.Get(constant.Name);
                 if (string.IsNullOrWhiteSpace(c.Desc))
                 {
-                    Log.WriteLine(
-                        "FirestormDocumentationScraper script_library name={0}: Docstring for constant {1} is empty",
+                    Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring for constant {1} is empty",
                         _scriptLibrary.Name, c.Name);
                     return null;
                 }
 
-                Log.WriteLine(
-                    "FirestormDocumentationScraper script_library name={0}: Docstring for constant {1} found in firestorm data",
+                Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Docstring for constant {1} found in firestorm data",
                     _scriptLibrary.Name, c.Name);
                 return c.Desc;
             }
-            Log.WriteLine(
-                "FirestormDocumentationScraper script_library name={0}: Constant {1} not defined in firestorm script library",
+            Log.WriteLineWithHeader("[FirestormDocumentationScraper]: ", "script_library name={0}: Constant {1} not defined in firestorm script library",
                 _scriptLibrary.Name, constant.Name);
             return null;
         }

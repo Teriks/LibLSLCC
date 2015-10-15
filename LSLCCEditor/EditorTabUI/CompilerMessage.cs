@@ -50,7 +50,7 @@ using LSLCCEditor.Annotations;
 
 #endregion
 
-namespace LSLCCEditor
+namespace LSLCCEditor.EditorTabUI
 {
     public enum CompilerMessageType
     {

@@ -44,12 +44,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.Collections;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -78,6 +80,7 @@ namespace LibLSLCC.CodeValidator.Components
             DocumentationString = other.DocumentationString;
             _subsets = new HashSet<string>(other._subsets);
             Type = other.Type;
+            _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
         }
 
         public LSLLibraryConstantSignature(LSLType type, string name)
@@ -101,14 +104,14 @@ namespace LibLSLCC.CodeValidator.Components
             get { return new ReadOnlyHashSet<string>(_subsets); }
         }
 
-        public IReadOnlyDictionary<string, string> Properties
+        public IDictionary<string, string> Properties
         {
             get { return _properties; }
         }
 
         public string SignatureString
         {
-            get { return Type.ToLSLTypeString() + " " + Name + " = " + ValueString; }
+            get { return Type.ToLSLTypeString() + " " + Name + " = " + ValueStringAsCodeLiteral; }
         }
 
         public string DocumentationString { get; set; }
@@ -131,6 +134,43 @@ namespace LibLSLCC.CodeValidator.Components
         public string Name { get; set; }
         public string ValueString { get; private set; }
 
+
+        /// <summary>
+        /// Returns the ValueString replacing any control code characters with symbolic string
+        /// escapes.
+        /// </summary>
+        public string ValueStringWithControlCodeEscapes
+        {
+            get { return StringTools.ShowControlCodeEscapes(ValueString); }
+        }
+
+        /// <summary>
+        /// Returns a string which represents what this Constant would look like
+        /// if it were expanded into an LSL code literal.  This takes the Type and contents
+        /// of ValueString into account.
+        /// </summary>
+        public string ValueStringAsCodeLiteral
+        {
+            get
+            {
+                if (Type == LSLType.Key || Type == LSLType.String)
+                {
+                    return "\"" + ValueStringWithControlCodeEscapes + "\"";
+                }
+                if (Type == LSLType.Vector || Type == LSLType.Rotation)
+                {
+                    return "<" + ValueString + ">";
+                }
+                if (Type == LSLType.List)
+                {
+                    return "[" + ValueString + "]";
+                }
+
+                return ValueString;
+            }
+        }
+
+
         /// <summary>
         ///     This method is reserved and should not be used. When implementing the IXmlSerializable interface, you should return
         ///     null (Nothing in Visual Basic) from this method, and instead, if specifying a custom schema is required, apply the
@@ -142,7 +182,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
-        public XmlSchema GetSchema()
+        XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
         }
@@ -151,7 +191,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Generates an object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
-        public void ReadXml(XmlReader reader)
+        void IXmlSerializable.ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
 
@@ -167,7 +207,9 @@ namespace LibLSLCC.CodeValidator.Components
                 if (reader.Name == "Value")
                 {
                     var val = reader.Value;
-                    if (!string.IsNullOrWhiteSpace(val))
+                    //The value is only truly missing if its entirely devoid of character data
+                    //some LSL constants like EOF are nothing but whitespace characters
+                    if (val.Length != 0)
                     {
                         hasValue = true;
                     }
@@ -291,12 +333,20 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
-        public void WriteXml(XmlWriter writer)
+        void IXmlSerializable.WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Name", Name);
             writer.WriteAttributeString("Type", Type.ToString());
             writer.WriteAttributeString("Value", ValueString);
             writer.WriteAttributeString("Subsets", string.Join(",", _subsets));
+
+            foreach (var prop in Properties)
+            {
+                writer.WriteStartElement("Property");
+                writer.WriteAttributeString("Name", prop.Key);
+                writer.WriteAttributeString("Value", prop.Value);
+                writer.WriteEndElement();
+            }
 
             writer.WriteStartElement("DocumentationString");
             writer.WriteString(DocumentationString);
@@ -330,16 +380,21 @@ namespace LibLSLCC.CodeValidator.Components
 
         public static LSLLibraryConstantSignature FromXmlFragment(XmlReader reader)
         {
-            var x = new LSLLibraryConstantSignature();
+            var con = new LSLLibraryConstantSignature();
+            IXmlSerializable x = con;
             x.ReadXml(reader);
-            return x;
+            return con;
         }
 
         public override int GetHashCode()
         {
             var hash = 17;
+            
+
+
             hash = hash*31 + Type.GetHashCode();
             hash = hash*31 + Name.GetHashCode();
+
 
             return hash;
         }
@@ -353,6 +408,59 @@ namespace LibLSLCC.CodeValidator.Components
             }
 
             return o.Name == Name && o.Type == Type;
+        }
+
+
+        public bool Deprecated
+        {
+            get
+            {
+                string deprecatedStatus;
+                return (Properties.TryGetValue("Deprecated", out deprecatedStatus) &&
+                        deprecatedStatus.ToLower() == "true");
+            }
+            set
+            {
+                if (value == false)
+                {
+                    if (Properties.ContainsKey("Deprecated"))
+                    {
+                        Properties.Remove("Deprecated");
+                    }
+                }
+                else
+                {
+                    Properties["Deprecated"] = "true";
+                }
+            }
+        }
+
+        /// <summary>
+        /// A hint to compilers, if Expand is true then the constant's value should be expanded and placed
+        /// into the generated code, otherwise if Expand is false the constants value should be retrieved
+        /// by referencing the constant by name in the current object or some other object where constants
+        /// are stored.
+        /// </summary>
+        public bool Expand
+        {
+            get {
+                string expand;
+                return (Properties.TryGetValue("Expand", out expand) && expand.ToLower() == "true");
+            }
+            set
+            {
+                if (value == false)
+                {
+                    if (Properties.ContainsKey("Expand"))
+                    {
+                        Properties.Remove("Expand");
+                    }
+                }
+                else
+                {
+                    Properties["Expand"] = "true";
+                }
+            }
         }
     }
 }

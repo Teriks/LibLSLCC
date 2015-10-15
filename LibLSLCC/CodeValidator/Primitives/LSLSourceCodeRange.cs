@@ -180,7 +180,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
         public override int GetHashCode()
         {
-            return (((this.HasIndexInfo.GetHashCode() * 251) + this.ColumnStart) * 251 + this.LineStart) * 251 + this.StartIndex;
+            return (((HasIndexInfo.GetHashCode() * 251) + ColumnStart) * 251 + LineStart) * 251 + StartIndex;
         }
 
         public LSLSourceCodeRange GetFirstCharRange()

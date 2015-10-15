@@ -48,7 +48,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
@@ -108,7 +107,7 @@ private static class UTILITIES
 }
 ";
 
-        private const bool ParenthesizeExpressions = true;
+        private readonly bool _parenthesizeExpressions = true;
         private bool _creatingGlobalsClass;
         private string _currentLSLStateBody;
         private int _indentLevel;
@@ -185,7 +184,7 @@ private static class UTILITIES
             {
                 if (node.LeftExpression.Type == LSLType.Integer && node.RightExpression.Type == LSLType.Float)
                 {
-                    if (parenths && ParenthesizeExpressions)
+                    if (parenths && _parenthesizeExpressions)
                     {
                         Writer.Write("(");
                     }
@@ -197,7 +196,7 @@ private static class UTILITIES
                     Visit(node.RightExpression);
                     Writer.Write(".value)");
 
-                    if (parenths && ParenthesizeExpressions)
+                    if (parenths && _parenthesizeExpressions)
                     {
                         Writer.Write(")");
                     }
@@ -245,7 +244,7 @@ private static class UTILITIES
         {
             var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is LSLExpressionListNode);
 
-            if (parenths && ParenthesizeExpressions)
+            if (parenths && _parenthesizeExpressions)
             {
                 Writer.Write("(");
             }
@@ -253,7 +252,7 @@ private static class UTILITIES
             Visit(node.LeftExpression);
             Writer.Write(node.OperationString);
 
-            if (parenths && ParenthesizeExpressions)
+            if (parenths && _parenthesizeExpressions)
             {
                 Writer.Write(")");
             }
@@ -277,7 +276,7 @@ private static class UTILITIES
             {
                 var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is LSLExpressionListNode);
 
-                if (parenths && ParenthesizeExpressions)
+                if (parenths && _parenthesizeExpressions)
                 {
                     Writer.Write("(");
                 }
@@ -286,7 +285,7 @@ private static class UTILITIES
                 Visit(node.RightExpression);
 
 
-                if (parenths && ParenthesizeExpressions)
+                if (parenths && _parenthesizeExpressions)
                 {
                     Writer.Write(")");
                 }
@@ -335,14 +334,14 @@ private static class UTILITIES
 
             Writer.Write("(" + LSLAtomType_To_CSharpType(node.CastToType) + ")");
 
-            if (ParenthesizeExpressions)
+            if (_parenthesizeExpressions)
             {
                 Writer.Write("(");
             }
 
             Visit(node.CastedExpression);
 
-            if (ParenthesizeExpressions)
+            if (_parenthesizeExpressions)
             {
                 Writer.Write(")");
             }
@@ -390,13 +389,11 @@ private static class UTILITIES
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
-            var libDataNode =
-                Settings.LibraryData.GetLibraryFunctionSignatures(node.Name)
-                    .First(x => x.SignatureMatches(node.Signature));
+            var libDataNode = Settings.LibraryData.GetLibraryFunctionSignature(node.Signature);
 
 
 
-            if (libDataNode.UsesOsModInvoke())
+            if (libDataNode.ModInvoke)
             {
                 var modInvokeFunction = "this." + _modInvokeFunctionMap[node.Signature.ReturnType];
 
@@ -466,15 +463,15 @@ private static class UTILITIES
         public override bool VisitLibraryConstantVariableReference(ILSLVariableNode node)
         {
             var x = Settings.LibraryData.GetLibraryConstantSignature(node.Name);
-            if (x.Properties.ContainsKey("Expand") && x.Properties["Expand"] == "true")
+            if (x.Expand)
             {
                 switch (x.Type)
                 {
                     case LSLType.String:
-                        Writer.Write("new LSL_Types.LSLString(\"" + x.ValueString + "\")");
+                        Writer.Write("new LSL_Types.LSLString(\"" + x.ValueStringWithControlCodeEscapes + "\")");
                         break;
                     case LSLType.Key:
-                        Writer.Write("new LSL_Types.key(\"" + x.ValueString + "\")");
+                        Writer.Write("new LSL_Types.key(\"" + x.ValueStringWithControlCodeEscapes + "\")");
                         break;
                     case LSLType.Vector:
                         Writer.Write("new LSL_Types.Vector3(" + x.ValueString + ")");
@@ -605,10 +602,9 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryData.GetLibraryFunctionSignatures(parentFunctionCallNode.Name)
-                        .First(x => x.SignatureMatches(parentFunctionCallNode.Signature));
+                    Settings.LibraryData.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
-                inModInvokeTopLevel = libDataNode.UsesOsModInvoke();
+                inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
             var box = !parentIsFunctionCall || inModInvokeTopLevel;
@@ -666,10 +662,9 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryData.GetLibraryFunctionSignatures(parentFunctionCallNode.Name)
-                        .First(x => x.SignatureMatches(parentFunctionCallNode.Signature));
+                    Settings.LibraryData.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
-                inModInvokeTopLevel = libDataNode.UsesOsModInvoke();
+                inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
             var box = !parentIsFunctionCall || inModInvokeTopLevel;
@@ -760,10 +755,9 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryData.GetLibraryFunctionSignatures(parentFunctionCallNode.Name)
-                        .First(x => x.SignatureMatches(parentFunctionCallNode.Signature));
+                    Settings.LibraryData.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
-                inModInvokeTopLevel = libDataNode.UsesOsModInvoke();
+                inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
             var box = !parentIsFunctionCall || inModInvokeTopLevel;
@@ -802,11 +796,6 @@ private static class UTILITIES
 
         #region Utilitys
 
-        private static string LSLType_To_CSharpType(string name)
-        {
-            return LSLAtomType_To_CSharpType(
-                LSLTypeTools.FromLSLTypeString(name));
-        }
 
 
         private static string LSLType_To_CSharpDefaultInitializer(string name)

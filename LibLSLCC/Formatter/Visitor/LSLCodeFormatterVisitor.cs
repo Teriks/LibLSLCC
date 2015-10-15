@@ -2248,7 +2248,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             public ILSLReadOnlySyntaxTreeNode Statement { get; private set; }
             public int WriteColumn { get; private set; }
-            public int WriteLine { get; set; }
+            public int WriteLine { get; private set; }
         }
     }
 }

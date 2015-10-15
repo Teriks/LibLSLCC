@@ -43,6 +43,7 @@
 #region Imports
 
 using System.Collections.Generic;
+using LibLSLCC.CodeValidator.Primitives;
 
 #endregion
 
@@ -87,15 +88,34 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         LSLLibraryEventSignature GetEventHandlerSignature(string name);
 
         /// <summary>
-        ///     Return true if a library function with the given name exists.
+        /// Return true if a library function with the given name exists.
         /// </summary>
         /// <param name="name">Name of the library function.</param>
         /// <returns>True if the library function with given name exists.</returns>
         bool LibraryFunctionExist(string name);
 
+
         /// <summary>
-        ///     Return an LSLFunctionSignature list object describing the function call signatures of a library function;
-        ///     if the function with the given name exists as a singular or overloaded function, otherwise null.
+        /// Returns true if the given signature would be considered an overload to an existing function according to this library data provider.
+        /// </summary>
+        /// <param name="signatureToTest">The function signature to test.</param>
+        /// <returns>Boolean representing if the given signature would be considered an overload to an existing function.</returns>
+        bool IsConsideredOverload(LSLFunctionSignature signatureToTest);
+
+
+
+        /// <summary>
+        /// Returns true if the library data provider contains a function signature where existingSignature.DefinitionIsDuplicate(signatureToTest) is true
+        /// </summary>
+        /// <param name="signatureToTest">The signature to use as search criteria.</param>
+        /// <returns>True if the library data provider contains a function signature where existingSignature.DefinitionIsDuplicate(signature) is true</returns>
+        bool LibraryFunctionExist(LSLFunctionSignature signatureToTest);
+
+
+
+        /// <summary>
+        ///     Return an LSLFunctionSignature list with the overload signatures of a function with the given name.
+        ///     If the function does not exist, null is returned.  If the function exist but is not overloaded only a single item will be returned.
         /// </summary>
         /// <param name="name">Name of the library function.</param>
         /// <returns>
@@ -103,6 +123,19 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         ///     or null if the library function does not exist.
         /// </returns>
         IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name);
+
+
+
+        /// <summary>
+        /// Return a LSLLibraryFunctionSignature from this object where signature.SignatureMatch(signatureToTest) is true,
+        /// or null if no such LSLLibraryFunctionSignature exists in this provider.
+        /// </summary>
+        /// <param name="signatureToTest">The signature to use as search criteria.</param>
+        /// <returns>
+        /// An LSLFunctionSignature which has the same signature of signatureToTest, or null if none exist.
+        /// </returns>
+        LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest);
+
 
         /// <summary>
         ///     Return true if a library constant with the given name exists.

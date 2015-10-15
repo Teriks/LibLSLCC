@@ -1,7 +1,7 @@
-﻿<Window x:Class="FindReplace.FindReplaceDialog"
+﻿<Window x:Class="LSLCCEditor.FindReplace.FindReplaceDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:my="clr-namespace:FindReplace"
+        xmlns:findReplace="clr-namespace:LSLCCEditor.FindReplace"
         Title="Find And Replace" Height="Auto" Width="300" ResizeMode="NoResize" SizeToContent="Height"
         KeyDown="Window_KeyDown" WindowStyle="ToolWindow" ShowInTaskbar="False" Topmost="False"
         WindowStartupLocation="CenterOwner"
@@ -10,19 +10,19 @@
         Left="{Binding WindowLeft, Mode=TwoWay}"
         Top="{Binding WindowTop, Mode=TwoWay}">
     <Window.Resources>
-        <my:SearchScopeToInt x:Key="searchScopeToInt" />
-        <BooleanToVisibilityConverter x:Key="boolToVis" />
-        <my:BoolToInt x:Key="boolToInt" />
+        <findReplace:SearchScopeToInt x:Key="SearchScopeToInt" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <findReplace:BoolToInt x:Key="BoolToInt" />
         <DataTemplate x:Key="FindPageTemplate">
             <StackPanel>
                 <TextBlock Margin="3">Text to Find:</TextBlock>
                 <ContentPresenter Content="{Binding }" />
                 <StackPanel DataContext="{Binding DataContext}">
-                    <TextBlock Margin="3" Visibility="{Binding ShowSearchIn,Converter={StaticResource boolToVis}}">Search in:</TextBlock>
+                    <TextBlock Margin="3" Visibility="{Binding ShowSearchIn,Converter={StaticResource BoolToVis}}">Search in:</TextBlock>
                     <ComboBox
-                        SelectedIndex="{Binding SearchIn, Mode=TwoWay,Converter={StaticResource searchScopeToInt}}"
+                        SelectedIndex="{Binding SearchIn, Mode=TwoWay,Converter={StaticResource SearchScopeToInt}}"
                         Margin="0 0 0 3"
-                        Visibility="{Binding ShowSearchIn,Converter={StaticResource boolToVis}}"
+                        Visibility="{Binding ShowSearchIn,Converter={StaticResource BoolToVis}}"
                         HorizontalAlignment="Stretch">
                         <ComboBoxItem>Current Document</ComboBoxItem>
                         <ComboBoxItem>All Documents</ComboBoxItem>
@@ -45,9 +45,9 @@
     </Window.Resources>
     <Grid>
         <TabControl Name="tabMain" Height="Auto"
-                    BorderThickness="{Binding AllowReplace,  Converter={StaticResource boolToInt}}">
+                    BorderThickness="{Binding AllowReplace,  Converter={StaticResource BoolToInt}}">
             <TabItem Header="Find" Name="tabFind" ContentTemplate="{StaticResource FindPageTemplate}"
-                     Visibility="{Binding AllowReplace, Converter={StaticResource boolToVis}}">
+                     Visibility="{Binding AllowReplace, Converter={StaticResource BoolToVis}}">
                 <StackPanel>
                     <TextBox Margin="3" Name="txtFind" AcceptsReturn="{Binding AcceptsReturn}"
                              Text="{Binding TextToFind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -55,7 +55,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="Replace" Name="tabReplace" ContentTemplate="{StaticResource FindPageTemplate}"
-                     Visibility="{Binding AllowReplace, Converter={StaticResource boolToVis}}">
+                     Visibility="{Binding AllowReplace, Converter={StaticResource BoolToVis}}">
                 <StackPanel>
                     <TextBox Margin="3" Name="txtFind2" AcceptsReturn="{Binding AcceptsReturn}"
                              Text="{Binding TextToFind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

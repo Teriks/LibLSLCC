@@ -59,6 +59,10 @@ using LibraryDataScrapingTools.ScraperInterfaces;
 
 namespace LibraryDataScrapingTools.LibraryDataScrapers
 {
+
+    /// <summary>
+    /// DEPRECATED
+    /// </summary>
     public class FirestormLibraryData : ILibraryData
     {
         private readonly LSLEventSignatureRegex _eventSig = new LSLEventSignatureRegex("", ";*");
@@ -108,28 +112,24 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                         if (!sigs.Contains(sig))
                         {
-                            Log.WriteLine(
-                                "FirestormLibraryData script_library name={0}: function {1} signature {2} found in doc string",
+                            Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: function {1} signature {2} found in doc string",
                                 _scriptLibrary.Name, overload.Name, sig.SignatureString);
                             sigs.Add(sig);
                         }
                         else if (matches.Count == 1)
                         {
-                            Log.WriteLine(
-                                "FirestormLibraryData script_library name={0}: function {1} has a duplicate overload caused by multiple xml node definitions",
+                            Log.WriteLineWithHeader("[FirestormLibraryData]: ", "function {1} has a duplicate overload caused by multiple xml node definitions",
                                 _scriptLibrary.Name, sig.Name);
                         }
                         else
                         {
-                            Log.WriteLine(
-                                "FirestormLibraryData script_library name={0}: function {1} has a duplicate overload caused by the documentation signature",
+                            Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: function {1} has a duplicate overload caused by the documentation signature",
                                 _scriptLibrary.Name, overload.Name);
                         }
                     }
                     else
                     {
-                        Log.WriteLine(
-                            "FirestormLibraryData script_library name={0}: function {1} has no signature in doc string",
+                        Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: function {1} has no signature in doc string",
                             _scriptLibrary.Name, overload.Name);
                     }
                 }
@@ -180,14 +180,13 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                     sig.DocumentationString = _eventSig.Regex.Replace(ev.Desc, "");
 
-                    Log.Write(
-                        "FirestormLibraryData script_library name={0}: event {1} signature {2} found in docstring",
+                    Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: event {1} signature {2} found in docstring",
                         _scriptLibrary.Name,
                         ev.Name, sig.SignatureString);
 
                     return sig;
                 }
-                Log.Write("FirestormLibraryData script_library name={0}: event {1} has no signature in doc string",
+                Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: event {1} has no signature in doc string",
                     _scriptLibrary.Name,
                     ev.Name);
                 return null;
@@ -207,8 +206,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                     if (matches.Count == 0)
                     {
-                        Log.WriteLine(
-                            "FirestormLibraryData script_library name={0}: function {1} has no signature in doc string",
+                        Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: function {1} has no signature in doc string",
                             _scriptLibrary.Name, f.Name);
                         continue;
                     }
@@ -226,14 +224,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                             }
                             else if (matches.Count == 1)
                             {
-                                Log.WriteLine(
-                                    "FirestormLibraryData script_library name={0}: function {1} has a duplicate overload caused by multiple xml node definitions",
+                                Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: function {1} has a duplicate overload caused by multiple xml node definitions",
                                     _scriptLibrary.Name, sig.Name);
                             }
                             else
                             {
-                                Log.WriteLine(
-                                    "FirestormLibraryData script_library name={0}: function {1} has a duplicate overload caused by the documentation signature",
+                                Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: function {1} has a duplicate overload caused by the documentation signature",
                                     _scriptLibrary.Name, sig.Name);
                             }
                         }
@@ -252,8 +248,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 if (matches.Count == 0)
                 {
-                    Log.WriteLine(
-                        "FirestormLibraryData script_library name={0}: function {1} has no signature in doc string",
+                    Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: function {1} has no signature in doc string",
                         _scriptLibrary.Name, f.Name);
                     yield break;
                 }
@@ -322,7 +317,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 }
                 else
                 {
-                    Log.Write("FirestormLibraryData script_library name={0}: event {1} has no signature in doc string",
+                    Log.WriteLineWithHeader("[FirestormLibraryData]: ", "script_library name={0}: event {1} has no signature in doc string",
                         _scriptLibrary.Name,
                         ev.Name);
                 }
@@ -357,16 +352,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         public class Function : IEquatable<Function>
         {
             [XmlAttribute(AttributeName = "sleep")]
-            public string Sleep { get; private set; }
+            public string Sleep { get; set; }
 
             [XmlAttribute(AttributeName = "energy")]
-            public string Energy { get; private set; }
+            public string Energy { get; set; }
 
             [XmlAttribute(AttributeName = "name")]
-            public string Name { get; private set; }
+            public string Name { get; set; }
 
             [XmlAttribute(AttributeName = "desc")]
-            public string Desc { get; private set; }
+            public string Desc { get; set; }
 
             public bool Equals(Function other)
             {
@@ -520,7 +515,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 }
                 catch (ArgumentException)
                 {
-                    Log.WriteLine("KeywordCollection: Duplicate keyword " + item.Name + " in firestorm script library");
+                    Log.WriteLineWithHeader("[KeywordCollection]: ", "Duplicate keyword " + item.Name + " in firestorm script library");
                 }
             }
 
@@ -590,7 +585,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 if (Contains(item))
                 {
-                    Log.WriteLine("FunctionCollection: Duplicate function " + item.Name + " in firestorm script library");
+                    Log.WriteLineWithHeader("[FunctionCollection]: ", "Duplicate function " + item.Name + " in firestorm script library");
                     return;
                 }
 

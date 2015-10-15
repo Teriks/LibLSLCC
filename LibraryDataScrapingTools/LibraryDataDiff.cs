@@ -70,7 +70,7 @@ namespace LibraryDataScrapingTools
         {
             if (Left.LibraryFunctions.Count() != Right.LibraryFunctions.Count())
             {
-                Log.WriteLine("Diff: Left number of functions is not equal to right number of functions");
+                Log.WriteLineWithHeader("[Diff]: ", "Left number of functions is not equal to right number of functions");
             }
 
 
@@ -83,8 +83,8 @@ namespace LibraryDataScrapingTools
                 {
                     if (!Right.LibraryFunctionExist(sig.Name))
                     {
-                        Log.WriteLine("Diff: Left function {0} does not exist in Right", sig.Name);
-                        NotInRight.AddValidLibraryFunction(sig);
+                        Log.WriteLineWithHeader("[Diff]: ", "Left function {0} does not exist in Right", sig.Name);
+                        NotInRight.DefineFunction(sig);
                     }
                     else
                     {
@@ -94,7 +94,7 @@ namespace LibraryDataScrapingTools
                             new HashSet<LSLLibraryFunctionSignature>(Right.GetLibraryFunctionSignatures(sig.Name));
                         if (overloads1.SetEquals(overloads2))
                         {
-                            Log.WriteLine("Diff: Left function {0} is different in Right", sig.Name);
+                            Log.WriteLineWithHeader("[Diff]: ", "Left function {0} is different in Right", sig.Name);
                         }
                     }
                 }
@@ -103,8 +103,8 @@ namespace LibraryDataScrapingTools
                 {
                     if (!Left.LibraryFunctionExist(sig.Name))
                     {
-                        Log.WriteLine("Diff: Right function {0} does not exist in Left", sig.Name);
-                        NotInLeft.AddValidLibraryFunction(sig);
+                        Log.WriteLineWithHeader("[Diff]: ", "Right function {0} does not exist in Left", sig.Name);
+                        NotInLeft.DefineFunction(sig);
                     }
                     else
                     {
@@ -114,7 +114,7 @@ namespace LibraryDataScrapingTools
                             new HashSet<LSLLibraryFunctionSignature>(Right.GetLibraryFunctionSignatures(sig.Name));
                         if (overloads1.SetEquals(overloads2))
                         {
-                            Log.WriteLine("Diff: Right function {0} is different in Left", sig.Name);
+                            Log.WriteLineWithHeader("[Diff]: ", "Right function {0} is different in Left", sig.Name);
                         }
                     }
                 }
@@ -125,38 +125,38 @@ namespace LibraryDataScrapingTools
         {
             if (Left.LibraryConstants.Count() != Right.LibraryConstants.Count())
             {
-                Log.WriteLine("Diff: Left number of constants is not equal to right number of constants");
+                Log.WriteLineWithHeader("[Diff]: ", "Left number of constants is not equal to right number of constants");
             }
 
 
-            var leftFuncs = new HashSet<LSLLibraryConstantSignature>(Left.LibraryConstants);
-            var rightFuncs = new HashSet<LSLLibraryConstantSignature>(Right.LibraryConstants);
+            var leftConstants = new HashSet<LSLLibraryConstantSignature>(Left.LibraryConstants);
+            var rightConstants = new HashSet<LSLLibraryConstantSignature>(Right.LibraryConstants);
 
-            if (!leftFuncs.SetEquals(rightFuncs))
+            if (!leftConstants.SetEquals(rightConstants))
             {
-                foreach (var sig in leftFuncs.Except(rightFuncs))
+                foreach (var sig in leftConstants.Except(rightConstants))
                 {
                     if (!Right.LibraryConstantExist(sig.Name))
                     {
-                        Log.WriteLine("Diff: Left constant {0} does not exist in Right", sig.Name);
-                        NotInRight.AddValidConstant(sig);
+                        Log.WriteLineWithHeader("[Diff]: ", "Left constant {0} does not exist in Right", sig.Name);
+                        NotInRight.DefineConstant(sig);
                     }
                     else
                     {
-                        Log.WriteLine("Diff: Left constant {0} is different in Right", sig.Name);
+                        Log.WriteLineWithHeader("[Diff]: ", "Left constant {0} is different in Right", sig.Name);
                     }
                 }
 
-                foreach (var sig in rightFuncs.Except(leftFuncs))
+                foreach (var sig in rightConstants.Except(leftConstants))
                 {
                     if (!Left.LibraryConstantExist(sig.Name))
                     {
-                        Log.WriteLine("Diff: Right constant {0} does not exist in Left", sig.Name);
-                        NotInLeft.AddValidConstant(sig);
+                        Log.WriteLineWithHeader("[Diff]: ", "Right constant {0} does not exist in Left", sig.Name);
+                        NotInLeft.DefineConstant(sig);
                     }
                     else
                     {
-                        Log.WriteLine("Diff: Right constant {0} is different in Left", sig.Name);
+                        Log.WriteLineWithHeader("[Diff]: ", "Right constant {0} is different in Left", sig.Name);
                     }
                 }
             }
@@ -166,38 +166,38 @@ namespace LibraryDataScrapingTools
         {
             if (Left.SupportedEventHandlers.Count() != Right.SupportedEventHandlers.Count())
             {
-                Log.WriteLine("Diff: Left number of events is not equal to right number of events");
+                Log.WriteLineWithHeader("[Diff]: ", "Left number of events is not equal to right number of events");
             }
 
 
-            var leftFuncs = new HashSet<LSLLibraryEventSignature>(Left.SupportedEventHandlers);
-            var rightFuncs = new HashSet<LSLLibraryEventSignature>(Right.SupportedEventHandlers);
+            var leftEvents = new HashSet<LSLLibraryEventSignature>(Left.SupportedEventHandlers);
+            var rightEvents = new HashSet<LSLLibraryEventSignature>(Right.SupportedEventHandlers);
 
-            if (!leftFuncs.SetEquals(rightFuncs))
+            if (!leftEvents.SetEquals(rightEvents))
             {
-                foreach (var sig in leftFuncs.Except(rightFuncs))
+                foreach (var sig in leftEvents.Except(rightEvents))
                 {
                     if (!Right.EventHandlerExist(sig.Name))
                     {
-                        Log.WriteLine("Diff: Left event {0} does not exist in Right", sig.Name);
-                        NotInRight.AddValidEventHandler(sig);
+                        Log.WriteLineWithHeader("[Diff]: ", "Left event {0} does not exist in Right", sig.Name);
+                        NotInRight.DefineEventHandler(sig);
                     }
                     else
                     {
-                        Log.WriteLine("Diff: Left event {0} is different in Right", sig.Name);
+                        Log.WriteLineWithHeader("[Diff]: ", "Left event {0} is different in Right", sig.Name);
                     }
                 }
 
-                foreach (var sig in rightFuncs.Except(leftFuncs))
+                foreach (var sig in rightEvents.Except(leftEvents))
                 {
                     if (!Left.EventHandlerExist(sig.Name))
                     {
-                        Log.WriteLine("Diff: Right event {0} does not exist in Left", sig.Name);
-                        NotInLeft.AddValidEventHandler(sig);
+                        Log.WriteLineWithHeader("[Diff]: ", "Right event {0} does not exist in Left", sig.Name);
+                        NotInLeft.DefineEventHandler(sig);
                     }
                     else
                     {
-                        Log.WriteLine("Diff: Right event {0} is different in Left", sig.Name);
+                        Log.WriteLineWithHeader("[Diff]: ", "Right event {0} is different in Left", sig.Name);
                     }
                 }
             }
@@ -205,9 +205,18 @@ namespace LibraryDataScrapingTools
 
         public void Diff()
         {
+
+            Log.WriteLine("============================");
+            Log.WriteLine("Starting Library Data DIFF");
+            Log.WriteLine("============================");
+
             DiffConstants();
             DiffFunctions();
             DiffEvents();
+
+            Log.WriteLine("============================");
+            Log.WriteLine("Library Data DIFF Finished");
+            Log.WriteLine("============================");
         }
     }
 }

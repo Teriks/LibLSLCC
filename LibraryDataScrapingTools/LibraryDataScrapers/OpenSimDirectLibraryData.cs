@@ -68,8 +68,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         public OpenSimDirectLibraryData(IReflectedLibraryData reflectedData,
             IDocumentationProvider documentationProvider)
         {
-            OptionalScriptModuleConstantAttribute = reflectedData.ScriptModuleConstantAttribute;
-            OptionalScriptModuleFunctionAttribute = reflectedData.ScriptModuleFunctionAttribute;
+            ScriptModuleConstantAttribute = reflectedData.ScriptModuleConstantAttribute;
+            ScriptModuleFunctionAttribute = reflectedData.ScriptModuleFunctionAttribute;
             DataTypeMapping = reflectedData.OpenSimToLSLTypeMapping();
             ReflectedData = reflectedData;
             _documentationProvider = documentationProvider;
@@ -79,8 +79,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public OpenSimDirectLibraryData(IReflectedLibraryData reflectedData)
         {
-            OptionalScriptModuleConstantAttribute = reflectedData.ScriptModuleConstantAttribute;
-            OptionalScriptModuleFunctionAttribute = reflectedData.ScriptModuleFunctionAttribute;
+            ScriptModuleConstantAttribute = reflectedData.ScriptModuleConstantAttribute;
+            ScriptModuleFunctionAttribute = reflectedData.ScriptModuleFunctionAttribute;
             DataTypeMapping = reflectedData.OpenSimToLSLTypeMapping();
             ReflectedData = reflectedData;
             _documentationProvider = new BlankDocumentor();
@@ -91,8 +91,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         public bool IncludeFunctions { get; set; }
         public bool IncludeConstants { get; set; }
         public IReadOnlyDictionary<Type, LSLType> DataTypeMapping { get; set; }
-        public Type OptionalScriptModuleConstantAttribute { get; set; }
-        public Type OptionalScriptModuleFunctionAttribute { get; set; }
+        public Type ScriptModuleConstantAttribute { get; set; }
+        public Type ScriptModuleFunctionAttribute { get; set; }
         public IReflectedLibraryData ReflectedData { get; private set; }
 
         public bool LSLFunctionExist(string name)
@@ -191,14 +191,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                         con.SetSubsets(subsets);
                         return con;
                     }
-                    Log.WriteLine(
-                        "OpenSimLibraryDataReflector: constant {0} of ScriptBaseClass, type is an un-recognized data type ({1})",
+                    Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "constant {0} of ScriptBaseClass, type is an un-recognized data type ({1})",
                         name, constant.Name);
 
                     return null;
                 }
-                Log.WriteLine(
-                    "OpenSimLibraryDataReflector: constant {0} does not exist in ScriptBaseClass",
+                Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "constant {0} does not exist in ScriptBaseClass",
                     name);
 
                 return null;
@@ -221,11 +219,18 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public IEnumerable<LSLLibraryFunctionSignature> LSLFunctions()
         {
-            if (!IncludeFunctions) return new List<LSLLibraryFunctionSignature>();
+            if (!IncludeFunctions) yield break;
 
-            return
-                _functionContainingInterfaces.SelectMany(InterfaceMethods)
-                    .Concat(_attributedScriptModuleClasses.SelectMany(ModuleMethods));
+            foreach (var method in _functionContainingInterfaces.SelectMany(InterfaceMethods))
+            {
+                yield return method;
+            }
+
+
+            foreach (var method in _attributedScriptModuleClasses.SelectMany(ModuleMethods))
+            {
+                yield return method;
+            }
         }
 
         public IEnumerable<LSLLibraryConstantSignature> LSLConstants()
@@ -251,8 +256,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     var type = LslTypeFromCsharpType(c.FieldType);
                     if (type == null)
                     {
-                        Log.WriteLine(
-                            "OpenSimLibraryDataReflector: constant {0} of {1}, type is an un-recognized data type ({2})",
+                        Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "constant {0} of {1}, type is an un-recognized data type ({2})",
                             c.Name, constantContrainerType.Name, c.FieldType.Name);
                     }
                     else
@@ -272,7 +276,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 IEnumerable<FieldInfo> fields;
 
-                if (OptionalScriptModuleConstantAttribute == null)
+                if (ScriptModuleConstantAttribute == null)
                 {
                     fields = module.GetFields(bindingFlags);
                 }
@@ -280,7 +284,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 {
                     fields = module.GetFields(bindingFlags)
                         .Where(x =>
-                            x.GetCustomAttributes(OptionalScriptModuleConstantAttribute, true).Any());
+                            x.GetCustomAttributes(ScriptModuleConstantAttribute, true).Any());
                 }
 
                 var subsets = _subsetsMap[module];
@@ -292,8 +296,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     var type = LslTypeFromCsharpType(c.FieldType);
                     if (type == null)
                     {
-                        Log.WriteLine(
-                            "OpenSimLibraryDataReflector: constant {0} of optional script module {1}, type is an un-recognized data type ({2})",
+                        Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "constant {0} of optional script module {1}, type is an un-recognized data type ({2})",
                             c.Name, module.Name, c.FieldType.Name);
                     }
                     else
@@ -403,7 +406,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return null;
         }
 
-        private LSLType? LslTypeFromCsharpParameterType(Type t, string name)
+        private LSLType? LslTypeFromCsharpParameterType(Type t)
         {
             if (DataTypeMapping.ContainsKey(t))
             {
@@ -425,7 +428,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 var returnType = LslTypeFromCsharpType(v.ReturnType);
 
-
                 var pTypes = new List<LSLParameter>();
 
                 foreach (var p in v.GetParameters())
@@ -434,43 +436,47 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     if (p.ParameterType == (typeof (object[])) && isVariadic)
                     {
                         pTypes.Add(new LSLParameter(LSLType.Void, p.Name, true));
-                        continue;
-                    }
-                    if (isVariadic)
-                    {
-                        Log.WriteLine(
-                            "OpenSimLibraryDataReflector: Interface function {0} of type {1}, variadic parameter {2} is an un-recognized data type ({3}), function ommited",
-                            v.Name, containerType.Name, p.Name, p.ParameterType.Name);
-                        yield break;
+                        goto omitRestOfParameters;
                     }
 
-                    var type = LslTypeFromCsharpParameterType(p.ParameterType, p.Name);
+                    if (isVariadic)
+                    {
+                        Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "Interface function {0} of type {1}, variadic parameter {2} is an un-recognized data type ({3}), function omitted",
+                            v.Name, containerType.Name, p.Name, p.ParameterType.Name);
+                        goto omitFunction;
+                    }
+
+                    var type = LslTypeFromCsharpParameterType(p.ParameterType);
                     if (type != null)
                     {
                         pTypes.Add(new LSLParameter(type.Value, p.Name, false));
                     }
                     else
                     {
-                        Log.WriteLine(
-                            "OpenSimLibraryDataReflector: Interface function {0} of type {1}, parameter {2} is an un-recognized data type ({3}), function ommited",
+                        Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "Interface function {0} of type {1}, parameter {2} is an un-recognized data type ({3}), function omitted",
                             v.Name, containerType.Name, p.Name, p.ParameterType.Name);
-                        yield break;
+
+                        goto omitFunction;
                     }
                 }
+
+                omitRestOfParameters:
 
                 if (returnType != null)
                 {
                     var f = new LSLLibraryFunctionSignature(returnType.Value, v.Name, pTypes);
                     f.DocumentationString = _documentationProvider.DocumentFunction(f);
                     f.SetSubsets(subsets);
+                   
                     yield return f;
                 }
                 else
                 {
-                    Log.WriteLine(
-                        "OpenSimLibraryDataReflector: function {0} of type {1} return type is an un-recognized data type ({2})",
+                    Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "function {0} of type {1} return type is an un-recognized data type ({2})",
                         v.Name, containerType.Name, v.ReturnType.Name);
                 }
+
+                omitFunction:;
             }
         }
 
@@ -479,7 +485,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             const BindingFlags bindingFlags = BindingFlags.Default | BindingFlags.Public | BindingFlags.Instance;
 
 
-            if (OptionalScriptModuleConstantAttribute == null)
+            if (ScriptModuleConstantAttribute == null)
             {
                 yield break;
             }
@@ -487,7 +493,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             IEnumerable<MethodInfo> methods;
 
-            if (OptionalScriptModuleFunctionAttribute == null)
+            if (ScriptModuleFunctionAttribute == null)
             {
                 methods = containerType.GetMethods(bindingFlags);
             }
@@ -495,7 +501,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 methods = containerType.GetMethods(bindingFlags)
                     .Where(x =>
-                        x.GetCustomAttributes(OptionalScriptModuleFunctionAttribute).Any());
+                        x.GetCustomAttributes(ScriptModuleFunctionAttribute).Any());
             }
 
             var subsets = _subsetsMap[containerType];
@@ -513,29 +519,29 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     if (p.ParameterType == (typeof (object[])) && isVariadic)
                     {
                         pTypes.Add(new LSLParameter(LSLType.Void, p.Name, true));
-                        continue;
+                        goto omitRestOfParameters;
                     }
                     if (isVariadic)
                     {
-                        Log.WriteLine(
-                            "OpenSimLibraryDataReflector: Optional script module function {0} of type {1}, variadic parameter {2} is an un-recognized data type ({3}), function ommited",
+                        Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "Optional script module function {0} of type {1}, variadic parameter {2} is an un-recognized data type ({3}), function omitted",
                             v.Name, containerType.Name, p.Name, p.ParameterType.Name);
-                        yield break;
+                        goto omitFunction;
                     }
 
-                    var type = LslTypeFromCsharpParameterType(p.ParameterType, p.Name);
+                    var type = LslTypeFromCsharpParameterType(p.ParameterType);
                     if (type != null)
                     {
                         pTypes.Add(new LSLParameter(type.Value, p.Name, false));
                     }
                     else
                     {
-                        Log.WriteLine(
-                            "OpenSimLibraryDataReflector: Optional script module function {0} of type {1}, parameter {2} is an un-recognized data type ({3}), function ommited",
+                        Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "Optional script module function {0} of type {1}, parameter {2} is an un-recognized data type ({3}), function omitted",
                             v.Name, containerType.Name, p.Name, p.ParameterType.Name);
-                        yield break;
+                        goto omitFunction;
                     }
                 }
+
+                omitRestOfParameters:
 
 
                 if (returnType != null)
@@ -543,14 +549,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     var f = new LSLLibraryFunctionSignature(returnType.Value, v.Name, pTypes);
                     f.DocumentationString = _documentationProvider.DocumentFunction(f);
                     f.SetSubsets(subsets);
+                    f.ModInvoke = true;
                     yield return f;
                 }
                 else
                 {
-                    Log.WriteLine(
-                        "OpenSimLibraryDataReflector: Optional script module  {0} of type {1} return type is an un-recognized data type ({2})",
+                    Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "Optional script module  {0} of type {1} return type is an un-recognized data type ({2})",
                         v.Name, containerType.Name, v.ReturnType.Name);
                 }
+
+                omitFunction:;
             }
         }
     }

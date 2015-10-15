@@ -344,14 +344,22 @@ namespace LibLSLCC.CodeValidator.Components
             IReadOnlyList<ILSLExprNode> givenParameters)
         {
             OnError(location,
-                "Overloads exist, but no matching overload found for library function \"" + functionName + "\"");
+                string.Format("Overloads of \"{0}\" exist, but no overloads match the given parameters expressions", functionName));
         }
+
+        public void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName,
+            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> expressionsUsedInCall)
+        {
+            OnError(location,
+                string.Format("Overloads of \"{0}\" exist, but the given parameter expressions match more than one overload (desired function is ambiguous)", functionName));
+        }
+
 
         public virtual void InvalidComponentAccessorOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
             string componentAccessed)
         {
             OnError(location,
-                string.Format("\".{0}\" member accessor is not valid on {1}'s", componentAccessed, exprLvalue.Type));
+                string.Format("\".{0}\" member access operator is not valid on {1}'s", componentAccessed, exprLvalue.Type));
         }
 
         public virtual void IfConditionNotValidType(LSLSourceCodeRange location,

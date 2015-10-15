@@ -44,7 +44,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -218,7 +217,16 @@ namespace LSLCCEditor.LSLEditor
 
         public string DocumentationString { get; set; }
 
-        public object Description { get; set; }
+
+        public Func<object> DescriptionFactory { get; set; } 
+
+        public object Description
+        {
+            get
+            {
+                return DescriptionFactory();
+            }
+        }
 
         public double Priority { get; set; }
         public bool OffsetCaretRelativeToDocument { get; set; }

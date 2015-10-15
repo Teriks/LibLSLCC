@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Schema;
@@ -75,11 +76,12 @@ namespace LibLSLCC.CodeValidator.Components
             DocumentationString = "";
         }
 
-        public LSLLibraryEventSignature(LSLLibraryEventSignature sig)
-            : base(sig)
+        public LSLLibraryEventSignature(LSLLibraryEventSignature other)
+            : base(other)
         {
-            DocumentationString = sig.DocumentationString;
-            _subsets = new HashSet<string>(sig._subsets);
+            DocumentationString = other.DocumentationString;
+            _subsets = new HashSet<string>(other._subsets);
+            _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
         }
 
         public LSLLibraryEventSignature(string name, IEnumerable<LSLParameter> parameters)
@@ -99,7 +101,7 @@ namespace LibLSLCC.CodeValidator.Components
             get { return new ReadOnlyHashSet<string>(_subsets); }
         }
 
-        public IReadOnlyDictionary<string, string> Properties
+        public IDictionary<string, string> Properties
         {
             get { return _properties; }
         }
@@ -131,7 +133,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
-        public XmlSchema GetSchema()
+        XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
         }
@@ -140,7 +142,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Generates an object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
-        public void ReadXml(XmlReader reader)
+        void IXmlSerializable.ReadXml(XmlReader reader)
         {
             var parameterNames = new HashSet<string>();
 
@@ -204,6 +206,12 @@ namespace LibLSLCC.CodeValidator.Components
                             GetType().Name + ", Parameter Type attribute invalid");
                     }
 
+                    if (pType == LSLType.Void)
+                    {
+                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                            GetType().Name + ", Parameter Type invalid, event handler parameters cannot be Void");
+                    }
+
                     var pName = reader.GetAttribute("Name");
                     if (string.IsNullOrWhiteSpace(pName))
                     {
@@ -218,9 +226,8 @@ namespace LibLSLCC.CodeValidator.Components
                     }
 
                     parameterNames.Add(pName);
-
                     AddParameter(new LSLParameter(pType, pName, false));
-
+     
                     canRead = reader.Read();
                 }
                 else if ((reader.Name == "DocumentationString") && reader.IsStartElement())
@@ -277,7 +284,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
-        public void WriteXml(XmlWriter writer)
+        void IXmlSerializable.WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Name", Name);
             writer.WriteAttributeString("Subsets", string.Join(",", _subsets));
@@ -287,6 +294,14 @@ namespace LibLSLCC.CodeValidator.Components
                 writer.WriteStartElement("Parameter");
                 writer.WriteAttributeString("Name", param.Name);
                 writer.WriteAttributeString("Type", param.Type.ToString());
+                writer.WriteEndElement();
+            }
+
+            foreach (var prop in Properties)
+            {
+                writer.WriteStartElement("Property");
+                writer.WriteAttributeString("Name", prop.Key);
+                writer.WriteAttributeString("Value", prop.Value);
                 writer.WriteEndElement();
             }
 
@@ -322,9 +337,34 @@ namespace LibLSLCC.CodeValidator.Components
 
         public static LSLLibraryEventSignature FromXmlFragment(XmlReader fragment)
         {
-            var x = new LSLLibraryEventSignature();
+            var ev = new LSLLibraryEventSignature();
+            IXmlSerializable x = ev;
             x.ReadXml(fragment);
-            return x;
+            return ev;
+        }
+
+        public bool Deprecated
+        {
+            get
+            {
+                string deprecatedStatus;
+                return (Properties.TryGetValue("Deprecated", out deprecatedStatus) &&
+                        deprecatedStatus.ToLower() == "true");
+            }
+            set
+            {
+                if (value == false)
+                {
+                    if (Properties.ContainsKey("Deprecated"))
+                    {
+                        Properties.Remove("Deprecated");
+                    }
+                }
+                else
+                {
+                    Properties["Deprecated"] = "true";
+                }
+            }
         }
     }
 }

@@ -646,7 +646,7 @@ namespace LibLSLCC.AutoCompleteParser
                 ScopeAddress = address;
                 NameSourceCodeRange = nameRange;
 
-                TypeSourceCodeRange = TypeSourceCodeRange;
+                TypeSourceCodeRange = typeRange;
             }
 
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
@@ -718,15 +718,6 @@ namespace LibLSLCC.AutoCompleteParser
 
 
 
-            public override bool VisitExpr_TypeCast(LSLParser.Expr_TypeCastContext context)
-            {
-                return base.VisitExpr_TypeCast(context);
-            }
-
-            public override bool VisitParenthesizedExpression(LSLParser.ParenthesizedExpressionContext context)
-            {
-                return base.VisitParenthesizedExpression(context);
-            }
 
             public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
             {

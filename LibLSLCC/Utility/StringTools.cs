@@ -40,6 +40,12 @@
 // 
 // 
 #endregion
+
+using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
+using System.IO;
+
 namespace LibLSLCC.Utility
 {
     public static class StringTools
@@ -151,6 +157,31 @@ namespace LibLSLCC.Utility
 
             return space;
         }
+
+
+        /// <summary>
+        /// If a string has control codes in it, this will return a string with those control codes 
+        /// replaced with their symbolic representation, IE: \n \t ect..
+        /// 
+        /// Supports every escape code supported by C# itself
+        /// </summary>
+        /// <param name="str">String to replace control codes in.</param>
+        /// <returns>String with control codes replaced with symbolic representation.</returns>
+        public static string ShowControlCodeEscapes(string str)
+        {
+
+            using (var writer = new StringWriter())
+            {
+                using (var provider = CodeDomProvider.CreateProvider("CSharp"))
+                {
+                    provider.GenerateCodeFromExpression(new CodePrimitiveExpression(str), writer, new CodeGeneratorOptions { IndentString = "\t" });
+                    var literal = writer.ToString();
+                    literal = literal.Replace(string.Format("\" +{0}\t\"", Environment.NewLine), "");
+                    return literal.Trim('"');
+                }
+            }
+        }
+
 
         public static string CreateRepeatingString(int repeats, string content)
         {
