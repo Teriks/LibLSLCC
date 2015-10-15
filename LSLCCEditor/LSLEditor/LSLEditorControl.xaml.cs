@@ -209,6 +209,9 @@ namespace LSLCCEditor.LSLEditor
 
             Settings.CaseInsensitiveAutoCompleteMatching = true;
 
+            Settings.ConstantCompletionFirstCharIsCaseSensitive = true;
+
+
 #if DEBUG_FASTPARSER
             _debugObjectView.Show();
 #endif
@@ -769,40 +772,40 @@ namespace LSLCCEditor.LSLEditor
                 IList<ICompletionData> data = null;
 
 
-                string completionInput = Settings.CaseInsensitiveAutoCompleteMatching ? e.Text.ToLower() : e.Text;
 
 
-                if (TryCompletionForEventHandler(completionInput, fastVarParser, ref data)) return;
+
+                if (TryCompletionForEventHandler(e.Text, fastVarParser, ref data)) return;
 
 
-                if (TryCompletionForStateName(completionInput, fastVarParser, ref data)) return;
+                if (TryCompletionForStateName(e.Text, fastVarParser, ref data)) return;
 
 
-                if (TryCompletionForLabelNameJumpTarget(completionInput, fastVarParser, ref data)) return;
+                if (TryCompletionForLabelNameJumpTarget(e.Text, fastVarParser, ref data)) return;
 
 
-                if (TryCompletionForLabelNameDefinition(completionInput, fastVarParser, ref data)) return;
+                if (TryCompletionForLabelNameDefinition(e.Text, fastVarParser, ref data)) return;
 
 
-                var possibleType = TryCompletionForTypeName(completionInput, fastVarParser, ref data);
+                var possibleType = TryCompletionForTypeName(e.Text, fastVarParser, ref data);
 
 
-                var possibleControlStruct = TryCompletionForControlStatement(completionInput, fastVarParser, ref data);
+                var possibleControlStruct = TryCompletionForControlStatement(e.Text, fastVarParser, ref data);
 
 
-                var possibleUserDefinedItem = TryCompletionForUserGlobalVariable(completionInput, fastVarParser, ref data);
+                var possibleUserDefinedItem = TryCompletionForUserGlobalVariable(e.Text, fastVarParser, ref data);
 
 
-                possibleUserDefinedItem |= TryCompletionForUserDefinedFunction(completionInput, fastVarParser, ref data);
+                possibleUserDefinedItem |= TryCompletionForUserDefinedFunction(e.Text, fastVarParser, ref data);
 
 
-                possibleUserDefinedItem |= TryCompletionForLocalVariableOrParameter(completionInput, fastVarParser, ref data);
+                possibleUserDefinedItem |= TryCompletionForLocalVariableOrParameter(e.Text, fastVarParser, ref data);
 
 
-                var possibleConstant = TryCompletionForLibraryConstant(completionInput, fastVarParser, ref data);
+                var possibleConstant = TryCompletionForLibraryConstant(e.Text, fastVarParser, ref data);
 
 
-                var possibleLibraryFunction = TryCompletionForLibraryFunction(completionInput, fastVarParser, ref data);
+                var possibleLibraryFunction = TryCompletionForLibraryFunction(e.Text, fastVarParser, ref data);
 
 
                 if (!possibleConstant
@@ -820,6 +823,13 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
+
+        private string ToLowerIfCaseInsensitiveComplete(string input)
+        {
+            return Settings.CaseInsensitiveAutoCompleteMatching ? input.ToLower() : input;
+        }
+
+
         private bool TryCompletionForLibraryFunction(string insertedText, LSLAutoCompleteParser fastVarParser,
             ref IList<ICompletionData> data)
         {
@@ -829,7 +839,14 @@ namespace LSLCCEditor.LSLEditor
             var possibleLibraryFunction = false;
 
 
-            foreach (var func in LibraryFunctionNames.Where(x => x.StartsWith(insertedText)).OrderBy(x => x.Length))
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var functions =
+                LibraryFunctionNames
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x).StartsWith(insertedText))
+                .OrderBy(x => x.Length);
+
+            foreach (var func in functions)
             {
                 if (!possibleLibraryFunction)
                 {
@@ -883,8 +900,22 @@ namespace LSLCCEditor.LSLEditor
             var possibleConstant = false;
 
 
-            foreach (
-                var sig in ConstantSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x => x.Name.Length))
+            IEnumerable<LSLLibraryConstantSignature> constants;
+
+            if (!Settings.ConstantCompletionFirstCharIsCaseSensitive)
+            {
+                insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+                constants =
+                    ConstantSignatures
+                        .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText));
+            }
+            else
+            {
+                constants = ConstantSignatures.Where(x => x.Name.StartsWith(insertedText));
+            }
+
+            foreach (var sig in constants.OrderBy(x=>x.Name.Length))
             {
                 if (!possibleConstant)
                 {
@@ -901,6 +932,7 @@ namespace LSLCCEditor.LSLEditor
             return possibleConstant;
         }
 
+
         private bool TryCompletionForLocalVariableOrParameter(string insertedText, LSLAutoCompleteParser fastVarParser,
             ref IList<ICompletionData> data)
         {
@@ -910,10 +942,15 @@ namespace LSLCCEditor.LSLEditor
             var possibleUserDefinedItem = false;
 
 
-            foreach (
-                var v in
-                    fastVarParser.LocalParameters.Where(x => x.Name.StartsWith(insertedText))
-                        .OrderBy(x => x.Name.Length))
+
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var parameters = fastVarParser
+                .LocalParameters
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
+                .OrderBy(x => x.Name.Length);
+
+            foreach (var v in parameters)
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -928,8 +965,12 @@ namespace LSLCCEditor.LSLEditor
                 data.Add(cdata);
             }
 
-            foreach (var v in fastVarParser.LocalVariables
-                .Where(x => x.Name.StartsWith(insertedText)))
+            var variables = fastVarParser
+                .LocalVariables
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
+                .OrderBy(x => x.Name.Length);
+
+            foreach (var v in variables)
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -955,7 +996,14 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleUserDefinedItem = false;
 
-            foreach (var func in fastVarParser.GlobalFunctions.Where(x => x.Name.StartsWith(insertedText)))
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var functions = fastVarParser
+                .GlobalFunctions
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
+                .OrderBy(x=>x.Name.Length);
+
+            foreach (var func in functions)
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -980,10 +1028,14 @@ namespace LSLCCEditor.LSLEditor
             var possibleUserDefinedItem = false;
 
 
-            foreach (
-                var v in
-                    fastVarParser.GlobalVariables.Where(x => x.Name.StartsWith(insertedText))
-                        .OrderBy(x => x.Name.Length))
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var variables = fastVarParser
+                .GlobalVariables
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
+                .OrderBy(x=>x.Name.Length);
+
+            foreach (var v in variables)
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -999,6 +1051,7 @@ namespace LSLCCEditor.LSLEditor
 
             return possibleUserDefinedItem;
         }
+
 
         private bool TryCompletionForControlStatement(string insertedText, LSLAutoCompleteParser fastVarParser,
             ref IList<ICompletionData> data)
@@ -1155,7 +1208,14 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleLabelName = false;
 
-            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x => x.Target.Length))
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var localJumps = fastVarParser
+                .GetLocalJumps(Editor.Text)
+                .Where(x=>ToLowerIfCaseInsensitiveComplete(x.Target).StartsWith(insertedText))
+                .OrderBy(x=>x.Target.Length);
+
+            foreach (var label in localJumps)
             {
                 if (!possibleLabelName)
                 {
@@ -1189,7 +1249,16 @@ namespace LSLCCEditor.LSLEditor
 
 
             var possibleLabelName = false;
-            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x => x.Name.Length))
+
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var localLabels = fastVarParser
+                .GetLocalLabels(Editor.Text)
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
+                .OrderBy(x => x.Name.Length);
+
+
+            foreach (var label in localLabels)
             {
                 if (!possibleLabelName)
                 {
@@ -1231,7 +1300,15 @@ namespace LSLCCEditor.LSLEditor
 
             data.Add(CreateCompletionData_DefaultStateName(fastVarParser));
 
-            foreach (var state in fastVarParser.StateBlocks.OrderBy(x => x.Name.Length))
+
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var states = fastVarParser
+                .StateBlocks
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
+                .OrderBy(x => x.Name.Length);
+
+            foreach (var state in states)
             {
                 var cdata = CreateCompletionData_StateName(state, fastVarParser);
                 cdata.Priority = -data.Count;
@@ -1252,9 +1329,14 @@ namespace LSLCCEditor.LSLEditor
 
             var possibleEventName = false;
 
-            foreach (
-                var eventHandler in
-                    EventSignatures.Where(x => x.Name.StartsWith(insertedText)).OrderBy(x => x.Name.Length))
+
+            insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
+
+            var events = EventSignatures
+                .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
+                .OrderBy(x => x.Name.Length);
+
+            foreach (var eventHandler in events)
             {
                 if (!possibleEventName)
                 {

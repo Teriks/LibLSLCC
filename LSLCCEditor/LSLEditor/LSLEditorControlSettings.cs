@@ -118,5 +118,6 @@ namespace LSLCCEditor.LSLEditor
 
         public bool CamelCaseAutoCompleteMatching { get; set; }
         public bool SubstringSearchAutoCompleteMatching { get; set; }
+        public bool ConstantCompletionFirstCharIsCaseSensitive { get; set; }
     }
 }
