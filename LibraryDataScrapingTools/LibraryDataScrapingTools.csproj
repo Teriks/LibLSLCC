@@ -59,9 +59,6 @@
     <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenMetaverse">
-      <HintPath>Dependencies\OpenMetaverse.dll</HintPath>
-    </Reference>
     <Reference Include="OpenMetaverse.StructuredData">
       <HintPath>Dependencies\OpenMetaverse.StructuredData.dll</HintPath>
     </Reference>

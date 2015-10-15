@@ -53,7 +53,7 @@ namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
     ///     The LSLDefaultLibraryDataProvider reads XML from the embedded resource
-    ///     LibLSLCC.CodeValidator.Components.LibraryData.StandardLSL.xml
+    ///     LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml
     ///     to define its data
     /// </summary>
     [LSLXmlLibraryDataRoot]
