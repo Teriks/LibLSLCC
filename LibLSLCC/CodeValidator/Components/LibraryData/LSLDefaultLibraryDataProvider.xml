@@ -3053,7 +3053,7 @@
     <Parameter Name="AvatarID" Type="Key" />
     <DocumentationString>This event is triggered whenever an object is attached or detached from an avatar. If it is attached, the key of the avatar it is attached to is passed in, otherwise NULL_KEY is.</DocumentationString>
   </EventHandler>
-  <EventHandler Name="changed" Subsets="lsl">
+  <EventHandler Name="changed" Subsets="lsl,os-lsl">
     <Parameter Name="Changed" Type="Integer" />
     <DocumentationString>Triggered when various events change the object. The change argument will be a bit-field of CHANGED_* constants.</DocumentationString>
   </EventHandler>
@@ -3088,7 +3088,7 @@
     <Parameter Name="NumberRemaining" Type="Integer" />
     <DocumentationString>This event is triggered when an email sent to this script arrives.  The number remaining tells how many more emails are known to be still pending.</DocumentationString>
   </EventHandler>
-  <EventHandler Name="http_request" Subsets="lsl">
+  <EventHandler Name="http_request" Subsets="lsl,os-lsl">
     <Parameter Name="HTTPRequestID" Type="Key" />
     <Parameter Name="HTTPMethod" Type="String" />
     <Parameter Name="Body" Type="String" />
@@ -3113,7 +3113,7 @@
     <Parameter Name="Position" Type="Vector" />
     <DocumentationString>This event is raised when the object the script is attached to begins to collide with the ground.</DocumentationString>
   </EventHandler>
-  <EventHandler Name="link_message" Subsets="lsl">
+  <EventHandler Name="link_message" Subsets="lsl,os-lsl">
     <Parameter Name="SendersLink" Type="Integer" />
     <Parameter Name="Value" Type="Integer" />
     <Parameter Name="Text" Type="String" />
@@ -3138,7 +3138,7 @@
   <EventHandler Name="moving_start" Subsets="lsl,os-lsl">
     <DocumentationString>Triggered whenever an object with this script starts moving.</DocumentationString>
   </EventHandler>
-  <EventHandler Name="no_sensor" Subsets="lsl">
+  <EventHandler Name="no_sensor" Subsets="lsl,os-lsl">
     <DocumentationString>This event is raised when sensors are active, via the llSensor function call, but are not sensing anything.</DocumentationString>
   </EventHandler>
   <EventHandler Name="not_at_rot_target" Subsets="lsl,os-lsl">
@@ -3151,7 +3151,7 @@
     <Parameter Name="RezzedObjectsID" Type="Key" />
     <DocumentationString>Triggered when an object rezzes another object from its inventory via the llRezObject, or similar, functions. The id is the globally unique key for the object rezzed.</DocumentationString>
   </EventHandler>
-  <EventHandler Name="on_rez" Subsets="lsl">
+  <EventHandler Name="on_rez" Subsets="lsl,os-lsl">
     <Parameter Name="StartParameter" Type="Integer" />
     <DocumentationString>Triggered whenever an object is rezzed from inventory or by another object. The start parameter is passed in from the llRezObject call, or zero if from inventory.</DocumentationString>
   </EventHandler>
@@ -3173,7 +3173,7 @@
     <Parameter Name="PermissionFlags" Type="Integer" />
     <DocumentationString>Scripts need permission from either the owner or the avatar they wish to act on before they may perform certain functions, such as debiting money from their owners account, triggering an animation on an avatar, or capturing control inputs. The llRequestPermissions library function is used to request these permissions and the various permissions integer constants can be supplied.  The integer returned to this event handler contains the current set of permissions flags, so if permissions equal 0 then no permissions are set.</DocumentationString>
   </EventHandler>
-  <EventHandler Name="sensor" Subsets="lsl">
+  <EventHandler Name="sensor" Subsets="lsl,os-lsl">
     <Parameter Name="NumberDetected" Type="Integer" />
     <DocumentationString>This event is raised whenever objects matching the constraints of the llSensor command are detected.  The number of detected objects is passed to the script in the parameter. Information on those objects may be gathered via the llDetected* functions.</DocumentationString>
   </EventHandler>

@@ -179,9 +179,10 @@ namespace LSLCCEditor
                 DefaultExt = ".cs",
                 Filter = "CSharp Code (*.cs) | *.cs"
             };
-
+#if !DEBUG
             try
             {
+#endif
                 var showDialog = saveDialog.ShowDialog();
                 if (showDialog != null && showDialog.Value)
                 {
@@ -200,6 +201,7 @@ namespace LSLCCEditor
                     }
                     CompileCurrentEditorText(saveDialog.FileName);
                 }
+#if !DEBUG
             }
             catch (Exception err)
             {
@@ -207,7 +209,10 @@ namespace LSLCCEditor
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
+#endif
         }
+
+
 
         private void NewFile_OnClick(object sender, RoutedEventArgs e)
         {

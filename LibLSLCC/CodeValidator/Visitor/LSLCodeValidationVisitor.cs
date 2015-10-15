@@ -1430,13 +1430,19 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 SyntaxErrorListener.UnknownEventHandlerDeclared(location, eventHandlerSignature);
 
+
                 isError = true;
             }
 
+
             var librarySignature = MainLibraryDataProvider.GetEventHandlerSignature(context.handler_name.Text);
 
-
-            if (!eventHandlerSignature.SignatureMatches(librarySignature))
+            //the library signature may not have been defined, see above
+            //but we want to continue processing errors in the code body of the event handler.
+            //so instead of returning after it is determined that there is no event handler with the given
+            //name, just skip the signature match check since librarySignature will be null (event handler is undefined)
+            //and continue down the tree into the events code scope.
+            if (librarySignature != null && !eventHandlerSignature.SignatureMatches(librarySignature))
             {
                 var location = new LSLSourceCodeRange(context.handler_name);
 
