@@ -3725,6 +3725,9 @@
   <LibraryConstant Name="GCNP_RADIUS" Type="Integer" Value="0" Subsets="lsl">
     <DocumentationString />
   </LibraryConstant>
+  <LibraryConstant Name="GCNP_STATIC" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString />
+  </LibraryConstant>
   <LibraryConstant Name="GRAVITY_MULTIPLIER" Type="Integer" Value="8" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llSetPhysicsMaterial to enable the gravity multiplier value. Must be between -1.0 and +28.0</DocumentationString>
   </LibraryConstant>
