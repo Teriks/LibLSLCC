@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Utility;
 
 namespace LibLSLCC.CodeValidator.Components
 {
@@ -23,12 +24,14 @@ namespace LibLSLCC.CodeValidator.Components
                     _eventSignaturesBySubsetAndName.Keys.Union(_constantSignaturesBySubsetAndName.Keys)
                         .Union(_functionSignaturesBySubsetAndName.Keys);
             }
-        } 
+        }
+
 
         public IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
         {
             get
             {
+                
                 return ActiveSubsets.Subsets.SelectMany<string, LSLLibraryEventSignature>(x =>
                 {
                     Dictionary<string, LSLLibraryEventSignature> subsetContent;
@@ -37,7 +40,8 @@ namespace LibLSLCC.CodeValidator.Components
                         return subsetContent.Values;
                     }
                     return new List<LSLLibraryEventSignature>();
-                });
+
+                }).Distinct(new LamdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
             }
         }
 
@@ -53,7 +57,10 @@ namespace LibLSLCC.CodeValidator.Components
                         return subsetContent.Values;
                     }
                     return new List<List<LSLLibraryFunctionSignature>>();
-                });
+                })
+                .SelectMany(x=>x)
+                .Distinct(new LamdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals))
+                .GroupBy(x=>x.Name).Select(x=>x.ToList());
             }
         }
 
@@ -71,12 +78,15 @@ namespace LibLSLCC.CodeValidator.Components
                         return subsetContent.Values;
                     }
                     return new List<LSLLibraryConstantSignature>();
-                });
+
+                }).Distinct(new LamdaEqualityComparer<LSLLibraryConstantSignature>(ReferenceEquals));
             }
         }
 
         private readonly Dictionary<string, Dictionary<string, List<LSLLibraryFunctionSignature>>>
             _functionSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, List<LSLLibraryFunctionSignature>>>();
+
+         
 
         private readonly Dictionary<string, Dictionary<string, LSLLibraryConstantSignature>>
             _constantSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, LSLLibraryConstantSignature>>();

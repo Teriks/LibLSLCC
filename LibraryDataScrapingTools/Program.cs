@@ -211,13 +211,10 @@ namespace LibraryDataScrapingTools
             var openSim = new LibraryDataSet(openSimData);
 
 
-            LSLXmlLibraryDataProvider provider = new LSLXmlLibraryDataProvider();
-            provider.ActiveSubsets.AddSubset("lsl");
-            provider.ActiveSubsets.AddSubset("os-lsl");
-            provider.ActiveSubsets.AddSubset("ossl");
-            provider.ActiveSubsets.AddSubset("os-mod-api");
-            provider.ActiveSubsets.AddSubset("os-bullet-physics");
-            provider.ActiveSubsets.AddSubset("os-json-store");
+            List<string> activeLibrarySubsets  = new List<string> {"lsl", "os-lsl", "ossl", "os-mod-api", "os-bullet-physics", "os-json-store"};
+
+            var provider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
+
 
             foreach (var c in llsdData.LSLConstants())
             {
@@ -578,14 +575,14 @@ namespace LibraryDataScrapingTools
             }
 
 
-            var rightDiffLibraryDataProvider = new LSLXmlLibraryDataProvider();
+            var rightDiffLibraryDataProvider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
 
             using (var file = new XmlTextReader(selectRightDialog.OpenFile()))
             {
                 rightDiffLibraryDataProvider.FillFromXml(file);
             }
 
-            var diff = new LibraryDataDiff(provider, rightDiffLibraryDataProvider);
+            var diff = new LibraryDataDiff(activeLibrarySubsets, provider, activeLibrarySubsets, rightDiffLibraryDataProvider);
 
             diff.Diff();
 

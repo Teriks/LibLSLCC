@@ -155,7 +155,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         IReadOnlySet<string> EventNames { get; }
 
 
-            /// <summary>
+        /// <summary>
         ///     Maps native return types/parameters for functions, and field types for constants
         ///     to an LSLType
         /// </summary>
@@ -175,7 +175,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         private readonly string _openSimBinDirectory;
         private readonly Dictionary<string, Assembly> _allOpenSimAssemblies = new Dictionary<string, Assembly>();
         private readonly List<Type> _scriptModuleClasses = new List<Type>();
-        private readonly HashSet<string> _eventNames; 
+        private readonly HashSet<string> _eventNames;
 
         public OpenSimLibraryReflectedTypeData(string openSimBinDirectory)
         {
@@ -191,12 +191,12 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
                     if (assemblyName != null && !_allOpenSimAssemblies.ContainsKey(assemblyName))
                         _allOpenSimAssemblies.Add(assemblyName, Assembly.LoadFrom(assemblyPath));
                 }
-                catch 
+                catch
                 {
                     //this is sparta
                 }
             }
-            
+
 
             ScriptApiAssembly = _allOpenSimAssemblies["OpenSim.Region.ScriptEngine.Shared.dll"];
 
@@ -221,25 +221,36 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
                 ScriptRuntimeAssembly.GetType("OpenSim.Region.ScriptEngine.Shared.ScriptBase.Executor")
                     .GetNestedType("scriptEvents")
                     .GetMembers(BindingFlags.Public | BindingFlags.Static)
-                    .Where(x=>x.Name!="None")
+                    .Where(x => x.Name != "None")
                     .Select(x => x.Name)
                     );
 
 
             foreach (var assembly in AllOpenSimAssemblies.Values)
             {
-                _scriptModuleClasses.AddRange(
-                    assembly.GetTypes()
-                    .Where(x => x.GetInterfaces().Any(y => y.Name == "INonSharedRegionModule"))
-                    .Where(t => t.GetFields().Any(h => h.GetCustomAttributes(true).Any(
-                        x =>
-                        {
-                            var n = x.GetType().Name;
-                            return n == "ScriptConstantAttribute" || n == "ScriptInvocationAttribute"
-                                ;
-                        }))).ToList()
-                    );
+                try
+                {
+                    var types = assembly.GetTypes();
+
+                    var interfaces = types.Where(x => x.GetInterfaces().FirstOrDefault(y => y.Name == "INonSharedRegionModule") != null);
+
+                    _scriptModuleClasses.AddRange(
+                        interfaces.Where(t => t.GetFields().FirstOrDefault(h => h.GetCustomAttributes(true).FirstOrDefault(
+                            x =>
+                            {
+                                var n = x.GetType().Name;
+                                return n == "ScriptConstantAttribute" || n == "ScriptInvocationAttribute"
+                                    ;
+                            }) != null) != null).ToList()
+                        );
+                }
+                catch (System.Reflection.ReflectionTypeLoadException e)
+                {
+
+                    Log.WriteLineWithHeader("[OpenSimLibraryReflector ASSEMBLY LOAD EXCEPTION]", string.Join(Environment.NewLine, e.LoaderExceptions.Select(x => x.Message)));
+                }
             }
+
 
 
 
@@ -252,7 +263,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             ScriptBaseClass =
                 ScriptRuntimeAssembly.GetType("OpenSim.Region.ScriptEngine.Shared.ScriptBase.ScriptBaseClass");
 
-            ScriptConstantContainerClasses = new List<Type> {ScriptBaseClass};
+            ScriptConstantContainerClasses = new List<Type> { ScriptBaseClass };
 
             AppDomain.CurrentDomain.AssemblyResolve -= _currentDomainOnAssemblyResolve;
         }

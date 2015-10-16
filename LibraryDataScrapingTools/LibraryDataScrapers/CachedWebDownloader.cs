@@ -42,7 +42,13 @@
 #endregion
 using System;
 using System.Data;
+
+#if __MonoCS__
+using Mono.Data.Sqlite;
+#else
 using System.Data.SQLite;
+#endif
+
 using System.IO;
 using System.Net;
 using System.Text;
@@ -53,7 +59,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
     {
         private string _cacheDirectory;
 
-        private SQLiteConnection _currentCacheIndexConnection;
+        private System.Data.IDbConnection _currentCacheIndexConnection;
 
         public bool DiskCacheEnabled { get; set; }
 
@@ -142,13 +148,35 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return data;
         }
 
+        private IDbConnection CreateConnection(string file, bool createFile)
+        {
 
+            IDbConnection con;
+#if __MonoCS__
 
-        private void WriteToCache<T>(string url,  T writeData, Action<string, T> writeAction)
+			if(createFile){
+				SqliteConnection.CreateFile(file);
+			}
+
+			con = new SqliteConnection(string.Format("Data Source={0};Version=3;", file));
+
+#else
+            if (createFile)
+            {
+                SQLiteConnection.CreateFile(file);
+            }
+
+            con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", file));
+
+#endif
+            return con;
+        }
+
+        private void WriteToCache<T>(string url, T writeData, Action<string, T> writeAction)
         {
             if (!DiskCacheEnabled) return;
 
-            SQLiteCommand cmd;
+            IDbCommand cmd;
             if (_cacheDirectoryCheckRequired && !Directory.Exists(CacheDirectory))
             {
                 Directory.CreateDirectory(CacheDirectory);
@@ -167,9 +195,10 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     _currentCacheIndexConnection = null;
                 }
 
-                SQLiteConnection.CreateFile(_currentCacheIndexFile);
 
-                _currentCacheIndexConnection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", _currentCacheIndexFile));
+                _currentCacheIndexConnection = CreateConnection(_currentCacheIndexFile, true);
+
+
                 _currentCacheIndexConnection.Open();
 
 
@@ -185,7 +214,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             if (_currentCacheIndexConnection == null)
             {
-                _currentCacheIndexConnection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", _currentCacheIndexFile));
+                _currentCacheIndexConnection = CreateConnection(_currentCacheIndexFile, false);
                 _currentCacheIndexConnection.Open();
             }
 
@@ -194,7 +223,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 cmd.CommandText = "SELECT rowid FROM idx WHERE url = ?;";
 
-                var param = new SQLiteParameter(DbType.AnsiString, (object)url);
+                var param = cmd.CreateParameter();
+                param.DbType = DbType.AnsiString;
+                param.Value = url;
 
                 cmd.Parameters.Add(param);
 
@@ -215,9 +246,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 cmd.CommandText = "SELECT last_insert_rowid()";
 
 
-                var id = (long) cmd.ExecuteScalar();
+                var id = (long)cmd.ExecuteScalar();
 
-                writeAction.Invoke(Path.Combine(CacheDirectory ,id+".cache"),writeData);
+                writeAction.Invoke(Path.Combine(CacheDirectory, id + ".cache"), writeData);
             }
 
         }
@@ -231,14 +262,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 cmd.CommandText = "SELECT rowid FROM idx WHERE url = ?;";
 
-                var param = new SQLiteParameter(DbType.AnsiString, (object)url);
+                var param = cmd.CreateParameter();
+                param.DbType = DbType.AnsiString;
+                param.Value = url;
 
                 cmd.Parameters.Add(param);
 
                 var id = cmd.ExecuteScalar();
                 if (id != null)
                 {
-                    return readAction.Invoke(Path.Combine(CacheDirectory, ((long) id) + ".cache"));
+                    return readAction.Invoke(Path.Combine(CacheDirectory, ((long)id) + ".cache"));
                 }
             }
 

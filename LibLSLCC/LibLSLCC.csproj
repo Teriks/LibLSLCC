@@ -86,6 +86,7 @@
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureMatcher.cs" />
+    <Compile Include="Utility\LambdaEqualityComparer.cs" />
     <Compile Include="Utility\TokenTools.cs" />
     <Compile Include="Utility\StringTools.cs" />
     <Compile Include="AutoCompleteParser\LSLCommentStringSkipper.cs" />
