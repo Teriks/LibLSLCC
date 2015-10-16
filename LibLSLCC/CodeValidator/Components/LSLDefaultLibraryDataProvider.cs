@@ -115,8 +115,6 @@ namespace LibLSLCC.CodeValidator.Components
         {
             yield return libraryBaseData.ToSubsetName();
 
-            if(libraryBaseData == LSLLibraryBaseData.All) yield break;
-
             foreach (var name in dataAdditions.ToSubsetNames())
             {
                 yield return name;
@@ -171,8 +169,7 @@ namespace LibLSLCC.CodeValidator.Components
     public enum LSLLibraryBaseData
     {
         StandardLsl,
-        OpensimLsl,
-        All
+        OpensimLsl
     }
 
     public static class LSLLibraryBaseDataEnumExtensions
@@ -185,8 +182,6 @@ namespace LibLSLCC.CodeValidator.Components
                     return "lsl";
                 case LSLLibraryBaseData.OpensimLsl:
                     return "os-lsl";
-                case LSLLibraryBaseData.All:
-                    return "all";
                 default:
                     throw new ArgumentOutOfRangeException("flag", flag, null);
             }

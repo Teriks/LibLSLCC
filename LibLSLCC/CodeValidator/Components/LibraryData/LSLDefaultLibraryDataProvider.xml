@@ -3725,9 +3725,6 @@
   <LibraryConstant Name="GCNP_RADIUS" Type="Integer" Value="0" Subsets="lsl">
     <DocumentationString />
   </LibraryConstant>
-  <LibraryConstant Name="GCNP_STATIC" Type="Integer" Value="1" Subsets="lsl">
-    <DocumentationString />
-  </LibraryConstant>
   <LibraryConstant Name="GRAVITY_MULTIPLIER" Type="Integer" Value="8" Subsets="lsl,os-lsl">
     <DocumentationString>Used with llSetPhysicsMaterial to enable the gravity multiplier value. Must be between -1.0 and +28.0</DocumentationString>
   </LibraryConstant>
@@ -3750,7 +3747,7 @@
     <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="HTTP_PRAGMA_NO_CACHE" Type="Integer" Value="6" Subsets="lsl,os-lsl">
-    <DocumentationString>Allows enabling/disbling of the "Pragma: no-cache" header.  Usage: [HTTP_PRAGMA_NO_CACHE, integer SendHeader]. When SendHeader is TRUE, the "Pragma: no-cache" header is sent by the script. This matches the default behavior. When SendHeader is FALSE, no "Pragma" header is sent by the script.</DocumentationString>
+    <DocumentationString>Allows enabling/disabling of the "Pragma: no-cache" header.  Usage: [HTTP_PRAGMA_NO_CACHE, integer SendHeader]. When SendHeader is TRUE, the "Pragma: no-cache" header is sent by the script. This matches the default behavior. When SendHeader is FALSE, no "Pragma" header is sent by the script.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="HTTP_VERBOSE_THROTTLE" Type="Integer" Value="4" Subsets="lsl,os-lsl">
     <DocumentationString />

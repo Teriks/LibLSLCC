@@ -9,7 +9,15 @@ namespace LibLSLCC.CodeValidator.Components
 {
     public class LSLLibraryDataProvider : ILSLMainLibraryDataProvider
     {
+        //The query functions and properties of this class will be optimized
+        //later after I get the correct live filtering behaviors down entirely
 
+       
+        /// <summary>
+        /// If this is false, functions, constants and events which do not 
+        /// belong to subsets in ActiveSubsets will be discarded upon adding
+        /// them to the object
+        /// </summary>
         public bool LiveFiltering { get; private set; } 
 
 
@@ -32,7 +40,7 @@ namespace LibLSLCC.CodeValidator.Components
             get
             {
                 
-                return ActiveSubsets.Subsets.SelectMany<string, LSLLibraryEventSignature>(x =>
+                var events = ActiveSubsets.Subsets.SelectMany<string, LSLLibraryEventSignature>(x =>
                 {
                     Dictionary<string, LSLLibraryEventSignature> subsetContent;
                     if (_eventSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
@@ -41,7 +49,24 @@ namespace LibLSLCC.CodeValidator.Components
                     }
                     return new List<LSLLibraryEventSignature>();
 
-                }).Distinct(new LamdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
+                }).Distinct(new LambdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
+
+                var eventNames = new HashSet<string>();
+
+                foreach (var evnt in events)
+                {
+                    if (!eventNames.Contains(evnt.Name))
+                    {
+                        eventNames.Add(evnt.Name);
+                        yield return evnt;
+                    }
+                    else
+                    {
+                        throw new LSLDuplicateSignatureException(
+                            "SupportedEventHandlers {get} failed because an event with the same name exist in more than one active subset, "+
+                            "and it is not shared across the involved subsets.");
+                    }
+                }
             }
         }
 
@@ -49,6 +74,8 @@ namespace LibLSLCC.CodeValidator.Components
         {
             get
             {
+                var funcs = new Dictionary<string, LSLLibraryFunctionSignature>();
+
                 return ActiveSubsets.Subsets.SelectMany<string, List<LSLLibraryFunctionSignature>>(x =>
                 {
                     Dictionary<string, List<LSLLibraryFunctionSignature>> subsetContent;
@@ -59,7 +86,27 @@ namespace LibLSLCC.CodeValidator.Components
                     return new List<List<LSLLibraryFunctionSignature>>();
                 })
                 .SelectMany(x=>x)
-                .Distinct(new LamdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals))
+                .Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals))
+                .Select(x =>
+                {
+                    if (funcs.ContainsKey(x.Name))
+                    {
+                        var func = funcs[x.Name];
+                        if (func.DefinitionIsDuplicate(x))
+                        {
+                            throw new LSLDuplicateSignatureException(
+                                "LibraryFunctions {get} failed because a function with a duplicate or ambiguous signature exists in more than one active subset, " +
+                                "and it is not shared across the involved subsets.");
+                        }
+
+                        //subset adds an overload
+                        funcs.Add(x.Name, x);
+                        return x;
+                    }
+                    //subset adds a new function
+                    funcs.Add(x.Name, x);
+                    return x;
+                })
                 .GroupBy(x=>x.Name).Select(x=>x.ToList());
             }
         }
@@ -70,7 +117,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             get
             {
-                return ActiveSubsets.Subsets.SelectMany<string, LSLLibraryConstantSignature>(x =>
+                var constants = ActiveSubsets.Subsets.SelectMany<string, LSLLibraryConstantSignature>(x =>
                 {
                     Dictionary<string, LSLLibraryConstantSignature> subsetContent;
                     if (_constantSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
@@ -79,7 +126,25 @@ namespace LibLSLCC.CodeValidator.Components
                     }
                     return new List<LSLLibraryConstantSignature>();
 
-                }).Distinct(new LamdaEqualityComparer<LSLLibraryConstantSignature>(ReferenceEquals));
+                }).Distinct(new LambdaEqualityComparer<LSLLibraryConstantSignature>(ReferenceEquals));
+
+
+                var eventNames = new HashSet<string>();
+
+                foreach (var cons in constants)
+                {
+                    if (!eventNames.Contains(cons.Name))
+                    {
+                        eventNames.Add(cons.Name);
+                        yield return cons;
+                    }
+                    else
+                    {
+                        throw new LSLDuplicateSignatureException(
+                            "LibraryConstants {get} failed because a constant with the same name exist in more than one active subset, " +
+                            "and it is not shared across the involved subsets.");
+                    }
+                }
             }
         }
 
@@ -278,18 +343,29 @@ namespace LibLSLCC.CodeValidator.Components
 
 
 
-        private LSLLibraryEventSignature GetEventHandlerSignature(string name, IEnumerable<string> subsets)
+        private LSLLibraryEventSignature GetEventHandlerSignature(string name, IEnumerable<string> possibleSubsets)
         {
-            foreach (var subset in subsets.Where(y => _eventSignaturesBySubsetAndName.ContainsKey(y)))
+            LSLLibraryEventSignature result = null;
+
+            foreach (var evnt in possibleSubsets
+                .Where(x => _eventSignaturesBySubsetAndName.ContainsKey(x) && _eventSignaturesBySubsetAndName[x].ContainsKey(name))
+                .Select(subset => _eventSignaturesBySubsetAndName[subset][name]))
             {
-                LSLLibraryEventSignature ev;
-                if (_eventSignaturesBySubsetAndName[subset].TryGetValue(name, out ev))
+                if (result == null)
                 {
-                    return ev;
+                    result = evnt;
+                }
+                else if (!ReferenceEquals(result, evnt))
+                {
+                    throw new LSLDuplicateSignatureException(
+                        string.Format(
+                            "GetEventHandlerSignature for {0} failed because the more than one active subset had a duplicate definition of it, and the event handler was not shared across the involved subsets.",
+                            name));
+
                 }
             }
 
-            return null;
+            return result;
         }
 
 
@@ -366,7 +442,8 @@ namespace LibLSLCC.CodeValidator.Components
                     {
                         throw new LSLDuplicateSignatureException(
                             string.Format(
-                                "GetLibraryFunctionSignatures for {0} failed because the more than one ActiveSubset had a duplicate/ambiguous definition of it.",
+                                "GetLibraryFunctionSignatures for {0} failed because the more than one active subset had a duplicate/ambiguous definition of it, "+
+                                "and the function was not shared across the involved subsets.",
                                 name));
 
                     }
@@ -374,8 +451,11 @@ namespace LibLSLCC.CodeValidator.Components
                 }
             }
 
-            return results.Count == 0 ? null : results;
+            //we want distinct by reference here because we do not want to return copies of the same object
+            //that have been put into the _functionSignaturesBySubsetAndName because they are shared across subsets
+            return results.Count == 0 ? null : results.Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals)).ToList();
         }
+
 
 
         public LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest)
@@ -386,6 +466,7 @@ namespace LibLSLCC.CodeValidator.Components
 
             return sigs.FirstOrDefault(x=>x.SignatureEquivalent(signatureToTest));
         }
+
 
 
         public bool LibraryConstantExist(string name)
@@ -406,13 +487,27 @@ namespace LibLSLCC.CodeValidator.Components
 
         private LSLLibraryConstantSignature GetLibraryConstantSignature(string name, IEnumerable<string> possibleSubsets)
         {
-            return
-                possibleSubsets.Where(
-                    x =>
-                        _constantSignaturesBySubsetAndName.ContainsKey(x) &&
-                        _constantSignaturesBySubsetAndName[x].ContainsKey(name))
-                    .Select(x => _constantSignaturesBySubsetAndName[x][name])
-                    .FirstOrDefault();
+            LSLLibraryConstantSignature result = null;
+
+            foreach (var constant in possibleSubsets
+                .Where(x => _constantSignaturesBySubsetAndName.ContainsKey(x) && _constantSignaturesBySubsetAndName[x].ContainsKey(name))
+                .Select(subset => _constantSignaturesBySubsetAndName[subset][name]))
+            {
+                if (result == null)
+                {
+                    result = constant;
+                }
+                else if(!ReferenceEquals(result, constant))
+                {
+                    throw new LSLDuplicateSignatureException(
+                        string.Format(
+                            "GetLibraryConstantSignature for {0} failed because the more than one active subset had a duplicate definition of it, and the constant was not shared across the involved subsets.",
+                            name));
+
+                }
+            }
+
+            return result;
         }
     }
 }
