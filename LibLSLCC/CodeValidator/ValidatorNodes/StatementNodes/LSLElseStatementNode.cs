@@ -92,7 +92,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return Code.ConstantJumps; }
+            get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps ; }
         }
 
         public LSLCodeScopeNode Code { get; private set; }
