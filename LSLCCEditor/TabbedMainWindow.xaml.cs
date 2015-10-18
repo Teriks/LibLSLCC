@@ -252,7 +252,10 @@ namespace LSLCCEditor
                 File.Delete(destinationFile);
             }
 
+#if !DEBUG
             bool compileSuccess = false;
+#endif
+
             using (var outfile = File.OpenWrite(destinationFile))
             {
                 var compiler = new LSLOpenSimCSCompiler(LSLOpenSimCSCompilerSettings
@@ -284,12 +287,14 @@ namespace LSLCCEditor
 
             }
 
+#if !DEBUG
             if (compileSuccess)
             {
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
                     "Program compiled successfully", false) {Clickable = false});
             }
             else
+#endif
             {
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error",
                     "An internal compiler exception occurred, please report the code that caused this.", false) { Clickable = false });
