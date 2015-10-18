@@ -98,7 +98,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return Code.ConstantJumps; }
+            get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps; }
         }
 
         internal LSLParser.IfStatementContext ParserContext { get; private set; }
@@ -124,7 +124,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public bool IsConstantBranch
         {
-            get { return ConditionExpression.IsConstant; }
+            get { return ConditionExpression != null && ConditionExpression.IsConstant; }
         }
 
         #endregion
@@ -133,7 +133,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public bool HasReturnPath
         {
-            get { return Code.HasReturnPath; }
+            get { return Code != null && Code.HasReturnPath; }
         }
 
         #endregion

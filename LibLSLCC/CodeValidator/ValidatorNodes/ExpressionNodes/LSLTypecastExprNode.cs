@@ -163,7 +163,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool IsConstant
         {
-            get { return CastedExpression.IsConstant; }
+            get { return CastedExpression != null && CastedExpression.IsConstant; }
         }
 
 

@@ -144,7 +144,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public LSLType Type
         {
-            get { return InnerExpression.Type; }
+            get { return InnerExpression == null ? LSLType.Void : InnerExpression.Type; }
         }
 
         public LSLExpressionType ExpressionType
@@ -154,7 +154,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool IsConstant
         {
-            get { return InnerExpression.IsConstant; }
+            get { return InnerExpression != null && InnerExpression.IsConstant; }
         }
 
 

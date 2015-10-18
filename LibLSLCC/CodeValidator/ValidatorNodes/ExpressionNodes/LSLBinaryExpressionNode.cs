@@ -181,7 +181,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public bool IsConstant
         {
-            get { return (LeftExpression.IsConstant && RightExpression.IsConstant); }
+            get { return 
+                    (LeftExpression != null && RightExpression != null) &&
+                    (LeftExpression.IsConstant && RightExpression.IsConstant); }
         }
 
 
