@@ -49,7 +49,9 @@ using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
@@ -57,8 +59,11 @@ using LibLSLCC.Utility;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+    /// <summary>
+    /// Represents the signature of a constant provided from an ILSLMainLibraryDataProvider implementation
+    /// </summary>
     [XmlRoot("LibraryConstant")]
-    public sealed class LSLLibraryConstantSignature : IXmlSerializable
+    public sealed class LSLLibraryConstantSignature : IXmlSerializable, ILSLLibrarySignature
     {
         private Dictionary<string, string> _properties = new Dictionary<string, string>();
         private HashSet<string> _subsets = new HashSet<string>();
@@ -74,6 +79,10 @@ namespace LibLSLCC.CodeValidator.Components
             Type = LSLType.Void;
         }
 
+        /// <summary>
+        /// Construct the LSLLibraryConstantSingature by cloning another one.
+        /// </summary>
+        /// <param name="other"></param>
         public LSLLibraryConstantSignature(LSLLibraryConstantSignature other)
         {
             ValueString = other.ValueString;
@@ -83,6 +92,12 @@ namespace LibLSLCC.CodeValidator.Components
             _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
         }
 
+
+        /// <summary>
+        /// Construct the LSLLibraryConstantSignature from a given LSLType and constant name
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="name"></param>
         public LSLLibraryConstantSignature(LSLType type, string name)
         {
             DocumentationString = "";
@@ -91,6 +106,13 @@ namespace LibLSLCC.CodeValidator.Components
             ValueString = "";
         }
 
+
+        /// <summary>
+        /// Construct the LSLLibraryConstantSignature from a given LSLType, constant name, and Value string.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="name"></param>
+        /// <param name="valueString"></param>
         public LSLLibraryConstantSignature(LSLType type, string name, string valueString)
         {
             DocumentationString = "";
@@ -99,23 +121,43 @@ namespace LibLSLCC.CodeValidator.Components
             Type = type;
         }
 
+        /// <summary>
+        /// The library subsets this signature belongs to/is shared among.
+        /// </summary>
         public IReadOnlySet<string> Subsets
         {
             get { return new ReadOnlyHashSet<string>(_subsets); }
         }
 
+
+        /// <summary>
+        /// Additional dynamic property values that can be attached to the constant signature and parsed from XML
+        /// </summary>
         public IDictionary<string, string> Properties
         {
             get { return _properties; }
         }
 
+        /// <summary>
+        /// Returns a formated signature string for the constant, in the form:  NAME = ValueStringAsCodeLiteral
+        /// Without a trailing semi-colon character.
+        /// </summary>
         public string SignatureString
         {
             get { return Type.ToLSLTypeString() + " " + Name + " = " + ValueStringAsCodeLiteral; }
         }
 
+        /// <summary>
+        /// Gets or sets the documentation string attached to this signature.
+        /// </summary>
         public string DocumentationString { get; set; }
 
+
+        /// <summary>
+        /// Combines the SignatureString and Documentation string.  The signature will
+        /// have a trailing semi-colon, and if there is a documentation string a new-line will
+        /// be inserted between the signature and documentation string.
+        /// </summary>
         public string SignatureAndDocumentation
         {
             get
@@ -130,14 +172,24 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+        /// <summary>
+        /// The LSLType that the library constant is defined with.
+        /// </summary>
         public LSLType Type { get; set; }
+
+        /// <summary>
+        /// The name of the library constant.
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// The raw value string of the library constant.
+        /// </summary>
         public string ValueString { get; private set; }
 
 
         /// <summary>
-        /// Returns the ValueString replacing any control code characters with symbolic string
-        /// escapes.
+        /// Returns the ValueString replacing any control code characters with symbolic string escapes.
         /// </summary>
         public string ValueStringWithControlCodeEscapes
         {
@@ -188,9 +240,10 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        ///     Generates an object from its XML representation.
+        /// Fills a constant signature object from an XML fragment.
         /// </summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
+        /// <param name="reader">The XML reader containing the fragment to read.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the constants name does not abide by LSL symbol naming conventions.</exception>
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
@@ -353,31 +406,62 @@ namespace LibLSLCC.CodeValidator.Components
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Delegates to the SignatureString Property.
+        /// </summary>
+        /// <returns>
+        /// The SignatureString Property.
+        /// </returns>
         public override string ToString()
         {
             return SignatureString;
         }
 
+        /// <summary>
+        /// Sets the library subsets this LSLLibraryConstantSignature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings</param>
         public void SetSubsets(IEnumerable<string> subsets)
         {
             _subsets = new HashSet<string>(subsets);
         }
 
+        /// <summary>
+        /// Sets the library subsets this LSLLibraryConstantSignature belongs to by parsing them out of a comma separated string of names.
+        /// </summary>
+        /// <param name="subsets">A comma separated list of subset names in a string.</param>
         public void SetSubsets(string subsets)
         {
             _subsets = new HashSet<string>(_subsetsRegex.ParseSubsets(subsets));
         }
 
+
+        /// <summary>
+        /// Adds to the current library subsets this LSLLibraryConstantSignature belongs to by parsing them out of a comma separated string of names.
+        /// </summary>
+        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
         public void AddSubsets(string subsets)
         {
             _subsets.UnionWith(_subsetsRegex.ParseSubsets(subsets));
         }
 
+
+        /// <summary>
+        /// Adds to the current library subsets this LSLLibraryConstantSignature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings to add.</param>
         public void AddSubsets(IEnumerable<string> subsets)
         {
             _subsets.UnionWith(subsets);
         }
 
+
+        /// <summary>
+        /// Reads a constant signature object from an XML fragment.
+        /// </summary>
+        /// <param name="reader">The XML reader containing the fragment to read.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the constants name does not abide by LSL symbol naming conventions.</exception>
+        /// <returns>The parsed LSLLibraryConstantSignature object.</returns>
         public static LSLLibraryConstantSignature FromXmlFragment(XmlReader reader)
         {
             var con = new LSLLibraryConstantSignature();
@@ -386,6 +470,11 @@ namespace LibLSLCC.CodeValidator.Components
             return con;
         }
 
+
+        /// <summary>
+        /// Returns the hash code of the LSLConstantSignature object.  The Type and Name properties are used to generate the hash code.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             var hash = 17;
@@ -399,6 +488,13 @@ namespace LibLSLCC.CodeValidator.Components
             return hash;
         }
 
+
+        /// <summary>
+        /// Determines whether the Type and Name properties of another LSLLibraryConstantSignature equal the Type and Name properties of this object.
+        /// If the passed object is not an LSLLibraryConstantSignature object then the result will always be false.
+        /// </summary>
+        /// <param name="obj">The object to compare this object with.</param>
+        /// <returns>True if the object is an LSLLibraryConstantSignature object and the Name and Type properties of both objects are equal to each other.</returns>
         public override bool Equals(object obj)
         {
             var o = obj as LSLLibraryConstantSignature;
@@ -411,6 +507,9 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        /// <summary>
+        /// Whether or not this constant is marked as deprecated.
+        /// </summary>
         public bool Deprecated
         {
             get

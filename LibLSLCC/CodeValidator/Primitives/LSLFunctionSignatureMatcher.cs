@@ -7,6 +7,10 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+
+    /// <summary>
+    /// A tool for matching comparing LSLFunctionSignature objects and preforming overload resolution across multiple LSLFunctionSignatures.
+    /// </summary>
     public static class LSLFunctionSignatureMatcher
     {
         /// <summary>
@@ -39,7 +43,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             /// <summary>
             /// True if the function can successfully be compiled with the given parameter expressions.
-            /// Equivalent to !NotEnoughParameters && !ToManyParameters && !TypeMismatch
+            /// Equivalent to !NotEnoughParameters &amp;&amp; !ToManyParameters &amp;&amp; !TypeMismatch
             /// </summary>
             public bool Success
             {
@@ -66,7 +70,10 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
-
+        /// <summary>
+        /// Represents the status of an attempted overload resolution match against parameter expressions.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         public class OverloadMatch<T> where T : LSLFunctionSignature
         {
              /// <summary>
@@ -101,7 +108,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             /// <summary>
             /// This returns true if there are no ambiguous matches, and a single overload match was found
-            /// it is equivalent to: (!Ambiguous && Matches.Count != 0)
+            /// it is equivalent to: (!Ambiguous &amp;&amp; Matches.Count != 0)
             /// </summary>
             public bool Success
             {
@@ -138,7 +145,16 @@ namespace LibLSLCC.CodeValidator.Primitives
             return new OverloadMatch<T>(matches);
         }
 
-
+        /// <summary>
+        /// Find a matching overload from a list of function signatures, given the parameter expressions. return null if none is found.
+        /// </summary>
+        /// <param name="typeComparer">
+        /// A function used to compare an LSLParameter to an ILSLExprNode to check for a match.
+        /// Should return true if the ILSLExprNode can be passed into the LSLParameter.
+        /// </param>
+        /// <param name="functionSignatures">The function signatures to search through.</param>
+        /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
+        /// <returns>A matching LSLFunctionSignature overload or null.</returns>
         public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyList<T> functionSignatures, IReadOnlyList<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer) where T : LSLFunctionSignature
         {
             var matches =
@@ -404,7 +420,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 break;
             }
 
-            //if there was a parameter mismatch, the last checked parameter index is the index at which the mismatch occured
+            //if there was a parameter mismatch, the last checked parameter index is the index at which the mismatch occurred
             var badParameterIndex = parameterTypeMismatch ? parameterNumber : -1;
 
             //we had an allowable amount of parameters, but there was a type mismatch somewhere

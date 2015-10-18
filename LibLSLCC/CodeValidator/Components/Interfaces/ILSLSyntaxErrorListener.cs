@@ -51,112 +51,470 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
-    public enum LSLConditionalStatementType
-    {
-        If,
-        ElseIf,
-        While,
-        DoWhile,
-        For
-    }
-
+    /// <summary>
+    /// Interface for a syntax error listener, this called into by the code validator
+    /// when syntax errors occur.
+    /// </summary>
     public interface ILSLSyntaxErrorListener
     {
+        /// <summary>
+        /// A parsing error at the grammar level has occurred somewhere in the source code.
+        /// </summary>
+        /// <param name="line">The line on which the error occurred.</param>
+        /// <param name="column">The character column at which the error occurred.</param>
+        /// <param name="message">The parsing error messaged passed along from the parsing backend.</param>
         void GrammarLevelSyntaxError(int line, int column, string message);
+
+
+        /// <summary>
+        /// A reference to an undefined variable was encountered.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="name">Name of the variable attempting to be referenced.</param>
         void UndefinedVariableReference(LSLSourceCodeRange location, string name);
+
+        /// <summary>
+        /// A parameter name for a function or event handler was used more than once.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="type">The type of the new parameter who's name was duplicate.</param>
+        /// <param name="name">The name of the new parameter, which was duplicate.</param>
         void ParameterNameRedefined(LSLSourceCodeRange location, LSLType type, string name);
+
+        /// <summary>
+        /// A binary operation was encountered that had incorrect expression types on either or both sides.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="left">The left expression.</param>
+        /// <param name="operation">The binary operation that was attempted on the two expressions.</param>
+        /// <param name="right">The right expression.</param>
         void InvalidBinaryOperation(LSLSourceCodeRange location, ILSLExprNode left, string operation, ILSLExprNode right);
+
+        /// <summary>
+        /// A prefix operation was attempted on an invalid type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="operation">The prefix operation that was attempted on the expression.</param>
+        /// <param name="right">The expression the prefix operation was used on.</param>
         void InvalidPrefixOperation(LSLSourceCodeRange location, string operation, ILSLExprNode right);
+
+        /// <summary>
+        /// A postfix operation was attempted on an invalid type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="operation">The postfix operation that was attempted on the expression.</param>
+        /// <param name="left">The expression the postfix operation was used on.</param>
         void InvalidPostfixOperation(LSLSourceCodeRange location, ILSLExprNode left, string operation);
+
+        /// <summary>
+        /// An invalid cast was preformed on some expression
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="castTo">The type that the cast operation attempted to cast the expression to.</param>
+        /// <param name="fromExpression">The expression that the cast was attempted on.</param>
         void InvalidCastOperation(LSLSourceCodeRange location, LSLType castTo, ILSLExprNode fromExpression);
 
+
+        /// <summary>
+        /// A variable declaration was initialized with an invalid type on the right.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="variableType">The actual type of the variable attempting to be initialized.</param>
+        /// <param name="assignedExpression">The invalid expression that was assigned in the variable declaration.</param>
         void TypeMismatchInVariableDeclaration(LSLSourceCodeRange location, LSLType variableType,
             ILSLExprNode assignedExpression);
 
+
+        /// <summary>
+        /// A variable was redefined.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="variableType">The type of the variable that was considered a re-definition.</param>
+        /// <param name="variableName">The name of the variable that was considered a re-definition.</param>
         void VariableRedefined(LSLSourceCodeRange location, LSLType variableType, string variableName);
 
+
+        /// <summary>
+        /// A vector literal contained an invalid expression in its initializer list.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="component">The vector component of the initializer that contained the invalid expression.</param>
+        /// <param name="invalidExpressionContent">The expression that was considered to be invalid vector initializer content.</param>
         void InvalidVectorContent(LSLSourceCodeRange location, LSLVectorComponent component,
             ILSLExprNode invalidExpressionContent);
 
+        /// <summary>
+        /// A list literal contained an invalid expression in its initializer list.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="index">The index in the initializer list that contained the invalid expression.</param>
+        /// <param name="invalidExpressionContent">The expression that was considered to be invalid list initializer content.</param>
         void InvalidListContent(LSLSourceCodeRange location, int index, ILSLExprNode invalidExpressionContent);
 
+
+
+        /// <summary>
+        /// A rotation literal contained an invalid expression in its initializer list.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="component">The rotation component of the initializer that contained the invalid expression.</param>
+        /// <param name="invalidExpressionContent">The expression that was considered to be invalid rotation initializer content.</param>
         void InvalidRotationContent(LSLSourceCodeRange location, LSLRotationComponent component,
             ILSLExprNode invalidExpressionContent);
 
+
+        /// <summary>
+        /// Attempted to return a value from a function with no return type. (A void function)
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
+        /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         void ReturnedValueFromVoidFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
             ILSLExprNode attemptedReturnExpression);
 
+
+        /// <summary>
+        /// Attempted to return an invalid expression type from a function with a defined return type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
+        /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         void TypeMismatchInReturnValue(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
             ILSLExprNode attemptedReturnExpression);
 
+        /// <summary>
+        /// An empty return statement was encountered in a non void function. (A function with a defined return type)
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
         void ReturnedVoidFromANonVoidFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature);
+
+        /// <summary>
+        /// A jump statement to an undefined label name was encountered.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="labelName">The name of the label that was given to the jump statement.</param>
         void JumpToUndefinedLabel(LSLSourceCodeRange location, string labelName);
+
+
+        /// <summary>
+        /// A call to an undefined function was encountered.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionName">The name of the function used in the call.</param>
         void CallToUndefinedFunction(LSLSourceCodeRange location, string functionName);
 
+
+        /// <summary>
+        /// A user defined or library function was called with the wrong number of parameters.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionSignature">The function signature of the defined function attempting to be called.</param>
+        /// <param name="parameterExpressionsGiven">The expressions given to the function call.</param>
         void ImproperParameterCountInFunctionCall(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature, ILSLExprNode[] parameterExpressionsGiven);
 
+        /// <summary>
+        /// Attempted to return a value from an event handler.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="attemptedReturnExpression">The expression attempted to be returned.</param>
         void ReturnedValueFromEventHandler(LSLSourceCodeRange location, ILSLExprNode attemptedReturnExpression);
+
+
+        /// <summary>
+        /// A user defined function was re-defined.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="previouslyDefinedSignature">The signature of the previously defined function that is considered a duplicated to the new definition.</param>
         void RedefinedFunction(LSLSourceCodeRange location, LSLFunctionSignature previouslyDefinedSignature);
+
+
+        /// <summary>
+        /// A code label was considered a redefinition of an already defined code label, given the scope of the new definition.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="labelName">The name of the label being redefined.</param>
         void RedefinedLabel(LSLSourceCodeRange location, string labelName);
-        void TupleAccessorOnLiteral(LSLSourceCodeRange location, ILSLExprNode lvalueLiteral, string operationText);
 
+
+        /// <summary>
+        /// A vector or rotation component accessor was used on a vector or rotation literal. (This is not allowed)
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="lvalueLiteral">The literal on the left of the dot operator.</param>
+        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
+        void TupleAccessorOnLiteral(LSLSourceCodeRange location, ILSLExprNode lvalueLiteral, string memberAccessed);
+
+
+        /// <summary>
+        /// A vector or rotation component accessor was used on a non simple expression.  
+        /// Doing something like: (float x = llGetPos().x;) is not valid, neither is (float x = (vector_var+vector_var).x;) component access is only valid directly on a variable names.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="lvalueCompound">The compound expression on the left side of the dot operator.</param>
+        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
         void TupleAccessorOnCompoundExpression(LSLSourceCodeRange location, ILSLExprNode lvalueCompound,
-            string operationText);
+            string memberAccessed);
 
+
+        /// <summary>
+        /// A '.' member access was attempted on an invalid variable type, or the variable type did not contain the given component.
+        /// Valid component names for vectors are:  x,y and z
+        /// Valid component names for rotations are:  x,y,z and s
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
+        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
         void InvalidComponentAccessorOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
-            string componentAccessed);
+            string memberAccessed);
 
+
+        /// <summary>
+        /// The return type of the expression present in an if statements condition is not a valid type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the if statement.</param>
         void IfConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+
+
+        /// <summary>
+        /// The return type of the expression present in an else-if statements condition is not a valid type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the else-if statement.</param>
         void ElseIfConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+
+        /// <summary>
+        /// The return type of the expression present in a do-loops condition is not a valid type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the do-loop.</param>
         void DoLoopConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+
+        /// <summary>
+        /// The return type of the expression present in a while-loops condition is not a valid type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the while-loop.</param>
         void WhileLoopConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+
+
+        /// <summary>
+        /// The return type of the expression present in a for-loops condition is not a valid type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the for-loop.</param>
         void ForLoopConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
 
+
+        /// <summary>
+        /// A parameter type mismatch was encountered when trying to call a user defined or library function.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="parameterNumberWithError">The index of the parameter with the type mismatch. (Zero based)</param>
+        /// <param name="calledFunction">The defined/library function that was attempting to be called.</param>
+        /// <param name="parameterExpressionsGiven">The parameter expressions given for the function call.</param>
         void ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location, int parameterNumberWithError,
             LSLFunctionSignature calledFunction, ILSLExprNode[] parameterExpressionsGiven);
 
+
+        /// <summary>
+        /// A state name was re-defined.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="stateName">The name of the state being redefined.</param>
         void RedefinedStateName(LSLSourceCodeRange location, string stateName);
 
+
+        /// <summary>
+        /// An event handler which was not defined in the library data provider was used in the program.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="givenEventHandlerSignature">The signature of the event handler attempting to be used.</param>
         void UnknownEventHandlerDeclared(LSLSourceCodeRange location,
             LSLEventSignature givenEventHandlerSignature);
 
+
+        /// <summary>
+        /// An event handler was used in the program which was defined in the library data provider, but the given call signature in the program
+        /// was incorrect.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="givenEventHandlerSignature">The invalid signature used for the event handler in the source code.</param>
+        /// <param name="correctEventHandlerSignature">The actual valid signature for the event handler from the library data provider.</param>
         void IncorrectEventHandlerSignature(LSLSourceCodeRange location,
             LSLEventSignature givenEventHandlerSignature,
             LSLLibraryEventSignature correctEventHandlerSignature);
 
+
+        /// <summary>
+        /// A standard library constant defined in the library data provider was redefined in source code as a global or local variable.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="redefinitionType">The type used in the re-definition.</param>
+        /// <param name="originalSignature">The original signature of the constant taken from the library data provider.</param>
         void RedefinedStandardLibraryConstant(LSLSourceCodeRange location, LSLType redefinitionType,
             LSLLibraryConstantSignature originalSignature);
 
+
+        /// <summary>
+        /// A library function that exist in the library data provider was redefined by the user as a user defined function.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionName">The name of the library function the user attempted to redefine.</param>
+        /// <param name="libraryFunctionSignatureOverloads">All of the overloads for the library function, there may only be one if no overloads actually exist.</param>
         void RedefinedStandardLibraryFunction(LSLSourceCodeRange location, string functionName,
             IReadOnlyList<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads);
 
+        /// <summary>
+        /// A state change statement was encountered that attempted to change states to an undefined state name.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="stateName">The undefined state name referenced.</param>
         void ChangeToUndefinedState(LSLSourceCodeRange location, string stateName);
+
+
+        /// <summary>
+        /// An attempt to modify a library constant defined in the library data provider was made.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="constantName">The name of the constant the user attempted to modified.</param>
         void ModifiedLibraryConstant(LSLSourceCodeRange location, string constantName);
+
+        /// <summary>
+        /// The user attempted to use 'default' for a user defined state name.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
         void RedefinedDefaultState(LSLSourceCodeRange location);
+
+        /// TODO check necessity
+        /// <summary>
+        /// The given expression was not valid as a statement in a code scope.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
         void InvalidStatementExpression(LSLSourceCodeRange location);
 
+
+        /// <summary>
+        /// Dead code after a return path was detected in a function with a non-void return type.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="inFunction">The signature of the function the dead code was detected in.</param>
+        /// <param name="deadSegment">An object describing the location an span of the dead code segment.</param>
         void DeadCodeAfterReturnPathDetected(LSLSourceCodeRange location, LSLFunctionSignature inFunction,
             LSLDeadCodeSegment deadSegment);
 
+        /// <summary>
+        /// A function with a non-void return type lacks a necessary return statement.  
+        /// Not all code paths return a value.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="inFunction">The signature of the function in question.</param>
         void NotAllCodePathsReturnAValue(LSLSourceCodeRange location, LSLFunctionSignature inFunction);
+
+        /// <summary>
+        /// A code state does not declare the use of any event handlers at all. (This is not allowed)
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="stateName">The name of the state in which this error occurred.</param>
         void StateHasNoEventHandlers(LSLSourceCodeRange location, string stateName);
+
+        /// <summary>
+        /// A conditional expression is missing from an IF, ELSE IF, or WHILE/DO-WHILE statement;
+        /// FOR loops can have a missing condition expression, but other control statements cannot.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="statementType">The type of branch/loop statement the condition was missing from.</param>
         void MissingConditionalExpression(LSLSourceCodeRange location, LSLConditionalStatementType statementType);
+
+        /// <summary>
+        /// Attempted to define a variable inside of a single statement block.  Such as inside of an IF statement which does not
+        /// use braces.  This applies to other statements that can use brace-less single statement blocks as well.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
         void DefinedVariableInNonScopeBlock(LSLSourceCodeRange location);
-        void IllegalStringCharacter(LSLSourceCodeRange location, LSLStringCharacterError chr);
-        void InvalidStringEscapeCode(LSLSourceCodeRange location, LSLStringCharacterError code);
+
+        /// <summary>
+        /// An illegal character was found inside of a string literal according to the current ILSLStringPreProccessor instance.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
+        void IllegalStringCharacter(LSLSourceCodeRange location, LSLStringCharacterError err);
+
+        /// <summary>
+        /// An invalid escape sequence was found inside of a string literal according to the current ILSLStringPreProcessor instance.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
+        void InvalidStringEscapeCode(LSLSourceCodeRange location, LSLStringCharacterError err);
+
+        /// <summary>
+        /// A call to function was attempted in a static context.  For example, inside of a global variables declaration expression.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
         void CallToFunctionInStaticContext(LSLSourceCodeRange location);
+
+
+        /// <summary>
+        /// A modifying assignment was attempted on a non variable expression.  Something like: ((a+b) += 3;) occurred, or even (llAbs(2.3) *= 3;)
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="operation">The modifying assignment expression used.</param>
         void ModifyingAssignmentToCompoundExpression(LSLSourceCodeRange location, string operation);
+
+        /// <summary>
+        /// A plain assignment was attempted on a non variable expression.  Something like: ((a+b) = 3;) occurred, or even (llAbs(2.3) = 3;)
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
         void AssignmentToCompoundExpression(LSLSourceCodeRange location);
+
+        /// <summary>
+        /// An assignment expression was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; = llGetPos()) or even ([1,2,...] = list_var;) occurred.
+        /// </summary>
+        /// <param name="location"></param>
         void AssignmentToLiteral(LSLSourceCodeRange location);
+
+        /// <summary>
+        /// A modifying assignment was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; *= llGetPos()) or even ([1,2,...] += list_var;) occurred.  
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="operation">The modifying assignment expression used.</param>
         void ModifyingAssignmentToLiteral(LSLSourceCodeRange location, string operation);
+
+
+        /// <summary>
+        /// A library defined event handler was used more than once in the same state.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="eventHandlerName">The name of the event handler which was used more than once.</param>
+        /// <param name="stateName">The name of the code state in which the error occured.</param>
         void RedefinedEventHandler(LSLSourceCodeRange location, string eventHandlerName, string stateName);
+
+        /// <summary>
+        /// The default code state was missing from the program.
+        /// </summary>
         void MissingDefaultState();
 
-        void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<ILSLExprNode> givenParameters);
 
+        /// <summary>
+        /// An overload could not be resolved for an attempted call to an overloaded library function.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
+        /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
+        void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
+            IReadOnlyList<ILSLExprNode> givenParameterExpressions);
+
+
+        /// <summary>
+        /// A call to an overloaded library function matches up with one or more overloads.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
+        /// <param name="ambigiousMatches">All of the function overloads the call to the library function matched up with.</param>
+        /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName, 
-            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> expressionsUsedInCall);
+            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> givenParameterExpressions);
     }
 }

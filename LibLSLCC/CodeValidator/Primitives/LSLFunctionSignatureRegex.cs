@@ -52,8 +52,18 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+    /// <summary>
+    /// Regex tools for parsing LSLFunctionSignature objects from strings.
+    /// </summary>
     public sealed class LSLFunctionSignatureRegex
     {
+
+        /// <summary>
+        /// Construct a function signature regex, given an enumerable of acceptable LSL types, a string 'before' that is prefixed to the regex, and a string 'after' that is appended to the regex.
+        /// </summary>
+        /// <param name="dataTypes">Acceptable LSL types, or other types that can appear as a return type or parameter type in the function signature.</param>
+        /// <param name="before">The string pre-pended to the regex.</param>
+        /// <param name="after">The string appended to the regex.</param>
         public LSLFunctionSignatureRegex(IEnumerable<string> dataTypes, string before, string after)
 
         {
@@ -64,6 +74,11 @@ namespace LibLSLCC.CodeValidator.Primitives
                           "\\s*(?:\\s*,\\s*" + types + "\\s+" + id + "\\s*)*)?)\\)" + after);
         }
 
+        /// <summary>
+        /// Construct a function signature regex that accepts the standard LSL types for the return type and parameter types.
+        /// </summary>
+        /// <param name="before">The string pre-pended to the regex.</param>
+        /// <param name="after">The string appended to the regex.</param>
         public LSLFunctionSignatureRegex(string before, string after) : this(new[]
         {
             "[vV]oid", "[sS]tring", "[kK]ey", "[fF]loat", "[iI]nteger", "[lL]ist", "[vV]ector", "[rR]otation",
@@ -72,6 +87,9 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
+        /// <summary>
+        /// Construct a function signature regex that accepts the standard LSL types for the return type and parameter types.
+        /// </summary>
         public LSLFunctionSignatureRegex()
             : this(new[]
             {
@@ -81,13 +99,27 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
+        /// <summary>
+        /// The function signature regex that was created upon construction.
+        /// </summary>
         public Regex Regex { get; private set; }
 
+
+        /// <summary>
+        /// Parse an LSLFunction signature from a string.
+        /// </summary>
+        /// <param name="inString">The string to parse the LSLFunctionSignature from.</param>
+        /// <returns>The parsed LSLFunctionSignature.</returns>
         public LSLFunctionSignature GetSignature(string inString)
         {
             return GetSignatures(inString).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Return SimpleSignature objects for function signatures that were matched inside of a given string.
+        /// </summary>
+        /// <param name="inString">The string to match function signatures in.</param>
+        /// <returns>An enumerable of SimpleSignature objects which represent the function signatures found in the string.</returns>
         public IEnumerable<SimpleSignature> GetSimpleSignatures(string inString)
         {
             var matches = Regex.Matches(inString);
@@ -128,6 +160,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
+        /// <summary>
+        /// Returns all LSLFunctionSignatures that could be parsed out of a given string.
+        /// </summary>
+        /// <param name="inString">The string to parse LSLFunctionSignature objects from.</param>
+        /// <returns>An enumerable of LSLFunctionSignature objects that were successfully parsed from the string.</returns>
         public IEnumerable<LSLFunctionSignature> GetSignatures(string inString)
         {
             var matches = Regex.Matches(inString);
@@ -168,26 +205,72 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
+        /// <summary>
+        /// Represents a simplified function signature
+        /// </summary>
         public class SimpleSignature : IEquatable<SimpleSignature>
         {
+            /// <summary>
+            /// Constructs a blank SimpleSignature object.
+            /// </summary>
             public SimpleSignature()
             {
                 ReturnType = "";
                 Parameters = new List<KeyValuePair<string, string>>();
             }
 
+            /// <summary>
+            /// Function name raw string.
+            /// </summary>
             public string Name { get; set; }
+
+
+            /// <summary>
+            /// Function return type raw string.
+            /// </summary>
             public string ReturnType { get; set; }
+
+
+            /// <summary>
+            /// List of key value pairs representing the raw parameter type and name strings for each parsed parameter if there are any.
+            /// </summary>
             public List<KeyValuePair<string, string>> Parameters { get; private set; }
 
+
+            /// <summary>
+            /// Compares this SimpleSignatures name, return type and parameter type strings to another SimpleSignatures.
+            /// </summary>
+            /// <param name="other">The other SimpleSignature to compare this one to.</param>
+            /// <returns>True if the Name, Return type, and all parameter type strings of both SimpleSignature objects are equal.</returns>
             public bool Equals(SimpleSignature other)
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return string.Equals(Name, other.Name) && string.Equals(ReturnType, other.ReturnType) &&
-                       Equals(Parameters, other.Parameters);
+
+
+                bool parametersEqual = Parameters.Count == other.Parameters.Count;
+
+                if (parametersEqual)
+                {
+                    int index = 0;
+                    foreach (var param in Parameters)
+                    {
+                        if (other.Parameters[index].Key == param.Key)
+                        {
+                            parametersEqual = false;
+                            break;
+                        }
+                        index++;
+                    }
+                }
+
+                return string.Equals(Name, other.Name) && string.Equals(ReturnType, other.ReturnType) && parametersEqual;
             }
 
+            /// <summary>
+            /// Derives a hash code for the SimpleSignature object by using its Name, ReturnType and Parameters enumerable.
+            /// </summary>
+            /// <returns>The hash code for this SimpleSignature.</returns>
             public override int GetHashCode()
             {
                 unchecked
@@ -199,17 +282,34 @@ namespace LibLSLCC.CodeValidator.Primitives
                 }
             }
 
+            /// <summary>
+            /// Compares SimpleSignature for equality using the Equals method.
+            /// </summary>
+            /// <param name="left">The SimpleSignature on the left side of the equality comparison.</param>
+            /// <param name="right">The SimpleSignature on the right side of the equality comparison.</param>
+            /// <returns>True if the SimpleSignatures are equal to each other.</returns>
             public static bool operator ==(SimpleSignature left, SimpleSignature right)
             {
                 return Equals(left, right);
             }
 
+            /// <summary>
+            /// Compares SimpleSignature for in-equality using the negated value from the Equals method.
+            /// </summary>
+            /// <param name="left">The SimpleSignature on the left side of the in-equality comparison.</param>
+            /// <param name="right">The SimpleSignature on the right side of the in-equality comparison.</param>
+            /// <returns>True if the SimpleSignatures are not equal to each other.</returns>
             public static bool operator !=(SimpleSignature left, SimpleSignature right)
             {
                 return !Equals(left, right);
             }
 
-            // override object.Equals
+
+            /// <summary>
+            /// Compares this SimpleSignatures name, return type and parameter type strings to another SimpleSignatures.
+            /// </summary>
+            /// <param name="obj">The other SimpleSignature to compare this one to.</param>
+            /// <returns>True if 'obj' is a SimpleSignature object and the Name, Return type, and all parameter type strings of both SimpleSignature objects are equal.</returns>
             public override bool Equals(object obj)
             {
                 if (ReferenceEquals(null, obj)) return false;

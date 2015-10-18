@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Utility;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+
+
+    /// <summary>
+    /// The default base implementation of ILSLMainLibraryDataProvider which features optional live filtering of data
+    /// and stores library information in memory. 
+    /// </summary>
     public class LSLLibraryDataProvider : ILSLMainLibraryDataProvider
     {
         //The query functions and properties of this class will be optimized
@@ -20,10 +27,25 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         public bool LiveFiltering { get; private set; } 
 
-
+        /// <summary>
+        /// The subsets of library data to present during query's.
+        /// If LiveFiltering is disabled, when classes that derive from this class try to call the Add* functions
+        /// to add signatures, the signatures will be discarded if their Subset property does not overlap with this collection.
+        /// 
+        /// During live filtering, all data added from derived classes is accepted and kept in memory, the ActiveSubsets collection will
+        /// then determine what subsets are actually presented during query's.
+        /// 
+        /// ActiveSubsets can only be changed after the construction of this object if LiveFiltering is enabled.
+        /// </summary>
         public LSLLibraryDataSubsetCollection ActiveSubsets { get; private set;}
 
 
+        /// <summary>
+        /// All possible subset names in the library data currently loaded into this provider.  
+        /// This is only really useful if LiveFiltering mode is enabled.  If the provider is not in live filtering
+        /// mode, signatures who's subsets do not overlap with the active subsets collection are discarded when they are added;
+        /// Therefore they could never be a part of the PossibleSubsets collection.
+        /// </summary>
         public IEnumerable<string> PossibleSubsets
         {
             get
@@ -34,7 +56,13 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
+        /// <summary>
+        /// Returns all supported event handler signatures for the current ActiveSubsets.
+        /// <exception cref="LSLDuplicateSignatureException">
+        /// If the current ActiveSubsets caused an event with a duplicate name to be loaded.  
+        /// And that event was not shared across subsets.  This can only really happen when LiveFiltering is enabled.
+        /// </exception>
+        /// </summary>
         public IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
         {
             get
@@ -70,6 +98,14 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+
+        /// <summary>
+        /// Returns all supported function signature overloads for the current ActiveSubsets.
+        /// <exception cref="LSLDuplicateSignatureException">
+        /// If the current ActiveSubsets caused a function signature with duplicate/ambiguous definition to be retrieved.
+        /// And that function was not shared across subsets.  This can only really happen when LiveFiltering is enabled.
+        /// </exception>
+        /// </summary>
         public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions
         {
             get
@@ -112,7 +148,13 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Returns all supported constant signatures for the current ActiveSubsets.
+        /// <exception cref="LSLDuplicateSignatureException">
+        /// If the current ActiveSubsets caused a constant with a duplicate name to be loaded.  
+        /// And that constant was not shared across subsets.  This can only really happen when LiveFiltering is enabled.
+        /// </exception>
+        /// </summary>
         public IEnumerable<LSLLibraryConstantSignature> LibraryConstants
         {
             get
@@ -162,23 +204,39 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         
-
+        /// <summary>
+        /// Clear all library functions defined in this library data provider.
+        /// </summary>
         public void ClearLibraryFunctions()
         {
             _functionSignaturesBySubsetAndName.Clear();
         }
 
+
+        /// <summary>
+        /// Clear all library event handlers defined in this library data provider.
+        /// </summary>
         public void ClearEventHandlers()
         {
             _eventSignaturesBySubsetAndName.Clear();
         }
 
+
+        /// <summary>
+        /// Clear all library constants defined in this library data provider.
+        /// </summary>
         public void ClearLibraryConstants()
         {
             _constantSignaturesBySubsetAndName.Clear();
         }
 
 
+
+        /// <summary>
+        /// Define a library event handler signature
+        /// </summary>
+        /// <param name="signature">The LSLLibraryEventSignature representing the library event handler to be defined.</param>
+        /// <exception cref="LSLDuplicateSignatureException">If the event handler could not be defined because it's name existed in the same subset already.</exception>
         public void DefineEventHandler(LSLLibraryEventSignature signature)
         {
             var sig = GetEventHandlerSignature(signature.Name, PossibleSubsets);
@@ -212,7 +270,11 @@ namespace LibLSLCC.CodeValidator.Components
             
         }
 
-
+        /// <summary>
+        /// Define a library constant signature
+        /// </summary>
+        /// <param name="signature">The LSLLibraryConstantSignature representing the library constant to be defined.</param>
+        /// <exception cref="LSLDuplicateSignatureException">If the constant could not be defined because it's name existed in the same subset already.</exception>
         public void DefineConstant(LSLLibraryConstantSignature signature)
         {
             var sig = GetLibraryConstantSignature(signature.Name, PossibleSubsets);
@@ -248,7 +310,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Define a library function signature
+        /// </summary>
+        /// <param name="signature">The LSLLibraryFunctionSignature representing the library function to be defined.</param>
+        /// <exception cref="LSLDuplicateSignatureException">If the function could not be defined because a duplicate or ambiguous definition existed in the same subset already.</exception>
         public void DefineFunction(LSLLibraryFunctionSignature signature)
         {
             var sigs = GetLibraryFunctionSignatures(signature.Name, PossibleSubsets);
@@ -296,7 +362,10 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Construct an LSLLibraryDataProvider with the option of enabling live filtering mode.
+        /// </summary>
+        /// <param name="liveFiltering">Whether or not to enable live filtering mode.  Default value is true.</param>
         public LSLLibraryDataProvider(bool liveFiltering = true)
         {
             LiveFiltering = liveFiltering;
@@ -305,7 +374,13 @@ namespace LibLSLCC.CodeValidator.Components
             ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnOnSubsetsChanged;
         }
 
-
+        /// <summary>
+        /// Construct an LSLLibraryDataProvider an initialize ActiveSubsets from the constructor parameter 'activeSubsets'.
+        /// Optionally enable live filtering mode using the 'liveFiltering' parameter.
+        /// 
+        /// </summary>
+        /// <param name="activeSubsets">The subsets to add to the ActiveSubsets collection upon construction.</param>
+        /// <param name="liveFiltering">Whether or not to enable live filtering mode.  Default value is true.</param>
         public LSLLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true)
         {
             LiveFiltering = liveFiltering;
@@ -325,7 +400,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Check if a library event handler with the given name is defined whiten this data provider.
+        /// </summary>
+        /// <param name="name">The name of the library event handler to query for existence.</param>
+        /// <returns>True if the library event handler is defined, false if it is not.</returns>
         public bool EventHandlerExist(string name)
         {
             var match = 
@@ -336,6 +415,15 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+
+        /// <summary>
+        /// Attempt to return a library event handler signature with the given name if it is defined in this data provider, other wise return null.
+        /// </summary>
+        /// <param name="name">The name of the library event handler signature to return.</param>
+        /// <returns>The signature if an event with the given name is defined, otherwise null.</returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        /// Thrown if LiveFiltering is enabled and more than one active subset contains a definition of an event handler with this name that is not shared across those subsets.
+        /// </exception>
         public LSLLibraryEventSignature GetEventHandlerSignature(string name)
         {
             return GetEventHandlerSignature(name, ActiveSubsets.Subsets);
@@ -369,6 +457,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        /// <summary>
+        /// Check if a library function with the given name is defined whiten this data provider.
+        /// </summary>
+        /// <param name="name">The name of the library function to query for existence.</param>
+        /// <returns>True if the library function is defined, false if it is not.</returns>
         public bool LibraryFunctionExist(string name)
         {
             var match =
@@ -379,7 +472,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Check if a given function signature would be considered an overload to any function in the active subsets.
+        /// </summary>
+        /// <param name="signatureToTest">The signature to test.</param>
+        /// <returns>True if non-(duplicate/ambiguous) definition of a function signature with the same name as the given signature exist in this library data provider. </returns>
         public bool IsConsideredOverload(LSLFunctionSignature signatureToTest)
         {
             var match =
@@ -399,7 +496,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Check if this library data provider contains a function with an exact signature match to the given function signature among the current active subsets.
+        /// </summary>
+        /// <param name="signatureToTest">The function signature to try to find exact match with.</param>
+        /// <returns>True if a function exists in the current active subsets that exactly matches the givent signature.</returns>
         public bool LibraryFunctionExist(LSLFunctionSignature signatureToTest)
         {
             var match =
@@ -418,7 +519,18 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Attempt to return a list of overloads for a function that might be defined in the library data provider given its name.
+        /// </summary>
+        /// <param name="name">The name of the function to attempt to return a list of overloads for.</param>
+        /// <returns>
+        /// A list of function signatures that represent the overloads among the active subsets for a function with a given name, or null if no function with that name exists.
+        /// If the function exists but has no overloads, only one item will be returned in the list.
+        /// </returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        /// Thrown if LiveFiltering is enabled and more than one active subset contains a duplicate definition of the function or one of its overloads,
+        /// and the function/overload is not shared across those subsets.
+        /// </exception>
         public IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
         {
             return GetLibraryFunctionSignatures(name, ActiveSubsets.Subsets);
@@ -457,7 +569,15 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Attempt to return a library function signature from the active subsets with an exact signature match to the give signature.
+        /// </summary>
+        /// <param name="signatureToTest">The function signature that should match exactly with the library function signature you want to return from the provider.</param>
+        /// <returns>A signature defined in the provider among the active subsets that matches exactly with the given signature, or null if none is found.</returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        /// Thrown if LiveFiltering is enabled and more than one active subset contains a duplicate definition of the function or one of its overloads,
+        /// and the function/overload is not shared across those subsets.
+        /// </exception>
         public LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest)
         {
             var sigs = GetLibraryFunctionSignatures(signatureToTest.Name);
@@ -468,7 +588,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
+        /// <summary>
+        /// Check whether a library constant with the given name is defined among the active subsets of this library data provider.
+        /// </summary>
+        /// <param name="name">The name of the constant to check the existence of.</param>
+        /// <returns>True if the constant is defined among the current active subsets, or false if it is not.</returns>
         public bool LibraryConstantExist(string name)
         {
             var match =
@@ -479,6 +603,16 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+
+        /// <summary>
+        /// Attempt to return a library constant signature from the active subsets with the same name as the given name.
+        /// </summary>
+        /// <param name="name">The name of the library constant that you want to find among the active subsets.</param>
+        /// <returns>A library constant signature with a matching name, or null if none is found.</returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        /// Thrown if LiveFiltering is enabled and more than one active subset contains a constant with a duplicate name, 
+        /// and the constant is not shared across those subsets.
+        /// </exception>
         public LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
         {
             return GetLibraryConstantSignature(name, ActiveSubsets.Subsets);

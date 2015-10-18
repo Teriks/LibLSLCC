@@ -53,26 +53,69 @@ using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+
+
+    /// <summary>
+    /// The default library implementation of ILSLSyntaxWarningListener that can write warning
+    /// information to an arbitrary output stream.  The default stream is standard out.
+    /// </summary>
     public class LSLDefaultSyntaxWarningListener : ILSLSyntaxWarningListener
     {
+
+
+        /// <summary>
+        /// Warns about the occurrence of multiple list or list variable assignments occurring inside of a single expression.
+        /// This sort of thing was a common optimization for LSL when LSO was used instead of Mono.
+        /// It can result in unexpected behavior in some LSL compilers such as OpenSims default compiler.
+        /// 
+        /// The code generator provided with this library can handle old LSO optimizations such as this one, but it is good
+        /// to warn about it since the optimization is completely unnecessary now days and may even make your code slower on Mono.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
         public virtual void MultipleListAssignmentsInExpression(LSLSourceCodeRange location)
         {
             OnWarning(location,
                 "Multiple list assignments in expression, may not evaluate how you expect");
         }
 
+
+        /// <summary>
+        /// Warns about the occurrence of multiple string or string variable assignments occurring inside of a single expression.
+        /// This sort of thing was a common optimization for LSL when LSO was used instead of Mono.
+        /// It can result in unexpected behavior in some LSL compilers such as OpenSims default compiler.
+        /// 
+        /// The code generator provided with this library can handle old LSO optimizations such as this one, but it is good
+        /// to warn about it since the optimization is completely unnecessary now days and may even make your code slower on Mono.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
         public virtual void MultipleStringAssignmentsInExpression(LSLSourceCodeRange location)
         {
             OnWarning(location,
                 "Multiple string assignments in expression, may not evaluate how you expect");
         }
 
+
+
+        /// <summary>
+        /// A hook for intercepting warning messages produced by the implementations of all other functions in the LSLDefaultSyntaxWarningListener object.
+        /// The default behavior is to write error messages to the Console.
+        /// </summary>
+        /// <param name="location">Location in source code for the warning.</param>
+        /// <param name="message">The warning message.</param>
         public virtual void OnWarning(LSLSourceCodeRange location, string message)
         {
             Console.WriteLine("({0},{1}) WARNING: {2}", location.LineStart, location.ColumnStart,
                 message + Environment.NewLine);
         }
 
+
+
+        /// <summary>
+        /// Dead code was detected, but it was not an error because it was in a function with a void return type.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
+        /// <param name="currentFunction">The signature of the function that dead code was detected in.</param>
+        /// <param name="deadSegment">An object describing the range of code that is considered to be dead.</param>
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLFunctionSignature currentFunction,
             LSLDeadCodeSegment deadSegment)
         {
@@ -90,6 +133,14 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+
+
+        /// <summary>
+        /// Dead code was detected, but it was not an error because it was in an event handler.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
+        /// <param name="currentEvent">The signature of the event handler that dead code was detected in.</param>
+        /// <param name="deadSegment">An object describing the range of code that is considered to be dead.</param>
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLEventSignature currentEvent,
             LSLDeadCodeSegment deadSegment)
         {
@@ -107,16 +158,45 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+
+
+        /// <summary>
+        /// An un-needed but valid semi-colon was detected in code, such as when a semi-colon is on a line by itself or multiple semi-colons follow an expression statement when only one is needed.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
         public virtual void UselessSemiColon(LSLSourceCodeRange location)
         {
             OnWarning(location, "Pointless semicolon detected");
         }
 
+
+
+        /// <summary>
+        /// An expression statement has no effect.  This can happen if you simply reference a variable as an expression statement and do nothing to it.
+        /// For example, reference a counter but forget to add an increment or decrement operator to it.
+        /// It would compile but it might be an error.
+        /// </summary>
+        /// <param name="location"></param>
         public virtual void ExpressionStatementHasNoEffect(LSLSourceCodeRange location)
         {
             OnWarning(location, "Expression statement has no effect");
         }
 
+
+
+        /// <summary>
+        /// The expression in the 'after thought' of a for loop has no affect, for example: If its just a variable reference.
+        /// This can happen if you forget to add an increment or decrement operator to a loop counter.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
+        /// <param name="expressionIndex">
+        /// For loop afterthoughts can be a list of expressions to be executed, separated by commas.  
+        /// This is the index of the expression in the possible list of expressions.
+        /// If the for loop afterthought does not use a list of expressions, this is always 0.
+        /// </param>
+        /// <param name="expressionCountTotal">
+        /// The number of expressions used in the for loop afterthought expression list.
+        /// </param>
         public virtual void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
             int expressionCountTotal)
         {
@@ -131,6 +211,21 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+
+
+        /// <summary>
+        /// The expression in the 'init section' of a for loop has no affect, for example: If its just a variable reference.
+        /// This can happen if you forget to assign a starting value to a loop counter.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
+        /// <param name="expressionIndex">
+        /// For loop init expressions can be a list of expressions to be executed, separated by commas.  
+        /// This is the index of the expression in the possible list of expressions.
+        /// If the for loop init expression does not use a list of expressions, this is always 0.
+        /// </param>
+        /// <param name="expressionCountTotal">
+        /// The number of expressions used in the for loop init expression list.
+        /// </param>
         public virtual void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
             int expressionCountTotal)
         {
@@ -145,17 +240,39 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+
+
+        /// <summary>
+        /// A cast is considered redundant because the expression the user is attempting to cast is already
+        /// of the same type being cast to.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
+        /// <param name="castType">The type the user attempted to cast the expression to.</param>
         public virtual void RedundantCast(LSLSourceCodeRange location, LSLType castType)
         {
             OnWarning(location, string.Format("Redundant cast to {0}", castType));
         }
 
-        public void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function)
+
+
+        /// <summary>
+        /// A user defined function was never referenced.
+        /// </summary>
+        /// <param name="location">The location in the source code of the function that was never referenced.</param>
+        /// <param name="function">The function declaration node of the un-referenced function.</param>
+        public virtual void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function)
         {
             OnWarning(location, string.Format("Function \"{0}\" was never used", function.Name));
         }
 
-        public void GlobalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable)
+
+
+        /// <summary>
+        /// A user defined global variable was never referenced.
+        /// </summary>
+        /// <param name="location">The location in the source code of the global variable that was never referenced.</param>
+        /// <param name="variable">The variable declaration node of the un-referenced global variable.</param>
+        public virtual void GlobalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable)
         {
             const string msg = "Global variable \"{0}\" was never used";
 
@@ -163,7 +280,14 @@ namespace LibLSLCC.CodeValidator.Components
             OnWarning(location, string.Format(msg, variable.Name));
         }
 
-        public void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
+
+        /// <summary>
+        /// A user defined local variable was never referenced.
+        /// </summary>
+        /// <param name="location">The location in the source code of the local variable that was never referenced.</param>
+        /// <param name="variable">The variable declaration node of the un-referenced local variable.</param>
+        /// <param name="inFunction">The signature of the function in which the local variable exists.</param>
+        public virtual void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
             LSLFunctionSignature inFunction)
         {
             const string msg = "Local variable \"{0}\" was never used in function \"{1}\"";
@@ -172,7 +296,15 @@ namespace LibLSLCC.CodeValidator.Components
             OnWarning(location, string.Format(msg, variable.Name, inFunction.Name));
         }
 
-        public void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
+
+
+        /// <summary>
+        /// A user defined local variable was never referenced.
+        /// </summary>
+        /// <param name="location">The location in the source code of the local variable that was never referenced.</param>
+        /// <param name="variable">The variable declaration node of the un-referenced local variable.</param>
+        /// <param name="inEvent">The signature of the event handler in which the local variable exists.</param>
+        public virtual void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
             LSLEventSignature inEvent)
         {
             const string msg = "Local variable \"{0}\" was never used in event \"{1}\"";
@@ -180,14 +312,31 @@ namespace LibLSLCC.CodeValidator.Components
             OnWarning(location, string.Format(msg, variable.Name, inEvent.Name));
         }
 
-        public void FunctionParameterNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode parameter,
+
+
+        /// <summary>
+        /// A user defined function parameter was never referenced.
+        /// </summary>
+        /// <param name="location">The location in the source code of the parameter that was never referenced.</param>
+        /// <param name="parameter">The variable declaration node of the un-referenced function parameter.</param>
+        /// <param name="inFunction">The signature of the function in which the parameter exists.</param>
+        public virtual void FunctionParameterNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode parameter,
             LSLFunctionSignature inFunction)
         {
             OnWarning(location,
                 string.Format("Parameter \"{0}\" was never used in function \"{1}\"", parameter.Name, inFunction.Name));
         }
 
-        public void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
+
+
+        /// <summary>
+        /// A parameter name of a user defined function hides the definition of a global variable.
+        /// </summary>
+        /// <param name="location">The location in source code of the parameter that hides the global variable.</param>
+        /// <param name="functionSignature">The function signature to which the parameter definition belongs to.</param>
+        /// <param name="parameter">The signature of the parameter that hides the global variable.</param>
+        /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
+        public virtual void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
             LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
@@ -196,7 +345,16 @@ namespace LibLSLCC.CodeValidator.Components
                     globalVariable.SourceCodeRange.LineStart));
         }
 
-        public void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLEventSignature eventHandlerSignature,
+
+
+        /// <summary>
+        /// A parameter name of a library defined event handler hides the definition of a global variable.
+        /// </summary>
+        /// <param name="location">The location in source code of the parameter that hides the global variable.</param>
+        /// <param name="eventHandlerSignature">The event handler signature to which the parameter definition belongs to.</param>
+        /// <param name="parameter">The signature of the parameter that hides the global variable.</param>
+        /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
+        public virtual void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLEventSignature eventHandlerSignature,
             LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
@@ -206,7 +364,16 @@ namespace LibLSLCC.CodeValidator.Components
                     globalVariable.SourceCodeRange.LineStart));
         }
 
-        public void LocalVariableHidesParameter(LSLSourceCodeRange location,
+
+
+        /// <summary>
+        /// A local variable name inside of a user defined function hides the definition of one of the functions parameters.
+        /// </summary>
+        /// <param name="location">The location in source code of the local variable that hides the function parameter.</param>
+        /// <param name="functionSignature">The pre-defined signature of the function in which the local variable is defined.</param>
+        /// <param name="localVariable">The variable declaration node of the local variable that hides the parameter.</param>
+        /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
+        public virtual void LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
             LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
         {
@@ -214,7 +381,16 @@ namespace LibLSLCC.CodeValidator.Components
                 localVariable.Name, functionSignature.Name, parameter.Name));
         }
 
-        public void LocalVariableHidesParameter(LSLSourceCodeRange location,
+
+
+        /// <summary>
+        /// A local variable name inside of a library defined event handler hides the definition of one of the event handlers parameters.
+        /// </summary>
+        /// <param name="location">The location in source code of the local variable that hides the event handler parameter.</param>
+        /// <param name="eventHandlerSignature">The parsed signature of the event handler in which the local variable is defined.</param>
+        /// <param name="localVariable">The variable declaration node of the local variable that hides the parameter.</param>
+        /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
+        public virtual void LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
             LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
         {
@@ -222,7 +398,16 @@ namespace LibLSLCC.CodeValidator.Components
                 localVariable.Name, eventHandlerSignature.Name, parameter.Name));
         }
 
-        public void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
+
+
+        /// <summary>
+        /// A local variable inside of a user defined function hides the definition of a user defined global variable.
+        /// </summary>
+        /// <param name="location">The location in source code of the local variable that hides the global variable.</param>
+        /// <param name="functionSignature">The pre-defined signature of the function in which the local variable is defined.</param>
+        /// <param name="localVariable">The variable declaration node of the local variable that hides the global variable.</param>
+        /// <param name="globalVariable">The variable declaration node of the user defined global variable that was hidden.</param>
+        public virtual void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
             LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
         {
@@ -233,7 +418,16 @@ namespace LibLSLCC.CodeValidator.Components
                     globalVariable.SourceCodeRange.LineStart));
         }
 
-        public void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
+
+
+        /// <summary>
+        /// A local variable inside of a library defined event handler hides the definition of a user defined global variable.
+        /// </summary>
+        /// <param name="location">The location in source code of the local variable that hides the global variable.</param>
+        /// <param name="eventHandlerSignature">The parsed signature of the event handler in which the local variable is defined.</param>
+        /// <param name="localVariable">The variable declaration node of the local variable that hides the global variable.</param>
+        /// <param name="globalVariable">The variable declaration node of the user defined global variable that was hidden.</param>
+        public virtual void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
             LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
         {
@@ -244,42 +438,50 @@ namespace LibLSLCC.CodeValidator.Components
                     globalVariable.SourceCodeRange.LineStart));
         }
 
-        public void UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature)
+
+
+        /// <summary>
+        /// A library function that was marked as being deprecated was used.
+        /// </summary>
+        /// <param name="location">The location in source code where the deprecated function was called.</param>
+        /// <param name="functionSignature">The library function signature of the deprecated function that was called.</param>
+        public virtual void UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location, LSLLibraryFunctionSignature functionSignature)
         {
             OnWarning(location,
                 string.Format(
                     "The library function \"{0}\" is deprecated, it is recommended you use an alternative or remove it.", functionSignature.Name));
         }
 
-        public void ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
+
+
+        /// <summary>
+        /// A constant value was used for the conditional expression in a control or loop statement.
+        /// </summary>
+        /// <param name="location">The location in the source code.</param>
+        /// <param name="conditionalStatementType">The type of conditional statement the expression was used in.</param>
+        public virtual void ConditionalExpressionIsConstant(LSLSourceCodeRange location,
             LSLConditionalStatementType conditionalStatementType)
         {
             if (conditionalStatementType == LSLConditionalStatementType.If)
             {
-                OnWarning(expression, "Conditional expression in 'if' branch is constant");
+                OnWarning(location, "Conditional expression in 'if' branch is constant");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.ElseIf)
             {
-                OnWarning(expression, "Conditional expression in 'else if' branch is constant");
+                OnWarning(location, "Conditional expression in 'else if' branch is constant");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.For)
             {
-                OnWarning(expression, "Conditional expression in 'for' loop is constant");
+                OnWarning(location, "Conditional expression in 'for' loop is constant");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.While)
             {
-                OnWarning(expression, "Conditional expression in 'while' loop is constant");
+                OnWarning(location, "Conditional expression in 'while' loop is constant");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.DoWhile)
             {
-                OnWarning(expression, "Conditional expression in 'do while' loop is constant");
+                OnWarning(location, "Conditional expression in 'do while' loop is constant");
             }
-        }
-
-        public virtual void NotAllCodePathsReturnAValue(LSLSourceCodeRange location,
-            LSLFunctionSignature currentFunction)
-        {
-            OnWarning(location, "Not all code paths return a value in function \"" + currentFunction.Name + "\"");
         }
     }
 }

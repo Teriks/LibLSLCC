@@ -48,8 +48,20 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+    /// <summary>
+    /// Represents the signature of a binary operation. Includes the types on either side of the expression, and the operation type.
+    /// </summary>
     public class LSLBinaryOperationSignature
     {
+
+        /// <summary>
+        /// Construct an LSLBinaryOperationSignature from the source code string representation of the binary operation,
+        /// the operations return type, the return type of the expression on the left and the return type of the expression on the right.
+        /// </summary>
+        /// <param name="operation">Source code string representation of the operator.</param>
+        /// <param name="returns">The return type of the binary operation.</param>
+        /// <param name="left">The return type of the expression on the left side of the binary operation.</param>
+        /// <param name="right">The return type of the expression on the right side of the binary operation.</param>
         public LSLBinaryOperationSignature(string operation, LSLType returns, LSLType left, LSLType right)
         {
             Returns = returns;
@@ -58,6 +70,15 @@ namespace LibLSLCC.CodeValidator.Primitives
             Operation = LSLBinaryOperationTypeTools.ParseFromOperator(operation);
         }
 
+
+        /// <summary>
+        /// Construct an LSLBinaryOperationSignature from an LSLBinaryOperationType, the operations return type, 
+        /// the return type of the expression on the left and the return type of the expression on the right.
+        /// </summary>
+        /// <param name="operation">The LSLBinaryOperationType of the binary operation signature.</param>
+        /// <param name="returns">The return type of the binary operation.</param>
+        /// <param name="left">The return type of the expression on the left side of the binary operation.</param>
+        /// <param name="right">The return type of the expression on the right side of the binary operation.</param>
         public LSLBinaryOperationSignature(LSLBinaryOperationType operation, LSLType returns, LSLType left,
             LSLType right)
         {
@@ -67,11 +88,31 @@ namespace LibLSLCC.CodeValidator.Primitives
             Operation = operation;
         }
 
+        /// <summary>
+        /// The return type of the binary operation.
+        /// </summary>
         public LSLType Returns { get; private set; }
+
+        /// <summary>
+        /// The return type of the expression on the left side of the binary operation.
+        /// </summary>
         public LSLType Left { get; private set; }
+
+        /// <summary>
+        /// The return type of the expression on the right side of the binary operation.
+        /// </summary>
         public LSLType Right { get; private set; }
+
+        /// <summary>
+        /// The LSLBinaryOperationType describing the operator used in the binary expression.
+        /// </summary>
         public LSLBinaryOperationType Operation { get; private set; }
 
+
+        /// <summary>
+        /// Gets a hash code for the LSLBinaryOperationSignature object derived from the properties: Returns, Left, Right and Operation.
+        /// </summary>
+        /// <returns>The hash code for this object.</returns>
         public override int GetHashCode()
         {
             var hash = 17;
@@ -82,6 +123,14 @@ namespace LibLSLCC.CodeValidator.Primitives
             return hash;
         }
 
+
+        /// <summary>
+        /// Compares this LSLBinaryOperationSignature to another LSLBinaryOperationSignature or object.
+        /// The properties: Returns, Left, Right and Operation are compared for equality and if they are all equal True is returned, otherwise False.
+        /// If 'obj' is not an LSLBinaryOperationSignature, then false is always returned.
+        /// </summary>
+        /// <param name="obj">The other LSLBinaryOperationSignature to compare this one to.</param>
+        /// <returns>True if 'obj' is an LSLBinaryOperationSignature object, and the properties: Returns, Left, Right and Operation are equal in both of them.</returns>
         public override bool Equals(object obj)
         {
             var o = obj as LSLBinaryOperationSignature;

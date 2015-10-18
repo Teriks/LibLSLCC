@@ -341,13 +341,13 @@ namespace LibLSLCC.CodeValidator.Visitor
         {
             if (scope == LSLVariableScope.Global)
             {
-                return GlobalVariables.ContainsKey(name);
+                return !GlobalVariables.ContainsKey(name);
             }
             if (scope == LSLVariableScope.Local)
             {
-                return _scopeVariables.Any(s => s.ContainsKey(name));
+                return !_scopeVariables.Any(s => s.ContainsKey(name));
             }
-            return false;
+            return true;
         }
 
         public void DefineVariable(LSLVariableDeclarationNode decl, LSLVariableScope scope)
@@ -603,7 +603,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     if (ctx.handler_name == null)
                     {
                         throw LSLCodeValidatorInternalError
-                            .ContextInInvalidState("VisitDefaultState", typeof (LSLParser.EventHandlerContext), true);
+                            .VisitContextInInvalidState("VisitDefaultState", typeof (LSLParser.EventHandlerContext), true);
                     }
 
                     if (eventHandlerNames.Contains(ctx.handler_name.Text))
@@ -669,7 +669,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     if (ctx.handler_name == null)
                     {
                         throw LSLCodeValidatorInternalError
-                            .ContextInInvalidState("VisitDefinedState",
+                            .VisitContextInInvalidState("VisitDefinedState",
                                 typeof (LSLParser.EventHandlerContext), true);
                     }
 

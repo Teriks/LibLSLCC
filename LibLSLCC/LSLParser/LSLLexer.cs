@@ -20,6 +20,7 @@
 namespace LibLSLCC {
 
 	using System.Collections.Generic;
+	using LibLSLCC.CodeValidator.Enums;
 	using LibLSLCC.CodeValidator.Primitives;
 
 using System;

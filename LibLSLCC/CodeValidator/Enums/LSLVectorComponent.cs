@@ -49,23 +49,50 @@ using System;
 namespace LibLSLCC.CodeValidator.Enums
 {
     /// <summary>
-    ///     Enum representing LSL's vector type components
+    /// Enum representing LSL's vector type components
     /// </summary>
     public enum LSLVectorComponent
     {
+        /// <summary>
+        /// X Axis Component
+        /// </summary>
         X,
+
+        /// <summary>
+        /// Y Axis Component
+        /// </summary>
         Y,
+
+        /// <summary>
+        /// Z Axis Component
+        /// </summary>
         Z
     }
 
-
+    /// <summary>
+    /// LSLVectorComponent extension methods for converting the LSLVectorComponent into a properly formed string and back.
+    /// </summary>
     public static class LSLVectorComponentTools
     {
+
+        /// <summary>
+        /// Converts the LSLVectorComponent into a name reference that could be used on the right side of the dot operator in LSL.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
         public static string ToComponentName(this LSLVectorComponent component)
         {
             return component.ToString().ToLower();
         }
 
+
+        /// <summary>
+        /// Converts a string into an LSLVectorComponent.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <exception cref="ArgumentNullException">Thrown if 'name' is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if 'name' is not one of: "x", "y" or "z".  (Case Sensitive)</exception>
+        /// <returns></returns>
         public static LSLVectorComponent ParseComponentName(string name)
         {
             if (string.IsNullOrEmpty(name))

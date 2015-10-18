@@ -51,19 +51,39 @@ using System.Text.RegularExpressions;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+    /// <summary>
+    /// Regex utility for parsing subset lists from the XML attributes in LSL library data documents
+    /// and elsewhere in the library.
+    /// </summary>
     [Serializable]
     public class LSLLibraryDataSubsetsAttributeRegex : Regex
     {
+
+        /// <summary>
+        /// Construct the default Regex for parsing subset lists
+        /// </summary>
         public LSLLibraryDataSubsetsAttributeRegex()
             : base(@"(?:([a-zA-Z]+[a-zA-Z_0-9\-]*)(?:\s*,\s*([a-zA-Z]+[a-zA-Z_0-9\-]*))*)?")
         {
         }
 
+        /// <summary>
+        /// Serializable constructor
+        /// </summary>
+        /// <param name="info">SerializationInfo</param>
+        /// <param name="context">StreamingContext</param>
         protected LSLLibraryDataSubsetsAttributeRegex(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
 
+        /// <summary>
+        /// Parse a subset list from a string and return all the subset names in an enumerable.
+        /// Subset names start with characters [a-zA-Z] followed by zero or more of the characters [a-zA-Z_0-9\-]
+        /// and can be separated into a list of multiple subset names using commas.
+        /// </summary>
+        /// <param name="parse"></param>
+        /// <returns></returns>
         public IEnumerable<string> ParseSubsets(string parse)
         {
             var matches = Matches(parse);

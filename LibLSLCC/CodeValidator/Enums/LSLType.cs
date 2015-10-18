@@ -48,6 +48,10 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Enums
 {
+
+    /// <summary>
+    /// Represents the basic types in LSL
+    /// </summary>
     public enum LSLType
     {
         /// <summary>
@@ -92,6 +96,9 @@ namespace LibLSLCC.CodeValidator.Enums
     }
 
 
+    /// <summary>
+    /// Extensions for converting LSLType's to strings and also parsing them.
+    /// </summary>
     public static class LSLTypeTools
     {
         /// <summary>
@@ -130,7 +137,7 @@ namespace LibLSLCC.CodeValidator.Enums
                     return LSLType.List;
             }
 
-            throw new ArgumentException("\"" + typeName + "\" is not a valid LSL typename", "typeName");
+            throw new ArgumentException("\"" + typeName + "\" is not a valid LSL type name", "typeName");
         }
 
         /// <summary>

@@ -46,22 +46,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Exceptions;
+using LibLSLCC.Utility;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+    /// <summary>
+    /// Represents a basic LSL function signature.
+    /// </summary>
     public class LSLFunctionSignature
     {
         private readonly List<LSLParameter> _parameters;
+        private string _name;
 
+        /// <summary>
+        /// Construct an empty LSLFunctionSignature.  Only derived classes can do this.
+        /// </summary>
         protected LSLFunctionSignature()
         {
-            _parameters = new List<LSLParameter>();
-            Name = "";
             ReturnType = LSLType.Void;
+            _parameters = new List<LSLParameter>();
         }
 
+        /// <summary>
+        /// Construct an LSLFunctionSignature by cloning another LSLFunctionSignature object.
+        /// </summary>
+        /// <param name="other">The LSLFunctionSignature object to copy construct from.</param>
         public LSLFunctionSignature(LSLFunctionSignature other)
         {
             Name = other.Name;
@@ -71,6 +83,12 @@ namespace LibLSLCC.CodeValidator.Primitives
             VariadicParameterIndex = other.VariadicParameterIndex;
         }
 
+        /// <summary>
+        /// Construct a function signature by providing an associated LSLType for the return type, a function Name and an optional enumerable of LSLParameter objects.
+        /// </summary>
+        /// <param name="returnType"></param>
+        /// <param name="name"></param>
+        /// <param name="parameters"></param>
         public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null)
         {
             ReturnType = returnType;
@@ -111,12 +129,26 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     The functions LSL return type
         /// </summary>
+
         public LSLType ReturnType { get; set; }
 
+
         /// <summary>
-        ///     The functions name
+        ///     The functions name, must follow LSL symbol naming conventions
         /// </summary>
-        public string Name { get; set; }
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the function does not follow LSL symbol naming conventions for functions.</exception>
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (!TokenTools.GetIDRegex().IsMatch(value))
+                {
+                    throw new LSLInvalidSymbolNameException("LSLFunctionSignature: Function name contained invalid characters or formating.");
+                }
+                _name = value;
+            }
+        }
 
         /// <summary>
         ///     Indexable list of objects describing the functions parameters
@@ -126,14 +158,24 @@ namespace LibLSLCC.CodeValidator.Primitives
             get { return _parameters; }
         }
 
+        /// <summary>
+        /// An enumerable of all non-variadic parameters in the function signature.
+        /// </summary>
         public IEnumerable<LSLParameter> ConcreteParameters
         {
             get
             {
                 return Parameters.Take(ConcreteParameterCount);
             }
-        } 
+        }
 
+        /// <summary>
+        /// Returns a formated signature string for the function signature without a trailing semi-colon.
+        /// Such as:  float llAbs(float value)
+        /// Or: modInvokeN(string fname, params any[] parms)
+        /// The later being a function from OpenSim's modInvoke API to demonstrate variadic parameter formating.
+        /// If a parameter is variadic and has a type that is not void, the 'any' keyword will be replaced with the corresponding name for the type.
+        /// </summary>
         public string SignatureString
         {
             get
@@ -150,25 +192,56 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
+        /// <summary>
+        /// Whether or not a variadic parameter has been added to this function signature.
+        /// There can only be one variadic parameter.
+        /// </summary>
         public bool HasVariadicParameter { get; private set; }
+
+
+
+        /// <summary>
+        /// The index of the variadic parameter in the Parameters list.
+        /// </summary>
         public int VariadicParameterIndex { get; private set; }
 
+
+
+        /// <summary>
+        /// Delegates to SignatureString
+        /// </summary>
+        /// <returns>
+        /// SignatureString
+        /// </returns>
         public override string ToString()
         {
             return SignatureString;
         }
 
-        public static LSLFunctionSignature Parse(string cSignature)
+
+        /// <summary>
+        /// Attempt to parse a function signature from a formated string.
+        /// Such as: float llAbs(float value) or llOwnerSay(string message);
+        /// </summary>
+        /// <param name="str">The string containing the formated function signature.</param>
+        /// <returns>The LSLLibraryFunctionSignature that was parsed from the string, or null.</returns>
+        /// <exception cref="ArgumentException">If there was a syntax error while parsing the function signature.</exception>
+        public static LSLFunctionSignature Parse(string str)
         {
             var regex = new LSLFunctionSignatureRegex("", ";*");
-            var m = regex.GetSignature(cSignature);
+            var m = regex.GetSignature(str);
             if (m == null)
             {
-                throw new ArgumentException("Syntax error parsing function signature", "cSignature");
+                throw new ArgumentException("Syntax error parsing function signature", "str");
             }
             return m;
         }
 
+        /// <summary>
+        /// Add a new parameter to the function signature object
+        /// </summary>
+        /// <param name="parameter">The LSLParameter object to add to the signature.</param>
+        /// <exception cref="ArgumentException">Thrown if more than one variadic parameter is added to the function signature.</exception>
         public void AddParameter(LSLParameter parameter)
         {
             if (parameter.Variadic)

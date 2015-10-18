@@ -53,20 +53,48 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     /// </summary>
     public interface ILSLValidatorServiceProvider
     {
+        /// <summary>
+        /// The expression validator is in charge of determining if two types are valid
+        /// in a binary expression.  Among other things, like checking if an expression
+        /// of some type can be passed into a function parameter.
+        /// </summary>
         ILSLExpressionValidator ExpressionValidator { get; }
+
+        /// <summary>
+        /// The library data provider gives the code validator information about standard library functions,
+        /// constants and events that exist in the LSL namespace.
+        /// </summary>
         ILSLMainLibraryDataProvider MainLibraryDataProvider { get; }
+
+        /// <summary>
+        /// The string literal pre-processor is in charge of pre-processing string literals
+        /// from source code before the value is assigned to a LSLStringLiteralNode object
+        /// </summary>
         ILSLStringPreProcessor StringLiteralPreProcessor { get; }
+
+        /// <summary>
+        /// The syntax error listener is an interface that listens for syntax
+        /// errors from the code validator
+        /// </summary>
         ILSLSyntaxErrorListener SyntaxErrorListener { get; }
+
+        /// <summary>
+        /// The syntax error listener is an interface that listens for syntax
+        /// warnings from the code validator
+        /// </summary>
         ILSLSyntaxWarningListener SyntaxWarningListener { get; }
     }
 
+    /// <summary>
+    /// Extensions for ILSLValidatorServiceProvider
+    /// </summary>
     public static class ILSLValidatorServiceProvideExtensions
     {
         /// <summary>
-        ///     Returns true if all service provider properties are non null
+        /// Returns true if all service provider properties are non null
         /// </summary>
-        /// <param name="provider">The ILSLValidatorServiceProvider to check</param>
-        /// <returns>True if all properties are initialized</returns>
+        /// <param name="provider">The ILSLValidatorServiceProvider to check.</param>
+        /// <returns>True if all properties are initialized.</returns>
         public static bool IsComplete(this ILSLValidatorServiceProvider provider)
         {
             if (provider == null)

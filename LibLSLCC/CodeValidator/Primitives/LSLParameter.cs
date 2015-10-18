@@ -44,11 +44,16 @@
 
 using System;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Exceptions;
+using LibLSLCC.Utility;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+    /// <summary>
+    /// Represents a basic parameter that belongs to either an event handler or function signature.
+    /// </summary>
     public class LSLParameter
     {
         /// <summary>
@@ -57,12 +62,18 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="type">The parameter type</param>
         /// <param name="name">The parameter name</param>
         /// <param name="variadic">Is the parameter variadic</param>
-        /// <exception cref="ArgumentException">If type is LSLType.Void and variadic is false.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the parameter name does not follow LSL symbol naming conventions for parameters.</exception>
+        /// <exception cref="ArgumentException">Thrown if type is LSLType.Void and variadic is false.</exception>
         public LSLParameter(LSLType type, string name, bool variadic)
         {
             if (type == LSLType.Void && variadic == false)
             {
                 throw new ArgumentException("LSLParameter's type currently cannot be LSLType.Void unless it is variadic.");
+            }
+
+            if (!TokenTools.GetIDRegex().IsMatch(name))
+            {
+                throw new LSLInvalidSymbolNameException("LSLParameter: Parameter name contained invalid characters or formating.");
             }
 
             Type = type;
@@ -91,7 +102,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         public int ParameterIndex { get; set; }
 
-
+        /// <summary>
+        /// Returns the signature string of the parameter.
+        /// If the parameter is not variadic, then the signature is simply the type name followed by the parameter name, separated with a space.
+        /// Otherwise if the parameter is variadic, it will be formated as:  params any[] parameter_name
+        /// If the variadic parameter actually has a type, the 'any' keyword will be replaced with the name of that type.
+        /// </summary>
         public string SignatureString
         {
             get
@@ -106,6 +122,12 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
+
+        /// <summary>
+        /// Returns a hash code for the LSLParameter object.
+        /// The hash code is generated from the parameter Type, Name, ParameterIndex and Variadic status.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             var hash = 17;
@@ -116,6 +138,13 @@ namespace LibLSLCC.CodeValidator.Primitives
             return hash;
         }
 
+
+        /// <summary>
+        /// Determines if the Type, Name, ParameterIndex and Variadic status are of equal values in another LSLParameter object.
+        /// If obj is not actually an LSLParameter object, or derived from one, than this function will always return false.
+        /// </summary>
+        /// <param name="obj">The LSLParameter object to compare this one to.</param>
+        /// <returns>True if 'obj' is an LSLParameter object or derived type; And Name, ParameterIndex and Variadic status are of equal values in both objects.</returns>
         public override bool Equals(object obj)
         {
             var o = obj as LSLParameter;

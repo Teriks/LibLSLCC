@@ -49,7 +49,9 @@ using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
@@ -57,8 +59,11 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+    /// <summary>
+    /// Represents a library event handler returned from an ILSLMainLibraryDataProvider implementation.
+    /// </summary>
     [XmlRoot("EventHandler")]
-    public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable
+    public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable, ILSLLibrarySignature
     {
         private Dictionary<string, string> _properties = new Dictionary<string, string>();
         private HashSet<string> _subsets = new HashSet<string>();
@@ -70,12 +75,21 @@ namespace LibLSLCC.CodeValidator.Components
         {
         }
 
+        /// <summary>
+        /// Construct an LSLLibraryEventSignature by copying the signature details from an LSLEventSignature object.
+        /// </summary>
+        /// <param name="sig">The LSLEventSignature object to copy signatures details from.</param>
         public LSLLibraryEventSignature(LSLEventSignature sig)
             : base(sig)
         {
             DocumentationString = "";
         }
 
+
+        /// <summary>
+        /// Construct an LSLLibraryEventSignature by cloning another LSLLibraryEventSignature object.
+        /// </summary>
+        /// <param name="other">The LSLLibraryEventSignature to copy construct from.</param>
         public LSLLibraryEventSignature(LSLLibraryEventSignature other)
             : base(other)
         {
@@ -84,30 +98,57 @@ namespace LibLSLCC.CodeValidator.Components
             _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
         }
 
+
+        /// <summary>
+        /// Construct an LSLLibraryEventSignature by providing a Name and a list of LSLParameter's that belong to the signature.
+        /// </summary>
+        /// <param name="name">The name of the event handler.</param>
+        /// <param name="parameters">The list of parameters that belong to this signature.</param>
         public LSLLibraryEventSignature(string name, IEnumerable<LSLParameter> parameters)
             : base(name, parameters)
         {
             DocumentationString = "";
         }
 
+
+        /// <summary>
+        /// Construct an LSLLibraryEventSignature with no parameters by providing an event Name only.
+        /// </summary>
+        /// <param name="name">The name of the event Handler.</param>
         public LSLLibraryEventSignature(string name)
             : base(name)
         {
             DocumentationString = "";
         }
 
+        /// <summary>
+        /// The library subsets that this LSLLibraryEventSignature belongs to.
+        /// </summary>
         public IReadOnlySet<string> Subsets
         {
             get { return new ReadOnlyHashSet<string>(_subsets); }
         }
 
+
+        /// <summary>
+        /// Additional dynamic property values that can be attached to the constant signature and parsed from XML
+        /// </summary>
         public IDictionary<string, string> Properties
         {
             get { return _properties; }
         }
 
+        /// <summary>
+        /// Returns the documentation string attached to this library signature.
+        /// </summary>
         public string DocumentationString { get; set; }
 
+
+        /// <summary>
+        /// Returns a formated string containing the signature and documentation for this library signature.
+        /// It consists of the SignatureString followed by a semi-colon, and then followed by a new-line and DocumentationString
+        /// if the documentation string is not null.
+        /// </summary>
         public string SignatureAndDocumentation
         {
             get
@@ -138,10 +179,12 @@ namespace LibLSLCC.CodeValidator.Components
             return null;
         }
 
+
         /// <summary>
-        ///     Generates an object from its XML representation.
+        /// Fills an event signature object from an XML fragment.
         /// </summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
+        /// <param name="reader">The XML reader containing the fragment to read.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             var parameterNames = new HashSet<string>();
@@ -310,31 +353,61 @@ namespace LibLSLCC.CodeValidator.Components
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Attempts to parse the signature from a formated string.
+        /// Such as:  listen( integer channel, string name, key id, string message )
+        /// Trailing semi-colon is optional.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <exception cref="ArgumentException">Thrown if the string could not be parsed.</exception>
+        /// <returns>The Parsed LSLLibraryEventSignature</returns>
         public new static LSLLibraryEventSignature Parse(string str)
         {
             return new LSLLibraryEventSignature(LSLEventSignature.Parse(str));
         }
 
+        /// <summary>
+        /// Adds to the current library subsets this signature belongs to by parsing them out of a comma separated string of names.
+        /// </summary>
+        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
         public void AddSubsets(string subsets)
         {
             _subsets.UnionWith(_subsetsRegex.ParseSubsets(subsets));
         }
 
+        /// <summary>
+        /// Sets the library subsets this signature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings</param>
         public void AddSubsets(IEnumerable<string> subsets)
         {
             _subsets.UnionWith(subsets);
         }
 
+        /// <summary>
+        /// Sets the library subsets this signature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings</param>
         public void SetSubsets(IEnumerable<string> subsets)
         {
             _subsets = new HashSet<string>(subsets);
         }
 
+        /// <summary>
+        /// Sets the library subsets this signature belongs to by parsing them out of a comma separated string of names.
+        /// </summary>
+        /// <param name="subsets">A comma separated list of subset names in a string.</param>
         public void SetSubsets(string subsets)
         {
             _subsets = new HashSet<string>(_subsetsRegex.ParseSubsets(subsets));
         }
 
+        /// <summary>
+        /// Reads an event signature object from an XML fragment.
+        /// </summary>
+        /// <param name="fragment">The XML reader containing the fragment to read.</param>
+        /// <returns>The parsed LSLLibraryEventSignature object.</returns>
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
         public static LSLLibraryEventSignature FromXmlFragment(XmlReader fragment)
         {
             var ev = new LSLLibraryEventSignature();
@@ -343,6 +416,9 @@ namespace LibLSLCC.CodeValidator.Components
             return ev;
         }
 
+        /// <summary>
+        /// Whether or not this library signature is marked as deprecated or not.
+        /// </summary>
         public bool Deprecated
         {
             get

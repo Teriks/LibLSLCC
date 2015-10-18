@@ -49,6 +49,10 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator
 {
+
+    /// <summary>
+    /// A simple interface for code validator's.
+    /// </summary>
     public interface ILSLCodeValidator
     {
         /// <summary>

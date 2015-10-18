@@ -49,27 +49,35 @@ using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.Collections;
+using LibLSLCC.CodeValidator.Exceptions;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    ///     A library data provider that reads LSL library data from XML, if you derive from this
-    ///     class, the new class must have the LSLXmlLibraryDataRoot attribute
+    ///     A library data provider that reads LSL library data from XML
     /// </summary>
-    [LSLXmlLibraryDataRoot]
     public class LSLXmlLibraryDataProvider : LSLLibraryDataProvider,
         IXmlSerializable
     {
 
+        /// <summary>
+        /// Construct an LSLXmlLibraryDataProvider with the option to enable live filtering mode in the base class
+        /// </summary>
+        /// <param name="liveFiltering">Whether or not to enable live filtering mode in the base class.</param>
         public LSLXmlLibraryDataProvider(bool liveFiltering = true) : base(liveFiltering)
         {
             
         }
 
+
+        /// <summary>
+        /// Construct an LSLXmlLibraryDataProvider with the ability to set the active subsets in the base class, and optionally enable
+        /// live filtering mode.
+        /// </summary>
+        /// <param name="activeSubsets">The active subsets to set in the base class.</param>
+        /// <param name="liveFiltering">Whether or not to enable live filtering mode in the base class.</param>
         public LSLXmlLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true) : base(activeSubsets, liveFiltering)
         {
 
@@ -146,21 +154,23 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
         /// <param name="writeRootElement">Whether or not to write the root element for this object</param>
-        public void WriteXml(XmlWriter writer, bool writeRootElement)
+        /// <param name="rootElementName">The root element name to write the library data into as content.</param>
+        public void WriteXml(XmlWriter writer, bool writeRootElement, string rootElementName = "LSLLibraryData")
         {
             LSLLibraryDataXmlSerializer.WriteXml(LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
-                LibraryConstants, writer, writeRootElement);
+                LibraryConstants, writer, writeRootElement, rootElementName);
         }
-       
+
 
         /// <summary>
         ///     Fills a library data provider from an XML reader object
         /// </summary>
-        /// <param name="data">The xml reader to read from</param>
+        /// <param name="data">The XML reader to read from</param>
+        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
         /// <exception cref="ArgumentNullException">When data is null</exception>
         /// <exception cref="XmlException">When a syntax error is encountered</exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public void FillFromXml(XmlReader data)
+        public void FillFromXml(XmlReader data, string rootElementName = "LSLLibraryData")
         {
             if (data == null)
             {
@@ -171,7 +181,7 @@ namespace LibLSLCC.CodeValidator.Components
             ClearLibraryConstants();
             ClearLibraryFunctions();
 
-            data.ReadStartElement(LSLXmlLibraryDataRootAttribute.RootElementName);
+            data.ReadStartElement(rootElementName);
 
             IXmlSerializable serializable = this;
             serializable.ReadXml(data);

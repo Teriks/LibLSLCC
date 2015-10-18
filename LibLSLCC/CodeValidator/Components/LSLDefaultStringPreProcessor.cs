@@ -52,32 +52,58 @@ using LibLSLCC.CodeValidator.Components.Interfaces;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+    /// <summary>
+    /// The default implementation of ILSLStringPreProcessor for the library
+    /// </summary>
     public class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
     {
 
         private readonly List<LSLStringCharacterError> _invalidEscapeCodes = new List<LSLStringCharacterError>();
 
+        /// <summary>
+        /// Construct the default implementation of ILSLStringPreProcessor
+        /// </summary>
         public LSLDefaultStringPreProcessor()
         {
             HasErrors = false;
             Result = "";
         }
 
+        /// <summary>
+        /// True if the string that was just pre-processed contains invalid escape sequences or illegal character errors.
+        /// </summary>
         public bool HasErrors { get; private set; }
 
+
+        /// <summary>
+        /// An enumerable of all invalid escape sequences found in the string.
+        /// </summary>
         public IEnumerable<LSLStringCharacterError> InvalidEscapeCodes
         {
             get { return _invalidEscapeCodes; }
         }
 
+        /// <summary>
+        /// An enumerable of all illegal characters found in the string.
+        /// </summary>
         public IEnumerable<LSLStringCharacterError> IllegalCharacters
         {
             //None that I know of so far
             get { return new List<LSLStringCharacterError>(); }
         }
 
+        /// <summary>
+        /// The resulting string after the input string has been pre-processed.
+        /// </summary>
         public string Result { get; private set; }
 
+
+
+        /// <summary>
+        /// Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,
+        /// Place illegal character errors in the IllegalCharacters enumerable.
+        /// </summary>
+        /// <param name="stringLiteral">The string literal to be processed, the string is expected to be wrapped in double quote characters still.</param>
         public void ProcessString(string stringLiteral)
         {
             var result = new StringBuilder();
@@ -95,6 +121,9 @@ namespace LibLSLCC.CodeValidator.Components
             Result = HasErrors ? "" : result.ToString();
         }
 
+        /// <summary>
+        /// Reset the pre-processor so it can process another string
+        /// </summary>
         public void Reset()
         {
             _invalidEscapeCodes.Clear();

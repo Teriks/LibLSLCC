@@ -50,37 +50,93 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
+
+    /// <summary>
+    /// Represents the result of an expression/type validation preformed by an ILSLExpressionValidator object
+    /// </summary>
     public struct LSLExpressionValidatorResult
     {
+        /// <summary>
+        /// Represents a validation error.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult Error = new LSLExpressionValidatorResult(LSLType.Void, false);
+
+
+        /// <summary>
+        /// Represents a list return type for an expression validation.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult List = new LSLExpressionValidatorResult(LSLType.List, true);
 
+
+        /// <summary>
+        /// Represents a string return type for an expression validation.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult String = new LSLExpressionValidatorResult(LSLType.String,
             true);
 
+
+        /// <summary>
+        /// Represents a vector return type for an expression validation.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult Vector = new LSLExpressionValidatorResult(LSLType.Vector,
             true);
 
+
+        /// <summary>
+        /// Represents a rotation return type for an expression validation.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult Rotation = new LSLExpressionValidatorResult(
             LSLType.Rotation,
             true);
 
+
+        /// <summary>
+        /// Represents a key return type for an expression validation.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult Key = new LSLExpressionValidatorResult(LSLType.Key, true);
 
+
+        /// <summary>
+        /// Represents an integer return type for an expression validation.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult Integer = new LSLExpressionValidatorResult(LSLType.Integer,
             true);
 
+
+        /// <summary>
+        /// Represents a float return type for an expression validation.
+        /// </summary>
         public static readonly LSLExpressionValidatorResult Float = new LSLExpressionValidatorResult(LSLType.Float, true);
 
+
+        /// <summary>
+        /// Constructs an expression validation result.
+        /// </summary>
+        /// <param name="resultType">The return type of the expression that was validated.</param>
+        /// <param name="isValid">True specifies that the validation was a success, false specifies that there was an error.</param>
         public LSLExpressionValidatorResult(LSLType resultType, bool isValid) : this()
         {
             IsValid = isValid;
             ResultType = resultType;
         }
 
+
+        /// <summary>
+        /// Contains the resulting type of an expression validation.
+        /// </summary>
         public LSLType ResultType { get; private set; }
+
+        /// <summary>
+        /// True if the expression passed validation, false if it did not.
+        /// </summary>
         public bool IsValid { get; private set; }
 
+
+        /// <summary>
+        /// Equates LSLExpressionValidatorResult objects using equality between their ResultType property and IsValid property.
+        /// </summary>
+        /// <param name="other">The other LSLExpressionValidatorResult to compare this one to.</param>
+        /// <returns>True if both LSLExpressionValidatorResult objects have the same ResultType and IsValid values.</returns>
         public bool Equals(LSLExpressionValidatorResult other)
         {
             return ResultType == other.ResultType && IsValid.Equals(other.IsValid);
@@ -113,14 +169,26 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             }
         }
 
+        /// <summary>
+        /// Equality operator that checks if ResultType and IsValid are the same in both objects.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns>True if both LSLExpressionValidatorResult objects have the same ResultType and IsValid values.</returns>
         public static bool operator ==(LSLExpressionValidatorResult left, LSLExpressionValidatorResult right)
         {
             return left.IsValid == right.IsValid && left.ResultType == right.ResultType;
         }
 
+        /// <summary>
+        /// In-Equality operator that checks if ResultType or IsValid are different in both objects.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns>True if both LSLExpressionValidatorResult objects ResultType or IsValid property values differ from each others.</returns>
         public static bool operator !=(LSLExpressionValidatorResult left, LSLExpressionValidatorResult right)
         {
-            return left.IsValid != right.IsValid && left.ResultType != right.ResultType;
+            return left.IsValid != right.IsValid || left.ResultType != right.ResultType;
         }
     }
 
@@ -133,19 +201,96 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     /// </summary>
     public interface ILSLExpressionValidator
     {
+
+        /// <summary>
+        /// Validates the types involved in a postfix operation and returns an object describing whether or not
+        /// the postfix operation expression was valid for the involved types, and the return type of the operation.
+        /// </summary>
+        /// <param name="left">The expression on the left of the postfix operation.</param>
+        /// <param name="operation">The postfix operation preformed.</param>
+        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
         LSLExpressionValidatorResult ValidatePostfixOperation(ILSLExprNode left, LSLPostfixOperationType operation);
+
+
+        /// <summary>
+        /// Validates the types involved in a prefix operation and returns an object describing whether or not
+        /// the prefix operation expression was valid for the involved types, and the return type of the operation.
+        /// </summary>
+        /// <param name="right">The expression on the right of the prefix operation.</param>
+        /// <param name="operation">The prefix operation preformed.</param>
+        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
         LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLExprNode right);
+
+        /// <summary>
+        /// Validates that a cast to a certain type can be preformed on a expression node of a certain type.
+        /// Returns an object describing whether or not the cast is valid, and the return type of the cast expression.
+        /// </summary>
+        /// <param name="castTo">The type being casted to.</param>
+        /// <param name="from">The expression being casted.</param>
+        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
         LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode from);
 
+
+        /// <summary>
+        /// Validates the types involved in a binary operation and returns an object describing whether or not
+        /// the binary operation expression was valid for the involved types, and the return type of the operation.
+        /// </summary>
+        /// <param name="left">The expression on the left of the binary operation.</param>
+        /// <param name="operation">The binary operation preformed.</param>
+        /// <param name="right">The expression on the left of the binary operation.</param>
+        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
         LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, LSLBinaryOperationType operation,
             ILSLExprNode right);
 
+
+        /// <summary>
+        /// Validates that an expression matches the return type of a function, or rather if a certain expression can be returned
+        /// from a function with the given return type.
+        /// </summary>
+        /// <param name="returnType">The return type of the function.</param>
+        /// <param name="returnedExpression">The expression to be returned from the function.</param>
+        /// <returns>True if the given expression is of a valid type to be returned from a function with the given return type, false if otherwise.</returns>
         bool ValidateReturnTypeMatch(LSLType returnType, ILSLExprNode returnedExpression);
+
+        /// <summary>
+        /// Validates that a given expression is able to be used inside of a vector literal initializer list.
+        /// </summary>
+        /// <param name="type">The expression the user is attempting to use to initialize one of the components of a vector literal.</param>
+        /// <returns>True if the expression can be used in a vector literal initializer list, false if otherwise.</returns>
         bool ValidVectorContent(ILSLExprNode type);
+
+        /// <summary>
+        /// Validates that a given expression is able to be used inside of a rotation literal initializer list.
+        /// </summary>
+        /// <param name="type">The expression the user is attempting to use to initialize one of the components of a rotation literal.</param>
+        /// <returns>True if the expression can be used in a rotation literal initializer list, false if otherwise.</returns>
         bool ValidRotationContent(ILSLExprNode type);
+
+
+        /// <summary>
+        /// Validates that a given expression is able to be used inside of a list literal initializer list.
+        /// </summary>
+        /// <param name="type">The expression the user is attempting to use to initialize a list literal element.</param>
+        /// <returns>True if the expression can be used in a list literal initializer list, false if otherwise.</returns>
         bool ValidListContent(ILSLExprNode type);
+
+
+        /// <summary>
+        /// Validates that a given expression can be used as a boolean conditional for a control or loop statement.
+        /// </summary>
+        /// <param name="type">The expression the user is attempting to use as a boolean conditional in a control or loop statement.</param>
+        /// <returns>True if the expression can be used as a boolean conditional, false if otherwise.</returns>
         bool ValidBooleanConditional(ILSLExprNode type);
 
+
+        /// <summary>
+        /// Validates that an expression can be passed into the parameter slot of a function signature at a certain index.
+        /// IE: That the passed expression matches up with or can be converted to the parameter type at a certain parameter index in the function signature.
+        /// </summary>
+        /// <param name="functionSignature">The signature of the function that is being called.</param>
+        /// <param name="parameterNumber">The zero based index of the parameter in the function signature that is to be checked against the given expression.</param>
+        /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
+        /// <returns></returns>
         bool ValidFunctionParameter(LSLFunctionSignature functionSignature, int parameterNumber,
             ILSLExprNode parameterExpressionPassed);
     }

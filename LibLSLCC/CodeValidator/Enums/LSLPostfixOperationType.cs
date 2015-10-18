@@ -48,15 +48,40 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Enums
 {
+
+    /// <summary>
+    /// Represents different types of LSL postfix operators.
+    /// </summary>
     public enum LSLPostfixOperationType
     {
+        /// <summary>
+        /// Postfix Increment.
+        /// </summary>
         Increment = 2,
+
+        /// <summary>
+        /// Postfix Decrement.
+        /// </summary>
         Decrement = 1,
+
+        /// <summary>
+        /// Unknown/Erroneous postfix operator.
+        /// </summary>
         Error = 0
     }
 
+    /// <summary>
+    /// LSLPostfixOperationType extensions for converting LSLPostfixOperationType from source code string representation
+    /// and back.
+    /// </summary>
     public static class LSLPostfixOperationTypeTools
     {
+        /// <summary>
+        /// Converts the provided LSLPostfixOperationType to its source code string representation.
+        /// </summary>
+        /// <param name="type">The LSLPostfixOperationType to convert to a string.</param>
+        /// <exception cref="ArgumentException">Thrown if the LSLPostfixOperationType provided was equal to LSLPostfixOperationType.Error.</exception>
+        /// <returns>The source code string representation of the LSLPostfixOperationType.</returns>
         public static string ToOperatorString(this LSLPostfixOperationType type)
         {
             switch (type)
@@ -72,6 +97,14 @@ namespace LibLSLCC.CodeValidator.Enums
                 "type");
         }
 
+
+        /// <summary>
+        /// Parses a LSLPostfixOperationType from its source code string representation.
+        /// </summary>
+        /// <param name="operationString">The string to attempt to parse an LSLPostfixOperationType from.</param>
+        /// <exception cref="ArgumentNullException">Thrown if 'operationString' is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if 'operationString' was not a valid source code string representation of an LSL postfix operator.</exception>
+        /// <returns>The parsed LSLPostfixOperationType.</returns>
         public static LSLPostfixOperationType ParseFromOperator(string operationString)
         {
             if (string.IsNullOrEmpty(operationString))

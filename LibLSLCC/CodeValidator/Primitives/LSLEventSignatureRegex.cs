@@ -53,8 +53,19 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+
+    /// <summary>
+    /// Regex tools for parsing LSLEventSignature objects from strings.
+    /// </summary>
     public sealed class LSLEventSignatureRegex
     {
+
+        /// <summary>
+        /// Construct an event signature regex, given an enumerable of acceptable LSL types, a string 'before' that is prefixed to the regex, and a string 'after' that is appended to the regex.
+        /// </summary>
+        /// <param name="dataTypes">Acceptable LSL types, or other types that can appear as parameter types in the event signature.</param>
+        /// <param name="before">The string pre-pended to the regex.</param>
+        /// <param name="after">The string appended to the regex.</param>
         public LSLEventSignatureRegex(IEnumerable<string> dataTypes, string before, string after)
         {
             var types = "(?:" + string.Join("|", dataTypes) + ")";
@@ -64,6 +75,12 @@ namespace LibLSLCC.CodeValidator.Primitives
                           "\\s+" + id + "\\s*)*)?)\\)" + after);
         }
 
+
+        /// <summary>
+        /// Construct a event signature regex that accepts the standard LSL types for the parameter types.
+        /// </summary>
+        /// <param name="before">The string pre-pended to the regex.</param>
+        /// <param name="after">The string appended to the regex.</param>
         public LSLEventSignatureRegex(string before, string after)
             : this(new[]
             {
@@ -73,6 +90,10 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
+
+        /// <summary>
+        /// Construct a event signature regex that accepts the standard LSL types for the parameter types.
+        /// </summary>
         public LSLEventSignatureRegex()
             : this(new[]
             {
@@ -82,41 +103,55 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
+        /// <summary>
+        /// The event signature regex that was created upon the construction of this object
+        /// </summary>
         public Regex Regex { get; private set; }
 
+
+        /// <summary>
+        /// Parse an LSLEventSignature signature from a string.
+        /// </summary>
+        /// <param name="inString">The string to parse the LSLEventSignature from.</param>
+        /// <returns>The parsed LSLEventSignature.</returns>
         public LSLEventSignature GetSignature(string inString)
         {
             return GetSignatures(inString).FirstOrDefault();
         }
 
+
+        /// <summary>
+        /// Returns all LSLEventSignature that could be parsed out of a given string.
+        /// </summary>
+        /// <param name="inString">The string to parse LSLEventSignature objects from.</param>
+        /// <returns>An enumerable of LSLEventSignature objects that were successfully parsed from the string.</returns>
         public IEnumerable<LSLEventSignature> GetSignatures(string inString)
         {
             var matches = Regex.Matches(inString);
             foreach (Match m in matches)
             {
-                if (m.Success)
+                if (!m.Success) continue;
+
+                var name = m.Groups[1].ToString();
+                var param = m.Groups[2].ToString();
+
+
+                var sig = new LSLLibraryEventSignature(name);
+
+                var ps = param.Split(',');
+
+                if (ps.Length == 1 && string.IsNullOrWhiteSpace(ps[0]))
                 {
-                    var name = m.Groups[1].ToString();
-                    var param = m.Groups[2].ToString();
-
-
-                    var sig = new LSLLibraryEventSignature(name);
-
-                    var ps = param.Split(',');
-
-                    if (ps.Length == 1 && string.IsNullOrWhiteSpace(ps[0]))
+                    yield return sig;
+                }
+                else
+                {
+                    foreach (var p in ps)
                     {
-                        yield return sig;
+                        var prm = p.Trim().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                        sig.AddParameter(new LSLParameter(LSLTypeTools.FromLSLTypeString(prm[0]), prm[1], false));
                     }
-                    else
-                    {
-                        foreach (var p in ps)
-                        {
-                            var prm = p.Trim().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-                            sig.AddParameter(new LSLParameter(LSLTypeTools.FromLSLTypeString(prm[0]), prm[1], false));
-                        }
-                        yield return sig;
-                    }
+                    yield return sig;
                 }
             }
         }

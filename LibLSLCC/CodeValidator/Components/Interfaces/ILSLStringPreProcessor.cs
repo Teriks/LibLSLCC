@@ -53,27 +53,46 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     /// </summary>
     public struct LSLStringCharacterError
     {
+        /// <summary>
+        /// Construct an LSLStringCharacterError for a given character and index in the string.
+        /// </summary>
+        /// <param name="causingCharacter">The character that caused the error.</param>
+        /// <param name="stringIndex">The index in the string the character error was encountered at.</param>
         public LSLStringCharacterError(char causingCharacter, int stringIndex) : this()
         {
             StringIndex = stringIndex;
             CausingCharacter = causingCharacter;
         }
 
+
+        /// <summary>
+        /// The character that caused the error.
+        /// </summary>
         public char CausingCharacter { get; private set; }
+
+        /// <summary>
+        /// The index in the string at which the error occured.
+        /// </summary>
         public int StringIndex { get; private set; }
 
+
+        /// <summary>
+        /// Equals checks equality by determining whether or not the CausingCharacter and StringIndex are the
+        /// same in both objects.
+        /// </summary>
+        /// <param name="other">The other LSLStringCharacterError object to test for equality with.</param>
+        /// <returns>True if CausingCharacter and StringIndex are the same in both objects.</returns>
         public bool Equals(LSLStringCharacterError other)
         {
             return CausingCharacter == other.CausingCharacter && StringIndex == other.StringIndex;
         }
 
         /// <summary>
-        ///     Indicates whether this instance and a specified object are equal.
+        /// Equals checks equality by determining whether or not the CausingCharacter and StringIndex are the
+        /// same in both objects.
         /// </summary>
-        /// <returns>
-        ///     true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false.
-        /// </returns>
-        /// <param name="obj">Another object to compare to. </param>
+        /// <param name="obj">The other LSLStringCharacterError object to test for equality with.</param>
+        /// <returns>True if 'obj' is a LSLStringCharacterError object, and CausingCharacter and StringIndex are the same in both objects.  False if otherwise.</returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -81,10 +100,11 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         }
 
         /// <summary>
-        ///     Returns the hash code for this instance.
+        /// Returns the hash code for this instance.  
+        /// The hash code is derived from the CausingCharacter property and the StringIndex property.
         /// </summary>
         /// <returns>
-        ///     A 32-bit signed integer that is the hash code for this instance.
+        /// A 32-bit signed integer that is the hash code for this instance.
         /// </returns>
         public override int GetHashCode()
         {
@@ -94,14 +114,29 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             }
         }
 
+
+        /// <summary>
+        /// The equality operator checks equality by determining whether or not the CausingCharacter and StringIndex are the
+        /// same in both LSLStringCharacterError objects.
+        /// </summary>
+        /// <param name="left">The LSLStringCharacterError on the left of the equality operator.</param>
+        /// <param name="right">The LSLStringCharacterError on the right of the equality operator.</param>
+        /// <returns>True if CausingCharacter and StringIndex are the same in both LSLStringCharacterError objects, false if otherwise.</returns>
         public static bool operator ==(LSLStringCharacterError left, LSLStringCharacterError right)
         {
             return left.CausingCharacter != right.CausingCharacter && left.StringIndex != right.StringIndex;
         }
 
+        /// <summary>
+        /// The in-equality operator checks in-equality by determining whether either the CausingCharacter or
+        /// StringIndex are different among two LSLStringCharacterError objects.
+        /// </summary>
+        /// <param name="left">The LSLStringCharacterError on the left of the in-equality operator.</param>
+        /// <param name="right">The LSLStringCharacterError on the right of the in-equality operator.</param>
+        /// <returns>True if CausingCharacter or StringIndex are different among the two LSLStringCharacterError objects, false otherwise.</returns>
         public static bool operator !=(LSLStringCharacterError left, LSLStringCharacterError right)
         {
-            return left.CausingCharacter != right.CausingCharacter && left.StringIndex != right.StringIndex;
+            return left.CausingCharacter != right.CausingCharacter || left.StringIndex != right.StringIndex;
         }
     }
 
@@ -113,20 +148,38 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     /// </summary>
     public interface ILSLStringPreProcessor
     {
+
+        /// <summary>
+        /// True if the string that was just pre-processed contains invalid escape sequences or illegal character errors.
+        /// </summary>
         bool HasErrors { get;  }
+
+
+        /// <summary>
+        /// An enumerable of all invalid escape sequences found in the string.
+        /// </summary>
         IEnumerable<LSLStringCharacterError> InvalidEscapeCodes { get;  }
+
+        /// <summary>
+        /// An enumerable of all illegal characters found in the string.
+        /// </summary>
         IEnumerable<LSLStringCharacterError> IllegalCharacters { get;  }
+
+        /// <summary>
+        /// The resulting string after the input string has been pre-processed.
+        /// </summary>
         string Result { get;  }
 
         /// <summary>
-        ///     Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,
-        ///     Place illegal character errors in the IllegalCharacters enumerable
+        /// Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,
+        /// Place illegal character errors in the IllegalCharacters enumerable.
         /// </summary>
-        /// <param name="stringLiteral">The string literal to be processed, with quotes still at the ends</param>
+        /// <param name="stringLiteral">The string literal to be processed, the string is expected to be wrapped in double quote characters still.</param>
         void ProcessString(string stringLiteral);
 
+
         /// <summary>
-        ///     Reset the pre processor so it can process another string
+        /// Reset the pre-processor so it can process another string
         /// </summary>
         void Reset();
     }

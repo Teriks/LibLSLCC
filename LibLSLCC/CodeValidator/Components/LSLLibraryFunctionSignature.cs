@@ -49,7 +49,9 @@ using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
@@ -57,8 +59,11 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+    /// <summary>
+    /// Represents a library function signature returned from an implementation of ILSLMainLibraryDataProvider.
+    /// </summary>
     [XmlRoot("LibraryFunction")]
-    public sealed class LSLLibraryFunctionSignature : LSLFunctionSignature, IXmlSerializable
+    public class LSLLibraryFunctionSignature : LSLFunctionSignature, IXmlSerializable, ILSLLibrarySignature
     {
         private Dictionary<string, string> _properties = new Dictionary<string, string>();
         private HashSet<string> _subsets = new HashSet<string>();
@@ -66,16 +71,30 @@ namespace LibLSLCC.CodeValidator.Components
         private LSLLibraryDataSubsetsAttributeRegex _subsetsRegex = new
             LSLLibraryDataSubsetsAttributeRegex();
 
+        /// <summary>
+        /// Construct a library function signature by copying the details from a basic function signature.
+        /// </summary>
+        /// <param name="other">The basic LSLFunctionSignature to copy details from.</param>
         public LSLLibraryFunctionSignature(LSLFunctionSignature other) : base(other)
         {
             DocumentationString = "";
         }
 
-        public LSLLibraryFunctionSignature()
+
+        /// <summary>
+        /// Construct an empty library function signature, this can only be done by derived classes.
+        /// </summary>
+        protected LSLLibraryFunctionSignature()
         {
             
         }
 
+
+
+        /// <summary>
+        /// Construct a library function signature by cloning another LSLLibraryFunctionSignature object.
+        /// </summary>
+        /// <param name="other">The LSLLibraryFunctionSignature to clone from.</param>
         public LSLLibraryFunctionSignature(LSLLibraryFunctionSignature other)
             : base(other)
         {
@@ -84,26 +103,47 @@ namespace LibLSLCC.CodeValidator.Components
             _properties = other._properties.ToDictionary(x=>x.Key,y=>y.Value);
         }
 
+
+        /// <summary>
+        /// Construct a library function signature by supplying an LSLType for the return type, a function Name and an optional enumerable of LSLParameters.
+        /// </summary>
+        /// <param name="returnType">The return type associated with the function signature.</param>
+        /// <param name="name">The name of the function.</param>
+        /// <param name="parameters">An optional enumerable of LSLParameters to initialize the function signature with.</param>
         public LSLLibraryFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null) :
             base(returnType, name, parameters)
         {
             DocumentationString = "";
         }
 
+        /// <summary>
+        /// The library subsets this signature belongs to/is shared among.
+        /// </summary>
         public IReadOnlySet<string> Subsets
         {
             get { return new ReadOnlyHashSet<string>(_subsets); }
         }
 
+        /// <summary>
+        /// Additional dynamic property values that can be attached to the constant signature and parsed from XML
+        /// </summary>
         public IDictionary<string, string> Properties
         {
             get { return _properties; }
         }
 
- 
 
+        /// <summary>
+        /// Returns the documentation string attached to this library signature.
+        /// </summary>
         public string DocumentationString { get; set; }
 
+
+        /// <summary>
+        /// Returns a formated string containing the signature and documentation for this library signature.
+        /// It consists of the SignatureString followed by a semi-colon, and then followed by a new-line and DocumentationString
+        /// if the documentation string is not null.
+        /// </summary>
         public string SignatureAndDocumentation
         {
             get
@@ -135,9 +175,10 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        ///     Generates an object from its XML representation.
+        /// Fills a function signature object from an XML fragment.
         /// </summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is de-serialized. </param>
+        /// <param name="reader">The XML reader containing the fragment to read.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the function signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             var parameterNames = new HashSet<string>();
@@ -359,31 +400,63 @@ namespace LibLSLCC.CodeValidator.Components
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Sets the library subsets this signature belongs to by parsing them out of a comma separated string of names.
+        /// </summary>
+        /// <param name="subsets">A comma separated list of subset names in a string.</param>
         public void SetSubsets(string subsets)
         {
             _subsets = new HashSet<string>(_subsetsRegex.ParseSubsets(subsets));
         }
 
+
+        /// <summary>
+        /// Adds to the current library subsets this signature belongs to by parsing them out of a comma separated string of names.
+        /// </summary>
+        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
         public void AddSubsets(string subsets)
         {
             _subsets.UnionWith(_subsetsRegex.ParseSubsets(subsets));
         }
 
+        /// <summary>
+        /// Sets the library subsets this signature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings</param>
         public void AddSubsets(IEnumerable<string> subsets)
         {
             _subsets.UnionWith(subsets);
         }
 
+
+        /// <summary>
+        /// Sets the library subsets this signature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings</param>
         public void SetSubsets(IEnumerable<string> subsets)
         {
             _subsets = new HashSet<string>(subsets);
         }
 
+        /// <summary>
+        /// Attempt to parse a function signature from a formated string.
+        /// Such as: float llAbs(float value) or llOwnerSay(string message);
+        /// </summary>
+        /// <param name="str">The string containing the formated function signature.</param>
+        /// <returns>The LSLLibraryFunctionSignature that was parsed from the string, or null.</returns>
+        /// <exception cref="ArgumentException">If there was a syntax error while parsing the function signature.</exception>
         public new static LSLLibraryFunctionSignature Parse(string str)
         {
             return new LSLLibraryFunctionSignature(LSLFunctionSignature.Parse(str));
         }
 
+
+        /// <summary>
+        /// Reads a function signature object from an XML fragment.
+        /// </summary>
+        /// <param name="fragment">The XML reader containing the fragment to read.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the function signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
+        /// <returns>The parsed LSLLibraryFunctionSignature object.</returns>
         public static LSLLibraryFunctionSignature FromXmlFragment(XmlReader fragment)
         {
             var func = new LSLLibraryFunctionSignature();
@@ -393,6 +466,9 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        /// <summary>
+        /// Whether or not this library signature is marked as deprecated or not.
+        /// </summary>
         public bool Deprecated
         {
             get
@@ -417,7 +493,9 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-
+        /// <summary>
+        /// Determines whether or not this LSLLibraryFunctionSignature will need to be called using OpenSims modInvoke* API.
+        /// </summary>
         public bool ModInvoke
         {
             get

@@ -56,7 +56,6 @@ namespace LibLSLCC.CodeValidator.Components
     ///     LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml
     ///     to define its data
     /// </summary>
-    [LSLXmlLibraryDataRoot]
     public class LSLDefaultLibraryDataProvider : LSLXmlLibraryDataProvider
     {
         private LSLLibraryBaseData _liveFilteringBaseLibraryData;
@@ -64,6 +63,16 @@ namespace LibLSLCC.CodeValidator.Components
 
 
 
+        /// <summary>
+        /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file.
+        /// </summary>
+        /// <param name="liveFiltering">
+        /// If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query results will change.
+        /// Otherwise if this is false, only subsets present upon construction will be loaded.
+        /// </param>
+        /// <param name="libraryBaseData"></param>
+        /// <param name="dataAdditions"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         public LSLDefaultLibraryDataProvider(bool liveFiltering, LSLLibraryBaseData libraryBaseData,
             LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None) : base(GetSubsets(libraryBaseData,dataAdditions),liveFiltering)
         {
@@ -85,6 +94,9 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+        /// <summary>
+        /// Easy way to add either 'lsl' or 'os-lsl' to the active subsets
+        /// </summary>
         public LSLLibraryBaseData LiveFilteringBaseLibraryData
         {
             get { return _liveFilteringBaseLibraryData; }
@@ -98,6 +110,9 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+        /// <summary>
+        /// Easy way to add extra modules to the active subsets
+        /// </summary>
         public LSLLibraryDataAdditions LiveFilteringLibraryDataAdditions
         {
             get { return _liveFilteringLibraryDataAdditions; }
@@ -122,20 +137,56 @@ namespace LibLSLCC.CodeValidator.Components
         }
     }
 
+
+    /// <summary>
+    /// Represents the available additionaly library subsets in LSLDefaultLibraryDataProvider.xml
+    /// </summary>
     [Flags]
     public enum LSLLibraryDataAdditions
     {
+        /// <summary>
+        /// Specifies no extra library data
+        /// </summary>
         None = 0,
+
+        /// <summary>
+        /// Specifies the addition of the OpenSim OSSL functions
+        /// </summary>
         OpenSimOssl = 1,
+
+        /// <summary>
+        /// Specifies the addition of the OpenSim light share functions
+        /// </summary>
         OpenSimWindlight = 2,
+
+        /// <summary>
+        /// Specifies the addition of the OpenSim bullet phys* functions
+        /// </summary>
         OpenSimBulletPhysics = 4,
+
+        /// <summary>
+        /// Specifies the addition of the OpenSim mod invoke functions
+        /// </summary>
         OpenSimModInvoke = 8,
+
+        /// <summary>
+        /// Specifies the addition of the OpenSim json store functions
+        /// </summary>
         OpenSimJsonStore = 16
     }
 
 
+    /// <summary>
+    /// Extensions for the LSLLibraryDataAdditions flags Enum
+    /// </summary>
     public static class LSLLibraryDataAdditionEnumExtensions
     {
+
+        /// <summary>
+        /// Converts LSLLibraryDataAdditions to the corresponding subset string
+        /// </summary>
+        /// <param name="flags"></param>
+        /// <returns>a string representation of the subset</returns>
         public static IEnumerable<string> ToSubsetNames(this LSLLibraryDataAdditions flags)
         {
             if ((flags & LSLLibraryDataAdditions.OpenSimOssl) == LSLLibraryDataAdditions.OpenSimOssl)
@@ -166,14 +217,34 @@ namespace LibLSLCC.CodeValidator.Components
         } 
     }
 
+
+    /// <summary>
+    /// Represents the available base library subsets in LSLDefaultLibraryDataProvider.xml
+    /// </summary>
     public enum LSLLibraryBaseData
     {
+        /// <summary>
+        /// Standard LSL
+        /// </summary>
         StandardLsl,
+
+        /// <summary>
+        /// OpenSim subset of Standard LSL
+        /// </summary>
         OpensimLsl
     }
 
+
+    /// <summary>
+    /// Extensions for the LSLLibraryBaseDataEnumExtensions Enum
+    /// </summary>
     public static class LSLLibraryBaseDataEnumExtensions
     {
+        /// <summary>
+        /// Converts LSLLibraryBaseData to the corresponding subset string
+        /// </summary>
+        /// <param name="flag"></param>
+        /// <returns>a string representation of the subset</returns>
         public static string ToSubsetName(this LSLLibraryBaseData flag)
         {
             switch (flag)

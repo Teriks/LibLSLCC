@@ -22,8 +22,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\x64\Debug\LibLSLCC.XML</DocumentationFile>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
   </PropertyGroup>
@@ -37,6 +36,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
+    <DocumentationFile>bin\x64\Release\LibLSLCC.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +48,7 @@
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
+    <DocumentationFile>bin\x86\Debug\LibLSLCC.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -60,6 +61,7 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
+    <DocumentationFile>bin\x86\Release\LibLSLCC.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
@@ -73,15 +75,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLLibrarySignature.cs" />
     <Compile Include="CodeValidator\Components\LSLCustomValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultLibraryDataProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLDuplicateSignatureException.cs" />
-    <Compile Include="CodeValidator\Components\LSLLibraryDataRootAttribute.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetCollection.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetsAttributeParser.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataXmlSerializer.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
+    <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />
+    <Compile Include="CodeValidator\Enums\LSLConditionalStatementType.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLDuplicateSignatureException.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLInvalidSymbolNameException.cs" />
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />

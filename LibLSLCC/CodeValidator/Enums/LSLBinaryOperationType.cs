@@ -48,38 +48,158 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Enums
 {
+
+    /// <summary>
+    /// Describes different types of binary operations.
+    /// </summary>
     public enum LSLBinaryOperationType
     {
+        /// <summary>
+        /// Addition.
+        /// </summary>
         Add = 24,
+
+        /// <summary>
+        /// Compound Add and assign.
+        /// </summary>
         AddAssign = 23,
+
+        /// <summary>
+        /// Subtraction.
+        /// </summary>
         Subtract = 22,
+
+
+        /// <summary>
+        /// Compound Subtract and assign.
+        /// </summary>
         SubtractAssign = 21,
+
+        /// <summary>
+        /// Multiplication.
+        /// </summary>
         Multiply = 20,
+
+        /// <summary>
+        /// Compound Multiply and assign.
+        /// </summary>
         MultiplyAssign = 19,
+
+        /// <summary>
+        /// Division.
+        /// </summary>
         Divide = 18,
+
+        /// <summary>
+        /// Compound Divide and assign.
+        /// </summary>
         DivideAssign = 17,
+
+
+        /// <summary>
+        /// Modulus.
+        /// </summary>
         Modulus = 16,
+
+        /// <summary>
+        /// Compound Modulus and assign.
+        /// </summary>
         ModulusAssign = 15,
+
+        /// <summary>
+        /// Direct assignment.
+        /// </summary>
         Assign = 14,
+
+        /// <summary>
+        /// Bitwise XOR operator.
+        /// </summary>
         BitwiseXor = 13,
+
+        /// <summary>
+        /// Bitwise AND operator.
+        /// </summary>
         BitwiseAnd = 12,
+
+        /// <summary>
+        /// Bitwise OR operator.
+        /// </summary>
         BitwiseOr = 11,
+
+        /// <summary>
+        /// Logical OR operator.
+        /// </summary>
         LogicalOr = 10,
+
+        /// <summary>
+        /// Logical AND operator.
+        /// </summary>
         LogicalAnd = 9,
+
+
+        /// <summary>
+        /// Less than comparison operator.
+        /// </summary>
         LessThan = 8,
+
+        /// <summary>
+        /// Less than or equal to comparison operator.
+        /// </summary>
         LessThanEqual = 7,
+
+        /// <summary>
+        /// Greater than comparison operator.
+        /// </summary>
         GreaterThan = 6,
+
+
+        /// <summary>
+        /// Greater than or equal to comparison operator.
+        /// </summary>
         GreaterThanEqual = 5,
+
+
+        /// <summary>
+        /// Bitwise left shift operator.
+        /// </summary>
         LeftShift = 4,
+
+        /// <summary>
+        /// Bitwise right shift operator.
+        /// </summary>
         RightShift = 3,
+
+        /// <summary>
+        /// Equality comparison operator.
+        /// </summary>
         Equals = 2,
+
+        /// <summary>
+        /// In-Equality comparison operator.
+        /// </summary>
         NotEquals = 1,
+
+        /// <summary>
+        /// Undefined operator.
+        /// </summary>
         Error = 0
     }
 
-
+    /// <summary>
+    /// LSLBinaryOperationType extensions for parsing LSLBinaryOperationType's from strings.
+    /// As well as converting them into strings.
+    /// 
+    /// This class also contains some methods for group classifications of LSLBinaryOperationType.
+    /// Such as IsModifyAssign();
+    /// </summary>
     public static class LSLBinaryOperationTypeTools
     {
+
+        /// <summary>
+        /// Determines if the LSLBinaryOperationType is a form of modifying assignment that is not just a plain assign operation.
+        /// </summary>
+        /// <param name="type">The LSLBinaryOperationType to test.</param>
+        /// <returns>True if the provided LSLBinaryOperationType is a ModifyAssignOperation such as (+=).  False if it is a plain assignment operator, or other type of operator.</returns>
         public static bool IsModifyAssign(this LSLBinaryOperationType type)
         {
             return type == LSLBinaryOperationType.AddAssign ||
@@ -89,11 +209,25 @@ namespace LibLSLCC.CodeValidator.Enums
                    type == LSLBinaryOperationType.SubtractAssign;
         }
 
+
+        /// <summary>
+        /// Determines if the LSLBinaryOperationType is a direct assignment, or a modifying assignment operation.
+        /// Effectively: (type == LSLBinaryOperationType.Assign || IsModifyAssign(type))
+        /// </summary>
+        /// <param name="type">The LSLBinaryOperationType to test.</param>
+        /// <returns>True if the provided LSLBinaryOperationType is either a direct assignment operation, or is a modifying assignment operation.  False if otherwise.</returns>
         public static bool IsAssignOrModifyAssign(this LSLBinaryOperationType type)
         {
             return type == LSLBinaryOperationType.Assign || IsModifyAssign(type);
         }
 
+
+        /// <summary>
+        /// Parses an LSLBinaryOperationType from a given string.  Accepted strings are any of LSL's binary operators, without any whitespace characters added.
+        /// </summary>
+        /// <param name="operationString">The operation string to turn into an LSLBinaryOperationType.</param>
+        /// <exception cref="ArgumentException">Thrown when 'operationString' does not contain a valid string representation of a binary operator that exist's in LSL.</exception>
+        /// <returns>The parsed LSLBinaryOperationType.</returns>
         public static LSLBinaryOperationType ParseFromOperator(string operationString)
         {
             if (operationString == "=")
@@ -197,6 +331,12 @@ namespace LibLSLCC.CodeValidator.Enums
                     operationString), "operationString");
         }
 
+        /// <summary>
+        /// Converts an LSLBinaryOperationType into is source code equivalent string.
+        /// </summary>
+        /// <param name="type">The LSLBinaryOperationType to convert to a string.</param>
+        /// <returns>The source code equivalent string representation of the provided LSLBinaryOperationType.</returns>
+        /// <exception cref="ArgumentException">Thrown if the LSLBinaryOperationType provided is equal to LSLBinaryOperationType.Error</exception>
         public static string ToOperatorString(this LSLBinaryOperationType type)
         {
             switch (type)

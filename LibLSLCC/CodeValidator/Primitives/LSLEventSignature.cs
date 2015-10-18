@@ -46,27 +46,44 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Exceptions;
+using LibLSLCC.Utility;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+    /// <summary>
+    /// Represents a basic event handler call signature.
+    /// </summary>
     public class LSLEventSignature
     {
         private readonly List<LSLParameter> _parameters;
+        private string _name;
 
+        /// <summary>
+        /// Construct an event signature by cloning another LSLEventSignature object.
+        /// </summary>
+        /// <param name="other">The LSLEventSignature to copy construct from.</param>
         public LSLEventSignature(LSLEventSignature other)
         {
             Name = other.Name;
             _parameters = other._parameters.ToList();
         }
 
+        /// <summary>
+        /// Construct and empty event signature, can only be used by derived classes.
+        /// </summary>
         protected LSLEventSignature()
         {
             _parameters = new List<LSLParameter>();
-            Name = "";
         }
 
+        /// <summary>
+        /// Construct and event signature with the provide parameters by providing a name and an enumerable containing LSLParameter objects.
+        /// </summary>
+        /// <param name="name">The name of the event signature.</param>
+        /// <param name="parameters">The parameters to include in the signature.</param>
         public LSLEventSignature(string name, IEnumerable<LSLParameter> parameters)
         {
             Name = name;
@@ -85,6 +102,10 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
+        /// <summary>
+        /// Construct an event signature that has no parameters by providing a name only.
+        /// </summary>
+        /// <param name="name">The name of the event signature.</param>
         protected LSLEventSignature(string name)
         {
             Name = name;
@@ -100,9 +121,21 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        ///     The event handlers name
+        ///     The event handlers name, must follow LSL symbol naming conventions
         /// </summary>
-        public string Name { get; set; }
+        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event handler does not follow LSL symbol naming conventions for event handlers.</exception>
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (!TokenTools.GetIDRegex().IsMatch(value))
+                {
+                    throw new LSLInvalidSymbolNameException("LSLEventSignature: Event name contained invalid characters or formating.");
+                } 
+                _name = value;
+            }
+        }
 
         /// <summary>
         ///     Indexable list of objects describing the event handlers parameters
@@ -112,6 +145,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             get { return _parameters; }
         }
 
+
+        /// <summary>
+        /// Returns a formated signature string for the LSLEventSignature.  This does not include a trailing semi-colon.
+        /// An example would be: listen(integer channel, string name, key id, string message)
+        /// </summary>
         public string SignatureString
         {
             get
@@ -122,6 +160,10 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
         }
 
+        /// <summary>
+        /// Delegates to SignatureString
+        /// </summary>
+        /// <returns>SignatureString</returns>
         public override string ToString()
         {
             return SignatureString;
@@ -184,6 +226,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             return SignatureMatches(o);
         }
 
+        /// <summary>
+        /// Add an LSLParameter object to this event signatures
+        /// </summary>
+        /// <param name="parameter">The LSLParameter object to add.</param>
+        /// <exception cref="ArgumentException">Thrown if the added parameter is a variadic parameter.</exception>
         public void AddParameter(LSLParameter parameter)
         {
             if (parameter.Variadic)
@@ -196,13 +243,21 @@ namespace LibLSLCC.CodeValidator.Primitives
             _parameters.Add(parameter);
         }
 
-        public static LSLEventSignature Parse(string cSignature)
+        /// <summary>
+        /// Attempts to parse the signature from a formated string.
+        /// Such as:  listen( integer channel, string name, key id, string message )
+        /// Trailing semi-colon is optional.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <exception cref="ArgumentException">Thrown if the string could not be parsed.</exception>
+        /// <returns>The Parsed LSLEventSignature</returns>
+        public static LSLEventSignature Parse(string str)
         {
             var regex = new LSLEventSignatureRegex("", ";*");
-            var m = regex.GetSignature(cSignature);
+            var m = regex.GetSignature(str);
             if (m == null)
             {
-                throw new ArgumentException("Syntax error parsing event signature", "cSignature");
+                throw new ArgumentException("Syntax error parsing event signature", "str");
             }
             return m;
         }

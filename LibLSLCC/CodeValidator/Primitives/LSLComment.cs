@@ -40,18 +40,29 @@
 // 
 // 
 #endregion
+
+using LibLSLCC.CodeValidator.Enums;
+
 namespace LibLSLCC.CodeValidator.Primitives
 {
-    public enum LSLCommentType
-    {
-        Block,
-        SingleLine
-    }
-
+    /// <summary>
+    /// A container for LSL source code comment strings.
+    /// </summary>
     public class LSLComment
     {
+        /// <summary>
+        /// The raw comment text.
+        /// </summary>
         public string Text { get; set; }
+
+        /// <summary>
+        /// The source code range which the comment occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; set; }
+
+        /// <summary>
+        /// The LSLCommentType type of the comment.
+        /// </summary>
         public LSLCommentType Type { get; set; }
     }
 }

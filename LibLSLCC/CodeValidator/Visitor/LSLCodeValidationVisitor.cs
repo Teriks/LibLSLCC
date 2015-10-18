@@ -640,7 +640,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            if (ScopingManager.CanVariableBeDefined(nameToken.Text, declarationScope))
+            if (!ScopingManager.CanVariableBeDefined(nameToken.Text, declarationScope))
             {
                 SyntaxErrorListener.VariableRedefined(
                     new LSLSourceCodeRange(nameToken), variableType, nameToken.Text);

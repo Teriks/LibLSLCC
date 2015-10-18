@@ -50,6 +50,10 @@ using System.Runtime.Serialization;
 
 namespace LibLSLCC.CodeValidator.Exceptions
 {
+
+    /// <summary>
+    /// Thrown when LSLCodeValidator experiences an un-expected exception.
+    /// </summary>
     [Serializable]
     public class LSLCodeValidatorInternalError : Exception
     {
@@ -60,24 +64,52 @@ namespace LibLSLCC.CodeValidator.Exceptions
         //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
         //
 
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public LSLCodeValidatorInternalError()
         {
         }
 
+
+        /// <summary>
+        /// Construct with message.
+        /// </summary>
+        /// <param name="message">Exception message.</param>
         public LSLCodeValidatorInternalError(string message) : base(message)
         {
         }
 
+
+        /// <summary>
+        /// Construct with message and inner exception.
+        /// </summary>
+        /// <param name="message">Exception message.</param>
+        /// <param name="inner">Inner exception.</param>
         public LSLCodeValidatorInternalError(string message, Exception inner) : base(message, inner)
         {
         }
 
+
+        /// <summary>
+        /// Serializable constructor.
+        /// </summary>
+        /// <param name="info">SerializationInfo.</param>
+        /// <param name="context">StreamingContext.</param>
         protected LSLCodeValidatorInternalError(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {
         }
 
+
+        /// <summary>
+        /// Constructs a typical exception for an invalid ANTLR parser context state during an ANTLR tree visit.
+        /// </summary>
+        /// <param name="visitFunctionName">The name of the function the exception is going to be thrown from.</param>
+        /// <param name="prePass">Whether or not this exception was thrown in the pre-compile pass over the source code.</param>
+        /// <returns>The constructed exception object.</returns>
         public static LSLCodeValidatorInternalError VisitContextInvalidState(string visitFunctionName,
             bool prePass = false)
         {
@@ -92,7 +124,15 @@ namespace LibLSLCC.CodeValidator.Exceptions
                                                   ", visited context did not meet pre-requisites in pre-pass.");
         }
 
-        public static LSLCodeValidatorInternalError ContextInInvalidState(string visitFunctionName,
+
+        /// <summary>
+        /// Constructs a typical exception for an invalid ANTLR parser context state during an ANTLR tree visit.
+        /// </summary>
+        /// <param name="visitFunctionName">The name of the function the exception is going to be thrown from.</param>
+        /// <param name="contextType">The type of the ANTLR context being visited.</param>
+        /// <param name="prePass">Whether or not this exception was thrown in the pre-compile pass over the source code.</param>
+        /// <returns>The constructed exception object.</returns>
+        public static LSLCodeValidatorInternalError VisitContextInInvalidState(string visitFunctionName,
             MemberInfo contextType,
             bool prePass = false)
         {
@@ -107,6 +147,13 @@ namespace LibLSLCC.CodeValidator.Exceptions
                                                   " type context did not meet pre-requisites in pre-pass.");
         }
 
+
+        /// <summary>
+        /// Constructs a typical exception for an invalid return type from an ANTLR parser visitor function.
+        /// </summary>
+        /// <param name="visitFunctionName">The visitor function the exception is going to be thrown from.</param>
+        /// <param name="expectedReturnType">The expected return type of the visitor function which did not meet the return type expectation.</param>
+        /// <returns></returns>
         public static LSLCodeValidatorInternalError VisitReturnTypeException(string visitFunctionName,
             MemberInfo expectedReturnType)
         {

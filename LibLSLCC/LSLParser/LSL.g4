@@ -41,6 +41,7 @@ grammar LSL;
 
 @lexer::header {
 	using System.Collections.Generic;
+	using LibLSLCC.CodeValidator.Enums;
 	using LibLSLCC.CodeValidator.Primitives;
 }
 
