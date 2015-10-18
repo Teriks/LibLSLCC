@@ -153,7 +153,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return _constantJumps; }
+            get { return _constantJumps == null ? new List<LSLConstantJumpDescription>() :_constantJumps; }
         }
 
         /// <summary>
