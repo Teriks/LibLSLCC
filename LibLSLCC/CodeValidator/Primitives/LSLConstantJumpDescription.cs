@@ -49,24 +49,47 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    ///     Represents a statement that causes a jump to happen in a constant manner.
-    ///     (As in, there is no condition under which a jump to a single known label will not occur)
+    /// Represents a statement that causes a jump to happen in a constant manner.
+    /// As in:  There is no condition under which a jump to a single known label will not occur.
     /// </summary>
     public class LSLConstantJumpDescription
     {
-        public LSLConstantJumpDescription(LSLConstantJumpDescription origionalJump,
+
+        /// <summary>
+        /// Construct an LSLConstantJumpDescription from another LSLConstantJumpDescription and an ILSLReadOnlyCodeStatement that
+        /// represents the actual jump statement in the syntax tree.
+        /// 
+        /// DeterminingJump in the constructed object is set to originalJump.DeterminingJump.
+        /// EffectiveJumpStatement in the constructed object is set to the effectedJumpStatement parameter.
+        /// </summary>
+        /// <param name="originalJump">The LSLConstantJumpDescripton to copy the DeterminingJump property from.</param>
+        /// <param name="effectiveJumpStatement">The ILSLReadOnlyCodeStatement that represents the jump statement in the syntax tree.</param>
+        public LSLConstantJumpDescription(LSLConstantJumpDescription originalJump,
             ILSLReadOnlyCodeStatement effectiveJumpStatement)
         {
-            DeterminingJump = origionalJump.DeterminingJump;
+            DeterminingJump = originalJump.DeterminingJump;
             EffectiveJumpStatement = effectiveJumpStatement;
         }
 
+        /// <summary>
+        /// Constructs an LSLConstantJumpDescription from an ILSLJumpStatement node by 
+        /// setting the DeterminingJump and EffectiveJumpStatement property in this object to the determiningJump parameter.
+        /// </summary>
+        /// <param name="determiningJump">The ILSLJumpStatementNode to set DeterminingJump and EffectiveJumpStatement to.</param>
         public LSLConstantJumpDescription(ILSLJumpStatementNode determiningJump)
         {
             DeterminingJump = determiningJump;
             EffectiveJumpStatement = determiningJump;
         }
 
+
+        /// <summary>
+        /// Constructs an LSLConstantJumpDescription from an ILSLJumpStatement node by 
+        /// setting the DeterminingJump property of this object to the effectiveJumpStatement parameter, and
+        /// the EffectiveJumpStatement of this object to the effectiveJumpStatement parameter.
+        /// </summary>
+        /// <param name="effectiveJumpStatement">The ILSLReadOnlyCodeStatement to set EffectiveJumpStatement to.</param>
+        /// <param name="determiningJump">The ILSLJumpStatementNode to set DeterminingJump to.</param>
         public LSLConstantJumpDescription(ILSLReadOnlyCodeStatement effectiveJumpStatement,
             ILSLJumpStatementNode determiningJump)
         {

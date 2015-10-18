@@ -2,6 +2,9 @@
 
 namespace LibLSLCC.Utility
 {
+    /// <summary>
+    /// Tools for dealing with LSL token strings, mostly symbol names.
+    /// </summary>
     public class TokenTools
     {    
 
@@ -20,23 +23,44 @@ namespace LibLSLCC.Utility
         /// </summary>
         public static string IDMiddleCharRegex = LSLLexer.IDMiddleCharRegex;
 
-
-        public static Regex GetIDRegex(bool multiMatch = false)
+        /// <summary>
+        /// Get a regex that will only match LSL symbol names, (ID's)
+        /// </summary>
+        /// <returns></returns>
+        public static Regex GetIDRegex()
         {
-            return new Regex("(?:"+IDRegex+")" + (multiMatch ? "*" : ""));
+            return new Regex("(?:"+IDRegex+")");
         }
 
+
+        /// <summary>
+        /// Get a regex that will only match any LSL symbol (ID) character, (starting characters as well as trailing characters)
+        /// </summary>
+        /// <param name="multiMatch">Whether or not the regex should match multiple sequential characters.</param>
+        /// <returns>The constructed Regex.</returns>
         public static Regex GetAnyIDCharRegex(bool multiMatch = false)
         {
             return new Regex("(?:"+ IDStartCharRegex +"|"+ IDMiddleCharRegex+ ")" + (multiMatch ? "*" : ""));
         }
 
+
+        /// <summary>
+        /// Get a regex that will only match LSL symbol name start characters, (Starting characters for ID's)
+        /// </summary>
+        /// <param name="multiMatch">Whether or not the regex should match multiple sequential starting characters.</param>
+        /// <returns>The constructed Regex.</returns>
         public static Regex GetIDStartCharRegex(bool multiMatch = false)
         {
             return new Regex("(?:"+IDStartCharRegex + ")"+(multiMatch?"*":""));
         }
 
-        public static Regex GetIDMiddleCharRegex(bool multiMatch = false)
+
+        /// <summary>
+        /// Get a regex that will only match LSL symbol name trailing characters, (Trailing characters after the first starting character for ID's)
+        /// </summary>
+        /// <param name="multiMatch">Whether or not the regex should match multiple sequential trailing characters.</param>
+        /// <returns>The constructed Regex.</returns>
+        public static Regex GetIDTrailingCharRegex(bool multiMatch = false)
         {
             return new Regex("(?:"+IDMiddleCharRegex + ")" + (multiMatch ? "*" : ""));
         }

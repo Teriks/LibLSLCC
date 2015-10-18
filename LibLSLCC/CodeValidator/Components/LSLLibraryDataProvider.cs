@@ -110,7 +110,9 @@ namespace LibLSLCC.CodeValidator.Components
         {
             get
             {
-                var funcs = new Dictionary<string, LSLLibraryFunctionSignature>();
+                //This could really be optimized, need to make sure the basic gist of this works first for what I want though.
+
+                var funcs = new Dictionary<string, List<LSLLibraryFunctionSignature>>();
 
                 return ActiveSubsets.Subsets.SelectMany<string, List<LSLLibraryFunctionSignature>>(x =>
                 {
@@ -128,7 +130,9 @@ namespace LibLSLCC.CodeValidator.Components
                     if (funcs.ContainsKey(x.Name))
                     {
                         var func = funcs[x.Name];
-                        if (func.DefinitionIsDuplicate(x))
+
+                        //Large amounts of overloads for a single function are not really expected.
+                        if (func.Any( y=> y.DefinitionIsDuplicate(x)))
                         {
                             throw new LSLDuplicateSignatureException(
                                 "LibraryFunctions {get} failed because a function with a duplicate or ambiguous signature exists in more than one active subset, " +
@@ -136,11 +140,11 @@ namespace LibLSLCC.CodeValidator.Components
                         }
 
                         //subset adds an overload
-                        funcs.Add(x.Name, x);
+                        func.Add(x);
                         return x;
                     }
                     //subset adds a new function
-                    funcs.Add(x.Name, x);
+                    funcs.Add(x.Name, new List<LSLLibraryFunctionSignature> {x});
                     return x;
                 })
                 .GroupBy(x=>x.Name).Select(x=>x.ToList());

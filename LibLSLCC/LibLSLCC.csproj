@@ -227,7 +227,6 @@
     <Compile Include="Collections\PriorityQueue.cs" />
     <Compile Include="Collections\ReadOnlyDictionary.cs" />
     <Compile Include="Collections\ReadOnlyHashSet.cs" />
-    <Compile Include="Collections\UniqueValueDictionary.cs" />
     <Compile Include="Compilers\LSLCompilerInternalException.cs" />
     <Compile Include="Compilers\LSLOpenSimCSCompiler.cs" />
     <Compile Include="Compilers\Visitors\LSLOpenSimCSCompilerVisitor.cs" />

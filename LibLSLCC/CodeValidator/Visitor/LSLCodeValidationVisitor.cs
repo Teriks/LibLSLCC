@@ -71,12 +71,6 @@ namespace LibLSLCC.CodeValidator.Visitor
         private ILSLSyntaxErrorListener _syntaxErrorListenerOveride;
         private ILSLSyntaxWarningListener _syntaxWarningListenerOveride;
 
-        public LSLCodeValidationVisitor()
-        {
-            _validatorServices = new LSLDefaultValidatorServiceProvider();
-
-            ScopingManager = new LSLVisitorScopeTracker(_validatorServices);
-        }
 
         public LSLCodeValidationVisitor(ILSLValidatorServiceProvider validatorServices)
         {

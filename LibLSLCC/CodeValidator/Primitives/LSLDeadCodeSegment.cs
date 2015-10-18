@@ -54,11 +54,19 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// </summary>
     public class LSLDeadCodeSegment : LSLCodeSegment
     {
+
+        /// <summary>
+        /// Construct an LSLDeadCodeSegment with the given LSLDeadCodeType
+        /// </summary>
+        /// <param name="deadCodeType"></param>
         public LSLDeadCodeSegment(LSLDeadCodeType deadCodeType)
         {
             DeadCodeType = deadCodeType;
         }
 
+        /// <summary>
+        /// The type of dead code that this LSLDeadCodeSegment represents.
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; private set; }
     }
 }

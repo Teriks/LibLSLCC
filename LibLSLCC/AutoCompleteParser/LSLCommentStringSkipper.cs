@@ -42,31 +42,73 @@
 #endregion
 namespace LibLSLCC.AutoCompleteParser
 {
+
+    /// <summary>
+    /// A class to help determine if an offset into LSL source code is inside of a comment or string literal.
+    /// </summary>
     public class LSLCommentStringSkipper
     {
         private int _lastStringStart;
 
+
+        /// <summary>
+        /// Construct an LSLCommentStringSkipper that will be ready to parse upon construction.
+        /// </summary>
         public LSLCommentStringSkipper()
         {
         }
 
+        /// <summary>
+        /// Construct an LSLCommentStringSkipper and automatically parse the provided text up to a given offset.
+        /// </summary>
+        /// <param name="text">The text to be parsed.</param>
+        /// <param name="parseUpTo">The offset to be parsed up to.</param>
         public LSLCommentStringSkipper(string text, int parseUpTo)
         {
             ParseUpTo(text, parseUpTo);
         }
 
+        /// <summary>
+        /// A rough estimation of scope level at the current offset.  This counter is incremented every
+        /// time an opening brace is found and decremented whenever a closing brace is found.
+        /// 
+        /// If there are missing/mismatched braces then its value will not be accurate.
+        /// </summary>
         public int ScopeLevel { get; set; }
+
+
         // ReSharper disable once MemberCanBePrivate.Global
+        /// <summary>
+        /// True if the offset that was parsed up to is inside a block style comment.
+        /// </summary>
         public bool InBlockComment { get; private set; }
+
+
         // ReSharper disable once MemberCanBePrivate.Global
+        /// <summary>
+        /// True if the offset that was parsed up to is inside a line style comment.
+        /// </summary>
         public bool InLineComment { get; set; }
+
+
+        /// <summary>
+        /// True if the offset that was parsed up to is inside a string literal.
+        /// </summary>
         public bool InString { get; private set; }
 
+
+        /// <summary>
+        /// True if the offset that was parsed up to is inside any sort of comment.
+        /// Effectively equal to: (InLineComment || InBlockComment)
+        /// </summary>
         public bool InComment
         {
             get { return InLineComment || InBlockComment; }
         }
 
+        /// <summary>
+        /// Reset the LSLCommentStringSkipper so it can parse again.
+        /// </summary>
         public void Reset()
         {
             InBlockComment = false;
@@ -75,6 +117,11 @@ namespace LibLSLCC.AutoCompleteParser
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
+        /// <summary>
+        /// Parse the given text up to a given offset.
+        /// </summary>
+        /// <param name="text">The text to parse.</param>
+        /// <param name="offset">The offset into the text to parse up to.</param>
         public void ParseUpTo(string text, int offset)
         {
             for (var i = 0; i < offset; i++)
@@ -83,7 +130,13 @@ namespace LibLSLCC.AutoCompleteParser
             }
         }
 
-        public void FeedChar(string text, int i, int offset)
+        /// <summary>
+        /// Feeds a single character from the given text at a certain index into the parser.
+        /// </summary>
+        /// <param name="text">The text the character is to be pulled from.</param>
+        /// <param name="i">The index of the character in the text to feed to the parser.</param>
+        /// <param name="offset">The offset at which the parser is set to parse up to.</param>
+        private void FeedChar(string text, int i, int offset)
         {
             var lookAhead = i + 1;
             var lookBehind = i - 1;

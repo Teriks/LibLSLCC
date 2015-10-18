@@ -51,19 +51,47 @@ using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+
+    /// <summary>
+    /// Represents a function signature that was parsed during the pre-pass that occurs during code validation.
+    /// </summary>
     public class LSLPreDefinedFunctionSignature : LSLFunctionSignature
     {
+        /// <summary>
+        /// Construct an LSLPreDefinedFunctionSignature from an LSLType representing the return type, a function name and an LSLParameterListNode
+        /// from an LSL Syntax tree.
+        /// </summary>
+        /// <param name="returnType">The return type of the function signature.</param>
+        /// <param name="name">The name of the function.</param>
+        /// <param name="parameters">The LSLParameterListNode from an LSL syntax tree that represents the function signatures parameters.</param>
         public LSLPreDefinedFunctionSignature(LSLType returnType, string name, LSLParameterListNode parameters)
             : base(returnType, name, parameters.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)))
         {
             ParameterListNode = parameters;
         }
 
+        /// <summary>
+        /// The LSLParameterListNOde from an LSL syntax tree the represents the function signatures parameters.
+        /// </summary>
         public LSLParameterListNode ParameterListNode { get; private set; }
+
+        /// <summary>
+        /// Internal property representing the ANTLR context for the function declaration node.
+        /// </summary>
         internal LSLParser.FunctionDeclarationContext DeclarationContext { get; set; }
+
+
+        /// <summary>
+        /// The LSLFunctionDeclarationNode in the syntax tree that this function signature belongs to/represents.
+        /// </summary>
         public LSLFunctionDeclarationNode DefinitionNode { get; private set; }
 
-        public void GiveDefinition(LSLFunctionDeclarationNode definition)
+
+        /// <summary>
+        /// Internal method that sets the DefinitionNode property, this method is named this way to bring clarity to the source code where it is used.
+        /// </summary>
+        /// <param name="definition"></param>
+        internal void GiveDefinition(LSLFunctionDeclarationNode definition)
         {
             DefinitionNode = definition;
         }

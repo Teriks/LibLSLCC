@@ -55,12 +55,12 @@ namespace LibraryDataScrapingTools.ScraperProxys
     {
         public LibraryDataSet(ILibraryData data)
         {
-            OverloadsDictionary = new UniqueValueDictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>>();
+            OverloadsDictionary = new Dictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>>();
             ConstantSet = new HashSet<LSLLibraryConstantSignature>();
             EventSet = new HashSet<LSLLibraryEventSignature>();
             FunctionSet = new HashSet<LSLLibraryFunctionSignature>();
-            EventDictionary = new UniqueValueDictionary<string, LSLLibraryEventSignature>();
-            ConstantDictionary = new UniqueValueDictionary<string, LSLLibraryConstantSignature>();
+            EventDictionary = new Dictionary<string, LSLLibraryEventSignature>();
+            ConstantDictionary = new Dictionary<string, LSLLibraryConstantSignature>();
 
             foreach (var f in data.LSLFunctions())
             {
@@ -89,9 +89,9 @@ namespace LibraryDataScrapingTools.ScraperProxys
             }
         }
 
-        public UniqueValueDictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>> OverloadsDictionary { get; private set; }
-        public UniqueValueDictionary<string, LSLLibraryConstantSignature> ConstantDictionary { get; private set; }
-        public UniqueValueDictionary<string, LSLLibraryEventSignature> EventDictionary { get; private set; }
+        public Dictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>> OverloadsDictionary { get; private set; }
+        public Dictionary<string, LSLLibraryConstantSignature> ConstantDictionary { get; private set; }
+        public Dictionary<string, LSLLibraryEventSignature> EventDictionary { get; private set; }
         public ISet<LSLLibraryFunctionSignature> FunctionSet { get; private set; }
         public ISet<LSLLibraryEventSignature> EventSet { get; private set; }
         public ISet<LSLLibraryConstantSignature> ConstantSet { get; private set; }

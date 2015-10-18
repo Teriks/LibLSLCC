@@ -49,20 +49,39 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.Collections
 {
+
+    /// <summary>
+    /// A wrapper implementation of IReadOnlySet that wraps an ISet object, giving it a read only interface.
+    /// </summary>
+    /// <typeparam name="T">The type that the ReadOnlyHashSet contains.</typeparam>
     public class ReadOnlyHashSet<T> : IReadOnlySet<T>
     {
         private readonly ISet<T> _items;
 
+        /// <summary>
+        /// Construct a ReadOnlyHashSet by wrapping an ISet object.
+        /// </summary>
+        /// <param name="items">The ISet object to wrap.</param>
         public ReadOnlyHashSet(ISet<T> items)
         {
             _items = items;
         }
 
+        /// <summary>
+        /// Construct a ReadOnlyHashSet from an IEnumerable containing items to be put into the set.
+        /// </summary>
+        /// <param name="items">An IEnumerable containing items that should be in the set.</param>
         public ReadOnlyHashSet(IEnumerable<T> items)
         {
             _items = new HashSet<T>(items);
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator<T> GetEnumerator()
         {
             return _items.GetEnumerator();
@@ -73,51 +92,101 @@ namespace LibLSLCC.Collections
             return ((IEnumerable) _items).GetEnumerator();
         }
 
+        /// <summary>
+        /// Determine if the set contains the given object.
+        /// </summary>
+        /// <param name="item">The item to look for.</param>
+        /// <returns>True if the set contains the given item.</returns>
         public bool Contains(T item)
         {
             return _items.Contains(item);
         }
 
+        /// <summary>
+        /// Copies the elements of the ReadOnlyHashSet to an array, starting at arrayIndex in the target array.
+        /// </summary>
+        /// <param name="array">The array to copy the items to.</param>
+        /// <param name="arrayIndex">The array index to start at in the target array.</param>
         public void CopyTo(T[] array, int arrayIndex)
         {
             _items.CopyTo(array, arrayIndex);
         }
 
+        /// <summary>
+        /// Gets the number of elements in the collection.
+        /// </summary>
+        /// <returns>
+        /// The number of elements in the collection. 
+        /// </returns>
         public int Count
         {
             get { return _items.Count; }
         }
 
+        /// <summary>
+        /// Determines if this ICollection is read only.
+        /// </summary>
         public bool IsReadOnly
         {
             get { return _items.IsReadOnly; }
         }
 
+        /// <summary>
+        /// Determines whether a set is a subset of a specified collection.
+        /// </summary>
+        /// <param name="other">The other collection.</param>
+        /// <returns>True if this set is a subset of the other collection.</returns>
         public bool IsSubsetOf(IEnumerable<T> other)
         {
             return _items.IsSubsetOf(other);
         }
 
+
+        /// <summary>
+        /// Determines whether the current set is a superset of the specified collection.
+        /// </summary>
+        /// <param name="other">The other collection.</param>
+        /// <returns>True if this set is a superset of the specified collection.</returns>
         public bool IsSupersetOf(IEnumerable<T> other)
         {
             return _items.IsSupersetOf(other);
         }
 
+        /// <summary>
+        /// Determines whether the current set is a proper (strict) superset of a specified collection.
+        /// </summary>
+        /// <param name="other">The other collection.</param>
+        /// <returns>True if the current set is a proper (string) superset of a specified collection.</returns>
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
             return _items.IsProperSupersetOf(other);
         }
 
+        /// <summary>
+        /// Determines whether the current set is a proper (strict) subset of a specified collection.
+        /// </summary>
+        /// <param name="other">The other collection.</param>
+        /// <returns>True if the current set is a proper (string) subset of a specified collection.</returns>
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
             return _items.IsProperSubsetOf(other);
         }
 
+        /// <summary>
+        /// Determines whether the current set overlaps with the specified collection.
+        /// </summary>
+        /// <param name="other">The other collection.</param>
+        /// <returns>True if the current set overlaps with the specified collection.</returns>
         public bool Overlaps(IEnumerable<T> other)
         {
             return _items.Overlaps(other);
         }
 
+        /// <summary>
+        /// Determines whether the current set and the specified collection contain the same elements.
+        /// </summary>
+        /// <param name="other">The other collection.</param>
+        /// <returns>True if the current set and the specified collection contain the same elements.</returns>
         public bool SetEquals(IEnumerable<T> other)
         {
             return _items.SetEquals(other);

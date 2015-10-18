@@ -49,10 +49,20 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
+
+    /// <summary>
+    /// Represents a flat code segment, it is basically a write only collection for ILSLReadOnlyCodeStatement objects.
+    /// The object keeps track of the starting and ending ILSLReadOnlyCodeStatement in the code segment, as well as the source
+    /// code range that all of the ILSLReadOnlyCodeStatement's occupy.
+    /// </summary>
     public class LSLCodeSegment
     {
         private readonly List<ILSLReadOnlyCodeStatement> _statementNodes;
 
+
+        /// <summary>
+        /// Construct an empty code segment.
+        /// </summary>
         public LSLCodeSegment()
         {
             _statementNodes = new List<ILSLReadOnlyCodeStatement>();
@@ -61,15 +71,34 @@ namespace LibLSLCC.CodeValidator.Primitives
             SourceCodeRange = new LSLSourceCodeRange();
         }
 
+        /// <summary>
+        /// The source code range that encompasses all ILSLReadOnlyCodeStatement objects in the LSLCodeStatement
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+        /// <summary>
+        /// The ILSLReadOnlyCodeStatement at the start of the code segment.
+        /// </summary>
         public ILSLReadOnlyCodeStatement StartNode { get; private set; }
+
+        /// <summary>
+        /// The ILSLReadOnlyCodeStatement at the end of the code segment.
+        /// </summary>
         public ILSLReadOnlyCodeStatement EndNode { get; private set; }
 
+        /// <summary>
+        /// All ILSLReadOnlyCodeStatement in the code segment, in order of definition.
+        /// </summary>
         public IReadOnlyList<ILSLReadOnlyCodeStatement> StatementNodes
         {
             get { return _statementNodes.AsReadOnly(); }
         }
 
+
+        /// <summary>
+        /// Adds an ILSLReadOnlyCodeStatement to the LSLCodeSegment object.
+        /// </summary>
+        /// <param name="statement">The ILSLReadOnlyCodeStatement to add.</param>
         public virtual void AddStatement(ILSLReadOnlyCodeStatement statement)
         {
             EndNode = statement;

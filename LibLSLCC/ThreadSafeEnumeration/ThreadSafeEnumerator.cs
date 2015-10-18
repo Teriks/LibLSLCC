@@ -51,6 +51,10 @@ using System.Threading;
 
 namespace LibLSLCC.ThreadSafeEnumeration
 {
+    /// <summary>
+    /// A thread safe wrapper for objects that derive from IEnumerator
+    /// </summary>
+    /// <typeparam name="T">The type the enumerator is to enumerate over.</typeparam>
     public class ThreadSafeEnumerator<T> : IEnumerator<T>
     {
         // this is the (thread-unsafe)
@@ -59,26 +63,40 @@ namespace LibLSLCC.ThreadSafeEnumeration
         // this is the object we shall lock on. 
         private readonly object _mLock;
 
-        public ThreadSafeEnumerator(IEnumerator<T> inner, object @lock)
+
+        /// <summary>
+        /// Create a thread safe enumerator wrapper, using an object as a lock.
+        /// </summary>
+        /// <param name="inner">The enumerator to wrap.</param>
+        /// <param name="lockObject">The object to use as a lock.</param>
+        public ThreadSafeEnumerator(IEnumerator<T> inner, object lockObject)
         {
             _mInner = inner;
-            _mLock = @lock;
+            _mLock = lockObject;
             // entering lock in constructor
             Monitor.Enter(_mLock);
         }
 
         #region Implementation of IDisposable
 
+
+        /// <summary>
+        /// Dispose the enumerator, Calls Monitor.Exit() and GC.SuppressFinalize(true);
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Dispose the enumerator, Calls Monitor.Exit();
+        /// </summary>
+        /// <param name="disposing">True if the object is disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
             // .. and exiting lock on Dispose()
-            // This will be called when foreach loop finishes
+            // This will be called when for-each loop finishes
             Monitor.Exit(_mLock);
         }
 
@@ -90,18 +108,28 @@ namespace LibLSLCC.ThreadSafeEnumeration
         // to the inner enumerator, that actually iterates
         // over some collection
 
+
+        /// <summary>
+        /// Move to the next item.
+        /// </summary>
+        /// <returns>True if more items exist</returns>
         public bool MoveNext()
         {
             return _mInner.MoveNext();
         }
 
 
+        /// <summary>
+        /// Reset enumerator.
+        /// </summary>
         public void Reset()
         {
             _mInner.Reset();
         }
 
-
+        /// <summary>
+        /// Current item.
+        /// </summary>
         public T Current
         {
             get { return _mInner.Current; }

@@ -48,13 +48,31 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.Collections
 {
+
+    /// <summary>
+    /// Collection extensions for collections in CSharp's standard library
+    /// </summary>
     public static class CollectionExtensions
     {
+
+        /// <summary>
+        /// Create a read only dictionary wrapper around an IDictionary object.
+        /// </summary>
+        /// <typeparam name="TK">The key type.</typeparam>
+        /// <typeparam name="TV">The value type.</typeparam>
+        /// <param name="dict">The IDictionary object to wrap.</param>
+        /// <returns>An IReadOnlyDictionary interface who's implementation wraps around the IDictionary making it read only.</returns>
         public static IReadOnlyDictionary<TK, TV> AsReadOnly<TK, TV>(this IDictionary<TK, TV> dict)
         {
             return new ReadOnlyDictionary<TK, TV>(dict);
         }
 
+        /// <summary>
+        /// Create a read only set wrapper around an ISet object.
+        /// </summary>
+        /// <param name="set">The ISet object to wrap.</param>
+        /// <typeparam name="T">The type the ISet object contains.</typeparam>
+        /// <returns>An IReadOnlySet interface who's implementation wraps around the ISet making it read only.</returns>
         public static IReadOnlySet<T> AsReadOnly<T>(this ISet<T> set)
         {
             return new ReadOnlyHashSet<T>(set);
