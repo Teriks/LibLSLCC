@@ -48,9 +48,21 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for list literal nodes.
+    /// </summary>
     public interface ILSLListLiteralNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// A list of expressions that were used to initialize the list literal, or an empty list.
+        /// </summary>
         IReadOnlyList<ILSLReadOnlyExprNode> ListEntryExpressions { get; }
+
+        /// <summary>
+        /// The expression list node that contains all of the expressions used to initialize the list literal.
+        /// This will never be null, even when the list literal was defined as being empty.
+        /// </summary>
         ILSLExpressionListNode ExpressionListNode { get; }
     }
 }

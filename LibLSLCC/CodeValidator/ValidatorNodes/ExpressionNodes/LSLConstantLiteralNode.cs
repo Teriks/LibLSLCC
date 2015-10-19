@@ -88,6 +88,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         #region ILSLExprNode Members
 
+        /// <summary>
+        /// The raw text of the literal taken from the source code.
+        /// </summary>
         public string RawText
         {
             get { return ParserContext.children[0].GetText(); }

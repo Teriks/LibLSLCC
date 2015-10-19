@@ -40,16 +40,53 @@
 // 
 // 
 #endregion
+
+using LibLSLCC.CodeValidator.Enums;
+
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for variable references.  
+    /// An ILSLVariableNode is also created as a child of an ILSLVariableDeclarationNode.
+    /// </summary>
     public interface ILSLVariableNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// True if this variable node references a library constant, False if it references a user defined variable or parameter.
+        /// </summary>
         bool IsLibraryConstant { get; }
+
+        /// <summary>
+        /// True if this variable node references a user defined global variable.
+        /// </summary>
         bool IsGlobal { get; }
+
+        /// <summary>
+        /// True if this variable node references a user defined local variable.
+        /// </summary>
         bool IsLocal { get; }
+
+
+        /// <summary>
+        /// A reference to the ILSLVariableDeclarationNode in the syntax tree where this variable was initially declared.
+        /// </summary>
         ILSLVariableDeclarationNode Declaration { get; }
+
+
+        /// <summary>
+        /// True if this variable node references a function or event handler parameter.
+        /// </summary>
         bool IsParameter { get; }
+
+        /// <summary>
+        /// The raw type string describing the type of the variable referenced.
+        /// </summary>
         string TypeString { get; }
+
+        /// <summary>
+        /// The name of the referenced variable.
+        /// </summary>
         string Name { get; }
     }
 }

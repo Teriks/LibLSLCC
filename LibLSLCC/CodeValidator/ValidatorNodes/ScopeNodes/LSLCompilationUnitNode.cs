@@ -128,7 +128,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             }
         }
 
+
+        /// <summary>
+        /// A list of objects describing the comments found in the source code and their position/range.
+        /// </summary>
         public IReadOnlyList<LSLComment> Comments { get; set; }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -137,17 +142,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         IReadOnlyList<ILSLVariableDeclarationNode> ILSLCompilationUnitNode.GlobalVariableDeclarations
         {
-            get { return _globalVariableDeclarations; }
+            get { return _globalVariableDeclarations ?? new List<LSLVariableDeclarationNode>(); }
         }
 
         IReadOnlyList<ILSLFunctionDeclarationNode> ILSLCompilationUnitNode.FunctionDeclarations
         {
-            get { return _functionDeclarations; }
+            get { return _functionDeclarations ?? new List<LSLFunctionDeclarationNode>(); }
         }
 
         IReadOnlyList<ILSLStateScopeNode> ILSLCompilationUnitNode.StateDeclarations
         {
-            get { return _stateDeclarations; }
+            get { return _stateDeclarations ?? new List<LSLStateScopeNode>(); }
         }
 
         ILSLStateScopeNode ILSLCompilationUnitNode.DefaultState
@@ -161,6 +166,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             return new LSLCompilationUnitNode(sourceRange, Err.Err);
         }
 
+
+
+        /// <summary>
+        /// Add a global variable declaration node to this compilation unit node.
+        /// </summary>
+        /// <param name="declaration">The global variable declaration node to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is null.</exception>
         public void AddVariableDeclaration(LSLVariableDeclarationNode declaration)
         {
             if (declaration == null)
@@ -181,6 +193,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             _globalVariableDeclarations.Add(declaration);
         }
 
+
+        /// <summary>
+        /// Add a function declaration node to this compilation unit node.
+        /// </summary>
+        /// <param name="declaration">The function declaration node to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is null.</exception>
         public void AddFunctionDeclaration(LSLFunctionDeclarationNode declaration)
         {
             if (declaration == null)
@@ -198,6 +216,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             _functionDeclarations.Add(declaration);
         }
 
+
+        /// <summary>
+        /// Add a state declaration node to this compilation unit node.
+        /// </summary>
+        /// <param name="declaration">The state declaration node to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is null.</exception>
         public void AddStateDeclaration(LSLStateScopeNode declaration)
         {
             if (declaration == null)
@@ -227,17 +251,32 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         #region ILSLTreeNode Members
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitCompilationUnit(this);
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion

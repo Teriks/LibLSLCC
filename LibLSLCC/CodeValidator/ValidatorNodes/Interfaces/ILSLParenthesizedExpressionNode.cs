@@ -42,8 +42,15 @@
 #endregion
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for parenthesized expressions.
+    /// </summary>
     public interface ILSLParenthesizedExpressionNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The expression node contained within the parenthesis, this should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode InnerExpression { get; }
     }
 }

@@ -109,17 +109,37 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         internal IToken OperationToken { get; private set; }
         internal LSLParser.ExpressionContext ParserContext { get; private set; }
+
+
         public ILSLExprNode LeftExpression { get; private set; }
+
+
+
         public ILSLExprNode RightExpression { get; private set; }
+
+
+        /// <summary>
+        /// The source code range that encompasses the binary expression and its children.
+        /// </summary>
         public LSLSourceCodeRange OperationSourceCodeRange { get; private set; }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
             get { return Parent; }
         }
 
+        /// <summary>
+        /// The binary operation type of this node.
+        /// </summary>
         public LSLBinaryOperationType Operation { get; private set; }
+
+
+        /// <summary>
+        /// The string representation of the binary operation this node preforms.
+        /// </summary>
         public string OperationString { get; private set; }
+
 
         ILSLReadOnlyExprNode ILSLBinaryExpressionNode.LeftExpression
         {
@@ -153,17 +173,36 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         #region ILSLExprNode Members
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; internal set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitBinaryExpression(this);
         }
 
 
+        /// <summary>
+        /// Should produce a user friendly description of the expressions return type.
+        /// This is used in some syntax error messages, Ideally you should enclose your description in
+        /// parenthesis or something that will make it stand out in a string.
+        /// </summary>
+        /// <returns></returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");
@@ -173,12 +212,19 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         public LSLType Type { get; private set; }
 
 
+        /// <summary>
+        /// The expression type/classification of the expression.
+        /// <see cref="LSLExpressionType"/>
+        /// </summary>
         public LSLExpressionType ExpressionType
         {
             get { return LSLExpressionType.BinaryExpression; }
         }
 
 
+        /// <summary>
+        /// True if the expression is constant and can be calculated at compile time.
+        /// </summary>
         public bool IsConstant
         {
             get { return 
@@ -193,9 +239,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
             if (HasErrors)

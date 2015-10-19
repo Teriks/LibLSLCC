@@ -49,15 +49,58 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for function call expression nodes.
+    /// </summary>
     public interface ILSLFunctionCallNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The name of the function that was called.
+        /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// A list of parameter expressions used to call the function, or an empty list if no parameters were used.
+        /// </summary>
         IReadOnlyList<ILSLReadOnlyExprNode> ParameterExpressions { get; }
+
+        /// <summary>
+        /// The function signature of the function that was called, as it was defined by either the user or library.
+        /// </summary>
         LSLFunctionSignature Signature { get; }
+
+
+        /// <summary>
+        /// The parameter list node containing the expressions used to call this function, this will never be null even if the parameter list is empty.
+        /// </summary>
         ILSLExpressionListNode ParameterListNode { get; }
+
+
+        /// <summary>
+        /// The syntax tree node where the function was defined if it is a user defined function.  If the function call is to a library function this will be null.
+        /// </summary>
         ILSLFunctionDeclarationNode DefinitionNode { get; }
+
+
+        /// <summary>
+        /// True if the function that was called is a library function call, false if it was a call to a user defined function.
+        /// </summary>
+        bool IsLibraryFunctionCall { get; }
+
+        /// <summary>
+        /// The source code range of the opening parentheses where the parameters of the function start.
+        /// </summary>
         LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the closing parentheses where the parameters of the function end.
+        /// </summary>
         LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the function name in the function call expression.
+        /// </summary>
         LSLSourceCodeRange FunctionNameSourceCodeRange { get; }
     }
 }

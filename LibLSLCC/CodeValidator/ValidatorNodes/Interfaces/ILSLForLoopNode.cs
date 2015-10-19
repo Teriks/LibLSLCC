@@ -48,17 +48,66 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for for-loop statements.
+    /// </summary>
     public interface ILSLForLoopNode : ILSLReadOnlyCodeStatement, ILSLLoopNode
     {
+        /// <summary>
+        /// The source code range of the 'for' keyword in the statement.
+        /// </summary>
         LSLSourceCodeRange ForKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the opening parenthesis that starts the for-loop clauses area.
+        /// </summary>
         LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The expression list node that contains the expressions used in the initialization clause of the for-loop.
+        /// This property should never be null unless the for loop node is an erroneous node.
+        /// Ideally you should not be handling a syntax tree containing syntax errors.
+        /// </summary>
         ILSLExpressionListNode InitExpressionsList { get; }
+
+
+        /// <summary>
+        /// The source code range of the semi-colon that separates the initialization clause from the condition clause of the for-loop;
+        /// </summary>
         LSLSourceCodeRange FirstSemiColonSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the semi-colon that separates the condition clause from the afterthought expressions of the for-loop;
+        /// </summary>
         LSLSourceCodeRange SecondSemiColonSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the closing parenthesis that ends the for-loop clause section.
+        /// </summary>
         LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The expression list node that contains the expressions used in the afterthought area of the for-loop's clauses.
+        /// This property should never be null unless the for loop node is an erroneous node.
+        /// Ideally you should not be handling a syntax tree containing syntax errors.
+        /// </summary>
         ILSLExpressionListNode AfterthoughExpressions { get; }
+
+
+        /// <summary>
+        /// Returns true if the for-loop statement contains any initialization expressions, otherwise False.
+        /// </summary>
         bool HasInitExpressions { get; }
+
+        /// <summary>
+        /// Returns true if the for-loop statement contains a condition expression, otherwise False.
+        /// </summary>
         bool HasConditionExpression { get; }
+
+        /// <summary>
+        /// Returns true if the for-loop statement contains any afterthought expressions, otherwise False.
+        /// </summary>
         bool HasAfterthoughtExpressions { get; }
     }
 }

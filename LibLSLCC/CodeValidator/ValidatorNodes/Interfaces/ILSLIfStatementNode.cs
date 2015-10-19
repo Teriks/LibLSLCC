@@ -48,12 +48,34 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
-    public interface ILSLIfStatementNode : ILSLReturnPathNode, ILSLBranchStatementNode
+    /// <summary>
+    /// AST Node interface for if statements
+    /// </summary>
+    public interface ILSLIfStatementNode : ILSLReturnPathNode, ILSLReadOnlyBranchStatementNode
     {
+        /// <summary>
+        /// The code inside the if statement.
+        /// </summary>
         ILSLCodeScopeNode Code { get; }
+
+        /// <summary>
+        /// The expression inside the condition clause of the if statement.
+        /// </summary>
         ILSLReadOnlyExprNode ConditionExpression { get; }
+
+        /// <summary>
+        /// The source code range of the 'if' keyword of the statement.
+        /// </summary>
         LSLSourceCodeRange IfKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the opening parenthesis of the condition area.
+        /// </summary>
         LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the closing parenthesis of the condition area.
+        /// </summary>
         LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
     }
 }

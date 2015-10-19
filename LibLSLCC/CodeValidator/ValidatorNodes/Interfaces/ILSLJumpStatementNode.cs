@@ -48,13 +48,40 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for jump statements.
+    /// </summary>
     public interface ILSLJumpStatementNode : ILSLReadOnlyCodeStatement
     {
+        /// <summary>
+        /// The name of the label that the jump statement jumps to.
+        /// </summary>
         string LabelName { get; }
+
+        /// <summary>
+        /// The label statement node in the syntax tree that this jump statement jumps to.
+        /// </summary>
         ILSLLabelStatementNode JumpTarget { get; }
+
+        /// <summary>
+        /// True if this jump is guaranteed to occur in a constant manner.  
+        /// IE, the jump is always encountered regardless of program control flow.
+        /// </summary>
         bool ConstantJump { get; }
+
+        /// <summary>
+        /// The source code range of the 'jump' keyword in the jump statement.
+        /// </summary>
         LSLSourceCodeRange JumpKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the target label name in the jump statement.
+        /// </summary>
         LSLSourceCodeRange LabelNameSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the semi-colon that follows the jump statement.
+        /// </summary>
         LSLSourceCodeRange SemiColonSourceCodeRange { get; }
     }
 }

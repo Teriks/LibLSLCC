@@ -48,17 +48,42 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node read only interface for expression nodes.
+    /// </summary>
     public interface ILSLReadOnlyExprNode : ILSLReadOnlySyntaxTreeNode
     {
+        /// <summary>
+        /// The return type of the expression.
+        /// </summary>
         LSLType Type { get; }
+
+
+        /// <summary>
+        /// The expression type/classification of the expression.
+        /// <see cref="LSLExpressionType"/>
+        /// </summary>
         LSLExpressionType ExpressionType { get; }
 
         /// <summary>
-        ///     Is this expression constant (can it be calculated at compile time)
+        /// True if the expression is constant and can be calculated at compile time.
         /// </summary>
         bool IsConstant { get; }
 
+
+        /// <summary>
+        /// Should produce a user friendly description of the expressions return type.
+        /// This is used in some syntax error messages, Ideally you should enclose your description in
+        /// parenthesis or something that will make it stand out in a string.
+        /// </summary>
+        /// <returns></returns>
         string DescribeType();
+
+        /// <summary>
+        /// Deep clone the expression node into a new node.
+        /// This should deep clone all of the node's children as well.
+        /// </summary>
+        /// <returns></returns>
         ILSLReadOnlyExprNode Clone();
     }
 }

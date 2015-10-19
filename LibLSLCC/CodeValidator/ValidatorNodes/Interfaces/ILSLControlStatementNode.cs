@@ -48,13 +48,43 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for control statement chains.  This node's children consists of
+    /// an if statement, optionally multiple else-if statements, and an optional else statement.
+    /// </summary>
     public interface ILSLControlStatementNode : ILSLReadOnlyCodeStatement
     {
+        /// <summary>
+        /// True if the control statement node has an else statement child.
+        /// </summary>
         bool HasElseStatement { get; }
+
+        /// <summary>
+        /// True if the control statement node has an if statement child.
+        /// This can only really be false if the node contains errors.
+        /// It should always be checked before using the IfStatement child property.
+        /// </summary>
         bool HasIfStatement { get; }
+
+        /// <summary>
+        /// True if the control statement node has any if-else statement children.
+        /// </summary>
         bool HasElseIfStatements { get; }
+
+        /// <summary>
+        /// The else statement child of this control statement node if one exists, otherwise null.
+        /// </summary>
         ILSLElseStatementNode ElseStatement { get; }
+
+        /// <summary>
+        /// The if statement child of this control statement node if one exists, otherwise null.
+        /// </summary>
         ILSLIfStatementNode IfStatement { get; }
+
+        /// <summary>
+        /// The else-if statement children of this control statement node if one exists, otherwise an empty enumerable.
+        /// </summary>
         IEnumerable<ILSLElseIfStatementNode> ElseIfStatements { get; }
     }
 }

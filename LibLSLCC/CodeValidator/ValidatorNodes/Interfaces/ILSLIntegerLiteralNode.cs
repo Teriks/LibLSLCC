@@ -42,8 +42,15 @@
 #endregion
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST token interface for integer literal nodes.
+    /// </summary>
     public interface ILSLIntegerLiteralNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The raw source code text that defines the integer literal.
+        /// </summary>
         string RawText { get; }
     }
 }

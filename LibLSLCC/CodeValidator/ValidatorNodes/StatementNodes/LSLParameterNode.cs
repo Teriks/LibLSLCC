@@ -76,31 +76,65 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// The name of the parameter.
+        /// </summary>
         public string Name
         {
             get { return ParserContext.ID().GetText(); }
         }
 
+        /// <summary>
+        /// The LSLType associated with the parameter.
+        /// </summary>
         public LSLType Type
         {
             get { return LSLTypeTools.FromLSLTypeString(ParserContext.TYPE().GetText()); }
         }
 
+        /// <summary>
+        /// The string representation of the LSLType for the parameter, taken from the source code.
+        /// </summary>
         public string TypeString
         {
             get { return ParserContext.TYPE().GetText(); }
         }
 
+        /// <summary>
+        /// The zero based index of the parameter definition in its parent ILSLParameterListNode.
+        /// </summary>
         public int ParameterIndex { get; set; }
+
+
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
+
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitParameterDefinition(this);
         }
 
+
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
 
         public static
             LSLParameterNode GetError(LSLSourceCodeRange sourceRange)

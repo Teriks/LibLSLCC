@@ -42,8 +42,17 @@
 #endregion
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST base interface for syntax tree expression nodes.
+    /// </summary>
     public interface ILSLExprNode : ILSLReadOnlyExprNode, ILSLSyntaxTreeNode
     {
+
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         new ILSLExprNode Clone();
     }
 }

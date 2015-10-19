@@ -49,13 +49,36 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 {
+    /// <summary>
+    /// Various extensions for dealing with syntax tree expression nodes.
+    /// </summary>
     public static class LSLExprNodeExtensions
     {
+        /// <summary>
+        /// Determines if the expression node represents a code literal.  Such as a string, vector, rotation or list literal.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a code literal.</returns>
         public static bool IsLiteral(this ILSLReadOnlyExprNode node)
         {
             return node.ExpressionType == LSLExpressionType.Literal;
         }
 
+
+        /// <summary>
+        /// Determines if the expression node represents a compound expression.
+        /// 
+        /// Compound expressions are:
+        /// 
+        /// Binary Expressions
+        /// Parenthesized Expressions
+        /// Postfix Expressions
+        /// Prefix Expressions
+        /// Typecast Expressions
+        /// 
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a compound expression.</returns>
         public static bool IsCompoundExpression(this ILSLReadOnlyExprNode node)
         {
             return node.ExpressionType == LSLExpressionType.BinaryExpression ||
@@ -65,34 +88,80 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                    node.ExpressionType == LSLExpressionType.TypecastExpression;
         }
 
+        /// <summary>
+        /// Determines if an expression node represents a function call to a user defined or library defined function.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a function call to either a user defined or library defined function.</returns>
         public static bool IsFunctionCall(this ILSLReadOnlyExprNode node)
         {
             return node.ExpressionType == LSLExpressionType.LibraryFunction ||
                    node.ExpressionType == LSLExpressionType.UserFunction;
         }
 
+
+        /// <summary>
+        /// Determines if an expression node represents a function call to a library defined function.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a function call to a library defined function.</returns>
         public static bool IsLibraryFunctionCall(this ILSLReadOnlyExprNode node)
         {
             return node.ExpressionType == LSLExpressionType.LibraryFunction;
         }
 
+
+        /// <summary>
+        /// Determines if an expression node represents a function call to a user defined function.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a function call to a user defined function.</returns>
         public static bool IsUserFunctionCall(this ILSLReadOnlyExprNode node)
         {
             return node.ExpressionType == LSLExpressionType.UserFunction;
         }
 
+        /// <summary>
+        /// Determines if an expression node represents a reference to a global or local variable.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a reference to either a global or local variable.</returns>
         public static bool IsVariable(this ILSLReadOnlyExprNode node)
         {
             return node.ExpressionType == LSLExpressionType.GlobalVariable ||
                    node.ExpressionType == LSLExpressionType.LocalVariable;
         }
 
+
+        /// <summary>
+        /// Determines if an expression node represents a reference to a local variable.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a reference to a local variable.</returns>
         public static bool IsLocalVariable(this ILSLReadOnlyExprNode node)
         {
             return
                 node.ExpressionType == LSLExpressionType.LocalVariable;
         }
 
+
+        /// <summary>
+        /// Determines if an expression node represents a reference to a local parameter.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a reference to a local parameter.</returns>
+        public static bool IsLocalParameter(this ILSLReadOnlyExprNode node)
+        {
+            return
+                node.ExpressionType == LSLExpressionType.ParameterVariable;
+        }
+
+
+        /// <summary>
+        /// Determines if an expression node represents a reference to a global variable.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a reference to a global variable.</returns>
         public static bool IsGlobalVariable(this ILSLReadOnlyExprNode node)
         {
             return

@@ -50,12 +50,36 @@ using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for expression list, such as function call parameters, for loop init sections/afterthoughts, list initializers ect.
+    /// </summary>
     public interface ILSLExpressionListNode : ILSLSyntaxTreeNode
     {
+        /// <summary>
+        /// The type of expression list this node represents.
+        /// <see cref="LSLExpressionListType"/>
+        /// </summary>
         LSLExpressionListType ListType { get; }
+
+
+        /// <summary>
+        /// A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
+        /// </summary>
         IReadOnlyList<ILSLReadOnlyExprNode> ExpressionNodes { get; }
+
+        /// <summary>
+        /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
+        /// </summary>
         IReadOnlyList<LSLSourceCodeRange> CommaSourceCodeRanges { get; }
+
+        /// <summary>
+        /// True if all expressions in the expression list are considered to be constant expressions.
+        /// </summary>
         bool AllExpressionsConstant { get; }
+
+        /// <summary>
+        /// True if this expression list node actually has expression children, False if it is empty.
+        /// </summary>
         bool HasExpressionNodes { get; }
     }
 }

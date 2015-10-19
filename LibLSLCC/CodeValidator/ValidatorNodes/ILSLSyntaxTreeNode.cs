@@ -49,16 +49,46 @@ using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes
 {
+    /// <summary>
+    /// Base read only interface for syntax tree nodes.
+    /// </summary>
     public interface ILSLReadOnlySyntaxTreeNode
     {
+
+        /// <summary>
+        /// The read only interface of the parent node of this syntax tree node.
+        /// </summary>
         ILSLReadOnlySyntaxTreeNode Parent { get; }
+
+
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         bool HasErrors { get; }
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         LSLSourceCodeRange SourceCodeRange { get; }
+
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor);
     }
 
+
+    /// <summary>
+    /// Base interface for syntax tree nodes.
+    /// </summary>
     public interface ILSLSyntaxTreeNode : ILSLReadOnlySyntaxTreeNode
     {
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         new ILSLSyntaxTreeNode Parent { get; set; }
     }
 }

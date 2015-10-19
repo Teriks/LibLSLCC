@@ -118,13 +118,23 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         internal LSLParser.Expr_FunctionCallContext ParserContext { get; private set; }
 
+        /// <summary>
+        /// A list of parameter expressions used to call the function, or an empty list if no parameters were used.
+        /// </summary>
         public IReadOnlyList<ILSLExprNode> ParameterExpressions
         {
             get { return ParameterListNode.ExpressionNodes; }
         }
 
+        /// <summary>
+        /// The parameter list node containing the expressions used to call this function, this will never be null even if the parameter list is empty.
+        /// </summary>
         public LSLExpressionListNode ParameterListNode { get; private set; }
 
+
+        /// <summary>
+        /// The syntax tree node where the function was defined if it is a user defined function.  If the function call is to a library function this will be null.
+        /// </summary>
         public LSLFunctionDeclarationNode DefinitionNode
         {
             get
@@ -134,12 +144,35 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                     return _preDefinition.DefinitionNode;
                 }
 
-                throw new InvalidOperationException("Cannot get a definition node for a library function call.");
+                return null;
             }
         }
 
+        /// <summary>
+        /// True if the function that was called is a library function call, false if it was a call to a user defined function.
+        /// </summary>
+        public bool IsLibraryFunctionCall
+        {
+            get
+            {
+                return _libraryFunction;
+            }
+        }
+
+        /// <summary>
+        /// The source code range of the opening parentheses where the parameters of the function start.
+        /// </summary>
         public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+
+        /// <summary>
+        /// The source code range of the closing parentheses where the parameters of the function end.
+        /// </summary>
         public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the function name in the function call expression.
+        /// </summary>
         public LSLSourceCodeRange FunctionNameSourceCodeRange { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -147,6 +180,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// The name of the function that was called.
+        /// </summary>
         public string Name
         {
             get { return ParserContext.function_name.Text; }
@@ -157,6 +193,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return ParameterExpressions; }
         }
 
+        /// <summary>
+        /// The function signature of the function that was called, as it was defined by either the user or library.
+        /// </summary>
         public LSLFunctionSignature Signature
         {
             get
@@ -195,6 +234,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         #region ILSLExprNode Members
 
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
             if (HasErrors)
@@ -221,14 +264,31 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (ExpressionType == LSLExpressionType.LibraryFunction)
@@ -246,22 +306,38 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The return type of the expression.
+        /// </summary>
         public LSLType Type
         {
             get { return Signature.ReturnType; }
         }
 
+        /// <summary>
+        /// The expression type/classification of the expression.
+        /// <see cref="LSLExpressionType"/>
+        /// </summary>
         public LSLExpressionType ExpressionType
         {
             get { return _libraryFunction ? LSLExpressionType.LibraryFunction : LSLExpressionType.UserFunction; }
         }
 
+        /// <summary>
+        /// True if the expression is constant and can be calculated at compile time.
+        /// </summary>
         public bool IsConstant
         {
             get { return false; }
         }
 
 
+        /// <summary>
+        /// Should produce a user friendly description of the expressions return type.
+        /// This is used in some syntax error messages, Ideally you should enclose your description in
+        /// parenthesis or something that will make it stand out in a string.
+        /// </summary>
+        /// <returns></returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");

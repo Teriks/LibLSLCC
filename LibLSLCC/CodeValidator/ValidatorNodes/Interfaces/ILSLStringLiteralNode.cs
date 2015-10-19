@@ -40,11 +40,30 @@
 // 
 // 
 #endregion
+
+using LibLSLCC.CodeValidator.Components.Interfaces;
+
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST token interface for string literal nodes.
+    /// </summary>
     public interface ILSLStringLiteralNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The pre-processed text of the string literal.
+        /// 
+        /// LSLCodeValidator relies on an implementation of ILSLStringPreProcessor to fill this value out by passing ILSLStringPreProcessor
+        /// the raw text for the string literal and assigning the string it produces to this property.
+        /// <see cref="ILSLStringPreProcessor"/>
+        /// </summary>
         string PreProccessedText { get; }
+
+        /// <summary>
+        /// The raw text for the string literal from the source code, this should include the quote characters that surround the string.
+        /// Any escape codes used in the source code string should be double escaped.
+        /// </summary>
         string RawText { get; }
     }
 }

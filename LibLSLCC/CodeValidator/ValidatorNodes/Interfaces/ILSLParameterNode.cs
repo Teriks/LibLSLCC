@@ -48,11 +48,30 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for parameter function and event handler parameter definitions.
+    /// </summary>
     public interface ILSLParameterNode : ILSLReadOnlySyntaxTreeNode
     {
+        /// <summary>
+        /// The name of the parameter.
+        /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// The LSLType associated with the parameter.
+        /// </summary>
         LSLType Type { get; }
+
+        /// <summary>
+        /// The string representation of the LSLType for the parameter, taken from the source code.
+        /// </summary>
         string TypeString { get; }
+
+        /// <summary>
+        /// The zero based index of the parameter definition in its parent ILSLParameterListNode.
+        /// </summary>
         int ParameterIndex { get; }
     }
 }

@@ -48,14 +48,48 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for rotation literal nodes.
+    /// </summary>
     public interface ILSLRotationLiteralNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The expression node used to initialize the X (first) Component of the rotation literal.  
+        /// This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode XExpression { get; }
+
+        /// <summary>
+        /// The source code range of the first component separator comma to appear in the rotation literal.
+        /// </summary>
         LSLSourceCodeRange CommaOneSourceCodeRange { get; }
+
+        /// <summary>
+        /// The expression node used to initialize the Y (second) Component of the rotation literal.  
+        /// This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode YExpression { get; }
+
+        /// <summary>
+        /// The source code range of the second component separator comma to appear in the rotation literal.
+        /// </summary>
         LSLSourceCodeRange CommaTwoSourceCodeRange { get; }
+
+        /// <summary>
+        /// The expression node used to initialize the Z (third) Component of the rotation literal.  
+        /// This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode ZExpression { get; }
+
+        /// <summary>
+        /// The source code range of the third component separator comma to appear in the rotation literal.
+        /// </summary>
         LSLSourceCodeRange CommaThreeSourceCodeRange { get; }
+
+        /// <summary>
+        /// The expression node used to initialize the S (fourth) Component of the rotation literal.  
+        /// This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode SExpression { get; }
     }
 }

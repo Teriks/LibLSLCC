@@ -49,14 +49,48 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for code state blocks.
+    /// </summary>
     public interface ILSLStateScopeNode : ILSLReadOnlySyntaxTreeNode
     {
+        /// <summary>
+        /// The name of the state block in the source code.
+        /// 'default' should be returned if the node represents the default state.
+        /// </summary>
         string StateName { get; }
+
+        /// <summary>
+        /// True if this state scope node represents a user defined state,  False if it is the 'default' state.
+        /// </summary>
         bool IsDefinedState { get; }
+
+
+        /// <summary>
+        /// True if this state scope node represents the 'default' state,  False if it is a user defined state.
+        /// </summary>
         bool IsDefaultState { get; }
+
+        /// <summary>
+        /// A list of event handlers nodes for each event handler that was used in the state.  
+        /// This should never be empty unless syntax errors are present.
+        /// </summary>
         IReadOnlyList<ILSLEventHandlerNode> EventHandlers { get; }
+
+        /// <summary>
+        /// The source code range of the opening brace of the state block's scope.
+        /// </summary>
         LSLSourceCodeRange OpenBraceSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the closing brace of the state block's scope.
+        /// </summary>
         LSLSourceCodeRange CloseBraceSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range where the name of the state is located.
+        /// For the default state, this will be the location of the 'default' keyword.
+        /// </summary>
         LSLSourceCodeRange StateNameSourceCodeRange { get; }
     }
 }

@@ -49,11 +49,31 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for postfix operations on an expression.
+    /// </summary>
     public interface ILSLPostfixOperationNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The postfix operation type preformed on the expression.
+        /// <see cref="LSLPostfixOperationType"/>
+        /// </summary>
         LSLPostfixOperationType Operation { get; }
+
+        /// <summary>
+        /// The postfix operation string taken from the source code.
+        /// </summary>
         string OperationString { get; }
+
+
+        /// <summary>
+        /// The expression that is left of the postfix operator, this should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode LeftExpression { get; }
+
+        /// <summary>
+        /// The source code range the postfix operator occupies.
+        /// </summary>
         LSLSourceCodeRange OperationSourceCodeRange { get; }
     }
 }

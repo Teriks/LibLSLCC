@@ -125,6 +125,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         #region ILSLBranchStatementNode Members
 
+        /// <summary>
+        /// Determines if the condition controlling the branch is a constant expression.
+        /// </summary>
         public bool IsConstantBranch
         {
             get { return ConditionExpression != null && ConditionExpression.IsConstant; }
@@ -134,6 +137,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         #region ILSLReturnPathNode Members
 
+        /// <summary>
+        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        /// </summary>
         public bool HasReturnPath
         {
             get { return Code != null && Code.HasReturnPath; }
@@ -141,9 +147,27 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         #endregion
 
+        /// <summary>
+        /// The source code range of the 'if' keyword in the else-if statement.
+        /// </summary>
         public LSLSourceCodeRange IfKeywordSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the 'else' keyword in the else-if statement.
+        /// </summary>
         public LSLSourceCodeRange ElseKeywordSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the opening parenthesis in the else-if statement where the condition area starts.
+        /// </summary>
         public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the closing parenthesis in the else-if statement where the condition area ends.
+        /// </summary>
         public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
 
         public static
@@ -163,13 +187,30 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         #region ILSLTreeNode Members
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
+
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitElseIfStatement(this);

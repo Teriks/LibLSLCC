@@ -51,6 +51,10 @@ using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for code scopes. 
+    /// Includes function, event handler, control/loop statement code body's, and anonymous code scopes.
+    /// </summary>
     public interface ILSLCodeScopeNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
@@ -103,6 +107,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// </summary>
         LSLReturnStatementNode ReturnStatementNode { get; }
 
+
+        /// <summary>
+        /// The type of code scope this node represents.
+        /// </summary>
         LSLCodeScopeType CodeScopeType { get; }
     }
 }

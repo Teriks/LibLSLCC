@@ -42,8 +42,15 @@
 #endregion
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST token interface for float literals.
+    /// </summary>
     public interface ILSLFloatLiteralNode : ILSLReadOnlyExprNode
     {
+
+        /// <summary>
+        /// The raw text from the source code representing the float literal token.
+        /// </summary>
         string RawText { get; }
     }
 }

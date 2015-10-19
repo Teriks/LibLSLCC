@@ -42,9 +42,20 @@
 #endregion
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for all loop type nodes that rely on a loop condition.
+    /// </summary>
     public interface ILSLLoopNode
     {
+        /// <summary>
+        /// The condition expression that controls the loop, this could be null in the case of for-loops.
+        /// </summary>
         ILSLReadOnlyExprNode ConditionExpression { get; }
+
+
+        /// <summary>
+        /// The code scope node that represents the code scope of the loop body.
+        /// </summary>
         ILSLCodeScopeNode Code { get; }
     }
 }

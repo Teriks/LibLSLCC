@@ -111,6 +111,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// True if this parameter list node contains parameter definition nodes.
+        /// </summary>
         public bool HasParameterNodes
         {
             get { return _parameters.Count > 0; }
@@ -121,10 +124,30 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return _parameters; }
         }
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
+
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
+
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitParameterDefinitionList(this);
@@ -260,6 +283,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             return result;
         }
 
+        /// <summary>
+        /// Add a parameter definition node to this parameter list node.
+        /// </summary>
+        /// <param name="node">The parameter definition node to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is null.</exception>
         public void AddParameterNode(LSLParameterNode node)
         {
             if (node == null)
@@ -271,6 +299,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             _parameters.Add(node);
         }
 
+        /// <summary>
+        /// Clear all parameter definition nodes from this parameter list node.
+        /// </summary>
         public void ClearParameters()
         {
             _parameters.Clear();

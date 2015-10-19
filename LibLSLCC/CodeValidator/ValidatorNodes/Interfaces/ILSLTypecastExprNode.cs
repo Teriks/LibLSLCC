@@ -48,10 +48,26 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for typecast expressions.
+    /// </summary>
     public interface ILSLTypecastExprNode : ILSLReadOnlyExprNode
     {
+
+        /// <summary>
+        /// The expression node that represents the expression being casted.  This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode CastedExpression { get; }
+
+        /// <summary>
+        /// The LSLType that represents the type the expression is being cast to.
+        /// </summary>
         LSLType CastToType { get; }
+
+        /// <summary>
+        /// The raw type name of the type the expression is being cast to, taken from the source code.
+        /// </summary>
         string CastToTypeString { get; }
     }
 }

@@ -49,12 +49,39 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for the top level node in an LSL syntax tree.
+    /// </summary>
     public interface ILSLCompilationUnitNode : ILSLReadOnlySyntaxTreeNode
     {
+        /// <summary>
+        /// A list of objects describing the comments found in the source code and their position/range.
+        /// </summary>
         IReadOnlyList<LSLComment> Comments { get; }
+
+        /// <summary>
+        /// Global variable declaration nodes, in order of appearance.
+        /// Returns and empty enumerable if non exist.
+        /// </summary>
         IReadOnlyList<ILSLVariableDeclarationNode> GlobalVariableDeclarations { get; }
+
+        /// <summary>
+        /// User defined function nodes, in order of appearance. 
+        /// Returns and empty enumerable if non exist.
+        /// </summary>
         IReadOnlyList<ILSLFunctionDeclarationNode> FunctionDeclarations { get; }
+
+        /// <summary>
+        /// User defined state nodes, in order of appearance.
+        /// Returns and empty enumerable if non exist.
+        /// </summary>
         IReadOnlyList<ILSLStateScopeNode> StateDeclarations { get; }
+
+        /// <summary>
+        /// The state node for the default script state, or null if one did not exist. (An error).
+        /// Ideally you should not be handling the syntax tree if there were syntax errors though.
+        /// </summary>
         ILSLStateScopeNode DefaultState { get; }
     }
 }

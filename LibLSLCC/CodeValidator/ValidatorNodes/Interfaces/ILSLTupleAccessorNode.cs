@@ -48,11 +48,36 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for a '.' operator occurrence.
+    /// In LSL the member access operator only occurs on tuple types such as vectors or rotations/quaternions,  hence the name.
+    /// </summary>
     public interface ILSLTupleAccessorNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The raw name of the accessed tuple member, taken from the source code.
+        /// </summary>
         string AccessedComponentString { get; }
+
+
+        /// <summary>
+        /// The tuple component accessed.
+        /// <see cref="LSLTupleComponent"/>
+        /// </summary>
         LSLTupleComponent AccessedComponent { get; }
+
+        /// <summary>
+        /// The type that the member access was preformed on.
+        /// This should only ever be LSLType.Vector or LSLType.Rotation.
+        /// </summary>
         LSLType AccessedType { get; }
+
+        /// <summary>
+        /// The expression that the member access operator was used on.
+        /// This should only ever be a reference to a variable.
+        /// Using a member accessor on a constant, even if it is a vector or rotation, is not allowed.
+        /// </summary>
         ILSLReadOnlyExprNode AccessedExpression { get; }
     }
 }

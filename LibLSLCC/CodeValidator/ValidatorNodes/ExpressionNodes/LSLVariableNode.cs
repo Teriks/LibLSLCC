@@ -79,28 +79,46 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// True if this variable node references a library constant, False if it references a user defined variable or parameter.
+        /// </summary>
         public bool IsLibraryConstant
         {
             get { return ExpressionType == LSLExpressionType.LibraryConstant; }
         }
 
+        /// <summary>
+        /// True if this variable node references a user defined global variable.
+        /// </summary>
         public bool IsGlobal
         {
             get { return ExpressionType == LSLExpressionType.GlobalVariable; }
         }
 
+        /// <summary>
+        /// True if this variable node references a user defined local variable.
+        /// </summary>
         public bool IsLocal
         {
             get { return ExpressionType == LSLExpressionType.LocalVariable; }
         }
 
+        /// <summary>
+        /// A reference to the ILSLVariableDeclarationNode in the syntax tree where this variable was initially declared.
+        /// </summary>
         public ILSLVariableDeclarationNode Declaration { get; private set; }
 
+        /// <summary>
+        /// True if this variable node references a function or event handler parameter.
+        /// </summary>
         public bool IsParameter
         {
             get { return ExpressionType == LSLExpressionType.ParameterVariable; }
         }
 
+        /// <summary>
+        /// The raw type string describing the type of the variable referenced.
+        /// </summary>
         public string TypeString
         {
             get
@@ -204,6 +222,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         #region ILSLExprNode Members
 
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
             if (HasErrors)
@@ -228,9 +250,15 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+        /// <summary>
+        /// The name of the referenced variable.
+        /// </summary>
         public string Name
         {
             get
@@ -260,12 +288,24 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
 
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (IsGlobal)
@@ -289,12 +329,25 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The expression type/classification of the expression.
+        /// <see cref="LSLExpressionType"/>
+        /// </summary>
         public LSLExpressionType ExpressionType { get; private set; }
 
 
+        /// <summary>
+        /// True if the expression is constant and can be calculated at compile time.
+        /// </summary>
         public bool IsConstant { get; set; }
 
 
+        /// <summary>
+        /// Should produce a user friendly description of the expressions return type.
+        /// This is used in some syntax error messages, Ideally you should enclose your description in
+        /// parenthesis or something that will make it stand out in a string.
+        /// </summary>
+        /// <returns></returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");
@@ -307,6 +360,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The return type of the expression.
+        /// </summary>
         public LSLType Type { get; private set; }
 
         #endregion

@@ -103,11 +103,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// The name of the event handler.
+        /// </summary>
         public string Name
         {
             get { return ParserContext.handler_name.Text; }
         }
 
+        /// <summary>
+        /// True if the event handler has parameters.
+        /// </summary>
         public bool HasParameterNodes
         {
             get { return ParameterListNode.Parameters.Any(); }
@@ -115,7 +121,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         IReadOnlyList<ILSLParameterNode> ILSLEventHandlerNode.ParameterNodes
         {
-            get { return ParameterNodes; }
+            get { return ParameterNodes ?? new List<LSLParameterNode>(); }
         }
 
         ILSLCodeScopeNode ILSLEventHandlerNode.EventBodyNode
@@ -128,11 +134,21 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return ParameterListNode; }
         }
 
+        /// <summary>
+        /// Get an LSLEventSignature representation of the event handlers signature.
+        /// This could be null or throw an exception if the event handler node contains syntax errors.
+        /// Ideally you should not be handling a syntax tree with syntax errors in it.
+        /// </summary>
+        /// <returns>An LSLEventSignature representing the signature of the event handler node.</returns>
         public LSLEventSignature ToSignature()
         {
+            if (Name == null || ParameterListNode == null || ParameterListNode.Parameters == null) return null;
+
             return new LSLEventSignature(Name,
                 ParameterListNode.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
         }
+
+
 
         public static
             LSLEventHandlerNode GetError(LSLSourceCodeRange sourceRange)
@@ -151,18 +167,34 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         #region ILSLTreeNode Members
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; set; }
 
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitEventHandler(this);
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion

@@ -85,12 +85,21 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         internal LSLParser.ListLiteralContext ParserContext { get; private set; }
 
+        /// <summary>
+        /// A list of expressions that were used to initialize the list literal, or an empty list.
+        /// </summary>
         public IReadOnlyList<ILSLExprNode> ListEntryExpressions
         {
             get { return ExpressionListNode.ExpressionNodes; }
         }
 
+
+        /// <summary>
+        /// The expression list node that contains all of the expressions used to initialize the list literal.
+        /// This will never be null, even when the list literal was defined as being empty.
+        /// </summary>
         public LSLExpressionListNode ExpressionListNode { get; private set; }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

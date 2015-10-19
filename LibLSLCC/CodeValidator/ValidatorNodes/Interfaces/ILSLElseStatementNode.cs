@@ -48,9 +48,20 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for else statements.
+    /// </summary>
     public interface ILSLElseStatementNode : ILSLReturnPathNode, ILSLReadOnlyBranchStatementNode
     {
+
+        /// <summary>
+        /// The code scope node associated with this else statement.
+        /// </summary>
         ILSLCodeScopeNode Code { get; }
+
+        /// <summary>
+        /// The source code range of the 'else' keyword in the else statement.
+        /// </summary>
         LSLSourceCodeRange ElseKeywordSourceCodeRange { get; }
     }
 }

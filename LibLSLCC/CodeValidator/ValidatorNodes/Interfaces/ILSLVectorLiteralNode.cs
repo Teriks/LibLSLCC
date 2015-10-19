@@ -48,12 +48,43 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for vector literal nodes.
+    /// </summary>
     public interface ILSLVectorLiteralNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The expression node used to initialize the X Axis Component of the vector literal.  
+        /// This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode XExpression { get; }
+
+
+        /// <summary>
+        /// The source code range of the first component separator comma to appear in the vector literal.
+        /// </summary>
         LSLSourceCodeRange CommaOneSourceCodeRange { get; }
+
+
+        /// <summary>
+        /// The expression node used to initialize the Y Axis Component of the vector literal.  
+        /// This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode YExpression { get; }
+
+
+        /// <summary>
+        /// The source code range of the second component separator comma to appear in the vector literal.
+        /// </summary>
         LSLSourceCodeRange CommaTwoSourceCodeRange { get; }
+
+
+        /// <summary>
+        /// The expression node used to initialize the Z Axis Component of the vector literal.  
+        /// This should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode ZExpression { get; }
     }
+
 }

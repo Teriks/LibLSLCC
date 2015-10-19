@@ -48,10 +48,27 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for while-loop statements.
+    /// </summary>
     public interface ILSLWhileLoopNode : ILSLReadOnlyCodeStatement, ILSLLoopNode
     {
+
+        /// <summary>
+        /// The source code range of the 'while' keyword in the while loop statement.
+        /// </summary>
         LSLSourceCodeRange WhileKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the opening parenthesis starting the condition area of a while loop statement.
+        /// </summary>
         LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+
+
+        /// <summary>
+        /// The source code range of the closing parenthesis ending the condition area of a while loop statement.
+        /// </summary>
         LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
     }
 }

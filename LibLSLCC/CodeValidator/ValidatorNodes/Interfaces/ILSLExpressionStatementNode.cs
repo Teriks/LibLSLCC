@@ -42,9 +42,21 @@
 #endregion
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for expression statements, expression statements are the statements that occur line by line inside of code scope.
+    /// </summary>
     public interface ILSLExpressionStatementNode : ILSLReadOnlyCodeStatement
     {
+        /// <summary>
+        /// The top expression node that represents the expression in the statement.
+        /// </summary>
         ILSLReadOnlyExprNode Expression { get; }
+
+
+        /// <summary>
+        /// True if the expression statement has some modifying affect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        /// </summary>
         bool HasEffect { get; set; }
     }
 }

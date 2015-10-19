@@ -48,13 +48,30 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for state change statements.
+    /// </summary>
     public interface ILSLStateChangeStatementNode : ILSLReadOnlyCodeStatement
     {
+        /// <summary>
+        /// The name of the state that this state change statement jumps to.
+        /// </summary>
         string StateTargetName { get; }
-        new ILSLReadOnlySyntaxTreeNode Parent { get; }
-        new bool HasErrors { get; }
+
+        /// <summary>
+        /// The source code range of the 'state' keyword in the state change statement.
+        /// </summary>
         LSLSourceCodeRange StateKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the target state name in the state change statement.
+        /// </summary>
         LSLSourceCodeRange StateNameSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the semi-colon that ends the state change statement.
+        /// </summary>
         LSLSourceCodeRange SemiColonSourceCodeRange { get; }
     }
 }

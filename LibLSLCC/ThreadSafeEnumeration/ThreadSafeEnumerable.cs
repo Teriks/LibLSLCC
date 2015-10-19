@@ -49,19 +49,35 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.ThreadSafeEnumeration
 {
+
+    /// <summary>
+    /// A thread safe wrapper around generic IEnumerable objects.
+    /// </summary>
+    /// <typeparam name="T">The type that the ThreadSafeEnumerable enumerates over.</typeparam>
     public class ThreadSafeEnumerable<T> : IEnumerable<T>
     {
         private readonly IEnumerable<T> _mInner;
         private readonly object _mLock;
 
-        public ThreadSafeEnumerable(IEnumerable<T> inner, object @lock)
+        /// <summary>
+        /// Construct a thread safe enumerable by wrapping a generic IEnumerable object.
+        /// </summary>
+        /// <param name="inner">The generic IEnumerable object to wrap.</param>
+        /// <param name="lockObject">The object to use as a concurrent locking handle.</param>
+        public ThreadSafeEnumerable(IEnumerable<T> inner, object lockObject)
         {
-            _mLock = @lock;
+            _mLock = lockObject;
             _mInner = inner;
         }
 
         #region Implementation of IEnumerable
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator<T> GetEnumerator()
         {
             return new ThreadSafeEnumerator<T>(_mInner.GetEnumerator(), _mLock);

@@ -85,19 +85,39 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return _references; }
         }
 
+        /// <summary>
+        /// If the scope has a return path, this is set to the node that causes the function to return.
+        /// it may be a return statement, or a control chain node.
+        /// </summary>
         public ILSLCodeStatement ReturnPath { get; set; }
+
+
+        /// <summary>
+        /// The type of dead code that this statement is considered to be, if it is dead
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
+
+        /// <summary>
+        /// The name of the variable.
+        /// </summary>
         public string Name
         {
             get { return VariableNode.Name; }
         }
 
+        /// <summary>
+        /// The variable type.
+        /// </summary>
         public LSLType Type
         {
             get { return VariableNode.Type; }
         }
 
+
+        /// <summary>
+        /// The raw type string representing the variable type, taken from the source code.
+        /// </summary>
         public string TypeString
         {
             get { return VariableNode.TypeString; }
@@ -108,26 +128,41 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return VariableNode; }
         }
 
+        /// <summary>
+        /// True if an expression was used to initialize this variable declaration node when it was defined.
+        /// </summary>
         public bool HasDeclarationExpression
         {
             get { return DeclarationExpression != null; }
         }
 
+        /// <summary>
+        /// True if this variable declaration is local to a function or event handler.  False if it is a global variable, parameter definition, or library constant.
+        /// </summary>
         public bool IsLocal
         {
             get { return VariableNode.IsLocal; }
         }
 
+        /// <summary>
+        /// True if this variable declaration is in the global program scope.  False if it is a local variable, parameter definition, or library constant.
+        /// </summary>
         public bool IsGlobal
         {
             get { return VariableNode.IsGlobal; }
         }
 
+        /// <summary>
+        /// True if this variable declaration represents a local function/event handler parameter.  False if it is a local variable, global variable, or library constant.
+        /// </summary>
         public bool IsParameter
         {
             get { return VariableNode.IsParameter; }
         }
 
+        /// <summary>
+        /// True if this variable declaration represents a library defined constant.  False if it is a local variable, global variable, or parameter definition.
+        /// </summary>
         public bool IsLibraryConstant
         {
             get { return VariableNode.IsLibraryConstant; }
@@ -143,6 +178,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return ReturnPath; }
         }
 
+        /// <summary>
+        /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        /// this is not the scopes level.
+        /// </summary>
         public ulong ScopeId { get; set; }
 
         IReadOnlyList<ILSLVariableNode> ILSLVariableDeclarationNode.References
@@ -336,15 +375,30 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+        /// <summary>
+        /// The index of this statement in its scope
+        /// </summary>
         public int StatementIndex { get; set; }
 
+
+        /// <summary>
+        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        /// </summary>
         public bool HasReturnPath
         {
             get { return false; }
         }
 
+
+        /// <summary>
+        /// Is this statement the last statement in its scope
+        /// </summary>
         public bool IsLastStatementInScope { get; set; }
 
+
+        /// <summary>
+        /// Is this statement dead code
+        /// </summary>
         public bool IsDeadCode { get; set; }
 
 
@@ -353,24 +407,48 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
 
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         public LSLSourceCodeRange OperationSourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// The source code range of the type specifier for the variable declaration.
+        /// </summary>
         public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// The source code range that encompasses the variables name in the declaration.
+        /// </summary>
         public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// The source code range of the assignment operator in the declaration expression if one was used.
+        /// This value is only meaningful if either 'IsLocal' or 'IsGlobal' are true, and 'HasDeclarationExpression' is also true.
+        /// </summary>
         public LSLSourceCodeRange OperatorSourceCodeRange
         {
             get { return OperationSourceCodeRange; }
         }
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (IsGlobal)

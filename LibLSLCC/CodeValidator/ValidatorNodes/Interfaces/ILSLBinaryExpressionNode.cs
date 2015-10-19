@@ -49,12 +49,35 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST interface for binary expression nodes.
+    /// </summary>
     public interface ILSLBinaryExpressionNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The binary operation type of this node.
+        /// </summary>
         LSLBinaryOperationType Operation { get; }
+
+        /// <summary>
+        /// The string representation of the binary operation this node preforms.
+        /// </summary>
         string OperationString { get; }
+
+        /// <summary>
+        /// The expression tree on the left of side of the binary operation.
+        /// </summary>
         ILSLReadOnlyExprNode LeftExpression { get; }
+
+        /// <summary>
+        /// The expression tree on the right side of the binary operation.
+        /// </summary>
         ILSLReadOnlyExprNode RightExpression { get; }
+
+
+        /// <summary>
+        /// The source code range that encompasses the binary expression and its children.
+        /// </summary>
         LSLSourceCodeRange OperationSourceCodeRange { get; }
     }
 }

@@ -83,35 +83,70 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors
         {
             get { return true; }
         }
 
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange
         {
             get { return new LSLSourceCodeRange(ParserContext); }
         }
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             throw new NotImplementedException("Visited LSLCodeStatementError");
         }
 
+
+        /// <summary>
+        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        /// </summary>
         public bool HasReturnPath
         {
             get { return false; }
         }
 
+        /// <summary>
+        ///     The index of this statement in its scope
+        /// </summary>
         public int StatementIndex { get; set; }
+
+
+        /// <summary>
+        ///     Is this statement the last statement in its scope
+        /// </summary>
         public bool IsLastStatementInScope { get; set; }
+
+
+        /// <summary>
+        ///     Is this statement dead code
+        /// </summary>
         public bool IsDeadCode { get; set; }
+
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
         {
             get { return ReturnPath; }
         }
 
+
+        /// <summary>
+        ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        ///     this is not the scopes level.
+        /// </summary>
         public ulong ScopeId { get; set; }
     }
 }

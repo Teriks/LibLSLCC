@@ -49,15 +49,54 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for function declaration nodes.
+    /// </summary>
     public interface ILSLFunctionDeclarationNode : ILSLReadOnlySyntaxTreeNode
     {
+        /// <summary>
+        /// True if the function definition node possesses parameter definitions.
+        /// </summary>
         bool HasParameters { get; }
+
+
+        /// <summary>
+        /// A list of function call nodes that reference this function definition, or an empty list.
+        /// </summary>
         IReadOnlyList<ILSLFunctionCallNode> References { get; }
+
+        /// <summary>
+        /// A list of  parameter definition nodes that belong to this function definition, or an empty list.
+        /// </summary>
         IReadOnlyList<ILSLParameterNode> ParameterNodes { get; }
+
+        /// <summary>
+        /// The string from the source code that represents the return type assigned to the function definition,
+        /// or an empty string if no return type was assigned.
+        /// </summary>
         string ReturnTypeString { get; }
+
+        /// <summary>
+        /// The name of the function.
+        /// </summary>
         string Name { get; }
+
+
+        /// <summary>
+        /// The return type assigned to the function definition, it will be LSLType.Void if no return type was given.
+        /// </summary>
         LSLType ReturnType { get; }
+
+        /// <summary>
+        /// The parameter list node that contains the parameter list definitions for this function.
+        /// It should never be null, even if the function definition contains no parameter definitions.
+        /// </summary>
         ILSLParameterListNode ParameterListNode { get; }
+
+
+        /// <summary>
+        /// The code scope node that represents the code body of the function definition.
+        /// </summary>
         ILSLCodeScopeNode FunctionBodyNode { get; }
     }
 }

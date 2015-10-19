@@ -158,9 +158,25 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// The name of the state block in the source code.
+        /// 'default' should be returned if the node represents the default state.
+        /// </summary>
         public string StateName { get; private set; }
+
+
+        /// <summary>
+        /// True if this state scope node represents a user defined state,  False if it is the 'default' state.
+        /// </summary>
         public bool IsDefinedState { get; private set; }
+
+
+        /// <summary>
+        /// True if this state scope node represents the 'default' state,  False if it is a user defined state.
+        /// </summary>
         public bool IsDefaultState { get; private set; }
+
+
 
         IReadOnlyList<ILSLEventHandlerNode> ILSLStateScopeNode.EventHandlers
         {
@@ -195,16 +211,43 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         #region ILSLTreeNode Members
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// The source code range of the opening brace of the state block's scope.
+        /// </summary>
         public LSLSourceCodeRange OpenBraceSourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// The source code range of the closing brace of the state block's scope.
+        /// </summary>
         public LSLSourceCodeRange CloseBraceSourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// The source code range where the name of the state is located.
+        /// For the default state, this will be the location of the 'default' keyword.
+        /// </summary>
         public LSLSourceCodeRange StateNameSourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (IsDefaultState)
@@ -216,6 +259,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion

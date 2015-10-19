@@ -49,6 +49,10 @@ using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 {
+    /// <summary>
+    /// Default visitor base class for LSL Syntax tree visitors.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class LSLValidatorNodeVisitor<T> : ILSLValidatorNodeVisitor<T>
     {
         /// <summary>

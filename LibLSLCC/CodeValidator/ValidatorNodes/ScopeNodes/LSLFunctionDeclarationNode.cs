@@ -118,6 +118,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// True if the function definition node possesses parameter definitions.
+        /// </summary>
         public bool HasParameters
         {
             get { return ParameterListNode.Parameters.Any(); }
@@ -128,6 +131,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return ParameterListNode.Parameters; }
         }
 
+        /// <summary>
+        /// The string from the source code that represents the return type assigned to the function definition,
+        /// or an empty string if no return type was assigned.
+        /// </summary>
         public string ReturnTypeString
         {
             get
@@ -138,11 +145,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             }
         }
 
+        /// <summary>
+        /// The name of the function.
+        /// </summary>
         public string Name
         {
             get { return ParserContext.function_name.Text; }
         }
 
+        /// <summary>
+        /// The return type assigned to the function definition, it will be LSLType.Void if no return type was given.
+        /// </summary>
         public LSLType ReturnType
         {
             get
@@ -191,17 +204,33 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         #region ILSLTreeNode Members
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitFunctionDeclaration(this);
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion

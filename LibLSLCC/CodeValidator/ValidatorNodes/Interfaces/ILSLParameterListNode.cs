@@ -48,9 +48,19 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for parameter list.  Used for function definition and event handler parameters.
+    /// </summary>
     public interface ILSLParameterListNode : ILSLSyntaxTreeNode
     {
+        /// <summary>
+        /// True if this parameter list node contains parameter definition nodes.
+        /// </summary>
         bool HasParameterNodes { get; }
+
+        /// <summary>
+        /// A list of parameter definition nodes that this parameter list node contains, or an empty list.
+        /// </summary>
         IReadOnlyList<ILSLParameterNode> Parameters { get; }
     }
 }

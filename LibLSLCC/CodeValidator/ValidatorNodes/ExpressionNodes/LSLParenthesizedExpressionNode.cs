@@ -84,6 +84,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
         internal LSLParser.ParenthesizedExpressionContext ParserContext { get; private set; }
+
+        /// <summary>
+        /// The expression node contained within the parenthesis, this should never be null.
+        /// </summary>
         public ILSLExprNode InnerExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent

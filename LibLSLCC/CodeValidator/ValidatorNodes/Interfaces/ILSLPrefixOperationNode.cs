@@ -49,11 +49,30 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for prefix operations on an expression.
+    /// </summary>
     public interface ILSLPrefixOperationNode : ILSLReadOnlyExprNode
     {
+        /// <summary>
+        /// The prefix operation type preformed on the expression.
+        /// <see cref="LSLPrefixOperationType"/>
+        /// </summary>
         LSLPrefixOperationType Operation { get; }
+
+        /// <summary>
+        /// The prefix operation string taken from the source code.
+        /// </summary>
         string OperationString { get; }
+
+        /// <summary>
+        /// The expression that is right of the prefix operator, this should never be null.
+        /// </summary>
         ILSLReadOnlyExprNode RightExpression { get; }
+
+        /// <summary>
+        /// The source code range the prefix operator occupies.
+        /// </summary>
         LSLSourceCodeRange OperationSourceCodeRange { get; }
     }
 }

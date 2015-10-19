@@ -66,9 +66,27 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         internal LSLParser.CodeStatementContext ParserContext { get; private set; }
+
+
         public bool IsSingleBlockStatement { get; private set; }
+
+
+        /// <summary>
+        ///     If the scope has a return path, this is set to the node that causes the function to return.
+        ///     it may be a return statement, or a control chain node.
+        /// </summary>
         public ILSLCodeStatement ReturnPath { get; set; }
+
+
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
+
+        /// <summary>
+        ///     The type of dead code that this statement is considered to be, if it is dead
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -81,26 +99,62 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return ReturnPath; }
         }
 
+        /// <summary>
+        /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        /// this is not the scopes level.
+        /// </summary>
         public ulong ScopeId { get; set; }
+
+
+
+        /// <summary>
+        /// Is this statement dead code
+        /// </summary>
         public bool IsDeadCode { get; set; }
+
+
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange
         {
             get { return new LSLSourceCodeRange(ParserContext); }
         }
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitSemiColonStatement(this);
         }
 
+        /// <summary>
+        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        /// </summary>
         public bool HasReturnPath
         {
             get { return false; }
         }
 
+        /// <summary>
+        ///     The index of this statement in its scope
+        /// </summary>
         public int StatementIndex { get; set; }
+
+
+        /// <summary>
+        ///     Is this statement the last statement in its scope
+        /// </summary>
         public bool IsLastStatementInScope { get; set; }
     }
 }

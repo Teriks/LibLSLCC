@@ -49,12 +49,37 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for label statements.
+    /// </summary>
     public interface ILSLLabelStatementNode : ILSLReadOnlyCodeStatement
     {
+        /// <summary>
+        /// The name of the label.
+        /// </summary>
         string LabelName { get; }
+
+        /// <summary>
+        /// A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
+        /// </summary>
         IReadOnlyList<ILSLJumpStatementNode> JumpsToHere { get; }
+
+
+
+        /// <summary>
+        /// The source code range of the '@' symbol that prefixes the label name.
+        /// </summary>
         LSLSourceCodeRange LabelPrefixSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the label's name.
+        /// </summary>
         LSLSourceCodeRange LabelNameSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the semi-colon that follows the label definition.
+        /// </summary>
         LSLSourceCodeRange SemiColonSourceCodeRange { get; }
     }
 }

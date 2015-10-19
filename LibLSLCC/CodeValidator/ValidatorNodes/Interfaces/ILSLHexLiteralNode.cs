@@ -42,8 +42,15 @@
 #endregion
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST token interface for HEX literal nodes.
+    /// </summary>
     public interface ILSLHexLiteralNode : ILSLReadOnlyExprNode
     {
+
+        /// <summary>
+        /// The raw source code text that defines the HEX literal.
+        /// </summary>
         string RawText { get; }
     }
 }

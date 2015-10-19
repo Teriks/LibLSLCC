@@ -48,12 +48,36 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for do-while loop statements.
+    /// </summary>
     public interface ILSLDoLoopNode : ILSLReadOnlyCodeStatement, ILSLLoopNode
     {
+
+        /// <summary>
+        /// The source code range of the opening parenthesis of the condition expression area.
+        /// </summary>
         LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the closing parenthesis of the condition expression area.
+        /// </summary>
         LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the 'do' keyword in the statement.
+        /// </summary>
         LSLSourceCodeRange DoKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the 'while' keyword in the statement.
+        /// </summary>
         LSLSourceCodeRange WhileKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the semi-colon after the do-while loop statement.
+        /// </summary>
         LSLSourceCodeRange SemiColonSourceCodeRange { get; }
     }
 }

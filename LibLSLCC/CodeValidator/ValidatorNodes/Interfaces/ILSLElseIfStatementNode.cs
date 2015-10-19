@@ -48,13 +48,41 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST Node interface for else-if statements.
+    /// </summary>
     public interface ILSLElseIfStatementNode : ILSLReturnPathNode, ILSLReadOnlyBranchStatementNode
     {
+        /// <summary>
+        /// The code scope associated with the else-if branch.
+        /// </summary>
         ILSLCodeScopeNode Code { get; }
+
+        /// <summary>
+        /// The condition expression of the else-if statement.
+        /// This may be null if there is an error, ideally you should not handle the syntax tree if there are syntax errors.
+        /// </summary>
         ILSLReadOnlyExprNode ConditionExpression { get; }
+
+        /// <summary>
+        /// The source code range of the 'else' keyword in the else-if statement.
+        /// </summary>
         LSLSourceCodeRange ElseKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the 'if' keyword in the else-if statement.
+        /// </summary>
         LSLSourceCodeRange IfKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the opening parenthesis in the else-if statement where the condition area starts.
+        /// </summary>
         LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the closing parenthesis in the else-if statement where the condition area ends.
+        /// </summary>
         LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
     }
 }

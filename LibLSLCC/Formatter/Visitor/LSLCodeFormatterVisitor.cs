@@ -56,6 +56,9 @@ using LibLSLCC.Utility;
 
 namespace LibLSLCC.Formatter.Visitor
 {
+    /// <summary>
+    /// An LSL Syntax tree visitor that formats code.
+    /// </summary>
     public class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
     {
         private readonly Stack<bool> _binaryExpressionWrappingEnabledStack = new Stack<bool>();
@@ -65,12 +68,20 @@ namespace LibLSLCC.Formatter.Visitor
         private int _writeColumn;
         private int _writeLine;
 
+        /// <summary>
+        /// Default constructor for the formating visitor.
+        /// </summary>
         public LSLCodeFormatterVisitor()
         {
             _binaryExpressionWrappingEnabledStack.Push(true);
         }
 
+        /// <summary>
+        /// The TextWriter that was passed to the WriteAndFlush function.
+        /// </summary>
         public TextWriter Writer { get; private set; }
+
+
         private CodeWrappingContext LastCodeWrappingContext { get; set; }
 
         private string GenIndent(int add = 0)
@@ -102,6 +113,14 @@ namespace LibLSLCC.Formatter.Visitor
             Writer.Write(str);
         }
 
+        /// <summary>
+        /// Writes formated code to a TextWriter as a given ILSLCompilationUnitNode is visited.
+        /// A reference to the original source code text is required.
+        /// </summary>
+        /// <param name="sourceReference">A reference to the original source code text.</param>
+        /// <param name="node">The ILSLCompilationUnitNode that was created from the source code text.  Most likely by LSLCodeValidator.</param>
+        /// <param name="writer">The TextWriter to write the formatted code to.</param>
+        /// <param name="closeStream">Whether or not to call .Close() on the TextWriter when done writing to it.</param>
         public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
             bool closeStream = true)
         {

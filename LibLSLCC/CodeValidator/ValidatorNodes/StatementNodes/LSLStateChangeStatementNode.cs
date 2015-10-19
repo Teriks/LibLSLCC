@@ -74,7 +74,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         internal LSLParser.StateChangeStatementContext ParserContext { get; private set; }
+
+        /// <summary>
+        /// If the scope has a return path, this is set to the node that causes the function to return.
+        /// it may be a return statement, or a control chain node.
+        /// </summary>
         public ILSLCodeStatement ReturnPath { get; set; }
+
+
+        /// <summary>
+        /// The type of dead code that this statement is considered to be, if it is dead
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -82,10 +92,31 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        /// this is not the scopes level.
+        /// </summary>
         public ulong ScopeId { get; set; }
+
+
+        /// <summary>
+        /// The source code range of the 'state' keyword in the state change statement.
+        /// </summary>
         public LSLSourceCodeRange StateKeywordSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the target state name in the state change statement.
+        /// </summary>
         public LSLSourceCodeRange StateNameSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the semi-colon that ends the state change statement.
+        /// </summary>
         public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
+
+
 
         public static
             LSLStateChangeStatementNode GetError(LSLSourceCodeRange sourceRange)
@@ -105,27 +136,46 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         #region ILSLCodeStatement Members
 
         public bool IsSingleBlockStatement { get; private set; }
+
+
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
+
+        /// <summary>
+        /// The name of the state that this state change statement jumps to.
+        /// </summary>
         public string StateTargetName
         {
             get { return ParserContext.state_target.Text; }
         }
 
-        ILSLReadOnlySyntaxTreeNode ILSLStateChangeStatementNode.Parent
-        {
-            get { return Parent; }
-        }
 
+        /// <summary>
+        /// The index of this statement in its scope
+        /// </summary>
         public int StatementIndex { get; set; }
 
+
+        /// <summary>
+        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        /// </summary>
         public bool HasReturnPath
         {
             get { return false; }
         }
 
+        /// <summary>
+        /// Is this statement the last statement in its scope
+        /// </summary>
         public bool IsLastStatementInScope { get; set; }
 
+
+        /// <summary>
+        /// Is this statement dead code
+        /// </summary>
         public bool IsDeadCode { get; set; }
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
@@ -133,11 +183,24 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return ReturnPath; }
         }
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitStateChangeStatement(this);

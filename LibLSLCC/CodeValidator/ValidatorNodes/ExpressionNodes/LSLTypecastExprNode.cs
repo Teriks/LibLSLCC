@@ -86,6 +86,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
         internal LSLParser.Expr_TypeCastContext ParserContext { get; private set; }
+
+        /// <summary>
+        /// The expression node that represents the expression being casted.  This should never be null.
+        /// </summary>
         public ILSLExprNode CastedExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -93,16 +97,23 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
+
         ILSLReadOnlyExprNode ILSLTypecastExprNode.CastedExpression
         {
             get { return CastedExpression; }
         }
 
+        /// <summary>
+        /// The LSLType that represents the type the expression is being cast to.
+        /// </summary>
         public LSLType CastToType
         {
             get { return LSLTypeTools.FromLSLTypeString(ParserContext.cast_type.Text); }
         }
 
+        /// <summary>
+        /// The raw type name of the type the expression is being cast to, taken from the source code.
+        /// </summary>
         public string CastToTypeString
         {
             get { return ParserContext.cast_type.Text; }
@@ -125,6 +136,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         #region ILSLExprNode Members
 
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
             if (HasErrors)
@@ -140,33 +155,66 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitTypecastExpression(this);
         }
 
 
+        /// <summary>
+        /// The return type of the expression.
+        /// </summary>
         public LSLType Type { get; private set; }
 
+
+        /// <summary>
+        /// The expression type/classification of the expression.
+        /// <see cref="LSLExpressionType"/>
+        /// </summary>
         public LSLExpressionType ExpressionType
         {
             get { return LSLExpressionType.TypecastExpression; }
         }
 
+        /// <summary>
+        /// True if the expression is constant and can be calculated at compile time.
+        /// </summary>
         public bool IsConstant
         {
             get { return CastedExpression != null && CastedExpression.IsConstant; }
         }
 
 
+        /// <summary>
+        /// Should produce a user friendly description of the expressions return type.
+        /// This is used in some syntax error messages, Ideally you should enclose your description in
+        /// parenthesis or something that will make it stand out in a string.
+        /// </summary>
+        /// <returns></returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");

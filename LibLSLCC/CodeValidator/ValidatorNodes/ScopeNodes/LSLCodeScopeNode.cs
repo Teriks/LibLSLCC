@@ -130,6 +130,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return false; }
         }
 
+        /// <summary>
+        /// The type of code scope this node represents.
+        /// </summary>
         public LSLCodeScopeType CodeScopeType { get; private set; }
 
         #region ILSLReturnPathNode Members
@@ -149,11 +152,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// <summary>
         ///     Constant jump descriptors for constant jumps that occur in this scope
         ///     used only with JumpStatementAnalysis is turned on and dead code caused by
-        ///     jump statements is being detected
+        ///     jump statements is being detected.
         /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return _constantJumps == null ? new List<LSLConstantJumpDescription>() :_constantJumps; }
+            get { return _constantJumps ?? new List<LSLConstantJumpDescription>(); }
         }
 
         /// <summary>
@@ -214,6 +217,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// </summary>
         public LSLReturnStatementNode ReturnStatementNode { get; private set; }
 
+        /// <summary>
+        ///     The type of dead code that this statement is considered to be, if it is dead
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
@@ -570,6 +576,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (IsSingleStatement)
@@ -580,7 +592,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
 
         #endregion // ReSharper disable UnusedParameter.Local
 

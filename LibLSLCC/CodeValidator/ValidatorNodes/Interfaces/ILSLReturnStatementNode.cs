@@ -48,11 +48,31 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+
+    /// <summary>
+    /// AST node interface for return statements.
+    /// </summary>
     public interface ILSLReturnStatementNode : ILSLReadOnlyCodeStatement
     {
+        /// <summary>
+        /// The expression node that represents the returned expression, or null if no expression was used with the return statement.
+        /// </summary>
         ILSLReadOnlyExprNode ReturnExpression { get; }
+
+        /// <summary>
+        /// True if the return statement uses a return expression.
+        /// </summary>
         bool HasReturnExpression { get; }
+
+
+        /// <summary>
+        /// The source code range of the 'return' keyword in the return statement.
+        /// </summary>
         LSLSourceCodeRange ReturnKeywordSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range of the semi-colon that ends the return statement.
+        /// </summary>
         LSLSourceCodeRange SemiColonSourceCodeRange { get; }
     }
 }

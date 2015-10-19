@@ -55,6 +55,8 @@ using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 {
+
+
     public class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
     {
         private readonly List<LSLElseIfStatementNode> _elseIfStatements = new List<LSLElseIfStatementNode>();
@@ -157,11 +159,21 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public IEnumerable<LSLElseIfStatementNode> ElseIfStatements
         {
-            get { return _elseIfStatements; }
+            get { return _elseIfStatements ?? new List<LSLElseIfStatementNode>(); }
         }
 
         internal LSLParser.ControlStructureContext ParserContext { get; private set; }
+
+        /// <summary>
+        ///     If the scope has a return path, this is set to the node that causes the function to return.
+        ///     it may be a return statement, or a control chain node.
+        /// </summary>
         public ILSLCodeStatement ReturnPath { get; set; }
+
+
+        /// <summary>
+        ///     The type of dead code that this statement is considered to be, if it is dead
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -169,16 +181,27 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// True if the control statement node has an else statement child.
+        /// </summary>
         public bool HasElseStatement
         {
             get { return ElseStatement != null; }
         }
 
+        /// <summary>
+        /// True if the control statement node has an if statement child.
+        /// This can only really be false if the node contains errors.
+        /// It should always be checked before using the IfStatement child property.
+        /// </summary>
         public bool HasIfStatement
         {
             get { return IfStatement != null; }
         }
 
+        /// <summary>
+        /// True if the control statement node has any if-else statement children.
+        /// </summary>
         public bool HasElseIfStatements
         {
             get { return ElseIfStatements.Any(); }
@@ -199,6 +222,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return _elseIfStatements; }
         }
 
+        /// <summary>
+        ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        ///     this is not the scopes level.
+        /// </summary>
         public ulong ScopeId { get; set; }
 
         public static
@@ -242,12 +269,31 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         #region ILSLCodeStatement Members
 
         public bool IsSingleBlockStatement { get; private set; }
+
+
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
+
+        /// <summary>
+        ///     The index of this statement in its scope
+        /// </summary>
         public int StatementIndex { get; set; }
 
+
+        /// <summary>
+        ///     Is this statement the last statement in its scope
+        /// </summary>
         public bool IsLastStatementInScope { get; set; }
 
+
+        /// <summary>
+        ///     Is this statement dead code
+        /// </summary>
         public bool IsDeadCode { get; set; }
+
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
         {
@@ -255,17 +301,33 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
 
+        /// <summary>
+        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        /// </summary>
         public bool HasReturnPath
         {
             get { return HaveReturnPath(); }
         }
 
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitControlStatement(this);

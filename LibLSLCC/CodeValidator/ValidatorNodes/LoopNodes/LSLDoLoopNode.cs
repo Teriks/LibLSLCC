@@ -94,8 +94,25 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         }
 
         internal LSLParser.DoLoopContext ParserContext { get; private set; }
+
+
+        /// <summary>
+        /// The code scope node that represents the code scope of the loop body.
+        /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
+
+
+
+        /// <summary>
+        /// The condition expression that controls the loop, this could be null in the case of for-loops.
+        /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
+
+
+        /// <summary>
+        /// If the scope has a return path, this is set to the node that causes the function to return.
+        /// it may be a return statement, or a control chain node.
+        /// </summary>
         public ILSLCodeStatement ReturnPath { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -108,22 +125,58 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
             get { return Code; }
         }
 
+        /// <summary>
+        /// The condition expression that controls the loop, this could be null in the case of for-loops.
+        /// </summary>
         ILSLReadOnlyExprNode ILSLLoopNode.ConditionExpression
         {
             get { return ConditionExpression; }
         }
+
+
+        
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
         {
             get { return ReturnPath; }
         }
 
+        /// <summary>
+        /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        /// this is not the scopes level.
+        /// </summary>
         public ulong ScopeId { get; set; }
+
+        /// <summary>
+        /// The source code range of the opening parenthesis of the condition expression area.
+        /// </summary>
         public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the closing parenthesis of the condition expression area.
+        /// </summary>
         public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the 'do' keyword in the statement.
+        /// </summary>
         public LSLSourceCodeRange DoKeywordSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the 'while' keyword in the statement.
+        /// </summary>
         public LSLSourceCodeRange WhileKeywordSourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the semi-colon after the do-while loop statement.
+        /// </summary>
         public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
+
+
 
         public static
             LSLDoLoopNode GetError(LSLSourceCodeRange sourceRange)
@@ -143,26 +196,65 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         #region ILSLCodeStatement Members
 
         public bool IsSingleBlockStatement { get; private set; }
+
+
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
+
+        /// <summary>
+        /// Is this statement the last statement in its scope
+        /// </summary>
         public bool IsLastStatementInScope { get; set; }
 
+
+        /// <summary>
+        ///     The type of dead code that this statement is considered to be, if it is dead
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
+
+        /// <summary>
+        /// Is this statement dead code
+        /// </summary>
         public bool IsDeadCode { get; set; }
 
+
+        /// <summary>
+        ///  The index of this statement in its scope
+        /// </summary>
         public int StatementIndex { get; set; }
 
+
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitDoLoop(this);
         }
 
 
+        /// <summary>
+        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        /// </summary>
         public bool HasReturnPath
         {
             get { return false; }

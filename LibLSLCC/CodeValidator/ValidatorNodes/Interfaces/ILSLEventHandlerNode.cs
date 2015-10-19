@@ -49,13 +49,44 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
+    /// <summary>
+    /// AST node interface for library event handler references.
+    /// </summary>
     public interface ILSLEventHandlerNode : ILSLReadOnlySyntaxTreeNode
     {
+        /// <summary>
+        /// The name of the event handler.
+        /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// True if the event handler has parameters.
+        /// </summary>
         bool HasParameterNodes { get; }
+
+        /// <summary>
+        /// An in order list of parameter nodes that belong to the event handler, or an empty enumerable if none exist.
+        /// </summary>
         IReadOnlyList<ILSLParameterNode> ParameterNodes { get; }
+
+        /// <summary>
+        /// The code scope node that represents the code body of the event handler.
+        /// </summary>
         ILSLCodeScopeNode EventBodyNode { get; }
+
+        /// <summary>
+        /// The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
+        /// It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
+        /// Ideally you should not be handling a syntax tree with syntax errors in it.
+        /// </summary>
         ILSLParameterListNode ParameterListNode { get; }
+
+        /// <summary>
+        /// Get an LSLEventSignature representation of the event handlers signature.
+        /// This could be null or throw an exception if the event handler node contains syntax errors.
+        /// Ideally you should not be handling a syntax tree with syntax errors in it.
+        /// </summary>
+        /// <returns>An LSLEventSignature representing the signature of the event handler node.</returns>
         LSLEventSignature ToSignature();
     }
 }
