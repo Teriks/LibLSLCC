@@ -574,6 +574,19 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format("Overloads of \"{0}\" exist, but the given parameter expressions match more than one overload (desired function is ambiguous)", functionName));
         }
 
+        /// <summary>
+        /// The dot operator used to access the tuple component members of vectors and rotations was used on a library constant.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
+        /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
+        /// <param name="accessedMember">The member the user attempted to access.</param>
+        public void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location, ILSLVariableNode libraryConstantReferenceNode,
+            LSLLibraryConstantSignature libraryConstantSignature, string accessedMember)
+        {
+            OnError(location, "The member access operator is not allowed on library constants, even if they are vector or rotation constants.");
+        }
+
 
         /// <summary>
         /// A '.' member access was attempted on an invalid variable type, or the variable type did not contain the given component.
@@ -583,7 +596,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        public virtual void InvalidComponentAccessorOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
+        public virtual void InvalidTupleComponentAccessorOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
             string memberAccessed)
         {
             OnError(location,

@@ -396,12 +396,12 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void ILSLSyntaxErrorListener.InvalidComponentAccessorOperation(LSLSourceCodeRange location,
+        void ILSLSyntaxErrorListener.InvalidTupleComponentAccessorOperation(LSLSourceCodeRange location,
             ILSLExprNode exprLvalue,
             string memberAccessed)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.InvalidComponentAccessorOperation(location, exprLvalue, memberAccessed));
+                () => SyntaxErrorListener.InvalidTupleComponentAccessorOperation(location, exprLvalue, memberAccessed));
         }
 
         /// <summary>
@@ -778,6 +778,21 @@ namespace LibLSLCC.CodeValidator.Components
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbigious(location, functionName, ambigiousMatches, givenParameterExpressions));
+        }
+
+        /// <summary>
+        /// The dot operator used to access the tuple component members of vectors and rotations was used on a library constant.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
+        /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
+        /// <param name="accessedMember">The member the user attempted to access.</param>
+        public void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location, ILSLVariableNode libraryConstantReferenceNode,
+            LSLLibraryConstantSignature libraryConstantSignature, string accessedMember)
+        {
+            _errorActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxErrorListener.TupleAccessorOnLibraryConstant(location, libraryConstantReferenceNode, libraryConstantSignature, accessedMember));
         }
 
         void ILSLSyntaxWarningListener.MultipleListAssignmentsInExpression(LSLSourceCodeRange location)

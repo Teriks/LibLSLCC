@@ -266,7 +266,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void InvalidComponentAccessorOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
+        void InvalidTupleComponentAccessorOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
             string memberAccessed);
 
 
@@ -516,5 +516,18 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName, 
             IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> givenParameterExpressions);
+
+
+        /// <summary>
+        /// The dot operator used to access the tuple component members of vectors and rotations was used on a library constant.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
+        /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
+        /// <param name="accessedMember">The member the user attempted to access.</param>
+        void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location, 
+            ILSLVariableNode libraryConstantReferenceNode, 
+            LSLLibraryConstantSignature libraryConstantSignature, 
+            string accessedMember);
     }
 }

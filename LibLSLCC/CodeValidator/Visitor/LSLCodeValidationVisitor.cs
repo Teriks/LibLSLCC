@@ -2521,7 +2521,27 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             var accessedMember = context.member.Text;
 
+            
+
+
+            var variableReferenceOnLeft = exprLvalue as ILSLVariableNode;
+
+
+            if (variableReferenceOnLeft != null)
+            {
+                if (variableReferenceOnLeft.IsLibraryConstant)
+                {
+                    var libraryConstantReferenced = MainLibraryDataProvider.GetLibraryConstantSignature(variableReferenceOnLeft.Name);
+
+                    SyntaxErrorListener.TupleAccessorOnLibraryConstant(location, variableReferenceOnLeft, libraryConstantReferenced, accessedMember);
+
+                    return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(new LSLSourceCodeRange(context)));
+                }
+            }
+
+
             var isTupleAccess = accessedMember.EqualsOneOf("x", "y", "z", "s");
+
 
             if (isTupleAccess && (exprLvalue.Type == LSLType.Vector || exprLvalue.Type == LSLType.Rotation))
             {
@@ -2551,7 +2571,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             else
             {
-                SyntaxErrorListener.InvalidComponentAccessorOperation(location, exprLvalue, accessedMember);
+                SyntaxErrorListener.InvalidTupleComponentAccessorOperation(location, exprLvalue, accessedMember);
 
 
                 return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(
@@ -2566,7 +2586,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (accessedMember == "s")
                 {
-                    SyntaxErrorListener.InvalidComponentAccessorOperation(
+                    SyntaxErrorListener.InvalidTupleComponentAccessorOperation(
                         location, exprLvalue, accessedMember);
 
                     return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(
