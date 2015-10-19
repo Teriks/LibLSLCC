@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from J:\Projects\csharp\LibLSLCC\LibLSLCC\LSLParser\LSL.g4 by ANTLR 4.5.1
+// Generated from J:\Projects\csharp\LibLSLCC\LibLSLCC\Parser\LSL.g4 by ANTLR 4.5.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -17,7 +17,7 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace LibLSLCC {
+namespace LibLSLCC.Parser {
 
 using Antlr4.Runtime.Misc;
 using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
@@ -659,4 +659,4 @@ public partial class LSLBaseListener : ILSLListener {
 	/// <remarks>The default implementation does nothing.</remarks>
 	public virtual void VisitErrorNode([NotNull] IErrorNode node) { }
 }
-} // namespace LibLSLCC
+} // namespace LibLSLCC.Parser

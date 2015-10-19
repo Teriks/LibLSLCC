@@ -69,7 +69,7 @@ namespace LibLSLCC.Formatter.Visitor
         private int _writeLine;
 
         /// <summary>
-        /// Default constructor for the formating visitor.
+        /// Default constructor for the formatting visitor.
         /// </summary>
         public LSLCodeFormatterVisitor()
         {

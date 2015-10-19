@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from J:\Projects\csharp\LibLSLCC\LibLSLCC\LSLParser\LSL.g4 by ANTLR 4.5.1
+// Generated from J:\Projects\csharp\LibLSLCC\LibLSLCC\Parser\LSL.g4 by ANTLR 4.5.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -17,7 +17,7 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace LibLSLCC {
+namespace LibLSLCC.Parser {
 
 	using System.Collections.Generic;
 	using LibLSLCC.CodeValidator.Enums;
@@ -379,4 +379,4 @@ public partial class LSLLexer : Lexer {
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }
-} // namespace LibLSLCC
+} // namespace LibLSLCC.Parser

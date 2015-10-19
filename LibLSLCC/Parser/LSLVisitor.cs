@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from J:\Projects\csharp\LibLSLCC\LibLSLCC\LSLParser\LSL.g4 by ANTLR 4.5.1
+// Generated from J:\Projects\csharp\LibLSLCC\LibLSLCC\Parser\LSL.g4 by ANTLR 4.5.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -17,7 +17,7 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace LibLSLCC {
+namespace LibLSLCC.Parser {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -356,4 +356,4 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDefaultState([NotNull] LSLParser.DefaultStateContext context);
 }
-} // namespace LibLSLCC
+} // namespace LibLSLCC.Parser

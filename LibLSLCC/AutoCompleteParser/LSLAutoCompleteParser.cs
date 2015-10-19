@@ -53,6 +53,7 @@ using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Parser;
 using LibLSLCC.Utility;
 
 #endregion

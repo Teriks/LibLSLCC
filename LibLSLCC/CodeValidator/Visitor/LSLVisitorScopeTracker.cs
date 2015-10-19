@@ -51,6 +51,7 @@ using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+using LibLSLCC.Parser;
 
 #endregion
 

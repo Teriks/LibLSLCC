@@ -39,6 +39,14 @@
 
 grammar LSL;
 
+@lexer::namespace {
+    LibLSLCC.Parser
+}
+
+@parser::namespace {
+    LibLSLCC.Parser
+}
+
 @lexer::header {
 	using System.Collections.Generic;
 	using LibLSLCC.CodeValidator.Enums;

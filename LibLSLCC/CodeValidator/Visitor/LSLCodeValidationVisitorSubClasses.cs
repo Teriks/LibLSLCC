@@ -43,6 +43,7 @@
 #region Imports
 
 using Antlr4.Runtime;
+using LibLSLCC.Parser;
 
 #endregion
 

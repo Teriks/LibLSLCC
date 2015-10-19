@@ -49,6 +49,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.Visitor;
+using LibLSLCC.Parser;
 
 #endregion
 

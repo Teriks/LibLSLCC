@@ -204,7 +204,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         /// <summary>
         /// Validates the types involved in a postfix operation and returns an object describing whether or not
-        /// the postfix operation expression was valid for the involved types, and the return type of the operation.
+        /// the postfix operation expression was valid for the involved types.
+        /// The return type of the postfix operation is also evaluated and returned in the result.
         /// </summary>
         /// <param name="left">The expression on the left of the postfix operation.</param>
         /// <param name="operation">The postfix operation preformed.</param>
@@ -214,7 +215,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         /// <summary>
         /// Validates the types involved in a prefix operation and returns an object describing whether or not
-        /// the prefix operation expression was valid for the involved types, and the return type of the operation.
+        /// the prefix operation expression was valid for the involved types.
+        /// The return type of the prefix operation is also evaluated and returned in the result.
         /// </summary>
         /// <param name="right">The expression on the right of the prefix operation.</param>
         /// <param name="operation">The prefix operation preformed.</param>
@@ -223,7 +225,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         /// <summary>
         /// Validates that a cast to a certain type can be preformed on a expression node of a certain type.
-        /// Returns an object describing whether or not the cast is valid, and the return type of the cast expression.
+        /// Returns an object describing whether or not the cast is valid.
+        /// The return type of the cast operation is also evaluated and returned in the result.
         /// </summary>
         /// <param name="castTo">The type being casted to.</param>
         /// <param name="from">The expression being casted.</param>
@@ -233,7 +236,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         /// <summary>
         /// Validates the types involved in a binary operation and returns an object describing whether or not
-        /// the binary operation expression was valid for the involved types, and the return type of the operation.
+        /// the binary operation expression was valid for the involved types.
+        /// The return type of the binary operation is also evaluated and returned in the result.
         /// </summary>
         /// <param name="left">The expression on the left of the binary operation.</param>
         /// <param name="operation">The binary operation preformed.</param>
