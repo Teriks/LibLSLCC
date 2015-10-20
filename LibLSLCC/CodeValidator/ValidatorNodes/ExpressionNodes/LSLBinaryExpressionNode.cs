@@ -106,7 +106,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             OperationToken = operationToken;
 
             OperationSourceCodeRange = new LSLSourceCodeRange(operationToken);
+
+            SourceCodeRangesAvailable = true;
         }
+
 
         internal IToken OperationToken { get; private set; }
         internal LSLParser.ExpressionContext ParserContext { get; private set; }
@@ -187,6 +190,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
 
         /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values
+        /// for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
+
+
+        /// <summary>
         /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
@@ -210,6 +220,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The return type of the expression.
+        /// </summary>
         public LSLType Type { get; private set; }
 
 

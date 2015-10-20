@@ -162,7 +162,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 IsConstant = false,
                 GlobalDeclarationContext = context,
                 SourceCodeRange = new LSLSourceCodeRange(context),
-                Declaration = declaration
+                Declaration = declaration,
+                SourceCodeRangesAvailable = true
             };
 
             return n;
@@ -178,7 +179,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 IsConstant = false,
                 LocalDeclarationContext = context,
                 SourceCodeRange = new LSLSourceCodeRange(context),
-                Declaration = declaration
+                Declaration = declaration,
+                SourceCodeRangesAvailable = true
             };
 
             return n;
@@ -192,7 +194,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 ExpressionType = LSLExpressionType.LibraryConstant,
                 IsConstant = true,
                 _libraryConstantName = name,
-                SourceCodeRange = new LSLSourceCodeRange()
+                SourceCodeRange = new LSLSourceCodeRange(),
+                SourceCodeRangesAvailable = false
             };
 
             return n;
@@ -206,7 +209,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 ExpressionType = LSLExpressionType.ParameterVariable,
                 IsConstant = false,
                 ParameterDeclarationContext = context,
-                SourceCodeRange = new LSLSourceCodeRange(context)
+                SourceCodeRange = new LSLSourceCodeRange(context),
+                SourceCodeRangesAvailable = true
             };
 
             return n;
@@ -245,7 +249,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 HasErrors = HasErrors,
                 Parent = Parent,
                 _libraryConstantName = _libraryConstantName,
-                Declaration = Declaration
+                Declaration = Declaration,
+                SourceCodeRangesAvailable = SourceCodeRangesAvailable
             };
             return n;
         }
@@ -298,7 +303,14 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; set; }
+        public LSLSourceCodeRange SourceCodeRange { get; internal set; }
+
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

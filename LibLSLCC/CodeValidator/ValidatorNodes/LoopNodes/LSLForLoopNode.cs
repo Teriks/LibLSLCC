@@ -98,6 +98,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
             afterthoughExpressions.Parent = this;
             initExpressions.Parent = this;
 
+            SourceCodeRangesAvailable = true;
+
 
             if (code != null)
             {
@@ -213,6 +215,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
 
         #region ILSLCodeStatement Members
 
+
+        /// <summary>
+        /// True if this statement belongs to a single statement code scope.
+        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        /// </summary>
         public bool IsSingleBlockStatement { get; private set; }
 
 
@@ -250,6 +257,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

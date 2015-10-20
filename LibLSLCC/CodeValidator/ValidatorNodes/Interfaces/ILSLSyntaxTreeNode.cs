@@ -47,7 +47,7 @@ using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.ValidatorNodes
+namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
     /// <summary>
     /// Base read only interface for syntax tree nodes.
@@ -70,6 +70,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         LSLSourceCodeRange SourceCodeRange { get; }
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        bool SourceCodeRangesAvailable { get; }
+
 
         /// <summary>
         /// Accept a visit from an implementor of ILSLValidatorNodeVisitor

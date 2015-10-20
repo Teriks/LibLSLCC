@@ -88,6 +88,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             OperationSourceCodeRange = new LSLSourceCodeRange(context.operation);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.Expr_PostfixOperationContext ParserContext { get; private set; }
@@ -178,6 +180,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

@@ -84,6 +84,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// this is not the scopes level.
         /// </summary>
         ulong ScopeId { get; }
+
+
+        /// <summary>
+        /// True if this statement belongs to a single statement code scope.
+        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        /// </summary>
+        bool IsSingleBlockStatement { get; }
     }
 
 

@@ -53,7 +53,7 @@ using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
 namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 {
-    public class LSLDummyExpr : ILSLExprNode
+    internal class LSLDummyExpr : ILSLExprNode
     {
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -64,6 +64,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public LSLDummyExpr()
         {
+            SourceCodeRangesAvailable = false;
         }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -88,6 +89,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         {
             get { return new LSLSourceCodeRange(); }
         }
+
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

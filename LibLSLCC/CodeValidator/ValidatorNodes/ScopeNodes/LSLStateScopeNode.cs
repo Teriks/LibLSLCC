@@ -83,6 +83,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
             CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
             StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context)
@@ -101,6 +103,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
             CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
             StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLStateScopeNode(LSLParser.DefaultStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
@@ -123,6 +127,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
             CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
             StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
@@ -144,6 +150,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
             CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
             StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.DefinedStateContext DefinedStateContext { get; private set; }
@@ -222,6 +230,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

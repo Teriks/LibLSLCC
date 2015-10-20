@@ -107,6 +107,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             ParserContext = parserContext;
             ListType = listType;
             SourceCodeRange = new LSLSourceCodeRange(parserContext);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext,
@@ -125,6 +127,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 AddExpression(lslExprNode);
             }
             SourceCodeRange = new LSLSourceCodeRange(parserContext);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.OptionalExpressionListContext ParserContext { get; set; }
@@ -215,7 +219,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             var r = new LSLExpressionListNode(ParserContext, ListType)
             {
                 HasErrors = HasErrors,
-                Parent = Parent
+                Parent = Parent,
+                SourceCodeRangesAvailable = SourceCodeRangesAvailable
             };
 
 
@@ -251,6 +256,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

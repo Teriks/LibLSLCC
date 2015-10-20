@@ -73,6 +73,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public override T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitFloatLiteral(this);
@@ -88,6 +94,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             return new LSLFloatLiteralNode(sourceRange, Err.Err);
         }
 
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()
         {
             if (HasErrors)

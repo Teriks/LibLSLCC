@@ -197,8 +197,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         /// <summary>
-        ///     Creates a reference to VariableNode by cloning and setting its SourceCodeRange
-        ///     to that of referenceToken
+        /// Creates a reference to VariableNode by cloning and setting its SourceCodeRange
+        /// to that of referenceToken
         /// </summary>
         /// <param name="referenceToken">The variable reference token from the parser</param>
         /// <returns>VariableNode cloned, with its SourceCodeRange set</returns>
@@ -207,7 +207,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             var v = (LSLVariableNode) VariableNode.Clone();
 
             v.SourceCodeRange = new LSLSourceCodeRange(referenceToken);
-
+            SourceCodeRangesAvailable = true;
             _references.Add(v);
 
             return v;
@@ -222,6 +222,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
             n.TypeSourceCodeRange = new LSLSourceCodeRange(context.variable_type);
             n.NameSourceCodeRange = new LSLSourceCodeRange(context.variable_name);
+
+            n.SourceCodeRangesAvailable = true;
 
             if (context.operation != null)
             {
@@ -242,6 +244,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
             n.TypeSourceCodeRange = new LSLSourceCodeRange(context.variable_type);
             n.NameSourceCodeRange = new LSLSourceCodeRange(context.variable_name);
+
+            n.SourceCodeRangesAvailable = true;
 
             declarationExpression.Parent = n;
 
@@ -265,6 +269,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             n.TypeSourceCodeRange = new LSLSourceCodeRange(context.variable_type);
             n.NameSourceCodeRange = new LSLSourceCodeRange(context.variable_name);
 
+            n.SourceCodeRangesAvailable = true;
+
             declarationExpression.Parent = n;
 
             if (context.operation != null)
@@ -285,6 +291,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             n.TypeSourceCodeRange = new LSLSourceCodeRange(context.variable_type);
             n.NameSourceCodeRange = new LSLSourceCodeRange(context.variable_name);
 
+            n.SourceCodeRangesAvailable = true;
+
             if (context.operation != null)
             {
                 n.OperationSourceCodeRange = new LSLSourceCodeRange(context.operation);
@@ -303,6 +311,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
             n.VariableNode.Parent = n;
 
+
             return n;
         }
 
@@ -311,14 +320,22 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             var n = new LSLVariableDeclarationNode
             {
                 VariableNode = LSLVariableNode.CreateParameter(context),
-                SourceCodeRange = new LSLSourceCodeRange(context)
+                SourceCodeRange = new LSLSourceCodeRange(context),
+                SourceCodeRangesAvailable = true
             };
 
+
             n.VariableNode.Parent = n;
+
 
             return n;
         }
 
+
+        /// <summary>
+        /// Deep clones the variable declaration node.  It should clone the node and also clone its VariableNode child.
+        /// </summary>
+        /// <returns>A deep clone of this variable declaration node.</returns>
         public LSLVariableDeclarationNode Clone()
         {
             if (HasErrors)
@@ -333,7 +350,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
                 StatementIndex = StatementIndex,
                 IsLastStatementInScope = IsLastStatementInScope,
                 VariableNode = (LSLVariableNode) VariableNode.Clone(),
-                OperationSourceCodeRange = OperationSourceCodeRange
+                OperationSourceCodeRange = OperationSourceCodeRange,
+                SourceCodeRangesAvailable = SourceCodeRangesAvailable
+
             };
 
             r._references.AddRange(_references);
@@ -372,7 +391,18 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return VariableNode.ParameterDeclarationContext; }
         }
 
+
+        /// <summary>
+        /// True if this statement belongs to a single statement code scope.
+        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        /// </summary>
         public bool IsSingleBlockStatement { get; private set; }
+
+
+
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
@@ -418,6 +448,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         public LSLSourceCodeRange OperationSourceCodeRange { get; private set; }

@@ -82,6 +82,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             ExpressionListNode.Parent = this;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.ListLiteralContext ParserContext { get; private set; }
@@ -134,6 +136,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         #region ILSLExprNode Members
 
+
+
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
             if (HasErrors)
@@ -151,33 +159,70 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
         public bool HasErrors { get; set; }
 
+        /// <summary>
+        /// The source code range that this syntax tree node occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
+
+
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitListLiteral(this);
         }
 
 
+        /// <summary>
+        /// The return type of the expression.
+        /// </summary>
         public LSLType Type
         {
             get { return LSLType.List; }
         }
 
+        /// <summary>
+        /// The expression type/classification of the expression.
+        /// <see cref="LSLExpressionType"/>
+        /// </summary>
         public LSLExpressionType ExpressionType
         {
             get { return LSLExpressionType.Literal; }
         }
 
+        /// <summary>
+        /// True if the expression is constant and can be calculated at compile time.
+        /// </summary>
         public bool IsConstant { get; private set; }
 
 
+        /// <summary>
+        /// Should produce a user friendly description of the expressions return type.
+        /// This is used in some syntax error messages, Ideally you should enclose your description in
+        /// parenthesis or something that will make it stand out in a string.
+        /// </summary>
+        /// <returns></returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");

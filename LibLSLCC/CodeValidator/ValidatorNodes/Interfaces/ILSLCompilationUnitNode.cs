@@ -60,6 +60,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// </summary>
         IReadOnlyList<LSLComment> Comments { get; }
 
+
         /// <summary>
         /// Global variable declaration nodes, in order of appearance.
         /// Returns and empty enumerable if non exist.

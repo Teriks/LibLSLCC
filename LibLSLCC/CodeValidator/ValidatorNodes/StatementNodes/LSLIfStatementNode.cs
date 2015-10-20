@@ -95,7 +95,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+
+            SourceCodeRangesAvailable = true;
         }
+
+
 
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
@@ -189,6 +193,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

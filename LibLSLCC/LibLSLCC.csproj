@@ -167,7 +167,7 @@
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLVariableNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLVecRotAccessorNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLVectorLiteralNode.cs" />
-    <Compile Include="CodeValidator\ValidatorNodes\ILSLSyntaxTreeNode.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLSyntaxTreeNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLDoLoopNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLForLoopNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\Interfaces\ILSLWhileLoopNode.cs" />
@@ -221,7 +221,7 @@
     <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLStateChangeStatementNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLVariableDeclarationNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodeVisitor\LSLDefaultValidatorNodeVisitor.cs" />
-    <Compile Include="CodeValidator\ValidatorNodeVisitor\LSLValidatorNodeVisitor.cs" />
+    <Compile Include="CodeValidator\ValidatorNodeVisitor\ILSLValidatorNodeVisitor.cs" />
     <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\IReadOnlySet.cs" />
     <Compile Include="Collections\PriorityQueue.cs" />

@@ -85,13 +85,18 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
             ParserContext = context;
             SourceCodeRange = new LSLSourceCodeRange(context);
+
+            SourceCodeRangesAvailable = true;
         }
 
         public LSLParameterListNode(LSLParser.OptionalParameterListContext context)
         {
             ParserContext = context;
             SourceCodeRange = new LSLSourceCodeRange(context);
+
+            SourceCodeRangesAvailable = true;
         }
+
 
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -102,6 +107,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         internal LSLParser.OptionalParameterListContext ParserContext { get; private set; }
 
+
+        /// <summary>
+        /// The LSLParameterNode objects that are children of this node, or an empty list.
+        /// </summary>
         public IReadOnlyList<LSLParameterNode> Parameters
         {
             get { return _parameters; }
@@ -141,6 +150,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

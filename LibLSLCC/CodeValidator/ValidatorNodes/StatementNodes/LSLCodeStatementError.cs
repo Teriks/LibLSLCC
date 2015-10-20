@@ -64,6 +64,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         {
             ParserContext = parserContext;
             IsSingleBlockStatement = isSingleBlockStatement;
+
+            SourceCodeRange = new LSLSourceCodeRange(parserContext);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.CodeStatementContext ParserContext { get; private set; }
@@ -74,10 +78,32 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return false; }
         }
 
+        /// <summary>
+        /// True if this statement belongs to a single statement code scope.
+        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        /// </summary>
         public bool IsSingleBlockStatement { get; set; }
+
+
+        /// <summary>
+        /// The parent node of this syntax tree node.
+        /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
+
+        /// <summary>
+        /// If the scope has a return path, this is set to the node that causes the function to return.
+        /// it may be a return statement, or a control chain node.
+        /// </summary>
         public ILSLCodeStatement ReturnPath { get; set; }
+
+
+        /// <summary>
+        /// The type of dead code that this statement is considered to be, if it is dead
+        /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
+
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -95,10 +121,14 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange
-        {
-            get { return new LSLSourceCodeRange(ParserContext); }
-        }
+        public LSLSourceCodeRange SourceCodeRange { get; private set;  }
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
+
 
         /// <summary>
         /// Accept a visit from an implementor of ILSLValidatorNodeVisitor

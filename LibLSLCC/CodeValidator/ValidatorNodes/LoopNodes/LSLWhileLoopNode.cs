@@ -88,15 +88,28 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
             WhileKeywordSourceCodeRange = new LSLSourceCodeRange(context.loop_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
-
+           
 
             code.Parent = this;
             conditionExpression.Parent = this;
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.WhileLoopContext ParserContext { get; private set; }
+
+
+        /// <summary>
+        /// True if this statement belongs to a single statement code scope.
+        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        /// </summary>
         public bool IsSingleBlockStatement { get; private set; }
+
+
         public ILSLExprNode ConditionExpression { get; private set; }
+
+
+
         public LSLCodeScopeNode Code { get; private set; }
 
 
@@ -128,7 +141,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
         {
-            get { return ReturnPath; }
+            get
+            { 
+                return ReturnPath;
+            }
         }
 
         /// <summary>
@@ -187,6 +203,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
             LSLWhileLoopNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLWhileLoopNode(sourceRange, Err.Err);
+
         }
 
         #region Nested type: Err
@@ -216,6 +233,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes
         /// The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

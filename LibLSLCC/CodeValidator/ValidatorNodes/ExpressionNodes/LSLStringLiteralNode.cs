@@ -43,6 +43,7 @@
 #region Imports
 
 using System.Diagnostics.CodeAnalysis;
+using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
@@ -69,6 +70,14 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             PreProccessedText = preProccessedText;
         }
 
+
+        /// <summary>
+        /// The pre-processed text of the string literal.
+        /// 
+        /// LSLCodeValidator relies on an implementation of ILSLStringPreProcessor to fill this value out by passing ILSLStringPreProcessor
+        /// the raw text for the string literal and assigning the string it produces to this property.
+        /// <see cref="ILSLStringPreProcessor"/>
+        /// </summary>
         public string PreProccessedText { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -76,6 +85,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public override T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitStringLiteral(this);
@@ -91,6 +106,10 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             return new LSLStringLiteralNode(sourceRange, Err.Err);
         }
 
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()
         {
             if (HasErrors)

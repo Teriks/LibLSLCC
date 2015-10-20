@@ -92,6 +92,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
             FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLFunctionCallNode(LSLParser.Expr_FunctionCallContext context,
@@ -115,6 +117,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
             FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.Expr_FunctionCallContext ParserContext { get; private set; }
@@ -253,7 +257,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
                 return new LSLFunctionCallNode(ParserContext, _librarySignature, parameterList)
                 {
                     HasErrors = HasErrors,
-                    Parent = Parent
+                    Parent = Parent,
                 };
             }
 
@@ -282,6 +286,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

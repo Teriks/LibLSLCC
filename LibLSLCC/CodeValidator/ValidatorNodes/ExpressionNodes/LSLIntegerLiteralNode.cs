@@ -43,6 +43,7 @@
 #region Imports
 
 using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
@@ -73,6 +74,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
+        /// <summary>
+        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// </summary>
+        /// <typeparam name="T">The visitors return type.</typeparam>
+        /// <param name="visitor">The visitor instance.</param>
+        /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public override T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitIntegerLiteral(this);
@@ -83,11 +90,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             return Clone();
         }
 
+
         public static LSLIntegerLiteralNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLIntegerLiteralNode(sourceRange, Err.Err);
         }
 
+
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()
         {
             if (HasErrors)

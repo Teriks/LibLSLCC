@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="line">The line on which the error occurred.</param>
         /// <param name="column">The character column at which the error occurred.</param>
-        /// <param name="message">The parsing error messaged passed along from the parsing backend.</param>
+        /// <param name="message">The parsing error messaged passed along from the parsing back end.</param>
         public virtual void GrammarLevelSyntaxError(int line, int column, string message)
         {
             OnError(new LSLSourceCodeRange(line, column), message);

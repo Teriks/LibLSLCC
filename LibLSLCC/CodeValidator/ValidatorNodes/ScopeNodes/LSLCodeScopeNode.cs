@@ -82,6 +82,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             CodeScopeType = codeScopeType;
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, ulong scopeId, LSLCodeScopeType codeScopeType)
@@ -98,6 +100,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             CodeScopeType = codeScopeType;
+
+            SourceCodeRangesAvailable = true;
         }
 
         internal LSLParser.CodeScopeContext CodeScopeContext { get; private set; }
@@ -575,6 +579,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         ///     The source code range this statement occupies in the source code
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
+
+
+
+        /// <summary>
+        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        /// </summary>
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         /// <summary>

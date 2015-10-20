@@ -48,11 +48,25 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.ThreadSafeEnumeration
 {
+    /// <summary>
+    /// A class extension that adds an AsLocked() method to enumerable objects.
+    /// This provides a quick way to create a ThreadSafeEnumerable object from an existing enumerable.
+    /// <see cref="ThreadSafeEnumerable{T}"/>
+    /// </summary>
     public static class ThreadSafeEnumerableExtension
     {
-        public static IEnumerable<T> AsLocked<T>(this IEnumerable<T> ie, object @lock)
+
+        /// <summary>
+        /// Retrieves a thread safe enumerable from an existing enumerable object by wrapping it with a ThreadSafeEnumerable instance.
+        /// </summary>
+        /// <see cref="ThreadSafeEnumerable{T}">The class used to create the thread safe enumerable.</see>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enumerable">The enumerable to wrap with a ThreadSafeEnumerable.</param>
+        /// <param name="lockObject">The object to use as a concurrent lock.</param>
+        /// <returns>An enumerable that is safe to enumerate over on multiple threads at once.</returns>
+        public static IEnumerable<T> AsLocked<T>(this IEnumerable<T> enumerable, object lockObject)
         {
-            return new ThreadSafeEnumerable<T>(ie, @lock);
+            return new ThreadSafeEnumerable<T>(enumerable, lockObject);
         }
     }
 }
