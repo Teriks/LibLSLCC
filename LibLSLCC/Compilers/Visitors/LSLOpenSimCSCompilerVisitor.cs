@@ -1449,7 +1449,11 @@ private static class UTILITIES
 
         public override bool VisitLabelStatement(ILSLLabelStatementNode node)
         {
-            if (node.IsDeadCode) return false;
+            //Things that can be referenced should not be omitted because they are dead code.
+            //Things like local variables, and labels
+            //Because the generated code will be in error if a label/variable definition that was pruned out
+            //is referenced later on...
+            //if (node.IsDeadCode) return false;
 
             if (Settings.InsertCoOpTerminationCalls)
             {
@@ -1481,7 +1485,11 @@ private static class UTILITIES
 
         public override bool VisitLocalVariableDeclaration(ILSLVariableDeclarationNode node)
         {
-            if (node.IsDeadCode) return false;
+            //Things that can be referenced should not be omitted because they are dead code.
+            //Things like local variables, and labels
+            //Because the generated code will be in error if a label/variable definition that was pruned out
+            //is referenced later on...
+            //if (node.IsDeadCode) return false;
 
 
             Writer.Write(GenIndent());
