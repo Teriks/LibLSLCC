@@ -59,7 +59,7 @@ namespace LSLCCEditor.EditorTabUI
     public partial class EditorTabContent : UserControl
     {
         public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
-            "LibraryDataProvider", typeof (ILSLMainLibraryDataProvider), typeof (EditorTabContent),
+            "LibraryDataProvider", typeof (ILSLLibraryDataProvider), typeof (EditorTabContent),
             new FrameworkPropertyMetadata(null));
 
         public static readonly DependencyProperty SourceCodeProperty = DependencyProperty.Register("SourceCode",
@@ -75,9 +75,9 @@ namespace LSLCCEditor.EditorTabUI
             _ownerTab = owner;
         }
 
-        public ILSLMainLibraryDataProvider LibraryDataProvider
+        public ILSLLibraryDataProvider LibraryDataProvider
         {
-            get { return (ILSLMainLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
+            get { return (ILSLLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
             set { SetValue(LibraryDataProviderProperty, value); }
         }
 

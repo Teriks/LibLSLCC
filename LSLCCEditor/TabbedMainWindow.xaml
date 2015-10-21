@@ -83,24 +83,7 @@
                 <MenuItem Header="Format" InputGestureText="Ctrl+Shift+F" Click="Format_OnClick" />
 
             </MenuItem>
-            <MenuItem Header="Tab Library Data"
-                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
-                <MenuItem Name="LindenLsl" Header="Linden LSL" IsChecked="True" IsCheckable="true"
-                          Unchecked="LindenLsl_OnUnchecked" Checked="LindenLsl_OnChecked" />
-                <MenuItem Name="OpenSimLsl" Header="OpenSim LSL" IsCheckable="true" Unchecked="OpenSimLsl_OnUnchecked"
-                          Checked="OpenSimLsl_OnChecked" />
-                <MenuItem Name="OsslFunctions" Header="OSSL Functions" IsCheckable="true"
-                          Unchecked="OsslFunctions_OnUnchecked" Checked="OsslFunctions_OnChecked" />
-                <MenuItem Name="OsWindlight" Header="OS Windlight" IsCheckable="true"
-                          Unchecked="OsWindlight_OnUnchecked" Checked="OsWindlight_OnChecked" />
-                <MenuItem Name="OsModInvoke" Header="OS Mod Invoke" IsCheckable="true" Checked="OsModInvoke_OnChecked"
-                          Unchecked="OsModInvoke_OnUnChecked" />
-                <MenuItem Name="OsBulletPhysics" Header="OS Bullet Physics" IsCheckable="true"
-                          Unchecked="OsBulletPhysics_OnUnchecked" Checked="OsBulletPhysics_OnChecked" />
-                <MenuItem Name="OsJsonStore" Header="OS Json Store" IsCheckable="true"
-                          Unchecked="OsJsonStore_OnUnchecked" Checked="OsJsonStore_OnChecked" />
-
-            </MenuItem>
+            <MenuItem Name="TabLibraryDataMenu" Header="Tab Library Data"></MenuItem>
             <MenuItem Header="Search"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
                 <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick" />

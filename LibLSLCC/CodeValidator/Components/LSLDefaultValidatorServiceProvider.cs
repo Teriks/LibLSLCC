@@ -60,7 +60,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             ExpressionValidator = new LSLDefaultExpressionValidator();
 
-            MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(false,
+            LibraryDataProvider = new LSLDefaultLibraryDataProvider(false,
                 LSLLibraryBaseData.StandardLsl);
 
             SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// The default implementation uses a LSLDefaultLibraryDataProvider(false, LSLLibraryBaseData.StandardLsl); instance.
         /// </summary>
         /// <see cref="LSLDefaultLibraryDataProvider"/>
-        public ILSLMainLibraryDataProvider MainLibraryDataProvider { get; private set; }
+        public ILSLLibraryDataProvider LibraryDataProvider { get; private set; }
 
         /// <summary>
         /// The default implementation uses a LSLDefaultStringPreProcessor(); instance.

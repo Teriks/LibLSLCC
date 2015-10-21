@@ -82,11 +82,14 @@
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetCollection.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetsAttributeParser.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataXmlSerializer.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibrarySubsetDescription.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />
     <Compile Include="CodeValidator\Enums\LSLConditionalStatementType.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLDuplicateSignatureException.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLDuplicateSubsetDescription.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLInvalidSymbolNameException.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLMissingSubsetDescriptionException.cs" />
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />
@@ -98,7 +101,7 @@
     <Compile Include="AutoCompleteParser\LSLAutoCompleteParser.cs" />
     <Compile Include="CodeValidator\Primitives\LSLBinaryOperationSignature.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLExpressionValidator.cs" />
-    <Compile Include="CodeValidator\Components\Interfaces\ILSLMainLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLStringPreProcessor.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxErrorListener.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxWarningListener.cs" />

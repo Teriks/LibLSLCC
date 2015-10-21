@@ -116,9 +116,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
         }
 
-        public ILSLMainLibraryDataProvider MainLibraryDataProvider
+        public ILSLLibraryDataProvider LibraryDataProvider
         {
-            get { return _validatorServices.MainLibraryDataProvider; }
+            get { return _validatorServices.LibraryDataProvider; }
         }
 
         public ILSLStringPreProcessor StringLiteralPreProcessor
@@ -624,11 +624,11 @@ namespace LibLSLCC.CodeValidator.Visitor
             var variableType = LSLTypeTools.FromLSLTypeString(typeToken.Text);
 
 
-            if (MainLibraryDataProvider.LibraryConstantExist(nameToken.Text))
+            if (LibraryDataProvider.LibraryConstantExist(nameToken.Text))
             {
                 SyntaxErrorListener.RedefinedStandardLibraryConstant(
                     new LSLSourceCodeRange(nameToken), variableType,
-                    MainLibraryDataProvider.GetLibraryConstantSignature(nameToken.Text));
+                    LibraryDataProvider.GetLibraryConstantSignature(nameToken.Text));
 
 
                 return LSLVariableDeclarationNode.GetError(new LSLSourceCodeRange(context));
@@ -1419,7 +1419,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            if (!MainLibraryDataProvider.EventHandlerExist(context.handler_name.Text))
+            if (!LibraryDataProvider.EventHandlerExist(context.handler_name.Text))
             {
                 var location = new LSLSourceCodeRange(context.handler_name);
 
@@ -1430,7 +1430,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var librarySignature = MainLibraryDataProvider.GetEventHandlerSignature(context.handler_name.Text);
+            var librarySignature = LibraryDataProvider.GetEventHandlerSignature(context.handler_name.Text);
 
             //the library signature may not have been defined, see above
             //but we want to continue processing errors in the code body of the event handler.
@@ -2412,11 +2412,11 @@ namespace LibLSLCC.CodeValidator.Visitor
                 var idText = context.variable.Text;
 
                 LSLVariableDeclarationNode declaration;
-                if (MainLibraryDataProvider.LibraryConstantExist(idText))
+                if (LibraryDataProvider.LibraryConstantExist(idText))
                 {
                     declaration =
                         LSLVariableDeclarationNode.CreateLibraryConstant(
-                            MainLibraryDataProvider.GetLibraryConstantSignature(idText).Type, idText);
+                            LibraryDataProvider.GetLibraryConstantSignature(idText).Type, idText);
                 }
                 else
                 {
@@ -2531,7 +2531,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (variableReferenceOnLeft.IsLibraryConstant)
                 {
-                    var libraryConstantReferenced = MainLibraryDataProvider.GetLibraryConstantSignature(variableReferenceOnLeft.Name);
+                    var libraryConstantReferenced = LibraryDataProvider.GetLibraryConstantSignature(variableReferenceOnLeft.Name);
 
                     SyntaxErrorListener.TupleAccessorOnLibraryConstant(location, variableReferenceOnLeft, libraryConstantReferenced, accessedMember);
 
@@ -2834,7 +2834,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var functionName = context.function_name.Text;
 
 
-            if (MainLibraryDataProvider.LibraryFunctionExist(functionName))
+            if (LibraryDataProvider.LibraryFunctionExist(functionName))
             {
                 var expressionList = VisitFunctionCallParameters(expressionListRule,
                     LSLExpressionListType.LibraryFunctionCallParameters) as LSLExpressionListNode;
@@ -2847,7 +2847,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
 
-                var functionSignatures = MainLibraryDataProvider.GetLibraryFunctionSignatures(functionName);
+                var functionSignatures = LibraryDataProvider.GetLibraryFunctionSignatures(functionName);
 
 
                 LSLLibraryFunctionSignature functionSignature = null;

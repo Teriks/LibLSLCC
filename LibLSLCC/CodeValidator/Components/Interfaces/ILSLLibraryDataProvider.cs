@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: ILSLMainLibraryDataProvider.cs
+// File: ILSLLibraryDataProvider.cs
 // 
 // 
 // ============================================================
@@ -50,10 +50,20 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
     /// <summary>
-    ///     An interface for a strategy that provides data about the standard LSL library to LSLCodeValidator
+    /// An interface for a strategy that provides data about the standard LSL library to LSLCodeValidator
     /// </summary>
-    public interface ILSLMainLibraryDataProvider
+    public interface ILSLLibraryDataProvider
     {
+
+
+        /// <summary>
+        /// Should contain description objects for all the library subsets this library data provider provides.
+        /// Every signature in a library data provider can belong to one or more subsets, if a signature
+        /// exists in the provider all of the subsets it belongs to must have descriptions.
+        /// </summary>
+        IReadOnlyDictionary<string, LSLLibrarySubsetDescription> SubsetDescriptions { get; }
+
+
         /// <summary>
         ///     Enumerable of event handlers supported according to this data provider
         /// </summary>

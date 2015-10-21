@@ -244,9 +244,9 @@ namespace LSLCCEditor.LSLEditor
             get { return LibraryDataProvider.LibraryFunctions.Where(x => x.Count > 0).Select(x => x.First().Name); }
         }
 
-        public ILSLMainLibraryDataProvider LibraryDataProvider
+        public ILSLLibraryDataProvider LibraryDataProvider
         {
-            get { return (ILSLMainLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
+            get { return (ILSLLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
             set { SetValue(LibraryDataProviderProperty, value); }
         }
 
@@ -336,7 +336,7 @@ namespace LSLCCEditor.LSLEditor
             if (dependencyPropertyChangedEventArgs.NewValue != null)
             {
                 ((LSLEditorControl) dependencyObject).UpdateHighlightingFromDataProvider(
-                    (ILSLMainLibraryDataProvider) dependencyPropertyChangedEventArgs.NewValue);
+                    (ILSLLibraryDataProvider) dependencyPropertyChangedEventArgs.NewValue);
             }
         }
 
@@ -2757,7 +2757,7 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-        public void UpdateHighlightingFromDataProvider(ILSLMainLibraryDataProvider provider)
+        public void UpdateHighlightingFromDataProvider(ILSLLibraryDataProvider provider)
         {
             using (var resourceStream = GetType().Assembly.GetManifestResourceStream("LSLCCEditor.LSLEditor.LSL.xshd"))
             {
@@ -2841,7 +2841,7 @@ namespace LSLCCEditor.LSLEditor
                 TextPropertyChangedCallback));
 
         public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
-            "LibraryDataProvider", typeof (ILSLMainLibraryDataProvider), typeof (LSLEditorControl),
+            "LibraryDataProvider", typeof (ILSLLibraryDataProvider), typeof (LSLEditorControl),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                 LibraryDataProviderPropertyChangedCallback));
 

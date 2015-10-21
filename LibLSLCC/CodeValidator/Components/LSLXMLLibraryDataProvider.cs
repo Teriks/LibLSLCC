@@ -110,27 +110,42 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 var serializer = new LSLLibraryDataXmlSerializer();
 
+
+                serializer.ReadLibrarySubsetDescription += desc =>
+                {
+                    lineInfo = serializer.CurrentLineInfo;
+                    AddSubsetDescription(desc);
+                };
+
                 serializer.ReadLibraryFunctionDefinition += signature =>
                 {
-                        lineInfo = serializer.CurrentLineInfo;
-                        DefineFunction(signature);
+                    lineInfo = serializer.CurrentLineInfo;
+                    DefineFunction(signature);
                 };
 
                 serializer.ReadLibraryEventHandlerDefinition += signature =>
                 {
-                        lineInfo = serializer.CurrentLineInfo;
-                        DefineEventHandler(signature);
+                    lineInfo = serializer.CurrentLineInfo;
+                    DefineEventHandler(signature);
                 };
 
 
                 serializer.ReadLibraryConstantDefinition += signature =>
                 {
-                        lineInfo = serializer.CurrentLineInfo;
-                        DefineConstant(signature);
+                    lineInfo = serializer.CurrentLineInfo;
+                    DefineConstant(signature);
                 };
 
 
                 serializer.Parse(reader);
+            }
+            catch (LSLMissingSubsetDescriptionException e)
+            {
+                throw new XmlSyntaxException(lineInfo.LineNumber, e.Message);
+            }
+            catch (LSLDuplicateSubsetDescription e)
+            {
+                throw new XmlSyntaxException(lineInfo.LineNumber, e.Message);
             }
             catch (LSLDuplicateSignatureException e)
             {
@@ -144,7 +159,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
         void IXmlSerializable.WriteXml(XmlWriter writer)
         {
-            LSLLibraryDataXmlSerializer.WriteXml(LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
+            LSLLibraryDataXmlSerializer.WriteXml(SubsetDescriptions.Values, LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
                 LibraryConstants, writer, false);
         }
 
@@ -157,7 +172,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="rootElementName">The root element name to write the library data into as content.</param>
         public void WriteXml(XmlWriter writer, bool writeRootElement, string rootElementName = "LSLLibraryData")
         {
-            LSLLibraryDataXmlSerializer.WriteXml(LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
+            LSLLibraryDataXmlSerializer.WriteXml(SubsetDescriptions.Values, LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
                 LibraryConstants, writer, writeRootElement, rootElementName);
         }
 

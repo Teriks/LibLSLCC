@@ -89,14 +89,13 @@ namespace LSLCCEditor.EditorTabUI
         private FileSystemWatcher _fileWatcher;
         private string _tabName;
 
-        public EditorTab(TabControl owner, IList<EditorTab> ownerTabCollection,
-            LSLDefaultLibraryDataProvider dataProvider, string sourceCode = "")
+        public EditorTab(TabControl owner, IList<EditorTab> ownerTabCollection, LSLLibraryDataProvider dataProvider, string sourceCode = "")
         {
             _owner = owner;
             OwnerTabCollection = ownerTabCollection;
 
-            BaseLibraryDataCache = LSLLibraryBaseData.StandardLsl;
-            LibraryDataAdditionsCache = LSLLibraryDataAdditions.None;
+            ActiveLibraryDataSubsetsCache = new HashSet<string> { "lsl" };
+
 
             Content = new EditorTabContent(this)
             {
@@ -122,6 +121,8 @@ namespace LSLCCEditor.EditorTabUI
             MemoryOnly = true;
             FilePath = null;
         }
+
+
 
         public IList<EditorTab> OwnerTabCollection { get; }
 
@@ -226,8 +227,9 @@ namespace LSLCCEditor.EditorTabUI
             set { Content.LibraryDataProvider = value; }
         }
 
-        public LSLLibraryBaseData BaseLibraryDataCache { get; set; }
-        public LSLLibraryDataAdditions LibraryDataAdditionsCache { get; set; }
+
+        public HashSet<string> ActiveLibraryDataSubsetsCache { get; private set; } 
+
 
         private static void ChangesPendingPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)

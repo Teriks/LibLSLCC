@@ -389,7 +389,7 @@ private static class UTILITIES
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
-            var libDataNode = Settings.LibraryData.GetLibraryFunctionSignature(node.Signature);
+            var libDataNode = Settings.LibraryDataProvider.GetLibraryFunctionSignature(node.Signature);
 
 
 
@@ -462,7 +462,7 @@ private static class UTILITIES
 
         public override bool VisitLibraryConstantVariableReference(ILSLVariableNode node)
         {
-            var x = Settings.LibraryData.GetLibraryConstantSignature(node.Name);
+            var x = Settings.LibraryDataProvider.GetLibraryConstantSignature(node.Name);
             if (x.Expand)
             {
                 switch (x.Type)
@@ -602,7 +602,7 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryData.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
+                    Settings.LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
@@ -662,7 +662,7 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryData.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
+                    Settings.LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
@@ -755,7 +755,7 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryData.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
+                    Settings.LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }

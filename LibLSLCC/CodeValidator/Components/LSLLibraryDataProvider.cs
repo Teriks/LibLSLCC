@@ -11,10 +11,10 @@ namespace LibLSLCC.CodeValidator.Components
 
 
     /// <summary>
-    /// The default base implementation of ILSLMainLibraryDataProvider which features optional live filtering of data
+    /// The default base implementation of ILSLLibraryDataProvider which features optional live filtering of data
     /// and stores library information in memory. 
     /// </summary>
-    public class LSLLibraryDataProvider : ILSLMainLibraryDataProvider
+    public class LSLLibraryDataProvider : ILSLLibraryDataProvider
     {
         //The query functions and properties of this class will be optimized
         //later after I get the correct live filtering behaviors down entirely
@@ -36,25 +36,75 @@ namespace LibLSLCC.CodeValidator.Components
         /// then determine what subsets are actually presented during query's.
         /// 
         /// ActiveSubsets can only be changed after the construction of this object if LiveFiltering is enabled.
+        /// 
+        /// If you try to add a subset to the active subsets collection while LiveFiltering is enabled,
+        /// and an 'LSLLibrarySubsetDescription' object has not been added for that subset name;  An LSLMissingSubsetDescription will be thrown by the collection.
         /// </summary>
         public LSLLibraryDataSubsetCollection ActiveSubsets { get; private set;}
 
 
+
         /// <summary>
-        /// All possible subset names in the library data currently loaded into this provider.  
-        /// This is only really useful if LiveFiltering mode is enabled.  If the provider is not in live filtering
-        /// mode, signatures who's subsets do not overlap with the active subsets collection are discarded when they are added;
-        /// Therefore they could never be a part of the PossibleSubsets collection.
+        /// All possible subset names in the library data currently loaded into this provider, taken from the 'SubsetDescriptions' dictionary.  
+        /// 
+        /// This is only really useful if LiveFiltering mode is enabled.  
+        /// 
+        /// If the provider is not in live filtering mode, subset descriptions who's subsets do not overlap with the active subsets collection are discarded when they are added;
+        /// Therefore they could never be a part of the 'PossibleSubsets' collection.
         /// </summary>
         public IEnumerable<string> PossibleSubsets
         {
             get
             {
-                return
-                    _eventSignaturesBySubsetAndName.Keys.Union(_constantSignaturesBySubsetAndName.Keys)
-                        .Union(_functionSignaturesBySubsetAndName.Keys);
+                return SubsetDescriptions.Values.Select(x=>x.Subset);
             }
         }
+
+
+        /// <summary>
+        /// Retrieves the friendly names of all the possible subsets that can be added to the active subsets collection of this library data provider.
+        /// The friendly name values are retrieved from the 'SubsetDescriptions' dictionary.
+        /// </summary>
+        public IEnumerable<string> PossibleSubsetsFriendlyNames
+        {
+            get { return SubsetDescriptions.Values.Select(x => x.FriendlyName); }
+        }
+
+
+
+        /// <summary>
+        /// Retrieves the friendly names of the active subsets in this library data provider.
+        /// The friendly name values are retrieved from the 'SubsetDescriptions' dictionary.
+        /// </summary>
+        public IEnumerable<string> ActiveSubsetsFriendlyNames
+        {
+            get
+            {
+                return ActiveSubsets.Subsets.Select(x =>
+                {
+                    LSLLibrarySubsetDescription desc;
+                    return SubsetDescriptions.TryGetValue(x, out desc) ? desc.FriendlyName : x;
+                });
+            }
+        }
+
+
+        /// <summary>
+        /// Contains descriptions of all the subsets that signatures can possibly belong to.
+        /// The key to this dictionary is the subset name the description is associated with.
+        /// 
+        /// If a signature is added to the library data provider who's Subsets's property contains a subset
+        /// without a description in this dictionary, an LSLMissingSubsetDescriptionException is thrown.
+        /// 
+        /// You can add descriptions for subsets using the AddSubsetDescription and SetSubsetDescription methods of this class.
+        /// </summary>
+        /// <see cref="SetSubsetDescription"/>
+        /// <see cref="AddSubsetDescription"/>
+        public IReadOnlyDictionary<string, LSLLibrarySubsetDescription> SubsetDescriptions
+        {
+            get { return _subsetDescriptions; }
+        }
+
 
         /// <summary>
         /// Returns all supported event handler signatures for the current ActiveSubsets.
@@ -205,9 +255,9 @@ namespace LibLSLCC.CodeValidator.Components
         private readonly Dictionary<string, Dictionary<string, LSLLibraryEventSignature>>
            _eventSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, LSLLibraryEventSignature>>();
 
+        private readonly Dictionary<string, LSLLibrarySubsetDescription> _subsetDescriptions  = new Dictionary<string, LSLLibrarySubsetDescription>();
 
 
-        
         /// <summary>
         /// Clear all library functions defined in this library data provider.
         /// </summary>
@@ -235,14 +285,95 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        /// <summary>
+        /// Clear all subset descriptions defined in this library data provider.
+        /// </summary>
+        public void ClearSubsetDescriptions()
+        {
+            _subsetDescriptions.Clear();
+        }
+
+
+
+        /// <summary>
+        /// Add a subset description to this library data provider.
+        /// If live filtering is not enabled, the subset description will be discarded if its subset does not exist in the active subsets collection.
+        /// </summary>
+        /// <exception cref="LSLDuplicateSubsetDescription">If a subset description for the same Subset name already exists.</exception>
+        /// <param name="description">The subset description to add.</param>
+        public void AddSubsetDescription(LSLLibrarySubsetDescription description)
+        {
+            if (!LiveFiltering && !ActiveSubsets.Subsets.Contains(description.Subset)) return;
+
+            if (_subsetDescriptions.ContainsKey(description.Subset))
+            {
+                throw new LSLDuplicateSubsetDescription(string.Format("Description for subset {0} already exists.", description.Subset));
+            }
+
+            _subsetDescriptions.Add(description.Subset, description);
+        }
+
+
+        /// <summary>
+        /// Adds multiple a subset description to this library data provider.
+        /// If live filtering is not enabled, a subset description will be discarded if its subset does not exist in the active subsets collection.
+        /// </summary>
+        /// <exception cref="LSLDuplicateSubsetDescription">If a subset description for the same Subset name already exists.</exception>
+        /// <param name="descriptions">The subset descriptions to add.</param>
+        public void AddSubsetDescriptions(IEnumerable<LSLLibrarySubsetDescription> descriptions)
+        {
+            foreach (var lslLibrarySubsetDescription in descriptions)
+            {
+                AddSubsetDescription(lslLibrarySubsetDescription);
+            }
+        }
+
+
+        /// <summary>
+        /// Set or add a subset description in this library data provider.
+        /// This will add the subset description if a subset description with the subset name in the object does not already exist.
+        /// If live filtering is not enabled, the subset description will be discarded if its subset does not exist in the active subsets collection.
+        /// </summary>
+        /// <param name="description">The subset description to set.</param>
+        public void SetSubsetDescription(LSLLibrarySubsetDescription description)
+        {
+            if (!LiveFiltering && !ActiveSubsets.Subsets.Contains(description.Subset)) return;
+
+            _subsetDescriptions[description.Subset] = description;
+        }
+
+
+
+        /// <summary>
+        /// Sets or adds multiple subset descriptions in/to this library data provider.
+        /// This will add the subset description if a subset description with the subset name in the object does not already exist.
+        /// If live filtering is not enabled, a subset description will be discarded if its subset does not exist in the active subsets collection.
+        /// </summary>
+        /// <param name="descriptions">The subset descriptions to set.</param>
+        public void SetSubsetDescriptions(IEnumerable<LSLLibrarySubsetDescription> descriptions)
+        {
+            foreach (var lslLibrarySubsetDescription in descriptions)
+            {
+                SetSubsetDescription(lslLibrarySubsetDescription);
+            }
+        }
+
 
         /// <summary>
         /// Define a library event handler signature
         /// </summary>
         /// <param name="signature">The LSLLibraryEventSignature representing the library event handler to be defined.</param>
+        /// <exception cref="LSLMissingSubsetDescriptionException">Thrown if the event signatures 'Subsets' property contains a subset that is not described in the library data providers 'SubsetDescriptions' collection.</exception>
         /// <exception cref="LSLDuplicateSignatureException">If the event handler could not be defined because it's name existed in the same subset already.</exception>
         public void DefineEventHandler(LSLLibraryEventSignature signature)
         {
+            foreach (var subset in signature.Subsets.Where(subset => !SubsetDescriptions.ContainsKey(subset)))
+            {
+                throw new LSLMissingSubsetDescriptionException("Event signature: " + signature.SignatureString +
+                                                               "; belongs to the subset \"" + subset +
+                                                               "\" but that subset has no associated SubsetDescription.");
+            }
+
             var sig = GetEventHandlerSignature(signature.Name, PossibleSubsets);
             if (sig != null)
             {
@@ -278,9 +409,18 @@ namespace LibLSLCC.CodeValidator.Components
         /// Define a library constant signature
         /// </summary>
         /// <param name="signature">The LSLLibraryConstantSignature representing the library constant to be defined.</param>
+        /// <exception cref="LSLMissingSubsetDescriptionException">Thrown if the constant signatures 'Subsets' property contains a subset that is not described in the library data providers 'SubsetDescriptions' collection.</exception>
         /// <exception cref="LSLDuplicateSignatureException">If the constant could not be defined because it's name existed in the same subset already.</exception>
         public void DefineConstant(LSLLibraryConstantSignature signature)
         {
+            foreach (var subset in signature.Subsets.Where(subset => !SubsetDescriptions.ContainsKey(subset)))
+            {
+                throw new LSLMissingSubsetDescriptionException("Library constant: " + signature.SignatureString +
+                                                               "; belongs to the subset \"" + subset +
+                                                               "\" but that subset has no associated SubsetDescription.");
+            }
+
+
             var sig = GetLibraryConstantSignature(signature.Name, PossibleSubsets);
             if (sig != null)
             {
@@ -318,9 +458,18 @@ namespace LibLSLCC.CodeValidator.Components
         /// Define a library function signature
         /// </summary>
         /// <param name="signature">The LSLLibraryFunctionSignature representing the library function to be defined.</param>
+        /// <exception cref="LSLMissingSubsetDescriptionException">Thrown if the function signatures 'Subsets' property contains a subset that is not described in the library data providers 'SubsetDescriptions' collection.</exception>
         /// <exception cref="LSLDuplicateSignatureException">If the function could not be defined because a duplicate or ambiguous definition existed in the same subset already.</exception>
         public void DefineFunction(LSLLibraryFunctionSignature signature)
         {
+            foreach (var subset in signature.Subsets.Where(subset => !SubsetDescriptions.ContainsKey(subset)))
+            {
+                throw new LSLMissingSubsetDescriptionException("Function signature: " + signature.SignatureString +
+                                                               "; belongs to the subset \"" + subset +
+                                                               "\" but that subset has no associated SubsetDescription.");
+            }
+
+
             var sigs = GetLibraryFunctionSignatures(signature.Name, PossibleSubsets);
 
             if (sigs != null)
@@ -376,6 +525,21 @@ namespace LibLSLCC.CodeValidator.Components
             ActiveSubsets = new LSLLibraryDataSubsetCollection();
 
             ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnOnSubsetsChanged;
+            ActiveSubsets.OnSubsetAdded += ActiveSubsetsOnOnSubsetAdded;
+        }
+
+
+
+        private void ActiveSubsetsOnOnSubsetAdded(object o, string subset)
+        {
+            if (!LiveFiltering) return;
+
+            if (!SubsetDescriptions.ContainsKey(subset))
+            {
+                throw new LSLMissingSubsetDescriptionException(
+                    "The subset \""+subset+
+                    "\" cannot be added to the library data providers ActiveSubsets collection while live filtering because a SubsetDescription does not exist for that subset name");
+            }
         }
 
         /// <summary>

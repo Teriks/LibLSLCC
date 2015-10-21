@@ -60,7 +60,7 @@ using LibLSLCC.Utility;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// Represents the signature of a constant provided from an ILSLMainLibraryDataProvider implementation
+    /// Represents the signature of a constant provided from an ILSLLibraryDataProvider implementation
     /// </summary>
     [XmlRoot("LibraryConstant")]
     public sealed class LSLLibraryConstantSignature : IXmlSerializable, ILSLLibrarySignature

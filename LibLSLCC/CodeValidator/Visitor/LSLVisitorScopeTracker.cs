@@ -698,11 +698,11 @@ namespace LibLSLCC.CodeValidator.Visitor
                     throw LSLCodeValidatorInternalError.VisitContextInvalidState("VisitFunctionDeclaration", true);
                 }
 
-                if (_validatorServiceProvider.MainLibraryDataProvider.LibraryFunctionExist(context.function_name.Text))
+                if (_validatorServiceProvider.LibraryDataProvider.LibraryFunctionExist(context.function_name.Text))
                 {
                     _validatorServiceProvider.SyntaxErrorListener.RedefinedStandardLibraryFunction(
                         new LSLSourceCodeRange(context.function_name), context.function_name.Text,
-                        _validatorServiceProvider.MainLibraryDataProvider.GetLibraryFunctionSignatures(
+                        _validatorServiceProvider.LibraryDataProvider.GetLibraryFunctionSignatures(
                             context.function_name.Text));
                     HasErrors = true;
                     return false;

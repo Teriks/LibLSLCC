@@ -53,7 +53,7 @@ namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
     ///     The LSLDefaultLibraryDataProvider reads XML from the embedded resource
-    ///     LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml
+    ///     LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLDefaultLibraryDataProvider.xml
     ///     to define its data
     /// </summary>
     public class LSLDefaultLibraryDataProvider : LSLXmlLibraryDataProvider
@@ -70,17 +70,32 @@ namespace LibLSLCC.CodeValidator.Components
         /// If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query results will change.
         /// Otherwise if this is false, only subsets present upon construction will be loaded.
         /// </param>
-        /// <param name="libraryBaseData"></param>
-        /// <param name="dataAdditions"></param>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <param name="libraryBaseData">The base library data to use.</param>
+        /// <param name="dataAdditions">Library data additions.</param>
+        /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
         public LSLDefaultLibraryDataProvider(bool liveFiltering, LSLLibraryBaseData libraryBaseData,
-            LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None) : base(GetSubsets(libraryBaseData,dataAdditions),liveFiltering)
+            LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None) : this(GetSubsets(libraryBaseData,dataAdditions),liveFiltering)
+        {
+
+        }
+
+
+        /// <summary>
+        /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file.
+        /// </summary>
+        /// <param name="activeSubsets">The library subsets to utilize.</param>
+        /// <param name="liveFiltering">
+        /// If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query results will change.
+        /// Otherwise if this is false, only subsets present upon construction will be loaded.
+        /// </param>
+        /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
+        public LSLDefaultLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true) : base(activeSubsets, liveFiltering)
         {
             using (
                 var libraryData =
                     GetType()
                         .Assembly.GetManifestResourceStream(
-                            "LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml"))
+                            "LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLDefaultLibraryDataProvider.xml"))
             {
                 if (libraryData == null)
                 {
@@ -93,6 +108,32 @@ namespace LibLSLCC.CodeValidator.Components
                 FillFromXml(reader);
             }
         }
+
+        /// <summary>
+        /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file in live filtering mode with no active subsets set.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
+        public LSLDefaultLibraryDataProvider() : base(true)
+        {
+            using (
+                var libraryData =
+                    GetType()
+                        .Assembly.GetManifestResourceStream(
+                            "LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLDefaultLibraryDataProvider.xml"))
+            {
+                if (libraryData == null)
+                {
+                    throw new InvalidOperationException(
+                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.Resources.StandardLSLLibraryData.xml");
+                }
+
+                var reader = new XmlTextReader(libraryData);
+
+                FillFromXml(reader);
+            }
+        }
+
+
 
         /// <summary>
         /// Easy way to add either 'lsl' or 'os-lsl' to the active subsets

@@ -60,7 +60,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// Represents a library function signature returned from an implementation of ILSLMainLibraryDataProvider.
+    /// Represents a library function signature returned from an implementation of ILSLLibraryDataProvider.
     /// </summary>
     [XmlRoot("LibraryFunction")]
     public class LSLLibraryFunctionSignature : LSLFunctionSignature, IXmlSerializable, ILSLLibrarySignature

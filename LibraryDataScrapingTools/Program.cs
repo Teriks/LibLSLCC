@@ -64,6 +64,16 @@ namespace LibraryDataScrapingTools
     internal class Program
     {
 
+        public static List<LSLLibrarySubsetDescription> SubsetDescriptions = new List<LSLLibrarySubsetDescription>
+        {
+            new LSLLibrarySubsetDescription("lsl", "Linden LSL","The standard library functions supported by Linden Lab's SecondLife servers."),
+            new LSLLibrarySubsetDescription("os-lsl", "OpenSim LSL","The subset of standard library functions from LSL supported by OpenSim SecondLife servers."),
+            new LSLLibrarySubsetDescription("ossl", "OpenSim OSSL","An extended set of functions provided by OpenSim servers that have OSSL enabled."),
+            new LSLLibrarySubsetDescription("os-bullet-physics", "OS Bullet Physics","A set of functions for interacting with bullet physics constraints on OpenSim servers which have extended physics enabled."),
+            new LSLLibrarySubsetDescription("os-mod-api", "OS Mod Invoke","A set of functions from OpenSim's JsonStore region module for manipulating JSON objects stored in script memory."),
+            new LSLLibrarySubsetDescription("os-json-store","OS Json Store","A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers."),
+            new LSLLibrarySubsetDescription("os-lightshare","OS Light Share","A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings.")
+        };
 
         private static void Run(TextWriter logFile)
         {
@@ -211,10 +221,11 @@ namespace LibraryDataScrapingTools
             var openSim = new LibraryDataSet(openSimData);
 
 
-            List<string> activeLibrarySubsets  = new List<string> {"lsl", "os-lsl", "ossl", "os-mod-api", "os-bullet-physics", "os-json-store"};
+            List<string> activeLibrarySubsets  = SubsetDescriptions.Select(x => x.Subset).ToList();
+
 
             var provider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
-
+            provider.AddSubsetDescriptions(SubsetDescriptions);
 
             foreach (var c in llsdData.LSLConstants())
             {
@@ -576,13 +587,14 @@ namespace LibraryDataScrapingTools
 
 
             var rightDiffLibraryDataProvider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
+            rightDiffLibraryDataProvider.AddSubsetDescriptions(SubsetDescriptions);
 
             using (var file = new XmlTextReader(selectRightDialog.OpenFile()))
             {
                 rightDiffLibraryDataProvider.FillFromXml(file);
             }
 
-            var diff = new LibraryDataDiff(activeLibrarySubsets, provider, activeLibrarySubsets, rightDiffLibraryDataProvider);
+            var diff = new LibraryDataDiff(provider, rightDiffLibraryDataProvider, SubsetDescriptions);
 
             diff.Diff();
 
@@ -711,7 +723,7 @@ namespace LibraryDataScrapingTools
                 .ToList();
         }
 
-        private static void GenerateLSLConstantTestScript(ILSLMainLibraryDataProvider dataProvider, TextWriter writer)
+        private static void GenerateLSLConstantTestScript(ILSLLibraryDataProvider dataProvider, TextWriter writer)
         {
 
             writer.WriteLine();

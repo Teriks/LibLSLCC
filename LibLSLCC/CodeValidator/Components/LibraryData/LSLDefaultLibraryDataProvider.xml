@@ -1,4 +1,28 @@
 ﻿<LSLLibraryData>
+  
+  <!-- Subset descriptions are required -->
+  <SubsetDescription Subset="lsl" FriendlyName="Standard LSL">
+    <Description>The standard library functions supported by Linden Lab's SecondLife servers.</Description>
+  </SubsetDescription>
+  <SubsetDescription Subset="os-lsl" FriendlyName="OpenSim LSL">
+    <Description>The subset of standard library functions from LSL supported by OpenSim SecondLife servers.</Description>
+  </SubsetDescription>
+  <SubsetDescription Subset="ossl" FriendlyName="OpenSim OSSL">
+    <Description>An extended set of functions provided by OpenSim servers that have OSSL enabled.</Description>
+  </SubsetDescription>
+  <SubsetDescription Subset="os-bullet-physics" FriendlyName="OS Bullet Physics">
+    <Description>A set of functions for interacting with bullet physics constraints on OpenSim servers which have extended physics enabled.</Description>
+  </SubsetDescription>
+  <SubsetDescription Subset="os-json-store" FriendlyName="OS Json Store">
+    <Description>A set of functions from OpenSim's JsonStore region module for manipulating JSON objects stored in script memory.</Description>
+  </SubsetDescription>
+  <SubsetDescription Subset="os-lightshare" FriendlyName="OS Lightshare">
+    <Description>A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings.</Description>
+  </SubsetDescription>
+  <SubsetDescription Subset="os-mod-api"  FriendlyName="OS Mod Invoke">
+    <Description>A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers.</Description>
+  </SubsetDescription>
+  
   <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="Value" Type="Integer" />
     <DocumentationString>Returns the absolute (positive) version of Value.</DocumentationString>

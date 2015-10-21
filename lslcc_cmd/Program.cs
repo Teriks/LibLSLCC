@@ -62,21 +62,22 @@ namespace lslcc
     {
         private static void WriteHelp()
         {
+            var defaultLibraryDataProvider = new LSLDefaultLibraryDataProvider();
+
             Console.WriteLine("======================================" + Environment.NewLine);
-            Console.WriteLine("Usage: lslcc -i script.lsl -o script.cs" + Environment.NewLine);
+            Console.WriteLine("Usage: lslcc -i script.lsl -o script.cs -librarysubsets lsl" + Environment.NewLine);
             Console.WriteLine("-i: input file");
             Console.WriteLine("-o: output file" + Environment.NewLine);
             Console.WriteLine("======================================" + Environment.NewLine);
-            Console.WriteLine("-baselibrary:" + Environment.NewLine);
-            Console.WriteLine("Set the available base LSL library. can either be: 'standard' or 'opensim' without quotes." + Environment.NewLine);
-            Console.WriteLine("======================================" + Environment.NewLine);
-            Console.WriteLine("-addonlibrarys:"+Environment.NewLine);
-            Console.WriteLine("Set the available add-on library's when compiling ( Separated by semi-colons ; )");
-            Console.WriteLine("All acceptable values are: ossl;os-mod-api;os-lightshare;os-bullet-physics;os-json-store" + Environment.NewLine);
+            Console.WriteLine("-librarysubsets:" + Environment.NewLine);
+            Console.WriteLine("Set the available library subsets when compiling ( Separated by semi-colons ; )");
+            Console.WriteLine("All acceptable values are: "+ string.Join(";",defaultLibraryDataProvider.PossibleSubsets) + Environment.NewLine);
             Console.WriteLine("======================================" + Environment.NewLine);
             Console.WriteLine("-h: help");
             Console.WriteLine("-v: lslcc, version and info");
         }
+
+
 
         private static DateTime RetrieveLinkerTimestamp()
         {
@@ -107,6 +108,9 @@ namespace lslcc
             return dt;
         }
 
+
+
+
         private static void WriteAbout()
         {
             Console.WriteLine("=================================");
@@ -123,13 +127,15 @@ namespace lslcc
             Console.WriteLine("=================================");
         }
 
+
+
         public static void Main(string[] args)
         {
             HashSet<string> libraries = new HashSet<string>();
-            LSLLibraryBaseData baseLibraryData = LSLLibraryBaseData.StandardLsl;
 
             string inFile = null;
             string outFile = null;
+
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
@@ -140,6 +146,7 @@ namespace lslcc
                 switch (arg.Substring(1))
                 {
                     case "i":
+
                         if (File.Exists(args[i + 1]) && inFile == null)
                         {
                             inFile = args[i + 1];
@@ -156,29 +163,8 @@ namespace lslcc
                         }
                         break;
 
-                    case "baselibrary":
-                        var baseLib = args[i + 1].Trim();
+                    case "librarysubsets":
 
-                        if (string.IsNullOrWhiteSpace(baseLib))
-                        {
-                            Console.WriteLine("-baselibrary switched used but left blank, use -h for help");
-                            return;
-                        }
-                        switch (baseLib)
-                        {
-                            case "standard":
-                                baseLibraryData = LSLLibraryBaseData.StandardLsl;
-                                break;
-                            case "opensim":
-                                baseLibraryData = LSLLibraryBaseData.OpensimLsl;
-                                break;
-                            default:
-                                Console.WriteLine("Base library name '{0}' not recognized, use -h for help", baseLib);
-                                return;
-                        }
-                        break;
-
-                    case "addonlibrarys":
                         var libs = args[i + 1];
 
                         foreach (var lib in libs.Split(';').Select(x => x.Trim()))
@@ -188,6 +174,7 @@ namespace lslcc
                         break;
 
                     case "o":
+
                         if (outFile == null)
                         {
                             outFile = args[i + 1];
@@ -198,6 +185,7 @@ namespace lslcc
                             return;
                         }
                         break;
+
                     case "h":
                         WriteHelp();
                         return;
@@ -210,6 +198,8 @@ namespace lslcc
                 }
             }
 
+
+
             if (inFile == null)
             {
                 Console.WriteLine("Input file not specified, use -h for help.");
@@ -221,6 +211,13 @@ namespace lslcc
                 Console.WriteLine("Output file not specified, use -h for help");
                 return;
             }
+
+            if (libraries.Count == 0)
+            {
+                Console.WriteLine("No library subsets specified, use -h for help.");
+                return;
+            }
+
 
             Console.WriteLine("================================================");
             Console.WriteLine("Compiling \"" + inFile + "\"...");
@@ -239,35 +236,21 @@ namespace lslcc
 
 
 
-            LSLLibraryDataAdditions libraryDataAdditions = LSLLibraryDataAdditions.None;
+            var defaultProvider = new LSLDefaultLibraryDataProvider();
+            validatorServices.LibraryDataProvider = defaultProvider;
 
-            if (libraries.Contains("os-mod-api"))
+
+            foreach (var library in libraries)
             {
-                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimModInvoke;
+                if (defaultProvider.SubsetDescriptions.ContainsKey(library)){
+                    defaultProvider.ActiveSubsets.AddSubset(library);
+                }
+                else
+                {
+                    Console.WriteLine("WARNING: Library subset '{0}' does not exist and was ignored.", library);
+                }
             }
 
-            if (libraries.Contains("ossl"))
-            {
-                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimOssl;
-            }
-
-            if (libraries.Contains("os-bullet-physics"))
-            {
-                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimBulletPhysics;
-            }
-
-            if (libraries.Contains("os-lightshare"))
-            {
-                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimWindlight;
-            }
-
-            if (libraries.Contains("os-json-store"))
-            {
-                libraryDataAdditions |= LSLLibraryDataAdditions.OpenSimJsonStore;
-            }
-
-
-            validatorServices.MainLibraryDataProvider = new LSLDefaultLibraryDataProvider(false, baseLibraryData, libraryDataAdditions);
 
             var validator = new LSLCodeValidator(validatorServices);
 
@@ -276,29 +259,26 @@ namespace lslcc
 
 
             try
-            {
-                try
+            { 
+                using (var infile = new StreamReader(inFile))
                 {
-                    using (var infile = new StreamReader(inFile))
-                    {
-                        validated = validator.Validate(infile);
+                    validated = validator.Validate(infile);
 
-                        if (validator.HasSyntaxErrors)
-                        {
-                            Console.WriteLine("Compilation phase did not start due to syntax errors");
-                            Console.WriteLine("================================================");
-                            return;
-                        }
+                    if (validator.HasSyntaxErrors)
+                    {
+                        Console.WriteLine("Compilation phase did not start due to syntax errors");
+                        Console.WriteLine("================================================");
+                        return;
                     }
                 }
-                catch (LSLCodeValidatorInternalError error)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Code Validator internal error: \"" + error.Message + "\"");
-                    Console.WriteLine("Please report to the developer the code that caused this message.");
-                    Console.WriteLine("================================================");
-                    return;
-                }
+            }
+            catch (LSLCodeValidatorInternalError error)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Code Validator internal error: \"" + error.Message + "\"");
+                Console.WriteLine("Please report to the developer the code that caused this message.");
+                Console.WriteLine("================================================");
+                return;
             }
             catch (Exception error)
             {
@@ -310,6 +290,7 @@ namespace lslcc
             }
 
 
+
             if (!validator.HasSyntaxErrors)
             {
                 if (File.Exists(outFile))
@@ -318,21 +299,19 @@ namespace lslcc
                 }
                 using (var outfile = File.OpenWrite(outFile))
                 {
-                    var compiler = new LSLOpenSimCSCompiler(validator.ValidatorServices.MainLibraryDataProvider);
+                    var compiler = new LSLOpenSimCSCompiler(validator.ValidatorServices.LibraryDataProvider);
                     try
                     {
-                        try
-                        {
-                            compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
-                        }
-                        catch (LSLCompilerInternalException error)
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Compiler internal error: \"" + error.Message + "\"");
-                            Console.WriteLine("Please report to the developer the code that caused this message.");
-                            Console.WriteLine("================================================");
-                            return;
-                        }
+                        compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
+
+                    }
+                    catch (LSLCompilerInternalException error)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Compiler internal error: \"" + error.Message + "\"");
+                        Console.WriteLine("Please report to the developer the code that caused this message.");
+                        Console.WriteLine("================================================");
+                        return;
                     }
                     catch (Exception error)
                     {

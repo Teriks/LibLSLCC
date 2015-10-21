@@ -53,16 +53,25 @@ namespace LibraryDataScrapingTools
 {
     public class LibraryDataDiff
     {
-        public LibraryDataDiff(IEnumerable<string> activeSubsetsLeft, LSLLibraryDataProvider left, IEnumerable<string> activeSubsetsRight, LSLLibraryDataProvider right)
+        public LibraryDataDiff(LSLLibraryDataProvider left, LSLLibraryDataProvider right, IEnumerable<LSLLibrarySubsetDescription> subsetDescriptions)
         {
             Left = left;
             Right = right;
-            NotInLeft = new LSLXmlLibraryDataProvider(activeSubsetsLeft);
-            NotInRight = new LSLXmlLibraryDataProvider(activeSubsetsRight);
+
+
+            var lslLibrarySubsetDescriptions = subsetDescriptions as LSLLibrarySubsetDescription[] ?? subsetDescriptions.ToArray();
+
+            var activeSubsets = lslLibrarySubsetDescriptions.Select(x => x.Subset).ToList();
+
+            NotInLeft = new LSLXmlLibraryDataProvider(activeSubsets);
+            NotInRight = new LSLXmlLibraryDataProvider(activeSubsets);
+
+            NotInLeft.SetSubsetDescriptions(lslLibrarySubsetDescriptions);
+            NotInRight.SetSubsetDescriptions(lslLibrarySubsetDescriptions);
         }
 
-        public ILSLMainLibraryDataProvider Left { get; set; }
-        public ILSLMainLibraryDataProvider Right { get; set; }
+        public ILSLLibraryDataProvider Left { get; set; }
+        public ILSLLibraryDataProvider Right { get; set; }
         public LSLXmlLibraryDataProvider NotInLeft { get; private set; }
         public LSLXmlLibraryDataProvider NotInRight { get; private set; }
 

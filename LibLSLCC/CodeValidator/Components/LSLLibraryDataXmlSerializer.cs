@@ -80,6 +80,13 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
+        /// Delegate for the ReadLibrarySubsetDescription event.
+        /// </summary>
+        /// <param name="desc">The description object that gets passed into the event when its read from XML.</param>
+        public delegate void LibrarySubsetDescriptionEvent(LSLLibrarySubsetDescription desc);
+
+
+        /// <summary>
         /// Info about the current XML line as parsing in progress.
         /// </summary>
         public IXmlLineInfo CurrentLineInfo { get; private set; }
@@ -99,6 +106,12 @@ namespace LibLSLCC.CodeValidator.Components
         /// This event is fired when an event handler definition has been retrieved from XML markup.
         /// </summary>
         public event LibraryEventHandlerSignatureEvent ReadLibraryEventHandlerDefinition;
+
+
+        /// <summary>
+        /// This event is fired when a library subset description has been retrieved from XML markup.
+        /// </summary>
+        public event LibrarySubsetDescriptionEvent ReadLibrarySubsetDescription;
 
 
         /// <summary>
@@ -130,6 +143,17 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+
+        /// <summary>
+        /// This event is fired when a library subset description has been retrieved from XML markup.
+        /// </summary>
+        protected virtual void OnReadLibrarySubsetDescription(LSLLibrarySubsetDescription desc)
+        {
+            var handler = ReadLibrarySubsetDescription;
+            if (handler != null) handler(desc);
+        }
+
+
         /// <summary>
         /// Starts a parse at the current node in the given XmlReader, the default element name to consume the content of is 'LSLLibraryData'
         /// </summary>
@@ -144,7 +168,15 @@ namespace LibLSLCC.CodeValidator.Components
                 var canRead = reader.Read();
                 while (canRead)
                 {
-                    if (reader.Name == "LibraryFunction" && reader.IsStartElement())
+                    if (reader.Name == "SubsetDescription" && reader.IsStartElement())
+                    {
+                        var desc = LSLLibrarySubsetDescription.FromXmlFragment(reader);
+
+                        OnReadLibrarySubsetDescription(desc);
+
+                        canRead = reader.Read();
+                    }
+                    else if (reader.Name == "LibraryFunction" && reader.IsStartElement())
                     {
                         var signature = LSLLibraryFunctionSignature.FromXmlFragment(reader);
 
@@ -193,6 +225,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         /// Serialize library signature definitions to an XmlWriter object/
         /// </summary>
+        /// <param name="librarySubsetDescriptions">The library subset descriptions to serialize.</param>
         /// <param name="libraryFunctions">The library function signatures to serialize.</param>
         /// <param name="libraryEventSignatures">The library event handler signatures to serialize.</param>
         /// <param name="libraryConstants">The library constant signatures to serialize</param>
@@ -200,6 +233,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="writeRootElement">Boolean defining whether or not to write a root element to the stream that houses the signatures, or to just write the signatures without putting them in a root element.</param>
         /// <param name="rootElementName">The name of the root element, which is houses the serialized library signature definitions.  The default name is 'LSLLibraryData'</param>
         public static void WriteXml(
+            IEnumerable<LSLLibrarySubsetDescription> librarySubsetDescriptions,
             IEnumerable<LSLLibraryFunctionSignature> libraryFunctions,
             IEnumerable<LSLLibraryEventSignature> libraryEventSignatures,
             IEnumerable<LSLLibraryConstantSignature> libraryConstants,
@@ -210,6 +244,14 @@ namespace LibLSLCC.CodeValidator.Components
             if (writeRootElement)
             {
                 writer.WriteStartElement(rootElementName);
+            }
+
+
+            foreach (var func in librarySubsetDescriptions)
+            {
+                writer.WriteStartElement("SubsetDescription");
+                ((IXmlSerializable)func).WriteXml(writer);
+                writer.WriteEndElement();
             }
 
             foreach (var func in libraryFunctions)
@@ -238,5 +280,6 @@ namespace LibLSLCC.CodeValidator.Components
                 writer.WriteEndElement();
             }
         }
+
     }
 }

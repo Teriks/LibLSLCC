@@ -60,7 +60,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// Represents a library event handler returned from an ILSLMainLibraryDataProvider implementation.
+    /// Represents a library event handler returned from an ILSLLibraryDataProvider implementation.
     /// </summary>
     [XmlRoot("EventHandler")]
     public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable, ILSLLibrarySignature
