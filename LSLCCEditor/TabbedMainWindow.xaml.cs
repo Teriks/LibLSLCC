@@ -110,6 +110,7 @@ namespace LSLCCEditor
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
+
             _libraryDataProvider = new LSLDefaultLibraryDataProvider();
 
             _validatorServices = new LSLCustomValidatorServiceProvider

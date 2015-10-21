@@ -66,8 +66,8 @@ namespace LibraryDataScrapingTools
             NotInLeft = new LSLXmlLibraryDataProvider(activeSubsets);
             NotInRight = new LSLXmlLibraryDataProvider(activeSubsets);
 
-            NotInLeft.SetSubsetDescriptions(lslLibrarySubsetDescriptions);
-            NotInRight.SetSubsetDescriptions(lslLibrarySubsetDescriptions);
+            NotInLeft.AddSubsetDescriptions(lslLibrarySubsetDescriptions);
+            NotInRight.AddSubsetDescriptions(lslLibrarySubsetDescriptions);
         }
 
         public ILSLLibraryDataProvider Left { get; set; }
