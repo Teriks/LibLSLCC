@@ -53,6 +53,7 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.LSLRuntime;
 
 #endregion
 
@@ -63,7 +64,6 @@ namespace LibLSLCC.Compilers.Visitors
         // ReSharper restore InconsistentNaming
     {
 
-
         private const string UtilityLibrary =
             @"
 //============================
@@ -73,9 +73,9 @@ private static class UTILITIES
 {
 
     public static readonly LSL_Types.Vector3 DEFAULT_VECTOR = new LSL_Types.Vector3();
-    public static readonly LSL_Types.Float DEFAULT_FLOAT = new LSL_Types.Float();
-    public static readonly LSL_Types.Integer DEFAULT_INTEGER = new LSL_Types.Integer();
-    public static readonly LSL_Types.String DEFAULT_STRING = new LSL_Types.String();
+    public static readonly LSL_Types.LSLFloat DEFAULT_FLOAT = new LSL_Types.LSLFloat();
+    public static readonly LSL_Types.LSLInteger DEFAULT_INTEGER = new LSL_Types.LSLInteger();
+    public static readonly LSL_Types.LSLString DEFAULT_STRING = new LSL_Types.LSLString();
     public static readonly LSL_Types.list DEFAULT_LIST = new LSL_Types.list();
     public static readonly LSL_Types.key DEFAULT_KEY = new LSL_Types.key();
     public static readonly LSL_Types.Quaternion DEFAULT_ROTATION = new LSL_Types.Quaternion();
