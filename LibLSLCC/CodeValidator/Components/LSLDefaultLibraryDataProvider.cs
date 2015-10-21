@@ -95,12 +95,12 @@ namespace LibLSLCC.CodeValidator.Components
                 var libraryData =
                     GetType()
                         .Assembly.GetManifestResourceStream(
-                            "LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLDefaultLibraryDataProvider.xml"))
+                            "LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml"))
             {
                 if (libraryData == null)
                 {
                     throw new InvalidOperationException(
-                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.Resources.StandardLSLLibraryData.xml");
+                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml");
                 }
 
                 var reader = new XmlTextReader(libraryData);
@@ -119,12 +119,12 @@ namespace LibLSLCC.CodeValidator.Components
                 var libraryData =
                     GetType()
                         .Assembly.GetManifestResourceStream(
-                            "LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLDefaultLibraryDataProvider.xml"))
+                            "LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml"))
             {
                 if (libraryData == null)
                 {
                     throw new InvalidOperationException(
-                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.Resources.StandardLSLLibraryData.xml");
+                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml");
                 }
 
                 var reader = new XmlTextReader(libraryData);
