@@ -62,6 +62,8 @@ namespace LibLSLCC.Compilers.Visitors
     internal class LSLOpenSimCSCompilerVisitor : LSLValidatorNodeVisitor<bool>
         // ReSharper restore InconsistentNaming
     {
+
+
         private const string UtilityLibrary =
             @"
 //============================
@@ -69,6 +71,15 @@ namespace LibLSLCC.Compilers.Visitors
 //============================
 private static class UTILITIES
 {
+
+    public static readonly LSL_Types.Vector3 DEFAULT_VECTOR = new LSL_Types.Vector3();
+    public static readonly LSL_Types.Float DEFAULT_FLOAT = new LSL_Types.Float();
+    public static readonly LSL_Types.Integer DEFAULT_INTEGER = new LSL_Types.Integer();
+    public static readonly LSL_Types.String DEFAULT_STRING = new LSL_Types.String();
+    public static readonly LSL_Types.list DEFAULT_LIST = new LSL_Types.list();
+    public static readonly LSL_Types.key DEFAULT_KEY = new LSL_Types.key();
+    public static readonly LSL_Types.Quaternion DEFAULT_ROTATION = new LSL_Types.Quaternion();
+    
     public static bool ToBool(LSL_Types.Vector3 vector)
     {
         return vector.x!=0.0&&vector.y!=0.0&&vector.z!=0.0;
@@ -448,7 +459,36 @@ private static class UTILITIES
 
         public override bool VisitLocalVariableReference(ILSLVariableNode node)
         {
-            Writer.Write("Var" + node.Declaration.ScopeId + "_" + node.Name);
+            if (node.Declaration.IsDeadCode)
+            {
+                /*  
+                    The variable will never be initialized if it is dead code, its an error if we reference it later in CSharp.
+                    So when a declaration is found to be in dead code its omitted from the generated code.
+                
+                    Then when we reference a variable that exist in dead code, we use the default value for its type.
+                
+                    The default values for each type have been defined in the generated UTILITIES class to prevent the need 
+                    to initialize them each time they need to be referenced.
+                
+                    Clever right?
+                */
+
+                Writer.Write("UTILITIES.DEFAULT_" + node.Type.ToLSLTypeString().ToUpper());
+
+                /*
+                  The call to ToLSLTypeString() instead of node.TypeString prevents the case where
+                  the generated string will be 'QUATERNION' if the variable was defined using the 'quaternion' keyword.
+                 
+                  'quaternion' is an alias for 'rotation' in LSL and node.TypeString returns raw unmodified type string used in the source code.
+
+                  the node.Type property uses the LSLType enumeration, which does not contain a member named Quaternion since the 'quaternion' keyword
+                  parses into 'LSLType.Rotation'.
+                */
+            }
+            else
+            {
+                Writer.Write("Var" + node.Declaration.ScopeId + "_" + node.Name);
+            }
             return false;
         }
 
@@ -1449,10 +1489,7 @@ private static class UTILITIES
 
         public override bool VisitLabelStatement(ILSLLabelStatementNode node)
         {
-            //Things that can be referenced should not be omitted because they are dead code.
-            //Things like local variables, and labels
-            //Because the generated code will be in error if a label/variable definition that was pruned out
-            //is referenced later on...
+            //Labels should not be omitted if they are dead code, they can be referenced still and if the definition is missing that a problem.
             //if (node.IsDeadCode) return false;
 
             if (Settings.InsertCoOpTerminationCalls)
@@ -1485,11 +1522,9 @@ private static class UTILITIES
 
         public override bool VisitLocalVariableDeclaration(ILSLVariableDeclarationNode node)
         {
-            //Things that can be referenced should not be omitted because they are dead code.
-            //Things like local variables, and labels
-            //Because the generated code will be in error if a label/variable definition that was pruned out
-            //is referenced later on...
-            //if (node.IsDeadCode) return false;
+            // See VisitLocalVariableReference to see how
+            // References to variables in dead code are handled.
+            if (node.IsDeadCode) return false;
 
 
             Writer.Write(GenIndent());

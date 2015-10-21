@@ -298,11 +298,15 @@ namespace LSLCCEditor
                 DefaultExt = ".cs",
                 Filter = "CSharp Code (*.cs) | *.cs"
             };
+
+            //I want to be able to debug compiler errors in debug mode
+            //Hence the conditional compilation.
+
 #if !DEBUG
             try
             {
 #endif
-                var showDialog = saveDialog.ShowDialog();
+            var showDialog = saveDialog.ShowDialog();
                 if (showDialog != null && showDialog.Value)
                 {
                     if (!tab.MemoryOnly)
@@ -376,6 +380,9 @@ namespace LSLCCEditor
                 File.Delete(destinationFile);
             }
 
+            //I want to be able to debug compiler errors in debug mode
+            //Hence the conditional compilation.
+
 #if !DEBUG
             bool compileSuccess = false;
 #endif
@@ -404,9 +411,10 @@ namespace LSLCCEditor
                         "Unknown Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     
                 }
-#else
-                compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
 #endif
+
+                compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
+
 
 
             }
@@ -414,15 +422,16 @@ namespace LSLCCEditor
 #if !DEBUG
             if (compileSuccess)
             {
-                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
-                    "Program compiled successfully", false) {Clickable = false});
+
+                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice", "Program compiled successfully", false) {Clickable = false});
             }
             else
-#endif
             {
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error",
                     "An internal compiler exception occurred, please report the code that caused this.", false) { Clickable = false });
             }
+#endif
+
         }
 
 
@@ -461,6 +470,9 @@ namespace LSLCCEditor
 
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(tab.SourceCode));
+
+            //I want to be able to debug validator errors in debug mode
+            //Hence the conditional compilation.
 
 #if !DEBUG
             try
