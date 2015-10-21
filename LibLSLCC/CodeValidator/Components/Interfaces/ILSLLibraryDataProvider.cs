@@ -55,15 +55,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     public interface ILSLLibraryDataProvider
     {
 
-
-        /// <summary>
-        /// Should contain description objects for all the library subsets this library data provider provides.
-        /// Every signature in a library data provider can belong to one or more subsets, if a signature
-        /// exists in the provider all of the subsets it belongs to must have descriptions.
-        /// </summary>
-        IReadOnlyDictionary<string, LSLLibrarySubsetDescription> SubsetDescriptions { get; }
-
-
         /// <summary>
         ///     Enumerable of event handlers supported according to this data provider
         /// </summary>
