@@ -45,6 +45,7 @@
       <Word>string</Word>
       <Word>vector</Word>
       <Word>rotation</Word>
+      <Word>quaternion</Word>
       <Word>list</Word>
       <Word>key</Word>
     </Keywords>

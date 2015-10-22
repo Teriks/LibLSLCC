@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: TabbedMainWindow.xaml.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,7 +58,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers;
@@ -63,6 +65,11 @@ using LibLSLCC.Formatter.Visitor;
 using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplace;
 using Microsoft.Win32;
+
+#if !DEBUG
+//prevents re-sharper from cleaning it while debug mode is active
+using LibLSLCC.CodeValidator.Exceptions;
+#endif
 
 #endregion
 
@@ -87,167 +94,19 @@ namespace LSLCCEditor
         public static RoutedCommand SearchFind = new RoutedCommand();
         public static RoutedCommand SearchReplace = new RoutedCommand();
 
+        private bool _droppingTabAfterDragging;
+
         private LSLLibraryDataProvider _libraryDataProvider;
 
-        private LSLCustomValidatorServiceProvider _validatorServices;
+        private bool _settingLibraryMenuProgrammaticallyFromTabCache;
 
-        private bool _droppingTab;
-        private bool _settingLibraryMenuFromTab;
+        private bool _uncheckingLibraryDataTabItemProgrammatically;
+
+        private bool _selectingStartupTabDuringWindowLoad;
 
         private Timer _tabDragTimer;
 
-        public TabbedMainWindow()
-        {
-
-#if !DEBUG
-           Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
-#endif
-
-            Loaded += OnLoaded;
-            InitializeComponent();
-            
-        }
-
-        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
-        {
-
-            _libraryDataProvider = new LSLDefaultLibraryDataProvider(new[] {"lsl"});
-
-
-            var t = _libraryDataProvider.LibraryFunctions.ToList();
-
-            _validatorServices = new LSLCustomValidatorServiceProvider
-            {
-                ExpressionValidator = new LSLDefaultExpressionValidator(),
-                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
-                SyntaxErrorListener = new WindowSyntaxErrorListener(this),
-                SyntaxWarningListener = new WindowSyntaxWarningListener(this)
-            };
-
-
-            foreach (var dataMenuItem in _libraryDataProvider.SubsetDescriptions.Select(subset => new MenuItem
-            {
-                IsCheckable = true,
-                Header = subset.Value.FriendlyName,
-                Tag = subset.Value.Subset,
-                ToolTip = new ToolTip { Content = new TextBlock { Text = subset.Value.Description } }
-            }))
-            {
-                dataMenuItem.Checked += DataMenuItemOnChecked;
-                dataMenuItem.Unchecked += DataMenuItemOnUnChecked;
-                TabLibraryDataMenu.Items.Add(dataMenuItem);
-            }
-        }
-
-
-
-        private void SetLibraryMenuFromTab(EditorTab tab)
-        {
-            if (tab == null)
-            {
-                throw new ArgumentNullException(nameof(tab));
-            }
-
-            _settingLibraryMenuFromTab = true;
-
-
-            foreach (var menuItem in TabLibraryDataMenu.Items.Cast<MenuItem>())
-            {
-                menuItem.IsChecked = tab.ActiveLibraryDataSubsetsCache.Contains(menuItem.Tag.ToString());
-            }
-
-   
-
-            _settingLibraryMenuFromTab = false;
-        }
-
-
-        private bool _tabDataUncheckEventIsProgramatic = false;
-
-        private void DataMenuItemOnUnChecked(object sender, RoutedEventArgs e)
-        {
-            if (TabControl == null || _settingLibraryMenuFromTab) return;
-
-            var item = sender as MenuItem;
-
-            var tab = (EditorTab)TabControl.SelectedItem;
-
-
-            if (item == null) return;
-
-            var subsetName = item.Tag.ToString();
-
-
-            var osLslMenuItem = TabLibraryDataMenu.Items.Cast<MenuItem>().FirstOrDefault(x=>x.Tag.ToString() == LSLLibraryBaseData.OpensimLsl.ToSubsetName());
-            var lslMenuItem = TabLibraryDataMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Tag.ToString() == LSLLibraryBaseData.StandardLsl.ToSubsetName());
-
-            if (subsetName == LSLLibraryBaseData.StandardLsl.ToSubsetName() && osLslMenuItem != null)
-            {
-                osLslMenuItem.IsChecked = true;
-            }
-
-            if (subsetName == LSLLibraryBaseData.OpensimLsl.ToSubsetName() && lslMenuItem != null)
-            {
-                lslMenuItem.IsChecked = true;
-            }
-
-            
-            tab.LibraryDataProvider.ActiveSubsets.RemoveSubset(subsetName);
-            tab.ActiveLibraryDataSubsetsCache.Remove(subsetName);
-
-            if (!_tabDataUncheckEventIsProgramatic)
-            {
-                tab.Content.Editor.UpdateHighlightingFromDataProvider();
-            }
-        }
-
-
-
-        private void DataMenuItemOnChecked(object sender, RoutedEventArgs routedEventArgs)
-        {
-            if (TabControl == null || _settingLibraryMenuFromTab) return;
-
-            var item = sender as MenuItem;
-
-            var tab = (EditorTab)TabControl.SelectedItem;
-
-
-            if (item == null) return;
-
-            var subsetName = item.Tag.ToString();
-
-
-            var osLslMenuItem = TabLibraryDataMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Tag.ToString() == LSLLibraryBaseData.OpensimLsl.ToSubsetName());
-            var lslMenuItem = TabLibraryDataMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Tag.ToString() == LSLLibraryBaseData.StandardLsl.ToSubsetName());
-
-            if (subsetName == LSLLibraryBaseData.StandardLsl.ToSubsetName() && osLslMenuItem != null)
-            {
-                _tabDataUncheckEventIsProgramatic = true;
-                osLslMenuItem.IsChecked = false;
-                _tabDataUncheckEventIsProgramatic = false;
-            }
-
-            if (subsetName == LSLLibraryBaseData.OpensimLsl.ToSubsetName() && lslMenuItem != null)
-            {
-                _tabDataUncheckEventIsProgramatic = true;
-                lslMenuItem.IsChecked = false;
-                _tabDataUncheckEventIsProgramatic = false;
-            }
-
-
-            tab.LibraryDataProvider.ActiveSubsets.AddSubset(subsetName);
-            tab.ActiveLibraryDataSubsetsCache.Add(subsetName);
-            tab.Content.Editor.UpdateHighlightingFromDataProvider();
-        }
-
-
-
-
-        public ObservableCollection<EditorTab> EditorTabs { get; set; } = new ObservableCollection<EditorTab>();
-
-
-        private FindReplaceMgr FindDialogManager { get; set; }
-
+        private LSLCustomValidatorServiceProvider _validatorServices;
 
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -272,6 +131,255 @@ namespace LSLCCEditor
 
 
 
+        public TabbedMainWindow()
+        {
+#if !DEBUG
+           Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+#endif
+            InitializeComponent();
+        }
+
+
+
+        private void TabbedMainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+
+            _libraryDataProvider = new LSLDefaultLibraryDataProvider(new[] { "lsl" });
+
+
+            _validatorServices = new LSLCustomValidatorServiceProvider
+            {
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                SyntaxErrorListener = new WindowSyntaxErrorListener(this),
+                SyntaxWarningListener = new WindowSyntaxWarningListener(this)
+            };
+
+
+            foreach (var dataMenuItem in _libraryDataProvider.SubsetDescriptions.Select(subset => new MenuItem
+            {
+                IsCheckable = true,
+                Header = subset.Value.FriendlyName,
+                Tag = subset.Value.Subset,
+                ToolTip = new ToolTip { Content = new TextBlock { Text = subset.Value.Description } }
+            }))
+            {
+                dataMenuItem.Checked += DataMenuItemOnChecked;
+                dataMenuItem.Unchecked += DataMenuItemOnUnChecked;
+                TabLibraryDataMenu.Items.Add(dataMenuItem);
+            }
+
+
+
+            FindDialogManager = new FindReplaceMgr
+            {
+                OwnerWindow = this,
+                InterfaceConverter = new IEditorConverter(),
+                ShowSearchIn = false
+            };
+
+
+            var args = Environment.GetCommandLineArgs();
+
+
+            if (args.Length > 1)
+            {
+                for (var i = 1; i < args.Length; i++)
+                {
+                    var tab = CreateEditorTab();
+                    tab.OpenFileInteractive(args[i]);
+                    EditorTabs.Add(tab);
+                }
+            }
+            else
+            {
+                EditorTabs.Add(CreateEditorTab());
+            }
+
+            _selectingStartupTabDuringWindowLoad = true;
+
+            TabControl.SelectedIndex = 0;
+
+            SetLibraryMenuFromTab((EditorTab)TabControl.SelectedItem);
+
+            _selectingStartupTabDuringWindowLoad = false;
+
+        }
+
+
+        private void TabbedMainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            for (var i = 0; i < EditorTabs.Count; i++)
+            {
+                var tab = EditorTabs[i];
+
+                if (tab.ChangesPending)
+                {
+                    TabControl.SelectedIndex = i;
+                    if (!tab.Close())
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        public ObservableCollection<EditorTab> EditorTabs { get; set; } = new ObservableCollection<EditorTab>();
+        private FindReplaceMgr FindDialogManager { get; set; }
+
+
+        private void SetLibraryMenuFromTab(EditorTab tab)
+        {
+            if (tab == null)
+            {
+                throw new ArgumentNullException(nameof(tab));
+            }
+
+            _settingLibraryMenuProgrammaticallyFromTabCache = true;
+
+
+            foreach (var menuItem in TabLibraryDataMenu.Items.Cast<MenuItem>())
+            {
+                menuItem.IsChecked = tab.ActiveLibraryDataSubsetsCache.Contains(menuItem.Tag.ToString());
+            }
+
+
+            _settingLibraryMenuProgrammaticallyFromTabCache = false;
+        }
+
+        private void DataMenuItemOnUnChecked(object sender, RoutedEventArgs e)
+        {
+            if (TabControl == null || _settingLibraryMenuProgrammaticallyFromTabCache) return;
+
+            var item = sender as MenuItem;
+
+            var tab = (EditorTab) TabControl.SelectedItem;
+
+
+            if (item == null) return;
+
+            var subsetName = item.Tag.ToString();
+
+
+            var osLslMenuItem =
+                TabLibraryDataMenu.Items.Cast<MenuItem>()
+                    .FirstOrDefault(x => x.Tag.ToString() == LSLLibraryBaseData.OpensimLsl.ToSubsetName());
+            var lslMenuItem =
+                TabLibraryDataMenu.Items.Cast<MenuItem>()
+                    .FirstOrDefault(x => x.Tag.ToString() == LSLLibraryBaseData.StandardLsl.ToSubsetName());
+
+            if (subsetName == LSLLibraryBaseData.StandardLsl.ToSubsetName() && osLslMenuItem != null)
+            {
+                osLslMenuItem.IsChecked = true;
+            }
+
+            if (subsetName == LSLLibraryBaseData.OpensimLsl.ToSubsetName() && lslMenuItem != null)
+            {
+                lslMenuItem.IsChecked = true;
+            }
+
+
+            tab.LibraryDataProvider.ActiveSubsets.RemoveSubset(subsetName);
+            tab.ActiveLibraryDataSubsetsCache.Remove(subsetName);
+
+            if (!_uncheckingLibraryDataTabItemProgrammatically)
+            {
+                tab.Content.Editor.UpdateHighlightingFromDataProvider();
+            }
+        }
+
+        private void DataMenuItemOnChecked(object sender, RoutedEventArgs routedEventArgs)
+        {
+            if (TabControl == null || _settingLibraryMenuProgrammaticallyFromTabCache) return;
+
+            var item = sender as MenuItem;
+
+            var tab = (EditorTab) TabControl.SelectedItem;
+
+
+            if (item == null) return;
+
+            var subsetName = item.Tag.ToString();
+
+
+            var osLslMenuItem =
+                TabLibraryDataMenu.Items.Cast<MenuItem>()
+                    .FirstOrDefault(x => x.Tag.ToString() == LSLLibraryBaseData.OpensimLsl.ToSubsetName());
+            var lslMenuItem =
+                TabLibraryDataMenu.Items.Cast<MenuItem>()
+                    .FirstOrDefault(x => x.Tag.ToString() == LSLLibraryBaseData.StandardLsl.ToSubsetName());
+
+            if (subsetName == LSLLibraryBaseData.StandardLsl.ToSubsetName() && osLslMenuItem != null)
+            {
+                _uncheckingLibraryDataTabItemProgrammatically = true;
+                osLslMenuItem.IsChecked = false;
+                _uncheckingLibraryDataTabItemProgrammatically = false;
+            }
+
+            if (subsetName == LSLLibraryBaseData.OpensimLsl.ToSubsetName() && lslMenuItem != null)
+            {
+                _uncheckingLibraryDataTabItemProgrammatically = true;
+                lslMenuItem.IsChecked = false;
+                _uncheckingLibraryDataTabItemProgrammatically = false;
+            }
+
+
+            tab.LibraryDataProvider.ActiveSubsets.AddSubset(subsetName);
+            tab.ActiveLibraryDataSubsetsCache.Add(subsetName);
+            tab.Content.Editor.UpdateHighlightingFromDataProvider();
+        }
+
+
+
+        private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //the initial tab already has already been setup before it was selected.
+            if (_selectingStartupTabDuringWindowLoad) return;
+
+
+            foreach (var i in e.RemovedItems)
+            {
+                var t = i as EditorTab;
+                if (t != null)
+                {
+                    t.IsSelected = false;
+                }
+            }
+
+            foreach (var i in e.AddedItems)
+            {
+                var tab = i as EditorTab;
+                if (tab != null)
+                {
+                    tab.LibraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
+
+                    SetLibraryMenuFromTab(tab);
+
+                    tab.LibraryDataProvider.ActiveSubsets.Clear();
+                    tab.LibraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
+                    tab.Content.Editor.UpdateHighlightingFromDataProvider();
+
+
+                    tab.Content.Editor.Editor.Unloaded += (o, args) =>
+                    {
+                        if (ReferenceEquals(FindDialogManager.CurrentEditor, tab.Content.Editor.Editor) && _droppingTabAfterDragging)
+                        {
+                            FindDialogManager.CurrentEditor = null;
+                        }
+                    };
+
+                    FindDialogManager.CurrentEditor = tab.Content.Editor.Editor;
+
+                    tab.IsSelected = true;
+                    tab.CheckExternalChanges();
+                }
+            }
+        }
+
+
+
         private EditorTab CreateEditorTab()
         {
             const string code = "default\n{\n\tstate_entry()\n\t{\n\t\tllSay(0, \"Hello World!\");\n\t}\n}";
@@ -285,8 +393,6 @@ namespace LSLCCEditor
 
             return t;
         }
-
-
 
         private void CompileForOpenSim_OnClick(object sender, RoutedEventArgs e)
         {
@@ -318,23 +424,23 @@ namespace LSLCCEditor
             {
 #endif
             var showDialog = saveDialog.ShowDialog();
-                if (showDialog != null && showDialog.Value)
+            if (showDialog != null && showDialog.Value)
+            {
+                if (!tab.MemoryOnly)
                 {
-                    if (!tab.MemoryOnly)
+                    try
                     {
-                        try
-                        {
-                            tab.SaveTabToFile();
-                        }
-                        catch (Exception err)
-                        {
-                            MessageBox.Show(err.Message, "Could Not Save Before Compiling",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
-                        }
+                        tab.SaveTabToFile();
                     }
-                    CompileCurrentEditorText(saveDialog.FileName);
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message, "Could Not Save Before Compiling",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                    }
                 }
+                CompileCurrentEditorText(saveDialog.FileName);
+            }
 #if !DEBUG
             }
             catch (Exception err)
@@ -346,16 +452,11 @@ namespace LSLCCEditor
 #endif
         }
 
-
-
-
         private void NewFile_OnClick(object sender, RoutedEventArgs e)
         {
             EditorTabs.Add(CreateEditorTab());
             TabControl.SelectedIndex = (EditorTabs.Count - 1);
         }
-
-
 
         private void Save_OnClick(object sender, RoutedEventArgs e)
         {
@@ -367,8 +468,6 @@ namespace LSLCCEditor
 
             tab.SaveTabToFileInteractive();
         }
-
-
 
         private void CompileCurrentEditorText(string destinationFile)
         {
@@ -425,9 +524,6 @@ namespace LSLCCEditor
 #endif
 
                 compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
-
-
-
             }
 
 #if !DEBUG
@@ -442,12 +538,7 @@ namespace LSLCCEditor
                     "An internal compiler exception occurred, please report the code that caused this.", false) { Clickable = false });
             }
 #endif
-
         }
-
-
-
-
 
         private void SaveAs_OnClick(object sender, RoutedEventArgs e)
         {
@@ -460,9 +551,6 @@ namespace LSLCCEditor
 
             tab.SaveTabToNewFileInteractive();
         }
-
-
-
 
         private ILSLCompilationUnitNode ValidateCurrentEditorText()
         {
@@ -515,9 +603,6 @@ namespace LSLCCEditor
             return validated;
         }
 
-
-
-
         private void CheckSyntax_OnClick(object sender, RoutedEventArgs e)
         {
             if (TabControl.SelectedItem == null) return;
@@ -539,9 +624,6 @@ namespace LSLCCEditor
                 });
             }
         }
-
-
-
 
         private void Format_OnClick(object sender, RoutedEventArgs e)
         {
@@ -585,12 +667,8 @@ namespace LSLCCEditor
                 {
                     Clickable = false
                 });
-
-                
             }
         }
-
-
 
         private void OpenInNewTab()
         {
@@ -622,15 +700,10 @@ namespace LSLCCEditor
             }
         }
 
-
-
-
         private void Open_OnClick(object sender, RoutedEventArgs e)
         {
             OpenInNewTab();
         }
-
-
 
         private void OpenInCurrentTab()
         {
@@ -674,9 +747,6 @@ namespace LSLCCEditor
             }
         }
 
-
-
-
         private void OpenInThisTab_OnClick(object sender, RoutedEventArgs e)
         {
             if (TabControl.SelectedItem != null)
@@ -689,57 +759,7 @@ namespace LSLCCEditor
             }
         }
 
-
-        private void TabbedMainWindow_OnClosing(object sender, CancelEventArgs e)
-        {
-            for (var i = 0; i < EditorTabs.Count; i++)
-            {
-                var tab = EditorTabs[i];
-
-                if (tab.ChangesPending)
-                {
-                    TabControl.SelectedIndex = i;
-                    if (!tab.Close())
-                    {
-                        e.Cancel = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-
-        private void TabbedMainWindow_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            FindDialogManager = new FindReplaceMgr
-            {
-                OwnerWindow = this,
-                InterfaceConverter = new IEditorConverter(),
-                ShowSearchIn = false
-            };
-
-
-            var args = Environment.GetCommandLineArgs();
-
-
-            if (args.Length > 1)
-            {
-                for (var i = 1; i < args.Length; i++)
-                {
-                    var tab = CreateEditorTab();
-                    tab.OpenFileInteractive(args[i]);
-                    EditorTabs.Add(tab);
-                }
-            }
-            else
-            {
-                EditorTabs.Add(CreateEditorTab());
-            }
-
-            TabControl.SelectedIndex = 0;
-        }
-
-
+ 
 
         private void Find_OnClick(object sender, RoutedEventArgs e)
         {
@@ -751,10 +771,6 @@ namespace LSLCCEditor
             FindDialogManager.ShowAsFind(this);
         }
 
-
-
-
-
         private void Replace_OnClick(object sender, RoutedEventArgs e)
         {
             var tab = TabControl.SelectedItem as EditorTab;
@@ -764,52 +780,6 @@ namespace LSLCCEditor
 
             FindDialogManager.ShowAsReplace(this);
         }
-
-
-
-
-        private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            foreach (var i in e.RemovedItems)
-            {
-                var t = i as EditorTab;
-                if (t != null)
-                {
-                    t.IsSelected = false;
-                }
-            }
-
-            foreach (var i in e.AddedItems)
-            {
-                var tab = i as EditorTab;
-                if (tab != null)
-                {
-                    tab.LibraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
-
-                    SetLibraryMenuFromTab(tab);
-
-                    tab.LibraryDataProvider.ActiveSubsets.Clear();
-                    tab.LibraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
-                    tab.Content.Editor.UpdateHighlightingFromDataProvider();
-
-
-                    tab.Content.Editor.Editor.Unloaded += (o, args) =>
-                    {
-                        if (ReferenceEquals(FindDialogManager.CurrentEditor, tab.Content.Editor.Editor) && _droppingTab)
-                        {
-                            FindDialogManager.CurrentEditor = null;
-                        }
-                    };
-
-                    FindDialogManager.CurrentEditor = tab.Content.Editor.Editor;
-
-                    tab.IsSelected = true;
-                    tab.CheckExternalChanges();
-                }
-            }
-        }
-
-
 
         private void TabStackPanelPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -843,8 +813,6 @@ namespace LSLCCEditor
             _tabDragTimer.Start();
         }
 
-
-
         private void TabStackPanelOnPreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (_tabDragTimer != null)
@@ -854,7 +822,6 @@ namespace LSLCCEditor
                 _tabDragTimer = null;
             }
         }
-
 
         private void TabOnDrop(object sender, DragEventArgs e)
         {
@@ -888,7 +855,8 @@ namespace LSLCCEditor
             if (tabItemTarget.Equals(tabItemSource)) return;
 
 
-            _droppingTab = true;
+            _droppingTabAfterDragging = true;
+
             var sourceIndex = EditorTabs.IndexOf(tabItemSource);
             var targetIndex = EditorTabs.IndexOf(tabItemTarget);
 
@@ -899,10 +867,9 @@ namespace LSLCCEditor
             EditorTabs.Insert(sourceIndex, tabItemTarget);
 
             TabControl.SelectedIndex = targetIndex;
-            _droppingTab = false;
+
+            _droppingTabAfterDragging = false;
         }
-
-
 
         private void ClearCompilerMessages_OnClick(object sender, RoutedEventArgs e)
         {
@@ -910,8 +877,6 @@ namespace LSLCCEditor
 
             tab?.CompilerMessages.Clear();
         }
-
-
 
         private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
         {
@@ -928,8 +893,6 @@ namespace LSLCCEditor
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Warning, "Warning", location, message));
             }
         }
-
-
 
         private class WindowSyntaxErrorListener : LSLDefaultSyntaxErrorListener
         {

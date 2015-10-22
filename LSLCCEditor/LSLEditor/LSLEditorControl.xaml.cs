@@ -1197,8 +1197,17 @@ namespace LSLCCEditor.LSLEditor
                 data.Add(CreateCompletionData_Type(LSLType.List));
                 possibleType = true;
             }
+            else if (insertedText.StartsWith("q"))
+            {
+                CurrentCompletionWindow = LazyInitCompletionWindow();
+                data = CurrentCompletionWindow.CompletionList.CompletionData;
+
+                data.Add(CreateCompletionData_Type("quaternion"));
+                possibleType = true;
+            }
             return possibleType;
         }
+
 
         private bool TryCompletionForLabelNameDefinition(string insertedText, LSLAutoCompleteParser fastVarParser,
             ref IList<ICompletionData> data)
@@ -2189,18 +2198,23 @@ namespace LSLCCEditor.LSLEditor
 
         private LSLCompletionData CreateCompletionData_Type(LSLType type)
         {
-            var name = type.ToLSLTypeString();
+
+            return CreateCompletionData_Type(type.ToLSLTypeString());
+        }
+
+        private LSLCompletionData CreateCompletionData_Type(string typeString)
+        {
 
             var desc = new TextBlock();
 
-            var typeRun = CreateHighlightedRunFromXshd("Type", name);
+            var typeRun = CreateHighlightedRunFromXshd("Type", typeString);
 
 
             desc.Inlines.Add(typeRun);
             desc.Inlines.Add(" type");
 
 
-            return new LSLCompletionData(name, name, 0)
+            return new LSLCompletionData(typeString, typeString, 0)
             {
                 ColorBrush = Settings.BuiltInTypeCompleteColor,
                 DescriptionFactory = () => desc

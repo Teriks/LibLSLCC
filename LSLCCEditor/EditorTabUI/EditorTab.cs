@@ -94,7 +94,7 @@ namespace LSLCCEditor.EditorTabUI
             _owner = owner;
             OwnerTabCollection = ownerTabCollection;
 
-            ActiveLibraryDataSubsetsCache = new HashSet<string> { "lsl" };
+            ActiveLibraryDataSubsetsCache = new HashSet<string>(dataProvider.ActiveSubsets.Subsets);
 
 
             Content = new EditorTabContent(this)
