@@ -48,8 +48,7 @@ namespace LibLSLCC.Collections
             }
             comparer = comparer ?? EqualityComparer<TKey>.Default;
             ICollection<TSource> list = source as ICollection<TSource>;
-            var ret = list == null ? new HashMap<TKey, TElement>(comparer)
-                : new HashMap<TKey, TElement>(list.Count, comparer);
+            var ret = list == null ? new HashMap<TKey, TElement>(comparer) : new HashMap<TKey, TElement>(list.Count, comparer);
             foreach (TSource item in source)
             {
                 ret.Add(keySelector(item), elementSelector(item));
