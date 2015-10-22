@@ -4,6 +4,7 @@ using System.Linq;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 namespace LibLSLCC.CodeValidator.Components
@@ -100,7 +101,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <see cref="SetSubsetDescription"/>
         /// <see cref="AddSubsetDescription"/>
-        public IReadOnlyDictionary<string, LSLLibrarySubsetDescription> SubsetDescriptions
+        public IReadOnlyHashMap<string, LSLLibrarySubsetDescription> SubsetDescriptions
         {
             get { return _subsetDescriptions; }
         }
@@ -120,12 +121,12 @@ namespace LibLSLCC.CodeValidator.Components
                 
                 var events = ActiveSubsets.Subsets.SelectMany<string, LSLLibraryEventSignature>(x =>
                 {
-                    Dictionary<string, LSLLibraryEventSignature> subsetContent;
+                    HashMap<string, LSLLibraryEventSignature> subsetContent;
                     if (_eventSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
                     {
                         return subsetContent.Values;
                     }
-                    return new List<LSLLibraryEventSignature>();
+                    return new GenericArray<LSLLibraryEventSignature>();
 
                 }).Distinct(new LambdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
 
@@ -156,22 +157,22 @@ namespace LibLSLCC.CodeValidator.Components
         /// And that function was not shared across subsets.  This can only really happen when LiveFiltering is enabled.
         /// </exception>
         /// </summary>
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LibraryFunctions
         {
             get
             {
                 //This could really be optimized, need to make sure the basic gist of this works first for what I want though.
 
-                var funcs = new Dictionary<string, List<LSLLibraryFunctionSignature>>();
+                var funcs = new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
 
-                return ActiveSubsets.Subsets.SelectMany<string, List<LSLLibraryFunctionSignature>>(x =>
+                return ActiveSubsets.Subsets.SelectMany<string, GenericArray<LSLLibraryFunctionSignature>>(x =>
                 {
-                    Dictionary<string, List<LSLLibraryFunctionSignature>> subsetContent;
+                    HashMap<string, GenericArray<LSLLibraryFunctionSignature>> subsetContent;
                     if (_functionSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
                     {
                         return subsetContent.Values;
                     }
-                    return new List<List<LSLLibraryFunctionSignature>>();
+                    return new GenericArray<GenericArray<LSLLibraryFunctionSignature>>();
                 })
                 .SelectMany(x=>x)
                 .Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals))
@@ -194,10 +195,10 @@ namespace LibLSLCC.CodeValidator.Components
                         return x;
                     }
                     //subset adds a new function
-                    funcs.Add(x.Name, new List<LSLLibraryFunctionSignature> {x});
+                    funcs.Add(x.Name, new GenericArray<LSLLibraryFunctionSignature> {x});
                     return x;
                 })
-                .GroupBy(x=>x.Name).Select(x=>x.ToList());
+                .GroupBy(x=>x.Name).Select(x=>x.ToGenericArray());
             }
         }
 
@@ -215,12 +216,12 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 var constants = ActiveSubsets.Subsets.SelectMany<string, LSLLibraryConstantSignature>(x =>
                 {
-                    Dictionary<string, LSLLibraryConstantSignature> subsetContent;
+                    HashMap<string, LSLLibraryConstantSignature> subsetContent;
                     if (_constantSignaturesBySubsetAndName.TryGetValue(x, out subsetContent))
                     {
                         return subsetContent.Values;
                     }
-                    return new List<LSLLibraryConstantSignature>();
+                    return new GenericArray<LSLLibraryConstantSignature>();
 
                 }).Distinct(new LambdaEqualityComparer<LSLLibraryConstantSignature>(ReferenceEquals));
 
@@ -244,23 +245,23 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-        private readonly Dictionary<string, Dictionary<string, List<LSLLibraryFunctionSignature>>>
-            _functionSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, List<LSLLibraryFunctionSignature>>>();
+        private readonly HashMap<string, HashMap<string, GenericArray<LSLLibraryFunctionSignature>>>
+            _functionSignaturesBySubsetAndName = new HashMap<string, HashMap<string, GenericArray<LSLLibraryFunctionSignature>>>();
 
          
 
-        private readonly Dictionary<string, Dictionary<string, LSLLibraryConstantSignature>>
-            _constantSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, LSLLibraryConstantSignature>>();
+        private readonly HashMap<string, HashMap<string, LSLLibraryConstantSignature>>
+            _constantSignaturesBySubsetAndName = new HashMap<string, HashMap<string, LSLLibraryConstantSignature>>();
 
-        private readonly Dictionary<string, Dictionary<string, LSLLibraryEventSignature>>
-           _eventSignaturesBySubsetAndName = new Dictionary<string, Dictionary<string, LSLLibraryEventSignature>>();
+        private readonly HashMap<string, HashMap<string, LSLLibraryEventSignature>>
+           _eventSignaturesBySubsetAndName = new HashMap<string, HashMap<string, LSLLibraryEventSignature>>();
 
-        private readonly Dictionary<string, LSLLibrarySubsetDescription> _subsetDescriptions 
-            = new Dictionary<string, LSLLibrarySubsetDescription>();
+        private readonly HashMap<string, LSLLibrarySubsetDescription> _subsetDescriptions 
+            = new HashMap<string, LSLLibrarySubsetDescription>();
 
 
-        private readonly Dictionary<string, LSLLibrarySubsetDescription> _candidateSubsetDescriptions 
-            = new Dictionary<string, LSLLibrarySubsetDescription>();
+        private readonly HashMap<string, LSLLibrarySubsetDescription> _candidateSubsetDescriptions 
+            = new HashMap<string, LSLLibrarySubsetDescription>();
 
 
         /// <summary>
@@ -308,7 +309,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="description">The subset description to add.</param>
         public void AddSubsetDescription(LSLLibrarySubsetDescription description)
         {
-            Dictionary<string, LSLLibrarySubsetDescription> dictRef = null;
+            HashMap<string, LSLLibrarySubsetDescription> dictRef = null;
 
             if (!LiveFiltering && !ActiveSubsets.Subsets.Contains(description.Subset))
             {
@@ -394,7 +395,7 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    _eventSignaturesBySubsetAndName[subset] = new Dictionary<string, LSLLibraryEventSignature> { {signature.Name,signature} };
+                    _eventSignaturesBySubsetAndName[subset] = new HashMap<string, LSLLibraryEventSignature> { {signature.Name,signature} };
                 }
             }
             
@@ -449,7 +450,7 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    _constantSignaturesBySubsetAndName[subset] = new Dictionary<string, LSLLibraryConstantSignature> { { signature.Name, signature } };
+                    _constantSignaturesBySubsetAndName[subset] = new HashMap<string, LSLLibraryConstantSignature> { { signature.Name, signature } };
                 }
             }
             
@@ -510,7 +511,7 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 if (!_functionSignaturesBySubsetAndName.ContainsKey(subset))
                 {
-                    _functionSignaturesBySubsetAndName[subset] = new Dictionary<string, List<LSLLibraryFunctionSignature>>();
+                    _functionSignaturesBySubsetAndName[subset] = new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
                 }
 
                 if (_functionSignaturesBySubsetAndName[subset].ContainsKey(signature.Name))
@@ -519,7 +520,7 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    _functionSignaturesBySubsetAndName[subset][signature.Name] = new List<LSLLibraryFunctionSignature> {signature};
+                    _functionSignaturesBySubsetAndName[subset][signature.Name] = new GenericArray<LSLLibraryFunctionSignature> {signature};
                 }
             }
         }
@@ -709,15 +710,15 @@ namespace LibLSLCC.CodeValidator.Components
         /// Thrown if LiveFiltering is enabled and more than one active subset contains a duplicate definition of the function or one of its overloads,
         /// and the function/overload is not shared across those subsets.
         /// </exception>
-        public IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
         {
             return GetLibraryFunctionSignatures(name, ActiveSubsets.Subsets);
         }
 
 
-        private IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name, IEnumerable<string> subsets)
+        private IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name, IEnumerable<string> subsets)
         {
-            var results = new List<LSLLibraryFunctionSignature>();
+            var results = new GenericArray<LSLLibraryFunctionSignature>();
 
             foreach (var subset in subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x) && _functionSignaturesBySubsetAndName[x].ContainsKey(name)))
             {
@@ -743,7 +744,7 @@ namespace LibLSLCC.CodeValidator.Components
 
             //we want distinct by reference here because we do not want to return copies of the same object
             //that have been put into the _functionSignaturesBySubsetAndName because they are shared across subsets
-            return results.Count == 0 ? null : results.Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals)).ToList();
+            return results.Count == 0 ? null : results.Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals)).ToGenericArray();
         }
 
 

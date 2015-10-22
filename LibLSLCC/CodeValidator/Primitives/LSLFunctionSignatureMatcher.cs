@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
@@ -91,7 +91,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             /// This is a list of all possible overload matches.  This will have more
             /// than one element when Ambiguous is set to true
             /// </summary>
-            public IReadOnlyList<T> Matches { get; private set; }
+            public IReadOnlyGenericArray<T> Matches { get; private set; }
 
             /// <summary>
             /// If multiple matches were found (Ambigious is set to true) then this will be null
@@ -119,7 +119,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             } 
 
 
-            internal OverloadMatch(IReadOnlyList<T> matches)
+            internal OverloadMatch(IReadOnlyGenericArray<T> matches)
             {
                 Matches = matches;
             }
@@ -134,12 +134,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="functionSignatures">The function signatures to search through.</param>
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
         /// <returns>A matching LSLFunctionSignature overload or null.</returns>
-        public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyList<T> functionSignatures, IReadOnlyList<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator) where T : LSLFunctionSignature
+        public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator) where T : LSLFunctionSignature
         {
             //if there are multiple matches, then the overload is ambiguous
             var matches =
                 functionSignatures.Where(
-                    functionSignature => TryMatch(functionSignature, expressionNodes, expressionValidator).Success).ToList();
+                    functionSignature => TryMatch(functionSignature, expressionNodes, expressionValidator).Success).ToGenericArray();
 
 
             return new OverloadMatch<T>(matches);
@@ -155,11 +155,11 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="functionSignatures">The function signatures to search through.</param>
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
         /// <returns>A matching LSLFunctionSignature overload or null.</returns>
-        public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyList<T> functionSignatures, IReadOnlyList<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer) where T : LSLFunctionSignature
+        public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer) where T : LSLFunctionSignature
         {
             var matches =
                 functionSignatures.Where(
-                    functionSignature => TryMatch(functionSignature, expressionNodes, typeComparer).Success).ToList();
+                    functionSignature => TryMatch(functionSignature, expressionNodes, typeComparer).Success).ToGenericArray();
 
 
             return new OverloadMatch<T>(matches);
@@ -174,7 +174,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="functionSignature">The function signature of the functions your passing the parameter expressions to.</param>
         /// <param name="expressions">The expressions we want to test against this function signatures defined parameters.</param>
         /// <returns>A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched or did not match the call signature.</returns>
-        public static Match TryMatch( LSLFunctionSignature functionSignature, IReadOnlyList<ILSLExprNode> expressions, ILSLExpressionValidator expressionValidator)
+        public static Match TryMatch( LSLFunctionSignature functionSignature, IReadOnlyGenericArray<ILSLExprNode> expressions, ILSLExpressionValidator expressionValidator)
         {
 
             return TryMatch(functionSignature,expressions,((parameter, node) => expressionValidator.ValidFunctionParameter(functionSignature, parameter.ParameterIndex, node)));
@@ -377,7 +377,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="functionSignature">The function signature of the functions your passing the parameter expressions to.</param>
         /// <param name="expressions">The expressions we want to test against this function signatures defined parameters.</param>
         /// <returns>A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched or did not match the call signature.</returns>
-        public static Match TryMatch(LSLFunctionSignature functionSignature, IReadOnlyList<ILSLExprNode> expressions, Func<LSLParameter,ILSLExprNode,bool> typeComparer)
+        public static Match TryMatch(LSLFunctionSignature functionSignature, IReadOnlyGenericArray<ILSLExprNode> expressions, Func<LSLParameter,ILSLExprNode,bool> typeComparer)
         {
 
             int parameterNumber = 0;

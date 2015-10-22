@@ -42,8 +42,8 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// A list of parameter expressions used to call the function, or an empty list if no parameters were used.
         /// </summary>
-        IReadOnlyList<ILSLReadOnlyExprNode> ParameterExpressions { get; }
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ParameterExpressions { get; }
 
         /// <summary>
         /// The function signature of the function that was called, as it was defined by either the user or library.

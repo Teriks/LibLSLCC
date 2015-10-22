@@ -55,22 +55,22 @@ namespace LibraryDataScrapingTools.ScraperProxys
     {
         public LibraryDataSet(ILibraryData data)
         {
-            OverloadsDictionary = new Dictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>>();
+            OverloadsHashMap = new HashMap<string, IReadOnlyGenericArray<LSLLibraryFunctionSignature>>();
             ConstantSet = new HashSet<LSLLibraryConstantSignature>();
             EventSet = new HashSet<LSLLibraryEventSignature>();
             FunctionSet = new HashSet<LSLLibraryFunctionSignature>();
-            EventDictionary = new Dictionary<string, LSLLibraryEventSignature>();
-            ConstantDictionary = new Dictionary<string, LSLLibraryConstantSignature>();
+            EventHashMap = new HashMap<string, LSLLibraryEventSignature>();
+            ConstantHashMap = new HashMap<string, LSLLibraryConstantSignature>();
 
             foreach (var f in data.LSLFunctions())
             {
-                if (OverloadsDictionary.ContainsKey(f.Name))
+                if (OverloadsHashMap.ContainsKey(f.Name))
                 {
-                    ((List<LSLLibraryFunctionSignature>) OverloadsDictionary[f.Name]).Add(f);
+                    ((GenericArray<LSLLibraryFunctionSignature>) OverloadsHashMap[f.Name]).Add(f);
                 }
                 else
                 {
-                    OverloadsDictionary.Add(f.Name, new List<LSLLibraryFunctionSignature> {f});
+                    OverloadsHashMap.Add(f.Name, new GenericArray<LSLLibraryFunctionSignature> {f});
                 }
 
                 FunctionSet.Add(f);
@@ -78,57 +78,57 @@ namespace LibraryDataScrapingTools.ScraperProxys
 
             foreach (var f in data.LSLEvents())
             {
-                EventDictionary.Add(f.Name, f);
+                EventHashMap.Add(f.Name, f);
                 EventSet.Add(f);
             }
 
             foreach (var f in data.LSLConstants())
             {
-                ConstantDictionary.Add(f.Name, f);
+                ConstantHashMap.Add(f.Name, f);
                 ConstantSet.Add(f);
             }
         }
 
-        public Dictionary<string, IReadOnlyList<LSLLibraryFunctionSignature>> OverloadsDictionary { get; private set; }
-        public Dictionary<string, LSLLibraryConstantSignature> ConstantDictionary { get; private set; }
-        public Dictionary<string, LSLLibraryEventSignature> EventDictionary { get; private set; }
+        public HashMap<string, IReadOnlyGenericArray<LSLLibraryFunctionSignature>> OverloadsHashMap { get; private set; }
+        public HashMap<string, LSLLibraryConstantSignature> ConstantHashMap { get; private set; }
+        public HashMap<string, LSLLibraryEventSignature> EventHashMap { get; private set; }
         public ISet<LSLLibraryFunctionSignature> FunctionSet { get; private set; }
         public ISet<LSLLibraryEventSignature> EventSet { get; private set; }
         public ISet<LSLLibraryConstantSignature> ConstantSet { get; private set; }
 
         public bool LSLFunctionExist(string name)
         {
-            return OverloadsDictionary.ContainsKey(name);
+            return OverloadsHashMap.ContainsKey(name);
         }
 
         public bool LSLConstantExist(string name)
         {
-            return ConstantDictionary.ContainsKey(name);
+            return ConstantHashMap.ContainsKey(name);
         }
 
         public bool LSLEventExist(string name)
         {
-            return EventDictionary.ContainsKey(name);
+            return EventHashMap.ContainsKey(name);
         }
 
-        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
-            return OverloadsDictionary[name];
+            return OverloadsHashMap[name];
         }
 
         public LSLLibraryConstantSignature LSLConstant(string name)
         {
-            return ConstantDictionary[name];
+            return ConstantHashMap[name];
         }
 
         public LSLLibraryEventSignature LSLEvent(string name)
         {
-            return EventDictionary[name];
+            return EventHashMap[name];
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
-            return OverloadsDictionary.Values;
+            return OverloadsHashMap.Values;
         }
 
         public IEnumerable<LSLLibraryFunctionSignature> LSLFunctions()

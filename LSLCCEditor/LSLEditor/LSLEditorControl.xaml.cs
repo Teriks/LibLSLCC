@@ -67,6 +67,7 @@ using LibLSLCC.AutoCompleteParser;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
@@ -1786,7 +1787,7 @@ namespace LSLCCEditor.LSLEditor
 
 
         private TextBlock CreateDescriptionTextBlock_LibraryFunction(
-            IReadOnlyList<LSLLibraryFunctionSignature> funcOverloads)
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> funcOverloads)
         {
             var description = new TextBlock();
 
@@ -2766,7 +2767,6 @@ namespace LSLCCEditor.LSLEditor
                     var reader = new XmlTextReader(resourceStream);
 
                     Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-
 
                     foreach (
                         var funcs in

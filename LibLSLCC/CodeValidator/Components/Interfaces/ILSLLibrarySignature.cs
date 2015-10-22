@@ -34,7 +34,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <summary>
         /// The library subsets this signature belongs to/is shared among.
         /// </summary>
-        IReadOnlySet<string> Subsets { get; }
+        IReadOnlyHashedSet<string> Subsets { get; }
 
 
         /// <summary>

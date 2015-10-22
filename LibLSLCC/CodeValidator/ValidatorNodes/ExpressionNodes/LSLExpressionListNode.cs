@@ -49,6 +49,7 @@ using System.Linq;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -89,8 +90,8 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
     public class LSLExpressionListNode : ILSLExpressionListNode
     {
-        private readonly List<LSLSourceCodeRange> _commaSourceCodeRanges = new List<LSLSourceCodeRange>();
-        private readonly List<ILSLExprNode> _expressionNodes = new List<ILSLExprNode>();
+        private readonly GenericArray<LSLSourceCodeRange> _commaSourceCodeRanges = new GenericArray<LSLSourceCodeRange>();
+        private readonly GenericArray<ILSLExprNode> _expressionNodes = new GenericArray<ILSLExprNode>();
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLExpressionListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -137,7 +138,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// <summary>
         /// A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
         /// </summary>
-        public IReadOnlyList<ILSLExprNode> ExpressionNodes
+        public IReadOnlyGenericArray<ILSLExprNode> ExpressionNodes
         {
             get { return _expressionNodes; }
         }
@@ -154,7 +155,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         public LSLExpressionListType ListType { get; private set; }
 
 
-        IReadOnlyList<ILSLReadOnlyExprNode> ILSLExpressionListNode.ExpressionNodes
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLExpressionListNode.ExpressionNodes
         {
             get { return _expressionNodes; }
         }
@@ -178,7 +179,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// <summary>
         /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
         /// </summary>
-        public IReadOnlyList<LSLSourceCodeRange> CommaSourceCodeRanges
+        public IReadOnlyGenericArray<LSLSourceCodeRange> CommaSourceCodeRanges
         {
             get { return _commaSourceCodeRanges; }
         }

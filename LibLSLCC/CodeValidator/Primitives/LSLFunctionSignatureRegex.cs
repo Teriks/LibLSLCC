@@ -47,6 +47,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -216,7 +217,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             public SimpleSignature()
             {
                 ReturnType = "";
-                Parameters = new List<KeyValuePair<string, string>>();
+                Parameters = new GenericArray<KeyValuePair<string, string>>();
             }
 
             /// <summary>
@@ -234,7 +235,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             /// <summary>
             /// List of key value pairs representing the raw parameter type and name strings for each parsed parameter if there are any.
             /// </summary>
-            public List<KeyValuePair<string, string>> Parameters { get; private set; }
+            public GenericArray<KeyValuePair<string, string>> Parameters { get; private set; }
 
 
             /// <summary>

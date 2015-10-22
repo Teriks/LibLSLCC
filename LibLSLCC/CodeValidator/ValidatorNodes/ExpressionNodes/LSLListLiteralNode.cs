@@ -43,12 +43,12 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -91,7 +91,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// <summary>
         /// A list of expressions that were used to initialize the list literal, or an empty list.
         /// </summary>
-        public IReadOnlyList<ILSLExprNode> ListEntryExpressions
+        public IReadOnlyGenericArray<ILSLExprNode> ListEntryExpressions
         {
             get { return ExpressionListNode.ExpressionNodes; }
         }
@@ -109,7 +109,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return Parent; }
         }
 
-        IReadOnlyList<ILSLReadOnlyExprNode> ILSLListLiteralNode.ListEntryExpressions
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLListLiteralNode.ListEntryExpressions
         {
             get { return ListEntryExpressions; }
         }

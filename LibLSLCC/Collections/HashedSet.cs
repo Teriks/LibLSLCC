@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: ReadOnlyHashSet.cs
+// File: HashedSet.cs
 // 
 // 
 // ============================================================
@@ -50,28 +50,33 @@ using System.Collections.Generic;
 namespace LibLSLCC.Collections
 {
 
-    /// <summary>
-    /// A wrapper implementation of IReadOnlySet that wraps an ISet object, giving it a read only interface.
-    /// </summary>
-    /// <typeparam name="T">The type that the ReadOnlyHashSet contains.</typeparam>
-    public class ReadOnlyHashSet<T> : IReadOnlySet<T>
+    public class HashedSet<T> : IReadOnlyHashedSet<T>, ISet<T>
     {
         private readonly ISet<T> _items;
 
-        /// <summary>
-        /// Construct a ReadOnlyHashSet by wrapping an ISet object.
-        /// </summary>
-        /// <param name="items">The ISet object to wrap.</param>
-        public ReadOnlyHashSet(ISet<T> items)
+
+        public HashedSet(ISet<T> items)
         {
             _items = items;
+          
         }
 
-        /// <summary>
-        /// Construct a ReadOnlyHashSet from an IEnumerable containing items to be put into the set.
-        /// </summary>
-        /// <param name="items">An IEnumerable containing items that should be in the set.</param>
-        public ReadOnlyHashSet(IEnumerable<T> items)
+        public HashedSet(IEnumerable<T> items, IEqualityComparer<T> comparer)
+        {
+            _items = new HashSet<T>(items, comparer);
+        }
+
+        public HashedSet()
+        {
+            _items = new HashSet<T>();
+        }
+
+        public HashedSet(IEqualityComparer<T> comparer)
+        {
+            _items = new HashSet<T>(comparer);
+        }
+
+        public HashedSet(IEnumerable<T> items)
         {
             _items = new HashSet<T>(items);
         }
@@ -92,6 +97,67 @@ namespace LibLSLCC.Collections
             return ((IEnumerable) _items).GetEnumerator();
         }
 
+        public bool Add(T item)
+        {
+            return _items.Add(item);
+        }
+
+        bool ISet<T>.Add(T item)
+        {
+            return _items.Add(item);
+        }
+
+        /// <summary>
+        /// Modifies the current set so that it contains all elements that are present in both the current set and in the specified collection.
+        /// </summary>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        public void UnionWith(IEnumerable<T> other)
+        {
+            _items.UnionWith(other);
+        }
+
+        /// <summary>
+        /// Modifies the current set so that it contains only elements that are also in a specified collection.
+        /// </summary>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        public void IntersectWith(IEnumerable<T> other)
+        {
+            _items.IntersectWith(other);
+        }
+
+        /// <summary>
+        /// Removes all elements in the specified collection from the current set.
+        /// </summary>
+        /// <param name="other">The collection of items to remove from the set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        public void ExceptWith(IEnumerable<T> other)
+        {
+            _items.ExceptWith(other);
+        }
+
+        /// <summary>
+        /// Modifies the current set so that it contains only elements that are present either in the current set or in the specified collection, but not both. 
+        /// </summary>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        public void SymmetricExceptWith(IEnumerable<T> other)
+        {
+            _items.SymmetricExceptWith(other);
+        }
+
+
+        void ICollection<T>.Add(T item)
+        {
+            _items.Add(item);
+        }
+
+        /// <summary>
+        /// Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// </summary>
+        /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only. </exception>
+        public void Clear()
+        {
+            _items.Clear();
+        }
+
         /// <summary>
         /// Determine if the set contains the given object.
         /// </summary>
@@ -102,8 +168,9 @@ namespace LibLSLCC.Collections
             return _items.Contains(item);
         }
 
+
         /// <summary>
-        /// Copies the elements of the ReadOnlyHashSet to an array, starting at arrayIndex in the target array.
+        /// Copies the elements of the IReadOnlyHashedSet to an array, starting at arrayIndex in the target array.
         /// </summary>
         /// <param name="array">The array to copy the items to.</param>
         /// <param name="arrayIndex">The array index to start at in the target array.</param>
@@ -113,10 +180,22 @@ namespace LibLSLCC.Collections
         }
 
         /// <summary>
-        /// Gets the number of elements in the collection.
+        /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </summary>
         /// <returns>
-        /// The number of elements in the collection. 
+        /// true if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// </returns>
+        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
+        public bool Remove(T item)
+        {
+            return _items.Remove(item);
+        }
+
+        /// <summary>
+        /// Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// </summary>
+        /// <returns>
+        /// The number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </returns>
         public int Count
         {
@@ -162,6 +241,7 @@ namespace LibLSLCC.Collections
             return _items.IsProperSupersetOf(other);
         }
 
+
         /// <summary>
         /// Determines whether the current set is a proper (strict) subset of a specified collection.
         /// </summary>
@@ -171,6 +251,7 @@ namespace LibLSLCC.Collections
         {
             return _items.IsProperSubsetOf(other);
         }
+
 
         /// <summary>
         /// Determines whether the current set overlaps with the specified collection.
@@ -190,6 +271,12 @@ namespace LibLSLCC.Collections
         public bool SetEquals(IEnumerable<T> other)
         {
             return _items.SetEquals(other);
+        }
+
+
+        public static implicit operator HashedSet<T>(HashSet<T> b)
+        {
+            return new HashedSet<T>(b);
         }
     }
 }

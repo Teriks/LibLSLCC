@@ -42,8 +42,8 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
         /// </summary>
-        IReadOnlyList<ILSLJumpStatementNode> JumpsToHere { get; }
+        IReadOnlyGenericArray<ILSLJumpStatementNode> JumpsToHere { get; }
 
 
 

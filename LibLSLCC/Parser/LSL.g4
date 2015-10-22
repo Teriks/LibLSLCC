@@ -48,14 +48,14 @@ grammar LSL;
 }
 
 @lexer::header {
-	using System.Collections.Generic;
+	using LibLSLCC.Collections;
 	using LibLSLCC.CodeValidator.Enums;
 	using LibLSLCC.CodeValidator.Primitives;
 }
 
 @lexer::members {
 
-	public List<LSLComment> Comments = new List<LSLComment>();
+	public GenericArray<LSLComment> Comments = new GenericArray<LSLComment>();
 
 
 

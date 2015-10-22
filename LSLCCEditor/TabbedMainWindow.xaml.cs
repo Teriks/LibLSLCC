@@ -111,7 +111,10 @@ namespace LSLCCEditor
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
 
-            _libraryDataProvider = new LSLDefaultLibraryDataProvider();
+            _libraryDataProvider = new LSLDefaultLibraryDataProvider(new[] {"lsl"});
+
+
+            var t = _libraryDataProvider.LibraryFunctions.ToList();
 
             _validatorServices = new LSLCustomValidatorServiceProvider
             {
@@ -153,14 +156,13 @@ namespace LSLCCEditor
                 menuItem.IsChecked = tab.ActiveLibraryDataSubsetsCache.Contains(menuItem.Tag.ToString());
             }
 
-            tab.LibraryDataProvider.ActiveSubsets.Clear();
-            tab.LibraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
-            tab.Content.Editor.UpdateHighlightingFromDataProvider();
+   
 
             _settingLibraryMenuFromTab = false;
         }
 
 
+        private bool _tabDataUncheckEventIsProgramatic = false;
 
         private void DataMenuItemOnUnChecked(object sender, RoutedEventArgs e)
         {
@@ -189,9 +191,14 @@ namespace LSLCCEditor
                 lslMenuItem.IsChecked = true;
             }
 
+            
             tab.LibraryDataProvider.ActiveSubsets.RemoveSubset(subsetName);
             tab.ActiveLibraryDataSubsetsCache.Remove(subsetName);
-            tab.Content.Editor.UpdateHighlightingFromDataProvider();
+
+            if (!_tabDataUncheckEventIsProgramatic)
+            {
+                tab.Content.Editor.UpdateHighlightingFromDataProvider();
+            }
         }
 
 
@@ -215,12 +222,16 @@ namespace LSLCCEditor
 
             if (subsetName == LSLLibraryBaseData.StandardLsl.ToSubsetName() && osLslMenuItem != null)
             {
+                _tabDataUncheckEventIsProgramatic = true;
                 osLslMenuItem.IsChecked = false;
+                _tabDataUncheckEventIsProgramatic = false;
             }
 
             if (subsetName == LSLLibraryBaseData.OpensimLsl.ToSubsetName() && lslMenuItem != null)
             {
+                _tabDataUncheckEventIsProgramatic = true;
                 lslMenuItem.IsChecked = false;
+                _tabDataUncheckEventIsProgramatic = false;
             }
 
 
@@ -770,27 +781,30 @@ namespace LSLCCEditor
 
             foreach (var i in e.AddedItems)
             {
-                var t = i as EditorTab;
-                if (t != null)
+                var tab = i as EditorTab;
+                if (tab != null)
                 {
-                    t.LibraryDataProvider.ActiveSubsets.SetSubsets(t.ActiveLibraryDataSubsetsCache);
-                    t.Content.Editor.UpdateHighlightingFromDataProvider();
+                    tab.LibraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
 
-                    SetLibraryMenuFromTab(t);
+                    SetLibraryMenuFromTab(tab);
+
+                    tab.LibraryDataProvider.ActiveSubsets.Clear();
+                    tab.LibraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
+                    tab.Content.Editor.UpdateHighlightingFromDataProvider();
 
 
-                    t.Content.Editor.Editor.Unloaded += (o, args) =>
+                    tab.Content.Editor.Editor.Unloaded += (o, args) =>
                     {
-                        if (ReferenceEquals(FindDialogManager.CurrentEditor, t.Content.Editor.Editor) && _droppingTab)
+                        if (ReferenceEquals(FindDialogManager.CurrentEditor, tab.Content.Editor.Editor) && _droppingTab)
                         {
                             FindDialogManager.CurrentEditor = null;
                         }
                     };
 
-                    FindDialogManager.CurrentEditor = t.Content.Editor.Editor;
+                    FindDialogManager.CurrentEditor = tab.Content.Editor.Editor;
 
-                    t.IsSelected = true;
-                    t.CheckExternalChanges();
+                    tab.IsSelected = true;
+                    tab.CheckExternalChanges();
                 }
             }
         }

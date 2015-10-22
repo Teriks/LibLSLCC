@@ -50,6 +50,7 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -60,7 +61,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
     public class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
     {
-        private readonly List<LSLElseIfStatementNode> _elseIfStatements = new List<LSLElseIfStatementNode>();
+        private readonly GenericArray<LSLElseIfStatementNode> _elseIfStatements = new GenericArray<LSLElseIfStatementNode>();
         private LSLElseStatementNode _elseStatement;
         private LSLIfStatementNode _ifStatement;
 // ReSharper disable UnusedParameter.Local
@@ -168,7 +169,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public IEnumerable<LSLElseIfStatementNode> ElseIfStatements
         {
-            get { return _elseIfStatements ?? new List<LSLElseIfStatementNode>(); }
+            get { return _elseIfStatements ?? new GenericArray<LSLElseIfStatementNode>(); }
         }
 
         internal LSLParser.ControlStructureContext ParserContext { get; private set; }

@@ -42,8 +42,8 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// </summary>
     public class LSLCodeSegment
     {
-        private readonly List<ILSLReadOnlyCodeStatement> _statementNodes;
+        private readonly GenericArray<ILSLReadOnlyCodeStatement> _statementNodes;
 
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         public LSLCodeSegment()
         {
-            _statementNodes = new List<ILSLReadOnlyCodeStatement>();
+            _statementNodes = new GenericArray<ILSLReadOnlyCodeStatement>();
             StartNode = null;
             EndNode = null;
             SourceCodeRange = new LSLSourceCodeRange();
@@ -89,9 +89,9 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// All ILSLReadOnlyCodeStatement in the code segment, in order of definition.
         /// </summary>
-        public IReadOnlyList<ILSLReadOnlyCodeStatement> StatementNodes
+        public IReadOnlyGenericArray<ILSLReadOnlyCodeStatement> StatementNodes
         {
-            get { return _statementNodes.AsReadOnly(); }
+            get { return _statementNodes; }
         }
 
 

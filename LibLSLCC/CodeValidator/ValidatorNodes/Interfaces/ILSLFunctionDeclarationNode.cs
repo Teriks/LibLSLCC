@@ -42,8 +42,8 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -63,12 +63,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// A list of function call nodes that reference this function definition, or an empty list.
         /// </summary>
-        IReadOnlyList<ILSLFunctionCallNode> References { get; }
+        IReadOnlyGenericArray<ILSLFunctionCallNode> References { get; }
 
         /// <summary>
         /// A list of  parameter definition nodes that belong to this function definition, or an empty list.
         /// </summary>
-        IReadOnlyList<ILSLParameterNode> ParameterNodes { get; }
+        IReadOnlyGenericArray<ILSLParameterNode> ParameterNodes { get; }
 
         /// <summary>
         /// The string from the source code that represents the return type assigned to the function definition,

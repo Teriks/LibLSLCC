@@ -49,6 +49,7 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -103,7 +104,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps; }
+            get { return Code == null ? new GenericArray<LSLConstantJumpDescription>() : Code.ConstantJumps; }
         }
 
         internal LSLParser.IfStatementContext ParserContext { get; private set; }

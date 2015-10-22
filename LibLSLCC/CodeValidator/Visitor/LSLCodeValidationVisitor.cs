@@ -46,7 +46,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Resources;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LibLSLCC.CodeValidator.Components;
@@ -54,12 +53,12 @@ using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -1593,7 +1592,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
                 else
                 {
-                    _referencesToNotYetDefinedFunctions.Add(functionSignature.Name, new List<LSLFunctionCallNode> {node});
+                    _referencesToNotYetDefinedFunctions.Add(functionSignature.Name, new GenericArray<LSLFunctionCallNode> {node});
                 }
             }
         }
@@ -2729,7 +2728,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         private bool ValidateFunctionCallSignatureMatch(
             LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature functionSignature,
-            IReadOnlyList<ILSLExprNode> expressions)
+            IReadOnlyGenericArray<ILSLExprNode> expressions)
         {
 
             var location = new LSLSourceCodeRange(context);
@@ -2773,8 +2772,8 @@ namespace LibLSLCC.CodeValidator.Visitor
         /// <param name="expressions">The expressions that are proposed to be passed into the function with the given signature.</param>
         /// <returns>A matching LSLLibraryFunctionSignature overload or null</returns>
         private LSLLibraryFunctionSignature ValidateLibraryFunctionCallSignatureMatch(
-            LSLParser.Expr_FunctionCallContext context, IReadOnlyList<LSLLibraryFunctionSignature> functionSignatures,
-            IReadOnlyList<ILSLExprNode> expressions)
+            LSLParser.Expr_FunctionCallContext context, IReadOnlyGenericArray<LSLLibraryFunctionSignature> functionSignatures,
+            IReadOnlyGenericArray<ILSLExprNode> expressions)
         {
             if (functionSignatures.Count() == 1)
             {
@@ -3382,8 +3381,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private readonly HashSet<RuleContext> _multipleStringAssignmentWarned = new HashSet<RuleContext>();
 
-        private readonly Dictionary<string, List<LSLFunctionCallNode>> _referencesToNotYetDefinedFunctions =
-            new Dictionary<string, List<LSLFunctionCallNode>>();
+        private readonly HashMap<string, GenericArray<LSLFunctionCallNode>> _referencesToNotYetDefinedFunctions =
+            new HashMap<string, GenericArray<LSLFunctionCallNode>>();
 
         /// <summary>
         ///     Only used by CheckForMultipleListAssignment

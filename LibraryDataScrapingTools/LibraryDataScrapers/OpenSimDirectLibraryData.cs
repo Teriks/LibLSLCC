@@ -49,6 +49,7 @@ using System.Reflection;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.OpenSimLibraryReflection;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
@@ -63,7 +64,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private readonly IDocumentationProvider _documentationProvider;
         private readonly HashSet<Type> _functionContainingInterfaces = new HashSet<Type>();
         private readonly HashSet<Type> _scriptConstantContainerClasses = new HashSet<Type>();
-        private readonly Dictionary<Type, HashSet<string>> _subsetsMap = new Dictionary<Type, HashSet<string>>();
+        private readonly HashMap<Type, HashSet<string>> _subsetsMap = new HashMap<Type, HashSet<string>>();
 
         public OpenSimDirectLibraryData(IReflectedLibraryData reflectedData,
             IDocumentationProvider documentationProvider)
@@ -90,7 +91,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public bool IncludeFunctions { get; set; }
         public bool IncludeConstants { get; set; }
-        public IReadOnlyDictionary<Type, LSLType> DataTypeMapping { get; set; }
+        public IReadOnlyHashMap<Type, LSLType> DataTypeMapping { get; set; }
         public Type ScriptModuleConstantAttribute { get; set; }
         public Type ScriptModuleFunctionAttribute { get; set; }
         public IReflectedLibraryData ReflectedData { get; private set; }
@@ -164,11 +165,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return false;
         }
 
-        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
-            if (!IncludeFunctions) return new List<LSLLibraryFunctionSignature>();
+            if (!IncludeFunctions) return new GenericArray<LSLLibraryFunctionSignature>();
 
-            return LSLFunctions().Where(x => x.Name == name).ToList();
+            return LSLFunctions().Where(x => x.Name == name).ToGenericArray();
         }
 
         public LSLLibraryConstantSignature LSLConstant(string name)
@@ -210,11 +211,11 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return null;
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
-            if (!IncludeFunctions) return new List<List<LSLLibraryFunctionSignature>>();
+            if (!IncludeFunctions) return new GenericArray<GenericArray<LSLLibraryFunctionSignature>>();
 
-            return LSLFunctions().GroupBy(x => x.Name).Select(x => x.ToList());
+            return LSLFunctions().GroupBy(x => x.Name).Select(x => x.ToGenericArray());
         }
 
         public IEnumerable<LSLLibraryFunctionSignature> LSLFunctions()
@@ -428,7 +429,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 var returnType = LslTypeFromCsharpType(v.ReturnType);
 
-                var pTypes = new List<LSLParameter>();
+                var pTypes = new GenericArray<LSLParameter>();
 
                 foreach (var p in v.GetParameters())
                 {
@@ -511,7 +512,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var returnType = LslTypeFromCsharpType(v.ReturnType);
 
 
-                var pTypes = new List<LSLParameter>();
+                var pTypes = new GenericArray<LSLParameter>();
 
                 foreach (var p in v.GetParameters().Skip(2))
                 {

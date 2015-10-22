@@ -51,6 +51,7 @@ using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
 
@@ -73,8 +74,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "<a\\s+href\\s*=\\s*\"/wiki/OSSL_Constants/(.*?)\"\\s+title\\s*=\\s*\"OSSL Constants/.*?\">(.*?)</a>\\s+</td>(?:\\n|\\r|.)*?<td>(?:\\n|\\r)*?(.*?)(?:\\n|\\r)*?</td>");
 
-        private readonly Dictionary<string, LSLLibraryConstantSignature> _constants =
-            new Dictionary<string, LSLLibraryConstantSignature>();
+        private readonly HashMap<string, LSLLibraryConstantSignature> _constants =
+            new HashMap<string, LSLLibraryConstantSignature>();
 
         private readonly Regex _functionPageAllFunctionsCatagory =
             new Regex(
@@ -87,12 +88,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private readonly Regex _functionPageLinks = new Regex("href\\s*=\\s*\"(/wiki/Os.*?)\"");
         private readonly LSLFunctionSignatureRegex _functionPageSignatureRegex;
 
-        private readonly Dictionary<string, List<LSLLibraryFunctionSignature>> _functions =
-            new Dictionary<string, List<LSLLibraryFunctionSignature>>();
+        private readonly HashMap<string, GenericArray<LSLLibraryFunctionSignature>> _functions =
+            new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
 
         private readonly IEnumerable<string> _subsets;
 
-        private readonly Dictionary<string, string> _wikiTypeToLslType = new Dictionary<string, string>
+        private readonly HashMap<string, string> _wikiTypeToLslType = new HashMap<string, string>
         {
             {"void", "void"},
             {"Void", "void"},
@@ -176,7 +177,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 else
                 {
                     _functions.Add(lslLibraryFunctionSignature.Name,
-                        new List<LSLLibraryFunctionSignature> {lslLibraryFunctionSignature});
+                        new GenericArray<LSLLibraryFunctionSignature> {lslLibraryFunctionSignature});
                 }
             }
 
@@ -205,13 +206,13 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return false;
         }
 
-        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
             if (LSLFunctionExist(name))
             {
                 return _functions[name];
             }
-            return new List<LSLLibraryFunctionSignature>();
+            return new GenericArray<LSLLibraryFunctionSignature>();
         }
 
         public LSLLibraryConstantSignature LSLConstant(string name)
@@ -228,7 +229,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return null;
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
             return _functions.Values;
         }
@@ -272,7 +273,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                         }
 
 
-                        var parameters = new List<LSLParameter>();
+                        var parameters = new GenericArray<LSLParameter>();
                         var badParam = false;
                         var badParamType = "";
 

@@ -48,6 +48,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -56,7 +57,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 {
     public class LSLStateScopeNode : ILSLStateScopeNode, ILSLSyntaxTreeNode
     {
-        private readonly List<LSLEventHandlerNode> _eventHandlers = new List<LSLEventHandlerNode>();
+        private readonly GenericArray<LSLEventHandlerNode> _eventHandlers = new GenericArray<LSLEventHandlerNode>();
 
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         // ReSharper disable UnusedParameter.Local
@@ -157,7 +158,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         internal LSLParser.DefinedStateContext DefinedStateContext { get; private set; }
         internal LSLParser.DefaultStateContext DefaultStateContext { get; private set; }
 
-        public IReadOnlyList<LSLEventHandlerNode> EventHandlers
+        public IReadOnlyGenericArray<LSLEventHandlerNode> EventHandlers
         {
             get { return _eventHandlers; }
         }
@@ -187,7 +188,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
 
 
-        IReadOnlyList<ILSLEventHandlerNode> ILSLStateScopeNode.EventHandlers
+        IReadOnlyGenericArray<ILSLEventHandlerNode> ILSLStateScopeNode.EventHandlers
         {
             get { return _eventHandlers; }
         }

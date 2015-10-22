@@ -43,12 +43,11 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -554,7 +553,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         public virtual void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
         {
             OnError(location,
                 string.Format("Overloads of \"{0}\" exist, but no overloads match the given parameters expressions", functionName));
@@ -568,7 +567,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="ambigiousMatches">All of the function overloads the call to the library function matched up with.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         public virtual void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
         {
             OnError(location,
                 string.Format("Overloads of \"{0}\" exist, but the given parameter expressions match more than one overload (desired function is ambiguous)", functionName));
@@ -754,7 +753,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="functionName">The name of the library function the user attempted to redefine.</param>
         /// <param name="libraryFunctionSignatureOverloads">All of the overloads for the library function, there may only be one if no overloads actually exist.</param>
         public virtual void RedefinedStandardLibraryFunction(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads)
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads)
         {
             OnError(location,
                 "Cannot define function with name \"" + functionName +

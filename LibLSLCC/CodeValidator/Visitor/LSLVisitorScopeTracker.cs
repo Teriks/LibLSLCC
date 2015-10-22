@@ -51,6 +51,7 @@ using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -66,23 +67,23 @@ namespace LibLSLCC.CodeValidator.Visitor
     {
         private readonly Stack<LSLControlStatementNode> _controlStatementStack = new Stack<LSLControlStatementNode>();
 
-        private readonly Dictionary<LSLParser.CodeScopeContext, Dictionary<string, LSLLabelStatementNode>> _labelScopes
-            = new Dictionary<LSLParser.CodeScopeContext, Dictionary<string, LSLLabelStatementNode>>();
+        private readonly HashMap<LSLParser.CodeScopeContext, HashMap<string, LSLLabelStatementNode>> _labelScopes
+            = new HashMap<LSLParser.CodeScopeContext, HashMap<string, LSLLabelStatementNode>>();
 
-        private readonly Dictionary<string, LSLVariableDeclarationNode> _parameterScopeVariables =
-            new Dictionary<string, LSLVariableDeclarationNode>();
+        private readonly HashMap<string, LSLVariableDeclarationNode> _parameterScopeVariables =
+            new HashMap<string, LSLVariableDeclarationNode>();
 
         private readonly Stack<LSLParser.CodeScopeContext> _scopeStack = new Stack<LSLParser.CodeScopeContext>();
         private readonly Stack<LSLCodeScopeType> _scopeTypeStack = new Stack<LSLCodeScopeType>();
 
-        private readonly Stack<Dictionary<string, LSLVariableDeclarationNode>> _scopeVariables =
-            new Stack<Dictionary<string, LSLVariableDeclarationNode>>();
+        private readonly Stack<HashMap<string, LSLVariableDeclarationNode>> _scopeVariables =
+            new Stack<HashMap<string, LSLVariableDeclarationNode>>();
 
         private readonly Stack<bool> _singleBlockStatementTrackingStack = new Stack<bool>();
 
-        private Dictionary<string, LSLStateScopeNode> _definedStates = new Dictionary<string, LSLStateScopeNode>();
-        private Dictionary<string, LSLPreDefinedFunctionSignature> _functionDefinitions = new Dictionary<string, LSLPreDefinedFunctionSignature>();
-        private Dictionary<string, LSLVariableDeclarationNode> _globalVariables = new Dictionary<string, LSLVariableDeclarationNode>();
+        private HashMap<string, LSLStateScopeNode> _definedStates = new HashMap<string, LSLStateScopeNode>();
+        private HashMap<string, LSLPreDefinedFunctionSignature> _functionDefinitions = new HashMap<string, LSLPreDefinedFunctionSignature>();
+        private HashMap<string, LSLVariableDeclarationNode> _globalVariables = new HashMap<string, LSLVariableDeclarationNode>();
 
         public LSLVisitorScopeTracker(ILSLValidatorServiceProvider validatorServiceProvider)
         {
@@ -107,19 +108,19 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
         // ReSharper disable once ConvertToAutoProperty
-        public Dictionary<string, LSLStateScopeNode> DefinedStates
+        public HashMap<string, LSLStateScopeNode> DefinedStates
         {
             get { return _definedStates; }
         }
 
         // ReSharper disable once ConvertToAutoProperty
-        public Dictionary<string, LSLPreDefinedFunctionSignature> FunctionDefinitions
+        public HashMap<string, LSLPreDefinedFunctionSignature> FunctionDefinitions
         {
             get { return _functionDefinitions; }
         }
 
         // ReSharper disable once ConvertToAutoProperty
-        public Dictionary<string, LSLVariableDeclarationNode> GlobalVariables
+        public HashMap<string, LSLVariableDeclarationNode> GlobalVariables
         {
             get { return _globalVariables; }
         }
@@ -462,7 +463,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             _scopeTypeStack.Push(LSLAntlrTreeIntrospector.ResolveCodeScopeNodeType(context));
             _singleBlockStatementTrackingStack.Push(false);
             _scopeStack.Push(context);
-            _labelScopes.Add(context, new Dictionary<string, LSLLabelStatementNode>());
+            _labelScopes.Add(context, new HashMap<string, LSLLabelStatementNode>());
         }
 
         public void EnterSingleStatementBlock(LSLParser.CodeStatementContext statement)
@@ -486,7 +487,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private void EnterLocalVariableScope()
         {
-            _scopeVariables.Push(new Dictionary<string, LSLVariableDeclarationNode>());
+            _scopeVariables.Push(new HashMap<string, LSLVariableDeclarationNode>());
         }
 
         private void ExitLocalVariableScope()

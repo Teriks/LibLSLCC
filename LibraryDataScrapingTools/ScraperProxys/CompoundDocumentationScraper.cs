@@ -45,6 +45,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.ScraperInterfaces;
 
 #endregion
@@ -53,7 +54,7 @@ namespace LibraryDataScrapingTools.ScraperProxys
 {
     public class CompoundDocumentationScraper : IDocumentationProvider
     {
-        private readonly List<IDocumentationProvider> _providers = new List<IDocumentationProvider>();
+        private readonly GenericArray<IDocumentationProvider> _providers = new GenericArray<IDocumentationProvider>();
 
         public CompoundDocumentationScraper(params IDocumentationProvider[] providers)
         {

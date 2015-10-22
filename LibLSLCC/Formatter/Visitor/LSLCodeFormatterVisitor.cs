@@ -47,9 +47,9 @@ using System.IO;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
@@ -1860,7 +1860,7 @@ namespace LibLSLCC.Formatter.Visitor
             if (nodes.Count > 0)
             {
                 var comments =
-                    GetComments(snode.SourceCodeRange.StartIndex, nodes[0].SourceCodeRange.StartIndex).ToList();
+                    GetComments(snode.SourceCodeRange.StartIndex, nodes[0].SourceCodeRange.StartIndex).ToGenericArray();
 
                 if (comments.Count > 0)
                 {
@@ -1896,7 +1896,7 @@ namespace LibLSLCC.Formatter.Visitor
 
 
                         comments =
-                            GetComments(node.SourceCodeRange.StopIndex, nextNode.SourceCodeRange.StartIndex).ToList();
+                            GetComments(node.SourceCodeRange.StopIndex, nextNode.SourceCodeRange.StartIndex).ToGenericArray();
 
                         if (comments.Count > 0)
                         {
@@ -1929,7 +1929,7 @@ namespace LibLSLCC.Formatter.Visitor
         private void MultiStatement_BetweenTwoNodes_WithComments(
             int singleLineBroken,
             ILSLReadOnlyCodeStatement node,
-            IReadOnlyList<LSLComment> comments,
+            IReadOnlyGenericArray<LSLComment> comments,
             ILSLReadOnlySyntaxTreeNode nextNode)
         {
             var indent = GenIndent();

@@ -43,10 +43,10 @@
 #region Imports
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator.Components
     public class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
     {
 
-        private readonly List<LSLStringCharacterError> _invalidEscapeCodes = new List<LSLStringCharacterError>();
+        private readonly GenericArray<LSLStringCharacterError> _invalidEscapeCodes = new GenericArray<LSLStringCharacterError>();
 
         /// <summary>
         /// Construct the default implementation of ILSLStringPreProcessor
@@ -89,7 +89,7 @@ namespace LibLSLCC.CodeValidator.Components
         public IEnumerable<LSLStringCharacterError> IllegalCharacters
         {
             //None that I know of so far
-            get { return new List<LSLStringCharacterError>(); }
+            get { return new GenericArray<LSLStringCharacterError>(); }
         }
 
         /// <summary>

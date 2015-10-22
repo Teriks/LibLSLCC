@@ -43,7 +43,6 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
@@ -52,6 +51,7 @@ using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -60,7 +60,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 {
     public class LSLFunctionDeclarationNode : ILSLFunctionDeclarationNode, ILSLSyntaxTreeNode
     {
-        private readonly List<LSLFunctionCallNode> _references = new List<LSLFunctionCallNode>();
+        private readonly GenericArray<LSLFunctionCallNode> _references = new GenericArray<LSLFunctionCallNode>();
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLFunctionDeclarationNode(LSLSourceCodeRange sourceRange, Err err)
@@ -98,12 +98,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         internal LSLParser.FunctionDeclarationContext ParserContext { get; private set; }
 
-        public IReadOnlyList<LSLParameterNode> ParameterNodes
+        public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
             get { return ParameterListNode.Parameters; }
         }
 
-        public IReadOnlyList<LSLFunctionCallNode> References
+        public IReadOnlyGenericArray<LSLFunctionCallNode> References
         {
             get { return _references; }
         }
@@ -111,7 +111,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         public LSLParameterListNode ParameterListNode { get; set; }
         public LSLCodeScopeNode FunctionBodyNode { get; private set; }
 
-        IReadOnlyList<ILSLFunctionCallNode> ILSLFunctionDeclarationNode.References
+        IReadOnlyGenericArray<ILSLFunctionCallNode> ILSLFunctionDeclarationNode.References
         {
             get { return _references; }
         }
@@ -129,7 +129,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return ParameterListNode.Parameters.Any(); }
         }
 
-        IReadOnlyList<ILSLParameterNode> ILSLFunctionDeclarationNode.ParameterNodes
+        IReadOnlyGenericArray<ILSLParameterNode> ILSLFunctionDeclarationNode.ParameterNodes
         {
             get { return ParameterListNode.Parameters; }
         }

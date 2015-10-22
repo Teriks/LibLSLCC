@@ -42,10 +42,10 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -365,7 +365,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="functionName">The name of the library function the user attempted to redefine.</param>
         /// <param name="libraryFunctionSignatureOverloads">All of the overloads for the library function, there may only be one if no overloads actually exist.</param>
         void RedefinedStandardLibraryFunction(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads);
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads);
 
         /// <summary>
         /// A state change statement was encountered that attempted to change states to an undefined state name.
@@ -504,7 +504,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<ILSLExprNode> givenParameterExpressions);
+            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions);
 
 
         /// <summary>
@@ -515,7 +515,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="ambigiousMatches">All of the function overloads the call to the library function matched up with.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName, 
-            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> givenParameterExpressions);
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions);
 
 
         /// <summary>

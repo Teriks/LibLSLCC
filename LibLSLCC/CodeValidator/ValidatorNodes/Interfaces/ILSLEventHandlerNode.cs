@@ -42,8 +42,8 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -67,7 +67,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// An in order list of parameter nodes that belong to the event handler, or an empty enumerable if none exist.
         /// </summary>
-        IReadOnlyList<ILSLParameterNode> ParameterNodes { get; }
+        IReadOnlyGenericArray<ILSLParameterNode> ParameterNodes { get; }
 
         /// <summary>
         /// The code scope node that represents the code body of the event handler.

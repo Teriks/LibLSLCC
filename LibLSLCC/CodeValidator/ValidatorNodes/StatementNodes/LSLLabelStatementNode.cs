@@ -42,13 +42,13 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 {
     public class LSLLabelStatementNode : ILSLLabelStatementNode, ILSLCodeStatement
     {
-        private readonly List<LSLJumpStatementNode> _jumpsToHere = new List<LSLJumpStatementNode>();
+        private readonly GenericArray<LSLJumpStatementNode> _jumpsToHere = new GenericArray<LSLJumpStatementNode>();
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLLabelStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -84,14 +84,14 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         internal LSLParser.CodeScopeContext ParentScopeParserContext { get; set; }
         public LSLCodeScopeNode ParentScope { get; set; }
 
-        public IReadOnlyList<LSLJumpStatementNode> JumpsToHere
+        public IReadOnlyGenericArray<LSLJumpStatementNode> JumpsToHere
         {
-            get { return _jumpsToHere.AsReadOnly(); }
+            get { return _jumpsToHere; }
         }
 
         public ILSLCodeStatement ReturnPath { get; set; }
 
-        IReadOnlyList<ILSLJumpStatementNode> ILSLLabelStatementNode.JumpsToHere
+        IReadOnlyGenericArray<ILSLJumpStatementNode> ILSLLabelStatementNode.JumpsToHere
         {
             get { return JumpsToHere; }
         }

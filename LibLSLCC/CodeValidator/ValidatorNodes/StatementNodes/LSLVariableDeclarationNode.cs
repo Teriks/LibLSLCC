@@ -42,7 +42,6 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
@@ -50,6 +49,7 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 {
     public class LSLVariableDeclarationNode : ILSLVariableDeclarationNode, ILSLCodeStatement
     {
-        private readonly List<LSLVariableNode> _references = new List<LSLVariableNode>();
+        private readonly GenericArray<LSLVariableNode> _references = new GenericArray<LSLVariableNode>();
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLVariableDeclarationNode(LSLSourceCodeRange sourceRange, Err err)
@@ -81,7 +81,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         public ILSLExprNode DeclarationExpression { get; private set; }
 
-        public IReadOnlyList<LSLVariableNode> References
+        public IReadOnlyGenericArray<LSLVariableNode> References
         {
             get { return _references; }
         }
@@ -185,7 +185,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         /// </summary>
         public ulong ScopeId { get; set; }
 
-        IReadOnlyList<ILSLVariableNode> ILSLVariableDeclarationNode.References
+        IReadOnlyGenericArray<ILSLVariableNode> ILSLVariableDeclarationNode.References
         {
             get { return References; }
         }

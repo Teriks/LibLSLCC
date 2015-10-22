@@ -48,6 +48,7 @@ using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using OpenMetaverse.StructuredData;
 
@@ -186,10 +187,10 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         }
 
 
-        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
             var map = GetFunctionOSDMap(_data, name);
-            if (map == null) return new List<LSLLibraryFunctionSignature> ();
+            if (map == null) return new GenericArray<LSLLibraryFunctionSignature> ();
 
             LSLType returnType = LSLType.Void;
 
@@ -212,16 +213,16 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             func.Deprecated = map.ContainsKey("deprecated");
 
 
-            if (!map.ContainsKey("arguments")) return new List<LSLLibraryFunctionSignature> {func};
+            if (!map.ContainsKey("arguments")) return new GenericArray<LSLLibraryFunctionSignature> {func};
 
 
 
             var args = map["arguments"] as OSDArray;
 
-            if (args == null) return new List<LSLLibraryFunctionSignature> {func};
+            if (args == null) return new GenericArray<LSLLibraryFunctionSignature> {func};
 
 
-            var paramNameDuplicates = new Dictionary<string, int>();
+            var paramNameDuplicates = new HashMap<string, int>();
 
             foreach (var arg in args.Cast<OSDMap>())
             {
@@ -248,7 +249,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     LSLTypeTools.FromLSLTypeString(paramDetails["type"].AsString()), argName, false));
             }
 
-            return new List<LSLLibraryFunctionSignature> {func};
+            return new GenericArray<LSLLibraryFunctionSignature> {func};
         }
 
 
@@ -323,7 +324,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 if (args == null) return ev;
 
 
-                var paramNameDuplicates = new Dictionary<string, int>();
+                var paramNameDuplicates = new HashMap<string, int>();
 
                 foreach (var arg in args.Cast<OSDMap>())
                 {
@@ -354,9 +355,9 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return ev;
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
-            return LSLFunctions().Select(x => new List<LSLLibraryFunctionSignature> {x});
+            return LSLFunctions().Select(x => new GenericArray<LSLLibraryFunctionSignature> {x});
         }
 
         public IEnumerable<LSLLibraryFunctionSignature> LSLFunctions()

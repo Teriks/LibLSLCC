@@ -50,6 +50,7 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -58,7 +59,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 {
     public class LSLParameterListNode : ILSLParameterListNode
     {
-        private readonly List<LSLParameterNode> _parameters = new List<LSLParameterNode>();
+        private readonly GenericArray<LSLParameterNode> _parameters = new GenericArray<LSLParameterNode>();
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLParameterListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -111,7 +112,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         /// <summary>
         /// The LSLParameterNode objects that are children of this node, or an empty list.
         /// </summary>
-        public IReadOnlyList<LSLParameterNode> Parameters
+        public IReadOnlyGenericArray<LSLParameterNode> Parameters
         {
             get { return _parameters; }
         }
@@ -129,7 +130,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
             get { return _parameters.Count > 0; }
         }
 
-        IReadOnlyList<ILSLParameterNode> ILSLParameterListNode.Parameters
+        IReadOnlyGenericArray<ILSLParameterNode> ILSLParameterListNode.Parameters
         {
             get { return _parameters; }
         }

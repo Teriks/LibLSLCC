@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LibLSLCC</RootNamespace>
     <AssemblyName>LibLSLCC</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>6c90bac5</NuGetPackageImportStamp>
@@ -95,6 +95,12 @@
     <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureMatcher.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\Interfaces\LSLExprNodeInterfaceExtensions.cs" />
+    <Compile Include="Collections\GenericArray.cs" />
+    <Compile Include="Collections\GenericArrayExtensions.cs" />
+    <Compile Include="Collections\HashMapExtensions.cs" />
+    <Compile Include="Collections\IReadOnlyContainer.cs" />
+    <Compile Include="Collections\IReadOnlyGenericArray.cs" />
+    <Compile Include="Collections\IReadOnlyHashMap.cs" />
     <Compile Include="Utility\LambdaEqualityComparer.cs" />
     <Compile Include="Utility\TokenTools.cs" />
     <Compile Include="Utility\StringTools.cs" />
@@ -225,11 +231,10 @@
     <Compile Include="CodeValidator\ValidatorNodes\StatementNodes\LSLVariableDeclarationNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodeVisitor\LSLDefaultValidatorNodeVisitor.cs" />
     <Compile Include="CodeValidator\ValidatorNodeVisitor\ILSLValidatorNodeVisitor.cs" />
-    <Compile Include="Collections\CollectionExtensions.cs" />
-    <Compile Include="Collections\IReadOnlySet.cs" />
+    <Compile Include="Collections\IReadOnlyHashedSet.cs" />
     <Compile Include="Collections\PriorityQueue.cs" />
-    <Compile Include="Collections\ReadOnlyDictionary.cs" />
-    <Compile Include="Collections\ReadOnlyHashSet.cs" />
+    <Compile Include="Collections\HashMap.cs" />
+    <Compile Include="Collections\HashedSet.cs" />
     <Compile Include="Compilers\LSLCompilerInternalException.cs" />
     <Compile Include="Compilers\LSLOpenSimCSCompiler.cs" />
     <Compile Include="Compilers\Visitors\LSLOpenSimCSCompilerVisitor.cs" />

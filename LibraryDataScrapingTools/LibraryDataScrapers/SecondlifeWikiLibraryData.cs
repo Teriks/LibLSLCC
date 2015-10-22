@@ -54,6 +54,7 @@ using System.Web;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;
 
@@ -87,8 +88,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Constants\">next 200</a>\\)<div");
 
-        private readonly Dictionary<string, LSLLibraryConstantSignature> _constants =
-            new Dictionary<string, LSLLibraryConstantSignature>();
+        private readonly HashMap<string, LSLLibraryConstantSignature> _constants =
+            new HashMap<string, LSLLibraryConstantSignature>();
 
         private readonly Regex _constantsGroupKeywordsAll =
             new Regex("<a\\s+name\\s*=\\s*\"Constants\"\\s+id\\s*=\\s*\"Constants\"></a><h2>((?:\\r|\\n|.))*?</pre>");
@@ -104,8 +105,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Events\">next 200</a>\\)<div");
 
-        private readonly Dictionary<string, LSLLibraryEventSignature> _events =
-            new Dictionary<string, LSLLibraryEventSignature>();
+        private readonly HashMap<string, LSLLibraryEventSignature> _events =
+            new HashMap<string, LSLLibraryEventSignature>();
 
         private readonly LSLEventSignatureRegex _eventSignature =
             new LSLEventSignatureRegex("<pre id=\"lsl-signature\">\\s*event\\s+void\\s+(", ";)");
@@ -119,8 +120,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Functions\">next 200</a>\\)<div");
 
-        private readonly Dictionary<string, List<LSLLibraryFunctionSignature>> _functions =
-            new Dictionary<string, List<LSLLibraryFunctionSignature>>();
+        private readonly HashMap<string, GenericArray<LSLLibraryFunctionSignature>> _functions =
+            new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
 
         private readonly Regex _functionsGroupInKeywordsAll =
             new Regex("<a\\s+name\\s*=\\s*\"Functions\"\\s+id\\s*=\\s*\"Functions\"></a><h2>((?:\\r|\\n|.))*?</pre>");
@@ -188,7 +189,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 else
                 {
                     _functions.Add(lslLibraryFunctionSignature.Name,
-                        new List<LSLLibraryFunctionSignature> {lslLibraryFunctionSignature});
+                        new GenericArray<LSLLibraryFunctionSignature> {lslLibraryFunctionSignature});
                 }
             }
 
@@ -231,13 +232,13 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return _events.ContainsKey(name);
         }
 
-        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
             if (_functions.ContainsKey(name))
             {
                 return _functions[name];
             }
-            return new List<LSLLibraryFunctionSignature>();
+            return new GenericArray<LSLLibraryFunctionSignature>();
         }
 
         public LSLLibraryConstantSignature LSLConstant(string name)
@@ -258,7 +259,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return null;
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
             return _functions.Values;
         }

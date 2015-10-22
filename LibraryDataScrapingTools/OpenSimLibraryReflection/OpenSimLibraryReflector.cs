@@ -152,7 +152,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
 
 
 
-        IReadOnlySet<string> EventNames { get; }
+        IReadOnlyHashedSet<string> EventNames { get; }
 
 
         /// <summary>
@@ -160,22 +160,22 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
         ///     to an LSLType
         /// </summary>
         /// <returns>The LSLType that can represent the native type</returns>
-        IReadOnlyDictionary<Type, LSLType> OpenSimToLSLTypeMapping();
+        IReadOnlyHashMap<Type, LSLType> OpenSimToLSLTypeMapping();
     }
 
     public class OpenSimLibraryReflectedTypeData : IReflectedLibraryData
     {
-        private readonly Dictionary<AssemblyName, Assembly> _loaded = new Dictionary<AssemblyName, Assembly>();
+        private readonly HashMap<AssemblyName, Assembly> _loaded = new HashMap<AssemblyName, Assembly>();
 
-        public IReadOnlyDictionary<string, Assembly> AllOpenSimAssemblies
+        public IReadOnlyHashMap<string, Assembly> AllOpenSimAssemblies
         {
             get { return _allOpenSimAssemblies; }
         }
 
         private readonly string _openSimBinDirectory;
-        private readonly Dictionary<string, Assembly> _allOpenSimAssemblies = new Dictionary<string, Assembly>();
-        private readonly List<Type> _scriptModuleClasses = new List<Type>();
-        private readonly HashSet<string> _eventNames;
+        private readonly HashMap<string, Assembly> _allOpenSimAssemblies = new HashMap<string, Assembly>();
+        private readonly GenericArray<Type> _scriptModuleClasses = new GenericArray<Type>();
+        private readonly HashedSet<string> _eventNames;
 
         public OpenSimLibraryReflectedTypeData(string openSimBinDirectory)
         {
@@ -217,7 +217,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             AppDomain.CurrentDomain.AssemblyResolve += _currentDomainOnAssemblyResolve;
 
 
-            _eventNames = new HashSet<string>(
+            _eventNames = new HashedSet<string>(
                 ScriptRuntimeAssembly.GetType("OpenSim.Region.ScriptEngine.Shared.ScriptBase.Executor")
                     .GetNestedType("scriptEvents")
                     .GetMembers(BindingFlags.Public | BindingFlags.Static)
@@ -263,7 +263,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             ScriptBaseClass =
                 ScriptRuntimeAssembly.GetType("OpenSim.Region.ScriptEngine.Shared.ScriptBase.ScriptBaseClass");
 
-            ScriptConstantContainerClasses = new List<Type> { ScriptBaseClass };
+            ScriptConstantContainerClasses = new GenericArray<Type> { ScriptBaseClass };
 
             AppDomain.CurrentDomain.AssemblyResolve -= _currentDomainOnAssemblyResolve;
         }
@@ -315,9 +315,9 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             return ScriptConstantContainerClasses.SingleOrDefault(x => x.Name == name);
         }
 
-        public IReadOnlySet<string> EventNames
+        public IReadOnlyHashedSet<string> EventNames
         {
-            get { return new ReadOnlyHashSet<string>(_eventNames); }
+            get { return _eventNames; }
         }
 
         /// <summary>
@@ -507,9 +507,9 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
             }
         }
 
-        public IReadOnlyDictionary<Type, LSLType> OpenSimToLSLTypeMapping()
+        public IReadOnlyHashMap<Type, LSLType> OpenSimToLSLTypeMapping()
         {
-            var r = new Dictionary<Type, LSLType>
+            var r = new HashMap<Type, LSLType>
             {
                 {
                     typeof(object[]),

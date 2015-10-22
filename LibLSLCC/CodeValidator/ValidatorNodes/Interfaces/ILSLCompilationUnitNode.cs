@@ -42,8 +42,8 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -58,26 +58,26 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// A list of objects describing the comments found in the source code and their position/range.
         /// </summary>
-        IReadOnlyList<LSLComment> Comments { get; }
+        IReadOnlyGenericArray<LSLComment> Comments { get; }
 
 
         /// <summary>
         /// Global variable declaration nodes, in order of appearance.
         /// Returns and empty enumerable if non exist.
         /// </summary>
-        IReadOnlyList<ILSLVariableDeclarationNode> GlobalVariableDeclarations { get; }
+        IReadOnlyGenericArray<ILSLVariableDeclarationNode> GlobalVariableDeclarations { get; }
 
         /// <summary>
         /// User defined function nodes, in order of appearance. 
         /// Returns and empty enumerable if non exist.
         /// </summary>
-        IReadOnlyList<ILSLFunctionDeclarationNode> FunctionDeclarations { get; }
+        IReadOnlyGenericArray<ILSLFunctionDeclarationNode> FunctionDeclarations { get; }
 
         /// <summary>
         /// User defined state nodes, in order of appearance.
         /// Returns and empty enumerable if non exist.
         /// </summary>
-        IReadOnlyList<ILSLStateScopeNode> StateDeclarations { get; }
+        IReadOnlyGenericArray<ILSLStateScopeNode> StateDeclarations { get; }
 
         /// <summary>
         /// The state node for the default script state, or null if one did not exist. (An error).

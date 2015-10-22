@@ -42,12 +42,12 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator.Components
     /// </summary>
     public class LSLDefaultExpressionValidator : ILSLExpressionValidator
     {
-        private readonly Dictionary<string, LSLType> _operations = new Dictionary<string, LSLType>();
+        private readonly HashMap<string, LSLType> _operations = new HashMap<string, LSLType>();
 
         /// <summary>
         /// Constructs the expression validator

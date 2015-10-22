@@ -9,14 +9,14 @@ namespace LibLSLCC.CodeValidator.Components
     /// </summary>
     public class LSLLibraryDataSubsetCollection
     {
-        private readonly HashSet<string> _subsets;
+        private readonly HashedSet<string> _subsets;
 
         /// <summary>
         /// Retrieve a read only set of the subsets in this collection
         /// </summary>
-        public IReadOnlySet<string> Subsets
+        public IReadOnlyHashedSet<string> Subsets
         {
-            get { return _subsets.AsReadOnly(); }
+            get { return _subsets; }
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="subsets"></param>
         public LSLLibraryDataSubsetCollection(IEnumerable<string> subsets)
         {
-            _subsets = new HashSet<string>(subsets);
+            _subsets = new HashedSet<string>(subsets);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         public LSLLibraryDataSubsetCollection()
         {
-            _subsets = new HashSet<string>();
+            _subsets = new HashedSet<string>();
         }
 
         /// <summary>

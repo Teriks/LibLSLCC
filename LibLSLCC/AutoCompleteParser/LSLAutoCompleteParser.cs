@@ -53,6 +53,7 @@ using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 using LibLSLCC.Utility;
 
@@ -63,16 +64,16 @@ namespace LibLSLCC.AutoCompleteParser
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class LSLAutoCompleteParser
     {
-        private readonly Dictionary<string, GlobalFunction> _globalFunctions = new Dictionary<string, GlobalFunction>();
-        private readonly Dictionary<string, GlobalVariable> _globalVariables = new Dictionary<string, GlobalVariable>();
+        private readonly HashMap<string, GlobalFunction> _globalFunctions = new HashMap<string, GlobalFunction>();
+        private readonly HashMap<string, GlobalVariable> _globalVariables = new HashMap<string, GlobalVariable>();
         private readonly Regex _jumpRegex = new Regex("jump\\s*(" + TokenTools.IDRegex + ")");
         private readonly Regex _labelRegex = new Regex("@\\s*(" + TokenTools.IDRegex + ")");
 
-        private readonly Stack<Dictionary<string, LocalVariable>> _localVariables =
-            new Stack<Dictionary<string, LocalVariable>>();
+        private readonly Stack<HashMap<string, LocalVariable>> _localVariables =
+            new Stack<HashMap<string, LocalVariable>>();
 
-        private readonly Dictionary<string, LocalParameter> _parameters = new Dictionary<string, LocalParameter>();
-        private readonly List<StateBlock> _stateBlocks = new List<StateBlock>();
+        private readonly HashMap<string, LocalParameter> _parameters = new HashMap<string, LocalParameter>();
+        private readonly GenericArray<StateBlock> _stateBlocks = new GenericArray<StateBlock>();
 
         protected readonly Stack<NestableExpressionElementType> NestableExpressionElementStack =
             new Stack<NestableExpressionElementType>();
@@ -179,7 +180,7 @@ namespace LibLSLCC.AutoCompleteParser
             }
         }
 
-        public IReadOnlyList<StateBlock> StateBlocks
+        public IReadOnlyGenericArray<StateBlock> StateBlocks
         {
             get { return _stateBlocks; }
         }
@@ -551,7 +552,7 @@ namespace LibLSLCC.AutoCompleteParser
         {
             public GlobalFunction(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
                 LSLSourceCodeRange nameRange,
-                IReadOnlyList<LocalParameter> parameters)
+                IReadOnlyGenericArray<LocalParameter> parameters)
             {
                 Parameters = parameters;
                 Name = name;
@@ -566,7 +567,7 @@ namespace LibLSLCC.AutoCompleteParser
             }
 
             public GlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
-                IReadOnlyList<LocalParameter> parameters)
+                IReadOnlyGenericArray<LocalParameter> parameters)
             {
                 Parameters = parameters;
                 Name = name;
@@ -618,7 +619,7 @@ namespace LibLSLCC.AutoCompleteParser
                 }
             }
 
-            public IReadOnlyList<LocalParameter> Parameters { get; private set; }
+            public IReadOnlyGenericArray<LocalParameter> Parameters { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
@@ -1199,7 +1200,7 @@ namespace LibLSLCC.AutoCompleteParser
                 return v;
             }
 
-            readonly Stack<List<GlobalVariable>> _globalVariablesHidden = new Stack<List<GlobalVariable>>(); 
+            readonly Stack<GenericArray<GlobalVariable>> _globalVariablesHidden = new Stack<GenericArray<GlobalVariable>>(); 
 
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
             {
@@ -1272,7 +1273,7 @@ namespace LibLSLCC.AutoCompleteParser
                 var returnTypeText = context.return_type == null ? "" : context.return_type.Text;
 
 
-                var parms = new List<LocalParameter>();
+                var parms = new GenericArray<LocalParameter>();
 
                 if (context.parameters != null && context.parameters.children != null)
                 {
@@ -1631,7 +1632,7 @@ namespace LibLSLCC.AutoCompleteParser
                 _parent.InSingleStatementCodeScopeTopLevel = false;
                 _parent.InMultiStatementCodeScopeTopLevel = true;
 
-                _globalVariablesHidden.Push(new List<GlobalVariable>());
+                _globalVariablesHidden.Push(new GenericArray<GlobalVariable>());
 
 
                 if (context.Parent is LSLParser.FunctionDeclarationContext ||
@@ -1648,7 +1649,7 @@ namespace LibLSLCC.AutoCompleteParser
                     }
                 }
 
-                _parent._localVariables.Push(new Dictionary<string, LocalVariable>());
+                _parent._localVariables.Push(new HashMap<string, LocalVariable>());
 
                 foreach (var i in context.codeStatement())
                 {

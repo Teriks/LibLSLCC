@@ -44,6 +44,7 @@
 
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -54,10 +55,10 @@ namespace LibraryDataScrapingTools.ScraperInterfaces
         bool LSLFunctionExist(string name);
         bool LSLConstantExist(string name);
         bool LSLEventExist(string name);
-        IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name);
+        IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name);
         LSLLibraryConstantSignature LSLConstant(string name);
         LSLLibraryEventSignature LSLEvent(string name);
-        IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups();
+        IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups();
         IEnumerable<LSLLibraryFunctionSignature> LSLFunctions();
         IEnumerable<LSLLibraryConstantSignature> LSLConstants();
         IEnumerable<LSLLibraryEventSignature> LSLEvents();

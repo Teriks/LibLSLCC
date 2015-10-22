@@ -42,7 +42,7 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -61,6 +61,6 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// A list of parameter definition nodes that this parameter list node contains, or an empty list.
         /// </summary>
-        IReadOnlyList<ILSLParameterNode> Parameters { get; }
+        IReadOnlyGenericArray<ILSLParameterNode> Parameters { get; }
     }
 }

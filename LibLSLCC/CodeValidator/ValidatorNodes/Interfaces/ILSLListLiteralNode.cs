@@ -42,7 +42,7 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// A list of expressions that were used to initialize the list literal, or an empty list.
         /// </summary>
-        IReadOnlyList<ILSLReadOnlyExprNode> ListEntryExpressions { get; }
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ListEntryExpressions { get; }
 
         /// <summary>
         /// The expression list node that contains all of the expressions used to initialize the list literal.

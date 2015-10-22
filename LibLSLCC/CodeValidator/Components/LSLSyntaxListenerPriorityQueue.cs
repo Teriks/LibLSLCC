@@ -43,7 +43,6 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
@@ -544,7 +543,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="functionName">The name of the library function the user attempted to redefine.</param>
         /// <param name="libraryFunctionSignatureOverloads">All of the overloads for the library function, there may only be one if no overloads actually exist.</param>
         void ILSLSyntaxErrorListener.RedefinedStandardLibraryFunction(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads)
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -757,7 +756,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         public void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -773,7 +772,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="ambigiousMatches">All of the function overloads the call to the library function matched up with.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
         public void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName,
-            IReadOnlyList<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyList<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>

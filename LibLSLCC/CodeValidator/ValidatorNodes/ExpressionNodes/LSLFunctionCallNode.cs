@@ -43,13 +43,13 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -126,7 +126,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         /// <summary>
         /// A list of parameter expressions used to call the function, or an empty list if no parameters were used.
         /// </summary>
-        public IReadOnlyList<ILSLExprNode> ParameterExpressions
+        public IReadOnlyGenericArray<ILSLExprNode> ParameterExpressions
         {
             get { return ParameterListNode.ExpressionNodes; }
         }
@@ -193,7 +193,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
             get { return ParserContext.function_name.Text; }
         }
 
-        IReadOnlyList<ILSLReadOnlyExprNode> ILSLFunctionCallNode.ParameterExpressions
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLFunctionCallNode.ParameterExpressions
         {
             get { return ParameterExpressions; }
         }

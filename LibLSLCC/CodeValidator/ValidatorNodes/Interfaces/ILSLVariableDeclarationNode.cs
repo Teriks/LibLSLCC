@@ -42,9 +42,9 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -84,7 +84,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// A list of variable nodes representing references to this variable declaration in the source code.  Or an empty list.
         /// ILSLVariableNodes are used to represent a reference to a declared variable, and are present in the syntax tree at the site of reference.
         /// </summary>
-        IReadOnlyList<ILSLVariableNode> References { get; }
+        IReadOnlyGenericArray<ILSLVariableNode> References { get; }
 
 
         /// <summary>

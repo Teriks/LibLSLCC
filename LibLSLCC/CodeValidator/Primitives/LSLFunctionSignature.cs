@@ -47,6 +47,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Exceptions;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
@@ -58,7 +59,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// </summary>
     public class LSLFunctionSignature
     {
-        private readonly List<LSLParameter> _parameters;
+        private readonly GenericArray<LSLParameter> _parameters;
         private string _name;
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         protected LSLFunctionSignature()
         {
             ReturnType = LSLType.Void;
-            _parameters = new List<LSLParameter>();
+            _parameters = new GenericArray<LSLParameter>();
         }
 
         /// <summary>
@@ -96,11 +97,11 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             if (parameters == null)
             {
-                _parameters = new List<LSLParameter>();
+                _parameters = new GenericArray<LSLParameter>();
             }
             else
             {
-                _parameters = new List<LSLParameter>();
+                _parameters = new GenericArray<LSLParameter>();
                 foreach (var lslParameter in parameters)
                 {
                     AddParameter(lslParameter);
@@ -153,7 +154,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     Indexable list of objects describing the functions parameters
         /// </summary>
-        public IReadOnlyList<LSLParameter> Parameters
+        public IReadOnlyGenericArray<LSLParameter> Parameters
         {
             get { return _parameters; }
         }

@@ -51,6 +51,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.LibraryDataScrapers;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.OpenSimLibraryReflection;
@@ -64,7 +65,7 @@ namespace LibraryDataScrapingTools
     internal class Program
     {
 
-        public static List<LSLLibrarySubsetDescription> SubsetDescriptions = new List<LSLLibrarySubsetDescription>
+        public static GenericArray<LSLLibrarySubsetDescription> SubsetDescriptions = new GenericArray<LSLLibrarySubsetDescription>
         {
             new LSLLibrarySubsetDescription("lsl", "Linden LSL","The standard library functions supported by Linden Lab's SecondLife servers."),
             new LSLLibrarySubsetDescription("os-lsl", "OpenSim LSL","The subset of standard library functions from LSL supported by OpenSim SecondLife servers."),
@@ -112,7 +113,7 @@ namespace LibraryDataScrapingTools
             }
 
 
-            List<ScriptLibrary> firestormScriptLibraries = new List<ScriptLibrary>();
+            GenericArray<ScriptLibrary> firestormScriptLibraries = new GenericArray<ScriptLibrary>();
 
 
             while (
@@ -221,7 +222,7 @@ namespace LibraryDataScrapingTools
             var openSim = new LibraryDataSet(openSimData);
 
 
-            List<string> activeLibrarySubsets  = SubsetDescriptions.Select(x => x.Subset).ToList();
+            GenericArray<string> activeLibrarySubsets  = SubsetDescriptions.Select(x => x.Subset).ToList();
 
 
             var provider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
@@ -714,13 +715,13 @@ namespace LibraryDataScrapingTools
                 }
             }
         }
-        private static List<List<T>> ChunkBy<T>(List<T> source, int chunkSize)
+        private static GenericArray<GenericArray<T>> ChunkBy<T>(GenericArray<T> source, int chunkSize)
         {
             return source
                 .Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / chunkSize)
-                .Select(x => x.Select(v => v.Value).ToList())
-                .ToList();
+                .Select(x => x.Select(v => v.Value).ToGenericArray())
+                .ToGenericArray();
         }
 
         private static void GenerateLSLConstantTestScript(ILSLLibraryDataProvider dataProvider, TextWriter writer)
@@ -735,7 +736,7 @@ namespace LibraryDataScrapingTools
             int index = 0;
 
 
-            foreach (var constantGroup in ChunkBy(dataProvider.LibraryConstants.Where(x => x.Subsets.Contains("lsl")).ToList(), 200))
+            foreach (var constantGroup in ChunkBy(dataProvider.LibraryConstants.Where(x => x.Subsets.Contains("lsl")).ToGenericArray(), 200))
             {
                 writer.WriteLine("\t\t#ifdef GROUP_"+index);
 

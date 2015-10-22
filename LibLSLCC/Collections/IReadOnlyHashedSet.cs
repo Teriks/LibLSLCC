@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: IReadOnlySet.cs
+// File: IReadOnlyHashedSet.cs
 // 
 // 
 // ============================================================
@@ -52,7 +52,7 @@ namespace LibLSLCC.Collections
     /// Read Set interface.
     /// </summary>
     /// <typeparam name="T">The type the set is to contain.</typeparam>
-    public interface IReadOnlySet<T> : IReadOnlyCollection<T>
+    public interface IReadOnlyHashedSet<T> : IReadOnlyContainer<T>
     {
         /// <summary>
         /// Determines if this ICollection is read only.
@@ -75,7 +75,7 @@ namespace LibLSLCC.Collections
         bool Contains(T item);
 
         /// <summary>
-        /// Copies the elements of the IReadOnlySet to an array, starting at arrayIndex in the target array.
+        /// Copies the elements of the IReadOnlyHashedSet to an array, starting at arrayIndex in the target array.
         /// </summary>
         /// <param name="array">The array to copy the items to.</param>
         /// <param name="arrayIndex">The array index to start at in the target array.</param>

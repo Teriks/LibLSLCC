@@ -43,13 +43,13 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -58,12 +58,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 {
     public class LSLCompilationUnitNode : ILSLCompilationUnitNode, ILSLSyntaxTreeNode
     {
-        private readonly List<LSLFunctionDeclarationNode> _functionDeclarations = new List<LSLFunctionDeclarationNode>();
+        private readonly GenericArray<LSLFunctionDeclarationNode> _functionDeclarations = new GenericArray<LSLFunctionDeclarationNode>();
 
-        private readonly List<LSLVariableDeclarationNode> _globalVariableDeclarations =
-            new List<LSLVariableDeclarationNode>();
+        private readonly GenericArray<LSLVariableDeclarationNode> _globalVariableDeclarations =
+            new GenericArray<LSLVariableDeclarationNode>();
 
-        private readonly List<LSLStateScopeNode> _stateDeclarations = new List<LSLStateScopeNode>();
+        private readonly GenericArray<LSLStateScopeNode> _stateDeclarations = new GenericArray<LSLStateScopeNode>();
         private int _addCounter;
         private LSLStateScopeNode _defaultState;
 // ReSharper disable UnusedParameter.Local
@@ -93,17 +93,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         internal LSLParser.CompilationUnitContext ParserContext { get; private set; }
 
-        public IReadOnlyList<LSLVariableDeclarationNode> GlobalVariableDeclarations
+        public IReadOnlyGenericArray<LSLVariableDeclarationNode> GlobalVariableDeclarations
         {
             get { return _globalVariableDeclarations; }
         }
 
-        public IReadOnlyList<LSLFunctionDeclarationNode> FunctionDeclarations
+        public IReadOnlyGenericArray<LSLFunctionDeclarationNode> FunctionDeclarations
         {
             get { return _functionDeclarations; }
         }
 
-        public IReadOnlyList<LSLStateScopeNode> StateDeclarations
+        public IReadOnlyGenericArray<LSLStateScopeNode> StateDeclarations
         {
             get { return _stateDeclarations; }
         }
@@ -137,7 +137,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// <summary>
         /// A list of objects describing the comments found in the source code and their position/range.
         /// </summary>
-        public IReadOnlyList<LSLComment> Comments { get; set; }
+        public IReadOnlyGenericArray<LSLComment> Comments { get; set; }
 
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -145,19 +145,19 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return Parent; }
         }
 
-        IReadOnlyList<ILSLVariableDeclarationNode> ILSLCompilationUnitNode.GlobalVariableDeclarations
+        IReadOnlyGenericArray<ILSLVariableDeclarationNode> ILSLCompilationUnitNode.GlobalVariableDeclarations
         {
-            get { return _globalVariableDeclarations ?? new List<LSLVariableDeclarationNode>(); }
+            get { return _globalVariableDeclarations ?? new GenericArray<LSLVariableDeclarationNode>(); }
         }
 
-        IReadOnlyList<ILSLFunctionDeclarationNode> ILSLCompilationUnitNode.FunctionDeclarations
+        IReadOnlyGenericArray<ILSLFunctionDeclarationNode> ILSLCompilationUnitNode.FunctionDeclarations
         {
-            get { return _functionDeclarations ?? new List<LSLFunctionDeclarationNode>(); }
+            get { return _functionDeclarations ?? new GenericArray<LSLFunctionDeclarationNode>(); }
         }
 
-        IReadOnlyList<ILSLStateScopeNode> ILSLCompilationUnitNode.StateDeclarations
+        IReadOnlyGenericArray<ILSLStateScopeNode> ILSLCompilationUnitNode.StateDeclarations
         {
-            get { return _stateDeclarations ?? new List<LSLStateScopeNode>(); }
+            get { return _stateDeclarations ?? new GenericArray<LSLStateScopeNode>(); }
         }
 
         ILSLStateScopeNode ILSLCompilationUnitNode.DefaultState

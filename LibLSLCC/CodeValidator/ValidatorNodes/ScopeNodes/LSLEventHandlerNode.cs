@@ -43,13 +43,13 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -93,7 +93,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         internal LSLParser.EventHandlerContext ParserContext { get; private set; }
 
-        public IReadOnlyList<LSLParameterNode> ParameterNodes
+        public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
             get { return ParameterListNode.Parameters; }
         }
@@ -122,9 +122,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
             get { return ParameterListNode.Parameters.Any(); }
         }
 
-        IReadOnlyList<ILSLParameterNode> ILSLEventHandlerNode.ParameterNodes
+        IReadOnlyGenericArray<ILSLParameterNode> ILSLEventHandlerNode.ParameterNodes
         {
-            get { return ParameterNodes ?? new List<LSLParameterNode>(); }
+            get { return ParameterNodes ?? new GenericArray<LSLParameterNode>(); }
         }
 
         ILSLCodeScopeNode ILSLEventHandlerNode.EventBodyNode

@@ -42,9 +42,9 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -65,12 +65,12 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
         /// </summary>
-        IReadOnlyList<ILSLReadOnlyExprNode> ExpressionNodes { get; }
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ExpressionNodes { get; }
 
         /// <summary>
         /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
         /// </summary>
-        IReadOnlyList<LSLSourceCodeRange> CommaSourceCodeRanges { get; }
+        IReadOnlyGenericArray<LSLSourceCodeRange> CommaSourceCodeRanges { get; }
 
         /// <summary>
         /// True if all expressions in the expression list are considered to be constant expressions.

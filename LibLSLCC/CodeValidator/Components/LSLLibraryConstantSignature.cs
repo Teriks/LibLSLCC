@@ -65,8 +65,8 @@ namespace LibLSLCC.CodeValidator.Components
     [XmlRoot("LibraryConstant")]
     public sealed class LSLLibraryConstantSignature : IXmlSerializable, ILSLLibrarySignature
     {
-        private Dictionary<string, string> _properties = new Dictionary<string, string>();
-        private HashSet<string> _subsets = new HashSet<string>();
+        private HashMap<string, string> _properties = new HashMap<string, string>();
+        private HashedSet<string> _subsets = new HashedSet<string>();
 
         private LSLLibraryDataSubsetsAttributeRegex _subsetsRegex = new
             LSLLibraryDataSubsetsAttributeRegex();
@@ -87,9 +87,9 @@ namespace LibLSLCC.CodeValidator.Components
         {
             ValueString = other.ValueString;
             DocumentationString = other.DocumentationString;
-            _subsets = new HashSet<string>(other._subsets);
+            _subsets = new HashedSet<string>(other._subsets);
             Type = other.Type;
-            _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
+            _properties = other._properties.ToHashMap(x => x.Key, y => y.Value);
         }
 
 
@@ -124,9 +124,9 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         /// The library subsets this signature belongs to/is shared among.
         /// </summary>
-        public IReadOnlySet<string> Subsets
+        public IReadOnlyHashedSet<string> Subsets
         {
-            get { return new ReadOnlyHashSet<string>(_subsets); }
+            get { return _subsets; }
         }
 
 
@@ -423,7 +423,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="subsets">An enumerable of subset name strings</param>
         public void SetSubsets(IEnumerable<string> subsets)
         {
-            _subsets = new HashSet<string>(subsets);
+            _subsets = new HashedSet<string>(subsets);
         }
 
         /// <summary>
@@ -432,7 +432,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="subsets">A comma separated list of subset names in a string.</param>
         public void SetSubsets(string subsets)
         {
-            _subsets = new HashSet<string>(_subsetsRegex.ParseSubsets(subsets));
+            _subsets = new HashedSet<string>(_subsetsRegex.ParseSubsets(subsets));
         }
 
 

@@ -51,6 +51,7 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -161,7 +162,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return _constantJumps ?? new List<LSLConstantJumpDescription>(); }
+            get { return _constantJumps ?? new GenericArray<LSLConstantJumpDescription>(); }
         }
 
         /// <summary>
@@ -614,15 +615,15 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
         #region AddCodeStatementState
 
-        private readonly List<ILSLCodeStatement> _codeStatements = new List<ILSLCodeStatement>();
+        private readonly GenericArray<ILSLCodeStatement> _codeStatements = new GenericArray<ILSLCodeStatement>();
 
-        private readonly List<LSLConstantJumpDescription> _constantJumps = new List<LSLConstantJumpDescription>();
+        private readonly GenericArray<LSLConstantJumpDescription> _constantJumps = new GenericArray<LSLConstantJumpDescription>();
 
         /// <summary>
         ///     When the dead code segment ends, the segment is put in this list and made public
         ///     and readonly through the DeadCodeSegments Property
         /// </summary>
-        private readonly List<LSLDeadCodeSegment> _deadCodeSegments = new List<LSLDeadCodeSegment>();
+        private readonly GenericArray<LSLDeadCodeSegment> _deadCodeSegments = new GenericArray<LSLDeadCodeSegment>();
 
         /// <summary>
         ///     The stack is used to keep track of the current dead code segment that statements

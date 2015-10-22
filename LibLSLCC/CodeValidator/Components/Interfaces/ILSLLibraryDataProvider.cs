@@ -44,6 +44,7 @@
 
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -63,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <summary>
         ///     Enumerable of the LibraryFunctions defined according to this data provider
         /// </summary>
-        IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LibraryFunctions { get; }
+        IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LibraryFunctions { get; }
 
         /// <summary>
         ///     Enumerable of the LibraryConstants defined according to this data provider
@@ -123,7 +124,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         ///     An LSLFunctionSignature list object describing the given library functions signatures,
         ///     or null if the library function does not exist.
         /// </returns>
-        IReadOnlyList<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name);
+        IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name);
 
 
 

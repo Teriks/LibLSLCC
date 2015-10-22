@@ -42,8 +42,8 @@
 #endregion
 #region Imports
 
-using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -75,7 +75,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// A list of event handlers nodes for each event handler that was used in the state.  
         /// This should never be empty unless syntax errors are present.
         /// </summary>
-        IReadOnlyList<ILSLEventHandlerNode> EventHandlers { get; }
+        IReadOnlyGenericArray<ILSLEventHandlerNode> EventHandlers { get; }
 
         /// <summary>
         /// The source code range of the opening brace of the state block's scope.

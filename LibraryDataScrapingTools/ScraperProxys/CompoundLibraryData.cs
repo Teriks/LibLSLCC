@@ -45,6 +45,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.ScraperInterfaces;
 
 #endregion
@@ -53,7 +54,7 @@ namespace LibraryDataScrapingTools.ScraperProxys
 {
     public class CompoundLibraryData : ILibraryData
     {
-        private readonly List<ILibraryData> _providers = new List<ILibraryData>();
+        private readonly GenericArray<ILibraryData> _providers = new GenericArray<ILibraryData>();
 
         public CompoundLibraryData(params ILibraryData[] libraryDataProviders)
         {
@@ -78,7 +79,7 @@ namespace LibraryDataScrapingTools.ScraperProxys
             return _providers.Any(x => x.LSLEventExist(name));
         }
 
-        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
             return LSLFunctionOverloadGroups().First(x => x.First().Name == name);
         }
@@ -93,7 +94,7 @@ namespace LibraryDataScrapingTools.ScraperProxys
             return _providers.First(x => x.LSLEventExist(name)).LSLEvent(name);
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
             return LSLFunctions().GroupBy(x => x.Name).Select(x =>
             {
@@ -105,8 +106,8 @@ namespace LibraryDataScrapingTools.ScraperProxys
                         s.Add(f);
                     }
                 }
-                return s.ToList();
-            }).ToList();
+                return s.ToGenericArray();
+            }).ToGenericArray();
         }
 
         public IEnumerable<LSLLibraryFunctionSignature> LSLFunctions()

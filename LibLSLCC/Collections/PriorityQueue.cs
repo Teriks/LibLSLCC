@@ -58,7 +58,7 @@ namespace LibLSLCC.Collections
     /// <typeparam name="TValue">Type of values</typeparam>
     public class PriorityQueue<TPriority, TValue> : ICollection<KeyValuePair<TPriority, TValue>>
     {
-        private readonly List<KeyValuePair<TPriority, TValue>> _baseHeap;
+        private readonly GenericArray<KeyValuePair<TPriority, TValue>> _baseHeap;
         private readonly IComparer<TPriority> _comparer;
 
         #region Constructors
@@ -92,7 +92,7 @@ namespace LibLSLCC.Collections
             if (comparer == null)
                 throw new ArgumentNullException("comparer");
 
-            _baseHeap = new List<KeyValuePair<TPriority, TValue>>(capacity);
+            _baseHeap = new GenericArray<KeyValuePair<TPriority, TValue>>(capacity);
             _comparer = comparer;
         }
 
@@ -106,7 +106,7 @@ namespace LibLSLCC.Collections
             if (comparer == null)
                 throw new ArgumentNullException("comparer");
 
-            _baseHeap = new List<KeyValuePair<TPriority, TValue>>();
+            _baseHeap = new GenericArray<KeyValuePair<TPriority, TValue>>();
             _comparer = comparer;
         }
 
@@ -132,7 +132,7 @@ namespace LibLSLCC.Collections
                 throw new ArgumentNullException();
 
             _comparer = comparer;
-            _baseHeap = new List<KeyValuePair<TPriority, TValue>>(data);
+            _baseHeap = new GenericArray<KeyValuePair<TPriority, TValue>>(data);
             // heapify data
             for (var pos = _baseHeap.Count/2 - 1; pos >= 0; pos--)
                 HeapifyFromBeginningToEnd(pos);

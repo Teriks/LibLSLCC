@@ -52,6 +52,7 @@ using System.Xml.Serialization;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Collections;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.ScraperInterfaces;
 
@@ -94,7 +95,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return _scriptLibrary.Keywords.Contains(name) && _scriptLibrary.Keywords.Get(name) is Event;
         }
 
-        public IReadOnlyList<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> LSLFunctionOverloads(string name)
         {
             var sigs = new HashSet<LSLLibraryFunctionSignature>();
             foreach (var overload in _scriptLibrary.Functions.Get(name))
@@ -135,7 +136,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 }
             }
 
-            return sigs.ToList();
+            return sigs.ToGenericArray();
         }
 
         public LSLLibraryConstantSignature LSLConstant(string name)
@@ -194,7 +195,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             return null;
         }
 
-        public IEnumerable<IReadOnlyList<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
+        public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LSLFunctionOverloadGroups()
         {
             foreach (var fs in _scriptLibrary.Functions.OverloadGroups)
             {
@@ -235,7 +236,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                         }
                     }
                 }
-                yield return sigs.ToList();
+                yield return sigs.ToGenericArray();
             }
         }
 
@@ -409,7 +410,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public interface IConstant
         {
-            LSLLibraryConstantSignature GetSignature(IReadOnlyList<string> subsets);
+            LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets);
         }
 
         [XmlRoot(ElementName = "data_type")]
@@ -425,7 +426,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         [XmlRoot(ElementName = "integer_constant")]
         public class IntegerConstant : Keyword, IConstant
         {
-            public LSLLibraryConstantSignature GetSignature(IReadOnlyList<string> subsets)
+            public LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets)
             {
                 var f = new LSLLibraryConstantSignature(LSLType.Integer, Name) {DocumentationString = Desc};
                 f.SetSubsets(subsets);
@@ -436,7 +437,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         [XmlRoot(ElementName = "float_constant")]
         public class FloatConstant : Keyword, IConstant
         {
-            public LSLLibraryConstantSignature GetSignature(IReadOnlyList<string> subsets)
+            public LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets)
             {
                 var f = new LSLLibraryConstantSignature(LSLType.Float, Name) {DocumentationString = Desc};
                 f.SetSubsets(subsets);
@@ -447,7 +448,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         [XmlRoot(ElementName = "string_constant")]
         public class StringConstant : Keyword, IConstant
         {
-            public LSLLibraryConstantSignature GetSignature(IReadOnlyList<string> subsets)
+            public LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets)
             {
                 var f = new LSLLibraryConstantSignature(LSLType.String, Name) {DocumentationString = Desc};
                 f.SetSubsets(subsets);
@@ -458,7 +459,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         [XmlRoot(ElementName = "compound_constant")]
         public class CompoundConstant : Keyword, IConstant
         {
-            public LSLLibraryConstantSignature GetSignature(IReadOnlyList<string> subsets)
+            public LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets)
             {
                 var s = Desc.Split(',');
                 var t = s.Length == 3 ? LSLType.Vector : LSLType.Rotation;
@@ -495,7 +496,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public class KeywordCollection : ICollection<Keyword>
         {
-            private readonly Dictionary<string, Keyword> _items = new Dictionary<string, Keyword>();
+            private readonly HashMap<string, Keyword> _items = new HashMap<string, Keyword>();
 
             public IEnumerator<Keyword> GetEnumerator()
             {
@@ -563,7 +564,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public class FunctionCollection : ICollection<Function>
         {
-            private readonly Dictionary<string, List<Function>> _items = new Dictionary<string, List<Function>>();
+            private readonly HashMap<string, GenericArray<Function>> _items = new HashMap<string, GenericArray<Function>>();
 
             [XmlIgnore]
             public IEnumerable<IList<Function>> OverloadGroups
@@ -595,7 +596,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 }
                 else
                 {
-                    _items.Add(item.Name, new List<Function> {item});
+                    _items.Add(item.Name, new GenericArray<Function> {item});
                 }
             }
 

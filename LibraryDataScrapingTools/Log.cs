@@ -45,6 +45,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LibLSLCC.Collections;
 
 namespace LibraryDataScrapingTools
 {
@@ -53,7 +54,7 @@ namespace LibraryDataScrapingTools
 
         private static readonly object LogLock = new object();
         private static int _lastWrittenLineCount = 1;
-        public static List<TextWriter> LogWriters = new List<TextWriter>();
+        public static GenericArray<TextWriter> LogWriters = new GenericArray<TextWriter>();
 
         public static void WriteLine(string format, params object[] args)
         {

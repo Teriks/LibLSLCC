@@ -52,7 +52,7 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
-
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -373,8 +373,8 @@ private static class UTILITIES
         }
 
 
-        private readonly Dictionary<LSLType, string> _modInvokeFunctionMap
-            = new Dictionary<LSLType, string>
+        private readonly HashMap<LSLType, string> _modInvokeFunctionMap
+            = new HashMap<LSLType, string>
             {
                 {LSLType.Void, "modInvokeN"},
                 {LSLType.String, "modInvokeS"},
