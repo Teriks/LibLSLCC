@@ -1074,11 +1074,20 @@ private static class UTILITIES
 
 
             /*
-                Write all variable declarations that are considered to be dead in this scope to the top of the scope
-                and initialize them with the default value for their type.
+                Write all variable declarations that are considered to be dead due to a jump over code in this scope
+                to the top of the scope and initialize them with the default value for their type.
+
+                Dead variable declarations inside of a constant jump over code can still be referenced within the same scope,
+                we need to make sure they are initialized or the CSharp compiler will complain when they are referenced.
+
+                They can be put at the top of the scope because the code validator has guaranteed they are only referenced
+                from places after their original definition point.
+
+                When a dead variable declaration node is encountered later in the syntax tree, it is discarded.  Because if it
+                needed to be defined to produce valid generated code it was already defined here at the top of the scope with a default value.
             */
             var deadVariableDeclarationNodes =
-                node.CodeStatements.Where(x => x.IsDeadCode && x is ILSLVariableDeclarationNode)
+                node.CodeStatements.Where(x => x.IsDeadCode && x.DeadCodeType == LSLDeadCodeType.JumpOverCode && x is ILSLVariableDeclarationNode)
                     .Cast<ILSLVariableDeclarationNode>();
 
 
