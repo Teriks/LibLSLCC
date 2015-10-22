@@ -50,10 +50,9 @@ using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
-using LibLSLCC.LSLRuntime;
+
 
 #endregion
 
@@ -71,15 +70,6 @@ namespace LibLSLCC.Compilers.Visitors
 //============================
 private static class UTILITIES
 {
-
-    public static readonly LSL_Types.Vector3 DEFAULT_VECTOR = new LSL_Types.Vector3();
-    public static readonly LSL_Types.LSLFloat DEFAULT_FLOAT = new LSL_Types.LSLFloat();
-    public static readonly LSL_Types.LSLInteger DEFAULT_INTEGER = new LSL_Types.LSLInteger();
-    public static readonly LSL_Types.LSLString DEFAULT_STRING = new LSL_Types.LSLString();
-    public static readonly LSL_Types.list DEFAULT_LIST = new LSL_Types.list();
-    public static readonly LSL_Types.key DEFAULT_KEY = new LSL_Types.key();
-    public static readonly LSL_Types.Quaternion DEFAULT_ROTATION = new LSL_Types.Quaternion();
-    
     public static bool ToBool(LSL_Types.Vector3 vector)
     {
         return vector.x!=0.0&&vector.y!=0.0&&vector.z!=0.0;
@@ -155,7 +145,7 @@ private static class UTILITIES
 
         public override bool VisitBinaryExpression(ILSLBinaryExpressionNode node)
         {
-            var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is LSLExpressionListNode);
+            var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
 
             if (node.Operation == LSLBinaryOperationType.LogicalAnd)
             {
@@ -253,7 +243,7 @@ private static class UTILITIES
 
         public override bool VisitPostfixOperation(ILSLPostfixOperationNode node)
         {
-            var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is LSLExpressionListNode);
+            var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
 
             if (parenths && _parenthesizeExpressions)
             {
@@ -285,7 +275,7 @@ private static class UTILITIES
             }
             else
             {
-                var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is LSLExpressionListNode);
+                var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
 
                 if (parenths && _parenthesizeExpressions)
                 {
@@ -319,7 +309,7 @@ private static class UTILITIES
 
         public override bool VisitParenthesizedExpression(ILSLParenthesizedExpressionNode node)
         {
-            var parenths = !(node.Parent is LSLExpressionListNode);
+            var parenths = !(node.Parent is ILSLExpressionListNode);
 
             if (parenths)
             {
@@ -371,7 +361,7 @@ private static class UTILITIES
             {
                 Writer.Write(functionName + "(");
 
-                VisitFunctionCallParameters(node.ParameterListNode);
+                VisitUserFunctionCallParameters(node.ParameterListNode);
 
                 Writer.Write(")");
             }
@@ -396,6 +386,7 @@ private static class UTILITIES
                 {LSLType.Rotation, "modInvokeR"}
             };
 
+        
 
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
@@ -413,7 +404,7 @@ private static class UTILITIES
                 Writer.Write(modInvokeFunction + "(\"" + node.Name + "\"" + afterName);
 
 
-                VisitFunctionCallParameters(node.ParameterListNode);
+                VisitLibraryFunctionCallParameters(node.ParameterListNode);
 
                 Writer.Write(")");
             }
@@ -425,7 +416,7 @@ private static class UTILITIES
                 {
                     Writer.Write(functionName + "(");
 
-                    VisitFunctionCallParameters(node.ParameterListNode);
+                    VisitLibraryFunctionCallParameters(node.ParameterListNode);
 
                     Writer.Write(")");
                 }
@@ -459,36 +450,12 @@ private static class UTILITIES
 
         public override bool VisitLocalVariableReference(ILSLVariableNode node)
         {
-            if (node.Declaration.IsDeadCode)
-            {
-                /*  
-                    The variable will never be initialized if it is dead code, its an error if we reference it later in CSharp.
-                    So when a declaration is found to be in dead code its omitted from the generated code.
-                
-                    Then when we reference a variable that exist in dead code, we use the default value for its type.
-                
-                    The default values for each type have been defined in the generated UTILITIES class to prevent the need 
-                    to initialize them each time they need to be referenced.
-                
-                    Clever right?
-                */
-
-                Writer.Write("UTILITIES.DEFAULT_" + node.Type.ToLSLTypeString().ToUpper());
-
-                /*
-                  The call to ToLSLTypeString() instead of node.TypeString prevents the case where
-                  the generated string will be 'QUATERNION' if the variable was defined using the 'quaternion' keyword.
-                 
-                  'quaternion' is an alias for 'rotation' in LSL and node.TypeString returns raw unmodified type string used in the source code.
-
-                  the node.Type property uses the LSLType enumeration, which does not contain a member named Quaternion since the 'quaternion' keyword
-                  parses into 'LSLType.Rotation'.
-                */
-            }
-            else
-            {
-                Writer.Write("Var" + node.Declaration.ScopeId + "_" + node.Name);
-            }
+            /*
+                See VisitCodeScope to see where variables defined inside of dead code are put.
+                If a variable is declared inside of dead code, it is put at the very top of the scope it was 
+                defined in and initialized with the default value for its type.
+            */
+            Writer.Write("Var" + node.Declaration.ScopeId + "_" + node.Name);
             return false;
         }
 
@@ -575,49 +542,33 @@ private static class UTILITIES
         }
 
 
+       
+
         public override bool VisitLibraryFunctionCallParameters(ILSLExpressionListNode node)
         {
-            //this is a library function, library functions should never modify list references
-            //with append operations
+            /* leaving this skeleton function here and using it to visit all library function call parameters.
+               In-case I find a reason that code generation needs to be different for library function call parameters in the future. */
+               
 
             VisitExpressionList(node);
-
             return false;
         }
+
 
 
         public override bool VisitUserFunctionCallParameters(ILSLExpressionListNode node)
         {
-            //list objects need to be copied into user defined function calls, because they
-            //are defined in the runtime as a csharp class; which is pass by reference and may be modifiable
-            //the passed in list should not be modifiable however, according to Linden Labs LSL
-            //implementation
+            /* leaving this skeleton function here and using it to visit all user defined function call parameters.
+               In-case I find a reason that code generation needs to be different for user defined function call parameters in the future. */
 
-            var i = 0;
+            /* previously I thought that list, keys and strings may need to be copied into user defined function calls to prevent them from being
+               mutated, but some testing has revealed this is not the case. */
 
-            for (; i < node.ExpressionNodes.Count; i++)
-            {
-                var expression = node.ExpressionNodes[i];
-
-                if (expression.Type == LSLType.List && expression.IsCompoundExpression())
-                {
-                    Writer.Write("UTILITIES.Copy(");
-                    Visit(expression);
-                    Writer.Write(")");
-                }
-                else
-                {
-                    Visit(expression);
-                }
-
-                if (i != (node.ExpressionNodes.Count - 1))
-                {
-                    Writer.Write(",");
-                }
-            }
-
+            VisitExpressionList(node);
             return false;
         }
+
+
 
         #endregion
 
@@ -626,11 +577,11 @@ private static class UTILITIES
         public override bool VisitFloatLiteral(ILSLFloatLiteralNode node)
         {
             bool parentIsFunctionCall = false;
-            var parentExpressionList = node.Parent as LSLExpressionListNode;
-            LSLFunctionCallNode parentFunctionCallNode = null;
+            var parentExpressionList = node.Parent as ILSLExpressionListNode;
+            ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
-                parentFunctionCallNode = node.Parent.Parent as LSLFunctionCallNode;
+                parentFunctionCallNode = node.Parent.Parent as ILSLFunctionCallNode;
                 if (parentFunctionCallNode != null)
                 {
                     parentIsFunctionCall = true;
@@ -650,7 +601,7 @@ private static class UTILITIES
             var box = !parentIsFunctionCall || inModInvokeTopLevel;
 
 
-            if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
+            if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
             {
                 box = false;
             }
@@ -665,7 +616,7 @@ private static class UTILITIES
             var match = Regex.Match(floatText, @"^([0-9]+)\.([eE][-+][0-9]+)?[fF]?$");
             if (match.Success)
             {
-                //things like 0. or 0.f wont work in Csharp but are allowed in LSL
+                //things like 0. or 0.f wont work in CSharp but are allowed in LSL
 
                 Writer.Write(match.Groups[1].Value + ".0" + match.Groups[2]);
             }
@@ -686,11 +637,11 @@ private static class UTILITIES
         public override bool VisitIntegerLiteral(ILSLIntegerLiteralNode node)
         {
             bool parentIsFunctionCall = false;
-            var parentExpressionList = node.Parent as LSLExpressionListNode;
-            LSLFunctionCallNode parentFunctionCallNode = null;
+            var parentExpressionList = node.Parent as ILSLExpressionListNode;
+            ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
-                parentFunctionCallNode = node.Parent.Parent as LSLFunctionCallNode;
+                parentFunctionCallNode = node.Parent.Parent as ILSLFunctionCallNode;
                 if (parentFunctionCallNode != null)
                 {
                     parentIsFunctionCall = true;
@@ -710,7 +661,7 @@ private static class UTILITIES
             var box = !parentIsFunctionCall || inModInvokeTopLevel;
 
 
-            if (node.Parent is LSLVectorLiteralNode || node.Parent is LSLRotationLiteralNode)
+            if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
             {
                 box = false;
             }
@@ -779,11 +730,11 @@ private static class UTILITIES
         public override bool VisitStringLiteral(ILSLStringLiteralNode node)
         {
             bool parentIsFunctionCall = false;
-            var parentExpressionList = node.Parent as LSLExpressionListNode;
-            LSLFunctionCallNode parentFunctionCallNode = null;
+            var parentExpressionList = node.Parent as ILSLExpressionListNode;
+            ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
-                parentFunctionCallNode = node.Parent.Parent as LSLFunctionCallNode;
+                parentFunctionCallNode = node.Parent.Parent as ILSLFunctionCallNode;
                 if (parentFunctionCallNode != null)
                 {
                     parentIsFunctionCall = true;
@@ -1120,6 +1071,31 @@ private static class UTILITIES
                         break;
                 }
             }
+
+
+            /*
+                Write all variable declarations that are considered to be dead in this scope to the top of the scope
+                and initialize them with the default value for their type.
+            */
+            var deadVariableDeclarationNodes =
+                node.CodeStatements.Where(x => x.IsDeadCode && x is ILSLVariableDeclarationNode)
+                    .Cast<ILSLVariableDeclarationNode>();
+
+
+
+            foreach (var deadVariableDeclarationNode in deadVariableDeclarationNodes)
+            {
+                var variableName = "Var" + node.ScopeId + "_" + deadVariableDeclarationNode.Name;
+
+                Writer.Write(GenIndent());
+                Writer.Write(LSLAtomType_To_CSharpType(deadVariableDeclarationNode.Type));
+                Writer.Write(" ");
+                Writer.Write(variableName);
+                Writer.Write(" = ");
+                Writer.Write(LSLType_To_CSharpDefaultInitializer(deadVariableDeclarationNode.TypeString));
+                Writer.WriteLine(";");
+           }
+
 
           
             foreach (var statement in node.CodeStatements)
@@ -1522,8 +1498,13 @@ private static class UTILITIES
 
         public override bool VisitLocalVariableDeclaration(ILSLVariableDeclarationNode node)
         {
-            // See VisitLocalVariableReference to see how
-            // References to variables in dead code are handled.
+            /* 
+               See VisitCodeScope to see where declarations of variables that exist inside dead code
+               are put in the generated code.  They are put at the top of the scope they are declared in,
+               and initialize with their default values.  They are written out in the VisitCodeScope method
+               before we even get to this point in the syntax tree, so they do not need to be written again.
+            */
+            
             if (node.IsDeadCode) return false;
 
 

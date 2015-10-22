@@ -94,6 +94,7 @@
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureMatcher.cs" />
+    <Compile Include="CodeValidator\ValidatorNodes\Interfaces\LSLExprNodeInterfaceExtensions.cs" />
     <Compile Include="Utility\LambdaEqualityComparer.cs" />
     <Compile Include="Utility\TokenTools.cs" />
     <Compile Include="Utility\StringTools.cs" />
@@ -151,7 +152,6 @@
     <Compile Include="CodeValidator\Enums\LSLBinaryOperationType.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLDummyExpr.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLExpressionListNode.cs" />
-    <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLExprNodeExtensions.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLFloatLiteralNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLFunctionCallNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\ExpressionNodes\LSLHexLiteralNode.cs" />

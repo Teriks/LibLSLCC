@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: LSLExprNodeExtensions.cs
+// File: LSLExprNodeInterfaceExtensions.cs
 // 
 // 
 // ============================================================
@@ -43,16 +43,15 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
+namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 {
     /// <summary>
-    /// Various extensions for dealing with syntax tree expression nodes.
+    /// Various extensions for dealing with syntax tree node interfaces.
     /// </summary>
-    public static class LSLExprNodeExtensions
+    public static class LSLExprNodeInterfaceExtensions
     {
         /// <summary>
         /// Determines if the expression node represents a code literal.  Such as a string, vector, rotation or list literal.
