@@ -66,8 +66,9 @@ namespace LibLSLCC.AutoCompleteParser
     {
         private readonly HashMap<string, GlobalFunction> _globalFunctions = new HashMap<string, GlobalFunction>();
         private readonly HashMap<string, GlobalVariable> _globalVariables = new HashMap<string, GlobalVariable>();
-        private readonly Regex _jumpRegex = new Regex("jump\\s*(" + LSLTokenTools.IDRegex + ")");
-        private readonly Regex _labelRegex = new Regex("@\\s*(" + LSLTokenTools.IDRegex + ")");
+
+        private static readonly Regex JumpRegex = new Regex("jump\\s*(" + LSLTokenTools.IDRegexString + ")");
+        private static readonly Regex LabelRegex = new Regex("@\\s*(" + LSLTokenTools.IDRegexString + ")");
 
         private readonly Stack<HashMap<string, LocalVariable>> _localVariables =
             new Stack<HashMap<string, LocalVariable>>();
@@ -75,7 +76,7 @@ namespace LibLSLCC.AutoCompleteParser
         private readonly HashMap<string, LocalParameter> _parameters = new HashMap<string, LocalParameter>();
         private readonly GenericArray<StateBlock> _stateBlocks = new GenericArray<StateBlock>();
 
-        protected readonly Stack<NestableExpressionElementType> NestableExpressionElementStack =
+        private readonly Stack<NestableExpressionElementType> NestableExpressionElementStack =
             new Stack<NestableExpressionElementType>();
 
         private bool _inEventCodeBody;
@@ -434,7 +435,7 @@ namespace LibLSLCC.AutoCompleteParser
             var len = CurrentCodeAreaRange.StopIndex - CurrentCodeAreaRange.StartIndex;
 
 
-            var match = _labelRegex.Match(sourceCode, CurrentCodeAreaRange.StartIndex, len);
+            var match = LabelRegex.Match(sourceCode, CurrentCodeAreaRange.StartIndex, len);
 
             var names = new HashSet<string>();
 
@@ -458,7 +459,7 @@ namespace LibLSLCC.AutoCompleteParser
             var len = CurrentCodeAreaRange.StopIndex - CurrentCodeAreaRange.StartIndex;
 
 
-            var match = _jumpRegex.Match(sourceCode, CurrentCodeAreaRange.StartIndex, len);
+            var match = JumpRegex.Match(sourceCode, CurrentCodeAreaRange.StartIndex, len);
 
             var names = new HashSet<string>();
 

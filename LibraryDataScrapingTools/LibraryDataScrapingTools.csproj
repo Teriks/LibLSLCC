@@ -109,7 +109,6 @@
     <Compile Include="LibraryDataScrapers\CachedWebDownloader.cs" />
     <Compile Include="LibraryDataScrapers\LLSDDocumentationScraper.cs" />
     <Compile Include="LibraryDataScrapers\LLSDLibraryData.cs" />
-    <Compile Include="LibraryDataScrapers\OsslWikiLibraryDataScraper.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="OpenSimLibraryReflection\OpenSimLibraryReflector.cs" />
     <Compile Include="ScraperProxys\BlankDocumentor.cs" />

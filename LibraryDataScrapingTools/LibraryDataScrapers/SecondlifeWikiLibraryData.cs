@@ -67,41 +67,41 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private const string SecondlifeWikiDomain = "http://wiki.secondlife.com";
         private const string SecondlifeWikiBaseUrl = SecondlifeWikiDomain + "/wiki/";
 
-        private readonly Regex _changedEventConstants =
+        private static readonly Regex _changedEventConstants =
             new Regex(
                 "<a href=\"/wiki/[A-Z_]*?\" title=\".*?\">([A-Z_]*?)</a>(?:\\n|\\r|.)*?title=\"Hexadecimal notation for:.*?\" style=\"border-bottom:1px dotted; cursor:help;\">(.*?)</span>");
 
-        private readonly Regex _changedEventConstantsTable =
+        private static readonly Regex _changedEventConstantsTable =
             new Regex("<tr bgcolor=\"#A7C1F2\">(\\n|\\r|.)*?</td></tr></table>");
 
-        private readonly Regex _clickActionConstants =
+        private static readonly Regex _clickActionConstants =
             new Regex("<span title=\"integer [A-Z_]*? = (.*?);.*?\">([A-Z_]*?)</span>");
 
-        private readonly Regex _constantInKeywordsAll =
+        private static readonly Regex _constantInKeywordsAll =
             new Regex(
                 "(integer|float|string|vector|rotation|list|key)\\s+<a\\s+href\\s*=\\s*\".*?\"\\s+title=\".*?\">(.*?)</a> = (.*)");
 
-        private readonly Regex _constantPageLinks =
+        private static readonly Regex _constantPageLinks =
             new Regex("<li>\\s*<a\\s+href\\s*=\\s*\"(/wiki/.*?)\"\\s+title\\s*=\\s*\".*?\"\\s*>.*?</a>\\s*</li>");
 
-        private readonly Regex _constantPageNavigation =
+        private static readonly Regex _constantPageNavigation =
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Constants\">next 200</a>\\)<div");
 
         private readonly HashMap<string, LSLLibraryConstantSignature> _constants =
             new HashMap<string, LSLLibraryConstantSignature>();
 
-        private readonly Regex _constantsGroupKeywordsAll =
+        private static readonly Regex _constantsGroupKeywordsAll =
             new Regex("<a\\s+name\\s*=\\s*\"Constants\"\\s+id\\s*=\\s*\"Constants\"></a><h2>((?:\\r|\\n|.))*?</pre>");
 
-        private readonly Regex _constantSignature =
+        private static readonly Regex _constantSignature =
             new Regex(
                 "Constant: <a href=\"/wiki/.*?\" title=\"(.*?)\" class=\"mw-redirect\">(?:integer|float|vector|string|list|key|quaternion)</a> <strong class=\"selflink\"><span title=\".*?\">(.*?)</span></strong>\\s*=\\s*(.*?); </span>");
 
-        private readonly Regex _deprecatedMarker  = new Regex("<td style=\"color:white;background:#990000; border-width:1px;\" title=\".*?\" width=\"100%\"> <b>Deprecated");
+        private static readonly Regex _deprecatedMarker  = new Regex("<td style=\"color:white;background:#990000; border-width:1px;\" title=\".*?\" width=\"100%\"> <b>Deprecated");
 
 
-        private readonly Regex _eventPageNavigation =
+        private static readonly Regex _eventPageNavigation =
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Events\">next 200</a>\\)<div");
 
@@ -111,31 +111,34 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         private readonly LSLEventSignatureRegex _eventSignature =
             new LSLEventSignatureRegex("<pre id=\"lsl-signature\">\\s*event\\s+void\\s+(", ";)");
 
-        private readonly Regex _functionInKeywordsAll =
+        private static readonly Regex _functionInKeywordsAll =
             new Regex(
                 "(integer|float|string|vector|rotation|list|key|void)\\s+<a\\s+href\\s*=\\s*\".*?\"\\s+title=\".*?\">(.*?)</a>((?:.*?)\\))");
 
 
-        private readonly Regex _functionPageNavigation =
+        private static readonly Regex _functionPageNavigation =
             new Regex(
                 "(?:\\(previous 200\\) |previous 200</a>\\) )\\(<a\\s+href=\"(.*?)\"\\s+title\\s*=\\s*\"Category:LSL Functions\">next 200</a>\\)<div");
 
         private readonly HashMap<string, GenericArray<LSLLibraryFunctionSignature>> _functions =
             new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
 
-        private readonly Regex _functionsGroupInKeywordsAll =
+        private static readonly Regex _functionsGroupInKeywordsAll =
             new Regex("<a\\s+name\\s*=\\s*\"Functions\"\\s+id\\s*=\\s*\"Functions\"></a><h2>((?:\\r|\\n|.))*?</pre>");
 
-        private readonly LSLFunctionSignatureRegex _functionSignature = new LSLFunctionSignatureRegex("function\\s+(",
+        private static readonly LSLFunctionSignatureRegex _functionSignature = new LSLFunctionSignatureRegex("function\\s+(",
             ";)");
 
-        private readonly Regex _hrefLink = new Regex("href=\"(/wiki/.*?)\"");
-        private readonly Regex _matchConstantllUnescapeUrl = new Regex(@"llUnescapeUrl\((.*?)\)");
-        private readonly Regex _mwPagesContent = new Regex("<div id=\"mw-pages\">(.*?)</table>", RegexOptions.Singleline);
+        private static readonly Regex _hrefLink = new Regex("href=\"(/wiki/.*?)\"");
+        private static readonly Regex _matchConstantllUnescapeUrl = new Regex(@"llUnescapeUrl\((.*?)\)");
+        private static readonly Regex _mwPagesContent = new Regex("<div id=\"mw-pages\">(.*?)</table>", RegexOptions.Singleline);
 
-        private readonly Regex _physicsConstantTableRow =
+        private static readonly Regex _physicsConstantTableRow =
             new Regex(
                 "(?:(?:<tr\\s+id\\s*=\\s*\"([A-Z_]*?)\">)|(?:<tr\\s+style\\s*=\\s*\"background-color:.*?;\"\\s+id\\s*=\\s*\"([A-Z_]*?)\">))(?:\\n|\\r|.)*?</tr>");
+
+
+        private static readonly Regex _hexNotation = new Regex("<span title=\"Hexadecimal notation for: (.*?)\"");
 
         private readonly IEnumerable<string> _subsets;
 
@@ -283,7 +286,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         {
             var page = _client.DownloadString(url);
 
-            var hexNotation = new Regex("<span title=\"Hexadecimal notation for: (.*?)\"");
+            
 
             var match = _constantSignature.Match(page);
 
@@ -299,7 +302,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             if (type == LSLType.Integer || type == LSLType.Float)
             {
-                var hxMatch = hexNotation.Match(val);
+                var hxMatch = _hexNotation.Match(val);
                 if (hxMatch.Success)
                 {
                     strValue = hxMatch.Groups[1].ToString();
