@@ -278,10 +278,6 @@
     <Compile Include="Parser\LSLListener.cs" />
     <Compile Include="Parser\LSLParser.cs" />
     <Compile Include="Parser\LSLVisitor.cs" />
-    <Compile Include="LSLRuntime\LSLScriptBase.cs" />
-    <Compile Include="LSLRuntime\LSLScriptLibraryBase.cs" />
-    <Compile Include="LSLRuntime\LSLTypes.cs" />
-    <Compile Include="LSLRuntime\OpenSimConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CodeValidator\Utility.cs" />
     <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerable.cs" />
