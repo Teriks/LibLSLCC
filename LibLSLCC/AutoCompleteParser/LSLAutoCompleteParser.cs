@@ -66,8 +66,8 @@ namespace LibLSLCC.AutoCompleteParser
     {
         private readonly HashMap<string, GlobalFunction> _globalFunctions = new HashMap<string, GlobalFunction>();
         private readonly HashMap<string, GlobalVariable> _globalVariables = new HashMap<string, GlobalVariable>();
-        private readonly Regex _jumpRegex = new Regex("jump\\s*(" + TokenTools.IDRegex + ")");
-        private readonly Regex _labelRegex = new Regex("@\\s*(" + TokenTools.IDRegex + ")");
+        private readonly Regex _jumpRegex = new Regex("jump\\s*(" + LSLTokenTools.IDRegex + ")");
+        private readonly Regex _labelRegex = new Regex("@\\s*(" + LSLTokenTools.IDRegex + ")");
 
         private readonly Stack<HashMap<string, LocalVariable>> _localVariables =
             new Stack<HashMap<string, LocalVariable>>();

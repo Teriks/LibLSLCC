@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 
 #endregion
@@ -59,6 +60,16 @@ namespace LibLSLCC.CodeValidator.Components
     {
         private LSLLibraryBaseData _liveFilteringBaseLibraryData;
         private LSLLibraryDataAdditions _liveFilteringLibraryDataAdditions;
+
+        /// <summary>
+        /// Get a stream that points the default library XML data embedded in the LibLSLCC assembly.
+        /// </summary>
+        /// <returns>A stream containing the default library XML data embedded in LibLSLCC</returns>
+        public static Stream GetDefaultLibraryDataStream()
+        {
+            return typeof(LSLDefaultLibraryDataProvider).Assembly.GetManifestResourceStream(
+                    "LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml");
+        }
 
 
 
@@ -90,11 +101,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
         public LSLDefaultLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true) : base(activeSubsets, liveFiltering)
         {
-            using (
-                var libraryData =
-                    GetType()
-                        .Assembly.GetManifestResourceStream(
-                            "LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml"))
+            using (var libraryData = GetDefaultLibraryDataStream())
             {
                 if (libraryData == null)
                 {
@@ -114,11 +121,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
         public LSLDefaultLibraryDataProvider() : base(true)
         {
-            using (
-                var libraryData =
-                    GetType()
-                        .Assembly.GetManifestResourceStream(
-                            "LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml"))
+            using (var libraryData = GetDefaultLibraryDataStream())
             {
                 if (libraryData == null)
                 {

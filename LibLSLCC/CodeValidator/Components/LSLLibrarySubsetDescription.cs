@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibLSLCC.CodeValidator.Exceptions;
 
 namespace LibLSLCC.CodeValidator.Components
 {
@@ -10,6 +11,8 @@ namespace LibLSLCC.CodeValidator.Components
     /// </summary>
     public class LSLLibrarySubsetDescription : IXmlSerializable
     {
+        private string _subset;
+
         /// <summary>
         /// Construct a description for a subset by giving the subset name, and a user friendly name associated with the subset.
         /// Optionally you can provide a description string describing the subset.
@@ -17,6 +20,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="subsetName">The subset name.</param>
         /// <param name="friendlyName">A user friendly name for the subset.</param>
         /// <param name="description">Optional description string.</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If the given subset name does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
         public LSLLibrarySubsetDescription(string subsetName, string friendlyName, string description = "")
         {
             Subset = subsetName;
@@ -25,10 +29,8 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        /// <summary>
-        /// Construct an empty LSLLibraryDataSubsetDescription()
-        /// </summary>
-        protected LSLLibrarySubsetDescription()
+
+        private LSLLibrarySubsetDescription()
         {
             
         }
@@ -37,17 +39,26 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         /// The name of the subset this subset description contains information about.
         /// </summary>
-        public string Subset { get; set; }
+        /// <exception cref="LSLInvalidSubsetNameException">If the given subset name does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        public string Subset
+        {
+            get { return _subset; }
+            private set
+            {
+                LSLLibraryDataSubsetNameParser.ThrowIfInvalid(value);
+                _subset = value;
+            }
+        }
 
         /// <summary>
         /// The friendly name to associate with the subset.
         /// </summary>
-        public string FriendlyName { get; set; }
+        public string FriendlyName { get; private set; }
 
         /// <summary>
         /// The description string for the subset.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; private set; }
 
         /// <summary>
         /// Implementors of IXmlSerializable should return null from this function.
@@ -96,18 +107,18 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ", unknown attribute " + reader.Name);
+                    throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": unknown attribute " + reader.Name);
                 }
             }
 
             if (!hasSubset || string.IsNullOrWhiteSpace(Subset))
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ", Missing Subset Attribute");
+                throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing Subset Attribute");
             }
 
             if (!hasFriendlyName || string.IsNullOrWhiteSpace(FriendlyName))
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ", Missing FriendlyName Attribute");
+                throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing FriendlyName Attribute");
             }
 
             bool canRead = reader.Read();

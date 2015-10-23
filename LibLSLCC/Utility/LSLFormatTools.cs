@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: StringTools.cs
+// File: LSLFormatTools.cs
 // 
 // 
 // ============================================================
@@ -48,7 +48,11 @@ using System.IO;
 
 namespace LibLSLCC.Utility
 {
-    public static class StringTools
+    /// <summary>
+    /// Various utilities for formatting string that are useful for generating/dealing with
+    /// indented code and escaped strings.
+    /// </summary>
+    public static class LSLFormatTools
     {
         /// <summary>
         ///     Gets the number of spaces required to match the length of the whitespace leading up to the first non-whitespace
@@ -182,7 +186,12 @@ namespace LibLSLCC.Utility
             }
         }
 
-
+        /// <summary>
+        /// Create a repeating string by repeating the content string a number of times.
+        /// </summary>
+        /// <param name="repeats">The number of times the 'content' string should repeat.</param>
+        /// <param name="content">The content string to repeat.</param>
+        /// <returns></returns>
         public static string CreateRepeatingString(int repeats, string content)
         {
             var r = "";

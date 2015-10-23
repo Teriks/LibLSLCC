@@ -108,7 +108,7 @@
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetCollection.cs" />
-    <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetsAttributeParser.cs" />
+    <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetNameParser.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataXmlSerializer.cs" />
     <Compile Include="CodeValidator\Components\LSLLibrarySubsetDescription.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
@@ -116,6 +116,7 @@
     <Compile Include="CodeValidator\Enums\LSLConditionalStatementType.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLDuplicateSignatureException.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLDuplicateSubsetDescription.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLInvalidSubsetNameException.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLInvalidSymbolNameException.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLMissingSubsetDescriptionException.cs" />
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
@@ -130,8 +131,8 @@
     <Compile Include="Collections\IReadOnlyGenericArray.cs" />
     <Compile Include="Collections\IReadOnlyHashMap.cs" />
     <Compile Include="Utility\LambdaEqualityComparer.cs" />
-    <Compile Include="Utility\TokenTools.cs" />
-    <Compile Include="Utility\StringTools.cs" />
+    <Compile Include="Utility\LSLTokenTools.cs" />
+    <Compile Include="Utility\LSLFormatTools.cs" />
     <Compile Include="AutoCompleteParser\LSLCommentStringSkipper.cs" />
     <Compile Include="AutoCompleteParser\LSLAutoCompleteParser.cs" />
     <Compile Include="CodeValidator\Primitives\LSLBinaryOperationSignature.cs" />
@@ -280,9 +281,6 @@
     <Compile Include="Parser\LSLVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CodeValidator\Utility.cs" />
-    <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerable.cs" />
-    <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerableExtension.cs" />
-    <Compile Include="ThreadSafeEnumeration\ThreadSafeEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Parser\LSL.tokens" />

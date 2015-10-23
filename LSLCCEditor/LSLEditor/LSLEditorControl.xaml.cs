@@ -342,10 +342,6 @@ namespace LSLCCEditor.LSLEditor
         }
 
 
-        private readonly Regex _anyIdCharacterRegex = TokenTools.GetAnyIDCharRegex();
-        private readonly Regex _idStartCharacterRegex = TokenTools.GetIDStartCharRegex();
-        private readonly Regex _idRegex = TokenTools.GetIDRegex();
-
 
         private TextSegment _GetIDSegmentUnderMouse(TextDocument document, TextViewPosition position)
         {
@@ -371,7 +367,7 @@ namespace LSLCCEditor.LSLEditor
             var endOffset = 0;
 
             // Get text backward of the mouse position, until the first space
-            while (!(string.IsNullOrWhiteSpace(textAtOffset) || !_anyIdCharacterRegex.Match(textAtOffset).Success))
+            while (!(string.IsNullOrWhiteSpace(textAtOffset) || !LSLTokenTools.IDAnyCharRegex.Match(textAtOffset).Success))
             {
                 //wordHovered = textAtOffset + wordHovered;
 
@@ -393,7 +389,7 @@ namespace LSLCCEditor.LSLEditor
 
                 textAtOffset = document.GetText(offset, 1);
 
-                while (!(string.IsNullOrWhiteSpace(textAtOffset) || !_anyIdCharacterRegex.Match(textAtOffset).Success))
+                while (!(string.IsNullOrWhiteSpace(textAtOffset) || !LSLTokenTools.IDAnyCharRegex.Match(textAtOffset).Success))
                 {
                     //wordHovered = wordHovered + textAtOffset;
 
@@ -430,7 +426,7 @@ namespace LSLCCEditor.LSLEditor
                 wordHovered = document.GetText(startOffset, length);
             }
 
-            if (_idRegex.Match(wordHovered).Success)
+            if (LSLTokenTools.IDRegexAnchored.Match(wordHovered).Success)
             {
                 return new TextSegment
                 {
@@ -835,7 +831,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestFunction) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleLibraryFunction = false;
 
@@ -896,7 +892,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestLibraryConstant) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleConstant = false;
 
@@ -938,7 +934,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestLocalVariableOrParameter) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleUserDefinedItem = false;
 
@@ -993,7 +989,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestFunction) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleUserDefinedItem = false;
 
@@ -1024,7 +1020,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestGlobalVariable) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleUserDefinedItem = false;
 
@@ -1213,7 +1209,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestLabelNameDefinition) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
             var possibleLabelName = false;
@@ -1255,7 +1251,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestLabelNameJumpTarget) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
             var possibleLabelName = false;
@@ -1298,7 +1294,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestStateName) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
             if (fastVarParser.StateBlocks.Count == 0 && !insertedText.StartsWith("d")) return false;
@@ -1334,7 +1330,7 @@ namespace LSLCCEditor.LSLEditor
             ref IList<ICompletionData> data)
         {
             if (!fastVarParser.CanSuggestEventHandler) return false;
-            if (insertedText.Length == 1 && !_idStartCharacterRegex.IsMatch(insertedText)) return false;
+            if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
             var possibleEventName = false;
@@ -1385,7 +1381,7 @@ namespace LSLCCEditor.LSLEditor
             while (true)
             {
                 var c = Editor.Text[offset];
-                var b = (char.IsWhiteSpace(c) || _anyIdCharacterRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
+                var b = (char.IsWhiteSpace(c) || LSLTokenTools.IDAnyCharRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
 
                 if (!b && c == ';')
                 {
@@ -1441,7 +1437,7 @@ namespace LSLCCEditor.LSLEditor
             while (true)
             {
                 var c = Editor.Text[offset];
-                var b = (char.IsWhiteSpace(c) || _anyIdCharacterRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
+                var b = (char.IsWhiteSpace(c) || LSLTokenTools.IDAnyCharRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
 
                 if (!b && c == ';')
                 {
@@ -1478,7 +1474,7 @@ namespace LSLCCEditor.LSLEditor
             while (true)
             {
                 var c = Editor.Text[offset];
-                var b = (char.IsWhiteSpace(c) || _anyIdCharacterRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
+                var b = (char.IsWhiteSpace(c) || LSLTokenTools.IDAnyCharRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
 
                 if (!b && c == ';')
                 {
@@ -1520,7 +1516,7 @@ namespace LSLCCEditor.LSLEditor
             while (true)
             {
                 var c = Editor.Text[offset];
-                var b = (char.IsWhiteSpace(c) || _anyIdCharacterRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
+                var b = (char.IsWhiteSpace(c) || LSLTokenTools.IDAnyCharRegex.IsMatch(c.ToString())) && c != '\n' && c != '\r';
 
                 if (!b && c == ';')
                 {
@@ -1570,7 +1566,7 @@ namespace LSLCCEditor.LSLEditor
         {
             var description = new TextBlock();
 
-            description.Inlines.Add(new Run("Global Variable:" + StringTools.CreateNewLinesString(2))
+            description.Inlines.Add(new Run("Global Variable:" + LSLFormatTools.CreateNewLinesString(2))
             {
                 FontWeight = FontWeights.Bold
             });
@@ -1637,7 +1633,7 @@ namespace LSLCCEditor.LSLEditor
             description.TextWrapping = TextWrapping.Wrap;
             description.MaxWidth = 500;
 
-            description.Inlines.Add(new Run("Library Constant:" + StringTools.CreateNewLinesString(2))
+            description.Inlines.Add(new Run("Library Constant:" + LSLFormatTools.CreateNewLinesString(2))
             {
                 FontWeight = FontWeights.Bold
             });
@@ -1647,7 +1643,7 @@ namespace LSLCCEditor.LSLEditor
 
             if (!string.IsNullOrWhiteSpace(sig.DocumentationString))
             {
-                description.Inlines.Add(StringTools.CreateNewLinesString(2) + sig.DocumentationString);
+                description.Inlines.Add(LSLFormatTools.CreateNewLinesString(2) + sig.DocumentationString);
             }
             return description;
         }
@@ -1679,7 +1675,7 @@ namespace LSLCCEditor.LSLEditor
         {
             var description = new TextBlock();
 
-            description.Inlines.Add(new Run("Local Variable:" + StringTools.CreateNewLinesString(2))
+            description.Inlines.Add(new Run("Local Variable:" + LSLFormatTools.CreateNewLinesString(2))
             {
                 FontWeight = FontWeights.Bold
             });
@@ -1715,7 +1711,7 @@ namespace LSLCCEditor.LSLEditor
         {
             var description = new TextBlock();
 
-            description.Inlines.Add(new Run("Local Parameter:" + StringTools.CreateNewLinesString(2))
+            description.Inlines.Add(new Run("Local Parameter:" + LSLFormatTools.CreateNewLinesString(2))
             {
                 FontWeight = FontWeights.Bold
             });
@@ -1764,7 +1760,7 @@ namespace LSLCCEditor.LSLEditor
                 Foreground = Settings.GlobalFunctionCompleteColor
             };
 
-            description.Inlines.Add(new Run("Global Function:" + StringTools.CreateNewLinesString(2))
+            description.Inlines.Add(new Run("Global Function:" + LSLFormatTools.CreateNewLinesString(2))
             {
                 FontWeight = FontWeights.Bold
             });
@@ -1803,7 +1799,7 @@ namespace LSLCCEditor.LSLEditor
             description.TextWrapping = TextWrapping.Wrap;
             description.MaxWidth = 500;
 
-            description.Inlines.Add(new Run("Library Function:" + StringTools.CreateNewLinesString(2))
+            description.Inlines.Add(new Run("Library Function:" + LSLFormatTools.CreateNewLinesString(2))
             {
                 FontWeight = FontWeights.Bold
             });
@@ -1879,12 +1875,12 @@ namespace LSLCCEditor.LSLEditor
 
                 if (!string.IsNullOrWhiteSpace(func.DocumentationString))
                 {
-                    description.Inlines.Add(StringTools.CreateNewLinesString(2) + func.DocumentationString);
+                    description.Inlines.Add(LSLFormatTools.CreateNewLinesString(2) + func.DocumentationString);
                 }
 
                 if (overloadCnt < funcOverloads.Count)
                 {
-                    description.Inlines.Add(StringTools.CreateNewLinesString(2));
+                    description.Inlines.Add(LSLFormatTools.CreateNewLinesString(2));
                 }
 
                 overloadCnt++;
@@ -2278,7 +2274,7 @@ namespace LSLCCEditor.LSLEditor
             description.TextWrapping = TextWrapping.Wrap;
             description.MaxWidth = 500;
 
-            description.Inlines.Add(new Run("Event Handler:" + StringTools.CreateNewLinesString(2))
+            description.Inlines.Add(new Run("Event Handler:" + LSLFormatTools.CreateNewLinesString(2))
             {
                 FontWeight = FontWeights.Bold
             });
@@ -2311,7 +2307,7 @@ namespace LSLCCEditor.LSLEditor
 
             if (!string.IsNullOrWhiteSpace(eventHandler.DocumentationString))
             {
-                description.Inlines.Add(StringTools.CreateNewLinesString(2) + eventHandler.DocumentationString);
+                description.Inlines.Add(LSLFormatTools.CreateNewLinesString(2) + eventHandler.DocumentationString);
             }
 
             return description;

@@ -95,7 +95,7 @@ namespace LSLCCEditor.LSLEditor
 
             if (ForceIndent)
             {
-                var indent = StringTools.CreateTabsString(IndentLevel);
+                var indent = LSLFormatTools.CreateTabsString(IndentLevel);
 
                 var result = "";
 

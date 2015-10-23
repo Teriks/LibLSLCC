@@ -68,15 +68,14 @@ namespace LibLSLCC.CodeValidator.Components
         private HashMap<string, string> _properties = new HashMap<string, string>();
         private HashedSet<string> _subsets = new HashedSet<string>();
 
-        private LSLLibraryDataSubsetsAttributeRegex _subsetsRegex = new
-            LSLLibraryDataSubsetsAttributeRegex();
+        private LSLLibraryDataSubsetNameParser _subsetsParser = new
+            LSLLibraryDataSubsetNameParser();
+
+        private string _name;
 
         private LSLLibraryConstantSignature()
         {
-            ValueString = "";
-            DocumentationString = "";
-            Name = "";
-            Type = LSLType.Void;
+
         }
 
         /// <summary>
@@ -178,9 +177,26 @@ namespace LibLSLCC.CodeValidator.Components
         public LSLType Type { get; set; }
 
         /// <summary>
-        /// The name of the library constant.
+        /// The name of the library constant, must abide by LSL symbol naming rules or an exception will be thrown.
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new LSLInvalidSymbolNameException("LSLFunctionSignature: Function name was null or whitespace.");
+                }
+
+                if (!LSLTokenTools.IDRegexAnchored.IsMatch(value))
+                {
+                    throw new LSLInvalidSymbolNameException(string.Format("LSLFunctionSignature: Function name '{0}' contained invalid characters or formating.", value));
+                }
+
+                _name = value;
+            }
+        }
 
         /// <summary>
         /// The raw value string of the library constant.
@@ -193,7 +209,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         public string ValueStringWithControlCodeEscapes
         {
-            get { return StringTools.ShowControlCodeEscapes(ValueString); }
+            get { return LSLFormatTools.ShowControlCodeEscapes(ValueString); }
         }
 
         /// <summary>
@@ -284,23 +300,18 @@ namespace LibLSLCC.CodeValidator.Components
                     else
                     {
                         throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ", Type attribute invalid");
+                            GetType().Name + ": Type attribute invalid");
                     }
                 }
                 else if (reader.Name == "Name")
                 {
-                    if (string.IsNullOrWhiteSpace(reader.Value))
-                    {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ", Name attribute invalid");
-                    }
                     Name = reader.Value;
                     hasName = true;
                 }
                 else
                 {
                     throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                        GetType().Name + ", unknown attribute " + reader.Name);
+                        GetType().Name + ": unknown attribute " + reader.Name);
                 }
             }
 
@@ -423,16 +434,18 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="subsets">An enumerable of subset name strings</param>
         public void SetSubsets(IEnumerable<string> subsets)
         {
-            _subsets = new HashedSet<string>(subsets);
+            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
         }
 
         /// <summary>
         /// Sets the library subsets this LSLLibraryConstantSignature belongs to by parsing them out of a comma separated string of names.
         /// </summary>
         /// <param name="subsets">A comma separated list of subset names in a string.</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
         public void SetSubsets(string subsets)
         {
-            _subsets = new HashedSet<string>(_subsetsRegex.ParseSubsets(subsets));
+
+            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
         }
 
 
@@ -440,9 +453,10 @@ namespace LibLSLCC.CodeValidator.Components
         /// Adds to the current library subsets this LSLLibraryConstantSignature belongs to by parsing them out of a comma separated string of names.
         /// </summary>
         /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
         public void AddSubsets(string subsets)
         {
-            _subsets.UnionWith(_subsetsRegex.ParseSubsets(subsets));
+            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
         }
 
 
@@ -452,7 +466,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="subsets">An enumerable of subset name strings to add.</param>
         public void AddSubsets(IEnumerable<string> subsets)
         {
-            _subsets.UnionWith(subsets);
+            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
         }
 
 

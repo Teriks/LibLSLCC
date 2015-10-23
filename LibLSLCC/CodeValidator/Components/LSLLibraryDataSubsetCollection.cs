@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Components
@@ -46,10 +48,11 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         /// Construct a subsets collection out of an exiting enumerable of strings
         /// </summary>
-        /// <param name="subsets"></param>
+        /// <param name="subsets">An enumerable of subset names to initialize the subset collection from.</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If any of the give subset names contain invalid characters.</exception>
         public LSLLibraryDataSubsetCollection(IEnumerable<string> subsets)
         {
-            _subsets = new HashedSet<string>(subsets);
+            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
         }
 
         /// <summary>
@@ -76,8 +79,13 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="subsetName">The subset string/name to add</param>
         /// <returns>True if a unique new subset was added,  False if it already existed.</returns>
+        /// <exception cref="LSLInvalidSubsetNameException">If the subset name does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
         public bool AddSubset(string subsetName)
         {
+
+            LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsetName);
+
+
             if (_subsets.Contains(subsetName)) return false;
 
             _subsets.Add(subsetName);
@@ -90,9 +98,10 @@ namespace LibLSLCC.CodeValidator.Components
         /// Add multiple subset strings at once to the collection.
         /// </summary>
         /// <param name="subsets">Enumerable of the subset strings to add</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If any of the give subset names don't match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
         public void AddSubsets(IEnumerable<string> subsets)
         {
-            foreach (var subset in subsets)
+            foreach (var subset in LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets))
             {
                 AddSubset(subset);
             }
@@ -103,8 +112,12 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="subsetName">The subset string/name to remove.</param>
         /// <returns>True if the subset existed and was removed, False if it did not exist.</returns>
+        /// <exception cref="LSLInvalidSubsetNameException">If the subset name does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
         public bool RemoveSubset(string subsetName)
         {
+            //help catch bugs
+            LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsetName);
+
             if (!_subsets.Contains(subsetName)) return false;
 
             _subsets.Remove(subsetName);

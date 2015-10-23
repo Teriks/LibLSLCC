@@ -44,8 +44,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -103,6 +105,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Generates an object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
+        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML.</exception>
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             var lineInfo = (IXmlLineInfo) reader;
@@ -178,13 +181,13 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        ///     Fills a library data provider from an XML reader object
+        /// Fills a library data provider from an XML reader object, the data provider is cleared first.
         /// </summary>
-        /// <param name="data">The XML reader to read from</param>
+        /// <param name="data">The XML reader to read from.</param>
         /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
-        /// <exception cref="ArgumentNullException">When data is null</exception>
-        /// <exception cref="XmlException">When a syntax error is encountered</exception>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
+        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void FillFromXml(XmlReader data, string rootElementName = "LSLLibraryData")
         {
             if (data == null)
@@ -204,5 +207,108 @@ namespace LibLSLCC.CodeValidator.Components
             data.ReadEndElement();
         }
 
+
+        /// <summary>
+        /// Adds additional library data provider from an XML reader object, the data provider is not cleared first.
+        /// </summary>
+        /// <param name="data">The XML reader to read from.</param>
+        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
+        /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
+        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
+        public void AddFromXml(XmlReader data, string rootElementName = "LSLLibraryData")
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+
+            data.ReadStartElement(rootElementName);
+
+            IXmlSerializable serializable = this;
+            serializable.ReadXml(data);
+
+            data.ReadEndElement();
+        }
+
+
+        /// <summary>
+        /// Adds additional library data provider from an XML file, the data provider is not cleared first.
+        /// Encoding is detected using the BOM (Byte Order Mark) of the file.
+        /// </summary>
+        /// <param name="filename">The XML file to read library data from.</param>
+        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
+        /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
+        /// <exception cref="ArgumentNullException">When the 'filename' parameter is null.</exception>
+        /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
+        /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
+        /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
+        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
+        public void AddFromXml(string filename, string rootElementName = "LSLLibraryData")
+        {
+            if (filename == null)
+            {
+                throw new ArgumentNullException("filename");
+            }
+
+            if (string.IsNullOrWhiteSpace(filename))
+            {
+                throw new ArgumentException("filename");
+            }
+
+            using (var reader = new XmlTextReader(new StreamReader(filename, true)))
+            {
+
+                reader.ReadStartElement(rootElementName);
+
+                IXmlSerializable serializable = this;
+                serializable.ReadXml(reader);
+
+                reader.ReadEndElement();
+            }
+        }
+
+
+        /// <summary>
+        /// Fills a library data provider from an XML reader object, the data provider is cleared first.
+        /// Encoding is detected using the BOM (Byte Order Mark) of the file.
+        /// </summary>
+        /// <param name="filename">The XML file to read library data from.</param>
+        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
+        /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
+        /// <exception cref="ArgumentNullException">When the 'filename' parameter is null.</exception>
+        /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
+        /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
+        /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
+        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
+        public void FillFromXml(string filename, string rootElementName = "LSLLibraryData")
+        {
+            if (filename == null)
+            {
+                throw new ArgumentNullException("filename");
+            }
+
+            if (string.IsNullOrWhiteSpace(filename))
+            {
+                throw new ArgumentException("filename");
+            }
+
+            ClearEventHandlers();
+            ClearLibraryConstants();
+            ClearLibraryFunctions();
+
+            using (var reader = new XmlTextReader(new StreamReader(filename, true)))
+            {
+
+                reader.ReadStartElement(rootElementName);
+
+                IXmlSerializable serializable = this;
+                serializable.ReadXml(reader);
+
+                reader.ReadEndElement();
+            }
+        }
     }
 }

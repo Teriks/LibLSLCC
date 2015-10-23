@@ -143,9 +143,14 @@ namespace LibLSLCC.CodeValidator.Primitives
             get { return _name; }
             set
             {
-                if (!TokenTools.GetIDRegex().IsMatch(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new LSLInvalidSymbolNameException("LSLFunctionSignature: Function name contained invalid characters or formating.");
+                    throw new LSLInvalidSymbolNameException("LSLFunctionSignature: Function name was null or whitespace.");
+                }
+
+                if (!LSLTokenTools.IDRegexAnchored.IsMatch(value))
+                {
+                    throw new LSLInvalidSymbolNameException(string.Format("LSLFunctionSignature: Function name '{0}' contained invalid characters or formating.", value));
                 }
                 _name = value;
             }

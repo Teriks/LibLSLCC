@@ -68,8 +68,8 @@ namespace LibLSLCC.CodeValidator.Components
         private HashMap<string, string> _properties = new HashMap<string, string>();
         private HashedSet<string> _subsets = new HashedSet<string>();
 
-        private LSLLibraryDataSubsetsAttributeRegex _subsetsRegex = new
-            LSLLibraryDataSubsetsAttributeRegex();
+        private LSLLibraryDataSubsetNameParser _subsetsParser = new
+            LSLLibraryDataSubsetNameParser();
 
         private LSLLibraryEventSignature()
         {
@@ -206,18 +206,13 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else if (reader.Name == "Name")
                 {
-                    if (string.IsNullOrWhiteSpace(reader.Value))
-                    {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ", Name attribute invalid");
-                    }
                     hasName = true;
                     Name = reader.Value;
                 }
                 else
                 {
                     throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                        GetType().Name + ", unknown attribute " + reader.Name);
+                        GetType().Name + ": unknown attribute " + reader.Name);
                 }
             }
 
@@ -246,26 +241,26 @@ namespace LibLSLCC.CodeValidator.Components
                     if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
                     {
                         throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ", Parameter Type attribute invalid");
+                            GetType().Name + ": Parameter Type attribute invalid");
                     }
 
                     if (pType == LSLType.Void)
                     {
                         throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ", Parameter Type invalid, event handler parameters cannot be Void");
+                            GetType().Name + ": Parameter Type invalid, event handler parameters cannot be Void");
                     }
 
                     var pName = reader.GetAttribute("Name");
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ", Parameter Name attribute invalid");
+                            GetType().Name + ": Parameter Name attribute invalid, cannot be empty or whitespace");
                     }
 
                     if (parameterNames.Contains(pName))
                     {
                         throw new XmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ", Parameter Name already used");
+                            GetType().Name + ": Parameter Name already used");
                     }
 
                     parameterNames.Add(pName);
@@ -366,41 +361,50 @@ namespace LibLSLCC.CodeValidator.Components
             return new LSLLibraryEventSignature(LSLEventSignature.Parse(str));
         }
 
-        /// <summary>
-        /// Adds to the current library subsets this signature belongs to by parsing them out of a comma separated string of names.
-        /// </summary>
-        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
-        public void AddSubsets(string subsets)
-        {
-            _subsets.UnionWith(_subsetsRegex.ParseSubsets(subsets));
-        }
 
         /// <summary>
-        /// Sets the library subsets this signature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings</param>
-        public void AddSubsets(IEnumerable<string> subsets)
-        {
-            _subsets.UnionWith(subsets);
-        }
-
-        /// <summary>
-        /// Sets the library subsets this signature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings</param>
-        public void SetSubsets(IEnumerable<string> subsets)
-        {
-            _subsets = new HashedSet<string>(subsets);
-        }
-
-        /// <summary>
-        /// Sets the library subsets this signature belongs to by parsing them out of a comma separated string of names.
+        /// Sets the library subsets this LSLLibraryEventSignature belongs to by parsing them out of a comma separated string of names.
         /// </summary>
         /// <param name="subsets">A comma separated list of subset names in a string.</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
         public void SetSubsets(string subsets)
         {
-            _subsets = new HashedSet<string>(_subsetsRegex.ParseSubsets(subsets));
+            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
         }
+
+
+        /// <summary>
+        /// Adds to the current library subsets this LSLLibraryEventSignature belongs to by parsing them out of a comma separated string of names.
+        /// </summary>
+        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
+        public void AddSubsets(string subsets)
+        {
+            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
+        }
+
+
+        /// <summary>
+        /// Sets the library subsets this signature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
+        public void AddSubsets(IEnumerable<string> subsets)
+        {
+            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
+        }
+
+
+        /// <summary>
+        /// Sets the library subsets this signature belongs to.
+        /// </summary>
+        /// <param name="subsets">An enumerable of subset name strings</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
+        public void SetSubsets(IEnumerable<string> subsets)
+        {
+            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
+        }
+
 
         /// <summary>
         /// Reads an event signature object from an XML fragment.
