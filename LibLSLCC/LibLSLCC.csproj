@@ -22,7 +22,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\x64\Debug\LibLSLCC.XML</DocumentationFile>
+    <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
     <Prefer32Bit>false</Prefer32Bit>
@@ -37,7 +37,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
-    <DocumentationFile>bin\x64\Release\LibLSLCC.XML</DocumentationFile>
+    <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -50,7 +50,7 @@
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
-    <DocumentationFile>bin\x86\Debug\LibLSLCC.XML</DocumentationFile>
+    <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
@@ -64,8 +64,32 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <NoWarn>3003;3001;3002</NoWarn>
     <LangVersion>5</LangVersion>
-    <DocumentationFile>bin\x86\Release\LibLSLCC.XML</DocumentationFile>
+    <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AnyCPU\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
+    <NoWarn>3003;3001;3002</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>5</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\AnyCPU\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>3003;3001;3002</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>5</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
