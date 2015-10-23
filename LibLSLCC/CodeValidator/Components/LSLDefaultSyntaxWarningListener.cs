@@ -96,17 +96,6 @@ namespace LibLSLCC.CodeValidator.Components
 
 
 
-        /// <summary>
-        /// A hook for intercepting warning messages produced by the implementations of all other functions in the LSLDefaultSyntaxWarningListener object.
-        /// The default behavior is to write error messages to the Console.
-        /// </summary>
-        /// <param name="location">Location in source code for the warning.</param>
-        /// <param name="message">The warning message.</param>
-        public virtual void OnWarning(LSLSourceCodeRange location, string message)
-        {
-            Console.WriteLine("({0},{1}) WARNING: {2}", location.LineStart, location.ColumnStart,
-                message + Environment.NewLine);
-        }
 
 
 
@@ -129,7 +118,8 @@ namespace LibLSLCC.CodeValidator.Components
                     string.Format(
                         "Unreachable code detected in function \"" + currentFunction.Name +
                         "\" between lines {0} and {1}",
-                        deadSegment.SourceCodeRange.LineStart, deadSegment.SourceCodeRange.LineEnd));
+                        MapLineNumber(deadSegment.SourceCodeRange.LineStart), 
+                        MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
             }
         }
 
@@ -154,7 +144,8 @@ namespace LibLSLCC.CodeValidator.Components
                     string.Format(
                         "Unreachable code detected in event handler \"" + currentEvent.Name +
                         "\" between lines {0} and {1}",
-                        deadSegment.SourceCodeRange.LineStart, deadSegment.SourceCodeRange.LineEnd));
+                        MapLineNumber(deadSegment.SourceCodeRange.LineStart),
+                        MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
             }
         }
 
@@ -342,7 +333,7 @@ namespace LibLSLCC.CodeValidator.Components
             OnWarning(location,
                 string.Format("Parameter \"{0}\" of function \"{1}\" hides global variable \"{2}\" defined on line {3}",
                     parameter.Name, functionSignature.Name, globalVariable.Name,
-                    globalVariable.SourceCodeRange.LineStart));
+                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
 
 
@@ -361,7 +352,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Parameter \"{0}\" of event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
                     parameter.Name, eventHandlerSignature.Name, globalVariable.Name,
-                    globalVariable.SourceCodeRange.LineStart));
+                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
 
 
@@ -415,7 +406,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Local variable \"{0}\" in function \"{1}\" hides global variable \"{2}\" defined on line {3}",
                     localVariable.Name, functionSignature.Name, globalVariable.Name,
-                    globalVariable.SourceCodeRange.LineStart));
+                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
 
 
@@ -435,7 +426,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Local variable \"{0}\" in event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
                     localVariable.Name, eventHandlerSignature.Name, globalVariable.Name,
-                    globalVariable.SourceCodeRange.LineStart));
+                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
 
 
@@ -482,6 +473,41 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 OnWarning(location, "Conditional expression in 'do while' loop is constant");
             }
+        }
+
+
+        /// <summary>
+        /// A hook to allow the modification of line numbers used in either the header of a warning
+        /// or the body.  You should pass line numbers you wish to put into customized error messages
+        /// through this function so that the derived class can easily offset them.
+        /// 
+        /// Line numbers reported in syntax warnings default to using a 'one' based index where
+        /// line #1 is the first line of source code.  To modify all line numbers reported in syntax 
+        /// warnings you could overload this function and return the passed in value with some offset
+        /// added/subtracted.
+        /// 
+        /// For example, if you want all line number references in warnings sent to OnWarning to have a 0 based index.
+        /// then you should return (oneBasedLine-1) from this function.
+        /// </summary>
+        /// <param name="oneBasedLine">The 'one' based line number that we might need to modify, a common modification would be to subtract 1 from it.</param>
+        /// <returns>The possibly modified line number to use in the warning message.</returns>
+        public virtual int MapLineNumber(int oneBasedLine)
+        {
+            return oneBasedLine;
+        }
+
+
+
+        /// <summary>
+        /// A hook for intercepting warning messages produced by the implementations of all other functions in the LSLDefaultSyntaxWarningListener object.
+        /// The default behavior is to write error messages to the Console.
+        /// </summary>
+        /// <param name="location">Location in source code for the warning.</param>
+        /// <param name="message">The warning message.</param>
+        public virtual void OnWarning(LSLSourceCodeRange location, string message)
+        {
+            Console.WriteLine("({0},{1}) WARNING: {2}", MapLineNumber(location.LineStart), location.ColumnStart,
+                message + Environment.NewLine);
         }
     }
 }

@@ -404,7 +404,8 @@ namespace LibLSLCC.CodeValidator.Components
                     string.Format(
                         "Unreachable code detected after return path in function \"" + inFunction.Name +
                         "\" between lines {0} and {1}",
-                        deadSegment.SourceCodeRange.LineStart, deadSegment.SourceCodeRange.LineEnd));
+                        MapLineNumber(deadSegment.SourceCodeRange.LineStart),
+                        MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
             }
         }
 
@@ -813,8 +814,29 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="message">The error message.</param>
         public virtual void OnError(LSLSourceCodeRange location, string message)
         {
-            Console.WriteLine("({0},{1}) ERROR: {2}", location.LineStart, location.ColumnStart,
+            Console.WriteLine("({0},{1}) ERROR: {2}", MapLineNumber(location.LineStart), location.ColumnStart,
                 message + Environment.NewLine);
+        }
+
+
+        /// <summary>
+        /// A hook to allow the modification of line numbers used in either the header of an error
+        /// or the body.  You should pass line numbers you wish to put into customized error messages
+        /// through this function so that the derived class can easily offset them.
+        /// 
+        /// Line numbers reported in syntax errors default to using a 'one' based index where
+        /// line #1 is the first line of source code.  To modify all line numbers reported in syntax 
+        /// errors you could overload this function and return the passed in value with some offset
+        /// added/subtracted.
+        /// 
+        /// For example, if you want all line number references in errors sent to OnError to have a 0 based index.
+        /// then you should return (oneBasedLine-1) from this function.
+        /// </summary>
+        /// <param name="oneBasedLine">The 'one' based line number that we might need to modify, a common modification would be to subtract 1 from it.</param>
+        /// <returns>The possibly modified line number to use in the error message.</returns>
+        public virtual int MapLineNumber(int oneBasedLine)
+        {
+            return oneBasedLine;
         }
     }
 }
