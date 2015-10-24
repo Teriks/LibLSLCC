@@ -4,28 +4,50 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.Collections
 {
+    /// <summary>
+    /// Generic Array class, it is equivalent to <see cref="List{TValue}"/>.
+    /// </summary>
+    /// <remarks>
+    /// This class supports a read only covariant interface in NET 4.0 via <see cref="IReadOnlyGenericArray{T}"/>.
+    /// </remarks>
+    /// <typeparam name="T">The type contained by the <see cref="GenericArray{T}"/></typeparam>
     public class GenericArray<T> : IReadOnlyGenericArray<T>, IList<T>
     {
         private readonly IList<T> _data;
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericArray{T}"/> class.
+        /// </summary>
         public GenericArray()
         {
             _data = new List<T>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericArray{T}"/> class.
+        /// </summary>
+        /// <param name="list">The list.</param>
         public GenericArray(IList<T> list)
         {
             _data = list;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericArray{T}"/> class.
+        /// </summary>
+        /// <param name="list">The list.</param>
         public GenericArray(IEnumerable<T> list)
         {
             _data = new List<T>(list);
         }
 
 
-        public GenericArray(Int32 capacity)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericArray{T}"/> class.
+        /// </summary>
+        /// <param name="capacity">The capacity.</param>
+        public GenericArray(int capacity)
         {
             _data = new List<T>(capacity);
         }
@@ -56,6 +78,10 @@ namespace LibLSLCC.Collections
             _data.Add(item);
         }
 
+        /// <summary>
+        /// Adds a range of elements to the array from an <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        /// <param name="items">The items to add.</param>
         public void AddRange(IEnumerable<T> items)
         {
             foreach (var item in items)
@@ -108,6 +134,12 @@ namespace LibLSLCC.Collections
 
         int ICollection<T>.Count { get { return _data.Count; } }
 
+        /// <summary>
+        /// Gets the number of items in the array.
+        /// </summary>
+        /// <value>
+        /// The number of items in the array.
+        /// </value>
         public int Count { get { return _data.Count; } }
 
 
@@ -168,9 +200,16 @@ namespace LibLSLCC.Collections
         }
 
 
-        public static implicit operator GenericArray<T>(List<T> b)
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="List{T}"/> to <see cref="GenericArray{T}"/>.
+        /// </summary>
+        /// <param name="other">The <see cref="List{T}"/> to convert from.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator GenericArray<T>(List<T> other)
         {
-            return new GenericArray<T>(b);
+            return new GenericArray<T>(other);
         }
     }
 }

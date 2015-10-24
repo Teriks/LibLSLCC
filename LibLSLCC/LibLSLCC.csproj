@@ -133,8 +133,8 @@
     <Compile Include="Utility\LambdaEqualityComparer.cs" />
     <Compile Include="Utility\LSLTokenTools.cs" />
     <Compile Include="Utility\LSLFormatTools.cs" />
-    <Compile Include="AutoCompleteParser\LSLCommentStringSkipper.cs" />
-    <Compile Include="AutoCompleteParser\LSLAutoCompleteParser.cs" />
+    <Compile Include="AutoComplete\LSLCommentStringSkipper.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteParser.cs" />
     <Compile Include="CodeValidator\Primitives\LSLBinaryOperationSignature.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLExpressionValidator.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLLibraryDataProvider.cs" />

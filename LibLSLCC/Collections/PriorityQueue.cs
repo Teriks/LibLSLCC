@@ -250,7 +250,7 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        ///     Returns priority and value of the element with minimun priority, without removing it from the queue
+        ///     Returns priority and value of the element with minimum priority, without removing it from the queue
         /// </summary>
         /// <returns>priority and value of the element with minimum priority</returns>
         /// <remarks>
@@ -265,7 +265,7 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        ///     Returns value of the element with minimun priority, without removing it from the queue
+        ///     Returns value of the element with minimum priority, without removing it from the queue
         /// </summary>
         /// <returns>value of the element with minimum priority</returns>
         /// <remarks>

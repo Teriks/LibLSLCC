@@ -40,7 +40,7 @@
 // 
 // 
 #endregion
-namespace LibLSLCC.AutoCompleteParser
+namespace LibLSLCC.AutoComplete
 {
 
     /// <summary>

@@ -50,32 +50,60 @@ using System.Collections.Generic;
 namespace LibLSLCC.Collections
 {
 
+    /// <summary>
+    /// A hashed set collection meant to contain unique items.  It is equivalent to <see cref="HashSet{T}"/>
+    /// </summary>
+    /// <remarks>
+    /// This collection supports a read only interface in NET 4.0 via <see cref="IReadOnlyHashedSet{T}"/>.
+    /// </remarks>
+    /// <typeparam name="T">The type of object(s) that the <see cref="HashSet{T}"/> can contain.</typeparam>
     public class HashedSet<T> : IReadOnlyHashedSet<T>, ISet<T>
     {
         private readonly ISet<T> _items;
 
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashedSet{T}"/> class.
+        /// </summary>
+        /// <param name="items">The items.</param>
         public HashedSet(ISet<T> items)
         {
             _items = items;
           
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashedSet{T}"/> class.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        /// <param name="comparer">The comparer.</param>
         public HashedSet(IEnumerable<T> items, IEqualityComparer<T> comparer)
         {
             _items = new HashSet<T>(items, comparer);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashedSet{T}"/> class.
+        /// </summary>
         public HashedSet()
         {
             _items = new HashSet<T>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashedSet{T}"/> class.
+        /// </summary>
+        /// <param name="comparer">The comparer.</param>
         public HashedSet(IEqualityComparer<T> comparer)
         {
             _items = new HashSet<T>(comparer);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashedSet{T}"/> class.
+        /// </summary>
+        /// <param name="items">The items.</param>
         public HashedSet(IEnumerable<T> items)
         {
             _items = new HashSet<T>(items);

@@ -52,6 +52,14 @@ using System.Runtime.Serialization;
 
 namespace LibLSLCC.Collections
 {
+    /// <summary>
+    /// Generic HashMap class, it is equivalent to <see cref="Dictionary{TKey,TValue}"/>.
+    /// </summary>
+    /// <remarks>
+    /// This class supports a read only interface in NET 4.0 via <see cref="IReadOnlyHashMap{TKey,TValue}"/>.
+    /// </remarks>
+    /// <typeparam name="TKey">The key type for the <see cref="HashMap{TKey,TValue}"/>.</typeparam>
+    /// <typeparam name="TValue">The value type for the <see cref="HashMap{TKey,TValue}"/>.</typeparam>
     [Serializable]
     public class HashMap<TKey, TValue> : IReadOnlyHashMap<TKey, TValue>, ISerializable,
         IDeserializationCallback, IDictionary<TKey,TValue>
@@ -59,38 +67,68 @@ namespace LibLSLCC.Collections
         private readonly IDictionary<TKey, TValue> _items;
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="items">The items.</param>
         public HashMap(IDictionary<TKey, TValue> items)
         {
             _items = items;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        /// <param name="comparer">The comparer.</param>
         public HashMap(IDictionary<TKey, TValue> items, IEqualityComparer<TKey> comparer )
         {
             
             _items = new Dictionary<TKey, TValue>(items, comparer);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// </summary>
         public HashMap()
         {
             _items = new Dictionary<TKey,TValue>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="capacity">The capacity.</param>
         public HashMap(int capacity)
         {
             _items = new Dictionary<TKey, TValue>(capacity);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="capacity">The capacity.</param>
+        /// <param name="comparer">The comparer.</param>
         public HashMap(int capacity, IEqualityComparer<TKey> comparer)
         {
             _items = new Dictionary<TKey, TValue>(capacity, comparer);
         }
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="comparer">The comparer.</param>
         public HashMap(IEqualityComparer<TKey> comparer)
         {
             _items = new Dictionary<TKey, TValue>(comparer);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="info">The information.</param>
+        /// <param name="context">The context.</param>
         protected HashMap(SerializationInfo info, StreamingContext context)
         {
             GetObjectData(info, context);

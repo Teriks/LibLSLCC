@@ -59,9 +59,11 @@ using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.AutoCompleteParser
+namespace LibLSLCC.AutoComplete
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    /// <summary>
+    /// An LSL parser that can help with implementing context aware auto-complete inside of code editors.
+    /// </summary>
     public class LSLAutoCompleteParser
     {
         private readonly HashMap<string, GlobalFunction> _globalFunctions = new HashMap<string, GlobalFunction>();
@@ -76,7 +78,7 @@ namespace LibLSLCC.AutoCompleteParser
         private readonly HashMap<string, LocalParameter> _parameters = new HashMap<string, LocalParameter>();
         private readonly GenericArray<StateBlock> _stateBlocks = new GenericArray<StateBlock>();
 
-        private readonly Stack<NestableExpressionElementType> NestableExpressionElementStack =
+        private readonly Stack<NestableExpressionElementType> _nestableExpressionElementStack =
             new Stack<NestableExpressionElementType>();
 
         private bool _inEventCodeBody;
@@ -329,8 +331,8 @@ namespace LibLSLCC.AutoCompleteParser
         {
             get
             {
-                return NestableExpressionElementStack.Count > 0 &&
-                       NestableExpressionElementStack.Peek() == NestableExpressionElementType.FunctionCallParameterList;
+                return _nestableExpressionElementStack.Count > 0 &&
+                       _nestableExpressionElementStack.Peek() == NestableExpressionElementType.FunctionCallParameterList;
             }
         }
 
@@ -338,8 +340,8 @@ namespace LibLSLCC.AutoCompleteParser
         {
             get
             {
-                return NestableExpressionElementStack.Count > 0 &&
-                       NestableExpressionElementStack.Peek() == NestableExpressionElementType.List;
+                return _nestableExpressionElementStack.Count > 0 &&
+                       _nestableExpressionElementStack.Peek() == NestableExpressionElementType.List;
             }
         }
 
@@ -347,8 +349,8 @@ namespace LibLSLCC.AutoCompleteParser
         {
             get
             {
-                return NestableExpressionElementStack.Count > 0 &&
-                       NestableExpressionElementStack.Peek() == NestableExpressionElementType.Vector;
+                return _nestableExpressionElementStack.Count > 0 &&
+                       _nestableExpressionElementStack.Peek() == NestableExpressionElementType.Vector;
             }
         }
 
@@ -356,8 +358,8 @@ namespace LibLSLCC.AutoCompleteParser
         {
             get
             {
-                return NestableExpressionElementStack.Count > 0 &&
-                       NestableExpressionElementStack.Peek() == NestableExpressionElementType.Rotation;
+                return _nestableExpressionElementStack.Count > 0 &&
+                       _nestableExpressionElementStack.Peek() == NestableExpressionElementType.Rotation;
             }
         }
 
@@ -769,7 +771,7 @@ namespace LibLSLCC.AutoCompleteParser
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                _parent.NestableExpressionElementStack.Push(NestableExpressionElementType.List);
+                _parent._nestableExpressionElementStack.Push(NestableExpressionElementType.List);
 
                 var val = base.VisitListLiteral(context);
 
@@ -777,7 +779,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                 if (context.Stop.StartIndex >= _parent._toOffset) return true;
 
-                _parent.NestableExpressionElementStack.Pop();
+                _parent._nestableExpressionElementStack.Pop();
 
 
                 return val;
@@ -788,7 +790,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
 
-                _parent.NestableExpressionElementStack.Push(NestableExpressionElementType.Vector);
+                _parent._nestableExpressionElementStack.Push(NestableExpressionElementType.Vector);
 
 
                 var val = base.VisitVectorLiteral(context);
@@ -797,7 +799,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                 if (context.Stop.StartIndex >= _parent._toOffset) return true;
 
-                _parent.NestableExpressionElementStack.Pop();
+                _parent._nestableExpressionElementStack.Pop();
 
 
                 return val;
@@ -807,7 +809,7 @@ namespace LibLSLCC.AutoCompleteParser
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                _parent.NestableExpressionElementStack.Push(NestableExpressionElementType.Rotation);
+                _parent._nestableExpressionElementStack.Push(NestableExpressionElementType.Rotation);
 
 
                 var val = base.VisitRotationLiteral(context);
@@ -816,7 +818,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (context.Stop.StartIndex >= _parent._toOffset) return true;
 
 
-                _parent.NestableExpressionElementStack.Pop();
+                _parent._nestableExpressionElementStack.Pop();
 
 
                 return val;
@@ -858,7 +860,7 @@ namespace LibLSLCC.AutoCompleteParser
                     if (context.semi_colon != null && context.semi_colon.Text == ";" &&
                         context.semi_colon.StartIndex < _parent._toOffset)
                     {
-                        _parent.NestableExpressionElementStack.Clear();
+                        _parent._nestableExpressionElementStack.Clear();
                         _parent.InGlobalVariableDeclarationExpression = false;
                         _parent.InGlobalScope = true;
                     }
@@ -959,7 +961,7 @@ namespace LibLSLCC.AutoCompleteParser
                 {
                     if (context.close_parenth.Text == ")" && context.close_parenth.StartIndex < _parent._toOffset)
                     {
-                        _parent.NestableExpressionElementStack.Clear();
+                        _parent._nestableExpressionElementStack.Clear();
                         _parent.InIfConditionExpression = false;
                         _parent.InSingleStatementCodeScopeTopLevel = true;
                         _startIfControlChainCodeScope = CodeScopeLevel;
@@ -988,7 +990,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (context.close_parenth != null && context.close_parenth.Text == ")" &&
                     context.close_parenth.StartIndex < _parent._toOffset)
                 {
-                    _parent.NestableExpressionElementStack.Clear();
+                    _parent._nestableExpressionElementStack.Clear();
                     _parent.InElseIfConditionExpression = false;
                     _parent.InSingleStatementCodeScopeTopLevel = true;
                     ScopeLevel++;
@@ -1036,7 +1038,7 @@ namespace LibLSLCC.AutoCompleteParser
                 {
                     if (context.close_parenth.Text == ")" && context.close_parenth.StartIndex < _parent._toOffset)
                     {
-                        _parent.NestableExpressionElementStack.Clear();
+                        _parent._nestableExpressionElementStack.Clear();
                         _parent.InWhileConditionExpression = false;
                         _parent.InSingleStatementCodeScopeTopLevel = true;
                         ScopeLevel++;
@@ -1081,7 +1083,7 @@ namespace LibLSLCC.AutoCompleteParser
                 {
                     if (context.close_parenth.Text == ")" && context.close_parenth.StartIndex < _parent._toOffset)
                     {
-                        _parent.NestableExpressionElementStack.Clear();
+                        _parent._nestableExpressionElementStack.Clear();
                         _parent.InForLoopClausesArea = false;
                         _parent.InSingleStatementCodeScopeTopLevel = true;
                         ScopeLevel++;
@@ -1132,7 +1134,7 @@ namespace LibLSLCC.AutoCompleteParser
                 {
                     if (context.close_parenth.Text == ")" && context.close_parenth.StartIndex < _parent._toOffset)
                     {
-                        _parent.NestableExpressionElementStack.Clear();
+                        _parent._nestableExpressionElementStack.Clear();
                         _parent.InDoWhileConditionExpression = false;
                     }
                 }
@@ -1186,7 +1188,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (context.open_parenth != null && context.open_parenth.Text == "(" &&
                     context.open_parenth.StartIndex < _parent._toOffset)
                 {
-                    _parent.NestableExpressionElementStack.Push(NestableExpressionElementType.FunctionCallParameterList);
+                    _parent._nestableExpressionElementStack.Push(NestableExpressionElementType.FunctionCallParameterList);
                 }
 
                 var v = base.VisitExpr_FunctionCall(context);
@@ -1194,7 +1196,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (context.close_parenth != null && context.close_parenth.Text == ")" &&
                     context.close_parenth.StartIndex < _parent._toOffset)
                 {
-                    _parent.NestableExpressionElementStack.Pop();
+                    _parent._nestableExpressionElementStack.Pop();
                 }
 
 
@@ -1256,7 +1258,7 @@ namespace LibLSLCC.AutoCompleteParser
                 if (context.semi_colon != null && context.semi_colon.Text == ";" &&
                     context.semi_colon.StartIndex < _parent._toOffset)
                 {
-                    _parent.NestableExpressionElementStack.Clear();
+                    _parent._nestableExpressionElementStack.Clear();
 
                     _parent.InLocalVariableDeclarationExpression = false;
                     _parent.InMultiStatementCodeScopeTopLevel = prevMultiStatementCodeScopeTopLevel;
@@ -1376,7 +1378,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                 _parent._parameters.Clear();
 
-                _parent.NestableExpressionElementStack.Clear();
+                _parent._nestableExpressionElementStack.Clear();
                 _parent.InFunctionCodeBody = false;
                 _parent.InGlobalScope = true;
 
@@ -1454,7 +1456,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                 _parent.CurrentEvent = null;
 
-                _parent.NestableExpressionElementStack.Clear();
+                _parent._nestableExpressionElementStack.Clear();
                 _parent.InEventCodeBody = false;
 
                 _parent.InEventSourceRange = false;
@@ -1499,7 +1501,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                 if (((context.Stop.StartIndex) >= _parent._toOffset) || context.Stop.Text != "}") return true;
 
-                _parent.NestableExpressionElementStack.Clear();
+                _parent._nestableExpressionElementStack.Clear();
                 _parent.InState = false;
 
 
@@ -1546,7 +1548,7 @@ namespace LibLSLCC.AutoCompleteParser
 
                 if (((context.Stop.StartIndex) >= _parent._toOffset) || context.Stop.Text != "}") return true;
 
-                _parent.NestableExpressionElementStack.Clear();
+                _parent._nestableExpressionElementStack.Clear();
                 _parent.InState = false;
 
                 ScopeLevel--;
@@ -1607,7 +1609,7 @@ namespace LibLSLCC.AutoCompleteParser
                     }
 
 
-                    _parent.NestableExpressionElementStack.Clear();
+                    _parent._nestableExpressionElementStack.Clear();
 
                     _parent.InMultiStatementCodeScopeTopLevel = prevMulti;
                     _parent.InSingleStatementCodeScopeTopLevel = prevSign;
@@ -1678,7 +1680,7 @@ namespace LibLSLCC.AutoCompleteParser
                 CodeScopeLevel--;
                 if (CodeScopeLevel == 0)
                 {
-                    _parent.NestableExpressionElementStack.Clear();
+                    _parent._nestableExpressionElementStack.Clear();
                     _parent.InMultiStatementCodeScopeTopLevel = false;
                 }
 

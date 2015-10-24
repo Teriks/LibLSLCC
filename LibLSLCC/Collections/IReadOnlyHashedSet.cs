@@ -49,7 +49,7 @@ using System.Collections.Generic;
 namespace LibLSLCC.Collections
 {
     /// <summary>
-    /// Read Set interface.
+    /// Read only Hashed Set interface, used by <see cref="HashedSet{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type the set is to contain.</typeparam>
     public interface IReadOnlyHashedSet<T> : IReadOnlyContainer<T>
