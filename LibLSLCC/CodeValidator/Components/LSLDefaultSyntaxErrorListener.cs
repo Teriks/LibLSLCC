@@ -54,7 +54,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// The default implementation of ILSLSyntaxErrorListener for the library.  
+    /// The default implementation of <see cref="ILSLSyntaxErrorListener"/> for the library.  
     /// It writes error information to standard out or an arbitrary stream.
     /// </summary>
     public class LSLDefaultSyntaxErrorListener : ILSLSyntaxErrorListener
@@ -467,7 +467,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        /// An invalid escape sequence was found inside of a string literal according to the current ILSLStringPreProcessor instance.
+        /// An invalid escape sequence was found inside of a string literal according to the current <see cref="ILSLStringPreProcessor"/> instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
@@ -531,7 +531,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="eventHandlerName">The name of the event handler which was used more than once.</param>
-        /// <param name="stateName">The name of the code state in which the error occured.</param>
+        /// <param name="stateName">The name of the code state in which the error occurred.</param>
         public virtual void RedefinedEventHandler(LSLSourceCodeRange location, string eventHandlerName, string stateName)
         {
             OnError(location,
@@ -818,10 +818,12 @@ namespace LibLSLCC.CodeValidator.Components
                 message + Environment.NewLine);
         }
 
-
         /// <summary>
-        /// A hook to allow the modification of line numbers used in either the header of an error
-        /// or the body.  You should pass line numbers you wish to put into customized error messages
+        /// A hook to allow the modification of line numbers used in either the header of an error or the body.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// You should pass line numbers you wish to put into customized error messages
         /// through this function so that the derived class can easily offset them.
         /// 
         /// Line numbers reported in syntax errors default to using a 'one' based index where
@@ -831,7 +833,8 @@ namespace LibLSLCC.CodeValidator.Components
         /// 
         /// For example, if you want all line number references in errors sent to OnError to have a 0 based index.
         /// then you should return (oneBasedLine-1) from this function.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <param name="oneBasedLine">The 'one' based line number that we might need to modify, a common modification would be to subtract 1 from it.</param>
         /// <returns>The possibly modified line number to use in the error message.</returns>
         public virtual int MapLineNumber(int oneBasedLine)

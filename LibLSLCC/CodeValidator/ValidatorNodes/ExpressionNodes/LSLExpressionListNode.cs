@@ -57,7 +57,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 {
     /// <summary>
-    /// Represents the different types of expression lists that an ILSLExpressionListNode can represent.
+    /// Represents the different types of expression lists that an <see cref="ILSLExpressionListNode"/> can represent.
     /// </summary>
     public enum LSLExpressionListType
     {
@@ -273,7 +273,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

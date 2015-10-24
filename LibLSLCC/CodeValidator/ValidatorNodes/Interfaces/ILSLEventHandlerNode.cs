@@ -82,11 +82,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         ILSLParameterListNode ParameterListNode { get; }
 
         /// <summary>
-        /// Get an LSLEventSignature representation of the event handlers signature.
+        /// Get an <see cref="LSLEventSignature "/> representation of the event handlers signature.
         /// This could be null or throw an exception if the event handler node contains syntax errors.
         /// Ideally you should not be handling a syntax tree with syntax errors in it.
         /// </summary>
-        /// <returns>An LSLEventSignature representing the signature of the event handler node.</returns>
+        /// <returns>An <see cref="LSLEventSignature "/> representing the signature of the event handler node.</returns>
         LSLEventSignature ToSignature();
     }
 }

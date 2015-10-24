@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// Internal function for creating an LSLSourceCodeRange from an ANTLR IToken.
+        /// Internal constructor for creating an <see cref="LSLSourceCodeRange"/> from an ANTLR IToken.
         /// </summary>
         /// <param name="ctx">The ANTLR IToken</param>
         internal LSLSourceCodeRange(IToken ctx)
@@ -86,7 +86,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Internal function for creating an LSLSourceCodeRange from an ANTLR ParserRuleContext.
+        /// Internal function for creating an <see cref="LSLSourceCodeRange"/> from an ANTLR ParserRuleContext.
         /// </summary>
         /// <param name="ctx">The ANTLR ParserRuleContext</param>
         internal LSLSourceCodeRange(ParserRuleContext ctx)
@@ -112,9 +112,9 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Creates a source code range from an ILSLReadOnlySyntaxTreeNode
+        /// Creates a source code range from an <see cref="ILSLReadOnlySyntaxTreeNode"/>
         /// </summary>
-        /// <param name="node">The syntax tree node to create the LSLSourceCodeRange from.</param>
+        /// <param name="node">The syntax tree node to create the <see cref="LSLSourceCodeRange"/> from.</param>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode node)
         {
             LineStart = node.SourceCodeRange.LineStart;
@@ -128,10 +128,10 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Creates a source code range that spans two ILSLReadOnlySyntaxTreeNode objects.
+        /// Creates a source code range that spans two <see cref="ILSLReadOnlySyntaxTreeNode"/> objects.
         /// </summary>
-        /// <param name="start">The ILSLReadOnlySyntaxTreeNode where the source code range starts.</param>
-        /// <param name="end">The ILSLReadOnlySyntaxTreeNode where the source code range ends.</param>
+        /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range starts.</param>
+        /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range ends.</param>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode start, ILSLReadOnlySyntaxTreeNode end)
         {
             LineStart = start.SourceCodeRange.LineStart;
@@ -266,7 +266,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
         /// <summary>
         /// Determines if this source code range object is exactly equal to another.  (All properties are equal)
-        /// If 'obj' is not an LSLSourceCodeRange object this function always returns false.
+        /// If 'obj' is not an <see cref="LSLSourceCodeRange"/> object this function always returns false.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -281,7 +281,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Derives a hash code for this LSLSourceCodeRange by using the HasIndexInfo, ColumnStart, LineStart and StartIndex properties.
+        /// Derives a hash code for this <see cref="LSLSourceCodeRange"/> by using the HasIndexInfo, ColumnStart, LineStart and StartIndex properties.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -291,10 +291,10 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Get a source code range for the first character in this LSLSourceCodeRange.
+        /// Get a source code range for the first character in this <see cref="LSLSourceCodeRange"/>.
         /// The return value is only relevant if HasIndexInfo is set to true.
         /// </summary>
-        /// <returns>The source code range of the first character in this LSLSourceCodeRange.</returns>
+        /// <returns>The source code range of the first character in this <see cref="LSLSourceCodeRange"/>.</returns>
         public LSLSourceCodeRange GetFirstCharRange()
         {
             return new LSLSourceCodeRange(LineStart, ColumnStart, LineStart, ColumnStart, StartIndex, StartIndex);
@@ -302,10 +302,10 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Get a source code range for the last character in this LSLSourceCodeRange.
+        /// Get a source code range for the last character in this <see cref="LSLSourceCodeRange"/>.
         /// The return value is only relevant if HasIndexInfo is set to true.
         /// </summary>
-        /// <returns>The source code range of the last character in this LSLSourceCodeRange.</returns>
+        /// <returns>The source code range of the last character in this <see cref="LSLSourceCodeRange"/>.</returns>
         public LSLSourceCodeRange GetLastCharRange()
         {
             return new LSLSourceCodeRange(LineEnd, ColumnEnd, LineEnd, ColumnEnd, StopIndex, StopIndex);
@@ -313,11 +313,11 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Extends this LSLSourceCodeRange to encompass another ILSLReadOnlySyntaxTreeNode.
-        /// This operation is only meaningful if ILSLReadOnlySyntaxTreeNode exists farther along in the source
-        /// code than the area that this LSLSourceCodeRange represents.
+        /// Extends this <see cref="LSLSourceCodeRange"/> to encompass another <see cref="ILSLReadOnlySyntaxTreeNode"/>.
+        /// This operation is only meaningful if <see cref="ILSLReadOnlySyntaxTreeNode"/> exists farther along in the source
+        /// code than the area that this <see cref="LSLSourceCodeRange"/> represents.
         /// </summary>
-        /// <param name="statement">The ILSLReadOnlySyntaxTreeNode to extend this LSLSourceCodeRange to.</param>
+        /// <param name="statement">The <see cref="ILSLReadOnlySyntaxTreeNode"/> to extend this <see cref="LSLSourceCodeRange"/> to.</param>
         public void ExtendTo(ILSLReadOnlySyntaxTreeNode statement)
         {
             LineEnd = statement.SourceCodeRange.LineEnd;

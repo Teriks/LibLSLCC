@@ -536,7 +536,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
         /// <summary>
         /// Visits the top level of a control statement chain during a syntax tree traversal.
-        /// ILSLControlStatementNode contains IF, ELSE-IF, and ELSE nodes as its children.
+        /// <see cref="ILSLControlStatementNode"/> contains IF, ELSE-IF, and ELSE nodes as its children.
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitIfStatement">VisitIfStatement is a child call of this visitor method.</seealso>
@@ -564,7 +564,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
         /// <summary>
         /// Visits an if statement node during a syntax tree traversal.
-        /// If statement nodes are children of ILSLControlStatementNode instances.
+        /// If statement nodes are children of <see cref="ILSLControlStatementNode"/> instances.
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitControlStatement">VisitControlStatement should call this function while visiting its children.</seealso>
@@ -581,7 +581,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
         /// <summary>
         /// Visits an else-if statement node during a syntax tree traversal.
-        /// Else-If statement nodes are children of ILSLControlStatementNode instances.
+        /// Else-If statement nodes are children of <see cref="ILSLControlStatementNode"/> instances.
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitControlStatement">VisitControlStatement should call this function while visiting its children.</seealso>
@@ -598,7 +598,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
         /// <summary>
         /// Visits an else statement node during a syntax tree traversal.
-        /// Else statement nodes are children of ILSLControlStatementNode instances.
+        /// Else statement nodes are children of <see cref="ILSLControlStatementNode"/> instances.
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitControlStatement">VisitControlStatement should call this function while visiting its children.</seealso>

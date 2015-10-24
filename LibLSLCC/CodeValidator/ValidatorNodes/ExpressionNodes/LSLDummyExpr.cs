@@ -95,16 +95,26 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
-            throw new NotImplementedException("Visited LSLDummyExpr");
+            throw new NotImplementedException("Visited LSLDummyExpr, Don't visit trees with syntax errors.");
         }
 
 
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+        /// <summary>
+        /// The return type of the expression. see: <see cref="LSLType" />
+        /// </summary>
         public LSLType Type { get; set; }
 
 
+
+        /// <summary>
+        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        /// </summary>
+        /// <value>
+        /// The type of the expression.
+        /// </value>
         public LSLExpressionType ExpressionType { get; set; }
 
 

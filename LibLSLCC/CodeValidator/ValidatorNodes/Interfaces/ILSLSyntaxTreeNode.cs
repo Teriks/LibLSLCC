@@ -79,7 +79,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Exceptions
 {
     /// <summary>
-    /// Thrown when LSLConstantSignature, LSLFunctionSignature or LSLEventSignature have their Name
-    /// set to a value that does not conform the LSL's symbol naming convention.
+    /// Thrown when <see cref="LSLLibraryConstantSignature"/>, <see cref="LSLFunctionSignature"/>, <see cref="LSLEventSignature"/> or <see cref="LSLParameter"/> 
+    /// have their Name set to a value that does not conform the LSL's symbol naming convention.
     /// </summary>
     [Serializable]
     public class LSLInvalidSymbolNameException : Exception

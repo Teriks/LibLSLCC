@@ -60,7 +60,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// Represents a library function signature returned from an implementation of ILSLLibraryDataProvider.
+    /// Represents a library function signature returned from an implementation of <see cref="ILSLLibraryDataProvider"/>.
     /// </summary>
     [XmlRoot("LibraryFunction")]
     public class LSLLibraryFunctionSignature : LSLFunctionSignature, IXmlSerializable, ILSLLibrarySignature
@@ -68,13 +68,11 @@ namespace LibLSLCC.CodeValidator.Components
         private HashMap<string, string> _properties = new HashMap<string, string>();
         private HashedSet<string> _subsets = new HashedSet<string>();
 
-        private LSLLibraryDataSubsetNameParser _subsetsParser = new
-            LSLLibraryDataSubsetNameParser();
 
         /// <summary>
         /// Construct a library function signature by copying the details from a basic function signature.
         /// </summary>
-        /// <param name="other">The basic LSLFunctionSignature to copy details from.</param>
+        /// <param name="other">The basic <see cref="LSLFunctionSignature"/> to copy details from.</param>
         public LSLLibraryFunctionSignature(LSLFunctionSignature other) : base(other)
         {
             DocumentationString = "";

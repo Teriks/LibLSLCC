@@ -44,6 +44,7 @@
 
 using System.IO;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 
 #endregion
 
@@ -62,7 +63,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Validates the code content of a stream and returns the top of the compilation unit syntax tree as a
-        ///     LSLCompilationUnitNode object, if parsing resulted in syntax errors the result will be null
+        ///     <see cref="LSLCompilationUnitNode"/> object, if parsing resulted in syntax errors the result will be null
         /// </summary>
         /// <param name="stream">The TextReader to parse code from</param>
         /// <returns>Top level node of an LSL syntax tree</returns>

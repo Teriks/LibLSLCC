@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 {
 
     /// <summary>
-    /// Regex tools for parsing LSLEventSignature objects from strings.
+    /// Regex tools for parsing <see cref="LSLEventSignature "/> objects from strings.
     /// </summary>
     public sealed class LSLEventSignatureRegex
     {
@@ -110,10 +110,10 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Parse an LSLEventSignature signature from a string.
+        /// Parse an <see cref="LSLEventSignature "/> signature from a string.
         /// </summary>
-        /// <param name="inString">The string to parse the LSLEventSignature from.</param>
-        /// <returns>The parsed LSLEventSignature.</returns>
+        /// <param name="inString">The string to parse the <see cref="LSLEventSignature "/> from.</param>
+        /// <returns>The parsed <see cref="LSLEventSignature "/>.</returns>
         public LSLEventSignature GetSignature(string inString)
         {
             return GetSignatures(inString).FirstOrDefault();
@@ -121,10 +121,10 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Returns all LSLEventSignature that could be parsed out of a given string.
+        /// Returns all <see cref="LSLEventSignature "/> that could be parsed out of a given string.
         /// </summary>
-        /// <param name="inString">The string to parse LSLEventSignature objects from.</param>
-        /// <returns>An enumerable of LSLEventSignature objects that were successfully parsed from the string.</returns>
+        /// <param name="inString">The string to parse <see cref="LSLEventSignature "/> objects from.</param>
+        /// <returns>An enumerable of <see cref="LSLEventSignature "/> objects that were successfully parsed from the string.</returns>
         public IEnumerable<LSLEventSignature> GetSignatures(string inString)
         {
             var matches = Regex.Matches(inString);

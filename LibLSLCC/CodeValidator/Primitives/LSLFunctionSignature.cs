@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         private string _name;
 
         /// <summary>
-        /// Construct an empty LSLFunctionSignature.  Only derived classes can do this.
+        /// Construct an empty <see cref="LSLFunctionSignature"/>.  Only derived classes can do this.
         /// </summary>
         protected LSLFunctionSignature()
         {
@@ -72,9 +72,9 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// Construct an LSLFunctionSignature by cloning another LSLFunctionSignature object.
+        /// Construct an <see cref="LSLFunctionSignature"/> by cloning another <see cref="LSLFunctionSignature"/> object.
         /// </summary>
-        /// <param name="other">The LSLFunctionSignature object to copy construct from.</param>
+        /// <param name="other">The <see cref="LSLFunctionSignature"/> object to copy construct from.</param>
         public LSLFunctionSignature(LSLFunctionSignature other)
         {
             Name = other.Name;
@@ -85,7 +85,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// Construct a function signature by providing an associated LSLType for the return type, a function Name and an optional enumerable of LSLParameter objects.
+        /// Construct a function signature by providing an associated <see cref="LSLType"/> for the return type, a function Name and an optional enumerable of <see cref="LSLParameter"/> objects.
         /// </summary>
         /// <param name="returnType"></param>
         /// <param name="name"></param>
@@ -246,7 +246,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// Add a new parameter to the function signature object
         /// </summary>
-        /// <param name="parameter">The LSLParameter object to add to the signature.</param>
+        /// <param name="parameter">The <see cref="LSLParameter"/> object to add to the signature.</param>
         /// <exception cref="ArgumentException">Thrown if more than one variadic parameter is added to the function signature.</exception>
         public void AddParameter(LSLParameter parameter)
         {
@@ -284,11 +284,11 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        ///     Determines if a given LSLFunctionSignature is a duplicate definition of this function signature.
+        ///     Determines if a given <see cref="LSLFunctionSignature"/> is a duplicate definition of this function signature.
         ///     The logic behind this is a bit different than SignatureMatches().
         ///     
         ///     If the given function signature has the same name, a differing return type and both functions have no parameters; than this function will return true
-        ///     and SignatureMatches() will not. 
+        ///     and <see cref="SignatureEquivalent(LSLFunctionSignature)"/> will not. 
         /// 
         ///     If the other signature is an overload that is ambiguous in all cases due to variadic parameters, this function returns true.
         /// </summary>
@@ -305,12 +305,12 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// This implementation of GetHashCode() uses the name of the LSLFunctionSignature, the ReturnType and the LSL Type/Variadic status of
+        /// This implementation of GetHashCode() uses the name of the <see cref="LSLFunctionSignature"/>, the <see cref="ReturnType"/> and the <see cref="LSLParameter.Type"/>/<see cref="LSLParameter.Variadic"/> status of
         /// the parameters, this means the Hash Code is linked the Function name, return Type and the Types/Variadic'ness of all its parameters.
         /// 
         /// Inherently, uniqueness is also determined by the number of parameters.
         /// </summary>
-        /// <returns>Hash code for this LSLFunctionSignature</returns>
+        /// <returns>Hash code for this <see cref="LSLFunctionSignature"/></returns>
         public override int GetHashCode()
         {
             var hash = 17;
@@ -326,7 +326,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// Equals(object obj) delegates to SignatureMatches(LSLFunctionSignature other)
+        /// Equals(object obj) delegates to <see cref="SignatureEquivalent(LSLFunctionSignature)"/>
         /// </summary>
         /// <param name="obj">The other function signature</param>
         /// <returns>Equality</returns>

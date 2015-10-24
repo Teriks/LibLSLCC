@@ -382,7 +382,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="left">The expression to preform the postfix operation on.</param>
         /// <param name="operation">The postfix operation preformed.</param>
-        /// <returns>An LSLExpressionValidatorResult object</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> object</returns>
         public LSLExpressionValidatorResult ValidatePostfixOperation(ILSLExprNode left,
             LSLPostfixOperationType operation)
         {
@@ -406,7 +406,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="right">The expression to preform the prefix operation on.</param>
         /// <param name="operation">The prefix operation preformed.</param>
-        /// <returns>An LSLExpressionValidatorResult object</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> object</returns>
         public LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLExprNode right)
         {
             if (right.HasErrors)
@@ -429,7 +429,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="from">The expression to preform the cast on.</param>
         /// <param name="castTo">The type that is being casted to.</param>
-        /// <returns>An LSLExpressionValidatorResult object</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> object</returns>
         public LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode from)
         {
             if (from.HasErrors)
@@ -454,7 +454,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="left">The expression to on the left of the binary operation.</param>
         /// <param name="operation">The binary operation to preform.</param>
         /// <param name="right">The expression to on the right of the binary operation.</param>
-        /// <returns>An LSLExpressionValidatorResult object</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> object</returns>
         public LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, LSLBinaryOperationType operation,
             ILSLExprNode right)
         {

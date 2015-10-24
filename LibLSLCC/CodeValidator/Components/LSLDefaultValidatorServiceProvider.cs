@@ -49,12 +49,12 @@ using LibLSLCC.CodeValidator.Components.Interfaces;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// The default implementation of ILSLValidatorServiceProvider for the library
+    /// The default implementation of <see cref="ILSLValidatorServiceProvider"/> for the library
     /// </summary>
     public class LSLDefaultValidatorServiceProvider : ILSLValidatorServiceProvider
     {
         /// <summary>
-        /// Construct the default implementation of ILSLValidatorServiceProvider for the library
+        /// Construct the default implementation of <see cref="ILSLValidatorServiceProvider"/> for the library
         /// </summary>
         public LSLDefaultValidatorServiceProvider()
         {
@@ -70,32 +70,32 @@ namespace LibLSLCC.CodeValidator.Components
 
         /// <summary>
         /// The default implementation uses a LSLDefaultExpressionValidator(); instance.
+        /// see: <see cref="LSLDefaultExpressionValidator"/>
         /// </summary>
-        /// <see cref="LSLDefaultExpressionValidator"/>
         public ILSLExpressionValidator ExpressionValidator { get; private set; }
 
         /// <summary>
         /// The default implementation uses a LSLDefaultLibraryDataProvider(false, LSLLibraryBaseData.StandardLsl); instance.
+        /// see: <see cref="LSLDefaultLibraryDataProvider"/>
         /// </summary>
-        /// <see cref="LSLDefaultLibraryDataProvider"/>
         public ILSLLibraryDataProvider LibraryDataProvider { get; private set; }
 
         /// <summary>
         /// The default implementation uses a LSLDefaultStringPreProcessor(); instance.
+        /// see: <see cref="LSLDefaultStringPreProcessor"/>
         /// </summary>
-        /// <see cref="LSLDefaultStringPreProcessor"/>
         public ILSLStringPreProcessor StringLiteralPreProcessor { get; private set; }
 
         /// <summary>
         /// The default implementation uses a LSLDefaultSyntaxErrorListener(); instance.
+        /// see: <see cref="LSLDefaultSyntaxErrorListener"/>
         /// </summary>
-        /// <see cref="LSLDefaultSyntaxErrorListener"/>
         public ILSLSyntaxErrorListener SyntaxErrorListener { get; private set; }
 
         /// <summary>
         /// The default implementation uses a LSLDefaultSyntaxWarningListener(); instance.
+        /// see: <see cref="LSLDefaultSyntaxWarningListener"/>
         /// </summary>
-        /// <see cref="LSLDefaultSyntaxWarningListener"/>
         public ILSLSyntaxWarningListener SyntaxWarningListener { get; private set; }
     }
 }

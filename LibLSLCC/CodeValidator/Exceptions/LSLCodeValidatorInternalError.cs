@@ -52,7 +52,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
 {
 
     /// <summary>
-    /// Thrown when LSLCodeValidator experiences an un-expected exception.
+    /// Thrown when <see cref="LSLCodeValidator"/> experiences an un-expected exception.
     /// </summary>
     [Serializable]
     public class LSLCodeValidatorInternalError : Exception

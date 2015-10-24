@@ -56,7 +56,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     {
 
         /// <summary>
-        /// Construct an LSLDeadCodeSegment with the given LSLDeadCodeType
+        /// Construct an <see cref="LSLDeadCodeSegment"/> with the given <see cref="LSLDeadCodeType"/>
         /// </summary>
         /// <param name="deadCodeType"></param>
         public LSLDeadCodeSegment(LSLDeadCodeType deadCodeType)
@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// The type of dead code that this LSLDeadCodeSegment represents.
+        /// The type of dead code that this <see cref="LSLDeadCodeSegment"/> represents.
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; private set; }
     }

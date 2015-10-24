@@ -186,20 +186,20 @@ namespace LibLSLCC.CodeValidator.Enums
     }
 
     /// <summary>
-    /// LSLBinaryOperationType extensions for parsing LSLBinaryOperationType's from strings.
+    /// <see cref="LSLBinaryOperationType"/> extensions for parsing <see cref="LSLBinaryOperationType"/>'s from strings.
     /// As well as converting them into strings.
     /// 
-    /// This class also contains some methods for group classifications of LSLBinaryOperationType.
+    /// This class also contains some methods for group classifications of <see cref="LSLBinaryOperationType"/>.
     /// Such as IsModifyAssign();
     /// </summary>
     public static class LSLBinaryOperationTypeTools
     {
 
         /// <summary>
-        /// Determines if the LSLBinaryOperationType is a form of modifying assignment that is not just a plain assign operation.
+        /// Determines if the <see cref="LSLBinaryOperationType"/> is a form of modifying assignment that is not just a plain assign operation.
         /// </summary>
-        /// <param name="type">The LSLBinaryOperationType to test.</param>
-        /// <returns>True if the provided LSLBinaryOperationType is a ModifyAssignOperation such as (+=).  False if it is a plain assignment operator, or other type of operator.</returns>
+        /// <param name="type">The <see cref="LSLBinaryOperationType"/> to test.</param>
+        /// <returns>True if the provided <see cref="LSLBinaryOperationType"/> is a ModifyAssignOperation such as (+=).  False if it is a plain assignment operator, or other type of operator.</returns>
         public static bool IsModifyAssign(this LSLBinaryOperationType type)
         {
             return type == LSLBinaryOperationType.AddAssign ||
@@ -211,11 +211,11 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Determines if the LSLBinaryOperationType is a direct assignment, or a modifying assignment operation.
-        /// Effectively: (type == LSLBinaryOperationType.Assign || IsModifyAssign(type))
+        /// Determines if the <see cref="LSLBinaryOperationType"/> is a direct assignment, or a modifying assignment operation.
+        /// Effectively: (type == <see cref="LSLBinaryOperationType.Assign"/> || <see cref="IsModifyAssign(LSLBinaryOperationType)"/>)
         /// </summary>
-        /// <param name="type">The LSLBinaryOperationType to test.</param>
-        /// <returns>True if the provided LSLBinaryOperationType is either a direct assignment operation, or is a modifying assignment operation.  False if otherwise.</returns>
+        /// <param name="type">The <see cref="LSLBinaryOperationType"/> to test.</param>
+        /// <returns>True if the provided <see cref="LSLBinaryOperationType"/> is either a direct assignment operation, or is a modifying assignment operation.  False if otherwise.</returns>
         public static bool IsAssignOrModifyAssign(this LSLBinaryOperationType type)
         {
             return type == LSLBinaryOperationType.Assign || IsModifyAssign(type);
@@ -223,11 +223,11 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Parses an LSLBinaryOperationType from a given string.  Accepted strings are any of LSL's binary operators, without any whitespace characters added.
+        /// Parses an <see cref="LSLBinaryOperationType"/> from a given string.  Accepted strings are any of LSL's binary operators, without any whitespace characters added.
         /// </summary>
-        /// <param name="operationString">The operation string to turn into an LSLBinaryOperationType.</param>
+        /// <param name="operationString">The operation string to turn into an <see cref="LSLBinaryOperationType"/>.</param>
         /// <exception cref="ArgumentException">Thrown when 'operationString' does not contain a valid string representation of a binary operator that exist's in LSL.</exception>
-        /// <returns>The parsed LSLBinaryOperationType.</returns>
+        /// <returns>The parsed <see cref="LSLBinaryOperationType"/>.</returns>
         public static LSLBinaryOperationType ParseFromOperator(string operationString)
         {
             if (operationString == "=")
@@ -332,11 +332,11 @@ namespace LibLSLCC.CodeValidator.Enums
         }
 
         /// <summary>
-        /// Converts an LSLBinaryOperationType into is source code equivalent string.
+        /// Converts an <see cref="LSLBinaryOperationType"/> into is source code equivalent string.
         /// </summary>
-        /// <param name="type">The LSLBinaryOperationType to convert to a string.</param>
-        /// <returns>The source code equivalent string representation of the provided LSLBinaryOperationType.</returns>
-        /// <exception cref="ArgumentException">Thrown if the LSLBinaryOperationType provided is equal to LSLBinaryOperationType.Error</exception>
+        /// <param name="type">The <see cref="LSLBinaryOperationType"/> to convert to a string.</param>
+        /// <returns>The source code equivalent string representation of the provided <see cref="LSLBinaryOperationType"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown if the <see cref="LSLBinaryOperationType"/> provided is equal to <see cref="LSLBinaryOperationType.Error"/></exception>
         public static string ToOperatorString(this LSLBinaryOperationType type)
         {
             switch (type)

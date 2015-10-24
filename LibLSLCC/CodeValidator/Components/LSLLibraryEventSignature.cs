@@ -60,7 +60,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// Represents a library event handler returned from an ILSLLibraryDataProvider implementation.
+    /// Represents a library event handler returned from an <see cref="ILSLLibraryDataProvider"/> implementation.
     /// </summary>
     [XmlRoot("EventHandler")]
     public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable, ILSLLibrarySignature
@@ -68,17 +68,15 @@ namespace LibLSLCC.CodeValidator.Components
         private HashMap<string, string> _properties = new HashMap<string, string>();
         private HashedSet<string> _subsets = new HashedSet<string>();
 
-        private LSLLibraryDataSubsetNameParser _subsetsParser = new
-            LSLLibraryDataSubsetNameParser();
 
         private LSLLibraryEventSignature()
         {
         }
 
         /// <summary>
-        /// Construct an LSLLibraryEventSignature by copying the signature details from an LSLEventSignature object.
+        /// Construct an LSLLibraryEventSignature by copying the signature details from an <see cref="LSLEventSignature "/> object.
         /// </summary>
-        /// <param name="sig">The LSLEventSignature object to copy signatures details from.</param>
+        /// <param name="sig">The <see cref="LSLEventSignature "/> object to copy signatures details from.</param>
         public LSLLibraryEventSignature(LSLEventSignature sig)
             : base(sig)
         {
@@ -100,7 +98,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Construct an LSLLibraryEventSignature by providing a Name and a list of LSLParameter's that belong to the signature.
+        /// Construct an LSLLibraryEventSignature by providing a Name and a list of <see cref="LSLParameter"/> objects that belong to the signature.
         /// </summary>
         /// <param name="name">The name of the event handler.</param>
         /// <param name="parameters">The list of parameters that belong to this signature.</param>

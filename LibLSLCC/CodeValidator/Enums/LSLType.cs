@@ -97,16 +97,16 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
     /// <summary>
-    /// Extensions for converting LSLType's to strings and also parsing them.
+    /// Extensions for converting <see cref="LSLType"/>'s to strings and also parsing them.
     /// </summary>
     public static class LSLTypeTools
     {
         /// <summary>
-        ///     Convert an LSL type name into an LSLType representation (case insensitive).
+        ///     Convert an LSL type name into an <see cref="LSLType"/> representation (case insensitive).
         ///     void is not recognized
         /// </summary>
         /// <param name="typeName">LSL Type name as string.</param>
-        /// <returns>An LSLType representation of said type name.</returns>
+        /// <returns>An <see cref="LSLType"/> representation of said type name.</returns>
         /// <exception cref="ArgumentException">If typeName was not recognized.</exception>
         /// <exception cref="ArgumentNullException">If typeName was null.</exception>
         public static LSLType FromLSLTypeString(string typeName)
@@ -141,11 +141,11 @@ namespace LibLSLCC.CodeValidator.Enums
         }
 
         /// <summary>
-        ///     Convert an LSLType to an LSL type string.
+        ///     Convert an <see cref="LSLType"/> to an LSL type string.
         /// </summary>
-        /// <param name="type">LSLType to convert.</param>
+        /// <param name="type"><see cref="LSLType"/> to convert.</param>
         /// <returns>LSL type string representation.</returns>
-        /// <exception cref="ArgumentException">If LSLType is LSLType.Void.</exception>
+        /// <exception cref="ArgumentException">If <see cref="LSLType"/> is <see cref="LSLType.Void"/>.</exception>
         public static string ToLSLTypeString(this LSLType type)
         {
             if (type == LSLType.Void)

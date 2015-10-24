@@ -108,7 +108,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
         /// <summary>
-        /// The LSLType that represents the type the expression is being cast to.
+        /// The <see cref="LSLType"/> that represents the type the expression is being cast to.
         /// </summary>
         public LSLType CastToType
         {
@@ -184,7 +184,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -195,16 +195,20 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+
         /// <summary>
-        /// The return type of the expression.
+        /// The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type { get; private set; }
 
 
+
         /// <summary>
-        /// The expression type/classification of the expression.
-        /// <see cref="LSLExpressionType"/>
+        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
+        /// <value>
+        /// The type of the expression.
+        /// </value>
         public LSLExpressionType ExpressionType
         {
             get { return LSLExpressionType.TypecastExpression; }

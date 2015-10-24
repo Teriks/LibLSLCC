@@ -9,7 +9,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 {
 
     /// <summary>
-    /// A tool for matching comparing LSLFunctionSignature objects and preforming overload resolution across multiple LSLFunctionSignatures.
+    /// A tool for matching comparing <see cref="LSLFunctionSignature"/> objects and preforming overload resolution across multiple <see cref="LSLFunctionSignature"/> objects.
     /// </summary>
     public static class LSLFunctionSignatureMatcher
     {
@@ -94,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             public IReadOnlyGenericArray<T> Matches { get; private set; }
 
             /// <summary>
-            /// If multiple matches were found (Ambigious is set to true) then this will be null
+            /// If multiple matches were found (Ambiguous is set to true) then this will be null
             /// This will also be null if no matches were found at all
             /// </summary>
             public T MatchingOverload {
@@ -133,7 +133,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="expressionValidator">The expression validator, which is used to determine if an expression can be passed into a parameter of a certain type.</param>
         /// <param name="functionSignatures">The function signatures to search through.</param>
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
-        /// <returns>A matching LSLFunctionSignature overload or null.</returns>
+        /// <returns>A matching <see cref="LSLFunctionSignature"/> overload or null.</returns>
         public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator) where T : LSLFunctionSignature
         {
             //if there are multiple matches, then the overload is ambiguous
@@ -149,12 +149,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Find a matching overload from a list of function signatures, given the parameter expressions. return null if none is found.
         /// </summary>
         /// <param name="typeComparer">
-        /// A function used to compare an LSLParameter to an ILSLExprNode to check for a match.
-        /// Should return true if the ILSLExprNode can be passed into the LSLParameter.
+        /// A function used to compare an <see cref="LSLParameter"/> to another <see cref="ILSLExprNode"/> to check for a match.
+        /// Should return true if the <see cref="ILSLExprNode"/> can be passed into the <see cref="LSLParameter"/>.
         /// </param>
         /// <param name="functionSignatures">The function signatures to search through.</param>
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
-        /// <returns>A matching LSLFunctionSignature overload or null.</returns>
+        /// <returns>A matching <see cref="LSLFunctionSignature"/> overload or null.</returns>
         public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer) where T : LSLFunctionSignature
         {
             var matches =

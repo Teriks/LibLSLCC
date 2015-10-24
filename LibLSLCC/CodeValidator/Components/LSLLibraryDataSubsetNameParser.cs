@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator.Components
     /// and elsewhere in the library.
     /// </summary>
 
-    public class LSLLibraryDataSubsetNameParser 
+    public static class LSLLibraryDataSubsetNameParser 
     {
         private static readonly Regex SubsetName = new Regex(@"^([a-zA-Z]+[a-zA-Z_0-9\-]*)$");
 

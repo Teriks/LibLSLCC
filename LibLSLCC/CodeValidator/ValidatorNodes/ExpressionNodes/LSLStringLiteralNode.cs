@@ -73,11 +73,11 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         /// <summary>
         /// The pre-processed text of the string literal.
-        /// 
-        /// LSLCodeValidator relies on an implementation of ILSLStringPreProcessor to fill this value out by passing ILSLStringPreProcessor
-        /// the raw text for the string literal and assigning the string it produces to this property.
-        /// <see cref="ILSLStringPreProcessor"/>
         /// </summary>
+        /// <remarks>
+        /// <see cref="LSLCodeValidator"/> relies on an implementation of <see cref="ILSLStringPreProcessor"/> to fill this value out by passing <see cref="ILSLStringPreProcessor"/>
+        /// the raw text for the string literal and assigning the string it produces to this property.
+        /// </remarks>
         public string PreProccessedText { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -86,7 +86,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

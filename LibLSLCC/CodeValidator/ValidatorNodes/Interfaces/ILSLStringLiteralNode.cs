@@ -54,7 +54,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// <summary>
         /// The pre-processed text of the string literal.
         /// 
-        /// LSLCodeValidator relies on an implementation of ILSLStringPreProcessor to fill this value out by passing ILSLStringPreProcessor
+        /// <see cref="LSLCodeValidator"/> relies on an implementation of <see cref="ILSLStringPreProcessor"/> to fill this value out by passing <see cref="ILSLStringPreProcessor"/>
         /// the raw text for the string literal and assigning the string it produces to this property.
         /// <see cref="ILSLStringPreProcessor"/>
         /// </summary>

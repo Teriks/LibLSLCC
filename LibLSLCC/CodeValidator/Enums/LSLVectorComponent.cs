@@ -70,13 +70,13 @@ namespace LibLSLCC.CodeValidator.Enums
     }
 
     /// <summary>
-    /// LSLVectorComponent extension methods for converting the LSLVectorComponent into a properly formed string and back.
+    /// <see cref="LSLVectorComponent"/> extension methods for converting the <see cref="LSLVectorComponent"/> into a properly formed string and back.
     /// </summary>
     public static class LSLVectorComponentTools
     {
 
         /// <summary>
-        /// Converts the LSLVectorComponent into a name reference that could be used on the right side of the dot operator in LSL.
+        /// Converts the <see cref="LSLVectorComponent"/> into a name reference that could be used on the right side of the dot operator in LSL.
         /// </summary>
         /// <param name="component"></param>
         /// <returns></returns>
@@ -87,7 +87,7 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Converts a string into an LSLVectorComponent.
+        /// Converts a string into an <see cref="LSLVectorComponent"/>.
         /// </summary>
         /// <param name="name"></param>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is null.</exception>

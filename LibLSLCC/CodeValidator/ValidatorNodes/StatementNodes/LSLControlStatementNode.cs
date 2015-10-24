@@ -347,7 +347,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -363,7 +363,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         ///     otherwise null.  A constant jump is a singular jump to the same label
         ///     from every possible branch of the control chain. meaning the jump
         ///     happens in a constant manner regardless of which branch is taken.
-        ///     DeterminingJump will point to the LSLJumpStatementNode in the 'if' code scope.
+        ///     DeterminingJump will point to the <see cref="LSLJumpStatementNode"/> in the 'if' code scope.
         ///     EffectiveJumpStatement will point to the control statement, because it can effectively
         ///     be considered a jump statement since it will always cause a jump to a known label to occur.
         ///     The label that this control statement jumps to can be found with DeterminingJump.JumpTarget.

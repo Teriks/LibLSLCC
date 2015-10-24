@@ -51,23 +51,23 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
     /// <summary>
-    /// An interface for a strategy that provides data about the standard LSL library to LSLCodeValidator
+    /// An interface for a strategy that provides data about the standard LSL library to <see cref="LSLCodeValidator"/>
     /// </summary>
     public interface ILSLLibraryDataProvider
     {
 
         /// <summary>
-        ///     Enumerable of event handlers supported according to this data provider
+        ///     Enumerable of <see cref="LSLLibraryEventSignature"/> describing the event handlers supported according to this data provider
         /// </summary>
         IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers { get; }
 
         /// <summary>
-        ///     Enumerable of the LibraryFunctions defined according to this data provider
+        ///     Enumerable of the <see cref="LSLLibraryFunctionSignature"/> overloads defined according to this data provider
         /// </summary>
         IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LibraryFunctions { get; }
 
         /// <summary>
-        ///     Enumerable of the LibraryConstants defined according to this data provider
+        ///     Enumerable of the <see cref="LibraryConstants"/> defined according to this data provider
         /// </summary>
         IEnumerable<LSLLibraryConstantSignature> LibraryConstants { get; }
 
@@ -79,12 +79,12 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         bool EventHandlerExist(string name);
 
         /// <summary>
-        ///     Return an LSLEventHandlerSignature object describing an event handler signature;
+        ///     Return an <see cref="LSLLibraryEventSignature"/> object describing an event handler signature;
         ///     if the event handler with the given name exists, otherwise null.
         /// </summary>
         /// <param name="name">Name of the event handler</param>
         /// <returns>
-        ///     An LSLEventHandlerSignature object describing the given event handlers signature,
+        ///     An <see cref="LSLLibraryEventSignature"/> object describing the given event handlers signature,
         ///     or null if the event handler does not exist.
         /// </returns>
         LSLLibraryEventSignature GetEventHandlerSignature(string name);
@@ -107,7 +107,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
         /// <summary>
-        /// Returns true if the library data provider contains a function signature where existingSignature.DefinitionIsDuplicate(signatureToTest) is true
+        /// Returns true if the library data provider contains a function signature where <see cref="LSLFunctionSignature.DefinitionIsDuplicate"/> is true for the given <see cref="LSLFunctionSignature"/>
         /// </summary>
         /// <param name="signatureToTest">The signature to use as search criteria.</param>
         /// <returns>True if the library data provider contains a function signature where existingSignature.DefinitionIsDuplicate(signature) is true</returns>
@@ -116,12 +116,12 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
         /// <summary>
-        ///     Return an LSLFunctionSignature list with the overload signatures of a function with the given name.
+        ///     Return an <see cref="LSLFunctionSignature"/> list with the overload signatures of a function with the given name.
         ///     If the function does not exist, null is returned.  If the function exist but is not overloaded only a single item will be returned.
         /// </summary>
         /// <param name="name">Name of the library function.</param>
         /// <returns>
-        ///     An LSLFunctionSignature list object describing the given library functions signatures,
+        ///     An <see cref="LSLFunctionSignature"/> list object describing the given library functions signatures,
         ///     or null if the library function does not exist.
         /// </returns>
         IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name);
@@ -129,12 +129,15 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
         /// <summary>
-        /// Return a LSLLibraryFunctionSignature from this object where signature.SignatureMatch(signatureToTest) is true,
-        /// or null if no such LSLLibraryFunctionSignature exists in this provider.
+        /// Return a <see cref="LSLLibraryFunctionSignature"/> from this object where <see cref="LSLFunctionSignature.SignatureEquivalent"/> is true for the given <see cref="LSLFunctionSignature"/>,
+        /// or null if no such <see cref="LSLLibraryFunctionSignature"/> exists in this provider.
         /// </summary>
+        /// <remarks>
+        /// see: <see cref="LSLFunctionSignature.SignatureEquivalent"/>
+        /// </remarks>
         /// <param name="signatureToTest">The signature to use as search criteria.</param>
         /// <returns>
-        /// An LSLFunctionSignature which has the same signature of signatureToTest, or null if none exist.
+        /// An <see cref="LSLFunctionSignature"/> which has the same signature of signatureToTest, or null if none exist.
         /// </returns>
         LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest);
 
@@ -147,11 +150,11 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         bool LibraryConstantExist(string name);
 
         /// <summary>
-        ///     Return an LSLLibraryConstantSignature object describing the signature of a library constant
+        ///     Return an <see cref="LSLLibraryConstantSignature"/> object describing the signature of a library constant
         /// </summary>
         /// <param name="name">Name of the library constant</param>
         /// <returns>
-        ///     An LSLLibraryConstantSignature object describing the given constants signature,
+        ///     An <see cref="LSLLibraryConstantSignature"/> object describing the given constants signature,
         ///     or null if the constant is not defined
         /// </returns>
         LSLLibraryConstantSignature GetLibraryConstantSignature(string name);

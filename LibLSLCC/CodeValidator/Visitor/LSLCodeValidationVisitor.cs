@@ -2718,8 +2718,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
         /// <summary>
-        /// Validate that a LSLFunctionSignature matches up with the parameters that are attempting to be passed into it.
-        /// This function generates SyntaxErrorListener events
+        /// Validate that a <see cref="LSLFunctionSignature"/> matches up with the parameters that are attempting to be passed into it.
+        /// This function generates <see cref="SyntaxErrorListener"/> events
         /// </summary>
         /// <param name="context">The ANTLR context for the parsed function call.</param>
         /// <param name="functionSignature">The function signature of the function call being tested.</param>
@@ -2763,7 +2763,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
         /// <summary>
-        /// Find a matching overload from a list of function signatures, generate SyntaxErrors using the SyntaxErrorListener if none is found.
+        /// Find a matching overload from a list of function signatures, generate SyntaxErrors using the <see cref="SyntaxErrorListener"/> if none is found.
         /// 
         /// Returns null if no overload is found.
         /// </summary>

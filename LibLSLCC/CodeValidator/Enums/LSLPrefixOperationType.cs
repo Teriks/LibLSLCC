@@ -91,18 +91,18 @@ namespace LibLSLCC.CodeValidator.Enums
     }
 
     /// <summary>
-    /// LSLPrefixOperationType extensions for converting LSLPrefixOperationType from source code string representation
+    /// <see cref="LSLPrefixOperationType"/> extensions for converting <see cref="LSLPrefixOperationType"/> from source code string representation
     /// and back.
     /// </summary>
     public static class LSLPrefixOperationTypeTools
     {
 
         /// <summary>
-        /// Converts the provided LSLPrefixOperationType to its source code string representation.
+        /// Converts the provided <see cref="LSLPrefixOperationType"/> to its source code string representation.
         /// </summary>
-        /// <param name="type">The LSLPrefixOperationType to convert to a string.</param>
-        /// <exception cref="ArgumentException">Thrown if the LSLPrefixOperationType provided was equal to LSLPrefixOperationType.Error.</exception>
-        /// <returns>The source code string representation of the LSLPrefixOperationType.</returns>
+        /// <param name="type">The <see cref="LSLPrefixOperationType"/> to convert to a string.</param>
+        /// <exception cref="ArgumentException">Thrown if the <see cref="LSLPrefixOperationType"/> provided was equal to <see cref="LSLPrefixOperationType.Error"/>.</exception>
+        /// <returns>The source code string representation of the <see cref="LSLPrefixOperationType"/>.</returns>
         public static string ToOperatorString(this LSLPrefixOperationType type)
         {
             switch (type)
@@ -128,12 +128,12 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Parses a LSLPrefixOperationType from its source code string representation.
+        /// Parses a <see cref="LSLPrefixOperationType"/> from its source code string representation.
         /// </summary>
-        /// <param name="operationString">The string to attempt to parse an LSLPrefixOperationType from.</param>
+        /// <param name="operationString">The string to attempt to parse an <see cref="LSLPrefixOperationType"/> from.</param>
         /// <exception cref="ArgumentNullException">Thrown if 'operationString' is null.</exception>
         /// <exception cref="ArgumentException">Thrown if 'operationString' was not a valid source code string representation of an LSL prefix operator.</exception>
-        /// <returns>The parsed LSLPrefixOperationType.</returns>
+        /// <returns>The parsed <see cref="LSLPrefixOperationType"/>.</returns>
         public static LSLPrefixOperationType ParseFromOperator(string operationString)
         {
             if (string.IsNullOrEmpty(operationString))

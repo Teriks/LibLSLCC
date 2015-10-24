@@ -43,6 +43,7 @@
 #region Imports
 
 using System;
+using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 
 #endregion
 
@@ -50,7 +51,7 @@ namespace LibLSLCC.CodeValidator.Enums
 {
 
     /// <summary>
-    /// Represents the component accessed by an LSLTupleAccessorNode syntax tree node.
+    /// Represents the component accessed by an <see cref="LSLTupleAccessorNode"/> syntax tree node.
     /// </summary>
     public enum LSLTupleComponent
     {
@@ -77,17 +78,17 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
     /// <summary>
-    /// LSLTupleComponent extensions for converting LSLTupleComponent to and from its source code string equivalent.
+    /// <see cref="LSLTupleComponent"/> extensions for converting <see cref="LSLTupleComponent"/> to and from its source code string equivalent.
     /// </summary>
     public static class LSLTupleComponentTools
     {
 
         /// <summary>
-        /// Returns the source code string equivalent of the given LSLTupleComponent.
+        /// Returns the source code string equivalent of the given <see cref="LSLTupleComponent"/>.
         /// Effectively the enum name as lowercase.
         /// </summary>
-        /// <param name="component">The LSLTupleComponent to be converted to a string.</param>
-        /// <returns>The source code equivalent string for the given LSLTupleComponent.</returns>
+        /// <param name="component">The <see cref="LSLTupleComponent"/> to be converted to a string.</param>
+        /// <returns>The source code equivalent string for the given <see cref="LSLTupleComponent"/>.</returns>
         public static string ToComponentName(this LSLTupleComponent component)
         {
             return component.ToString().ToLower();
@@ -95,12 +96,12 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Parses and LSLTupleComponent from its source code string equivalent.
+        /// Parses and <see cref="LSLTupleComponent"/> from its source code string equivalent.
         /// </summary>
-        /// <param name="name">The string to parse the LSLTupleComponent from.</param>
+        /// <param name="name">The string to parse the <see cref="LSLTupleComponent"/> from.</param>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is null.</exception>
-        /// <exception cref="ArgumentException">Thrown if 'name' is not a valid source code string equivalent to any LSLTupleComponent.</exception>
-        /// <returns>The parsed LSLTupleComponent.</returns>
+        /// <exception cref="ArgumentException">Thrown if 'name' is not a valid source code string equivalent to any <see cref="LSLTupleComponent"/>.</exception>
+        /// <returns>The parsed <see cref="LSLTupleComponent"/>.</returns>
         public static LSLTupleComponent ParseComponentName(string name)
         {
             if (string.IsNullOrEmpty(name))

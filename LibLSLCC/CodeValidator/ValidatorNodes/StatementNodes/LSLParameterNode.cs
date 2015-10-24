@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         /// <summary>
-        /// The LSLType associated with the parameter.
+        /// The <see cref="LSLType"/> associated with the parameter.
         /// </summary>
         public LSLType Type
         {
@@ -96,7 +96,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         /// <summary>
-        /// The string representation of the LSLType for the parameter, taken from the source code.
+        /// The string representation of the <see cref="LSLType"/> for the parameter, taken from the source code.
         /// </summary>
         public string TypeString
         {
@@ -104,7 +104,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
         }
 
         /// <summary>
-        /// The zero based index of the parameter definition in its parent ILSLParameterListNode.
+        /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
         /// </summary>
         public int ParameterIndex { get; set; }
 
@@ -129,7 +129,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

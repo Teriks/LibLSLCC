@@ -51,9 +51,9 @@ namespace LibLSLCC.CodeValidator.Primitives
 {
 
     /// <summary>
-    /// Represents a flat code segment, it is basically a write only collection for ILSLReadOnlyCodeStatement objects.
-    /// The object keeps track of the starting and ending ILSLReadOnlyCodeStatement in the code segment, as well as the source
-    /// code range that all of the ILSLReadOnlyCodeStatement's occupy.
+    /// Represents a flat code segment, it is basically a write only collection for <see cref="ILSLReadOnlyCodeStatement"/> objects.
+    /// The object keeps track of the starting and ending <see cref="ILSLReadOnlyCodeStatement"/> in the code segment, as well as the source
+    /// code range that all of the <see cref="ILSLReadOnlyCodeStatement"/> object occupy.
     /// </summary>
     public class LSLCodeSegment
     {
@@ -72,22 +72,22 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// The source code range that encompasses all ILSLReadOnlyCodeStatement objects in the LSLCodeStatement
+        /// The source code range that encompasses all <see cref="ILSLReadOnlyCodeStatement"/> objects in the LSLCodeStatement
         /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
         /// <summary>
-        /// The ILSLReadOnlyCodeStatement at the start of the code segment.
+        /// The <see cref="ILSLReadOnlyCodeStatement"/> at the start of the code segment.
         /// </summary>
         public ILSLReadOnlyCodeStatement StartNode { get; private set; }
 
         /// <summary>
-        /// The ILSLReadOnlyCodeStatement at the end of the code segment.
+        /// The <see cref="ILSLReadOnlyCodeStatement"/> at the end of the code segment.
         /// </summary>
         public ILSLReadOnlyCodeStatement EndNode { get; private set; }
 
         /// <summary>
-        /// All ILSLReadOnlyCodeStatement in the code segment, in order of definition.
+        /// All <see cref="ILSLReadOnlyCodeStatement"/> in the code segment, in order of definition.
         /// </summary>
         public IReadOnlyGenericArray<ILSLReadOnlyCodeStatement> StatementNodes
         {
@@ -96,9 +96,9 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Adds an ILSLReadOnlyCodeStatement to the LSLCodeSegment object.
+        /// Adds an <see cref="ILSLReadOnlyCodeStatement"/> to the <see cref="LSLCodeSegment"/> object.
         /// </summary>
-        /// <param name="statement">The ILSLReadOnlyCodeStatement to add.</param>
+        /// <param name="statement">The <see cref="ILSLReadOnlyCodeStatement"/> to add.</param>
         public virtual void AddStatement(ILSLReadOnlyCodeStatement statement)
         {
             EndNode = statement;

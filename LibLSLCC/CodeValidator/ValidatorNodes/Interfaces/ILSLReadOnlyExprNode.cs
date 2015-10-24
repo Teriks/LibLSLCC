@@ -54,15 +54,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
     public interface ILSLReadOnlyExprNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// The return type of the expression.
+        /// The return type of the expression. see: <see cref="LSLType"/>
         /// </summary>
         LSLType Type { get; }
 
 
         /// <summary>
-        /// The expression type/classification of the expression.
-        /// <see cref="LSLExpressionType"/>
+        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
+        /// <value>
+        /// The type of the expression.
+        /// </value>
         LSLExpressionType ExpressionType { get; }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         /// Deep clone the expression node into a new node.
         /// This should deep clone all of the node's children as well.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Cloned <see cref="ILSLReadOnlyExprNode"/></returns>
         ILSLReadOnlyExprNode Clone();
     }
 }

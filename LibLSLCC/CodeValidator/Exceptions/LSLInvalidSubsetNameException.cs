@@ -6,6 +6,9 @@ using System.Text;
 
 namespace LibLSLCC.CodeValidator.Exceptions
 {
+    /// <summary>
+    /// Thrown by functions that deal with subset names, when an invalid format for a subset name is encountered
+    /// </summary>
     [Serializable]
     public class LSLInvalidSubsetNameException : Exception
     {

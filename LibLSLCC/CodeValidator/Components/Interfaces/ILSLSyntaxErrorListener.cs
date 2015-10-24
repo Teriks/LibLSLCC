@@ -62,7 +62,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="line">The line on which the error occurred.</param>
         /// <param name="column">The character column at which the error occurred.</param>
-        /// <param name="message">The parsing error messaged passed along from the parsing backend.</param>
+        /// <param name="message">The parsing error messaged passed along from the parsing back end.</param>
         void GrammarLevelSyntaxError(int line, int column, string message);
 
 
@@ -436,17 +436,17 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         void DefinedVariableInNonScopeBlock(LSLSourceCodeRange location);
 
         /// <summary>
-        /// An illegal character was found inside of a string literal according to the current ILSLStringPreProccessor instance.
+        /// An illegal character was found inside of a string literal according to the current <see cref="ILSLStringPreProcessor"/> instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
+        /// <param name="err">The generated character error object from the <see cref="ILSLStringPreProcessor"/> instance.</param>
         void IllegalStringCharacter(LSLSourceCodeRange location, LSLStringCharacterError err);
 
         /// <summary>
-        /// An invalid escape sequence was found inside of a string literal according to the current ILSLStringPreProcessor instance.
+        /// An invalid escape sequence was found inside of a string literal according to the current <see cref="ILSLStringPreProcessor"/> instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
+        /// <param name="err">The generated character error object from the <see cref="ILSLStringPreProcessor"/> instance.</param>
         void InvalidStringEscapeCode(LSLSourceCodeRange location, LSLStringCharacterError err);
 
         /// <summary>

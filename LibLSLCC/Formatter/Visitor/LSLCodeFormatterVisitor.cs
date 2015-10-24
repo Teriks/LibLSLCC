@@ -45,6 +45,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
@@ -114,11 +115,11 @@ namespace LibLSLCC.Formatter.Visitor
         }
 
         /// <summary>
-        /// Writes formated code to a TextWriter as a given ILSLCompilationUnitNode is visited.
+        /// Writes formated code to a TextWriter as a given <see cref="ILSLCompilationUnitNode"/> is visited.
         /// A reference to the original source code text is required.
         /// </summary>
         /// <param name="sourceReference">A reference to the original source code text.</param>
-        /// <param name="node">The ILSLCompilationUnitNode that was created from the source code text.  Most likely by LSLCodeValidator.</param>
+        /// <param name="node">The <see cref="ILSLCompilationUnitNode"/> that was created from the source code text.  Most likely by <see cref="LSLCodeValidator"/>.</param>
         /// <param name="writer">The TextWriter to write the formatted code to.</param>
         /// <param name="closeStream">Whether or not to call .Close() on the TextWriter when done writing to it.</param>
         public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,

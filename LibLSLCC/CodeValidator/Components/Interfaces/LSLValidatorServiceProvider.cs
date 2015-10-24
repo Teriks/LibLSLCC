@@ -43,13 +43,14 @@
 #region Imports
 
 using System;
+using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
     /// <summary>
-    ///     Represents various sub strategies and listeners that are used in LSLCodeValidator's implementation
+    ///     Represents various sub strategies and listeners that are used in the <see cref="LSLCodeValidator"/> implementation of <see cref="ILSLCodeValidator"/>.
     /// </summary>
     public interface ILSLValidatorServiceProvider
     {
@@ -68,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         /// <summary>
         /// The string literal pre-processor is in charge of pre-processing string literals
-        /// from source code before the value is assigned to a LSLStringLiteralNode object
+        /// from source code before the value is assigned to a <see cref="LSLStringLiteralNode"/> object
         /// </summary>
         ILSLStringPreProcessor StringLiteralPreProcessor { get; }
 
@@ -93,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <summary>
         /// Returns true if all service provider properties are non null
         /// </summary>
-        /// <param name="provider">The ILSLValidatorServiceProvider to check.</param>
+        /// <param name="provider">The <see cref="ILSLValidatorServiceProvider"/> to check.</param>
         /// <returns>True if all properties are initialized.</returns>
         public static bool IsComplete(this ILSLValidatorServiceProvider provider)
         {

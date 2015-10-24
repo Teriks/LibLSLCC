@@ -46,7 +46,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
     /// <summary>
     /// AST node interface for variable references.  
-    /// An ILSLVariableNode is also created as a child of an ILSLVariableDeclarationNode.
+    /// An <see cref="ILSLVariableNode"/> is also created as a child of an <see cref="ILSLVariableDeclarationNode"/>.
     /// </summary>
     public interface ILSLVariableNode : ILSLReadOnlyExprNode
     {
@@ -67,7 +67,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
 
         /// <summary>
-        /// A reference to the ILSLVariableDeclarationNode in the syntax tree where this variable was initially declared.
+        /// A reference to the <see cref="ILSLVariableDeclarationNode"/> in the syntax tree where this variable was initially declared.
         /// </summary>
         ILSLVariableDeclarationNode Declaration { get; }
 

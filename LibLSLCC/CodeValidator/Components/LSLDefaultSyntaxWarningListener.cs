@@ -56,7 +56,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
     /// <summary>
-    /// The default library implementation of ILSLSyntaxWarningListener that can write warning
+    /// The default library implementation of <see cref="ILSLSyntaxWarningListener"/> that can write warning
     /// information to an arbitrary output stream.  The default stream is standard out.
     /// </summary>
     public class LSLDefaultSyntaxWarningListener : ILSLSyntaxWarningListener
@@ -477,8 +477,11 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// A hook to allow the modification of line numbers used in either the header of a warning
-        /// or the body.  You should pass line numbers you wish to put into customized error messages
+        /// A hook to allow the modification of line numbers used in either the header of a warning or the body.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// You should pass line numbers you wish to put into customized error messages
         /// through this function so that the derived class can easily offset them.
         /// 
         /// Line numbers reported in syntax warnings default to using a 'one' based index where
@@ -488,7 +491,8 @@ namespace LibLSLCC.CodeValidator.Components
         /// 
         /// For example, if you want all line number references in warnings sent to OnWarning to have a 0 based index.
         /// then you should return (oneBasedLine-1) from this function.
-        /// </summary>
+        /// </para>
+        /// </remarks>
         /// <param name="oneBasedLine">The 'one' based line number that we might need to modify, a common modification would be to subtract 1 from it.</param>
         /// <returns>The possibly modified line number to use in the warning message.</returns>
         public virtual int MapLineNumber(int oneBasedLine)

@@ -133,10 +133,10 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
         /// <summary>
-        /// Equates LSLExpressionValidatorResult objects using equality between their ResultType property and IsValid property.
+        /// Equates <see cref="LSLExpressionValidatorResult"/> objects using equality between their ResultType property and IsValid property.
         /// </summary>
-        /// <param name="other">The other LSLExpressionValidatorResult to compare this one to.</param>
-        /// <returns>True if both LSLExpressionValidatorResult objects have the same ResultType and IsValid values.</returns>
+        /// <param name="other">The other  <see cref="LSLExpressionValidatorResult"/> to compare this one to.</param>
+        /// <returns>True if both  <see cref="LSLExpressionValidatorResult"/> objects have the same  <see cref="ResultType"/> and  <see cref="IsValid"/> values.</returns>
         public bool Equals(LSLExpressionValidatorResult other)
         {
             return ResultType == other.ResultType && IsValid.Equals(other.IsValid);
@@ -170,22 +170,22 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         }
 
         /// <summary>
-        /// Equality operator that checks if ResultType and IsValid are the same in both objects.
+        /// Equality operator that checks if <see cref="ResultType"/> and <see cref="IsValid"/> are the same in both objects.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        /// <returns>True if both LSLExpressionValidatorResult objects have the same ResultType and IsValid values.</returns>
+        /// <returns>True if both <see cref="LSLExpressionValidatorResult"/> objects have the same <see cref="ResultType"/> and <see cref="IsValid"/> values.</returns>
         public static bool operator ==(LSLExpressionValidatorResult left, LSLExpressionValidatorResult right)
         {
             return left.IsValid == right.IsValid && left.ResultType == right.ResultType;
         }
 
         /// <summary>
-        /// In-Equality operator that checks if ResultType or IsValid are different in both objects.
+        /// In-Equality operator that checks if <see cref="ResultType"/> or <see cref="IsValid"/> are different in both objects.
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        /// <returns>True if both LSLExpressionValidatorResult objects ResultType or IsValid property values differ from each others.</returns>
+        /// <returns>True if both <see cref="LSLExpressionValidatorResult"/> objects  <see cref="ResultType"/> or <see cref="IsValid"/> property values differ from each others.</returns>
         public static bool operator !=(LSLExpressionValidatorResult left, LSLExpressionValidatorResult right)
         {
             return left.IsValid != right.IsValid || left.ResultType != right.ResultType;
@@ -194,7 +194,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
     /// <summary>
-    ///     An interface for a strategy used by LSLCodeValidator to validate and retrieve the return type of
+    ///     An interface for a strategy used by <see cref="LSLCodeValidator"/> to validate and retrieve the return type of
     ///     expressions such as binary expressions, as well as other expressions that return a type.
     ///     this interface also defines type validation for expressions in boolean condition areas, vectors, rotations, lists
     ///     and function call parameters
@@ -209,7 +209,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="left">The expression on the left of the postfix operation.</param>
         /// <param name="operation">The postfix operation preformed.</param>
-        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> containing the validation results.</returns>
         LSLExpressionValidatorResult ValidatePostfixOperation(ILSLExprNode left, LSLPostfixOperationType operation);
 
 
@@ -220,7 +220,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="right">The expression on the right of the prefix operation.</param>
         /// <param name="operation">The prefix operation preformed.</param>
-        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> containing the validation results.</returns>
         LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLExprNode right);
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="castTo">The type being casted to.</param>
         /// <param name="from">The expression being casted.</param>
-        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> containing the validation results.</returns>
         LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode from);
 
 
@@ -242,7 +242,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="left">The expression on the left of the binary operation.</param>
         /// <param name="operation">The binary operation preformed.</param>
         /// <param name="right">The expression on the left of the binary operation.</param>
-        /// <returns>An LSLExpressionValidatorResult containing the validation results.</returns>
+        /// <returns>An <see cref="LSLExpressionValidatorResult"/> containing the validation results.</returns>
         LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, LSLBinaryOperationType operation,
             ILSLExprNode right);
 

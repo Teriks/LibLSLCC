@@ -76,7 +76,7 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
     /// <summary>
-    /// Extensions for LSLRotationComponent. Used to convert the component enum into a name, or parse it from a string.
+    /// Extensions for <see cref="LSLRotationComponent"/>. Used to convert the component enum into a name, or parse it from a string.
     /// </summary>
     public static class LSLRotationComponentTools
     {
@@ -91,12 +91,12 @@ namespace LibLSLCC.CodeValidator.Enums
         }
 
         /// <summary>
-        /// Converts a string into an LSLRotationComponent.
+        /// Converts a string into an <see cref="LSLRotationComponent"/>.
         /// </summary>
         /// <param name="name">The component name to parse, without the dot operator in front.</param>
         /// <exception cref="ArgumentException">Thrown if 'name' was not: "x", "y", "z" or "s"</exception>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is null.</exception>
-        /// <returns>The corresponding LSLRotationComponent.</returns>
+        /// <returns>The corresponding <see cref="LSLRotationComponent"/>.</returns>
         public static LSLRotationComponent ParseComponentName(string name)
         {
             if (string.IsNullOrEmpty(name))

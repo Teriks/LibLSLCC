@@ -110,7 +110,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
 
         /// <summary>
-        /// The LSLParameterNode objects that are children of this node, or an empty list.
+        /// The <see cref="LSLParameterNode"/> objects that are children of this node, or an empty list.
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> Parameters
         {
@@ -161,7 +161,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -179,7 +179,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes
 
         /// <summary>
         ///     Builds a parameter list node directly from a parser context, checking for duplicates and reporting
-        ///     duplicate parameter errors via the validatorServices ILSLValidatorServiceProvider.
+        ///     duplicate parameter errors via the validatorServices <see cref="ILSLValidatorServiceProvider"/>.
         /// </summary>
         /// <param name="context">The context to build from</param>
         /// <param name="validatorServices">The validator service provider to use for reporting errors or warnings</param>

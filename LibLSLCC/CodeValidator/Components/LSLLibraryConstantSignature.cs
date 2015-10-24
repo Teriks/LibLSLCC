@@ -60,7 +60,7 @@ using LibLSLCC.Utility;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// Represents the signature of a constant provided from an ILSLLibraryDataProvider implementation
+    /// Represents the signature of a constant provided from an <see cref="ILSLLibraryDataProvider"/> implementation
     /// </summary>
     [XmlRoot("LibraryConstant")]
     public sealed class LSLLibraryConstantSignature : IXmlSerializable, ILSLLibrarySignature
@@ -68,8 +68,7 @@ namespace LibLSLCC.CodeValidator.Components
         private HashMap<string, string> _properties = new HashMap<string, string>();
         private HashedSet<string> _subsets = new HashedSet<string>();
 
-        private LSLLibraryDataSubsetNameParser _subsetsParser = new
-            LSLLibraryDataSubsetNameParser();
+
 
         private string _name;
 
@@ -93,7 +92,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Construct the LSLLibraryConstantSignature from a given LSLType and constant name
+        /// Construct the LSLLibraryConstantSignature from a given <see cref="LSLType"/> and constant name
         /// </summary>
         /// <param name="type"></param>
         /// <param name="name"></param>
@@ -107,7 +106,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Construct the LSLLibraryConstantSignature from a given LSLType, constant name, and Value string.
+        /// Construct the LSLLibraryConstantSignature from a given <see cref="LSLType"/>, constant name, and Value string.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="name"></param>
@@ -172,7 +171,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        /// The LSLType that the library constant is defined with.
+        /// The <see cref="LSLType"/> that the library constant is defined with.
         /// </summary>
         public LSLType Type { get; set; }
 

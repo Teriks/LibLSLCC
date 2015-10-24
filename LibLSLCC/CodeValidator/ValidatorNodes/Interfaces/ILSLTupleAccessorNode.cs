@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
         /// <summary>
         /// The type that the member access was preformed on.
-        /// This should only ever be LSLType.Vector or LSLType.Rotation.
+        /// This should only ever be <see cref="LSLType.Vector"/> or <see cref="LSLType.Rotation"/>.
         /// </summary>
         LSLType AccessedType { get; }
 

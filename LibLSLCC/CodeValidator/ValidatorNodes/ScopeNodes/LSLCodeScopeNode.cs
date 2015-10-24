@@ -128,7 +128,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         internal LSLParser.CodeStatementContext FirstDeadStatementNodeContext { get; private set; }
 
         /// <summary>
-        ///     Is this a single block statement, for LSLCodeScopeNode it is always false
+        ///     Is this a single block statement, for <see cref="LSLCodeScopeNode"/> it is always false
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public bool IsSingleBlockStatement
@@ -260,7 +260,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         ///     The statement that acts as the return path for this scope, if there is one
         /// </summary>
         /// <remarks>
-        ///     This can be a LSLReturnStatementNode or an LSLControlStatementNode
+        ///     This can be a <see cref="LSLReturnStatementNode"/> or an <see cref="LSLControlStatementNode"/>
         ///     as of the current implementation,  loop statements cannot currently
         ///     act as a sole return path; there is no constant evaluation in condition
         ///     statements so they are equivalent to a singular if statement
@@ -308,7 +308,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
         /// </summary>
         /// <remarks>
         ///     if JumpStatementAnalysis is enabled, this function expects the JumpTarget of every
-        ///     LSLJumpStatementNode object (the LSLLabelStatementNode reference) to have a correct
+        ///     <see cref="LSLJumpStatementNode"/> object (the <see cref="LSLLabelStatementNode"/> reference) to have a correct
         ///     StatementIndex and ScopeId already. this includes JumpTarget's that are jumps forward in code
         ///     and have not been added to the code scope yet.  this prerequisite should be accomplished
         ///     with a pre-pass that creates the jump graph ahead of time. so that all Jump statement objects
@@ -590,7 +590,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

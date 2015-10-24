@@ -56,7 +56,7 @@ namespace LibLSLCC.CodeValidator.Components
 {
 
     /// <summary>
-    /// A proxy object for ILSLSyntaxErrorListener and ILSLSyntaxWarningListener that queue's/sorts syntax warnings/errors by their starting index in source code.
+    /// A proxy object for <see cref="ILSLSyntaxErrorListener"/> and <see cref="ILSLSyntaxWarningListener"/> that queue's/sorts syntax warnings/errors by their starting index in source code.
     /// </summary>
     public sealed class LSLSyntaxListenerPriorityQueue : ILSLSyntaxErrorListener, ILSLSyntaxWarningListener
     {
@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Construct a LSLSyntaxListenerPriorityQueue by wrapping another ILSLSyntaxErrorListener and ILSLSyntaxWarningListener
+        /// Construct a <see cref="LSLSyntaxListenerPriorityQueue"/> by wrapping another <see cref="ILSLSyntaxErrorListener"/> and <see cref="ILSLSyntaxWarningListener"/>
         /// </summary>
         /// <param name="invokeErrorsOn">Syntax errors will be priority queued by their index in the source code and invoked on this object.</param>
         /// <param name="invokeWarningsOn">Syntax warnings will be priority queued by their index in the source code and invoked on this object.</param>
@@ -93,7 +93,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="line">The line on which the error occurred.</param>
         /// <param name="column">The character column at which the error occurred.</param>
-        /// <param name="message">The parsing error messaged passed along from the parsing backend.</param>
+        /// <param name="message">The parsing error messaged passed along from the parsing back end.</param>
         void ILSLSyntaxErrorListener.GrammarLevelSyntaxError(int line, int column, string message)
         {
             _errorActionQueue.Enqueue(line,
@@ -666,7 +666,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        /// An invalid escape sequence was found inside of a string literal according to the current ILSLStringPreProcessor instance.
+        /// An invalid escape sequence was found inside of a string literal according to the current <see cref="ILSLStringPreProcessor"/> instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
@@ -963,7 +963,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Invoke all the queued warnings and errors on this.SyntaxErrorListener and this.SyntaxWarningListener
+        /// Invoke all the queued warnings and errors on <see cref="SyntaxErrorListener"/> and <see cref="SyntaxWarningListener"/>
         /// so that the syntax warnings and errors are reported in order by their position in source code.
         /// </summary>
         public void InvokeQueuedActions()

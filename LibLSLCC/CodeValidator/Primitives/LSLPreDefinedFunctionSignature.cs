@@ -59,12 +59,12 @@ namespace LibLSLCC.CodeValidator.Primitives
     public class LSLPreDefinedFunctionSignature : LSLFunctionSignature
     {
         /// <summary>
-        /// Construct an LSLPreDefinedFunctionSignature from an LSLType representing the return type, a function name and an LSLParameterListNode
+        /// Construct an <see cref="LSLPreDefinedFunctionSignature"/> from an <see cref="LSLType"/> representing the return type, a function name and an <see cref="LSLParameterListNode"/>
         /// from an LSL Syntax tree.
         /// </summary>
         /// <param name="returnType">The return type of the function signature.</param>
         /// <param name="name">The name of the function.</param>
-        /// <param name="parameters">The LSLParameterListNode from an LSL syntax tree that represents the function signatures parameters.</param>
+        /// <param name="parameters">The <see cref="LSLParameterListNode"/> from an LSL syntax tree that represents the function signatures parameters.</param>
         public LSLPreDefinedFunctionSignature(LSLType returnType, string name, LSLParameterListNode parameters)
             : base(returnType, name, parameters.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)))
         {
@@ -83,7 +83,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// The LSLFunctionDeclarationNode in the syntax tree that this function signature belongs to/represents.
+        /// The <see cref="LSLFunctionDeclarationNode"/> in the syntax tree that this function signature belongs to/represents.
         /// </summary>
         public LSLFunctionDeclarationNode DefinitionNode { get; private set; }
 

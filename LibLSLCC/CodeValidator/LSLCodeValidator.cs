@@ -48,6 +48,7 @@ using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
 using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
@@ -56,12 +57,13 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    /// LSLCodeValidator is responsible for building a rich syntax tree with ILSLCompilationUnitNode as the top node.
-    /// 
+    /// LSLCodeValidator is responsible for building a rich syntax tree with <see cref="ILSLCompilationUnitNode"/> as the top node.
+    /// <para>
     /// It preforms full front end syntax checking of the source code as the tree is built.
     /// 
-    /// It delegates syntax errors and syntax warning invocations/information to the SyntaxErrorListener and SyntaxWarningListener instances 
-    /// inside of the ILSLValidatorServiceProvider implementation assigned to the ValidatorServices property.
+    /// It delegates syntax errors and syntax warning invocations/information to the <see cref="ILSLValidatorServiceProvider.SyntaxErrorListener"/> and <see cref="ILSLValidatorServiceProvider.SyntaxWarningListener"/> instances 
+    /// inside of the <see cref="ILSLValidatorServiceProvider"/> implementation assigned to the <see cref="ValidatorServices"/> property.
+    /// </para>
     /// </summary>
     public class LSLCodeValidator : ILSLCodeValidator
     {
@@ -70,10 +72,10 @@ namespace LibLSLCC.CodeValidator
         private readonly LSLCodeValidationVisitor _validationVisitor;
 
         /// <summary>
-        /// Constructs an LSLCodeValidator using the given ILSLValidatorServiceProvider.
+        /// Constructs an LSLCodeValidator using the given <see cref="ILSLValidatorServiceProvider"/>.
         /// </summary>
         /// <see cref="ILSLValidatorServiceProvider"/>
-        /// <param name="validatorServices">The ILSLValidatorServiceProvider to use.</param>
+        /// <param name="validatorServices">The <see cref="ILSLValidatorServiceProvider"/> to use.</param>
         public LSLCodeValidator(ILSLValidatorServiceProvider validatorServices)
         {
             ValidatorServices = validatorServices;
@@ -99,9 +101,8 @@ namespace LibLSLCC.CodeValidator
         }
 
         /// <summary>
-        /// ILSLValidatorServiceProvider that provides several components to the validator.
-        /// Among them are the SyntaxErrorListener and SyntaxWarningListener implementations.
-        /// <see cref="ILSLValidatorServiceProvider"/>
+        /// <see cref="ILSLValidatorServiceProvider"/> that provides several components to the validator.
+        /// Among them are the <see cref="ILSLValidatorServiceProvider.SyntaxErrorListener"/> and <see cref="ILSLValidatorServiceProvider.SyntaxWarningListener"/> implementations.
         /// </summary>
         public ILSLValidatorServiceProvider ValidatorServices { get; private set; }
 
@@ -113,7 +114,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         /// Validates the code content of a stream and returns the top of the compilation unit syntax tree as a
-        /// LSLCompilationUnitNode object, if parsing resulted in syntax errors the result will be null
+        /// <see cref="LSLCompilationUnitNode"/> object, if parsing resulted in syntax errors the result will be null
         /// </summary>
         /// <param name="stream">The TextReader to parse code from</param>
         /// <returns>Top level node of an LSL syntax tree</returns>

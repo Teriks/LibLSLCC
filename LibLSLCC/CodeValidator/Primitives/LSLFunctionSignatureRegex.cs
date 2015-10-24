@@ -54,7 +54,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    /// Regex tools for parsing LSLFunctionSignature objects from strings.
+    /// Regex tools for parsing <see cref="LSLFunctionSignature"/> objects from strings.
     /// </summary>
     public sealed class LSLFunctionSignatureRegex
     {
@@ -109,8 +109,8 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// Parse an LSLFunction signature from a string.
         /// </summary>
-        /// <param name="inString">The string to parse the LSLFunctionSignature from.</param>
-        /// <returns>The parsed LSLFunctionSignature.</returns>
+        /// <param name="inString">The string to parse the <see cref="LSLFunctionSignature"/> from.</param>
+        /// <returns>The parsed <see cref="LSLFunctionSignature"/>.</returns>
         public LSLFunctionSignature GetSignature(string inString)
         {
             return GetSignatures(inString).FirstOrDefault();
@@ -164,8 +164,8 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// Returns all LSLFunctionSignatures that could be parsed out of a given string.
         /// </summary>
-        /// <param name="inString">The string to parse LSLFunctionSignature objects from.</param>
-        /// <returns>An enumerable of LSLFunctionSignature objects that were successfully parsed from the string.</returns>
+        /// <param name="inString">The string to parse <see cref="LSLFunctionSignature"/> objects from.</param>
+        /// <returns>An enumerable of <see cref="LSLFunctionSignature"/> objects that were successfully parsed from the string.</returns>
         public IEnumerable<LSLFunctionSignature> GetSignatures(string inString)
         {
             var matches = Regex.Matches(inString);

@@ -75,7 +75,7 @@ namespace LibLSLCC.Collections
         bool Contains(T item);
 
         /// <summary>
-        /// Copies the elements of the IReadOnlyHashedSet to an array, starting at arrayIndex in the target array.
+        /// Copies the elements of the <see cref="IReadOnlyHashedSet{T}"/> to an array, starting at arrayIndex in the target array.
         /// </summary>
         /// <param name="array">The array to copy the items to.</param>
         /// <param name="arrayIndex">The array index to start at in the target array.</param>

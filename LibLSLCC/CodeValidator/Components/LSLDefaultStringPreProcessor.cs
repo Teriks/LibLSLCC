@@ -53,7 +53,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// The default implementation of ILSLStringPreProcessor for the library
+    /// The default implementation of <see cref="ILSLStringPreProcessor"/> for the library
     /// </summary>
     public class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
     {
@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator.Components
         private readonly GenericArray<LSLStringCharacterError> _invalidEscapeCodes = new GenericArray<LSLStringCharacterError>();
 
         /// <summary>
-        /// Construct the default implementation of ILSLStringPreProcessor
+        /// Construct the default implementation of <see cref="ILSLStringPreProcessor"/>
         /// </summary>
         public LSLDefaultStringPreProcessor()
         {

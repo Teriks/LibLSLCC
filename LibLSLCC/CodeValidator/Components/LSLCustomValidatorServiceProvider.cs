@@ -43,14 +43,15 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    ///     An ILSLValidatorServiceProvider implementation that allows you to assign values
-    ///     to members which will be used directly as part of LSLCodeValidator's implementation
+    ///     An <see cref="ILSLValidatorServiceProvider"/> implementation that allows you to assign values
+    ///     to members which will be used directly as part of <see cref="LSLCodeValidator"/>'s implementation
     /// </summary>
     public class LSLCustomValidatorServiceProvider : ILSLValidatorServiceProvider
     {
@@ -69,7 +70,7 @@ namespace LibLSLCC.CodeValidator.Components
 
         /// <summary>
         /// The string literal pre-processor is in charge of pre-processing string literals
-        /// from source code before the value is assigned to a LSLStringLiteralNode object
+        /// from source code before the value is assigned to a <see cref="LSLStringLiteralNode"/> object
         /// </summary>
         public ILSLStringPreProcessor StringLiteralPreProcessor { get; set; }
 

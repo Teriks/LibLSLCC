@@ -40,10 +40,13 @@
 // 
 // 
 #endregion
+
+using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+
 namespace LibLSLCC.CodeValidator.Enums
 {
     /// <summary>
-    ///     Represents the expression type of an ILSLReadOnlyExprNode object
+    ///     Represents the expression type of an <see cref="ILSLReadOnlyExprNode"/> object
     /// </summary>
     public enum LSLExpressionType
     {

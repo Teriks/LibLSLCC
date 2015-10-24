@@ -60,17 +60,17 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         string Name { get; }
 
         /// <summary>
-        /// The LSLType associated with the parameter.
+        /// The <see cref="LSLType"/> associated with the parameter.
         /// </summary>
         LSLType Type { get; }
 
         /// <summary>
-        /// The string representation of the LSLType for the parameter, taken from the source code.
+        /// The string representation of the <see cref="LSLType"/> for the parameter, taken from the source code.
         /// </summary>
         string TypeString { get; }
 
         /// <summary>
-        /// The zero based index of the parameter definition in its parent ILSLParameterListNode.
+        /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
         /// </summary>
         int ParameterIndex { get; }
     }

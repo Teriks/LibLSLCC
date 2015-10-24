@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
         ILSLReadOnlyExprNode CastedExpression { get; }
 
         /// <summary>
-        /// The LSLType that represents the type the expression is being cast to.
+        /// The <see cref="LSLType"/> that represents the type the expression is being cast to.
         /// </summary>
         LSLType CastToType { get; }
 

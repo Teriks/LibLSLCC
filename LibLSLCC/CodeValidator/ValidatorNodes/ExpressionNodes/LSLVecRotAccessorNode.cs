@@ -128,7 +128,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
         /// <summary>
         /// The type that the member access was preformed on.
-        /// This should only ever be LSLType.Vector or LSLType.Rotation.
+        /// This should only ever be <see cref="LSLType.Vector"/> or <see cref="LSLType.Rotation"/>.
         /// </summary>
         public LSLType AccessedType { get; private set; }
 
@@ -209,7 +209,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
 
 
         /// <summary>
-        /// Accept a visit from an implementor of ILSLValidatorNodeVisitor
+        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -225,8 +225,9 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+
         /// <summary>
-        /// The return type of the expression.
+        /// The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type
         {
@@ -234,10 +235,13 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes
         }
 
 
+
         /// <summary>
-        /// The expression type/classification of the expression.
-        /// <see cref="LSLExpressionType"/>
+        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
+        /// <value>
+        /// The type of the expression.
+        /// </value>
         public LSLExpressionType ExpressionType
         {
             get

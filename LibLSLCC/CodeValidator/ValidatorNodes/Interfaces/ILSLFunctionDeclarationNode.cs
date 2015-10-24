@@ -83,7 +83,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodes.Interfaces
 
 
         /// <summary>
-        /// The return type assigned to the function definition, it will be LSLType.Void if no return type was given.
+        /// The return type assigned to the function definition, it will be <see cref="LSLType.Void"/> if no return type was given.
         /// </summary>
         LSLType ReturnType { get; }
 

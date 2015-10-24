@@ -43,6 +43,7 @@
 #region Imports
 
 using System.Collections.Generic;
+using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
 
 #endregion
 
@@ -54,7 +55,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     public struct LSLStringCharacterError
     {
         /// <summary>
-        /// Construct an LSLStringCharacterError for a given character and index in the string.
+        /// Construct an <see cref="LSLStringCharacterError"/> for a given character and index in the string.
         /// </summary>
         /// <param name="causingCharacter">The character that caused the error.</param>
         /// <param name="stringIndex">The index in the string the character error was encountered at.</param>
@@ -71,28 +72,28 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         public char CausingCharacter { get; private set; }
 
         /// <summary>
-        /// The index in the string at which the error occured.
+        /// The index in the string at which the error occurred.
         /// </summary>
         public int StringIndex { get; private set; }
 
 
         /// <summary>
-        /// Equals checks equality by determining whether or not the CausingCharacter and StringIndex are the
+        /// Equals checks equality by determining whether or not the <see cref="CausingCharacter"/> and <see cref="StringIndex"/> are the
         /// same in both objects.
         /// </summary>
-        /// <param name="other">The other LSLStringCharacterError object to test for equality with.</param>
-        /// <returns>True if CausingCharacter and StringIndex are the same in both objects.</returns>
+        /// <param name="other">The other <see cref="LSLStringCharacterError"/> object to test for equality with.</param>
+        /// <returns>True if <see cref="CausingCharacter"/> and <see cref="StringIndex"/> are the same in both objects.</returns>
         public bool Equals(LSLStringCharacterError other)
         {
             return CausingCharacter == other.CausingCharacter && StringIndex == other.StringIndex;
         }
 
         /// <summary>
-        /// Equals checks equality by determining whether or not the CausingCharacter and StringIndex are the
+        /// Equals checks equality by determining whether or not the <see cref="CausingCharacter"/> and <see cref="StringIndex"/> are the
         /// same in both objects.
         /// </summary>
-        /// <param name="obj">The other LSLStringCharacterError object to test for equality with.</param>
-        /// <returns>True if 'obj' is a LSLStringCharacterError object, and CausingCharacter and StringIndex are the same in both objects.  False if otherwise.</returns>
+        /// <param name="obj">The other <see cref="LSLStringCharacterError"/> object to test for equality with.</param>
+        /// <returns>True if 'obj' is a <see cref="LSLStringCharacterError"/> object, and <see cref="CausingCharacter"/> and <see cref="StringIndex"/> are the same in both objects.  False if otherwise.</returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -101,7 +102,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         /// <summary>
         /// Returns the hash code for this instance.  
-        /// The hash code is derived from the CausingCharacter property and the StringIndex property.
+        /// The hash code is derived from the <see cref="CausingCharacter"/> property and the <see cref="StringIndex"/> property.
         /// </summary>
         /// <returns>
         /// A 32-bit signed integer that is the hash code for this instance.
@@ -116,24 +117,24 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
         /// <summary>
-        /// The equality operator checks equality by determining whether or not the CausingCharacter and StringIndex are the
-        /// same in both LSLStringCharacterError objects.
+        /// The equality operator checks equality by determining whether or not the <see cref="CausingCharacter"/> and <see cref="StringIndex"/> are the
+        /// same in both <see cref="LSLStringCharacterError"/> objects.
         /// </summary>
-        /// <param name="left">The LSLStringCharacterError on the left of the equality operator.</param>
-        /// <param name="right">The LSLStringCharacterError on the right of the equality operator.</param>
-        /// <returns>True if CausingCharacter and StringIndex are the same in both LSLStringCharacterError objects, false if otherwise.</returns>
+        /// <param name="left">The <see cref="LSLStringCharacterError"/> on the left of the equality operator.</param>
+        /// <param name="right">The <see cref="LSLStringCharacterError"/> on the right of the equality operator.</param>
+        /// <returns>True if <see cref="CausingCharacter"/> and <see cref="StringIndex"/> are the same in both <see cref="LSLStringCharacterError"/> objects, false if otherwise.</returns>
         public static bool operator ==(LSLStringCharacterError left, LSLStringCharacterError right)
         {
             return left.CausingCharacter != right.CausingCharacter && left.StringIndex != right.StringIndex;
         }
 
         /// <summary>
-        /// The in-equality operator checks in-equality by determining whether either the CausingCharacter or
-        /// StringIndex are different among two LSLStringCharacterError objects.
+        /// The in-equality operator checks in-equality by determining whether either the <see cref="CausingCharacter"/> or
+        /// <see cref="StringIndex"/> are different among two <see cref="LSLStringCharacterError"/> objects.
         /// </summary>
-        /// <param name="left">The LSLStringCharacterError on the left of the in-equality operator.</param>
-        /// <param name="right">The LSLStringCharacterError on the right of the in-equality operator.</param>
-        /// <returns>True if CausingCharacter or StringIndex are different among the two LSLStringCharacterError objects, false otherwise.</returns>
+        /// <param name="left">The <see cref="LSLStringCharacterError"/> on the left of the in-equality operator.</param>
+        /// <param name="right">The <see cref="LSLStringCharacterError"/> on the right of the in-equality operator.</param>
+        /// <returns>True if <see cref="CausingCharacter"/> or <see cref="StringIndex"/> are different among the two <see cref="LSLStringCharacterError"/> objects, false otherwise.</returns>
         public static bool operator !=(LSLStringCharacterError left, LSLStringCharacterError right)
         {
             return left.CausingCharacter != right.CausingCharacter || left.StringIndex != right.StringIndex;
@@ -142,8 +143,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
     /// <summary>
-    ///     An interface for a strategy in LSLCodeValidator that pre-processes string literals encountered
-    ///     in source code before the text is stored in the PreProccessedText property of the LSLStringLiteral
+    ///     An interface for a strategy in <see cref="LSLCodeValidator"/> that pre-processes string literals encountered
+    ///     in source code before the text is stored in the <see cref="LSLStringLiteralNode.PreProccessedText"/> property of the <see cref="LSLStringLiteralNode"/>
     ///     validator node
     /// </summary>
     public interface ILSLStringPreProcessor
@@ -171,8 +172,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         string Result { get;  }
 
         /// <summary>
-        /// Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,
-        /// Place illegal character errors in the IllegalCharacters enumerable.
+        /// Process the string and place descriptions of invalid escape codes in the <see cref="InvalidEscapeCodes"/> enumerable,
+        /// Place illegal character errors in the <see cref="IllegalCharacters"/> enumerable.
         /// </summary>
         /// <param name="stringLiteral">The string literal to be processed, the string is expected to be wrapped in double quote characters still.</param>
         void ProcessString(string stringLiteral);

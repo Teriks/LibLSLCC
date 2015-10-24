@@ -63,9 +63,9 @@ namespace LibLSLCC.CodeValidator.Primitives
         private string _name;
 
         /// <summary>
-        /// Construct an event signature by cloning another LSLEventSignature object.
+        /// Construct an event signature by cloning another <see cref="LSLEventSignature"/> object.
         /// </summary>
-        /// <param name="other">The LSLEventSignature to copy construct from.</param>
+        /// <param name="other">The  <see cref="LSLEventSignature"/> to copy construct from.</param>
         public LSLEventSignature(LSLEventSignature other)
         {
             Name = other.Name;
@@ -81,7 +81,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// Construct and event signature with the provide parameters by providing a name and an enumerable containing LSLParameter objects.
+        /// Construct and event signature with the provide parameters by providing a name and an enumerable containing <see cref="LSLParameter"/> objects.
         /// </summary>
         /// <param name="name">The name of the event signature.</param>
         /// <param name="parameters">The parameters to include in the signature.</param>
@@ -153,7 +153,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Returns a formated signature string for the LSLEventSignature.  This does not include a trailing semi-colon.
+        /// Returns a formated signature string for the <see cref="LSLEventSignature"/>.  This does not include a trailing semi-colon.
         /// An example would be: listen(integer channel, string name, key id, string message)
         /// </summary>
         public string SignatureString
@@ -202,12 +202,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// This implementation of GetHashCode() uses the name of the LSLEventSignature and the LSL Types of
+        /// This implementation of GetHashCode() uses the name of the <see cref="LSLEventSignature"/> and the LSL Types of
         /// the parameters, this means the Hash Code is determined by the event name, and the Types of all its parameters.
         /// 
         /// Inherently, uniqueness is also determined by the number of parameters. 
         /// </summary>
-        /// <returns>Hash code for this LSLEventSignature</returns>
+        /// <returns>Hash code for this <see cref="LSLEventSignature"/></returns>
         public override int GetHashCode()
         {
             var hash = 17;
@@ -217,7 +217,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// Equals(object obj) delegates to SignatureMatches(LSLEventSignature other)
+        /// Equals(object obj) delegates to <see cref="SignatureMatches(LSLEventSignature)"/>
         /// </summary>
         /// <param name="obj">The other event signature</param>
         /// <returns>Equality</returns>
@@ -233,9 +233,9 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
         /// <summary>
-        /// Add an LSLParameter object to this event signatures
+        /// Add an <see cref="LSLParameter"/> object to this event signatures
         /// </summary>
-        /// <param name="parameter">The LSLParameter object to add.</param>
+        /// <param name="parameter">The <see cref="LSLParameter"/> object to add.</param>
         /// <exception cref="ArgumentException">Thrown if the added parameter is a variadic parameter.</exception>
         public void AddParameter(LSLParameter parameter)
         {
@@ -256,7 +256,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         /// <param name="str"></param>
         /// <exception cref="ArgumentException">Thrown if the string could not be parsed.</exception>
-        /// <returns>The Parsed LSLEventSignature</returns>
+        /// <returns>The Parsed <see cref="LSLEventSignature"/></returns>
         public static LSLEventSignature Parse(string str)
         {
             var regex = new LSLEventSignatureRegex("", ";*");
