@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*"
            UpgradeCode="F1C48367-6E7A-4B17-9059-E0CC9C511339" Version="1.0.1.0" Language="1033" Name="LSLCCEditor"
@@ -20,11 +19,12 @@
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.ProgramFilesFolder)">
-        <Directory Id="CompanyFolder" Name="LSLcc">
-          <Directory Id="INSTALLLOCATION" Name="LSLCCEditor" />
+        <Directory Id="CompanyFolder" Name="LibLSLCC">
+          <Directory Id="INSTALLLOCATION" Name="LSLCCEditor" >
+            <Directory Id="LIBRARYDATA" Name="library_data"></Directory>
+          </Directory>
         </Directory>
       </Directory>
-      <!-- Step 1: Define the directory structure -->
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="LSLCCEditor" />
       </Directory>
@@ -40,7 +40,7 @@
           </Extension>
         </ProgId>
 
-
+        
         <File Id="AvalonEdit" Source="$(var.SourceDir)ICSharpCode.AvalonEdit.dll" />
         <File Id="AvalonEditXml" Source="$(var.SourceDir)ICSharpCode.AvalonEdit.xml" />
         <File Id="AntlrRuntime" Source="$(var.SourceDir)Antlr4.Runtime.dll" />
@@ -49,9 +49,14 @@
         <File Id="LSLCCEditor.exe.config" Source="$(var.SourceDir)LSLCCEditor.exe.config" />
         <File Id="Icon" Source="$(var.SourceDir)..\..\..\lsl_script_icon.ico" />
       </Component>
+
     </DirectoryRef>
 
-    <!-- Step 2: Add the shortcut to your installer package -->
+    <Component Id="LibraryDataFolder" Directory="LIBRARYDATA" Guid="F5B97C71-2173-4679-BDCA-2935A0EB05A7">
+      <File Id="default.xml" Source="$(var.SourceDir)\library_data\default.xml"/>
+      <File Id="LIBRARYDATA_README.txt" Source="$(var.SourceDir)\library_data\README.txt"/>
+    </Component>
+
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="346EA803-F018-45E5-8D79-A5D47A1737DB">
         <Shortcut Id="ApplicationStartMenuShortcut"
@@ -60,15 +65,15 @@
                   Target="[#LSLCCEditor.exe]"
                   WorkingDirectory="INSTALLLOCATION" />
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\LSLcc\LSLCCEditor" Name="installed" Type="integer" Value="1"
+        <RegistryValue Root="HKCU" Key="Software\LibLSLCC\LSLCCEditor" Name="installed" Type="integer" Value="1"
                        KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
     <Feature Id="MainApplication" Title="Main Application" Level="1">
       <ComponentRef Id="LSLCCEditor.exe" />
-      <!-- Step 3: Tell WiX to install the shortcut -->
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="LibraryDataFolder"/>
     </Feature>
   </Product>
 </Wix>

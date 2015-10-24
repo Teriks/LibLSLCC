@@ -143,7 +143,7 @@
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\LSLValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultStringPreProcessor.cs" />
-    <Compile Include="CodeValidator\Components\LSLXMLLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLXmlLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultSyntaxErrorListener.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Enums\LSLCodeScopeType.cs" />

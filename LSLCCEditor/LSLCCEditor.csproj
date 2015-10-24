@@ -277,12 +277,18 @@
       <DefaultIcon>lsl_script_icon.ico</DefaultIcon>
     </FileAssociation>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <LibLSLCCLibraryData Include="LibraryData\*" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+    <Copy DestinationFolder="$(OutputPath)\library_data\" SourceFiles="@(LibLSLCCLibraryData)" SkipUnchangedFiles="true" />
   </Target>
-  -->
 </Project>

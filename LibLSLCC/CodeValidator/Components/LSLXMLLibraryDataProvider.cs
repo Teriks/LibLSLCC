@@ -181,7 +181,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Fills a library data provider from an XML reader object, the data provider is cleared first.
+        /// Fills a library data provider from an XML reader object, the data provider is cleared of all definitions first.
         /// </summary>
         /// <param name="data">The XML reader to read from.</param>
         /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
@@ -270,8 +270,80 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+
         /// <summary>
-        /// Fills a library data provider from an XML reader object, the data provider is cleared first.
+        /// Adds additional library data by parsing every XML file in a given directory, the data provider is not cleared first.
+        /// </summary>
+        /// <param name="path">The directory path.</param>
+        /// <param name="rootElementName">Name of the root element.</param>
+        /// <exception cref="System.ArgumentNullException">path</exception>
+        /// <exception cref="System.ArgumentException">path</exception>
+        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
+        /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
+        public void AddFromXmlDirectory(string path, string rootElementName = "LSLLibraryData")
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("path");
+            }
+
+            foreach (var file in Directory.EnumerateFiles(path, "*.xml"))
+            {
+                try
+                {
+                    AddFromXml(file, rootElementName);
+                }
+                catch (XmlSyntaxException e)
+                {
+                    throw new XmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Fills a library data provider by parsing every XML file in a given directory, the data provider is cleared of all definitions first.
+        /// </summary>
+        /// <param name="path">The directory path.</param>
+        /// <param name="rootElementName">Name of the root element.</param>
+        /// <exception cref="System.ArgumentNullException">path</exception>
+        /// <exception cref="System.ArgumentException">path</exception>
+        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
+        /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
+        public void FillFromXmlDirectory(string path, string rootElementName = "LSLLibraryData")
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException("path");
+            }
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("path");
+            }
+
+            foreach (var file in Directory.EnumerateFiles(path, "*.xml"))
+            {
+                try
+                {
+                    AddFromXml(file, rootElementName);
+                }
+                catch (XmlSyntaxException e)
+                {
+                    throw new XmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fills a library data provider from an XML reader object, the data provider is cleared of all definitions first.
         /// Encoding is detected using the BOM (Byte Order Mark) of the file.
         /// </summary>
         /// <param name="filename">The XML file to read library data from.</param>

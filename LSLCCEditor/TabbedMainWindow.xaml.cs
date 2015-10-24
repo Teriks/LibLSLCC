@@ -96,7 +96,7 @@ namespace LSLCCEditor
 
         private bool _droppingTabAfterDragging;
 
-        private LSLLibraryDataProvider _libraryDataProvider;
+        private LSLXmlLibraryDataProvider _libraryDataProvider;
 
         private bool _settingLibraryMenuProgrammaticallyFromTabCache;
 
@@ -144,7 +144,10 @@ namespace LSLCCEditor
         private void TabbedMainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
 
-            _libraryDataProvider = new LSLDefaultLibraryDataProvider(new[] { "lsl" });
+            _libraryDataProvider = new LSLXmlLibraryDataProvider(new[] { "lsl" });
+
+
+            _libraryDataProvider.FillFromXmlDirectory("library_data");
 
 
             _validatorServices = new LSLCustomValidatorServiceProvider
