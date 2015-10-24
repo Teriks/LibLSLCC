@@ -221,11 +221,6 @@ namespace LSLCCEditor.EditorTabUI
             get { return Content.CompilerMessages; }
         }
 
-        public LSLDefaultLibraryDataProvider LibraryDataProvider
-        {
-            get { return (LSLDefaultLibraryDataProvider) Content.LibraryDataProvider; }
-            set { Content.LibraryDataProvider = value; }
-        }
 
 
         public HashSet<string> ActiveLibraryDataSubsetsCache { get; private set; } 

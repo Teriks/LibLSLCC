@@ -155,7 +155,8 @@ namespace LSLCCEditor
                 ExpressionValidator = new LSLDefaultExpressionValidator(),
                 StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
                 SyntaxErrorListener = new WindowSyntaxErrorListener(this),
-                SyntaxWarningListener = new WindowSyntaxWarningListener(this)
+                SyntaxWarningListener = new WindowSyntaxWarningListener(this),
+                LibraryDataProvider = _libraryDataProvider
             };
 
 
@@ -284,7 +285,7 @@ namespace LSLCCEditor
             }
 
 
-            tab.LibraryDataProvider.ActiveSubsets.RemoveSubset(subsetName);
+            _libraryDataProvider.ActiveSubsets.RemoveSubset(subsetName);
             tab.ActiveLibraryDataSubsetsCache.Remove(subsetName);
 
             if (!_uncheckingLibraryDataTabItemProgrammatically)
@@ -329,7 +330,7 @@ namespace LSLCCEditor
             }
 
 
-            tab.LibraryDataProvider.ActiveSubsets.AddSubset(subsetName);
+            _libraryDataProvider.ActiveSubsets.AddSubset(subsetName);
             tab.ActiveLibraryDataSubsetsCache.Add(subsetName);
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }
@@ -356,12 +357,12 @@ namespace LSLCCEditor
                 var tab = i as EditorTab;
                 if (tab != null)
                 {
-                    tab.LibraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
+                    _libraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
 
                     SetLibraryMenuFromTab(tab);
 
-                    tab.LibraryDataProvider.ActiveSubsets.Clear();
-                    tab.LibraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
+                    _libraryDataProvider.ActiveSubsets.Clear();
+                    _libraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
                     tab.Content.Editor.UpdateHighlightingFromDataProvider();
 
 
@@ -562,9 +563,6 @@ namespace LSLCCEditor
             var tab = (EditorTab) TabControl.SelectedItem;
 
             if (tab.SourceCode == null) tab.SourceCode = "";
-
-            _validatorServices.LibraryDataProvider = tab.LibraryDataProvider;
-
 
             var validator = new LSLCodeValidator(_validatorServices);
 
