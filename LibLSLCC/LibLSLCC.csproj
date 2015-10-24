@@ -287,13 +287,16 @@
     <None Include="Parser\LSLLexer.tokens" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Parser\LSL.g4">
-      <CustomToolNamespace>LibLSLCC</CustomToolNamespace>
-      <ForceAtn>False</ForceAtn>
-    </None>
+    <None Include="Parser\LSL.g4" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CodeValidator\Components\LibraryData\LSLDefaultLibraryDataProvider.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <License Include="LICENSE"/>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" Outputs="$(ProjectDir)Parser\LSLParser.cs;$(ProjectDir)Parser\LSLVisitor.cs;$(ProjectDir)Parser\LSLListener.cs;$(ProjectDir)Parser\LSLLexer.cs;$(ProjectDir)Parser\LSLLexer.tokens;$(ProjectDir)Parser\LSL.tokens;$(ProjectDir)Parser\LSLBaseVisitor.cs;$(ProjectDir)Parser\LSLBaseListener.cs;">
@@ -301,5 +304,7 @@
     </Exec>
   </Target>
   <Target Name="AfterBuild">
+    <Copy SourceFiles="@(ThirdPartyLicenses)" DestinationFolder="$(ProjectDir)bin\ThirdPartyLicenses" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(License)" DestinationFolder="$(ProjectDir)bin" SkipUnchangedFiles="true" />
   </Target>
 </Project>

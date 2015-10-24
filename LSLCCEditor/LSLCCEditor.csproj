@@ -249,7 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="lsl_script_icon.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -281,6 +281,10 @@
   <ItemGroup>
     <LibLSLCCLibraryData Include="LibraryData\*" />
   </ItemGroup>
+  <ItemGroup>
+    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt"  />
+    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\AvalonEdit.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
@@ -290,5 +294,6 @@
   </Target>
   <Target Name="AfterBuild">
     <Copy DestinationFolder="$(OutputPath)\library_data\" SourceFiles="@(LibLSLCCLibraryData)" SkipUnchangedFiles="true" />
+    <Copy DestinationFolder="$(OutputPath)\ThirdPartyLicenses\" SourceFiles="@(ThirdPartyLicenses)" SkipUnchangedFiles="true" />
   </Target>
 </Project>

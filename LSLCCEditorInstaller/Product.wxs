@@ -21,7 +21,8 @@
       <Directory Id="$(var.ProgramFilesFolder)">
         <Directory Id="CompanyFolder" Name="LibLSLCC">
           <Directory Id="INSTALLLOCATION" Name="LSLCCEditor" >
-            <Directory Id="LIBRARYDATA" Name="library_data"></Directory>
+            <Directory Id="LIBRARYDATA" Name="library_data"/>
+            <Directory Id="THIRDPARTYLICENSES" Name="ThirdPartyLicenses"/>
           </Directory>
         </Directory>
       </Directory>
@@ -40,7 +41,7 @@
           </Extension>
         </ProgId>
 
-        
+        <File Id="Licence" Source="license.rtf"/>
         <File Id="AvalonEdit" Source="$(var.SourceDir)ICSharpCode.AvalonEdit.dll" />
         <File Id="AvalonEditXml" Source="$(var.SourceDir)ICSharpCode.AvalonEdit.xml" />
         <File Id="AntlrRuntime" Source="$(var.SourceDir)Antlr4.Runtime.dll" />
@@ -55,6 +56,11 @@
     <Component Id="LibraryDataFolder" Directory="LIBRARYDATA" Guid="F5B97C71-2173-4679-BDCA-2935A0EB05A7">
       <File Id="default.xml" Source="$(var.SourceDir)\library_data\default.xml"/>
       <File Id="LIBRARYDATA_README.txt" Source="$(var.SourceDir)\library_data\README.txt"/>
+    </Component>
+
+    <Component Id="ThirdPartyLicensesFolder" Directory="THIRDPARTYLICENSES" Guid="E6CB3511-BC30-49A3-89E8-168360E2518B">
+      <File Id="AvalonEdit.txt" Source="$(var.SourceDir)\ThirdPartyLicenses\AvalonEdit.txt"/>
+      <File Id="Antlr_4.txt" Source="$(var.SourceDir)\ThirdPartyLicenses\Antlr 4.txt"/>
     </Component>
 
     <DirectoryRef Id="ApplicationProgramsFolder">
@@ -74,6 +80,7 @@
       <ComponentRef Id="LSLCCEditor.exe" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="LibraryDataFolder"/>
+      <ComponentRef Id="ThirdPartyLicensesFolder"/>
     </Feature>
   </Product>
 </Wix>
