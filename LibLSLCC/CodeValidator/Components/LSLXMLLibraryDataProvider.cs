@@ -195,9 +195,7 @@ namespace LibLSLCC.CodeValidator.Components
                 throw new ArgumentNullException("data");
             }
 
-            ClearEventHandlers();
-            ClearLibraryConstants();
-            ClearLibraryFunctions();
+            ClearLibraryData();
 
             data.ReadStartElement(rootElementName);
 
@@ -329,6 +327,8 @@ namespace LibLSLCC.CodeValidator.Components
                 throw new ArgumentException("path");
             }
 
+            ClearLibraryData();
+
             foreach (var file in Directory.EnumerateFiles(path, "*.xml"))
             {
                 try
@@ -367,9 +367,7 @@ namespace LibLSLCC.CodeValidator.Components
                 throw new ArgumentException("filename");
             }
 
-            ClearEventHandlers();
-            ClearLibraryConstants();
-            ClearLibraryFunctions();
+            ClearLibraryData();
 
             using (var reader = new XmlTextReader(new StreamReader(filename, true)))
             {

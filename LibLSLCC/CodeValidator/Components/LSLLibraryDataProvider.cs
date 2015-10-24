@@ -295,7 +295,16 @@ namespace LibLSLCC.CodeValidator.Components
             _subsetDescriptions.Clear();
         }
 
-
+        /// <summary>
+        /// Clears all library definitions and subset descriptions.
+        /// </summary>
+        public void ClearLibraryData()
+        {
+            ClearSubsetDescriptions();
+            ClearEventHandlers();
+            ClearLibraryConstants();
+            ClearLibraryFunctions();
+        }
 
         /// <summary>
         /// Add a subset description to this library data provider.
