@@ -55,7 +55,7 @@
 
     <Component Id="LibraryDataFolder" Directory="LIBRARYDATA" Guid="F5B97C71-2173-4679-BDCA-2935A0EB05A7">
       <File Id="default.xml" Source="$(var.SourceDir)\library_data\default.xml"/>
-      <File Id="LIBRARYDATA_README.txt" Source="$(var.SourceDir)\library_data\README.txt"/>
+      <File Id="LibraryData_XML_Syntax_README.txt" Source="$(var.SourceDir)\library_data\LibraryData_XML_Syntax_README.txt"/>
     </Component>
 
     <Component Id="ThirdPartyLicensesFolder" Directory="THIRDPARTYLICENSES" Guid="E6CB3511-BC30-49A3-89E8-168360E2518B">
