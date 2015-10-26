@@ -279,9 +279,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <LibLSLCCLibraryData Include="LibraryData\*" />
-  </ItemGroup>
-  <ItemGroup>
+    <LibLSLCCLibraryData Include="..\LibLSLCC\Documentation\LibraryData_XML_Syntax_README.txt">
+      <Link>LibraryData\LibraryData_XML_Syntax_README.txt</Link>
+    </LibLSLCCLibraryData>
+    <LibLSLCCLibraryData Include="LibraryData\default.xml" />
     <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt" />
     <ThirdPartyLicenses Include="..\ThirdPartyLicenses\AvalonEdit.txt" />
   </ItemGroup>
