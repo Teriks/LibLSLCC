@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace LibLSLCC.Collections
 {
     /// <summary>
-    /// Generic Array class, it is equivalent to <see cref="List{TValue}"/>.
+    /// Generic Array class, it is equivalent to <see cref="List{T}"/>.
     /// </summary>
     /// <remarks>
     /// This class supports a read only covariant interface in NET 4.0 via <see cref="IReadOnlyGenericArray{T}"/>.

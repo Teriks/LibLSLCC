@@ -43,7 +43,7 @@
 #region Imports
 
 using System.Linq;
-using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 

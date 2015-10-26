@@ -46,6 +46,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.ScraperInterfaces;
 
 #endregion

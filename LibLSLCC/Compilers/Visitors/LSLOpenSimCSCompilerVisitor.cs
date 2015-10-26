@@ -49,8 +49,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 using LibLSLCC.Collections;
 

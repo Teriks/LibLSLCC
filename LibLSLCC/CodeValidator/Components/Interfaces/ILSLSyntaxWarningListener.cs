@@ -43,9 +43,10 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Nodes;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+using LibLSLCC.LibraryData;
 
 #endregion
 

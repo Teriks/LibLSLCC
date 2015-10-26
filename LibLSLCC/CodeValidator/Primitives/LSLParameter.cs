@@ -44,7 +44,6 @@
 
 using System;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Exceptions;
 using LibLSLCC.Utility;
 
 #endregion

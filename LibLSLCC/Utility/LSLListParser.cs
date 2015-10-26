@@ -49,7 +49,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
@@ -225,8 +224,8 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Parses an LSL list from a string and returns the simple expressions it contains.
         /// </summary>
-        /// <param name="list">The list.</param>
-        /// <param name="parsingFlags">The parsing flags.</param>
+        /// <param name="list">The string containing the list.</param>
+        /// <param name="parsingFlags">Optional parsing flags.</param>
         /// <returns></returns>
         /// <exception cref="LSLListParserOptionsConstraintViolationException">
         ///     When an
@@ -254,6 +253,27 @@ namespace LibLSLCC.Utility
 
 
 
+        /// <summary>
+        /// Attempts to parse an LSL list from a string and returns true if the parse succeeded.
+        /// </summary>
+        /// <param name="list">The string containing the list.</param>
+        /// <param name="expressions">The resulting expression list will be put at this location if the parse succeeded, otherwise it will be null.</param>
+        /// <param name="parsingFlags">Optional parsing flags.</param>
+        /// <returns></returns>
+        public static bool TryParseList(string list, out GenericArray<ILSLListExpr> expressions, LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
+        {
+            try
+            {
+                expressions = ParseList(list, parsingFlags);
+                return true;
+            }
+            catch (LSLListParserSyntaxException)
+            {
+                expressions = null;
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// Parses an LSL list from a string and returns the simple expressions it contains as an enumerable.
@@ -261,8 +281,8 @@ namespace LibLSLCC.Utility
         /// Take note that parsing wont start to occur until you begin enumerating the returned value.
         /// </remarks>
         /// </summary>
-        /// <param name="list">The list.</param>
-        /// <param name="parsingFlags">The parsing flags.</param>
+        /// <param name="list">The string containing the list.</param>
+        /// <param name="parsingFlags">Optional parsing flags.</param>
         /// <returns></returns>
         /// <exception cref="LSLListParserOptionsConstraintViolationException">
         ///     When an
@@ -289,7 +309,7 @@ namespace LibLSLCC.Utility
         }
 
 
-        private static ILSLListExpr BasicAtomToExpr(Parser.LSLParser.Expr_AtomContext c, string numericPrefix = null)
+        private static ILSLListExpr BasicAtomToExpr(LSLParser.Expr_AtomContext c, string numericPrefix = null)
         {
             if (c.string_literal != null)
             {

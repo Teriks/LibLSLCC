@@ -48,6 +48,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.LibraryData;
 
 #endregion
 

@@ -58,10 +58,11 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Compilers;
 using LibLSLCC.Formatter.Visitor;
+using LibLSLCC.LibraryData;
 using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplace;
 using Microsoft.Win32;
@@ -147,7 +148,9 @@ namespace LSLCCEditor
             _libraryDataProvider = new LSLXmlLibraryDataProvider(new[] { "lsl" });
 
 
+
             _libraryDataProvider.FillFromXmlDirectory("library_data");
+
 
 
             _validatorServices = new LSLCustomValidatorServiceProvider
@@ -888,7 +891,7 @@ namespace LSLCCEditor
                 _parent = parent;
             }
 
-            public override void OnWarning(LSLSourceCodeRange location, string message)
+            protected override void OnWarning(LSLSourceCodeRange location, string message)
             {
                 var tab = (EditorTab) _parent.TabControl.SelectedItem;
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Warning, "Warning", location, message));
@@ -904,7 +907,7 @@ namespace LSLCCEditor
                 _parent = parent;
             }
 
-            public override void OnError(LSLSourceCodeRange location, string message)
+            protected override void OnError(LSLSourceCodeRange location, string message)
             {
                 var tab = (EditorTab) _parent.TabControl.SelectedItem;
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error", location, message));

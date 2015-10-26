@@ -43,7 +43,7 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
+using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 

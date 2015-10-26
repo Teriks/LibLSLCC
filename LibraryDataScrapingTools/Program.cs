@@ -43,7 +43,6 @@
 #region Imports
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,6 +51,7 @@ using System.Xml;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.LibraryDataScrapers;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.OpenSimLibraryReflection;

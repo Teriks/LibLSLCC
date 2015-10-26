@@ -42,7 +42,7 @@
 #endregion
 #region Imports
 
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Collections;
 
 #endregion

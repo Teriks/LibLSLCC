@@ -42,7 +42,7 @@
 
 //if you have this un-commented, the signatures that get matched during overload resolution
 //will be output to the debug console using Debug.WriteLine();
-#define DEBUG_OVERLOAD_MATCHES
+//#define DEBUG_OVERLOAD_MATCHES
 
 #endregion
 #region Imports
@@ -57,14 +57,11 @@ using Antlr4.Runtime.Tree;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Exceptions;
+using LibLSLCC.CodeValidator.Nodes;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.ExpressionNodes;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.LoopNodes;
-using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
-using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 using LibLSLCC.Parser;
 
 #endregion

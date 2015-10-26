@@ -68,6 +68,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;

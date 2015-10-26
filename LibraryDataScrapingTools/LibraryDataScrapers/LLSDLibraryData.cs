@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -49,6 +50,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using OpenMetaverse.StructuredData;
 

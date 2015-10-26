@@ -50,10 +50,9 @@ using System.Reflection;
 using System.Text;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Exceptions;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers;
-using LibLSLCC.Utility;
+using LibLSLCC.LibraryData;
 
 #endregion
 

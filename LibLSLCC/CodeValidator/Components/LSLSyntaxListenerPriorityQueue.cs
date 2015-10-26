@@ -45,10 +45,11 @@
 using System;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Nodes;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 
 #endregion
 

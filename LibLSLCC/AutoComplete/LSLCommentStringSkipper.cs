@@ -74,7 +74,7 @@ namespace LibLSLCC.AutoComplete
         /// 
         /// If there are missing/mismatched braces then its value will not be accurate.
         /// </summary>
-        public int ScopeLevel { get; set; }
+        public int ScopeLevel { get; private set; }
 
 
         // ReSharper disable once MemberCanBePrivate.Global
@@ -88,7 +88,7 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         /// True if the offset that was parsed up to is inside a line style comment.
         /// </summary>
-        public bool InLineComment { get; set; }
+        public bool InLineComment { get; private set; }
 
 
         /// <summary>

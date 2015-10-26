@@ -45,6 +45,7 @@
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 
 #endregion
 

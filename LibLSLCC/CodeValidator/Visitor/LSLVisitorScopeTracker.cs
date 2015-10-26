@@ -47,10 +47,8 @@ using System.Linq;
 using LibLSLCC.CodeValidator.AntlrTreeUtilitys;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Exceptions;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
-using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 

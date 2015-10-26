@@ -44,8 +44,7 @@
 
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
-using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.Parser;
 
 #endregion

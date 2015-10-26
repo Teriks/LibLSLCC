@@ -41,7 +41,7 @@
 // 
 #endregion
 
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator.Enums
 {

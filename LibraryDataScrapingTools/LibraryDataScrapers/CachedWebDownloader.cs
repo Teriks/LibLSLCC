@@ -40,18 +40,17 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Data;
-
+using System.IO;
+using System.Net;
+using System.Text;
 #if __MonoCS__
 using Mono.Data.Sqlite;
 #else
 using System.Data.SQLite;
 #endif
-
-using System.IO;
-using System.Net;
-using System.Text;
 
 namespace LibraryDataScrapingTools.LibraryDataScrapers
 {
@@ -59,7 +58,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
     {
         private string _cacheDirectory;
 
-        private System.Data.IDbConnection _currentCacheIndexConnection;
+        private IDbConnection _currentCacheIndexConnection;
 
         public bool DiskCacheEnabled { get; set; }
 

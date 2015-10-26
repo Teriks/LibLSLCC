@@ -54,6 +54,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.LibraryData;
 using LSLCCEditor.Utility;
 using Microsoft.Win32;
 

@@ -244,7 +244,7 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
                             }) != null) != null).ToList()
                         );
                 }
-                catch (System.Reflection.ReflectionTypeLoadException e)
+                catch (ReflectionTypeLoadException e)
                 {
 
                     Log.WriteLineWithHeader("[OpenSimLibraryReflector ASSEMBLY LOAD EXCEPTION]", string.Join(Environment.NewLine, e.LoaderExceptions.Select(x => x.Message)));

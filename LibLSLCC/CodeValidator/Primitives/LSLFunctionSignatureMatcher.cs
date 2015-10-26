@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 

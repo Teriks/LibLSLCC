@@ -45,9 +45,10 @@
 using System;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Nodes;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.StatementNodes;
+using LibLSLCC.LibraryData;
 
 #endregion
 
@@ -495,7 +496,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </remarks>
         /// <param name="oneBasedLine">The 'one' based line number that we might need to modify, a common modification would be to subtract 1 from it.</param>
         /// <returns>The possibly modified line number to use in the warning message.</returns>
-        public virtual int MapLineNumber(int oneBasedLine)
+        protected virtual int MapLineNumber(int oneBasedLine)
         {
             return oneBasedLine;
         }
@@ -508,7 +509,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="location">Location in source code for the warning.</param>
         /// <param name="message">The warning message.</param>
-        public virtual void OnWarning(LSLSourceCodeRange location, string message)
+        protected virtual void OnWarning(LSLSourceCodeRange location, string message)
         {
             Console.WriteLine("({0},{1}) WARNING: {2}", MapLineNumber(location.LineStart), location.ColumnStart,
                 message + Environment.NewLine);

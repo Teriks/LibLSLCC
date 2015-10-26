@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using LibLSLCC.LibraryData;
 
 #endregion
 
@@ -68,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Components
         public static Stream GetDefaultLibraryDataStream()
         {
             return typeof(LSLDefaultLibraryDataProvider).Assembly.GetManifestResourceStream(
-                    "LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml");
+                    "LibLSLCC.Components.LSLDefaultLibraryDataProvider.xml");
         }
 
 

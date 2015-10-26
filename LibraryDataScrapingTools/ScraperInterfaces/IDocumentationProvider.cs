@@ -43,6 +43,7 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.LibraryData;
 
 #endregion
 

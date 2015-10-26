@@ -43,8 +43,8 @@
 #region Imports
 
 using System.IO;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
-using LibLSLCC.CodeValidator.ValidatorNodes.ScopeNodes;
+using LibLSLCC.CodeValidator.Nodes;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 #endregion
 

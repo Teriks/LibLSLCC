@@ -50,6 +50,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.OpenSimLibraryReflection;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using LibraryDataScrapingTools.ScraperProxys;

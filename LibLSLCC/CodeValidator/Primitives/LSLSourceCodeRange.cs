@@ -43,7 +43,7 @@
 #region Imports
 
 using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 #endregion
 

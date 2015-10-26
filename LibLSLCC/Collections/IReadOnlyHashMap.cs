@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using LibLSLCC.Collections;
 
 namespace LibLSLCC.Collections
 {
