@@ -143,7 +143,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (!_scopeTypeStack.Any())
                 {
-                    throw new LSLCodeValidatorInternalError("Cannot resolve scope type, not inside a scope");
+                    throw new LSLCodeValidatorInternalException("Cannot resolve scope type, not inside a scope");
                 }
 
                 return _scopeTypeStack.Peek();
@@ -156,7 +156,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (!_scopeStack.Any())
                 {
-                    throw new LSLCodeValidatorInternalError("Cannot resolve current scope context, not in a scope");
+                    throw new LSLCodeValidatorInternalException("Cannot resolve current scope context, not in a scope");
                 }
 
                 return _scopeStack.Peek();
@@ -548,7 +548,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (context == null)
                 {
-                    throw LSLCodeValidatorInternalError.VisitContextInvalidState("VisitCompilationUnit", true);
+                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitCompilationUnit", true);
                 }
 
 
@@ -581,7 +581,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (context == null || context.children == null)
                 {
-                    throw LSLCodeValidatorInternalError.VisitContextInvalidState("VisitDefaultState", true);
+                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitDefaultState", true);
                 }
 
 
@@ -604,7 +604,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 {
                     if (ctx.handler_name == null)
                     {
-                        throw LSLCodeValidatorInternalError
+                        throw LSLCodeValidatorInternalException
                             .VisitContextInInvalidState("VisitDefaultState", typeof (LSLParser.EventHandlerContext), true);
                     }
 
@@ -628,7 +628,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (context == null || Utility.AnyNull(context.children, context.state_name))
                 {
-                    throw LSLCodeValidatorInternalError.VisitContextInvalidState("VisitDefinedState", true);
+                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitDefinedState", true);
                 }
 
 
@@ -670,7 +670,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 {
                     if (ctx.handler_name == null)
                     {
-                        throw LSLCodeValidatorInternalError
+                        throw LSLCodeValidatorInternalException
                             .VisitContextInInvalidState("VisitDefinedState",
                                 typeof (LSLParser.EventHandlerContext), true);
                     }
@@ -696,7 +696,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (context == null || Utility.AnyNull(context.function_name, context.code))
                 {
-                    throw LSLCodeValidatorInternalError.VisitContextInvalidState("VisitFunctionDeclaration", true);
+                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitFunctionDeclaration", true);
                 }
 
                 if (_validatorServiceProvider.LibraryDataProvider.LibraryFunctionExist(context.function_name.Text))
@@ -785,7 +785,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (context == null || !Utility.OnlyOneNotNull(context.code, context.statement))
                 {
                     throw
-                        LSLCodeValidatorInternalError.
+                        LSLCodeValidatorInternalException.
                             VisitContextInvalidState("VisitCodeScopeOrSingleBlockStatement",
                                 true);
                 }
@@ -813,7 +813,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (context == null || context.children == null)
                 {
-                    throw LSLCodeValidatorInternalError.VisitContextInvalidState("VisitCodeScope", true);
+                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitCodeScope", true);
                 }
 
                 _scopingManager.EnterCodeScopeDuringPrePass(context);
@@ -829,7 +829,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (context == null || context.label_name == null)
                 {
-                    throw LSLCodeValidatorInternalError.VisitContextInvalidState("VisitLabelStatement", true);
+                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitLabelStatement", true);
                 }
 
 

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.ValidatorNodes.Interfaces;
 using LibLSLCC.Collections;
+using LibLSLCC.Utility;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
@@ -116,12 +118,32 @@ namespace LibLSLCC.CodeValidator.Primitives
                 {
                     return !Ambiguous && Matches.Count != 0;
                 }
-            } 
+            }
 
-
+            /// <summary>
+            /// Initializes a new instance of the <see cref="OverloadMatch{T}"/> class with an <see cref="IReadOnlyGenericArray{T}"/> containing signature matches.
+            /// </summary>
+            /// <param name="matches">The matches.</param>
             internal OverloadMatch(IReadOnlyGenericArray<T> matches)
             {
                 Matches = matches;
+            }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="OverloadMatch{T}"/> class with no signature matches at all.
+            /// </summary>
+            internal OverloadMatch()
+            {
+                Matches = new GenericArray<T>();
+            }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="OverloadMatch{T}"/> class with a single un-ambiguous signature match.
+            /// </summary>
+            /// <param name="match">The match.</param>
+            internal OverloadMatch(T match)
+            {
+                Matches = new GenericArray<T> { match };
             }
         }
 
@@ -136,13 +158,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <returns>A matching <see cref="LSLFunctionSignature"/> overload or null.</returns>
         public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator) where T : LSLFunctionSignature
         {
-            //if there are multiple matches, then the overload is ambiguous
-            var matches =
-                functionSignatures.Where(
-                    functionSignature => TryMatch(functionSignature, expressionNodes, expressionValidator).Success).ToGenericArray();
-
-
-            return new OverloadMatch<T>(matches);
+            return MatchOverloads(functionSignatures, expressionNodes,(expressionValidator.ValidFunctionParameter));
         }
 
         /// <summary>
@@ -157,12 +173,116 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <returns>A matching <see cref="LSLFunctionSignature"/> overload or null.</returns>
         public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer) where T : LSLFunctionSignature
         {
+            //discover candidates 'applicable' functions, using a typeComparer function/lambda to compare the signature parameters to the passed expression nodes.
+            //anything that could possibly match the signature as an individual non-overloaded function is considered an overload match candidate. (see the TryMatch function of this class)
+            // 
+            //The type comparer is allowed to match signatures with implicit parameter conversions if it wants to.
+            //such as for LSL's (key to string) and (string to key) conversion.
             var matches =
                 functionSignatures.Where(
                     functionSignature => TryMatch(functionSignature, expressionNodes, typeComparer).Success).ToGenericArray();
 
+            
 
-            return new OverloadMatch<T>(matches);
+
+            //More than one matching signature, we need to tie break.
+            if (matches.Count <= 1) return new OverloadMatch<T>(matches);
+
+
+            //Prefer function declarations that have no parameters, over function declarations with one variadic parameter.
+            if (expressionNodes.Count == 0)
+            {
+                return new OverloadMatch<T>(matches.First(x=>x.ParameterCount == 0));
+            }
+
+
+            //Rank matches by the number implicit type conversions that occur.
+            //Implicit conversion is the only real match quality degradation that can occur in LSL.
+            var numberOfConversionsWithSignature = new List<Tuple<int, T>>();
+        
+            foreach (var match in matches)
+            {
+                int conversions = 0;
+                int idx = 0;
+                foreach (var parameter in expressionNodes)
+                {
+                    //Select the signature parameter to compare, if the expression index 'idx' is greater than a matches parameter count;
+                    //Then that match is a variadic function, with the parameters overflowing the parameter count because multiple parameters were passed into the variadic parameter slot.
+                    //If this happens, we want to continue comparing the rest of the passed variadic parameters to the type of the last parameter in the match signature, IE. The one that is variadic. 
+                    var signatureParameterToCompare = idx > (match.ParameterCount-1) ? match.Parameters.Last() : match.Parameters[idx];
+
+                    //If a type of the passed expression does not exactly equal the signature parameter, but the type comparer says that the expression can actually be passed in anyway.
+                    //Then the type that the expression is must be implicitly convertible to the type that the parameter is, an implicit conversion has occurred.  The match quality of the signature has degraded.
+                    if (signatureParameterToCompare.Type != parameter.Type && typeComparer(signatureParameterToCompare, parameter))
+                    {
+                        conversions++;
+                    }
+
+                    //increment the current expression index
+                    idx++;
+                }
+                //add the signature to the list in a tuple, the int is the number of implicit conversions required for the function to be called with the given parameters.
+                numberOfConversionsWithSignature.Add(new Tuple<int, T>(conversions, match));
+            }
+
+            //check if all the matching signatures have the same amount of required implicit conversions, which would mean neither of them is a better choice.
+            if (numberOfConversionsWithSignature.Distinct(new LambdaEqualityComparer<Tuple<int, T>>((tuple, tuple1) => tuple.Item1 == tuple1.Item1, tuple => tuple.Item1.GetHashCode())).Count() == 1)
+            {
+                //all candidates share the same number of implicit type conversions, ambiguous match because neither signature is a better choice, return all matches.
+                return new OverloadMatch<T>(matches);
+            }
+
+            //Group by the number of conversions, and find the grouping with the smallest number of implicit conversions.
+            GenericArray<Tuple<int, T>> groupingWithSmallestNumberOfConversions = null;
+            foreach (var group in numberOfConversionsWithSignature.GroupBy(x => x.Item1))
+            {
+                var items = group.ToGenericArray();
+                //we grouped by the number of conversions, so we can check the number of conversions associated with every signature in the group
+                //just by checking the number of implicit conversions the first signature requires.
+                if (groupingWithSmallestNumberOfConversions == null || items.First().Item1 < groupingWithSmallestNumberOfConversions.First().Item1)
+                {
+                    //assign this group if it has fewer implicit conversion requirements than the previous group.
+                    groupingWithSmallestNumberOfConversions = items;
+                }
+            }
+
+
+            //no groupings were created, no matches at all.  This is not expected to happen, but I don't want the compiler to complain
+            //about me not checking for it.
+            if (groupingWithSmallestNumberOfConversions == null)
+            {
+                return new OverloadMatch<T>(new GenericArray<T>());
+            }
+
+
+            //if we found a grouping, and that grouping has more than one matching signature, we need to tie break again.
+            if (groupingWithSmallestNumberOfConversions.Count != 1)
+            {
+                if (
+                    groupingWithSmallestNumberOfConversions.Distinct(
+                        new LambdaEqualityComparer<Tuple<int, T>>(
+                            (tuple, tuple1) => tuple.Item2.ParameterCount == tuple1.Item2.ParameterCount,
+                            tuple => tuple.Item2.ParameterCount.GetHashCode())).Count() == 1)
+                {
+                    //all the signatures in the grouping have a matching number of parameters, overload resolution is ambiguous, return all signatures that matched.
+                    return new OverloadMatch<T>(groupingWithSmallestNumberOfConversions.Select(x => x.Item2).ToGenericArray());
+                }
+
+                
+                //Otherwise find the signature in the grouping with a concrete (non-variadic) parameter count closest to the amount of parameter expressions given to call the function.
+
+                var minDistance = groupingWithSmallestNumberOfConversions.Min(n => Math.Abs(expressionNodes.Count - n.Item2.ConcreteParameterCount));
+                var closest = groupingWithSmallestNumberOfConversions.First(n => Math.Abs(expressionNodes.Count - n.Item2.ConcreteParameterCount) == minDistance);
+
+                //The one with the closest amount of concrete parameters wins.
+                return new OverloadMatch<T>(closest.Item2);
+            }
+
+
+
+            //There was only one signature match in the grouping that had the smallest number of implicit conversion.
+            //The one with the fewest implicit conversions wins, so return it.
+            return new OverloadMatch<T>(groupingWithSmallestNumberOfConversions.First().Item2);
         }
 
 
@@ -177,11 +297,13 @@ namespace LibLSLCC.CodeValidator.Primitives
         public static Match TryMatch( LSLFunctionSignature functionSignature, IReadOnlyGenericArray<ILSLExprNode> expressions, ILSLExpressionValidator expressionValidator)
         {
 
-            return TryMatch(functionSignature,expressions,((parameter, node) => expressionValidator.ValidFunctionParameter(functionSignature, parameter.ParameterIndex, node)));
+            return TryMatch(functionSignature,expressions,(expressionValidator.ValidFunctionParameter));
         }
 
+
+
         /// <summary>
-        /// Determines if two function signatures match exactly (including return type), parameter names do not matter but parameter types do.
+        /// Determines if two function signatures match exactly (including return type), parameter names do not matter but parameter types and variadic parameter status do.
         /// </summary>
         /// <param name="left">The first function signature in the comparison.</param>
         /// <param name="right">The other function signature in the comparison.</param>
@@ -202,7 +324,9 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
             for (var i = 0; i < left.ParameterCount; i++)
             {
-                if (left.Parameters[i].Type != right.Parameters[i].Type)
+                var l = left.Parameters[i];
+                var r = right.Parameters[i];
+                if (l.Type != r.Type || l.Variadic != r.Variadic)
                 {
                     return false;
                 }
@@ -212,13 +336,16 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        ///     Determines if a two LSLFunctionSignatures are duplicate definitions of each other
-        ///     The logic behind this is a bit different than SignaturesEquivalent().
+        ///     Determines if a two LSLFunctionSignatures are duplicate definitions of each other.
+        /// <para>
+        ///     The logic behind this is a bit different than <see cref="SignaturesEquivalent"/>.
         ///     
-        ///     If the given function signature has the same name, a differing return type and both functions have no parameters; than this function will return true
-        ///     and SignaturesEquivalent() will not. 
+        ///     If the given function signatures have the same name, differing return types and no parameters; than this function will return true
+        ///     and <see cref="SignaturesEquivalent"/> will not. 
         /// 
-        ///     If the other signature is an overload that is ambiguous in all cases due to variadic parameters, this function returns true.
+        ///     If the given function signatures have differing return types, and the exact same parameter types/count; than this function will return true
+        ///     and <see cref="SignaturesEquivalent"/> will not.
+        /// </para>
         /// </summary>
         /// <param name="left">The first function signature in the comparison.</param>
         /// <param name="right">The other function signature in the comparison.</param>
@@ -228,143 +355,34 @@ namespace LibLSLCC.CodeValidator.Primitives
             //Cannot be duplicates of each other if the name is different
             if (left.Name != right.Name) return false;
 
-
-            //Cases for when both signatures have an equal number of parameters
-            //ParameterCount includes variadic parameters, variadic parameters can only
-            //be the last parameter in a signature.  There can only be one variadic parameter
-            //in a function signature, LSLFunctionSignature ensures this.
-            if (left.ParameterCount == right.ParameterCount)
+            //Both functions have no parameters and the same name, they are duplicate definitions of each other.
+            if (left.ParameterCount == right.ParameterCount && left.ParameterCount == 0)
             {
-
-                //Notes:
-                //1: Linq's All function returns TRUE for empty collections
-                //
-                //2: The type of the variadic parameters is important in determining ambiguity, ie:
-                //   func(integer a, params string[] b) and func(integer a, params integer[] b) are not duplicates
-                //   OpenSim does not have any variadic library functions that take a non object[] (non generic) parameter type
-                //   but I believe the best behavior is to implement a type check on the variadic parameter so they option is available
-                //   to have overloads with the same basic signature and different types for the variadic parameter
-                //
-                //3: It is a fact that LSLFunctionSignature is only allowed to have one variadic parameter, it is enforced with an exception in the class
-                //
-                //4: if both functions have a single variadic parameter, an ambiguous match can occur at compile time, but this is not a duplicate
-                //   definition because the overload can be resolved using the types of the parameters
-
-
-
-                if (left.HasVariadicParameter && right.HasVariadicParameter)
-                {
-                    var rightVariadicType = right.Parameters.Last().Type;
-                    var leftVariadicType = left.Parameters.Last().Type;
-
-                    var eitherAreVoidOrTheyAreEqual =
-                        (leftVariadicType == LSLType.Void || rightVariadicType == LSLType.Void) ||
-                        leftVariadicType == rightVariadicType;
-
-                    //TRUE IF:
-                    //All concrete parameters match, and the variadic parameters are equal to each other or either one of them is Void
-                    return
-                        right.ConcreteParameters
-                            .All(x => x.Type == left.Parameters[x.ParameterIndex].Type) && eitherAreVoidOrTheyAreEqual;
-                }
-
-
-                if (left.HasVariadicParameter)
-                {
-                    var leftVariadicType = left.Parameters.Last().Type;
-                    var lastParamRight = right.Parameters.Last().Type;
-
-                    //TRUE IF:
-                    //All concrete parameters in the left signature match the corresponding ones in the right
-                    //and the left variadic parameter type is either Void or equal to the last parameter in right
-                    return
-                        left.ConcreteParameters
-                            .All(x => x.Type == right.Parameters[x.ParameterIndex].Type) &&
-                        (leftVariadicType == LSLType.Void || leftVariadicType == lastParamRight);
-                }
-
-                if (right.HasVariadicParameter)
-                {
-                    var rightVariadicType = right.Parameters.Last().Type;
-                    var lastParamLeft = left.Parameters.Last().Type;
-
-                    //TRUE IF:
-                    //All concrete parameters in the right signature match the corresponding ones in the left
-                    //and the right variadic parameter type is either Void or equal to the last parameter in left
-                    return
-                        right.ConcreteParameters
-                            .All(x => x.Type == left.Parameters[x.ParameterIndex].Type) &&
-                        (rightVariadicType == LSLType.Void || rightVariadicType == lastParamLeft);
-                }
-
-                //TRUE IF:
-                //Neither function has variadic parameters, and the parameter count is equal to zero
-                return left.ParameterCount == 0 || left.Parameters.All(x => x.Type == right.Parameters[x.ParameterIndex].Type);
+                return true;
             }
 
+            //we don't care about the return type, it does not make a function definition unique, it does not participate in overload resolution.
 
-
-            //Cases for when the function signatures do not have an equal amount of parameters.
-
-            //
-            // left: func(integer a, params TYPE[] b)
-            // right:  func(integer a, integer b, integer c);
-            //
-            if (left.HasVariadicParameter && left.ParameterCount < right.ParameterCount)
+            //simple case, these functions cannot be a duplicate definition if they have a different parameter count.
+            if (left.ParameterCount != right.ParameterCount)
             {
-                
-
-
-                var leftVariadicParameterType = left.Parameters.Last().Type;
-                var rightParameterTypeWhereLeftVariadicIs = right.Parameters[left.VariadicParameterIndex].Type;
-
-                //if we have a Void variadic parameter in the left it will consume/match the rest of the rights parameters
-                //no matter what type they are.
-                //
-                //If the variadic parameter in the left signature is equal to the parameter in the right signature
-                //at the corresponding position,  then the variadic parameter in the left signature also consumes/matches
-                //the rest of the right signatures parameters
-                var leftVariadicParameterConsumesRights = leftVariadicParameterType == LSLType.Void ||
-                                                          leftVariadicParameterType ==
-                                                          rightParameterTypeWhereLeftVariadicIs;
-
-
-                //TRUE IF:
-                //All concrete parameters match up, and my variadic parameter is either Void (accepts anything) or is the same type as the parameter
-                //in their signature at the same index
-                return left.ConcreteParameters.All(x => x.Type == right.Parameters[x.ParameterIndex].Type) && leftVariadicParameterConsumesRights;
+                return false;
+            }
+            for (var i = 0; i < left.ParameterCount; i++)
+            {
+                //check all the parameters have identical specifications.
+                //IE, type and variadic status.
+                var l = left.Parameters[i];
+                var r = right.Parameters[i];
+                if (l.Type != r.Type || l.Variadic != r.Variadic)
+                {
+                    //nope, there was a mismatch.
+                    return false;
+                }
             }
 
-
-            //
-            // left: func(integer a, integer b, integer c);
-            // right:  func(integer a, params TYPE[] b);
-            //
-            if (right.HasVariadicParameter && left.ParameterCount > right.ParameterCount)
-            {
-                var rightVariadicParameterType = right.Parameters.Last().Type;
-                var leftParameterTypeWhereRightVariadicIs =
-                    left.Parameters[right.VariadicParameterIndex].Type;
-
-                //if we have a Void variadic parameter in the right it will consume/match the rest of the lefts parameters
-                //no matter what type they are.
-                //
-                //If the variadic parameter in the right signature is equal to the parameter in the left signature
-                //at the corresponding position,  then the variadic parameter in the right signature also consumes/matches
-                //the rest of the left signatures parameters
-                var rightVariadicParameterConsumesLefts =
-                    rightVariadicParameterType == LSLType.Void ||
-                    rightVariadicParameterType == leftParameterTypeWhereRightVariadicIs;
-
-                //TRUE IF:
-                //All concrete parameters match up, and the rights variadic parameter is either Void (accepts anything) or is the same type as the parameter
-                //in the left signature at the same index
-                return right.ConcreteParameters.All(x => x.Type == left.Parameters[x.ParameterIndex].Type)
-                    && rightVariadicParameterConsumesLefts;
-            }
-
-            //this cannot be a duplicate if none of the above conditions were met.
-            return false;
+            //everything matched up, the return type was ignored, it does not matter.
+            return true;
         }
 
 
@@ -399,19 +417,35 @@ namespace LibLSLCC.CodeValidator.Primitives
                 return new Match(true, false, false, -1);
             }
 
+
             //check the types of all parameters match, including variadic parameters from the signature if they are not Void
             //if the variadic parameter is Void than anything can go in it, so it is not even checked
             for (; parameterNumber < expressions.Count; parameterNumber++)
             {
-                var currentSignatureParameter = functionSignature.Parameters[parameterNumber];
+                LSLParameter compareWithThisSignatureParameter;
+
+                if (parameterNumber > (functionSignature.ParameterCount-1))
+                {
+                    //If this happens it means we are in a continuation of a variadic parameter, we want to continue comparing the rest of the passed
+                    //expressions to the last parameter in the function signature, IE. the variadic parameter.
+                    compareWithThisSignatureParameter = functionSignature.Parameters[functionSignature.ParameterCount - 1];
+                }
+                else
+                {
+                    //We have not flowed over the parameter count of the signature, so theres no danger
+                    //of an out of bounds index on the parameters array in the signature.
+                    compareWithThisSignatureParameter = functionSignature.Parameters[parameterNumber];
+                }
+                
 
                 //no type check required, the variadic parameter allows everything in because its type is Void, anything you put in is a match
-                if (currentSignatureParameter.Variadic && currentSignatureParameter.Type == LSLType.Void)
-                    continue;
+                //from here on out.  So its safe to return from the loop now and stop checking parameters.
+                if (compareWithThisSignatureParameter.Variadic && compareWithThisSignatureParameter.Type == LSLType.Void)
+                    break;
 
                 //use the type comparer to check for a match, there might be some special case like string literals
                 //being passed into a Key parameter, this behavior is delegated for better re-usability
-                if (typeComparer(functionSignature.Parameters[parameterNumber], expressions[parameterNumber]))
+                if (typeComparer(compareWithThisSignatureParameter, expressions[parameterNumber]))
                     continue;
 
                 //the expression could not be passed into the parameter due to a type mismatch, we are done checking the parameters
@@ -419,6 +453,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 parameterTypeMismatch = true;
                 break;
             }
+
 
             //if there was a parameter mismatch, the last checked parameter index is the index at which the mismatch occurred
             var badParameterIndex = parameterTypeMismatch ? parameterNumber : -1;

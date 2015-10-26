@@ -342,17 +342,14 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Given a function signature, parameter index, and parameter expression; this will return whether or not
-        /// the parameter expression can be passed into the parameter slot of function signature at the specified parameter
-        /// index.
+        /// Validates that an expression can be passed into the parameter slot of a function.
+        /// IE: That the passed expression matches up with or can be converted to the parameter type.
         /// </summary>
-        /// <param name="functionSignature">The function signature.</param>
-        /// <param name="parameterNumber">The index of the parameter in the function signature.</param>
-        /// <param name="parameterExpressionPassed">The expression that is attempting to be passed into the parameter slot at index.</param>
-        /// <returns>True if the expression can be passed.</returns>
+        /// <param name="parameter">The parameter definition.</param>
+        /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
+        /// <returns></returns>
         public bool ValidFunctionParameter(
-            LSLFunctionSignature functionSignature,
-            int parameterNumber,
+            LSLParameter parameter,
             ILSLExprNode parameterExpressionPassed)
         {
             if (parameterExpressionPassed.HasErrors)
@@ -360,14 +357,15 @@ namespace LibLSLCC.CodeValidator.Components
                 return false;
             }
 
-            if (functionSignature.ParameterCount == 0)
+            if (parameter.Variadic && parameter.Type == LSLType.Void)
             {
-                return false;
+                return true;
             }
+
 
             var left = new LSLDummyExpr
             {
-                Type = functionSignature.Parameters[parameterNumber].Type,
+                Type = parameter.Type,
                 ExpressionType = LSLExpressionType.ParameterVariable
             };
 

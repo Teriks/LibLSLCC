@@ -39,11 +39,17 @@
 // ============================================================
 // 
 // 
+
+//if you un-comment this, the signatures that get matched during overload resolution
+//will be output to the debug console using Debug.WriteLine();
+#define DEBUG_OVERLOAD_MATCHES
+
 #endregion
 #region Imports
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Antlr4.Runtime;
@@ -62,6 +68,8 @@ using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
+
+
 
 namespace LibLSLCC.CodeValidator.Visitor
 {
@@ -2860,6 +2868,11 @@ namespace LibLSLCC.CodeValidator.Visitor
                         return LSLFunctionCallNode.GetError(new LSLSourceCodeRange(context));
                     }
 
+#if DEBUG_OVERLOAD_MATCHES
+
+                    Debug.WriteLine("Overload match: "+functionSignature.SignatureString);
+#endif
+
 
                     if (functionSignature.Deprecated)
                     {
@@ -3037,9 +3050,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             return ReturnFromVisit(context, result);
         }
 
-        #endregion
+#endregion
 
-        #region CompoundLiteralVisitors
+#region CompoundLiteralVisitors
 
         public override ILSLSyntaxTreeNode VisitVectorLiteral(LSLParser.VectorLiteralContext context)
         {
@@ -3181,9 +3194,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             return ReturnFromVisit(context, result);
         }
 
-        #endregion
+#endregion
 
-        #region GeneralUtilitys
+#region GeneralUtilitys
 
         private static bool DoesExpressionHaveEffect(LSLParser.ExpressionContext context)
         {
@@ -3232,9 +3245,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             return nodeData;
         }
 
-        #endregion
+#endregion
 
-        #region ConstantAnalysisUtilitys
+#region ConstantAnalysisUtilitys
 
         /*private readonly Stack<bool> _branchScopeStack = new Stack<bool>();
 
@@ -3268,9 +3281,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             _branchScopeStack.Pop();
         }*/
 
-        #endregion
+#endregion
 
-        #region ExpressionValidationStubs
+#region ExpressionValidationStubs
 
         private LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, string operation,
             ILSLExprNode right, LSLSourceCodeRange location)
@@ -3358,9 +3371,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             return validate;
         }
 
-        #endregion
+#endregion
 
-        #region MultipleListStringAssignmentWarnings
+#region MultipleListStringAssignmentWarnings
 
         // The following algorithms for detecting multiple assignments to lists and strings work
         // by traversing up the tree from assignment operations, which may be leaves in
@@ -3538,6 +3551,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             _multipleListAssignmentWarned.Clear();
         }
 
-        #endregion
+#endregion
     }
 }

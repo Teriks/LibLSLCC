@@ -312,7 +312,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <remarks>
         /// If <see cref="LiveFiltering"/> is not enabled, the subset description will be put into a holding area and not added to <see cref="SubsetDescriptions"/> until it is referenced by a signature.
         /// </remarks>
-        /// <exception cref="LSLDuplicateSubsetDescription">If a subset description for the same Subset name already exists.</exception>
+        /// <exception cref="LSLDuplicateSubsetDescriptionException">If a subset description for the same Subset name already exists.</exception>
         /// <param name="description">The subset description to add.</param>
         public void AddSubsetDescription(LSLLibrarySubsetDescription description)
         {
@@ -330,7 +330,7 @@ namespace LibLSLCC.CodeValidator.Components
 
             if (dictRef.ContainsKey(description.Subset))
             {
-                throw new LSLDuplicateSubsetDescription(string.Format("Description for subset {0} already exists.", description.Subset));
+                throw new LSLDuplicateSubsetDescriptionException(string.Format("Description for subset {0} already exists.", description.Subset));
             }
 
             dictRef.Add(description.Subset, description);
@@ -344,7 +344,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <remarks>
         /// If <see cref="LiveFiltering"/> is not enabled, the subset description will be put into a holding area and not added to <see cref="SubsetDescriptions"/> until it is referenced by a signature.
         /// </remarks>
-        /// <exception cref="LSLDuplicateSubsetDescription">If a subset description for the same Subset name already exists.</exception>
+        /// <exception cref="LSLDuplicateSubsetDescriptionException">If a subset description for the same Subset name already exists.</exception>
         /// <param name="descriptions">The subset descriptions to add.</param>
         public void AddSubsetDescriptions(IEnumerable<LSLLibrarySubsetDescription> descriptions)
         {

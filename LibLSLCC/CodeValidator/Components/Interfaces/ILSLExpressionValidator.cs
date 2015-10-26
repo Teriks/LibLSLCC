@@ -288,14 +288,13 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
         /// <summary>
-        /// Validates that an expression can be passed into the parameter slot of a function signature at a certain index.
-        /// IE: That the passed expression matches up with or can be converted to the parameter type at a certain parameter index in the function signature.
+        /// Validates that an expression can be passed into the parameter slot of a function.
+        /// IE: That the passed expression matches up with or can be converted to the parameter type.
         /// </summary>
-        /// <param name="functionSignature">The signature of the function that is being called.</param>
-        /// <param name="parameterNumber">The zero based index of the parameter in the function signature that is to be checked against the given expression.</param>
+        /// <param name="parameter">The parameter definition.</param>
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
         /// <returns></returns>
-        bool ValidFunctionParameter(LSLFunctionSignature functionSignature, int parameterNumber,
+        bool ValidFunctionParameter(LSLParameter parameter,
             ILSLExprNode parameterExpressionPassed);
     }
 }

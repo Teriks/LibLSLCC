@@ -475,10 +475,10 @@ private static class UTILITIES
                 switch (x.Type)
                 {
                     case LSLType.String:
-                        Writer.Write("new LSL_Types.LSLString(\"" + x.ValueStringWithControlCodeEscapes + "\")");
+                        Writer.Write("new LSL_Types.LSLString(" + x.ValueStringAsCodeLiteral + ")");
                         break;
                     case LSLType.Key:
-                        Writer.Write("new LSL_Types.key(\"" + x.ValueStringWithControlCodeEscapes + "\")");
+                        Writer.Write("new LSL_Types.key("+ x.ValueStringAsCodeLiteral + ")");
                         break;
                     case LSLType.Vector:
                         Writer.Write("new LSL_Types.Vector3(" + x.ValueString + ")");

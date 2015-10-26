@@ -44,8 +44,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -71,6 +73,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         private string _name;
+        private string _valueString;
 
         private LSLLibraryConstantSignature()
         {
@@ -197,19 +200,113 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-        /// <summary>
-        /// The raw value string of the library constant.
-        /// </summary>
-        public string ValueString { get; private set; }
+        private static string _floatRegexString = "([-+]?[0-9]*(?:\\.[0-9]*))";
+        private static Regex _vectorValidationRegex = new Regex("^"+_floatRegexString+"\\s*,\\s*"+_floatRegexString+"\\s*,\\s*"+_floatRegexString+"$");
+        private static Regex _rotationValidationRegex = new Regex("^" + _floatRegexString + "\\s*,\\s*" + _floatRegexString + "\\s*,\\s*" + _floatRegexString+ "\\s*,\\s*" + _floatRegexString + "$");
 
 
         /// <summary>
-        /// Returns the ValueString replacing any control code characters with symbolic string escapes.
+        /// The value string of the library constant, you must set <see cref="Type" /> first to a value that is not <see cref="LSLType.Void" /> or an exception will be thrown.
         /// </summary>
-        public string ValueStringWithControlCodeEscapes
+        /// <value>
+        /// The value string.
+        /// </value>
+        /// <exception cref="System.ArgumentNullException">If you attempt to set the value to <c>null</c>.</exception>
+        /// <exception cref="LSLInvalidConstantValueString">If the Value is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
+        /// or
+        /// If the Value is an invalid value for an integer and <see cref="Type" /> is set to <see cref="LSLType.Integer" />
+        /// or
+        /// If the Value is an invalid value for a vector and <see cref="Type" /> is set to <see cref="LSLType.Vector" />
+        /// or
+        /// If the Value is an invalid value for a rotation and <see cref="Type" /> is set to <see cref="LSLType.Rotation" /></exception>
+        /// <exception cref="System.InvalidOperationException">If you try to set this value and <see cref="Type" /> is equal to <see cref="LSLType.Void" />.</exception>
+        /// <remarks>
+        /// Only integral or hexadecimal values are allowed when <see cref="Type" /> is set to <see cref="LSLType.Integer" />
+        /// Only floating point or hexadecimal values are allowed when <see cref="Type" /> is set to <see cref="LSLType.Float" />
+        /// The enclosing less than and greater than symbols will be removed when <see cref="Type" /> is set to <see cref="LSLType.Vector" /> or <see cref="LSLType.Rotation" />.
+        /// </remarks>
+        public string ValueString
         {
-            get { return LSLFormatTools.ShowControlCodeEscapes(ValueString); }
+            get { return _valueString; }
+            private set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                if (Type == LSLType.Float)
+                {
+                    float f;
+                    if (!float.TryParse(value, out f) && 
+                        !float.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out f))
+                    {
+                         throw new LSLInvalidConstantValueString(string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.", value));
+                    }
+                    _valueString = value;
+                    return;
+                }
+
+                if (Type == LSLType.Integer)
+                {
+                    int i;
+                    if (!int.TryParse(value, out i) && 
+                        !int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
+                    {
+                        throw new LSLInvalidConstantValueString(string.Format("Integer Constant ValueString:  Given value '{0}' is not a valid integer value.", value));
+                    }
+                    _valueString = value;
+                    return;
+                }
+                if (Type == LSLType.List)
+                {
+                    try
+                    {
+                        LSLListParser.ParseList(value);
+                        _valueString = value;
+                        return;
+                    }
+                    catch (LSLListParserSyntaxException e)
+                    {
+                        throw new LSLInvalidConstantValueString("List Constant ValueString Invalid: " + e.Message);
+                    }
+                }
+                if (Type == LSLType.Vector)
+                {
+                    _valueString = value.Trim('<', '>',' ');
+                    var match = _vectorValidationRegex.Match(value);
+                    if (!match.Success)
+                    {
+                        throw new LSLInvalidConstantValueString(string.Format("Vector Constant ValueString: '{0}' could not be parsed and formated.", value));
+                    }
+
+                    _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3];
+                    return;
+                }
+                if (Type == LSLType.Rotation)
+                {
+                    _valueString = value.Trim('<', '>', ' ');
+                    var match = _rotationValidationRegex.Match(value);
+                    if (!match.Success)
+                    {
+                        throw new LSLInvalidConstantValueString(string.Format("Rotation Constant ValueString: '{0}' could not be parsed and formated.", value));
+                    }
+
+                    _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
+                    return;
+                }
+
+                if (Type == LSLType.Void)
+                {
+                    throw new InvalidOperationException("LSLLibraryConstantSignature: could not set ValueString because Type was set to LSLType.Void.");
+                }
+
+                _valueString = value;
+
+            }
         }
+
+
 
         /// <summary>
         /// Returns a string which represents what this Constant would look like
@@ -222,7 +319,7 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 if (Type == LSLType.Key || Type == LSLType.String)
                 {
-                    return "\"" + ValueStringWithControlCodeEscapes + "\"";
+                    return "\"" + LSLFormatTools.ShowControlCodeEscapes(ValueString) + "\"";
                 }
                 if (Type == LSLType.Vector || Type == LSLType.Rotation)
                 {
@@ -268,6 +365,8 @@ namespace LibLSLCC.CodeValidator.Components
             var hasName = false;
             var hasValue = false;
 
+            string valueString = null;
+
             var lineNumberInfo = (IXmlLineInfo) reader;
 
             while (reader.MoveToNextAttribute())
@@ -281,7 +380,9 @@ namespace LibLSLCC.CodeValidator.Components
                     {
                         hasValue = true;
                     }
-                    ValueString = val;
+
+                    //need to set the type first, defer this until later.
+                    valueString = val;
                 }
                 else if (reader.Name == "Subsets")
                 {
@@ -337,6 +438,10 @@ namespace LibLSLCC.CodeValidator.Components
                 throw new XmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing Subsets attribute");
             }
+
+            //Set the value string, this can possibly throw an LSLInvalidConstantValueString
+            //The Type property needs to be set first above for validation to occur.
+            ValueString = valueString;
 
 
             var canRead = reader.Read();

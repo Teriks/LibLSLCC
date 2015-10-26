@@ -99,6 +99,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +112,9 @@
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetNameParser.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataXmlSerializer.cs" />
     <Compile Include="CodeValidator\Components\LSLLibrarySubsetDescription.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLInvalidConstantValueString.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLLibraryDataAttributeOrderError.cs" />
+    <Compile Include="Utility\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />
     <Compile Include="CodeValidator\Enums\LSLConditionalStatementType.cs" />
@@ -124,6 +128,7 @@
     <Compile Include="CodeValidator\Components\LSLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureMatcher.cs" />
     <Compile Include="CodeValidator\ValidatorNodes\Interfaces\LSLExprNodeInterfaceExtensions.cs" />
+    <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\GenericArray.cs" />
     <Compile Include="Collections\GenericArrayExtensions.cs" />
     <Compile Include="Collections\HashMapExtensions.cs" />
@@ -296,7 +301,7 @@
     <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt" />
   </ItemGroup>
   <ItemGroup>
-    <License Include="LICENSE"/>
+    <License Include="LICENSE" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" Outputs="$(ProjectDir)Parser\LSLParser.cs;$(ProjectDir)Parser\LSLVisitor.cs;$(ProjectDir)Parser\LSLListener.cs;$(ProjectDir)Parser\LSLLexer.cs;$(ProjectDir)Parser\LSLLexer.tokens;$(ProjectDir)Parser\LSL.tokens;$(ProjectDir)Parser\LSLBaseVisitor.cs;$(ProjectDir)Parser\LSLBaseListener.cs;">
