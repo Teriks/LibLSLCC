@@ -275,8 +275,7 @@ namespace LibLSLCC.LibraryData
                 {
                     try
                     {
-                        LSLListParser.ParseList(value);
-                        _valueString = value;
+                        _valueString = LSLListParser.Format(LSLListParser.ParseList(value), false);
                         return;
                     }
                     catch (LSLListParserSyntaxException e)

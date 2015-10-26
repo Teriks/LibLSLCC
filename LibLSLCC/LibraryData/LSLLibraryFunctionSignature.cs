@@ -251,13 +251,9 @@ namespace LibLSLCC.LibraryData
                     }
 
 
-                    LSLType pType;
+                    
 
-                    if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
-                    {
-                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunction '{0}': Parameter Type attribute invalid.", Name));
-                    }
+      
 
 
                     var pName = reader.GetAttribute("Name");
@@ -266,6 +262,14 @@ namespace LibLSLCC.LibraryData
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, 
                             string.Format("LibraryFunction '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.", Name));
+                    }
+
+                    LSLType pType;
+
+                    if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
+                    {
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
+                            string.Format("LibraryFunction '{0}': Parameter named '{1}' has an invalid Type attribute.", Name, pName));
                     }
 
                     if (parameterNames.Contains(pName))

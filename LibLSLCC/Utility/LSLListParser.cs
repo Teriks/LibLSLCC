@@ -49,6 +49,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
@@ -272,6 +273,18 @@ namespace LibLSLCC.Utility
                 expressions = null;
                 return false;
             }
+        }
+
+
+        /// <summary>
+        /// Formats the specified expressions into the string representation of an LSL list.
+        /// </summary>
+        /// <param name="expressions">The expressions to format.</param>
+        /// <param name="brackets">if set to <c>true</c> place brackets around the list, otherwise just return the CSV list content.</param>
+        /// <returns></returns>
+        public static string Format(IEnumerable<ILSLListExpr> expressions, bool brackets=true)
+        {
+            return  (brackets ? "[" : "") + string.Join(", ", expressions.Select(x => x.ValueString)) + (brackets ? "]" : "");
         }
 
 

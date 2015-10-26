@@ -22,28 +22,6 @@
   <SubsetDescription Subset="os-mod-api"  FriendlyName="OS Mod Invoke">
     <Description>A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers.</Description>
   </SubsetDescription>
-
-  <!-- Overload resolution testing stuff -->
-  <!--
-  <LibraryFunction Name="Func" ReturnType="Integer" Subsets="lsl,os-lsl">
-    <Parameter Name="Value1" Type="Integer" />
-    <Parameter Name="Value2" Type="String" />
-    <Parameter Name="Value3" Type="Float" />
-    <Parameter Name="Value4" Type="Key" />
-  </LibraryFunction>
-
-  <LibraryFunction Name="Func" ReturnType="Integer" Subsets="lsl,os-lsl">
-    <Parameter Name="Value" Type="Void" Variadic="true" />
-  </LibraryFunction>
-  
-  <LibraryFunction Name="Func" ReturnType="Integer" Subsets="lsl,os-lsl">
-    <Parameter Name="Value1" Type="Float" />
-    <Parameter Name="Value2" Type="Key" />
-    <Parameter Name="Value3" Type="Integer" />
-    <Parameter Name="Value4" Type="String" />
-  </LibraryFunction>
-  -->
-  
   <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="Value" Type="Integer" />
     <DocumentationString>Returns the absolute (positive) version of Value.</DocumentationString>

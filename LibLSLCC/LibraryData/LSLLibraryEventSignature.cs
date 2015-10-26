@@ -233,25 +233,26 @@ namespace LibLSLCC.LibraryData
             {
                 if ((reader.Name == "Parameter") && reader.IsStartElement())
                 {
-                    LSLType pType;
-
-                    if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
-                    {
-                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("EventHandler '{0}': Parameter Type attribute invalid.", Name));
-                    }
-
-                    if (pType == LSLType.Void)
-                    {
-                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("EventHandler '{0}': Parameter Type invalid, event handler parameters cannot be Void.", Name));
-                    }
 
                     var pName = reader.GetAttribute("Name");
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format("EventHandler '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.", Name));
+                    }
+
+                    LSLType pType;
+
+                    if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
+                    {
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
+                            string.Format("EventHandler '{0}': Parameter named '{1}' has an invalid Type attribute.", pName, Name));
+                    }
+
+                    if (pType == LSLType.Void)
+                    {
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
+                            string.Format("EventHandler '{0}': Parameter named '{1}' has an invalid Type, event parameters cannot be Void.", Name, pName));
                     }
 
                     if (parameterNames.Contains(pName))

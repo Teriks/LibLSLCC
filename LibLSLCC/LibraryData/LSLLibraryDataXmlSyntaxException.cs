@@ -53,7 +53,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="lineNumber">The line number the syntax error occurred on.</param>
         /// <param name="message">The message.</param>
         /// <param name="inner">The inner exception.</param>
-        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message, Exception inner) : base("[Library Data XML Error Line # "+lineNumber+"]: "+message, inner)
+        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message, Exception inner) : base("[Line #"+lineNumber+"]: "+message, inner)
         {
             this.LineNumber = lineNumber;
         }
@@ -74,7 +74,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="lineNumber">The line number.</param>
         /// <param name="message">The message.</param>
-        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message) : base("[Library Data XML Error Line # " + lineNumber + "]: " + message)
+        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message) : base("[Line #" + lineNumber + "]: " + message)
         {
             LineNumber = lineNumber;
         }

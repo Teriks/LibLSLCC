@@ -335,7 +335,7 @@ namespace LibLSLCC.LibraryData
                 }
                 catch (LSLLibraryDataXmlSyntaxException e)
                 {
-                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message), e);
+                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File '{0}': {1}", file, e.Message), e);
                 }
             }
         }

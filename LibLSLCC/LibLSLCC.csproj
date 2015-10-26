@@ -304,7 +304,9 @@
   <ItemGroup>
     <License Include="LICENSE" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Documentation\LibraryData_XML_Syntax_README.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" Outputs="$(ProjectDir)Parser\LSLParser.cs;$(ProjectDir)Parser\LSLVisitor.cs;$(ProjectDir)Parser\LSLListener.cs;$(ProjectDir)Parser\LSLLexer.cs;$(ProjectDir)Parser\LSLLexer.tokens;$(ProjectDir)Parser\LSL.tokens;$(ProjectDir)Parser\LSLBaseVisitor.cs;$(ProjectDir)Parser\LSLBaseListener.cs;">
     <Exec Command="java -classpath $(ProjectDir)antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.Parser -o $(ProjectDir)Parser $(ProjectDir)Parser\LSL.g4">

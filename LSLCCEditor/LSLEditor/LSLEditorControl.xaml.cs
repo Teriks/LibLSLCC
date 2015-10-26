@@ -1638,6 +1638,8 @@ namespace LSLCCEditor.LSLEditor
             {
                 FontWeight = FontWeights.Bold
             });
+
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", sig.Type.ToLSLTypeString()+" "));
             description.Inlines.Add(CreateHighlightedRunFromXshd("Constants", sig.Name));
             description.Inlines.Add(" = ");
             description.Inlines.Add(sig.ValueStringAsCodeLiteral + ";");

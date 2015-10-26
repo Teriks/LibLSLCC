@@ -63,6 +63,7 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Compilers;
 using LibLSLCC.Formatter.Visitor;
 using LibLSLCC.LibraryData;
+using LibLSLCC.Utility;
 using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplace;
 using Microsoft.Win32;
@@ -143,8 +144,20 @@ namespace LSLCCEditor
             _libraryDataProvider = new LSLXmlLibraryDataProvider(new[] { "lsl" });
 
 
+            try
+            {
+                _libraryDataProvider.FillFromXmlDirectory("library_data");
 
-            _libraryDataProvider.FillFromXmlDirectory("library_data");
+            }
+            catch (LSLLibraryDataXmlSyntaxException err)
+            {
+                MessageBox.Show(
+                    "There is a syntax error in one of your XML library data files and the application must close." 
+                    + LSLFormatTools.CreateNewLinesString(2) + err.Message,
+                    "Library Data Syntax Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                Application.Current.Shutdown();
+            }
 
 
 
