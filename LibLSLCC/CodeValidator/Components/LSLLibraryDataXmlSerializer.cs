@@ -216,6 +216,10 @@ namespace LibLSLCC.CodeValidator.Components
                     }
                 }
             }
+            catch (LSLLibraryDataInvalidConstantTypeException e)
+            {
+                throw new LSLLibraryDataXmlSyntaxException(CurrentLineInfo.LineNumber, e.Message, e);
+            }
             catch (LSLInvalidConstantValueStringException e)
             {
                 throw new LSLLibraryDataXmlSyntaxException(CurrentLineInfo.LineNumber, e.Message, e);

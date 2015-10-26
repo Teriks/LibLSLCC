@@ -113,6 +113,7 @@
     <Compile Include="CodeValidator\Components\LSLLibraryDataXmlSerializer.cs" />
     <Compile Include="CodeValidator\Components\LSLLibrarySubsetDescription.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLInvalidConstantValueStringException.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLLibraryDataInvalidConstantTypeException.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLLibraryDataXmlSyntaxException.cs" />
     <Compile Include="Utility\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />

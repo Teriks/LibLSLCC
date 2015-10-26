@@ -74,10 +74,11 @@ namespace LibLSLCC.CodeValidator.Components
 
         private string _name;
         private string _valueString;
+        private LSLType _type;
 
         private LSLLibraryConstantSignature()
         {
-
+            DocumentationString = "";
         }
 
         /// <summary>
@@ -176,7 +177,18 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         /// The <see cref="LSLType"/> that the library constant is defined with.
         /// </summary>
-        public LSLType Type { get; set; }
+        public LSLType Type
+        {
+            get { return _type; }
+            set
+            {
+                if (value == LSLType.Void)
+                {
+                    throw new LSLLibraryDataInvalidConstantTypeException("Library Constant's Type may not be set to Void.");
+                }
+                _type = value;
+            }
+        }
 
         /// <summary>
         /// The name of the library constant, must abide by LSL symbol naming rules or an exception will be thrown.
@@ -212,14 +224,16 @@ namespace LibLSLCC.CodeValidator.Components
         /// The value string.
         /// </value>
         /// <exception cref="System.ArgumentNullException">If you attempt to set the value to <c>null</c>.</exception>
-        /// <exception cref="LSLInvalidConstantValueStringException">If the Value is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
+        /// <exception cref="LSLInvalidConstantValueStringException">
+        /// If the Value is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
         /// or
         /// If the Value is an invalid value for an integer and <see cref="Type" /> is set to <see cref="LSLType.Integer" />
         /// or
         /// If the Value is an invalid value for a vector and <see cref="Type" /> is set to <see cref="LSLType.Vector" />
         /// or
         /// If the Value is an invalid value for a rotation and <see cref="Type" /> is set to <see cref="LSLType.Rotation" /></exception>
-        /// <exception cref="System.InvalidOperationException">If you try to set this value and <see cref="Type" /> is equal to <see cref="LSLType.Void" />.</exception>
+        /// <exception cref="LSLLibraryDataInvalidConstantTypeException">If you try to set this value and <see cref="Type" /> is equal to <see cref="LSLType.Void" />.</exception>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <remarks>
         /// Only integral or hexadecimal values are allowed when <see cref="Type" /> is set to <see cref="LSLType.Integer" />
         /// Only floating point or hexadecimal values are allowed when <see cref="Type" /> is set to <see cref="LSLType.Float" />
@@ -298,7 +312,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                 if (Type == LSLType.Void)
                 {
-                    throw new InvalidOperationException("LSLLibraryConstantSignature: could not set ValueString because Type was set to LSLType.Void.");
+                    throw new LSLLibraryDataInvalidConstantTypeException("Could not set ValueString because the 'Type' Properties value is set to Void.");
                 }
 
                 _valueString = value;
@@ -400,7 +414,7 @@ namespace LibLSLCC.CodeValidator.Components
                     else
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            GetType().Name + ": Type attribute invalid");
+                            string.Format("LibraryConstantSignature{0}: Type attribute invalid.", hasName ? (" '" + Name + "'") : ""));
                     }
                 }
                 else if (reader.Name == "Name")
@@ -411,32 +425,33 @@ namespace LibLSLCC.CodeValidator.Components
                 else
                 {
                     throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                        GetType().Name + ": unknown attribute " + reader.Name);
+                        string.Format("LibraryConstantSignature{0}: Unknown attribute '{1}'.", 
+                        hasName ? (" '" + Name + "'") : "",  reader.Name));
                 }
             }
 
             if (!hasName)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    "Missing Name attribute");
+                    "LibraryConstantSignature: Missing Name attribute.");
             }
 
             if (!hasType)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    "Missing Type attribute");
+                    string.Format("LibraryConstantSignature '{0}': Missing Type attribute.", Name));
             }
 
             if (!hasValue)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    "Missing Value attribute");
+                    string.Format("LibraryConstantSignature '{0}': Missing Value attribute.", Name));
             }
 
             if (!hasSubsets)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    "Missing Subsets attribute");
+                    string.Format("LibraryConstantSignature '{0}': Missing Subsets attribute.", Name));
             }
 
             //Set the value string, this can possibly throw an LSLInvalidConstantValueStringException
@@ -454,14 +469,13 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else if ((reader.Name == "Property") && reader.IsStartElement())
                 {
-                    var name = reader.GetAttribute("Name");
+                    var pName = reader.GetAttribute("Name");
 
-                    if (string.IsNullOrWhiteSpace(name))
+                    if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
-                                "{0}, Event {1}: Property element's Name attribute cannot be empty",
-                                GetType().Name, Name));
+                                "LibraryConstantSignature '{0}': Property element's Name attribute cannot be empty.", Name));
                     }
 
                     var value = reader.GetAttribute("Value");
@@ -470,19 +484,17 @@ namespace LibLSLCC.CodeValidator.Components
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
-                                "{0}, Event {1}: Property element's Value attribute cannot be empty",
-                                GetType().Name, Name));
+                                "LibraryConstantSignature '{0}': Property element's Value attribute cannot be empty.",Name));
                     }
 
-                    if (_properties.ContainsKey(name))
+                    if (_properties.ContainsKey(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
-                                "{0}, Event {1}: Property name {2} has already been used",
-                                GetType().Name, Name, name));
+                                "LibraryConstantSignature '{0}': Property name '{1}' has already been used.", Name, pName));
                     }
 
-                    _properties.Add(name, value);
+                    _properties.Add(pName, value);
 
                     canRead = reader.Read();
                 }

@@ -14,8 +14,6 @@ namespace LibLSLCC.CodeValidator.Exceptions
     [Serializable]
     public class LSLLibraryDataXmlSyntaxException : Exception
     {
-        private string v;
-
 
         /// <summary>
         /// The line number on which the exception occured.
@@ -75,10 +73,14 @@ namespace LibLSLCC.CodeValidator.Exceptions
         {
         }
 
-        public LSLLibraryDataXmlSyntaxException(int lineNumber, string v)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException"/> class.
+        /// </summary>
+        /// <param name="lineNumber">The line number.</param>
+        /// <param name="message">The message.</param>
+        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message) : base("[Library Data XML Error Line # " + lineNumber + "]: " + message)
         {
             LineNumber = lineNumber;
-            this.v = v;
         }
     }
 }

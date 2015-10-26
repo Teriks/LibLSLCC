@@ -300,7 +300,7 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 catch (LSLLibraryDataXmlSyntaxException e)
                 {
-                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
+                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message), e);
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 catch (LSLLibraryDataXmlSyntaxException e)
                 {
-                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
+                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message), e);
                 }
             }
         }

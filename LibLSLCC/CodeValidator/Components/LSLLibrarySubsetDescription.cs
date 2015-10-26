@@ -32,7 +32,7 @@ namespace LibLSLCC.CodeValidator.Components
 
         private LSLLibrarySubsetDescription()
         {
-            
+            Description = "";
         }
 
 
@@ -107,18 +107,22 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": unknown attribute " + reader.Name);
+                    throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
+                        string.Format("LibrarySubsetDescription{0}: Unknown attribute '{1}'.",
+                        hasSubset ? (" '" + Subset + "'") : "", reader.Name));
                 }
             }
 
             if (!hasSubset || string.IsNullOrWhiteSpace(Subset))
             {
-                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing Subset Attribute");
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, 
+                    string.Format("LibrarySubsetDescription '{0}': Missing Subset Attribute.", Subset));
             }
 
             if (!hasFriendlyName || string.IsNullOrWhiteSpace(FriendlyName))
             {
-                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing FriendlyName Attribute");
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, 
+                    string.Format("LibrarySubsetDescription '{0}': Missing FriendlyName Attribute.", Subset));
             }
 
             bool canRead = reader.Read();
