@@ -399,7 +399,7 @@ namespace LibLSLCC.CodeValidator.Components
                     }
                     else
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             GetType().Name + ": Type attribute invalid");
                     }
                 }
@@ -410,32 +410,32 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                    throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                         GetType().Name + ": unknown attribute " + reader.Name);
                 }
             }
 
             if (!hasName)
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing Name attribute");
             }
 
             if (!hasType)
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing Type attribute");
             }
 
             if (!hasValue)
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing Value attribute");
             }
 
             if (!hasSubsets)
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing Subsets attribute");
             }
 
@@ -458,7 +458,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (string.IsNullOrWhiteSpace(name))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
                                 "{0}, Event {1}: Property element's Name attribute cannot be empty",
                                 GetType().Name, Name));
@@ -468,7 +468,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (string.IsNullOrWhiteSpace(value))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
                                 "{0}, Event {1}: Property element's Value attribute cannot be empty",
                                 GetType().Name, Name));
@@ -476,7 +476,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (_properties.ContainsKey(name))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
                                 "{0}, Event {1}: Property name {2} has already been used",
                                 GetType().Name, Name, name));

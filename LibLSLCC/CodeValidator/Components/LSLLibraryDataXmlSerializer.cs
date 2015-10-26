@@ -159,7 +159,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="reader">The XmlReader object to read XML from.</param>
         /// <param name="rootElementName">The name of the root element, it will be consumed first and the content will be read from it.</param>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
         public void Parse(XmlReader reader, string rootElementName = "LSLLibraryData")
         {
             CurrentLineInfo = (IXmlLineInfo) reader;
@@ -216,13 +216,21 @@ namespace LibLSLCC.CodeValidator.Components
                     }
                 }
             }
+            catch (LSLInvalidConstantValueStringException e)
+            {
+                throw new LSLLibraryDataXmlSyntaxException(CurrentLineInfo.LineNumber, e.Message, e);
+            }
             catch (LSLInvalidSymbolNameException e)
             {
-                throw new XmlSyntaxException(CurrentLineInfo.LineNumber, e.Message);
+                throw new LSLLibraryDataXmlSyntaxException(CurrentLineInfo.LineNumber, e.Message, e);
             }
             catch (LSLInvalidSubsetNameException e)
             {
-                throw new XmlSyntaxException(CurrentLineInfo.LineNumber, e.Message);
+                throw new LSLLibraryDataXmlSyntaxException(CurrentLineInfo.LineNumber, e.Message, e);
+            }
+            catch (XmlSyntaxException e)
+            {
+                throw new LSLLibraryDataXmlSyntaxException(CurrentLineInfo.LineNumber, e.Message, e);
             }
         }
 

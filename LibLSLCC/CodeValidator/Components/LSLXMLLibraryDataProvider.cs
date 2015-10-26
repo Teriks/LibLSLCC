@@ -105,7 +105,7 @@ namespace LibLSLCC.CodeValidator.Components
         ///     Generates an object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             var lineInfo = (IXmlLineInfo) reader;
@@ -142,17 +142,18 @@ namespace LibLSLCC.CodeValidator.Components
 
                 serializer.Parse(reader);
             }
+            //LSLLibraryDataXmlSerializer.Parse() handles XmlSyntaxExceptions by throwing an LSLLibraryDataXmlSyntaxException.
             catch (LSLMissingSubsetDescriptionException e)
             {
-                throw new XmlSyntaxException(lineInfo.LineNumber, e.Message);
+                throw new LSLLibraryDataXmlSyntaxException(lineInfo.LineNumber, e.Message, e);
             }
             catch (LSLDuplicateSubsetDescriptionException e)
             {
-                throw new XmlSyntaxException(lineInfo.LineNumber, e.Message);
+                throw new LSLLibraryDataXmlSyntaxException(lineInfo.LineNumber, e.Message, e);
             }
             catch (LSLDuplicateSignatureException e)
             {
-                throw new XmlSyntaxException(lineInfo.LineNumber, e.Message);
+                throw new LSLLibraryDataXmlSyntaxException(lineInfo.LineNumber, e.Message, e);
             }
         }
 
@@ -186,7 +187,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="data">The XML reader to read from.</param>
         /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
         /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void FillFromXml(XmlReader data, string rootElementName = "LSLLibraryData")
         {
@@ -212,7 +213,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="data">The XML reader to read from.</param>
         /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
         /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void AddFromXml(XmlReader data, string rootElementName = "LSLLibraryData")
         {
@@ -241,7 +242,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void AddFromXml(string filename, string rootElementName = "LSLLibraryData")
         {
@@ -276,7 +277,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="rootElementName">Name of the root element.</param>
         /// <exception cref="System.ArgumentNullException">path</exception>
         /// <exception cref="System.ArgumentException">path</exception>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
         public void AddFromXmlDirectory(string path, string rootElementName = "LSLLibraryData")
@@ -297,9 +298,9 @@ namespace LibLSLCC.CodeValidator.Components
                 {
                     AddFromXml(file, rootElementName);
                 }
-                catch (XmlSyntaxException e)
+                catch (LSLLibraryDataXmlSyntaxException e)
                 {
-                    throw new XmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
+                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
                 }
             }
         }
@@ -312,7 +313,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="rootElementName">Name of the root element.</param>
         /// <exception cref="System.ArgumentNullException">path</exception>
         /// <exception cref="System.ArgumentException">path</exception>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
         public void FillFromXmlDirectory(string path, string rootElementName = "LSLLibraryData")
@@ -335,9 +336,9 @@ namespace LibLSLCC.CodeValidator.Components
                 {
                     AddFromXml(file, rootElementName);
                 }
-                catch (XmlSyntaxException e)
+                catch (LSLLibraryDataXmlSyntaxException e)
                 {
-                    throw new XmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
+                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message));
                 }
             }
         }
@@ -353,7 +354,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
-        /// <exception cref="XmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void FillFromXml(string filename, string rootElementName = "LSLLibraryData")
         {

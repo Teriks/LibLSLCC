@@ -107,18 +107,18 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": unknown attribute " + reader.Name);
+                    throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": unknown attribute " + reader.Name);
                 }
             }
 
             if (!hasSubset || string.IsNullOrWhiteSpace(Subset))
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing Subset Attribute");
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing Subset Attribute");
             }
 
             if (!hasFriendlyName || string.IsNullOrWhiteSpace(FriendlyName))
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing FriendlyName Attribute");
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, GetType().Name + ": Missing FriendlyName Attribute");
             }
 
             bool canRead = reader.Read();

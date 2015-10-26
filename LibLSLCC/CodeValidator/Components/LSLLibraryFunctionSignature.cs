@@ -202,7 +202,7 @@ namespace LibLSLCC.CodeValidator.Components
                     }
                     else
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             GetType().Name + ": ReturnType attribute invalid");
                     }
                 }
@@ -213,7 +213,7 @@ namespace LibLSLCC.CodeValidator.Components
                 }
                 else
                 {
-                    throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                    throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                         GetType().Name + ": unknown attribute " + reader.Name);
                 }
             }
@@ -221,19 +221,19 @@ namespace LibLSLCC.CodeValidator.Components
 
             if (!hasName)
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing Name attribute");
             }
 
             if (!hasReturnType)
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing ReturnType attribute");
             }
 
             if (!hasSubsets)
             {
-                throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     "Missing Subsets attribute");
             }
 
@@ -246,7 +246,7 @@ namespace LibLSLCC.CodeValidator.Components
                 {
                     if (isVariadic)
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
                                 "{0}, Library function {1} cannot more parameters after a Variadic parameter is defined",
                                 GetType().Name, Name));
@@ -257,7 +257,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             GetType().Name + ": Parameter Type attribute invalid");
                     }
 
@@ -266,13 +266,13 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (string.IsNullOrWhiteSpace(pName))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             GetType().Name + ": Parameter Name attribute invalid, cannot be empty or whitespace");
                     }
 
                     if (parameterNames.Contains(pName))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             GetType().Name + ": Parameter Name already used");
                     }
 
@@ -287,7 +287,7 @@ namespace LibLSLCC.CodeValidator.Components
                         }
                         else if (variadic.ToLower() != "false")
                         {
-                            throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                            throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                                 string.Format("{0}, Variadic attribute in parameter {1} of Function {2} must equal True or False (Case Insensitive)",
                                     GetType().Name, pName, Name));
                         }
@@ -295,7 +295,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (pType == LSLType.Void && !isVariadic)
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             GetType().Name + ", Parameter Type invalid, function parameters cannot be Void unless they are declared variadic.");
                     }
 
@@ -315,7 +315,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (string.IsNullOrWhiteSpace(name))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
                                 "{0}, Function {1}: Property element's Name attribute cannot be empty",
                                 GetType().Name, Name));
@@ -325,7 +325,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (string.IsNullOrWhiteSpace(value))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
                                 "{0}, Function {1}: Property element's Value attribute cannot be empty",
                                 GetType().Name, Name));
@@ -333,7 +333,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     if (_properties.ContainsKey(name))
                     {
-                        throw new XmlSyntaxException(lineNumberInfo.LineNumber,
+                        throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
                                 "{0}, Function {1}: Property name {2} has already been used",
                                 GetType().Name, Name, name));
