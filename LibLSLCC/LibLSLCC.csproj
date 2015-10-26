@@ -112,14 +112,13 @@
     <Compile Include="CodeValidator\Components\LSLLibraryDataSubsetNameParser.cs" />
     <Compile Include="CodeValidator\Components\LSLLibraryDataXmlSerializer.cs" />
     <Compile Include="CodeValidator\Components\LSLLibrarySubsetDescription.cs" />
-    <Compile Include="CodeValidator\Exceptions\LSLInvalidConstantValueString.cs" />
-    <Compile Include="CodeValidator\Exceptions\LSLLibraryDataAttributeOrderError.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLInvalidConstantValueStringException.cs" />
     <Compile Include="Utility\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />
     <Compile Include="CodeValidator\Enums\LSLConditionalStatementType.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLDuplicateSignatureException.cs" />
-    <Compile Include="CodeValidator\Exceptions\LSLDuplicateSubsetDescription.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLDuplicateSubsetDescriptionException.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLInvalidSubsetNameException.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLInvalidSymbolNameException.cs" />
     <Compile Include="CodeValidator\Exceptions\LSLMissingSubsetDescriptionException.cs" />
@@ -157,7 +156,7 @@
     <Compile Include="CodeValidator\Enums\LSLRotationComponent.cs" />
     <Compile Include="CodeValidator\Enums\LSLVariableScope.cs" />
     <Compile Include="CodeValidator\Enums\LSLVectorComponent.cs" />
-    <Compile Include="CodeValidator\Exceptions\LSLCodeValidatorInternalError.cs" />
+    <Compile Include="CodeValidator\Exceptions\LSLCodeValidatorInternalException.cs" />
     <Compile Include="CodeValidator\Primitives\LSLComment.cs" />
     <Compile Include="CodeValidator\Primitives\LSLEventSignature.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignature.cs" />

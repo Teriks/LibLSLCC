@@ -250,7 +250,70 @@ namespace LibLSLCC.Utility
             LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
         {
             return _ParseList(list, parsingFlags).ToGenericArray();
-        } 
+        }
+
+
+
+
+        /// <summary>
+        /// Parses an LSL list from a string and returns the simple expressions it contains as an enumerable.
+        /// <remarks>
+        /// Take note that parsing wont start to occur until you begin enumerating the returned value.
+        /// </remarks>
+        /// </summary>
+        /// <param name="list">The list.</param>
+        /// <param name="parsingFlags">The parsing flags.</param>
+        /// <returns></returns>
+        /// <exception cref="LSLListParserOptionsConstraintViolationException">
+        ///     When an
+        ///     <see cref="LSLListParsingFlags" /> constraint is violated.
+        /// </exception>
+        /// <exception cref="LSLListParserSyntaxException">
+        ///     Rotations must contain only literal values to be parsed, and cannot contain these types of expressions: rotations,
+        ///     vectors, lists or strings.
+        ///     or
+        ///     Vectors must contain only literal values to be parsed, and cannot contain these types of expressions: rotations,
+        ///     vectors, lists or strings.
+        ///     or
+        ///     Lists cannot contain other lists.
+        ///     or
+        ///     Cast expressions can only be used to specify that a list element is a 'key' and not a 'string'
+        ///     or
+        ///     Encountered an un-parseable expression in the list, only literal values and possibly variable names are acceptable
+        ///     when parsing.
+        /// </exception>
+        public static IEnumerable<ILSLListExpr> ParseListAsEnumerable(string list,
+            LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
+        {
+            return _ParseList(list, parsingFlags);
+        }
+
+
+        private static ILSLListExpr BasicAtomToExpr(Parser.LSLParser.Expr_AtomContext c, string numericPrefix = null)
+        {
+            if (c.string_literal != null)
+            {
+                if(numericPrefix!=null) throw new InvalidOperationException("LSLListParser.BasicAtomToExpr:  Numeric prefix cannot be added to a string literal node.");
+                return (new LSLString(c.GetText()));
+            }
+            if (c.float_literal != null)
+            {
+                numericPrefix = numericPrefix ?? "";
+                return new LSLFloat(numericPrefix + c.GetText());
+            }
+            if (c.hex_literal != null)
+            {
+                if (numericPrefix != null) throw new InvalidOperationException("LSLListParser.BasicAtomToExpr:  Numeric prefix cannot be added to a hex literal node.");
+                return new LSLFloat(c.GetText(), true);
+            }
+            if (c.integer_literal != null)
+            {
+                numericPrefix = numericPrefix ?? "";
+                return new LSLFloat(numericPrefix + c.GetText());
+            }
+
+            return null;
+        }
 
         private static IEnumerable<ILSLListExpr> _ParseList(string list,
             LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
@@ -280,9 +343,16 @@ namespace LibLSLCC.Utility
             {
                 var atomToken = child as LSLParser.Expr_AtomContext;
                 var castExpression = child as LSLParser.Expr_TypeCastContext;
+                var negateOrPositive = child as LSLParser.Expr_PrefixOperationContext;
 
                 if (atomToken != null)
                 {
+                    var maybeBasic = BasicAtomToExpr(atomToken);
+                    if (maybeBasic != null)
+                    {
+                        yield return maybeBasic;
+                    }
+
                     if (atomToken.variable != null)
                     {
                         if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInList) ==
@@ -296,121 +366,15 @@ namespace LibLSLCC.Utility
                                 "Variable references are not allowed in the list.");
                         }
                     }
-                    if (atomToken.string_literal != null)
-                    {
-                        yield return (new LSLString(atomToken.GetText()));
-                    }
-                    if (atomToken.float_literal != null)
-                    {
-                        yield return (new LSLFloat(atomToken.GetText()));
-                    }
-                    if (atomToken.hex_literal != null)
-                    {
-                        yield return (new LSLInteger(atomToken.GetText(), true));
-                    }
-                    if (atomToken.integer_literal != null)
-                    {
-                        yield return (new LSLInteger(atomToken.GetText()));
-                    }
+  
                     if (atomToken.rotation_literal != null)
                     {
-                        LSLParser.Expr_AtomContext[] xe =
-                        {
-                            atomToken.rotation_literal.rotation_x as LSLParser.Expr_AtomContext,
-                            atomToken.rotation_literal.rotation_y as LSLParser.Expr_AtomContext,
-                            atomToken.rotation_literal.rotation_z as LSLParser.Expr_AtomContext,
-                            atomToken.rotation_literal.rotation_s as LSLParser.Expr_AtomContext,
-                        };
-
-                        if (
-                            xe.Any(
-                                x =>
-                                    x == null || x.rotation_literal != null || x.vector_literal != null ||
-                                    x.list_literal != null || x.string_literal != null))
-                        {
-                            throw new LSLListParserSyntaxException(
-                                "Rotations must contain only literal values to be parsed, and cannot contain these types of expressions: rotations, vectors, lists or strings.");
-                        }
-
-                        var create = xe.Select<LSLParser.Expr_AtomContext, ILSLListExpr>(x =>
-                        {
-                            if (x.float_literal != null)
-                            {
-                                return new LSLFloat(x.GetText());
-                            }
-                            if (x.hex_literal != null)
-                            {
-                                return new LSLFloat(x.GetText(), true);
-                            }
-                            if (x.integer_literal != null)
-                            {
-                                return new LSLFloat(x.GetText());
-                            }
-                            if (x.variable != null)
-                            {
-                                if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInRotations) ==
-                                    LSLListParsingFlags.AllowVariableReferencesInRotations)
-                                {
-                                    return new LSLVariable(atomToken.GetText());
-                                }
-                                throw new LSLListParserOptionsConstraintViolationException(
-                                    "Variable references are not allowed in Rotation literals.");
-                            }
-                            return null;
-                        }).ToList();
-
-
-                        yield return (new LSLRotation(create[0], create[1], create[2], create[3]));
+                        yield return ListExpressionFromRotation(parsingFlags, atomToken);
                     }
 
                     if (atomToken.vector_literal != null)
                     {
-                        LSLParser.Expr_AtomContext[] xe =
-                        {
-                            atomToken.vector_literal.vector_x as LSLParser.Expr_AtomContext,
-                            atomToken.vector_literal.vector_y as LSLParser.Expr_AtomContext,
-                            atomToken.vector_literal.vector_z as LSLParser.Expr_AtomContext,
-                        };
-
-                        if (
-                            xe.Any(
-                                x =>
-                                    x == null || x.rotation_literal != null || x.vector_literal != null ||
-                                    x.list_literal != null || x.string_literal != null))
-                        {
-                            throw new LSLListParserSyntaxException(
-                                "Vectors must contain only literal values to be parsed, and cannot contain these types of expressions: rotations, vectors, lists or strings.");
-                        }
-
-                        var create = xe.Select<LSLParser.Expr_AtomContext, ILSLListExpr>(x =>
-                        {
-                            if (x.float_literal != null)
-                            {
-                                return new LSLFloat(x.GetText());
-                            }
-                            if (x.hex_literal != null)
-                            {
-                                return new LSLFloat(x.GetText(), true);
-                            }
-                            if (x.integer_literal != null)
-                            {
-                                return new LSLFloat(x.GetText());
-                            }
-                            if (x.variable != null)
-                            {
-                                if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInVectors) ==
-                                    LSLListParsingFlags.AllowVariableReferencesInVectors)
-                                {
-                                    return new LSLVariable(atomToken.GetText());
-                                }
-                                throw new LSLListParserOptionsConstraintViolationException(
-                                    "Variable references are not allowed in Vector literals.");
-                            }
-                            return null;
-                        }).ToList();
-
-
-                        yield return (new LSLVector(create[0], create[1], create[2]));
+                        yield return ListExpressionFromVector(parsingFlags, atomToken);
                     }
 
                     if (atomToken.list_literal != null)
@@ -432,13 +396,173 @@ namespace LibLSLCC.Utility
                             "Cast expressions can only be used to specify that a list element is a 'key' and not a 'string'");
                     }
                 }
+                else if (negateOrPositive != null)
+                {
+
+                    var floatOrInt = negateOrPositive.expr_rvalue as LSLParser.Expr_AtomContext;
+                    var operation = negateOrPositive.operation.Text;
+
+                    var validType = floatOrInt != null &&
+                                    (floatOrInt.float_literal != null || floatOrInt.integer_literal != null);
+
+                    if (validType && operation == "-" || operation == "+")
+                    {
+                        yield return BasicAtomToExpr(floatOrInt, operation);
+                    }
+                    else
+                    {
+                        throw new LSLListParserSyntaxException(
+                            string.Format("The Negative and Positive prefix operator can only be used on Floats and Integer list elements, operator '{0}' is not valid.", operation));
+                    }
+
+                }
                 else
                 {
                     throw new LSLListParserSyntaxException(
-                        "Encountered an un-parseable expression in the list, only literal values and possibly variable names are acceptable when parsing.");
+                        "Encountered an un-parseable expression in the list, only LSL literals and possibly variable names are acceptable list elements.");
                 }
             }
         }
+
+        private static ILSLListExpr ListExpressionFromVector(LSLListParsingFlags parsingFlags, LSLParser.Expr_AtomContext atomToken)
+        {
+
+            object[] xe =
+            {
+                atomToken.vector_literal.vector_x,
+                atomToken.vector_literal.vector_y,
+                atomToken.vector_literal.vector_z,
+            };
+
+            for (int i = 0; i < xe.Length; i++)
+            {
+                var atom = xe[i] as LSLParser.Expr_AtomContext;
+                var prefix = xe[i] as LSLParser.Expr_PrefixOperationContext;
+
+                if (atom != null)
+                {
+                    if (atom.float_literal != null || atom.integer_literal != null || atom.hex_literal != null)
+                    {
+                        xe[i] = BasicAtomToExpr(atom);
+                    }
+                    else if (atom.variable != null)
+                    {
+                        if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInVectors) ==LSLListParsingFlags.AllowVariableReferencesInVectors)
+                        {
+                            xe[i] = new LSLVariable(atomToken.GetText());
+                        }
+                        throw new LSLListParserOptionsConstraintViolationException("Variable references are not allowed in Vector literals.");
+                    }
+                    else
+                    {
+                        goto throw_type_error;
+                    }
+                }
+                else if (prefix != null)
+                {
+                    var floatOrInt = prefix.expr_rvalue as LSLParser.Expr_AtomContext;
+                    var operation = prefix.operation.Text;
+
+                    var validType = floatOrInt != null &&
+                                    (floatOrInt.float_literal != null || floatOrInt.integer_literal != null);
+
+                    if (validType && (operation == "-" || operation == "+"))
+                    {
+                        xe[i] = BasicAtomToExpr(floatOrInt, operation);
+                    }
+                    else
+                    {
+                        throw new LSLListParserSyntaxException(
+                            string.Format("The Negative and Positive prefix operator can only be used on Floats and Integers inside of a Vector, operator '{0}' is not valid.", operation));
+                    }
+                }
+                else
+                {
+                    goto throw_type_error;
+                }
+
+                continue;
+                throw_type_error:
+
+                throw new LSLListParserSyntaxException(
+                              "Vectors must contain only Float and Integer literal values.");
+            }
+
+            return new LSLVector((ILSLListExpr)xe[0], (ILSLListExpr)xe[1], (ILSLListExpr)xe[2]);
+        }
+
+
+
+        private static ILSLListExpr ListExpressionFromRotation(LSLListParsingFlags parsingFlags, LSLParser.Expr_AtomContext atomToken)
+        {
+
+            object[] xe =
+            {
+                atomToken.rotation_literal.rotation_x,
+                atomToken.rotation_literal.rotation_y,
+                atomToken.rotation_literal.rotation_z,
+                atomToken.rotation_literal.rotation_s
+            };
+
+            for (int i = 0; i < xe.Length; i++)
+            {
+                var atom = xe[i] as LSLParser.Expr_AtomContext;
+                var prefix = xe[i] as LSLParser.Expr_PrefixOperationContext;
+
+                if (atom != null)
+                {
+                    if (atom.float_literal != null || atom.integer_literal != null || atom.hex_literal != null)
+                    {
+                        xe[i] = BasicAtomToExpr(atom);
+                    }
+                    else if (atom.variable != null)
+                    {
+                        if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInRotations) == LSLListParsingFlags.AllowVariableReferencesInRotations)
+                        {
+                            xe[i] = new LSLVariable(atomToken.GetText());
+                        }
+                        throw new LSLListParserOptionsConstraintViolationException("Variable references are not allowed in Rotation literals.");
+                    }
+                    else
+                    {
+                        goto throw_type_error;
+                    }
+                }
+                else if (prefix != null)
+                {
+                    var floatOrInt = prefix.expr_rvalue as LSLParser.Expr_AtomContext;
+                    var operation = prefix.operation.Text;
+
+                    var validType = floatOrInt != null &&
+                                    (floatOrInt.float_literal != null || floatOrInt.integer_literal != null);
+
+                    if (validType && (operation == "-" || operation == "+"))
+                    {
+                        xe[i] = BasicAtomToExpr(floatOrInt, operation);
+                    }
+                    else
+                    {
+                        throw new LSLListParserSyntaxException(
+                            string.Format("The Negative and Positive prefix operator can only be used on Floats and Integers inside of a Rotation, operator '{0}' is not valid.", operation));
+                    }
+                }
+                else
+                {
+                    goto throw_type_error;
+                }
+
+                continue;
+                throw_type_error:
+
+                throw new LSLListParserSyntaxException(
+                            "Rotations must contain only Float and Integer literal values.");
+            }
+
+            return new LSLRotation((ILSLListExpr)xe[0], (ILSLListExpr)xe[1], (ILSLListExpr)xe[2], (ILSLListExpr)xe[3]);
+        }
+
+
+
 
         /// <summary>
         ///     Interface for parsed list elements.

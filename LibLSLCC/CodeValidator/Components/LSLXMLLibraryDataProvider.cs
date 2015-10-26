@@ -146,7 +146,7 @@ namespace LibLSLCC.CodeValidator.Components
             {
                 throw new XmlSyntaxException(lineInfo.LineNumber, e.Message);
             }
-            catch (LSLDuplicateSubsetDescription e)
+            catch (LSLDuplicateSubsetDescriptionException e)
             {
                 throw new XmlSyntaxException(lineInfo.LineNumber, e.Message);
             }

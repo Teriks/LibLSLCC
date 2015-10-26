@@ -582,7 +582,7 @@ namespace LSLCCEditor
                     validated = validator.Validate(infile);
                 }
             }
-            catch (LSLCodeValidatorInternalError error)
+            catch (LSLCodeValidatorInternalException error)
             {
                 MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
                     "Internal Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);

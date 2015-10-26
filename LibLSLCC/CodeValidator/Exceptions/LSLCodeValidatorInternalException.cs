@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: LSLCodeValidatorInternalError.cs
+// File: LSLCodeValidatorInternalException.cs
 // 
 // 
 // ============================================================
@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
     /// Thrown when <see cref="LSLCodeValidator"/> experiences an un-expected exception.
     /// </summary>
     [Serializable]
-    public class LSLCodeValidatorInternalError : Exception
+    public class LSLCodeValidatorInternalException : Exception
     {
         //
         // For guidelines regarding the creation of new exception types, see
@@ -68,7 +68,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public LSLCodeValidatorInternalError()
+        public LSLCodeValidatorInternalException()
         {
         }
 
@@ -77,7 +77,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// Construct with message.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        public LSLCodeValidatorInternalError(string message) : base(message)
+        public LSLCodeValidatorInternalException(string message) : base(message)
         {
         }
 
@@ -87,7 +87,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="inner">Inner exception.</param>
-        public LSLCodeValidatorInternalError(string message, Exception inner) : base(message, inner)
+        public LSLCodeValidatorInternalException(string message, Exception inner) : base(message, inner)
         {
         }
 
@@ -97,7 +97,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>
-        protected LSLCodeValidatorInternalError(
+        protected LSLCodeValidatorInternalException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {
@@ -110,17 +110,17 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// <param name="visitFunctionName">The name of the function the exception is going to be thrown from.</param>
         /// <param name="prePass">Whether or not this exception was thrown in the pre-compile pass over the source code.</param>
         /// <returns>The constructed exception object.</returns>
-        public static LSLCodeValidatorInternalError VisitContextInvalidState(string visitFunctionName,
+        public static LSLCodeValidatorInternalException VisitContextInvalidState(string visitFunctionName,
             bool prePass = false)
         {
             if (prePass)
             {
-                return new LSLCodeValidatorInternalError("In visitor function: " + visitFunctionName +
+                return new LSLCodeValidatorInternalException("In visitor function: " + visitFunctionName +
                                                          ", context did not meet pre-requisites.");
             }
 
             return
-                new LSLCodeValidatorInternalError("In visitor function: " + visitFunctionName +
+                new LSLCodeValidatorInternalException("In visitor function: " + visitFunctionName +
                                                   ", visited context did not meet pre-requisites in pre-pass.");
         }
 
@@ -132,18 +132,18 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// <param name="contextType">The type of the ANTLR context being visited.</param>
         /// <param name="prePass">Whether or not this exception was thrown in the pre-compile pass over the source code.</param>
         /// <returns>The constructed exception object.</returns>
-        public static LSLCodeValidatorInternalError VisitContextInInvalidState(string visitFunctionName,
+        public static LSLCodeValidatorInternalException VisitContextInInvalidState(string visitFunctionName,
             MemberInfo contextType,
             bool prePass = false)
         {
             if (prePass)
             {
-                return new LSLCodeValidatorInternalError("In function: " + visitFunctionName + ", " + contextType.Name +
+                return new LSLCodeValidatorInternalException("In function: " + visitFunctionName + ", " + contextType.Name +
                                                          " type context did not meet pre-requisites.");
             }
 
             return
-                new LSLCodeValidatorInternalError("In function: " + visitFunctionName + ", " + contextType.Name +
+                new LSLCodeValidatorInternalException("In function: " + visitFunctionName + ", " + contextType.Name +
                                                   " type context did not meet pre-requisites in pre-pass.");
         }
 
@@ -154,10 +154,10 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// <param name="visitFunctionName">The visitor function the exception is going to be thrown from.</param>
         /// <param name="expectedReturnType">The expected return type of the visitor function which did not meet the return type expectation.</param>
         /// <returns></returns>
-        public static LSLCodeValidatorInternalError VisitReturnTypeException(string visitFunctionName,
+        public static LSLCodeValidatorInternalException VisitReturnTypeException(string visitFunctionName,
             MemberInfo expectedReturnType)
         {
-            return new LSLCodeValidatorInternalError(
+            return new LSLCodeValidatorInternalException(
                 visitFunctionName + " did not return " + expectedReturnType.Name + " or derived");
         }
     }

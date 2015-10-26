@@ -212,7 +212,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// The value string.
         /// </value>
         /// <exception cref="System.ArgumentNullException">If you attempt to set the value to <c>null</c>.</exception>
-        /// <exception cref="LSLInvalidConstantValueString">If the Value is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
+        /// <exception cref="LSLInvalidConstantValueStringException">If the Value is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
         /// or
         /// If the Value is an invalid value for an integer and <see cref="Type" /> is set to <see cref="LSLType.Integer" />
         /// or
@@ -241,7 +241,7 @@ namespace LibLSLCC.CodeValidator.Components
                     if (!float.TryParse(value, out f) && 
                         !float.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out f))
                     {
-                         throw new LSLInvalidConstantValueString(string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.", value));
+                         throw new LSLInvalidConstantValueStringException(string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.", value));
                     }
                     _valueString = value;
                     return;
@@ -253,7 +253,7 @@ namespace LibLSLCC.CodeValidator.Components
                     if (!int.TryParse(value, out i) && 
                         !int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
                     {
-                        throw new LSLInvalidConstantValueString(string.Format("Integer Constant ValueString:  Given value '{0}' is not a valid integer value.", value));
+                        throw new LSLInvalidConstantValueStringException(string.Format("Integer Constant ValueString:  Given value '{0}' is not a valid integer value.", value));
                     }
                     _valueString = value;
                     return;
@@ -268,7 +268,7 @@ namespace LibLSLCC.CodeValidator.Components
                     }
                     catch (LSLListParserSyntaxException e)
                     {
-                        throw new LSLInvalidConstantValueString("List Constant ValueString Invalid: " + e.Message);
+                        throw new LSLInvalidConstantValueStringException("List Constant ValueString Invalid: " + e.Message);
                     }
                 }
                 if (Type == LSLType.Vector)
@@ -277,7 +277,7 @@ namespace LibLSLCC.CodeValidator.Components
                     var match = _vectorValidationRegex.Match(value);
                     if (!match.Success)
                     {
-                        throw new LSLInvalidConstantValueString(string.Format("Vector Constant ValueString: '{0}' could not be parsed and formated.", value));
+                        throw new LSLInvalidConstantValueStringException(string.Format("Vector Constant ValueString: '{0}' could not be parsed and formated.", value));
                     }
 
                     _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3];
@@ -289,7 +289,7 @@ namespace LibLSLCC.CodeValidator.Components
                     var match = _rotationValidationRegex.Match(value);
                     if (!match.Success)
                     {
-                        throw new LSLInvalidConstantValueString(string.Format("Rotation Constant ValueString: '{0}' could not be parsed and formated.", value));
+                        throw new LSLInvalidConstantValueStringException(string.Format("Rotation Constant ValueString: '{0}' could not be parsed and formated.", value));
                     }
 
                     _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
@@ -439,7 +439,7 @@ namespace LibLSLCC.CodeValidator.Components
                     "Missing Subsets attribute");
             }
 
-            //Set the value string, this can possibly throw an LSLInvalidConstantValueString
+            //Set the value string, this can possibly throw an LSLInvalidConstantValueStringException
             //The Type property needs to be set first above for validation to occur.
             ValueString = valueString;
 

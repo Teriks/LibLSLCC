@@ -10,7 +10,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
     /// Thrown by functions that deal with subset names, when an invalid format for a subset name is encountered
     /// </summary>
     [Serializable]
-    public class LSLInvalidConstantValueString : Exception
+    public class LSLInvalidConstantValueStringException : Exception
     {
         //
         // For guidelines regarding the creation of new exception types, see
@@ -22,7 +22,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public LSLInvalidConstantValueString()
+        public LSLInvalidConstantValueStringException()
         {
         }
 
@@ -30,7 +30,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// Construct with message.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        public LSLInvalidConstantValueString(string message) : base(message)
+        public LSLInvalidConstantValueStringException(string message) : base(message)
         {
         }
 
@@ -39,7 +39,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="inner">Inner exception.</param>
-        public LSLInvalidConstantValueString(string message, Exception inner) : base(message, inner)
+        public LSLInvalidConstantValueStringException(string message, Exception inner) : base(message, inner)
         {
         }
 
@@ -48,7 +48,7 @@ namespace LibLSLCC.CodeValidator.Exceptions
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>
-        protected LSLInvalidConstantValueString(
+        protected LSLInvalidConstantValueStringException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {

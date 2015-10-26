@@ -273,7 +273,7 @@ namespace lslcc
                     }
                 }
             }
-            catch (LSLCodeValidatorInternalError error)
+            catch (LSLCodeValidatorInternalException error)
             {
                 Console.WriteLine();
                 Console.WriteLine("Code Validator internal error: \"" + error.Message + "\"");
