@@ -196,14 +196,18 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
 
 
-            //Rank matches by the number implicit type conversions that occur.
+            //Rank and group the matches by the number implicit type conversions that occur.
             //Implicit conversion is the only real match quality degradation that can occur in LSL.
-            var numberOfConversionsWithSignature = new List<Tuple<int, T>>();
+            var rankingToSignatureGroup = new HashMap<int, GenericArray<T>>();
+
         
             foreach (var match in matches)
             {
-                int conversions = 0;
+                //the higher the match ranking, the worse it is.
+                int matchRank = 0;
+
                 int idx = 0;
+
                 foreach (var parameter in expressionNodes)
                 {
                     //Select the signature parameter to compare, if the expression index 'idx' is greater than a matches parameter count;
@@ -215,74 +219,90 @@ namespace LibLSLCC.CodeValidator.Primitives
                     //Then the type that the expression is must be implicitly convertible to the type that the parameter is, an implicit conversion has occurred.  The match quality of the signature has degraded.
                     if (signatureParameterToCompare.Type != parameter.Type && typeComparer(signatureParameterToCompare, parameter))
                     {
-                        conversions++;
+                        matchRank++;
                     }
 
                     //increment the current expression index
                     idx++;
                 }
-                //add the signature to the list in a tuple, the int is the number of implicit conversions required for the function to be called with the given parameters.
-                numberOfConversionsWithSignature.Add(new Tuple<int, T>(conversions, match));
-            }
 
-            //check if all the matching signatures have the same amount of required implicit conversions, which would mean neither of them is a better choice.
-            if (numberOfConversionsWithSignature.Distinct(new LambdaEqualityComparer<Tuple<int, T>>((tuple, tuple1) => tuple.Item1 == tuple1.Item1, tuple => tuple.Item1.GetHashCode())).Count() == 1)
-            {
-                //all candidates share the same number of implicit type conversions, ambiguous match because neither signature is a better choice, return all matches.
-                return new OverloadMatch<T>(matches);
-            }
+                //group by rank, using the HashMap object.
+                GenericArray<T> signaturesWithTheSameRank = null;
 
-            //Group by the number of conversions, and find the grouping with the smallest number of implicit conversions.
-            GenericArray<Tuple<int, T>> groupingWithSmallestNumberOfConversions = null;
-            foreach (var group in numberOfConversionsWithSignature.GroupBy(x => x.Item1))
-            {
-                var items = group.ToGenericArray();
-                //we grouped by the number of conversions, so we can check the number of conversions associated with every signature in the group
-                //just by checking the number of implicit conversions the first signature requires.
-                if (groupingWithSmallestNumberOfConversions == null || items.First().Item1 < groupingWithSmallestNumberOfConversions.First().Item1)
+                //get a reference to a group with the same rank, if one exists
+                if (rankingToSignatureGroup.TryGetValue(matchRank, out signaturesWithTheSameRank))
+                { 
+                    signaturesWithTheSameRank.Add(match);
+                }
+                else
                 {
-                    //assign this group if it has fewer implicit conversion requirements than the previous group.
-                    groupingWithSmallestNumberOfConversions = items;
+                    //first group seen with this rank, make a new group
+                    signaturesWithTheSameRank = new GenericArray<T> {match};
+                    rankingToSignatureGroup.Add(matchRank, signaturesWithTheSameRank);
                 }
             }
 
+            //check if all the matching signatures have the same ranking, which would mean there is not a 'best' choice.
+            //we grouped by rank, so if there is just one group, then all the signatures have the same rank.
+            if (rankingToSignatureGroup.Count == 1)
+            {
+                //all candidates share the same rank, ambiguous match because no signature can be the 'best' choice, return all matches.
+                return new OverloadMatch<T>(matches);
+            }
 
-            //no groupings were created, no matches at all.  This is not expected to happen, but I don't want the compiler to complain
-            //about me not checking for it.
-            if (groupingWithSmallestNumberOfConversions == null)
+            //Find the grouping with the smallest ranking number, this is the best group to look in.
+            KeyValuePair<int, GenericArray<T>> ?groupingWithTheBestRank = null;
+
+            foreach (var groupPair in rankingToSignatureGroup)
+            {
+                //find the lowest rank
+                if (!groupingWithTheBestRank.HasValue || groupPair.Key < groupingWithTheBestRank.Value.Key)
+                {
+                    //assign this group if it has lower rank than the previous group.
+                    groupingWithTheBestRank = groupPair;
+                }
+            }
+            
+
+
+            //no groupings were created, no matches at all.  This is not expected to happen.
+            if (!groupingWithTheBestRank.HasValue)
             {
                 return new OverloadMatch<T>(new GenericArray<T>());
             }
 
+            var selectedGroup = groupingWithTheBestRank.Value.Value;
 
             //if we found a grouping, and that grouping has more than one matching signature, we need to tie break again.
-            if (groupingWithSmallestNumberOfConversions.Count != 1)
+            if (selectedGroup.Count != 1)
             {
                 if (
-                    groupingWithSmallestNumberOfConversions.Distinct(
-                        new LambdaEqualityComparer<Tuple<int, T>>(
-                            (tuple, tuple1) => tuple.Item2.ParameterCount == tuple1.Item2.ParameterCount,
-                            tuple => tuple.Item2.ParameterCount.GetHashCode())).Count() == 1)
+                    selectedGroup.Distinct(
+                        new LambdaEqualityComparer<T>(
+                            (sig, sig2) => sig.ParameterCount == sig2.ParameterCount,
+                            sig => sig.ParameterCount.GetHashCode())).Count() == 1)
                 {
                     //all the signatures in the grouping have a matching number of parameters, overload resolution is ambiguous, return all signatures that matched.
-                    return new OverloadMatch<T>(groupingWithSmallestNumberOfConversions.Select(x => x.Item2).ToGenericArray());
+                    return new OverloadMatch<T>(selectedGroup);
                 }
 
                 
                 //Otherwise find the signature in the grouping with a concrete (non-variadic) parameter count closest to the amount of parameter expressions given to call the function.
 
-                var minDistance = groupingWithSmallestNumberOfConversions.Min(n => Math.Abs(expressionNodes.Count - n.Item2.ConcreteParameterCount));
-                var closest = groupingWithSmallestNumberOfConversions.First(n => Math.Abs(expressionNodes.Count - n.Item2.ConcreteParameterCount) == minDistance);
+                var minDistance = selectedGroup.Min(n => Math.Abs(expressionNodes.Count - n.ConcreteParameterCount));
+                var closest = selectedGroup.First(n => Math.Abs(expressionNodes.Count - n.ConcreteParameterCount) == minDistance);
 
                 //The one with the closest amount of concrete parameters wins.
-                return new OverloadMatch<T>(closest.Item2);
+                return new OverloadMatch<T>(closest);
             }
 
+            if (selectedGroup.Count > 1)
+            {
+                throw new InvalidOperationException("LSLFunctionSignatureMatcher.MatchOverloads: Algorithm bug check assertion.");
+            }
 
-
-            //There was only one signature match in the grouping that had the smallest number of implicit conversion.
-            //The one with the fewest implicit conversions wins, so return it.
-            return new OverloadMatch<T>(groupingWithSmallestNumberOfConversions.First().Item2);
+            //There was only one signature match in the grouping, it had the lowest rank so its the best.
+            return new OverloadMatch<T>(selectedGroup.First());
         }
 
 

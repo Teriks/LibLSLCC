@@ -40,7 +40,7 @@
 // 
 // 
 
-//if you un-comment this, the signatures that get matched during overload resolution
+//if you have this un-commented, the signatures that get matched during overload resolution
 //will be output to the debug console using Debug.WriteLine();
 #define DEBUG_OVERLOAD_MATCHES
 
