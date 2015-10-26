@@ -67,11 +67,6 @@ using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplace;
 using Microsoft.Win32;
 
-#if !DEBUG
-//prevents re-sharper from cleaning it while debug mode is active
-using LibLSLCC.CodeValidator.Exceptions;
-#endif
-
 #endregion
 
 // ReSharper disable LocalizableElement

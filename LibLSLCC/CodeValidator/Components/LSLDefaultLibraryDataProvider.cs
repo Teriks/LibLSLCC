@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Components
         public static Stream GetDefaultLibraryDataStream()
         {
             return typeof(LSLDefaultLibraryDataProvider).Assembly.GetManifestResourceStream(
-                    "LibLSLCC.Components.LSLDefaultLibraryDataProvider.xml");
+                    "LibLSLCC.CodeValidator.Components.LSLDefaultLibraryDataProvider.xml");
         }
 
 
