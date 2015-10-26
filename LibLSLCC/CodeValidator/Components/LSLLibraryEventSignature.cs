@@ -211,7 +211,7 @@ namespace LibLSLCC.CodeValidator.Components
                 else
                 {
                     throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                        string.Format("LibraryEventSignature{0}: Unknown attribute '{1}'.", 
+                        string.Format("EventHandler{0}: Unknown attribute '{1}'.", 
                         hasName ? (" '" + Name + "'") : "", reader.Name));
                 }
             }
@@ -219,14 +219,14 @@ namespace LibLSLCC.CodeValidator.Components
 
             if (!hasName)
             {
-                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, "LibraryEventSignature: Missing Name attribute.");
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, "EventHandler: Missing Name attribute.");
             }
 
 
             if (!hasSubsets)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    string.Format("LibraryEventSignature '{0}': Missing Subsets attribute.", Name));
+                    string.Format("EventHandler '{0}': Missing Subsets attribute.", Name));
             }
 
 
@@ -240,26 +240,26 @@ namespace LibLSLCC.CodeValidator.Components
                     if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryEventSignature '{0}': Parameter Type attribute invalid.", Name));
+                            string.Format("EventHandler '{0}': Parameter Type attribute invalid.", Name));
                     }
 
                     if (pType == LSLType.Void)
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryEventSignature '{0}': Parameter Type invalid, event handler parameters cannot be Void.", Name));
+                            string.Format("EventHandler '{0}': Parameter Type invalid, event handler parameters cannot be Void.", Name));
                     }
 
                     var pName = reader.GetAttribute("Name");
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryEventSignature '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.", Name));
+                            string.Format("EventHandler '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.", Name));
                     }
 
                     if (parameterNames.Contains(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryEventSignature '{0}': Parameter Name '{1}' already used.", Name, pName));
+                            string.Format("EventHandler '{0}': Parameter Name '{1}' already used.", Name, pName));
                     }
 
                     parameterNames.Add(pName);
@@ -279,7 +279,7 @@ namespace LibLSLCC.CodeValidator.Components
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryEventSignature '{0}': Property element's Name attribute cannot be empty.", pName));
+                            string.Format("EventHandler '{0}': Property element's Name attribute cannot be empty.", pName));
                     }
 
                     var value = reader.GetAttribute("Value");
@@ -287,14 +287,14 @@ namespace LibLSLCC.CodeValidator.Components
                     if (string.IsNullOrWhiteSpace(value))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryEventSignature '{0}': Property element's Value attribute cannot be empty.", pName));
+                            string.Format("EventHandler '{0}': Property element's Value attribute cannot be empty.", pName));
                     }
 
                     if (_properties.ContainsKey(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format(
-                                "LibraryEventSignature '{0}': Property name '{1}' has already been used.", Name, pName));
+                                "EventHandler '{0}': Property name '{1}' has already been used.", Name, pName));
                     }
 
                     _properties.Add(pName, value);

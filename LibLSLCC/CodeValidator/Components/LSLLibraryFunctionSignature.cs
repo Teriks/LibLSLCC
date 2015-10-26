@@ -203,7 +203,7 @@ namespace LibLSLCC.CodeValidator.Components
                     else
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature{0}: ReturnType attribute Value '{1}' invalid.", 
+                            string.Format("LibraryFunction{0}: ReturnType attribute Value '{1}' invalid.", 
                             hasName ? (" '" + Name + "'") : "", reader.Value));
                     }
                 }
@@ -215,7 +215,7 @@ namespace LibLSLCC.CodeValidator.Components
                 else
                 {
                     throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                        string.Format("LibraryFunctionSignature{0}: Unknown attribute '{1}'.",
+                        string.Format("LibraryFunction{0}: Unknown attribute '{1}'.",
                         hasName ? (" '"+Name+"'") : "", reader.Name));
                 }
             }
@@ -224,19 +224,19 @@ namespace LibLSLCC.CodeValidator.Components
             if (!hasName)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    "LibraryFunctionSignature: Missing Name attribute.");
+                    "LibraryFunction: Missing Name attribute.");
             }
 
             if (!hasReturnType)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    string.Format("LibraryFunctionSignature '{0}': Missing ReturnType attribute.", Name));
+                    string.Format("LibraryFunction '{0}': Missing ReturnType attribute.", Name));
             }
 
             if (!hasSubsets)
             {
                 throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                    string.Format("LibraryFunctionSignature '{0}': Missing Subsets attribute.", Name));
+                    string.Format("LibraryFunction '{0}': Missing Subsets attribute.", Name));
             }
 
             var isVariadic = false;
@@ -249,7 +249,7 @@ namespace LibLSLCC.CodeValidator.Components
                     if (isVariadic)
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature '{0}': More than one variadic parameter was defined.", Name));
+                            string.Format("LibraryFunction '{0}': More than one variadic parameter was defined.", Name));
                     }
 
 
@@ -258,7 +258,7 @@ namespace LibLSLCC.CodeValidator.Components
                     if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature '{0}': Parameter Type attribute invalid.", Name));
+                            string.Format("LibraryFunction '{0}': Parameter Type attribute invalid.", Name));
                     }
 
 
@@ -267,13 +267,13 @@ namespace LibLSLCC.CodeValidator.Components
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, 
-                            string.Format("LibraryFunctionSignature '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.", Name));
+                            string.Format("LibraryFunction '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.", Name));
                     }
 
                     if (parameterNames.Contains(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature '{0}': Parameter Name '{1}' already used.", Name, pName));
+                            string.Format("LibraryFunction '{0}': Parameter Name '{1}' already used.", Name, pName));
                     }
 
                     var variadic = reader.GetAttribute("Variadic");
@@ -288,14 +288,14 @@ namespace LibLSLCC.CodeValidator.Components
                         else if (variadic.ToLower() != "false")
                         {
                             throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                                string.Format("LibraryFunctionSignature '{0}': Variadic attribute in parameter #{1} of Function '{2}' must equal True or False (Case Insensitive).", Name, pName, Name));
+                                string.Format("LibraryFunction '{0}': Variadic attribute in parameter #{1} of Function '{2}' must equal True or False (Case Insensitive).", Name, pName, Name));
                         }
                     }
 
                     if (pType == LSLType.Void && !isVariadic)
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature '{0}': Parameter Type invalid, function parameters cannot be Void unless they are declared variadic.", Name));
+                            string.Format("LibraryFunction '{0}': Parameter Type invalid, function parameters cannot be Void unless they are declared variadic.", Name));
                     }
 
                     parameterNames.Add(pName);
@@ -315,7 +315,7 @@ namespace LibLSLCC.CodeValidator.Components
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature '{0}': Property element's Name attribute cannot be empty.", Name));
+                            string.Format("LibraryFunction '{0}': Property element's Name attribute cannot be empty.", Name));
                     }
 
                     var value = reader.GetAttribute("Value");
@@ -323,13 +323,13 @@ namespace LibLSLCC.CodeValidator.Components
                     if (string.IsNullOrWhiteSpace(value))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature '{0}': Property element's Value attribute cannot be empty.", Name));
+                            string.Format("LibraryFunction '{0}': Property element's Value attribute cannot be empty.", Name));
                     }
 
                     if (_properties.ContainsKey(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("LibraryFunctionSignature '{0}': Property name '{1}' has already been used.", Name, pName));
+                            string.Format("LibraryFunction '{0}': Property name '{1}' has already been used.", Name, pName));
                     }
 
                     _properties.Add(pName, value);

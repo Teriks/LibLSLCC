@@ -1,13 +1,14 @@
 ﻿================================
 ===  Library Data XML Syntax ===
+================================
 
-
-The basic syntax of library data files is simple, the root node is always named "LSLLibraryData".
+The basic syntax of library data files is simple, first off: the root node is always named "LSLLibraryData".
 
 
 =================================
 ===  SubsetDescription Node's ===
 =================================
+
 
 The content of the LSLLibraryData Node should start with your SubsetDescription's, which name the subsets
 that library definitions can be a member of:
@@ -49,9 +50,9 @@ or another file thats being loaded with yours, subset names must be globally uni
 
 
 
-==================================
-==================================
-
+====================================================================
+====================================================================
+====================================================================
 
 
 
@@ -158,7 +159,7 @@ Parameter node rules are very straight forward:
 /// DocumentationString Node (Child) ///
 
 
-Pretty self explanitory, this can contain documentation for the function.  It's not required, but LSLCCEditor uses it.
+Pretty self explanitory, this can contain documentation for the function.  It's not a required node, but LSLCCEditor uses it.
 
 
 /// Property Node's (Children) ///
@@ -292,8 +293,9 @@ For instance, take these declarations:
 If you have used variadic functions in CSharp then ambiguity problems such as this should be familiar to you.
 
 	
-==================================
-==================================
+====================================================================
+====================================================================
+====================================================================
 
 
 ==================================
@@ -378,7 +380,7 @@ The value associtated with the constant.
 /// DocumentationString Node (Child) ///
 
 A place to add documentation for the library constant, it's not really used in OpenSim, but it is used in LSLCCEditor.
-
+This node is not required to be present.
 
 /// Property Node (Children) ///
 
@@ -391,8 +393,53 @@ the generated source code as a code literal that is apropriate for the constants
 will be created as a reference to a static variable that exists in the base class of the generated script class.
 
 
+====================================================================
+====================================================================
+====================================================================
+
+
+
 ==================================
+====  EventHandler Node's ========
 ==================================
+
+EventHandler nodes are for defining the event handlers that are able to be used in a subset or subset(s).
+
+Examples:
+
+
+<EventHandler Name="state_entry" Subsets="lsl,os-lsl">
+	<DocumentationString>The state_entry event occurs whenever a new state is entered, including at program start, and is always the first event handled.</DocumentationString>
+	<!-- optional properties -->
+	<Property Name="Deprecated" Value="false">
+</EventHandler>
+
+
+<EventHandler Name="collision_start" Subsets="lsl,os-lsl">
+	<Parameter Name="NumberOfCollisions" Type="Integer" />
+	<DocumentationString>This event is raised when another object, or avatar, starts colliding with the object the script is attached to.  The number of detected objects is passed to the script.</DocumentationString>
+	<!-- optional properties -->
+	<Property Name="Deprecated" Value="false">
+</EventHandler>
+
+
+EventHandler nodes are pretty much identical to LibraryFunction nodes, except for the following:
+
+1.) No ReturnType can be specified, LSL events are not allowed to return values.
+2.) Events cannot have Variadic parameters, The 'Variadic' attribute is not even available for use on the Parameter children nodes.
+
+
+
+#Notes:
+
+The 'Deprecated' property is only used by LSLCCEditor to mark events as deprecated in their documentation string.
+Currently there are not really any deprecated event handlers that exist in standard LSL, but who knows; maybe someday.
+
+
+====================================================================
+====================================================================
+====================================================================
+
 
 
 
