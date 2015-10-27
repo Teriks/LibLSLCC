@@ -406,8 +406,50 @@ namespace LibLSLCC.LibraryData
                     _eventSignaturesBySubsetAndName[subset] = new HashMap<string, LSLLibraryEventSignature> { {signature.Name,signature} };
                 }
             }
-            
         }
+
+
+
+        /// <summary>
+        /// Define all the event handlers from the given enumerable.
+        /// </summary>
+        /// <param name="eventHandlersSignatures">The event handler signatures to define.</param>
+        public void DefineEventHandlers(IEnumerable<LSLLibraryEventSignature> eventHandlersSignatures)
+        {
+            foreach (var lslLibraryEventSignature in eventHandlersSignatures)
+            {
+                DefineEventHandler(lslLibraryEventSignature);
+            }
+        }
+
+
+        /// <summary>
+        /// Define all the function signatures from the given enumerable.
+        /// </summary>
+        /// <param name="functionSignatures">The function signatures to define.</param>
+        public void DefineFunctions(IEnumerable<LSLLibraryFunctionSignature> functionSignatures)
+        {
+            foreach (var lslLibraryFunctionSignature in functionSignatures)
+            {
+                DefineFunction(lslLibraryFunctionSignature);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Defines all the constant signatures from the given enumerable.
+        /// </summary>
+        /// <param name="constantSignatures">The constant signatures to define.</param>
+        public void DefineConstants(IEnumerable<LSLLibraryConstantSignature> constantSignatures)
+        {
+            foreach (var lslLibraryConstantSignature in constantSignatures)
+            {
+                DefineConstant(lslLibraryConstantSignature);
+            }
+        }
+
+
 
         /// <summary>
         /// Define a library constant signature

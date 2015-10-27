@@ -115,6 +115,17 @@
     <Compile Include="LibraryData\LSLInvalidConstantValueStringException.cs" />
     <Compile Include="LibraryData\LSLLibraryDataInvalidConstantTypeException.cs" />
     <Compile Include="LibraryData\LSLLibraryDataXmlSyntaxException.cs" />
+    <Compile Include="LibraryData\Reflection\ILSLReflectionConstantFilter.cs" />
+    <Compile Include="LibraryData\Reflection\ILSLReflectionConstantMultiFilter.cs" />
+    <Compile Include="LibraryData\Reflection\ILSLReflectionMethodFilter.cs" />
+    <Compile Include="LibraryData\Reflection\ILSLReflectionTypeConverter.cs" />
+    <Compile Include="LibraryData\Reflection\LSLLibraryDataReflectionException.cs" />
+    <Compile Include="LibraryData\Reflection\LSLLibraryDataReflectionSerializer.cs" />
+    <Compile Include="LibraryData\Reflection\LSLReflectionLambdaConstantFilter.cs" />
+    <Compile Include="LibraryData\Reflection\LSLReflectionLambdaMethodFilter.cs" />
+    <Compile Include="LibraryData\Reflection\LSLReflectionTypeMappingException.cs" />
+    <Compile Include="LibraryData\Reflection\ILSLReflectionMethodMultiFilter.cs" />
+    <Compile Include="LibraryData\Reflection\ILSLReflectionTypeConversionTable.cs" />
     <Compile Include="Utility\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />

@@ -95,7 +95,8 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct the LSLLibraryConstantSignature from a given <see cref="LSLType"/> and constant name
+        /// Construct the LSLLibraryConstantSignature from a given <see cref="LSLType"/> and constant name. <see cref="ValueString"/> is given the default
+        /// value for the given <see cref="LSLType"/> passed in <paramref name="type"/>
         /// </summary>
         /// <param name="type"></param>
         /// <param name="name"></param>
@@ -104,7 +105,35 @@ namespace LibLSLCC.LibraryData
             DocumentationString = "";
             Name = name;
             Type = type;
-            ValueString = "";
+
+            //use _valueString to bypass validation, since its faster
+            //and we know what is required by the class.
+            switch (type)
+            {
+                case LSLType.Key:
+                    _valueString = "00000000-0000-0000-0000-000000000000";
+                    break;
+                case LSLType.Integer:
+                    _valueString = "0";
+                    break;
+                case LSLType.String:
+                    _valueString = "";
+                    break;
+                case LSLType.Float:
+                    _valueString = "0.0";
+                    break;
+                case LSLType.List:
+                    _valueString = "";    //empty list
+                    break;
+                case LSLType.Vector:
+                    _valueString = "0,0,0";
+                    break;
+                case LSLType.Rotation:
+                    _valueString = "0,0,0,0";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("type", type, null);
+            }
         }
 
 

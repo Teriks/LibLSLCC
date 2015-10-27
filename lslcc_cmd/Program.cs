@@ -50,9 +50,11 @@ using System.Reflection;
 using System.Text;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers;
 using LibLSLCC.LibraryData;
+using LibLSLCC.LibraryData.Reflection;
 
 #endregion
 
@@ -126,7 +128,6 @@ namespace lslcc
             Console.WriteLine("Version: 1.0.0");
             Console.WriteLine("=================================");
         }
-
 
 
         public static void Main(string[] args)
