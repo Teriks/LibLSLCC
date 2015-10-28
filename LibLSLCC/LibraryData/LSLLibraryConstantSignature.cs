@@ -354,19 +354,22 @@ namespace LibLSLCC.LibraryData
                 }
 
 
-                if (s[0] == '[' && s[s.Length - 1] != ']')
+                char firstChar = s[0];
+                char lastChar = s[s.Length - 1];
+
+                if ((firstChar == '[' || lastChar == ']') &&
+                    (firstChar != '[' || lastChar != ']'))
                 {
                     throw new LSLInvalidConstantValueStringException(
                         "List Constant ValueString '{0}' Invalid: If brackets are used for the List value string, both brackets must be present.");
                 }
-                if (s[0] == '[')
+                if (firstChar == '[')
                 {
                     s = s.Substring(1, s.Length - 2);
                 }
 
                 if (string.IsNullOrWhiteSpace(s)) _valueString = "";
 
-                //the trim junk makes the brackets optional.
                 _valueString = LSLListParser.Format(LSLListParser.ParseList("[" + s + "]"), false);
             }
             catch (LSLListParserSyntaxException e)
@@ -387,13 +390,17 @@ namespace LibLSLCC.LibraryData
             }
 
 
-            if (s[0] == '<' && s[s.Length - 1] != '>')
+            char firstChar = s[0];
+            char lastChar = s[s.Length - 1];
+
+            if ((firstChar == '<' || lastChar == '>') &&
+                (firstChar != '<' || lastChar != '>'))
             {
                 throw new LSLInvalidConstantValueStringException(
                     "Rotation Constant ValueString '{0}' Invalid: If rotation quotes are used for a Rotation value string, both '<' and '>' must be present.");
             }
 
-            if (s[0] == '<')
+            if (firstChar == '<')
             {
                 s = s.Substring(1, s.Length - 2);
             }
@@ -421,13 +428,17 @@ namespace LibLSLCC.LibraryData
                     "Vector Constant ValueString Invalid: May not be null or whitespace.");
             }
 
-            if (s[0] == '<' && s[s.Length - 1] != '>')
+            char firstChar = s[0];
+            char lastChar = s[s.Length - 1];
+
+            if ((firstChar == '<' || lastChar == '>') &&
+                (firstChar != '<' || lastChar != '>'))
             {
                 throw new LSLInvalidConstantValueStringException(
                     "Vector Constant ValueString '{0}' Invalid: If vector quotes are used for a Vector value string, both '<' and '>' must be present.");
             }
 
-            if (s[0] == '<')
+            if (firstChar == '<')
             {
                 s = s.Substring(1, s.Length - 2);
             }
