@@ -45,6 +45,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
@@ -86,11 +87,12 @@ namespace LibLSLCC.LibraryData
         /// <param name="other"></param>
         public LSLLibraryConstantSignature(LSLLibraryConstantSignature other)
         {
-            ValueString = other.ValueString;
+            
             DocumentationString = other.DocumentationString;
             _subsets = new HashedSet<string>(other._subsets);
-            Type = other.Type;
             _properties = other._properties.ToHashMap(x => x.Key, y => y.Value);
+            _type = other.Type;
+            _valueString = other.ValueString;
         }
 
 
@@ -147,8 +149,8 @@ namespace LibLSLCC.LibraryData
         {
             DocumentationString = "";
             Name = name;
-            ValueString = valueString;
             Type = type;
+            ValueString = valueString;
         }
 
         /// <summary>
@@ -241,7 +243,7 @@ namespace LibLSLCC.LibraryData
         }
 
         private static string _floatRegexString = "([-+]?[0-9]*(?:\\.[0-9]*))";
-        private static Regex _vectorValidationRegex = new Regex("^"+_floatRegexString+"\\s*,\\s*"+_floatRegexString+"\\s*,\\s*"+_floatRegexString+"$");
+        private static Regex _vectorValidationRegex = new Regex("^"+_floatRegexString+"\\s*,\\s*"+_floatRegexString+"\\s*,\\s*"+_floatRegexString+ "$");
         private static Regex _rotationValidationRegex = new Regex("^" + _floatRegexString + "\\s*,\\s*" + _floatRegexString + "\\s*,\\s*" + _floatRegexString+ "\\s*,\\s*" + _floatRegexString + "$");
 
 
@@ -274,78 +276,173 @@ namespace LibLSLCC.LibraryData
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException("value",GetType().Name+".ValueString cannot be set to null.");
                 }
 
-                if (Type == LSLType.Float)
+                switch (Type)
                 {
-                    float f;
-                    if (!float.TryParse(value, out f) && 
-                        !float.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out f))
-                    {
-                         throw new LSLInvalidConstantValueStringException(string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.", value));
-                    }
-                    _valueString = value;
-                    return;
-                }
-
-                if (Type == LSLType.Integer)
-                {
-                    int i;
-                    if (!int.TryParse(value, out i) && 
-                        !int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
-                    {
-                        throw new LSLInvalidConstantValueStringException(string.Format("Integer Constant ValueString:  Given value '{0}' is not a valid integer value.", value));
-                    }
-                    _valueString = value;
-                    return;
-                }
-                if (Type == LSLType.List)
-                {
-                    try
-                    {
-                        _valueString = LSLListParser.Format(LSLListParser.ParseList(value), false);
+                    case LSLType.Float:
+                        SetFloatValueString(value);
                         return;
-                    }
-                    catch (LSLListParserSyntaxException e)
-                    {
-                        throw new LSLInvalidConstantValueStringException("List Constant ValueString Invalid: " + e.Message);
-                    }
-                }
-                if (Type == LSLType.Vector)
-                {
-                    _valueString = value.Trim('<', '>',' ');
-                    var match = _vectorValidationRegex.Match(value);
-                    if (!match.Success)
-                    {
-                        throw new LSLInvalidConstantValueStringException(string.Format("Vector Constant ValueString: '{0}' could not be parsed and formated.", value));
-                    }
-
-                    _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3];
-                    return;
-                }
-                if (Type == LSLType.Rotation)
-                {
-                    _valueString = value.Trim('<', '>', ' ');
-                    var match = _rotationValidationRegex.Match(value);
-                    if (!match.Success)
-                    {
-                        throw new LSLInvalidConstantValueStringException(string.Format("Rotation Constant ValueString: '{0}' could not be parsed and formated.", value));
-                    }
-
-                    _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
-                    return;
-                }
-
-                if (Type == LSLType.Void)
-                {
-                    throw new LSLLibraryDataInvalidConstantTypeException("Could not set ValueString because the 'Type' Properties value is set to Void.");
+                    case LSLType.Integer:
+                        SetIntegerValueString(value);
+                        return;
+                    case LSLType.List:
+                        SetListValueString(value);
+                        return;
+                    case LSLType.Vector:
+                        SetVectorValueString(value);
+                        return;
+                    case LSLType.Rotation:
+                        SetRotationValueString(value);
+                        return;
+                    case LSLType.Void:
+                        throw new LSLLibraryDataInvalidConstantTypeException("Could not set ValueString because the 'Type' Properties value is set to Void.");
                 }
 
                 _valueString = value;
 
             }
         }
+
+        private void SetFloatValueString(string value)
+        {
+            float f;
+            if (!float.TryParse(value, out f) &&
+                !float.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out f))
+            {
+                throw new LSLInvalidConstantValueStringException(
+                    string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.", value));
+            }
+            _valueString = value;
+        }
+
+
+        private void SetIntegerValueString(string value)
+        {
+            bool b;
+            if (!bool.TryParse(value, out b))
+            {
+                int i;
+                if (!int.TryParse(value, out i) &&
+                    !int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
+                {
+                    throw new LSLInvalidConstantValueStringException(
+                        string.Format("Integer Constant ValueString:  Given value '{0}' is not a valid integer, hexadecimal or boolean value.",
+                            value));
+                }
+                _valueString = value;
+            }
+            else
+            {
+                //make it integral
+                _valueString = b ? "1" : "0";
+            }
+            
+        }
+
+        private void SetListValueString(string value)
+        {
+            try
+            {
+                string s = value.Trim(' ');
+
+                if (string.IsNullOrWhiteSpace(s))
+                {
+                    throw new LSLInvalidConstantValueStringException(
+                        "List Constant ValueString Invalid: May not be null or whitespace.");
+                }
+
+
+                if (s[0] == '[' && s[s.Length - 1] != ']')
+                {
+                    throw new LSLInvalidConstantValueStringException(
+                        "List Constant ValueString '{0}' Invalid: If brackets are used for the List value string, both brackets must be present.");
+                }
+                if (s[0] == '[')
+                {
+                    s = s.Substring(1, s.Length - 2);
+                }
+
+                if (string.IsNullOrWhiteSpace(s)) _valueString = "";
+
+                //the trim junk makes the brackets optional.
+                _valueString = LSLListParser.Format(LSLListParser.ParseList("[" + s + "]"), false);
+            }
+            catch (LSLListParserSyntaxException e)
+            {
+                throw new LSLInvalidConstantValueStringException("List Constant ValueString Invalid: " + e.Message);
+            }
+        }
+
+        private void SetRotationValueString(string value)
+        {
+            string s = value.Trim(' ');
+
+
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                throw new LSLInvalidConstantValueStringException(
+                    "Rotation Constant ValueString Invalid: May not be null or whitespace.");
+            }
+
+
+            if (s[0] == '<' && s[s.Length - 1] != '>')
+            {
+                throw new LSLInvalidConstantValueStringException(
+                    "Rotation Constant ValueString '{0}' Invalid: If rotation quotes are used for a Rotation value string, both '<' and '>' must be present.");
+            }
+
+            if (s[0] == '<')
+            {
+                s = s.Substring(1, s.Length - 2);
+            }
+
+
+            var match = _rotationValidationRegex.Match(s);
+            if (!match.Success)
+            {
+                throw new LSLInvalidConstantValueStringException(
+                    string.Format("Rotation Constant ValueString: '{0}' could not be parsed and formated.", value));
+            }
+
+            _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
+        }
+
+
+        private void SetVectorValueString(string value)
+        {
+            string s = value.Trim(' ');
+
+
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                throw new LSLInvalidConstantValueStringException(
+                    "Vector Constant ValueString Invalid: May not be null or whitespace.");
+            }
+
+            if (s[0] == '<' && s[s.Length - 1] != '>')
+            {
+                throw new LSLInvalidConstantValueStringException(
+                    "Vector Constant ValueString '{0}' Invalid: If vector quotes are used for a Vector value string, both '<' and '>' must be present.");
+            }
+
+            if (s[0] == '<')
+            {
+                s = s.Substring(1, s.Length - 2);
+            }
+
+
+            var match = _vectorValidationRegex.Match(s);
+            if (!match.Success)
+            {
+                throw new LSLInvalidConstantValueStringException(
+                    string.Format("Vector Constant ValueString: '{0}' could not be parsed and formated.", value));
+            }
+
+            _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3];
+        }
+
 
 
 

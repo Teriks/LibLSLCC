@@ -18,12 +18,13 @@ namespace LibLSLCC.LibraryData.Reflection
     {
 
         /// <summary>
-        /// Responsible for mapping a runtime <see cref="Type"/> to a corresponding <see cref="LSLType"/> and vice-versa  
+        /// Responsible for mapping a runtime <see cref="Type"/> to a corresponding <see cref="LSLType"/> 
         /// </summary>
         public ILSLReflectionTypeConverter Converter { get; private set; }
 
         /// <summary>
         /// Gets or sets the method serializer addon, it can add additional data to serialized library functions or choose to filter them.
+        /// This property is allowed to be <c>null</c>.
         /// </summary>
         /// <value>
         /// The method serializer addon.
@@ -32,6 +33,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
         /// <summary>
         /// Gets or sets the constant serializer addon, it can add additional data to serialized library constants or choose to filter them.
+        /// This property is allowed to be <c>null</c>.
         /// </summary>
         /// <value>
         /// The constant serializer addon.
@@ -91,7 +93,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// unable to convert the <see cref="Type"/> used in <see cref="PropertyInfo.PropertyType"/>.  If this is <c>false</c> <see cref="DeSerializeConstant(PropertyInfo,object)"/> will return <c>null</c> instead of throwing.
         /// </summary>
         /// <value>
-        /// <c>true</c> if <see cref="DeSerializeConstant(PropertyInfo)"/> should throw <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c> if it should return <c>null</c>.
+        /// <c>true</c> if <see cref="DeSerializeConstant(PropertyInfo,object)"/> should throw <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c> if it should return <c>null</c>.
         /// </value>
         public bool ThrowOnUnmappedTypeInProperty { get; set; }
 
@@ -125,8 +127,6 @@ namespace LibLSLCC.LibraryData.Reflection
         }
 
 
-
-
         /// <summary>
         /// <para>
         /// De-serializes an <see cref="LSLLibraryConstantSignature"/> from a given <see cref="PropertyInfo"/> object.
@@ -137,6 +137,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// </para>
         /// </summary>
         /// <param name="info">The <see cref="PropertyInfo"/> to deserialize an <see cref="LSLLibraryConstantSignature"/> from.</param>
+        /// <param name="constantValueInstance">The optional object instance to retrieve property values from that will be assigned to <see cref="LSLLibraryConstantSignature.ValueString"/> if <see cref="FieldValueStringConverter"/> is not <c>null</c>.</param>
         /// <returns>
         /// An <see cref="LSLLibraryConstantSignature"/> that was deserialized from the given <see cref="PropertyInfo"/> object.  
         /// Or <c>null</c> if <see cref="PropertyInfo.PropertyType"/> was not convertible by <see cref="Converter"/> and <see cref="ThrowOnUnmappedTypeInProperty"/> is <c>false</c>.
@@ -165,7 +166,7 @@ namespace LibLSLCC.LibraryData.Reflection
         private LSLLibraryConstantSignature _DoDeSerializeConstantWithNoPreChecks(PropertyInfo info, object fieldValueInstance = null)
         {
             LSLType propertyType;
-            if (!Converter.ConvertType(info.PropertyType, out propertyType))
+            if (!Converter.ConvertPropertyType(info.PropertyType, out propertyType))
             {
                 if (ThrowOnUnmappedTypeInProperty)
                 {
@@ -239,7 +240,7 @@ namespace LibLSLCC.LibraryData.Reflection
         private LSLLibraryConstantSignature _DoDeSerializeConstantWithNoPreChecks(FieldInfo info, object fieldValueInstance = null)
         {
             LSLType propertyType;
-            if (!Converter.ConvertType(info.FieldType, out propertyType))
+            if (!Converter.ConvertFieldType(info.FieldType, out propertyType))
             {
                 if (ThrowOnUnmappedTypeInField)
                 {
@@ -281,7 +282,6 @@ namespace LibLSLCC.LibraryData.Reflection
                         return ConstantFilter.MutateSignature(this, info, result) ? null : result;
                     }
                 }
-
 
                 fieldValue = info.GetValue(null);
 
@@ -359,7 +359,7 @@ namespace LibLSLCC.LibraryData.Reflection
             LSLType returnType;
 
 
-            if (!Converter.ConvertType(info.ReturnType, out returnType))
+            if (!Converter.ConvertReturnType(info.ReturnType, out returnType))
             {
                 if (ThrowOnUnmappedTypeInMethod)
                 {
@@ -378,7 +378,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 var cSharpParameterType = isVariadic ? p.ParameterType.GetElementType() : p.ParameterType;
 
                 LSLType parameterType;
-                if (!Converter.ConvertType(cSharpParameterType, out parameterType))
+                if (!Converter.ConvertParameterType(cSharpParameterType, out parameterType))
                 {
                     if (ThrowOnUnmappedTypeInMethod)
                     {

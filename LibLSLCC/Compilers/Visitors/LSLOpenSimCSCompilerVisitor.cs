@@ -53,6 +53,7 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 using LibLSLCC.Collections;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -467,6 +468,42 @@ private static class UTILITIES
         }
 
 
+
+        private string GenerateExpandedListConstant(string constantValueString)
+        {
+            return "new LSL_Types.list("+string.Join(", ",LSLListParser.ParseListAsEnumerable("["+constantValueString+"]").Select(e =>
+            {
+
+                switch (e.Type)
+                {
+                    case LSLType.String:
+                        return ("new LSL_Types.LSLString(\"" + LSLFormatTools.ShowControlCodeEscapes(e.ValueString) +"\")");
+
+                    case LSLType.Key:
+                        return ("new LSL_Types.key(\"" + LSLFormatTools.ShowControlCodeEscapes(e.ValueString) + "\")");
+
+                    case LSLType.Vector:
+                        return ("new LSL_Types.Vector3(" + e.ValueString + ")");
+
+                    case LSLType.Rotation:
+                        return ("new LSL_Types.Quaternion(" + e.ValueString + ")");
+
+                    case LSLType.Integer:
+                        return ("new LSL_Types.LSLInteger(" + e.ValueString + ")");
+
+                    case LSLType.Float:
+                        return ("new LSL_Types.LSLFloat(" + e.ValueString + ")");
+
+                    case LSLType.List:
+                        return ("new LSL_Types.list(" + e.ValueString + ")");
+                    default:
+                        throw new InvalidOperationException("LSLOpenSimCSCompilerVisitor.GenerateExpandedListConstant encountered a Void list element type.");
+                }
+
+            })) + ")";
+        }
+
+
         public override bool VisitLibraryConstantVariableReference(ILSLVariableNode node)
         {
             var x = Settings.LibraryDataProvider.GetLibraryConstantSignature(node.Name);
@@ -493,8 +530,12 @@ private static class UTILITIES
                         Writer.Write("new LSL_Types.LSLFloat(" + x.ValueString + ")");
                         break;
                     case LSLType.List:
-                        Writer.Write("new LSL_Types.list(" + x.ValueString + ")");
+                        Writer.Write(GenerateExpandedListConstant(x.ValueString));
                         break;
+                    default:
+                        throw new InvalidOperationException(
+                            "LSLOpenSimCSCompilerVisitor.VisitLibraryConstantVariableReference retrieved a library  "
+                            +"constant from the library data provider using 'LSLType.Void' as its Type.");
                 }
             }
             else

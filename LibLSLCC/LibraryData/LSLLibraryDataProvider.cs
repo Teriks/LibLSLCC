@@ -144,7 +144,7 @@ namespace LibLSLCC.LibraryData
                     else
                     {
                         throw new LSLDuplicateSignatureException(
-                            "SupportedEventHandlers {get} failed because an event with the same name exist in more than one active subset, "+
+                            string.Format("SupportedEventHandlers {{get}} failed because the event '{0};' exist in more than one active subset, ", evnt.SignatureString) +
                             "and it is not shared across the involved subsets.");
                     }
                 }
@@ -163,41 +163,59 @@ namespace LibLSLCC.LibraryData
         {
             get
             {
-                //This could really be optimized, need to make sure the basic gist of this works first for what I want though.
-
-                var funcs = new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
-
-                return ActiveSubsets.Subsets.SelectMany(x =>
+                if (!LiveFiltering)
                 {
-                    HashMap<string, GenericArray<LSLLibraryFunctionSignature>> subsetContent;
-                    return _functionSignaturesBySubsetAndName.TryGetValue(x, out subsetContent) ? subsetContent.Values : new GenericArray<GenericArray<LSLLibraryFunctionSignature>>();
+                    return ActiveSubsets.Subsets
+                        .Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+                        .SelectMany(subset => _functionSignaturesBySubsetAndName[subset].Values.ToGenericArray())
+                        .Cast<IReadOnlyGenericArray<LSLLibraryFunctionSignature>>().ToList();
+                }
 
-                })
-                .SelectMany(x=>x)
-                .Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals))
-                .Select(x =>
+
+                var functionGroups = new Dictionary<string, GenericArray<LSLLibraryFunctionSignature>>();
+
+                foreach (var subset in ActiveSubsets.Subsets.Where(x=>_functionSignaturesBySubsetAndName.ContainsKey(x)))
                 {
-                    if (funcs.ContainsKey(x.Name))
+
+                    var subsetFunctions = _functionSignaturesBySubsetAndName[subset].Values.SelectMany(x=>x).ToGenericArray();
+
+                    //iterate over the subset functions, they are guaranteed to not be duplicates.
+                    foreach (var subsetFunction in subsetFunctions)
                     {
-                        var func = funcs[x.Name];
 
-                        //Large amounts of overloads for a single function are not really expected.
-                        if (func.Any( y=> y.DefinitionIsDuplicate(x)))
+                        if (functionGroups.ContainsKey(subsetFunction.Name))
                         {
-                            throw new LSLDuplicateSignatureException(
-                                "LibraryFunctions {get} failed because a function with a duplicate or ambiguous signature exists in more than one active subset, " +
-                                "and it is not shared across the involved subsets.");
-                        }
+                            var overloads = functionGroups[subsetFunction.Name];
+                            //check the overloads for duplicates that exist already, from another subset thats active
+                            foreach (var overload in overloads)
+                            {
+                                //the reference check is to make sure its not shared across subsets.
+                                if (overload.DefinitionIsDuplicate(subsetFunction) &&
+                                    !ReferenceEquals(subsetFunction, overload))
+                                {
+                                    throw new LSLDuplicateSignatureException(
+                                        string.Format(
+                                            "LibraryFunctions {{get}} failed because the function '{0};' with subsets '{1}' is duplicate with the function '{2}' with subsets '{3}'.",
+                                            subsetFunction.SignatureString,
+                                            string.Join(",", subsetFunction.Subsets),
+                                            overload.SignatureString.Length,
+                                            string.Join(",", overload.Subsets)))
+                                        ;
+                                }
+                            }
 
-                        //subset adds an overload
-                        func.Add(x);
-                        return x;
+                            overloads.Add(subsetFunction);
+                        }
+                        else
+                        {
+                            //add the first overload to the groupings
+                            functionGroups.Add(subsetFunction.Name, new List<LSLLibraryFunctionSignature> { subsetFunction });
+                        }
                     }
-                    //subset adds a new function
-                    funcs.Add(x.Name, new GenericArray<LSLLibraryFunctionSignature> {x});
-                    return x;
-                })
-                .GroupBy(x=>x.Name).Select(x=>x.ToGenericArray());
+                    
+                }
+
+                return functionGroups.Values;
             }
         }
 
@@ -233,7 +251,7 @@ namespace LibLSLCC.LibraryData
                     else
                     {
                         throw new LSLDuplicateSignatureException(
-                            "LibraryConstants {get} failed because a constant with the same name exist in more than one active subset, " +
+                            string.Format("LibraryConstants {{get}} failed because a constant with the same name '{0};' exist in more than one active subset, ", cons.SignatureString) +
                             "and it is not shared across the involved subsets.");
                     }
                 }

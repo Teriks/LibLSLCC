@@ -125,7 +125,7 @@
     <Compile Include="LibraryData\Reflection\LSLReflectionLambdaMethodFilter.cs" />
     <Compile Include="LibraryData\Reflection\LSLReflectionTypeMappingException.cs" />
     <Compile Include="LibraryData\Reflection\ILSLReflectionMethodMultiFilter.cs" />
-    <Compile Include="LibraryData\Reflection\ILSLReflectionTypeConversionTable.cs" />
+    <Compile Include="LibraryData\Reflection\LSLReflectionTypeConversionMap.cs" />
     <Compile Include="Utility\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />

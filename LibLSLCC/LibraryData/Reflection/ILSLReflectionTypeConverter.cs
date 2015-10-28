@@ -9,20 +9,42 @@ namespace LibLSLCC.LibraryData.Reflection
     public interface ILSLReflectionTypeConverter
     {
         /// <summary>
-        /// Convert a runtime <see cref="Type"/> to its corresponding <see cref="LSLType"/>
+        /// Convert a runtime method return <see cref="Type"/> to its corresponding <see cref="LSLType"/>
         /// </summary>
-        /// <param name="type">The runtime <see cref="Type"/> to convert.</param>
+        /// <param name="type">The runtime return <see cref="Type"/> to convert.</param>
         /// <param name="lslType">Output <see cref="LSLType"/>.</param>
         /// <returns><c>true</c> if the conversion succeed.</returns>
-        bool ConvertType(Type type, out LSLType lslType);
+        bool ConvertReturnType(Type type, out LSLType lslType);
+
 
 
         /// <summary>
-        /// Convert an LSL <see cref="LSLType"/> to its corresponding runtime <see cref="Type"/>
+        /// Convert a runtime method parameter <see cref="Type"/> to its corresponding <see cref="LSLType"/>
         /// </summary>
-        /// <param name="lslType">The LSL <see cref="LSLType"/> to convert.</param>
-        /// <param name="type">Output <see cref="Type"/>.</param>
+        /// <param name="type">The runtime parameter <see cref="Type"/> to convert.</param>
+        /// <param name="lslType">Output <see cref="LSLType"/>.</param>
         /// <returns><c>true</c> if the conversion succeed.</returns>
-        bool ConvertType(LSLType lslType, out Type type);
+        bool ConvertParameterType(Type type, out LSLType lslType);
+
+
+        /// <summary>
+        /// Convert a runtime property declaration <see cref="Type"/> to its corresponding <see cref="LSLType"/>
+        /// </summary>
+        /// <param name="type">The runtime property declaration <see cref="Type"/> to convert.</param>
+        /// <param name="lslType">Output <see cref="LSLType"/>.</param>
+        /// <returns><c>true</c> if the conversion succeed.</returns>
+        bool ConvertPropertyType(Type type, out LSLType lslType);
+
+
+
+        /// <summary>
+        /// Convert a runtime field declaration <see cref="Type"/> to its corresponding <see cref="LSLType"/>
+        /// </summary>
+        /// <param name="type">The runtime field declaration <see cref="Type"/> to convert.</param>
+        /// <param name="lslType">Output <see cref="LSLType"/>.</param>
+        /// <returns><c>true</c> if the conversion succeed.</returns>
+        bool ConvertFieldType(Type type, out LSLType lslType);
+
+
     }
 }

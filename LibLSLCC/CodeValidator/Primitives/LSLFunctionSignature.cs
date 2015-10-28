@@ -68,6 +68,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
             ReturnType = LSLType.Void;
             _parameters = new GenericArray<LSLParameter>();
+            VariadicParameterIndex = -1;
         }
 
         /// <summary>
@@ -93,6 +94,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
             ReturnType = returnType;
             Name = name;
+            VariadicParameterIndex = -1;
 
             if (parameters == null)
             {
@@ -206,7 +208,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// The index of the variadic parameter in the Parameters list.
+        /// The index of the variadic parameter in the Parameters list, or -1 if none exists.
         /// </summary>
         public int VariadicParameterIndex { get; private set; }
 
@@ -269,6 +271,8 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             _parameters.Add(parameter);
         }
+
+
 
         /// <summary>
         ///     Determines if two function signatures match exactly (including return type), parameter names do not matter but parameter types do.
