@@ -411,10 +411,29 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <param name="info">The <see cref="PropertyInfo"/> object to de-serialize from.</param>
         /// <param name="optionalInstance">
         /// An optional object instance to provide to serializer.
+        /// Instance properties will be considered <c>null</c> if one is not provided.
+        /// </param>
+        /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
+        public LSLLibraryConstantSignature DeSerializeConstant(PropertyInfo info, object optionalInstance = null)
+        {
+            var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
+            var valueStringConverter = LSLLibraryDataSerializableAttribute.GetValueStringConverter(info.DeclaringType);
+
+            return _DoDeSerializeConstant(info, constantTypeConverter, valueStringConverter, optionalInstance);
+        }
+
+
+
+        /// <summary>
+        /// de-serialize a <see cref="LSLLibraryConstantSignature"/> from a <see cref="FieldInfo"/> object.
+        /// </summary>
+        /// <param name="info">The <see cref="FieldInfo"/> object to de-serialize from.</param>
+        /// <param name="optionalInstance">
+        /// An optional object instance to provide to serializer.
         /// Instance fields will be considered <c>null</c> if one is not provided.
         /// </param>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
-        public LSLLibraryConstantSignature DeSerializeMethod(PropertyInfo info, object optionalInstance = null)
+        public LSLLibraryConstantSignature DeSerializeConstant(FieldInfo info, object optionalInstance = null)
         {
             var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
             var valueStringConverter = LSLLibraryDataSerializableAttribute.GetValueStringConverter(info.DeclaringType);
