@@ -133,7 +133,7 @@
     <Compile Include="LibraryData\Reflection\ILSLLambdaMethodFilter.cs" />
     <Compile Include="LibraryData\Reflection\LSLReflectionTypeMappingException.cs" />
     <Compile Include="LibraryData\Reflection\LSLMultiMethodFilter.cs" />
-    <Compile Include="LibraryData\Reflection\ILSLTypeConverterMap.cs" />
+    <Compile Include="LibraryData\Reflection\LSLTypeConverterMap.cs" />
     <Compile Include="Utility\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />

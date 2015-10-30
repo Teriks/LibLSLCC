@@ -11,11 +11,36 @@ namespace LibLSLCC.LibraryData.Reflection
     /// <summary>
     /// Implements <see cref="ILSLTypeConverter"/> as an simple <see cref="IDictionary{Type,LSLType}"/>.
     /// </summary>
-    public class ILSLTypeConverterMap : IDictionary<Type, CodeValidator.Enums.LSLType>, ILSLTypeConverter
+    public class LSLTypeConverterMap : IDictionary<Type, CodeValidator.Enums.LSLType>, ILSLTypeConverter
     {
-        private readonly Dictionary<Type,LSLType> _map = new Dictionary<Type, LSLType>();
+        private readonly IDictionary<Type,LSLType> _map;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LSLTypeConverterMap"/> class by wrapping another <see cref="IDictionary{Type, LSLType}"/> implementor.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        public LSLTypeConverterMap(IDictionary<Type, LSLType> other)
+        {
+            _map = other;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LSLTypeConverterMap" /> class.
+        /// </summary>
+        public LSLTypeConverterMap()
+        {
+            _map = new Dictionary<Type, LSLType>();
+        }
 
 
+        /// <summary>
+        /// Clones the type map.
+        /// </summary>
+        /// <returns>A clone of the type map.</returns>
+        public LSLTypeConverterMap Clone()
+        {
+            return new LSLTypeConverterMap(_map.ToDictionary(pair => pair.Key, pair => pair.Value));
+        }
 
 
         /// <summary>
