@@ -168,7 +168,7 @@ namespace Tests
         public int CONSTANT_A = 5;
 
 
-        //if we don't provide an instance, this will be given a default value because its not static or constant
+        //if we don't provide an instance, the ValueString will be used.
         [LSLConstant(LSLType.Integer, ValueString = "5")]
         public int CONSTANT_X = 5;
 
