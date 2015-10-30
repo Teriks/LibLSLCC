@@ -138,10 +138,6 @@ namespace Tests
             }
 
 
-            var m = x.DeSerializeMethod(typeof (AttributeReflectionTest).GetMethod("function2"));
-
-
-            Console.WriteLine(m.ToString());
         }
     }
 
