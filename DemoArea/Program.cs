@@ -100,7 +100,10 @@ namespace Tests
 
                 ConstantTypeConverter = new MySimpleConverter(),
 
-                ParamTypeConverter = new MySimpleConverter()
+                ParamTypeConverter = new MySimpleConverter(),
+                AttributedMethodsOnly = false
+
+                
             };
 
 
@@ -133,6 +136,12 @@ namespace Tests
             {
                 Console.WriteLine(c.ToString());
             }
+
+
+            var m = x.DeSerializeMethod(typeof (AttributeReflectionTest).GetMethod("function2"));
+
+
+            Console.WriteLine(m.ToString());
         }
     }
 
@@ -205,8 +214,7 @@ namespace Tests
             return "";
         }
 
-        //uses the class ReturnTypeConverter, and the ParamTypeConverter on this method.
-        [LSLFunction(ParamTypeConverter = typeof(MySimpleConverter))]
+
         public string function2(
             int arg1,
             string arg2,

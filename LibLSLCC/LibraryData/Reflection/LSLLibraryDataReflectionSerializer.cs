@@ -391,6 +391,37 @@ namespace LibLSLCC.LibraryData.Reflection
         }
 
 
+        /// <summary>
+        /// de-serialize a <see cref="LSLLibraryFunctionSignature"/> from a <see cref="MethodInfo"/> object.
+        /// </summary>
+        /// <param name="info">The <see cref="MethodInfo"/> object to de-serialize from.</param>
+        /// <returns>The de-serialized <see cref="LSLLibraryFunctionSignature"/> or <c>null</c>.</returns>
+        public LSLLibraryFunctionSignature DeSerializeMethod(MethodInfo info)
+        {
+            var classReturnTypeConverter = LSLLibraryDataSerializableAttribute.GetReturnTypeConverter(info.DeclaringType);
+            var classParamTypeConverter = LSLLibraryDataSerializableAttribute.GetParamTypeConverter(info.DeclaringType);
+
+            return _DoDeSerializeMethod(info, classReturnTypeConverter, classParamTypeConverter);
+        }
+
+
+        /// <summary>
+        /// de-serialize a <see cref="LSLLibraryConstantSignature"/> from a <see cref="PropertyInfo"/> object.
+        /// </summary>
+        /// <param name="info">The <see cref="PropertyInfo"/> object to de-serialize from.</param>
+        /// <param name="optionalInstance">
+        /// An optional object instance to provide to serializer.
+        /// Instance fields will be considered <c>null</c> if one is not provided.
+        /// </param>
+        /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
+        public LSLLibraryConstantSignature DeSerializeMethod(PropertyInfo info, object optionalInstance = null)
+        {
+            var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
+            var valueStringConverter = LSLLibraryDataSerializableAttribute.GetValueStringConverter(info.DeclaringType);
+
+            return _DoDeSerializeConstant(info, constantTypeConverter, valueStringConverter, optionalInstance);
+        }
+
 
 
         private LSLLibraryFunctionSignature _DoDeSerializeMethod(MethodInfo info,

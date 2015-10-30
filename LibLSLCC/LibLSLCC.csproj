@@ -116,7 +116,7 @@
     <Compile Include="LibraryData\LSLLibraryDataInvalidConstantTypeException.cs" />
     <Compile Include="LibraryData\LSLLibraryDataXmlSyntaxException.cs" />
     <Compile Include="LibraryData\Reflection\ILSLReflectionConstantFilter.cs" />
-    <Compile Include="LibraryData\Reflection\ILSLMultiConstantFilter.cs" />
+    <Compile Include="LibraryData\Reflection\LSLMultiConstantFilter.cs" />
     <Compile Include="LibraryData\Reflection\ILSLMethodFilter.cs" />
     <Compile Include="LibraryData\Reflection\ILSLTypeConverter.cs" />
     <Compile Include="LibraryData\Reflection\ILSLValueStringConverter.cs" />
@@ -130,7 +130,7 @@
     <Compile Include="LibraryData\Reflection\LSLFunctionAttributeSerializer.cs" />
     <Compile Include="LibraryData\Reflection\LSLParamAttribute.cs" />
     <Compile Include="LibraryData\Reflection\LSLLambdaConstantFilter.cs" />
-    <Compile Include="LibraryData\Reflection\ILSLLambdaMethodFilter.cs" />
+    <Compile Include="LibraryData\Reflection\LSLLambdaMethodFilter.cs" />
     <Compile Include="LibraryData\Reflection\LSLReflectionTypeMappingException.cs" />
     <Compile Include="LibraryData\Reflection\LSLMultiMethodFilter.cs" />
     <Compile Include="LibraryData\Reflection\LSLTypeConverterMap.cs" />
