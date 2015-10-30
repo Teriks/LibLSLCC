@@ -9,7 +9,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// Allows multiple <see cref="ILSLReflectionConstantFilter"/> objects to participate in filtering/mutating constant
     /// signatures de-serialized from runtime types using <see cref="LSLLibraryDataReflectionSerializer"/>.
     /// </summary>
-    public class ILSLReflectionConstantMultiFilter : ILSLReflectionConstantFilter, IEnumerable<ILSLReflectionConstantFilter>
+    public class ILSLMultiConstantFilter : ILSLReflectionConstantFilter, IEnumerable<ILSLReflectionConstantFilter>
     {
 
         /// <summary>
@@ -22,9 +22,9 @@ namespace LibLSLCC.LibraryData.Reflection
         public List<ILSLReflectionConstantFilter> Filters { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ILSLReflectionMethodMultiFilter"/> class.
+        /// Initializes a new instance of the <see cref="LSLMultiMethodFilter"/> class.
         /// </summary>
-        public ILSLReflectionConstantMultiFilter()
+        public ILSLMultiConstantFilter()
         {
             Filters = new List<ILSLReflectionConstantFilter>();
         }
@@ -34,7 +34,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Add's a filter to this multi filter, this here so list initializer syntax can be utilized to build a multi filter.
         /// </summary>
         /// <param name="filter">The filter to add.</param>
-        public void Add(ILSLReflectionConstantMultiFilter filter)
+        public void Add(ILSLMultiConstantFilter filter)
         {
             Filters.Add(filter);
         }

@@ -272,7 +272,7 @@ namespace LibLSLCC.LibraryData
         public string ValueString
         {
             get { return _valueString; }
-            private set
+            set
             {
                 if (value == null)
                 {

@@ -4,10 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Antlr4.Runtime.Atn;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
+using LibLSLCC.Utility;
 
 namespace LibLSLCC.LibraryData.Reflection
 {
@@ -18,350 +20,416 @@ namespace LibLSLCC.LibraryData.Reflection
     {
 
         /// <summary>
-        /// Responsible for mapping a runtime <see cref="Type"/> to a corresponding <see cref="LSLType"/> 
-        /// </summary>
-        public ILSLReflectionTypeConverter Converter { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the method serializer addon, it can add additional data to serialized library functions or choose to filter them.
-        /// This property is allowed to be <c>null</c>.
+        /// Gets or sets the method filter which can pre-filter <see cref="MethodInfo"/> objects from the reflection search results.
         /// </summary>
         /// <value>
-        /// The method serializer addon.
+        /// The method filter.
         /// </value>
-        public ILSLReflectionMethodFilter MethodFilter { get; set; }
+        public ILSLMethodFilter MethodFilter { get; set; }
+
 
         /// <summary>
-        /// Gets or sets the constant serializer addon, it can add additional data to serialized library constants or choose to filter them.
-        /// This property is allowed to be <c>null</c>.
+        /// Gets or sets the constant filter which can pre-filter <see cref="FieldInfo"/> and <see cref="PropertyInfo"/> objects from the reflection search results.
         /// </summary>
         /// <value>
-        /// The constant serializer addon.
+        /// The constant filter.
         /// </value>
         public ILSLReflectionConstantFilter ConstantFilter { get; set; }
 
 
-
         /// <summary>
-        /// Gets or sets the property binding flags used in <see cref="DeSerializeConstants(Type,object)"/> and <see cref="DeSerializeConstants(object)"/> to discover object properties.
+        /// Gets or sets the reflection <see cref="BindingFlags"/> used to search for class properties.
         /// </summary>
         /// <value>
-        /// The property binding flags to use in <see cref="DeSerializeConstants(Type,object)"/> and <see cref="DeSerializeConstants(object)"/> to discover object properties.
+        /// The property binding flags.
         /// </value>
         public BindingFlags PropertyBindingFlags { get; set; }
 
 
         /// <summary>
-        /// Gets or sets the field binding flags used in <see cref="DeSerializeConstants(Type,object)"/> and <see cref="DeSerializeConstants(object)"/> to discover object fields.
+        /// Gets or sets the reflection <see cref="BindingFlags"/> used to search for class fields.
         /// </summary>
         /// <value>
-        /// The field binding flags to use in <see cref="DeSerializeConstants(Type,object)"/> and <see cref="DeSerializeConstants(object)"/> to discover object fields.
+        /// The field binding flags.
         /// </value>
         public BindingFlags FieldBindingFlags { get; set; }
 
+
         /// <summary>
-        /// Gets or sets the field binding flags used in <see cref="DeSerializeMethods(Type)"/> to discover object methods.
+        /// Gets or sets the reflection <see cref="BindingFlags"/> used to search for class methods.
         /// </summary>
         /// <value>
-        /// The field binding flags to use in <see cref="DeSerializeMethods(Type)"/> to discover object methods.
+        /// The method binding flags.
         /// </value>
         public BindingFlags MethodBindingFlags { get; set; }
 
 
         /// <summary>
-        /// Gets or sets a value indicating whether to throw an <see cref="LSLReflectionTypeMappingException"/> from <see cref="DeSerializeMethod"/> when <see cref="Converter"/> was
-        /// unable to convert a <see cref="Type"/> used in a <see cref="MethodInfo"/> signature.  If this is <c>false</c> <see cref="DeSerializeMethod"/> will return <c>null</c> instead of throwing.
+        /// Gets or sets a value indicating whether to throw a <see cref="LSLReflectionTypeMappingException"/> when <see cref="ReturnTypeConverter"/>
+        /// fails to map a type on a method without a <see cref="LSLFunctionAttribute"/>.  If false then the method is just discarded (filtered). 
         /// </summary>
         /// <value>
-        /// <c>true</c> if <see cref="DeSerializeMethod"/> should throw <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c> if it should return <c>null</c>.
+        /// <c>true</c> if a failed return type conversion by <see cref="ReturnTypeConverter"/> on a method lacking an <see cref="LSLFunctionAttribute"/> causes an <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c>.
         /// </value>
-        public bool ThrowOnUnmappedTypeInMethod { get; set; }
+        public bool ThrowOnUnmappedReturnTypeInMethod { get; set; }
 
 
         /// <summary>
-        /// Gets or sets a value indicating whether to throw an <see cref="LSLReflectionTypeMappingException"/> from <see cref="DeSerializeConstant(FieldInfo,object)"/> when <see cref="Converter"/> was
-        /// unable to convert the <see cref="Type"/> used in <see cref="FieldInfo.FieldType"/>.  If this is <c>false</c> <see cref="DeSerializeConstant(FieldInfo,object)"/> will return <c>null</c> instead of throwing.
+        /// Gets or sets a value indicating whether to throw a <see cref="LSLReflectionTypeMappingException"/> when <see cref="ParamTypeConverter"/>
+        /// fails to map a type on a method without a <see cref="LSLFunctionAttribute"/>.  If false then the method is just discarded (filtered). 
         /// </summary>
         /// <value>
-        /// <c>true</c> if <see cref="DeSerializeConstant(FieldInfo,object)"/> should throw <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c> if it should return <c>null</c>.
+        /// <c>true</c> if a failed return type conversion by <see cref="ParamTypeConverter"/> on a method lacking an <see cref="LSLFunctionAttribute"/> causes an <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c>.
         /// </value>
-        public bool ThrowOnUnmappedTypeInField { get; set; }
+        public bool ThrowOnUnmappedParamTypeInMethod { get; set; }
 
 
         /// <summary>
-        /// Gets or sets a value indicating whether to throw an <see cref="LSLReflectionTypeMappingException"/> from <see cref="DeSerializeConstant(PropertyInfo,object)"/> when <see cref="Converter"/> was
-        /// unable to convert the <see cref="Type"/> used in <see cref="PropertyInfo.PropertyType"/>.  If this is <c>false</c> <see cref="DeSerializeConstant(PropertyInfo,object)"/> will return <c>null</c> instead of throwing.
+        /// Gets or sets a value indicating whether to throw a <see cref="LSLReflectionTypeMappingException"/> when <see cref="ConstantTypeConverter"/>
+        /// fails to map a type on a field/property without a <see cref="LSLConstantAttribute"/>.  If false then the field or property is just discarded (filtered). 
         /// </summary>
         /// <value>
-        /// <c>true</c> if <see cref="DeSerializeConstant(PropertyInfo,object)"/> should throw <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c> if it should return <c>null</c>.
+        /// <c>true</c> if a failed return type conversion by <see cref="ConstantTypeConverter"/> on a field or property lacking an <see cref="LSLConstantAttribute"/> causes an <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c>.
         /// </value>
-        public bool ThrowOnUnmappedTypeInProperty { get; set; }
+        public bool ThrowOnUnmappedTypeInConstant { get; set; }
 
 
         /// <summary>
-        /// The function used to convert property/field values to strings so that they can be assigned to <see cref="LSLLibraryConstantSignature.ValueString"/> in de-serialized library constants.
-        /// If you don't set this, values taken from objects are simply discarded.
-        /// </summary>
-        public Func<object, string> FieldValueStringConverter { get; set; }
-
-
-        /// <summary>
-        /// Gets or sets a value indicating whether fields/properties who's values are null are to be filtered.
-        /// If this is <c>true</c> both <see cref="DeSerializeConstant(PropertyInfo,object)"/> and <see cref="DeSerializeConstant(FieldInfo,object)"/> will return null if the value retrieved from a field/property is <c>null</c>.
+        /// Gets or sets base <see cref="ILSLValueStringConverter"/> to be used when a field or property lacks an <see cref="LSLConstantAttribute"/> or
+        /// when <see cref="LSLLibraryDataSerializableAttribute.ValueStringConverter"/> or <see cref="LSLConstantAttribute.ValueStringConverter"/> is not specified
+        /// to override it.
         /// </summary>
         /// <value>
-        /// <c>true</c> if we should filter field/properties that have a null value in the object instance they were reflected from.
+        /// The value string converter.
+        /// </value>
+        public ILSLValueStringConverter ValueStringConverter { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets base <see cref="ILSLTypeConverter"/> to be used when a field or property lacks an <see cref="LSLConstantAttribute"/> or
+        /// when <see cref="LSLLibraryDataSerializableAttribute.ConstantTypeConverter"/> or <see cref="LSLConstantAttribute.TypeConverter"/> is not specified
+        /// to override it.
+        /// </summary>
+        /// <value>
+        /// The constant type converter.
+        /// </value>
+        public ILSLTypeConverter ConstantTypeConverter { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets base <see cref="ILSLTypeConverter"/> to be used when a method lacks an <see cref="LSLFunctionAttribute"/> or
+        /// when <see cref="LSLLibraryDataSerializableAttribute.ReturnTypeConverter"/> or <see cref="LSLFunctionAttribute.ReturnTypeConverter"/> is not specified
+        /// to override it.
+        /// </summary>
+        /// <value>
+        /// The return type converter.
+        /// </value>
+        public ILSLTypeConverter ReturnTypeConverter { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets base <see cref="ILSLTypeConverter"/> to be used when a method parameter lacks an <see cref="LSLParamAttribute"/> or
+        /// when <see cref="LSLLibraryDataSerializableAttribute.ParamTypeConverter"/> or <see cref="LSLFunctionAttribute.ParamTypeConverter"/> is not specified
+        /// to override it.
+        /// </summary>
+        /// <value>
+        /// The parameter type converter.
+        /// </value>
+        public ILSLTypeConverter ParamTypeConverter { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter fields and properties that lack an <see cref="LSLConstantAttribute"/> and are declared with/return a <c>null</c> value.
+        /// Instance fields will be considered to have <c>null</c> values if you do not provide an object instance to <see cref="DeSerializeConstants(System.Type,object)"/>.
+        /// If a <c>null</c> value is encountered in a field or property that lacks an <see cref="LSLConstantAttribute"/> and this is <c>false</c>, an <see cref="LSLLibraryDataReflectionException"/> will be thrown.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> to filter out null field/property values on field's/properties lacking an <see cref="LSLConstantAttribute"/>; otherwise, <c>false</c> to throw <see cref="LSLLibraryDataReflectionException"/>.
         /// </value>
         public bool FilterNullFieldsAndProperties { get; set; }
 
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the serializer should only de-serialize methods marked with an <see cref="LSLFunctionAttribute"/>.
+        /// The default value is <c>true</c>.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> If the serializer should only de-serialize methods marked with an <see cref="LSLFunctionAttribute"/>; otherwise, <c>false</c>.
+        /// </value>
+        public bool AttributedMethodsOnly { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the serializer should only de-serialize fields and properties marked with an <see cref="LSLConstantAttribute"/>.
+        /// The default value is <c>true</c>.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> If the serializer should only de-serialize fields and properties marked with an <see cref="LSLConstantAttribute"/>; otherwise, <c>false</c>.
+        /// </value>
+        public bool AttributedConstantsOnly { get; set; }
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataReflectionSerializer"/> class with a given <see cref="ILSLReflectionTypeConverter"/>
+        /// Initializes a new instance of the <see cref="LSLLibraryDataReflectionSerializer"/> class.
         /// </summary>
-        /// <param name="converter">The conversion mapper to assign to <see cref="Converter"/>.</param>
-        public LSLLibraryDataReflectionSerializer(ILSLReflectionTypeConverter converter)
+        public LSLLibraryDataReflectionSerializer()
         {
-            Converter = converter;
+            AttributedConstantsOnly = true;
+            AttributedMethodsOnly = true;
         }
 
 
-        /// <summary>
-        /// <para>
-        /// De-serializes an <see cref="LSLLibraryConstantSignature"/> from a given <see cref="PropertyInfo"/> object.
-        /// If <paramref name="constantValueInstance"/> is not <c>null</c> the value for <see cref="LSLLibraryConstantSignature.ValueString"/> will be determined by the properties value <paramref name="constantValueInstance"/>.
-        /// If <see cref="FilterNullFieldsAndProperties"/> is <c>true</c> and the property value retrieved from <paramref name="constantValueInstance"/> is <c>null</c> than this function returns null.
-        /// The value retrieved from <paramref name="constantValueInstance"/> is passed through <see cref="FieldValueStringConverter"/> before being assigned to <see cref="LSLLibraryConstantSignature.ValueString"/>.
-        /// If <paramref name="constantValueInstance"/> is <c>null</c> the default value associated with <see cref="LSLLibraryConstantSignature.Type"/> is used for <see cref="LSLLibraryConstantSignature.ValueString"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="info">The <see cref="PropertyInfo"/> to deserialize an <see cref="LSLLibraryConstantSignature"/> from.</param>
-        /// <param name="constantValueInstance">The optional object instance to retrieve property values from that will be assigned to <see cref="LSLLibraryConstantSignature.ValueString"/> if <see cref="FieldValueStringConverter"/> is not <c>null</c>.</param>
-        /// <returns>
-        /// An <see cref="LSLLibraryConstantSignature"/> that was deserialized from the given <see cref="PropertyInfo"/> object.  
-        /// Or <c>null</c> if <see cref="PropertyInfo.PropertyType"/> was not convertible by <see cref="Converter"/> and <see cref="ThrowOnUnmappedTypeInProperty"/> is <c>false</c>.
-        /// Or <c>null</c> if <see cref="PropertyInfo.CanRead"/> is <c>false</c>.
-        /// Or <c>null</c> if <see cref="FilterNullFieldsAndProperties"/> is <c>true</c> and the property value retrieved from <paramref name="constantValueInstance"/> is <c>null</c>.
-        /// Or <c>null</c> if the given <see cref="PropertyInfo"/> object or proposed return value was filtered by the <see cref="ILSLReflectionConstantFilter"/> implementation assigned to <see cref="ConstantFilter"/>./>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="info"/> is <c>null</c>.</exception>
-        /// <exception cref="LSLReflectionTypeMappingException">Occurs if <see cref="ThrowOnUnmappedTypeInMethod" /> is <c>true</c> and an unmapped type was used in <see cref="PropertyInfo.PropertyType"/>.</exception>
-        public LSLLibraryConstantSignature DeSerializeConstant(PropertyInfo info, object constantValueInstance = null)
+
+        private LSLLibraryConstantSignature TryConvertConstantValueString(MemberInfo info,
+            LSLLibraryConstantSignature sig, object value)
         {
-            if (info == null)
+            bool isProperty = info is PropertyInfo;
+
+            Type constantMemberType = isProperty
+                ? ((PropertyInfo) info).PropertyType
+                : ((FieldInfo) info).FieldType;
+
+
+            string fieldDescription = isProperty ? "Property" : "Field";
+            string fieldDescriptionPossessive = isProperty ? "Properties" : "Field's";
+
+
+            string convertedValueString;
+
+            if (!ValueStringConverter.Convert(sig.Type, value, out convertedValueString))
             {
-                throw new ArgumentNullException("info");
+                return sig;
+            }
+
+            if (convertedValueString == null)
+            {
+                throw new LSLLibraryDataReflectionException(
+                    string.Format(
+                        "LSLLibraryDataReflectionSerializer.ValueStringConverter returned a null ValueString " +
+                        "from {0} '{1}' of type '{2}' in class of type '{3}'.  " +
+                        "The {4} retrieved value was {5} (ToSTring'd):",
+                        fieldDescription,
+                        info.Name,
+                        constantMemberType.Name,
+                        info.DeclaringType,
+                        fieldDescriptionPossessive,
+                        value));
             }
 
 
-            if (ConstantFilter != null && ConstantFilter.PreFilter(this, info)) return null;
+            try
+            {
+                sig.ValueString = convertedValueString;
+            }
+            catch (LSLInvalidConstantValueStringException e)
+            {
+                throw new LSLLibraryDataReflectionException(
+                    string.Format(
+                        "LSLLibraryDataReflectionSerializer.ValueStringConverter returned the ValueString '{0}' that " +
+                        "LSLLibraryConstantSignature could not parse for LSLType '{1}'. The property value given to the converter was " +
+                        "taken from {2} '{3}' of type '{4}' in class of type '{5}'.  " +
+                        "The {6} value was '{7}' (ToString'd):" +
+                        LSLFormatTools.CreateNewLinesString(2) + e.Message,
+                        convertedValueString,
+                        sig.Type,
+                        fieldDescription,
+                        info.Name,
+                        constantMemberType.Name,
+                        info.DeclaringType.Name,
+                        fieldDescriptionPossessive,
+                        value));
+            }
 
-            return _DoDeSerializeConstantWithNoPreChecks(info, constantValueInstance);
+            return sig;
         }
 
 
-
-
-        private LSLLibraryConstantSignature _DoDeSerializeConstantWithNoPreChecks(PropertyInfo info, object fieldValueInstance = null)
+        private LSLLibraryConstantSignature _DoDeSerializeConstant(
+            MemberInfo info,
+            ILSLTypeConverter optionalClassConstantTypeConverter,
+            ILSLValueStringConverter optionalClassConstantValueStringConverter,
+            object fieldValueInstance = null)
         {
-            LSLType propertyType;
-            if (!Converter.ConvertPropertyType(info.PropertyType, out propertyType))
+            var attributeSerializer = new LSLConstantAttributeSerializer
             {
-                if (ThrowOnUnmappedTypeInProperty)
+                OptionalDeclaringTypeInstance = fieldValueInstance,
+
+                //prefer the converters on the class attribute to ours if they are available
+                FallBackTypeConverter = optionalClassConstantTypeConverter ?? ConstantTypeConverter,
+                FallBackValueStringConverter = optionalClassConstantValueStringConverter ?? ValueStringConverter
+            };
+
+
+            var propertyInfo = info as PropertyInfo;
+            var fieldInfo = info as FieldInfo;
+
+            bool isProperty = propertyInfo != null;
+
+
+            var attributeInfo = isProperty
+                ? attributeSerializer.GetInfo(propertyInfo)
+                : attributeSerializer.GetInfo(fieldInfo);
+
+
+            if (attributeInfo != null)
+            {
+                return new LSLLibraryConstantSignature(attributeInfo.Type, info.Name, attributeInfo.RetrievedValueString)
                 {
-                    throw new LSLReflectionTypeMappingException(
-                        string.Format("Unmapped type '{0}' in .NET property named '{1}': ", info.PropertyType.Name, info.Name),
-                        info.PropertyType);
-                }
+                    Deprecated = attributeInfo.Deprecated,
+                    Expand = attributeInfo.Expand
+                };
+            }
+
+            if (AttributedConstantsOnly)
+            {
+                //no attribute, and we did not want anything without an attribute to be serialized
                 return null;
             }
 
-            LSLLibraryConstantSignature result;
 
-            if (fieldValueInstance != null && FieldValueStringConverter != null)
+            if (propertyInfo != null && !propertyInfo.CanRead) return null;
+
+
+            Type fieldType = isProperty ? propertyInfo.PropertyType : fieldInfo.FieldType;
+            bool fieldIsStatic = isProperty ? propertyInfo.GetGetMethod(true).IsStatic : fieldInfo.IsStatic;
+
+
+            //cant serialize without either of these
+            if (ConstantTypeConverter == null || ValueStringConverter == null)
             {
-                if (!info.CanRead) return null;
-
-
-                var value = info.GetValue(fieldValueInstance, null);
-
-                if (value == null && FilterNullFieldsAndProperties) return null;
-
-                result = new LSLLibraryConstantSignature(propertyType, info.Name, FieldValueStringConverter(value));
-                if (ConstantFilter == null) return result;
-                return ConstantFilter.MutateSignature(this, info, result) ? null : result;
-            }
-
-            result = new LSLLibraryConstantSignature(propertyType, info.Name);
-            if (ConstantFilter == null) return result;
-            return ConstantFilter.MutateSignature(this, info, result) ? null : result;
-        }
-
-
-        /// <summary>
-        /// <para>
-        /// De-serializes an <see cref="LSLLibraryConstantSignature"/> from a given <see cref="FieldInfo"/> object.
-        /// If <paramref name="constantValueInstance"/> is not <c>null</c> the value for <see cref="LSLLibraryConstantSignature.ValueString"/> will be determined by the fields value in <paramref name="constantValueInstance"/>.
-        /// If <see cref="FilterNullFieldsAndProperties"/> is <c>true</c> and the property value retrieved from <paramref name="constantValueInstance"/> is <c>null</c> than this function returns null.
-        /// The value retrieved from <paramref name="constantValueInstance"/> is passed through <see cref="FieldValueStringConverter"/> before being assigned to <see cref="LSLLibraryConstantSignature.ValueString"/>.
-        /// If <paramref name="constantValueInstance"/> is <c>null</c> null the default value associated with <see cref="LSLLibraryConstantSignature.Type"/> is used for <see cref="LSLLibraryConstantSignature.ValueString"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="info">The <see cref="FieldInfo"/> to deserialize an <see cref="LSLLibraryConstantSignature"/> from.</param>
-        /// <param name="constantValueInstance">The optional object instance to retrieve field values from that will be assigned to <see cref="LSLLibraryConstantSignature.ValueString"/> if <see cref="FieldValueStringConverter"/> is not <c>null</c>.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the given <see cref="FieldInfo"/> object represents a static field when <paramref name="constantValueInstance"/> is non <c>null</c>,
-        /// and has a <see cref="Type"/> that is different from the <see cref="MemberInfo.DeclaringType"/> of <paramref name="info"/>.</exception>
-        /// <returns>
-        /// An <see cref="LSLLibraryConstantSignature"/> that was deserialized from the given <see cref="FieldInfo"/> object.  
-        /// Or <c>null</c> if <see cref="FieldInfo.FieldType"/> was not convertible by <see cref="Converter"/> and <see cref="ThrowOnUnmappedTypeInProperty"/> is <c>false</c>.
-        /// Or <c>null</c> if <see cref="FilterNullFieldsAndProperties"/> is <c>true</c> and the property value retrieved from <paramref name="constantValueInstance"/> is <c>null</c>.
-        /// Or <c>null</c> if the given <see cref="FieldInfo"/> object or proposed return value was filtered by the <see cref="ILSLReflectionConstantFilter"/> implementation assigned to <see cref="ConstantFilter"/>./>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="info"/> is <c>null</c>.</exception>
-        /// <exception cref="LSLReflectionTypeMappingException">Occurs if <see cref="ThrowOnUnmappedTypeInMethod" /> is <c>true</c> and an unmapped type was used in <see cref="FieldInfo.FieldType"/>.</exception>
-        public LSLLibraryConstantSignature DeSerializeConstant(FieldInfo info, object constantValueInstance = null)
-        {
-            if (info == null)
-            {
-                throw new ArgumentNullException("info");
-            }
-
-            if (ConstantFilter != null && ConstantFilter.PreFilter(this, info)) return null;
-
-            return _DoDeSerializeConstantWithNoPreChecks(info, constantValueInstance);
-        }
-
-
-
-
-
-        private LSLLibraryConstantSignature _DoDeSerializeConstantWithNoPreChecks(FieldInfo info, object fieldValueInstance = null)
-        {
-            LSLType propertyType;
-            if (!Converter.ConvertFieldType(info.FieldType, out propertyType))
-            {
-                if (ThrowOnUnmappedTypeInField)
-                {
-                    throw new LSLReflectionTypeMappingException(
-                        string.Format("Unmapped type '{0}' in .NET field named '{1}': ", info.FieldType.Name, info.Name),
-                        info.FieldType);
-                }
                 return null;
             }
 
-            LSLLibraryConstantSignature result;
-
-            //user has defined a way to convert field/property values into strings.
-            if (FieldValueStringConverter != null)
+            LSLType propertyType;
+            if (!ConstantTypeConverter.Convert(fieldType, out propertyType))
             {
-                object fieldValue;
-
-                if (!info.IsStatic)
+                if (ThrowOnUnmappedTypeInConstant)
                 {
-                    if (fieldValueInstance != null)
-                    {
-                        if (fieldValueInstance.GetType() != info.DeclaringType)
-                        {
-                            throw new ArgumentException(
-                                "Cannot retrieve a field value from 'constantValueInstance' because the given 'FieldInfo.DeclaringType' did not " +
-                                "equal 'constantValueInstance.GetType()', and 'FieldInfo' described a non-static field which requires an object instance to retreive a value from.",
-                                "info");
-                        }
-
-
-                        fieldValue = info.GetValue(fieldValueInstance);
-
-                        if (fieldValue == null && FilterNullFieldsAndProperties) return null;
-
-                        result = new LSLLibraryConstantSignature(propertyType, info.Name,
-                            FieldValueStringConverter(fieldValue));
-
-                        if (ConstantFilter == null) return result;
-                        return ConstantFilter.MutateSignature(this, info, result) ? null : result;
-                    }
+                    throw new LSLReflectionTypeMappingException(
+                        string.Format(
+                            "Class field/property '{0}' was declared with a Type {1} that could not be mapped by the ConstantTypeConverter of Type {2}",
+                            info.Name, fieldType.FullName, ConstantTypeConverter.GetType().FullName),
+                        fieldType);
                 }
 
-                fieldValue = info.GetValue(null);
-
-                if (fieldValue == null && FilterNullFieldsAndProperties) return null;
-
-                result = new LSLLibraryConstantSignature(propertyType, info.Name,
-                    FieldValueStringConverter(fieldValue));
-
-                if (ConstantFilter == null) return result;
-                return ConstantFilter.MutateSignature(this, info, result) ? null : result;
+                return null;
             }
 
 
-            //ignore any field/property value because there is no way we can convert it to a string assignable to LSLLibraryConstantSignature.ValueString
+            if (propertyType == LSLType.Void)
+            {
+                throw new LSLLibraryDataReflectionException(
+                    string.Format(
+                        "Field/Property '{0}' of type '{1}' is was mapped to LSLType.Void by the ConstantTypeConverter of Type '{2}', this is not valid.",
+                        info.Name,
+                        info.DeclaringType.FullName,
+                        ConstantTypeConverter));
+            }
 
-            result = new LSLLibraryConstantSignature(propertyType, info.Name);
+            object fieldValue;
 
-            if (ConstantFilter == null) return result;
-            return ConstantFilter.MutateSignature(this, info, result) ? null : result;
+            if (!fieldIsStatic)
+            {
+                //cant declare without a value, cant get a value without an instance, filter it
+                if (fieldValueInstance == null) return null;
+
+                if (fieldValueInstance.GetType() != info.DeclaringType)
+                {
+                    throw new LSLLibraryDataReflectionException(
+                        string.Format(
+                            "Cannot retrieve field/property '{0}''s value from 'constantValueInstance' of Type {1}.  " +
+                            "Because the given {2}'.DeclaringType' (Type '{3}') did not " +
+                            "equal 'constantValueInstance.GetType()' (Type '{1}'), and '{2}' described a non-static field which requires an object instance to retrieve a value from.",
+                            info.Name,
+                            fieldValueInstance.GetType().FullName,
+                            info.GetType().Name,
+                            info.DeclaringType.Name));
+                }
+
+
+                fieldValue = isProperty
+                    ? propertyInfo.GetValue(fieldValueInstance, null)
+                    : fieldInfo.GetValue(fieldValueInstance);
+
+                if (fieldValue == null && FilterNullFieldsAndProperties)
+                {
+                    return null;
+                }
+                if (fieldValue != null)
+                {
+                    return TryConvertConstantValueString(info, new LSLLibraryConstantSignature(propertyType, info.Name),
+                        fieldValue);
+                }
+
+                //throw if the field/property value was null and we asked the serializer to throw in this condition
+                throw new LSLLibraryDataReflectionException(
+                    string.Format("Instance field/property '{0}' belonging to type {1} returned a null field value.",
+                        info.Name, info.DeclaringType.FullName));
+            }
+
+
+            //static field/property detected
+
+            fieldValue = isProperty ? propertyInfo.GetValue(null, null) : fieldInfo.GetValue(null);
+
+            if (fieldValue == null && FilterNullFieldsAndProperties)
+            {
+                return null;
+            }
+            if (fieldValue != null)
+            {
+                return TryConvertConstantValueString(info, new LSLLibraryConstantSignature(propertyType, info.Name),
+                    fieldValue);
+            }
+
+            //throw if the field/property value was null and we asked the serializer to throw in this condition
+            throw new LSLLibraryDataReflectionException(
+                string.Format("Static field/property '{0}' belonging to type {1} returned a null field value.",
+                    info.Name,
+                    info.DeclaringType.FullName));
+
+            //no value converter
         }
 
 
 
 
-        /// <summary>
-        /// Serializes a matching library function signature given a <see cref="MethodInfo" /> object that describes a reflected .NET method.
-        /// </summary>
-        /// <param name="info">The MethodInfo object.</param>
-        /// <returns>
-        /// An <see cref="LSLLibraryFunctionSignature" /> serialized from the <see cref="MethodInfo" /> object.  
-        /// Or <c>null</c> if the <see cref="MethodInfo"/> object utilized an type not convertible by <see cref="Converter"/> and <see cref="ThrowOnUnmappedTypeInMethod"/> was set to <c>false</c>.
-        /// Or <c>null</c> if the given <see cref="MethodInfo"/> object or proposed return value was filtered by the <see cref="ILSLReflectionMethodFilter"/> implementation assigned to <see cref="MethodFilter"/>./>.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">If <paramref name="info" /> is <c>null</c>.</exception>
-        /// <exception cref="LSLLibraryDataReflectionException">
-        /// If <see cref="MethodBase.IsSpecialName"/> is <c>true</c> in <paramref name="info"/>.
-        /// Or if <see cref="MethodBase.IsConstructor"/> is <c>true</c> in <paramref name="info"/>.
-        /// Or if <see cref="MethodBase.IsGenericMethod"/> is <c>true</c> in <paramref name="info"/>.
-        /// </exception>
-        /// <exception cref="LSLReflectionTypeMappingException">Occurs if <see cref="ThrowOnUnmappedTypeInMethod" /> is <c>true</c> and an unmapped type is found in the <see cref="MethodInfo" /> signature.</exception>
-        public LSLLibraryFunctionSignature DeSerializeMethod(MethodInfo info)
+        private LSLLibraryFunctionSignature _DoDeSerializeMethod(MethodInfo info,
+            ILSLTypeConverter optionalClassReturnTypeConverter,
+            ILSLTypeConverter optionalClassParamTypeConverter)
         {
-            if (info == null)
+            var attributeSerializer = new LSLFunctionAttributeSerializer
             {
-                throw new ArgumentNullException("info");
-            }
+                //prefer the converters on the class we are serializing to ours if they are not null
+                FallBackReturnTypeConverter = optionalClassReturnTypeConverter ?? ReturnTypeConverter,
+                FallBackParameterTypeConverter = optionalClassParamTypeConverter ?? ParamTypeConverter
+            };
 
-            if (info.IsGenericMethod)
-            {
-                throw new ArgumentException(string.Format("Cannot de-serialize because method named '{0}' is a generic method.", info.Name));
-            }
+            var attributeInfo = attributeSerializer.GetInfo(info);
 
-            if (info.IsConstructor)
+            if (attributeInfo != null)
             {
-                throw new ArgumentException(
-                    string.Format("Cannot de-serialize because method named '{0}' is a constructor.", info.Name));
-            }
-
-            if (info.IsSpecialName)
-            {
-                throw new ArgumentException(
-                    string.Format("Cannot de-serialize because method named '{0}' is a 'special' method such as a property indexer or array index, etc..", info.Name));
+                return new LSLLibraryFunctionSignature(attributeInfo.ReturnType, info.Name, attributeInfo.Parameters);
             }
 
 
-            if (MethodFilter != null && MethodFilter.PreFilter(this, info)) return null;
+            if (AttributedMethodsOnly)
+            {
+                return null;
+            }
 
-            return _DoDeSerializeMethodWithNoPreChecks(info);
-        }
 
+            //cant serialize without these.
+            if (ReturnTypeConverter == null || ParamTypeConverter == null)
+            {
+                return null;
+            }
 
-
-        private LSLLibraryFunctionSignature _DoDeSerializeMethodWithNoPreChecks(MethodInfo info)
-        {
             LSLType returnType;
 
 
-            if (!Converter.ConvertReturnType(info.ReturnType, out returnType))
+            if (!ReturnTypeConverter.Convert(info.ReturnType, out returnType))
             {
-                if (ThrowOnUnmappedTypeInMethod)
+                if (ThrowOnUnmappedReturnTypeInMethod)
                 {
                     throw new LSLReflectionTypeMappingException(
                         string.Format("Unmapped return type '{0}' in .NET function named '{1}': ", info.ReturnType.Name,
@@ -371,26 +439,28 @@ namespace LibLSLCC.LibraryData.Reflection
             }
 
             var parameters = new GenericArray<LSLParameter>();
-            foreach (var p in info.GetParameters())
+            foreach (var param in info.GetParameters())
             {
-                var isVariadic = p.GetCustomAttributes(typeof (ParamArrayAttribute), false).Length > 0;
+                var isVariadic =
+                    param.GetCustomAttributesData()
+                        .Any(x => x.Constructor.DeclaringType == typeof (ParamArrayAttribute));
 
-                var cSharpParameterType = isVariadic ? p.ParameterType.GetElementType() : p.ParameterType;
+                var cSharpParameterType = isVariadic ? param.ParameterType.GetElementType() : param.ParameterType;
 
                 LSLType parameterType;
-                if (!Converter.ConvertParameterType(cSharpParameterType, out parameterType))
+                if (!ParamTypeConverter.Convert(cSharpParameterType, out parameterType))
                 {
-                    if (ThrowOnUnmappedTypeInMethod)
+                    if (ThrowOnUnmappedParamTypeInMethod)
                     {
                         throw new LSLReflectionTypeMappingException(
                             string.Format(
                                 "Unmapped parameter type '{0}' in .NET function named '{1}' at parameter index {2}: ",
-                                p.ParameterType.Name, info.Name, p.Position), info.ReturnType);
+                                param.ParameterType.Name, info.Name, param.Position), info.ReturnType);
                     }
                     return null;
                 }
 
-                var name = p.Name;
+                var name = param.Name;
 
                 parameters.Add(new LSLParameter(parameterType, name, isVariadic));
             }
@@ -403,54 +473,92 @@ namespace LibLSLCC.LibraryData.Reflection
         }
 
 
+
+
         /// <summary>
-        /// Serialize all methods of a type into <see cref="LSLLibraryFunctionSignature"/> objects, The <see cref="BindingFlags"/> used for method reflection are taken from <see cref="MethodBindingFlags"/>
-        /// If <see cref="MethodFilter"/> is not <c>null</c> and decides to filter a field/property then that field or property is not included in the output from this function.
+        /// de-serialize <see cref="LSLLibraryFunctionSignature"/>'s from a class or interface using the options provided to the serializer.
         /// </summary>
-        /// <param name="objectType">The type of the object to obtain the method signatures from.</param>
-        /// <exception cref="LSLReflectionTypeMappingException">Occurs while enumerating if <see cref="ThrowOnUnmappedTypeInMethod" /> is <c>true</c> and an unmapped type is found in one of the <see cref="MethodInfo" /> signatures belonging to the <see cref="Type"/> given in <paramref name="objectType"/>.</exception>
-        /// <returns>A list of serialized <see cref="LSLLibraryFunctionSignature"/>'s.</returns>
+        /// <param name="objectType">The type of the class or interface to serialize method definitions from.</param>
+        /// <returns>An enumerable of de-serialized <see cref="LSLLibraryFunctionSignature"/> generated from the object type's methods.</returns>
         public IEnumerable<LSLLibraryFunctionSignature> DeSerializeMethods(Type objectType)
         {
+            var classReturnTypeConverter = LSLLibraryDataSerializableAttribute.GetReturnTypeConverter(objectType);
+            var classParamTypeConverter = LSLLibraryDataSerializableAttribute.GetParamTypeConverter(objectType);
 
             return
                 objectType.GetMethods(MethodBindingFlags)
-                .Where(x => (!x.IsSpecialName && !x.IsConstructor && !x.IsGenericMethod) && (MethodFilter == null || !MethodFilter.PreFilter(this, x)))
-                    .Select(_DoDeSerializeMethodWithNoPreChecks)
+                    .Where(
+                        x => FilterCompilerGenerated(x) &&
+                             (!x.IsSpecialName && !x.IsConstructor && !x.IsGenericMethod) &&
+                             (MethodFilter == null || !MethodFilter.PreFilter(this, x)))
+                    .Select(
+                        x => _DoDeSerializeMethod(x, classReturnTypeConverter, classParamTypeConverter))
+                    .Where(x => x != null);
+        }
+
+
+
+
+        private bool FilterCompilerGenerated(MemberInfo info)
+        {
+            return
+                info.GetCustomAttributesData()
+                    .All(x => x.Constructor.DeclaringType != typeof (CompilerGeneratedAttribute));
+        }
+
+
+        /// <summary>
+        /// de-serialize <see cref="LSLLibraryConstantSignature"/>'s from a class or interface using the options provided to the serializer.
+        /// Any non-static field or property encountered in the class will be considered <c>null</c> if no object instance is provided in <paramref name="typeInstance"/>
+        /// </summary>
+        /// <param name="objectType">The type of the class or interface to serialize method definitions from.</param>
+        /// <param name="typeInstance">
+        /// An optional instance of the type, which instance field/property values can be taken from.
+        /// Any non-static field or property encountered in the class will be considered <c>null</c> if no object instance is provided.
+        /// </param>
+        /// <returns>An enumerable of de-serialized <see cref="LSLLibraryConstantSignature"/> generated from the object type's fields and properties.</returns>
+        public IEnumerable<LSLLibraryConstantSignature> DeSerializeConstants(Type objectType,
+            object typeInstance = null)
+        {
+            var classConstantTypeConverter =
+                LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(objectType);
+
+            var classValueStringConverter =
+                LSLLibraryDataSerializableAttribute.GetValueStringConverter(objectType);
+
+
+            var props =
+                objectType.GetProperties(PropertyBindingFlags)
+                    .Where(
+                        x =>
+                            FilterCompilerGenerated(x) && (ConstantFilter == null || !ConstantFilter.PreFilter(this, x)))
+                    .Select(
+                        x =>
+                            _DoDeSerializeConstant(x, classConstantTypeConverter,
+                                classValueStringConverter, typeInstance))
                     .Where(x => x != null);
 
-        }
-
-        /// <summary>
-        /// Serialize all properties/fields of a type into <see cref="LSLLibraryFunctionSignature"/> objects, The <see cref="BindingFlags"/> used for property/field reflection are taken from <see cref="FieldBindingFlags"/> and <see cref="PropertyBindingFlags"/> respectively.
-        /// If <see cref="ConstantFilter"/> is not <c>null</c> and decides to filter a field/property then that field or property is not included in the output from this function.
-        /// </summary>
-        /// <param name="objectType">The type of the object to obtain the method signatures from.</param>
-        /// <param name="fieldValueInstance">The optional object instance to retrieve property/field values from that will be assigned to <see cref="LSLLibraryConstantSignature.ValueString"/> if <see cref="FieldValueStringConverter"/> is not <c>null</c>.</param>
-        /// <exception cref="LSLReflectionTypeMappingException">Occurs while enumerating if <see cref="ThrowOnUnmappedTypeInMethod" /> is <c>true</c> and an unmapped type is found in one of the <see cref="MethodInfo" /> signatures belonging to the <see cref="Type"/> given in <paramref name="objectType"/>.</exception>
-        /// <returns>A list of <see cref="LSLLibraryConstantSignature"/>'s de-serialized from the <paramref name="objectType"/> <see cref="Type"/> with <see cref="LSLLibraryConstantSignature.ValueString"/> taken from the optional <paramref name="fieldValueInstance"/> object.</returns>
-        public IEnumerable<LSLLibraryConstantSignature> DeSerializeConstants(Type objectType, object fieldValueInstance = null)
-        {
 
             return objectType.GetFields(FieldBindingFlags)
-                .Where(x => ConstantFilter == null || !ConstantFilter.PreFilter(this, x))
-                .Select(x=>_DoDeSerializeConstantWithNoPreChecks(x, fieldValueInstance))
+                .Where(x => FilterCompilerGenerated(x) && (ConstantFilter == null || !ConstantFilter.PreFilter(this, x)))
+                .Select(
+                    x =>
+                        _DoDeSerializeConstant(x, classConstantTypeConverter, classValueStringConverter,
+                            typeInstance))
                 .Where(x => x != null)
-                .Concat(
-                    objectType.GetProperties(PropertyBindingFlags).Select(x => _DoDeSerializeConstantWithNoPreChecks(x, fieldValueInstance)).Where(x => x != null)
-                    );
-
+                .Concat(props);
         }
 
+
         /// <summary>
-        /// Delegates to <see cref="DeSerializeConstants(System.Type,object)"/> with the arguments (<paramref name="fieldValueInstance"/>.GetType(), <paramref name="fieldValueInstance"/>).
+        /// de-serialize <see cref="LSLLibraryConstantSignature"/>'s from a object instance using the options provided to the serializer.
         /// </summary>
-        /// <param name="fieldValueInstance">The object instance to retrieve the information used for <see cref="DeSerializeConstants(System.Type,object)"/> from.</param>
-        /// <returns>A list of <see cref="LSLLibraryFunctionSignature"/>'s de-serialized from the <paramref name="fieldValueInstance"/> object.</returns>
+        /// <param name="fieldValueInstance">The object instance to use, instance field and property values will be able to be retrieved from this instance.</param>
+        /// <returns>An enumerable of de-serialized <see cref="LSLLibraryConstantSignature"/> generated from the object instances fields and properties.</returns>
+
         public IEnumerable<LSLLibraryConstantSignature> DeSerializeConstants(object fieldValueInstance)
         {
             return DeSerializeConstants(fieldValueInstance.GetType(), fieldValueInstance);
         }
-
     }
 }

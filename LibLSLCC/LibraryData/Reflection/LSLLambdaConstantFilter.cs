@@ -6,7 +6,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// <summary>
     /// Implements <see cref="ILSLReflectionConstantFilter"/> using function objects.
     /// </summary>
-    public class LSLReflectionLambdaConstantFilter : ILSLReflectionConstantFilter
+    public class LSLLambdaConstantFilter : ILSLReflectionConstantFilter
     {
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LibLSLCC.LibraryData.Reflection.LSLReflectionLambdaConstantFilter"/> class.
+        /// Initializes a new instance of the <see cref="LSLLambdaConstantFilter"/> class.
         /// </summary>
-        public LSLReflectionLambdaConstantFilter()
+        public LSLLambdaConstantFilter()
         {
         }
 

@@ -4,11 +4,16 @@ using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.LibraryData.Reflection
 {
+
     /// <summary>
-    /// Thrown by de-serialization methods in <see cref="LSLLibraryDataReflectionSerializer"/> 
+    /// Thrown by de-serialization methods in <see cref="LSLLibraryDataReflectionSerializer" /> when a type encountered in a non-attributed member
+    /// signature contains <see cref="Type" />('s) that were un-mappable to an <see cref="LSLType" />
     /// </summary>
+    /// <seealso cref="LSLLibraryDataReflectionSerializer.ThrowOnUnmappedReturnTypeInMethod" />
+    /// <seealso cref="LSLLibraryDataReflectionSerializer.ThrowOnUnmappedParamTypeInMethod" />
+    /// <seealso cref="LSLLibraryDataReflectionSerializer.ThrowOnUnmappedTypeInConstant"/>
     [Serializable]
-    public class LSLReflectionTypeMappingException : Exception
+    public class LSLReflectionTypeMappingException : LSLLibraryDataReflectionException
     {
         //
         // For guidelines regarding the creation of new exception types, see

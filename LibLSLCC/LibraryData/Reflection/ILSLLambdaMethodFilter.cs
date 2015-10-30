@@ -4,9 +4,9 @@ using System.Reflection;
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Implements <see cref="ILSLReflectionMethodFilter"/> using function objects.
+    /// Implements <see cref="ILSLMethodFilter"/> using function objects.
     /// </summary>
-    public class LSLReflectionLambdaMethodFilter : ILSLReflectionMethodFilter
+    public class ILSLLambdaMethodFilter : ILSLMethodFilter
     {
 
         /// <summary>
@@ -22,37 +22,37 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLReflectionLambdaMethodFilter"/> class.
+        /// Initializes a new instance of the <see cref="ILSLLambdaMethodFilter"/> class.
         /// </summary>
-        public LSLReflectionLambdaMethodFilter()
+        public ILSLLambdaMethodFilter()
         {
         }
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLReflectionLambdaMethodFilter"/> class.
+        /// Initializes a new instance of the <see cref="ILSLLambdaMethodFilter"/> class.
         /// </summary>
         /// <param name="preFilterFunction">The pre filter function.</param>
-        public LSLReflectionLambdaMethodFilter(Func<LSLLibraryDataReflectionSerializer, MethodInfo, bool> preFilterFunction)
+        public ILSLLambdaMethodFilter(Func<LSLLibraryDataReflectionSerializer, MethodInfo, bool> preFilterFunction)
         {
             PreFilterFunction = preFilterFunction;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLReflectionLambdaMethodFilter"/> class.
+        /// Initializes a new instance of the <see cref="ILSLLambdaMethodFilter"/> class.
         /// </summary>
         /// <param name="mutateSignatureFunction">The mutate signature function.</param>
-        public LSLReflectionLambdaMethodFilter(Func<LSLLibraryDataReflectionSerializer, MethodInfo, LSLLibraryFunctionSignature, bool> mutateSignatureFunction)
+        public ILSLLambdaMethodFilter(Func<LSLLibraryDataReflectionSerializer, MethodInfo, LSLLibraryFunctionSignature, bool> mutateSignatureFunction)
         {
             MutateSignatureFunction = mutateSignatureFunction;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLReflectionLambdaMethodFilter"/> class.
+        /// Initializes a new instance of the <see cref="ILSLLambdaMethodFilter"/> class.
         /// </summary>
         /// <param name="preFilterFunction">The pre filter function.</param>
         /// <param name="mutateSignatureFunction">The mutate signature function.</param>
-        public LSLReflectionLambdaMethodFilter(Func<LSLLibraryDataReflectionSerializer, MethodInfo, bool> preFilterFunction, Func<LSLLibraryDataReflectionSerializer, MethodInfo, LSLLibraryFunctionSignature, bool> mutateSignatureFunction) : this(preFilterFunction)
+        public ILSLLambdaMethodFilter(Func<LSLLibraryDataReflectionSerializer, MethodInfo, bool> preFilterFunction, Func<LSLLibraryDataReflectionSerializer, MethodInfo, LSLLibraryFunctionSignature, bool> mutateSignatureFunction) : this(preFilterFunction)
         {
             MutateSignatureFunction = mutateSignatureFunction;
         }

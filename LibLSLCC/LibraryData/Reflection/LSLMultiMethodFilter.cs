@@ -6,27 +6,27 @@ using System.Reflection;
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Allows multiple <see cref="ILSLReflectionMethodFilter"/> objects to participate in filtering/mutating method
+    /// Allows multiple <see cref="ILSLMethodFilter"/> objects to participate in filtering/mutating method
     /// signatures de-serialized from runtime types using <see cref="LSLLibraryDataReflectionSerializer"/>.
     /// </summary>
-    public class ILSLReflectionMethodMultiFilter : ILSLReflectionMethodFilter, IEnumerable<ILSLReflectionMethodFilter>
+    public class LSLMultiMethodFilter : ILSLMethodFilter, IEnumerable<ILSLMethodFilter>
     {
 
         /// <summary>
-        /// A modifiable collection of all <see cref="ILSLReflectionMethodFilter"/> objects participating in filtering.
+        /// A modifiable collection of all <see cref="ILSLMethodFilter"/> objects participating in filtering.
         /// </summary>
         /// <value>
-        /// The <see cref="ILSLReflectionMethodFilter"/>'s being used to filter.
+        /// The <see cref="ILSLMethodFilter"/>'s being used to filter.
         /// </value>
         // ReSharper disable once CollectionNeverUpdated.Global
-        public List<ILSLReflectionMethodFilter> Filters { get; private set; }
+        public List<ILSLMethodFilter> Filters { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ILSLReflectionMethodMultiFilter"/> class.
+        /// Initializes a new instance of the <see cref="LSLMultiMethodFilter"/> class.
         /// </summary>
-        public ILSLReflectionMethodMultiFilter()
+        public LSLMultiMethodFilter()
         {
-            Filters= new List<ILSLReflectionMethodFilter>();
+            Filters= new List<ILSLMethodFilter>();
         }
 
         /// <summary>
@@ -58,12 +58,12 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Add's a filter to this multi filter, this here so list initializer syntax can be utilized to build a multi filter.
         /// </summary>
         /// <param name="filter">The filter to add.</param>
-        public void Add(ILSLReflectionMethodFilter filter)
+        public void Add(ILSLMethodFilter filter)
         {
             Filters.Add(filter);
         }
 
-        public IEnumerator<ILSLReflectionMethodFilter> GetEnumerator()
+        public IEnumerator<ILSLMethodFilter> GetEnumerator()
         {
             return Filters.GetEnumerator();
         }

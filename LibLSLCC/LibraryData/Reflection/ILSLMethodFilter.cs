@@ -6,7 +6,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// <summary>
     /// Allows modification of a function signature after its basic information has been serialized, before its returned.
     /// </summary>
-    public interface ILSLReflectionMethodFilter
+    public interface ILSLMethodFilter
     {
         /// <summary>
         /// Allows <see cref="MethodInfo"/> objects to be prematurely filtered from de-serialization output.  Returns <c>true</c> if the <see cref="MethodInfo"/> should be filtered.
