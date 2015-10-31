@@ -43,6 +43,7 @@
 #region Imports
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -65,7 +66,7 @@ namespace LibraryDataScrapingTools
     internal class Program
     {
 
-        public static GenericArray<LSLLibrarySubsetDescription> SubsetDescriptions = new GenericArray<LSLLibrarySubsetDescription>
+        public static List<LSLLibrarySubsetDescription> SubsetDescriptions = new List<LSLLibrarySubsetDescription>
         {
             new LSLLibrarySubsetDescription("lsl", "Linden LSL","The standard library functions supported by Linden Lab's SecondLife servers."),
             new LSLLibrarySubsetDescription("os-lsl", "OpenSim LSL","The subset of standard library functions from LSL supported by OpenSim SecondLife servers."),
@@ -222,7 +223,7 @@ namespace LibraryDataScrapingTools
             var openSim = new LibraryDataSet(openSimData);
 
 
-            GenericArray<string> activeLibrarySubsets  = SubsetDescriptions.Select(x => x.Subset).ToList();
+            List<string> activeLibrarySubsets  = SubsetDescriptions.Select(x => x.Subset).ToList();
 
 
             var provider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
@@ -235,7 +236,7 @@ namespace LibraryDataScrapingTools
                 if (openSim.LSLConstantExist(c.Name))
                 {
                     var constant = openSim.LSLConstant(c.Name);
-                    c.AddSubsets(constant.Subsets);
+                    c.Subsets.AddSubsets(constant.Subsets);
                 }
 
                 provider.DefineConstant(c);
@@ -248,7 +249,7 @@ namespace LibraryDataScrapingTools
                 if (openSim.LSLFunctionExist(c.Name))
                 {
                     var overloads = openSim.LSLFunctionOverloads(c.Name);
-                    c.AddSubsets(overloads.First().Subsets);
+                    c.Subsets.AddSubsets(overloads.First().Subsets);
                 }
 
                 provider.DefineFunction(c);
@@ -260,7 +261,7 @@ namespace LibraryDataScrapingTools
 
                 if (openSimLibraryReflectedTypeData.EventNames.Contains(c.Name))
                 {
-                    c.AddSubsets("os-lsl");
+                    c.Subsets.AddSubsets("os-lsl");
                 }
 
                 provider.DefineEventHandler(c);
@@ -328,7 +329,7 @@ namespace LibraryDataScrapingTools
 
                 if (openSim.LSLFunctionExist(func.Name))
                 {
-                    func.AddSubsets("os-lsl");
+                    func.Subsets.AddSubsets("os-lsl");
                 }
 
                 provider.DefineFunction(func);
@@ -376,7 +377,7 @@ namespace LibraryDataScrapingTools
 
                 if (openSim.LSLConstantExist(con.Name))
                 {
-                    con.AddSubsets("os-lsl");
+                    con.Subsets.AddSubsets("os-lsl");
                 }
 
                 provider.DefineConstant(con);
@@ -419,7 +420,7 @@ namespace LibraryDataScrapingTools
 
                 if (openSimLibraryReflectedTypeData.EventNames.Contains(ev.Name))
                 {
-                    ev.AddSubsets("os-lsl");
+                    ev.Subsets.AddSubsets("os-lsl");
                 }
 
                 provider.DefineEventHandler(ev);

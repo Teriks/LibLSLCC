@@ -348,7 +348,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
 
 
-            constantSignature.SetSubsets(_subsets);
+            constantSignature.Subsets.SetSubsets(_subsets);
 
             Log.WriteLineWithHeader(
                 "[SecondlifeWikiLibraryData]: ", "Retrieved" + (constantSignature.Deprecated ? " (DEPRECATED) " : "") +
@@ -373,7 +373,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 functionSignature.Deprecated = _deprecatedMarker.IsMatch(page);
 
-                functionSignature.SetSubsets(_subsets);
+                functionSignature.Subsets.SetSubsets(_subsets);
 
 
                 if (url.ToLower() != SecondlifeWikiBaseUrl + functionSignature.Name.ToLower()) continue;
@@ -398,7 +398,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             if (match.Success)
             {
                 var eventSignature = LSLLibraryEventSignature.Parse(match.Groups[1].ToString());
-                eventSignature.SetSubsets(_subsets);
+                eventSignature.Subsets.SetSubsets(_subsets);
 
                 Log.WriteLineWithHeader(
                 "[SecondlifeWikiLibraryData]: ", "Retrieved event {0}; from {1}",
@@ -529,14 +529,14 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 {
                     var constant = new LSLLibraryConstantSignature(LSLType.Integer, name,
                         valueCase2.Groups[1].ToString());
-                    constant.SetSubsets(_subsets);
+                    constant.Subsets.SetSubsets(_subsets);
                     yield return constant;
                 }
                 else
                 {
                     var constant = new LSLLibraryConstantSignature(LSLType.Integer, name,
                         valueCase1.Groups[1].ToString());
-                    constant.SetSubsets(_subsets);
+                    constant.Subsets.SetSubsets(_subsets);
                     yield return constant;
                 }
             }
@@ -553,7 +553,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             {
                 var c = new LSLLibraryConstantSignature(LSLType.Integer, match.Groups[2].ToString(),
                     match.Groups[1].ToString());
-                c.SetSubsets(_subsets);
+                c.Subsets.SetSubsets(_subsets);
                 yield return c;
             }
         }
@@ -572,7 +572,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var s = Convert.ToInt32(match.Groups[2].ToString(), 16);
                 var c = new LSLLibraryConstantSignature(LSLType.Integer, match.Groups[1].ToString(),
                     s.ToString(CultureInfo.InvariantCulture));
-                c.SetSubsets(_subsets);
+                c.Subsets.SetSubsets(_subsets);
                 yield return c;
             }
         }
@@ -625,7 +625,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     }
 
 
-                    result.SetSubsets(_subsets);
+                    result.Subsets.SetSubsets(_subsets);
                     yield return result;
                 }
             }
@@ -692,7 +692,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
 
                     var result = LSLLibraryFunctionSignature.Parse(sig);
-                    result.SetSubsets(_subsets);
+                    result.Subsets.SetSubsets(_subsets);
                     yield return result;
                 }
             }

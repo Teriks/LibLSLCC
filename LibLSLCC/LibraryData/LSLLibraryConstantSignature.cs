@@ -367,7 +367,7 @@ namespace LibLSLCC.LibraryData
 
                 if (string.IsNullOrWhiteSpace(s)) _valueString = "";
 
-                _valueString = LSLListParser.Format(LSLListParser.ParseList("[" + s + "]"), false);
+                _valueString = LSLListParser.Format("[" + s + "]", false);
             }
             catch (LSLListParserSyntaxException e)
             {

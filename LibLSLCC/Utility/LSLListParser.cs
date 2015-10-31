@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: LSLListParser.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 #region Imports
 
 using System;
@@ -280,11 +277,23 @@ namespace LibLSLCC.Utility
         /// Formats the specified expressions into the string representation of an LSL list.
         /// </summary>
         /// <param name="expressions">The expressions to format.</param>
-        /// <param name="brackets">if set to <c>true</c> place brackets around the list, otherwise just return the CSV list content.</param>
+        /// <param name="brackets">if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV list content.</param>
         /// <returns></returns>
         public static string Format(IEnumerable<ILSLListExpr> expressions, bool brackets=true)
         {
             return  (brackets ? "[" : "") + string.Join(", ", expressions.Select(x => x.ValueString)) + (brackets ? "]" : "");
+        }
+
+
+        /// <summary>
+        /// Formats the specified list string by parsing it with <see cref="ParseListAsEnumerable"/> and passing the resulting enumerable to <see cref="Format(IEnumerable{ILSLListExpr},bool)"/>.
+        /// </summary>
+        /// <param name="listString">The string containing the list to parse and format.</param>
+        /// <param name="brackets">if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV list content.</param>
+        /// <returns></returns>
+        public static string Format(string listString, bool brackets = true)
+        {
+            return Format(ParseListAsEnumerable(listString), brackets);
         }
 
 

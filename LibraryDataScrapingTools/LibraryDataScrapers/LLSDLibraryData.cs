@@ -211,7 +211,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 DocumentationString = DocumentFunction(_data,name)
             };
 
-            func.SetSubsets(_subsets);
+            func.Subsets.SetSubsets(_subsets);
             func.Deprecated = map.ContainsKey("deprecated");
 
 
@@ -299,7 +299,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 DocumentationString = DocumentConstant(_data, name)
             };
 
-            sig.SetSubsets(_subsets);
+            sig.Subsets.SetSubsets(_subsets);
             sig.Deprecated = map.ContainsKey("deprecated");
 
             return sig;
@@ -315,7 +315,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 DocumentationString = DocumentEvent(_data, name)    
             };
 
-            ev.SetSubsets(_subsets);
+            ev.Subsets.SetSubsets(_subsets);
 
             ev.Deprecated = map.ContainsKey("deprecated");
 

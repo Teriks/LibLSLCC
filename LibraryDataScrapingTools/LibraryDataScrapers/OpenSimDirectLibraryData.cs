@@ -190,7 +190,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     {
                         var con = new LSLLibraryConstantSignature(type.Value, constant.Name);
                         con.DocumentationString = _documentationProvider.DocumentConstant(con);
-                        con.SetSubsets(subsets);
+                        con.Subsets.SetSubsets(subsets);
                         return con;
                     }
                     Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ", "constant {0} of ScriptBaseClass, type is an un-recognized data type ({1})",
@@ -264,7 +264,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     else
                     {
                         var f = new LSLLibraryConstantSignature(type.Value, c.Name, valueString);
-                        f.SetSubsets(subsets);
+                        f.Subsets.SetSubsets(subsets);
                         f.DocumentationString = _documentationProvider.DocumentConstant(f);
                         yield return f;
                     }
@@ -304,7 +304,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     else
                     {
                         var f = new LSLLibraryConstantSignature(type.Value, c.Name, valueString);
-                        f.SetSubsets(subsets);
+                        f.Subsets.SetSubsets(subsets);
                         f.DocumentationString = _documentationProvider.DocumentConstant(f);
                         yield return f;
                     }
@@ -468,7 +468,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 {
                     var f = new LSLLibraryFunctionSignature(returnType.Value, v.Name, pTypes);
                     f.DocumentationString = _documentationProvider.DocumentFunction(f);
-                    f.SetSubsets(subsets);
+                    f.Subsets.SetSubsets(subsets);
                    
                     yield return f;
                 }
@@ -550,7 +550,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 {
                     var f = new LSLLibraryFunctionSignature(returnType.Value, v.Name, pTypes);
                     f.DocumentationString = _documentationProvider.DocumentFunction(f);
-                    f.SetSubsets(subsets);
+                    f.Subsets.SetSubsets(subsets);
                     f.ModInvoke = true;
                     yield return f;
                 }

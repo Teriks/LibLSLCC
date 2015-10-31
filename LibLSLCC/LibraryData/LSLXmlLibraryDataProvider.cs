@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLXMLLibraryDataProvider.cs
+// File: LSLXmlLibraryDataProvider.cs
 // 
 // 
 // ============================================================

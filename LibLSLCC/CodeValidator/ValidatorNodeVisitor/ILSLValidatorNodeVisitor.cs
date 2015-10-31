@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLValidatorNodeVisitor.cs
+// File: ILSLValidatorNodeVisitor.cs
 // 
 // 
 // ============================================================

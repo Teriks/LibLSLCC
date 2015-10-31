@@ -430,7 +430,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             public LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets)
             {
                 var f = new LSLLibraryConstantSignature(LSLType.Integer, Name) {DocumentationString = Desc};
-                f.SetSubsets(subsets);
+                f.Subsets.SetSubsets(subsets);
                 return f;
             }
         }
@@ -441,7 +441,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             public LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets)
             {
                 var f = new LSLLibraryConstantSignature(LSLType.Float, Name) {DocumentationString = Desc};
-                f.SetSubsets(subsets);
+                f.Subsets.SetSubsets(subsets);
                 return f;
             }
         }
@@ -452,7 +452,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             public LSLLibraryConstantSignature GetSignature(IReadOnlyGenericArray<string> subsets)
             {
                 var f = new LSLLibraryConstantSignature(LSLType.String, Name) {DocumentationString = Desc};
-                f.SetSubsets(subsets);
+                f.Subsets.SetSubsets(subsets);
                 return f;
             }
         }
@@ -465,7 +465,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var s = Desc.Split(',');
                 var t = s.Length == 3 ? LSLType.Vector : LSLType.Rotation;
                 var f = new LSLLibraryConstantSignature(t, Name) {DocumentationString = Desc};
-                f.SetSubsets(subsets);
+                f.Subsets.SetSubsets(subsets);
                 return f;
             }
         }
