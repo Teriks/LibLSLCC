@@ -232,7 +232,7 @@ namespace LibLSLCC.LibraryData
 
                 if (!LSLTokenTools.IDRegexAnchored.IsMatch(value))
                 {
-                    throw new LSLInvalidSymbolNameException(string.Format("LSLFunctionSignature: Function name '{0}' contained invalid characters or formating.", value));
+                    throw new LSLInvalidSymbolNameException(string.Format("LSLConstantSignature: Constant name '{0}' contained invalid characters or formating.", value));
                 }
 
                 _name = value;
@@ -304,14 +304,21 @@ namespace LibLSLCC.LibraryData
 
         private void SetFloatValueString(string value)
         {
-            float f;
-            if (!float.TryParse(value, out f) &&
-                !float.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out f))
+            string stripSpecifiers = value.TrimEnd('f', 'F', 'd', 'D');
+
+            double f;
+            if (!double.TryParse(stripSpecifiers, out f))
             {
-                throw new LSLInvalidConstantValueStringException(
-                    string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.", value));
+                int i;
+                if (!int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
+                {
+                    throw new LSLInvalidConstantValueStringException(
+                        string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.",
+                            value));
+                }
+                _valueString = value;
             }
-            _valueString = value;
+            _valueString = stripSpecifiers;
         }
 
 

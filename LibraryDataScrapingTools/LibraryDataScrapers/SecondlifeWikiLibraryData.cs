@@ -343,7 +343,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             var constantSignature =
                 new LSLLibraryConstantSignature(type,
-                    match.Groups[2].ToString(), strValue) {Deprecated = _deprecatedMarker.IsMatch(page)};
+                    match.Groups[2].ToString().Replace(' ', '_'), strValue) {Deprecated = _deprecatedMarker.IsMatch(page)};
 
 
 

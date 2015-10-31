@@ -67,18 +67,18 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
             if (type == LSLType.Void && variadic == false)
             {
-                throw new ArgumentException("LSLParameter's type currently cannot be LSLType.Void unless it is variadic.");
+                throw new ArgumentException(GetType().FullName + ": Type cannot be LSLType.Void unless the parameter it is variadic.");
             }
 
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new LSLInvalidSymbolNameException("LSLParameter: Parameter name was null or whitespace.");
+                throw new LSLInvalidSymbolNameException(GetType().FullName + ": Parameter name was null or whitespace.");
             }
 
             if (!LSLTokenTools.IDRegexAnchored.IsMatch(name))
             {
-                throw new LSLInvalidSymbolNameException(string.Format("LSLParameter: Parameter name '{0}' contained invalid characters or formating.", name));
+                throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Parameter name '{0}' contained invalid characters or formating.", name));
             }
 
             Type = type;

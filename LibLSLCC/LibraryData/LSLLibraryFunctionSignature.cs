@@ -62,7 +62,7 @@ namespace LibLSLCC.LibraryData
     /// Represents a library function signature returned from an implementation of <see cref="ILSLLibraryDataProvider"/>.
     /// </summary>
     [XmlRoot("LibraryFunction")]
-    public class LSLLibraryFunctionSignature : LSLFunctionSignature, IXmlSerializable, ILSLLibrarySignature
+    public sealed class LSLLibraryFunctionSignature : LSLFunctionSignature, IXmlSerializable, ILSLLibrarySignature
     {
         private Dictionary<string, string> _properties = new Dictionary<string, string>();
         private LSLLibraryDataSubsetCollection _subsets = new LSLLibraryDataSubsetCollection();

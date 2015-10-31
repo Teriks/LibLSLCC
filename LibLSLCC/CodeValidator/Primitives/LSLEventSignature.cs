@@ -131,12 +131,12 @@ namespace LibLSLCC.CodeValidator.Primitives
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new LSLInvalidSymbolNameException("LSLEventSignature: Event name was null or whitespace.");
+                    throw new LSLInvalidSymbolNameException(GetType().FullName+": Event name was null or whitespace.");
                 }
 
                 if (!LSLTokenTools.IDRegexAnchored.IsMatch(value))
                 {
-                    throw new LSLInvalidSymbolNameException(string.Format("LSLEventSignature: Event name '{0}' contained invalid characters or formating.", value));
+                    throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Event name '{0}' contained invalid characters or formating.", value));
                 } 
                 _name = value;
             }
@@ -241,12 +241,15 @@ namespace LibLSLCC.CodeValidator.Primitives
             if (parameter.Variadic)
             {
                 throw new ArgumentException(
-                    "Cannot add variadic parameters to an event signature", "parameter");
+                    GetType().FullName + ": Cannot add variadic parameters to an event signature", "parameter");
             }
 
             parameter.ParameterIndex = _parameters.Count;
             _parameters.Add(parameter);
         }
+
+
+
 
         /// <summary>
         /// Attempts to parse the signature from a formated string.

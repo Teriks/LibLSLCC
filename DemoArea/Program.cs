@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
@@ -105,6 +107,17 @@ namespace Tests
 
                 
             };
+
+
+
+            LSLDefaultLibraryDataProvider y = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl,LSLLibraryDataAdditions.None, false);
+
+
+            var j = y.GetLibraryFunctionSignatures("llAbs").First();
+
+            j.Subsets.Add("test");
+
+
 
 
             Console.WriteLine("Methods....\n\n");

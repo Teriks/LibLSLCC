@@ -146,12 +146,12 @@ namespace LibLSLCC.CodeValidator.Primitives
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new LSLInvalidSymbolNameException("LSLFunctionSignature: Function name was null or whitespace.");
+                    throw new LSLInvalidSymbolNameException(GetType().FullName + ": Function name was null or whitespace.");
                 }
 
                 if (!LSLTokenTools.IDRegexAnchored.IsMatch(value))
                 {
-                    throw new LSLInvalidSymbolNameException(string.Format("LSLFunctionSignature: Function name '{0}' contained invalid characters or formating.", value));
+                    throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Function name '{0}' contained invalid characters or formating.", value));
                 }
                 _name = value;
             }
@@ -261,8 +261,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 else
                 {
                     throw new ArgumentException(
-                        "Signature already has a variadic parameter, cannot add another",
-                        "parameter");
+                        GetType().FullName + ": Signature already has a variadic parameter, cannot add another", "parameter");
                 }
             }
             
@@ -343,5 +342,6 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             return SignatureEquivalent(o);
         }
+
     }
 }

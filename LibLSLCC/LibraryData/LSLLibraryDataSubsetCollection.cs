@@ -72,7 +72,7 @@ namespace LibLSLCC.LibraryData
         /// but only when the collection was not already empty.
         /// 
         /// </summary>
-        public event Action<object, string> OnSubsetsChanged;
+        public event Action<object> OnSubsetsChanged;
 
         /// <summary>
         /// Fired when the subset collection is cleared, but only if the collection
@@ -107,7 +107,7 @@ namespace LibLSLCC.LibraryData
             if (_subsets.Contains(subsetName)) return;
 
             _subsets.Add(subsetName);
-            OnSubsetsChangedEvent(this, subsetName);
+            OnSubsetsChangedEvent(this);
             OnSubsetAddedEvent(this, subsetName);
         }
 
@@ -259,7 +259,7 @@ namespace LibLSLCC.LibraryData
 
             if (_subsets.Add(subsetName) == false) return false;
 
-            OnSubsetsChangedEvent(this, subsetName);
+            OnSubsetsChangedEvent(this);
             OnSubsetAddedEvent(this, subsetName);
 
             return true;
@@ -357,7 +357,7 @@ namespace LibLSLCC.LibraryData
         {
             if (_subsets.Remove(subsetName) == false) return false;
 
-            OnSubsetsChangedEvent(this, subsetName);
+            OnSubsetsChangedEvent(this);
             OnSubsetRemovedEvent(this, subsetName);
 
             return true;
@@ -389,10 +389,10 @@ namespace LibLSLCC.LibraryData
         /// Fired when the collection changes at all. Including cleared,
         /// but only when the collection was not already empty.
         /// </summary>
-        protected virtual void OnSubsetsChangedEvent(object arg1, string arg2)
+        protected virtual void OnSubsetsChangedEvent(object arg1)
         {
             var handler = OnSubsetsChanged;
-            if (handler != null) handler(arg1, arg2);
+            if (handler != null) handler(arg1);
         }
 
 

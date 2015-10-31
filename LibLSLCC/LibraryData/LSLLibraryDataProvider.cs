@@ -43,6 +43,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
@@ -321,11 +322,28 @@ namespace LibLSLCC.LibraryData
             = new HashMap<string, LSLLibrarySubsetDescription>();
 
 
+        private readonly HashSet<LSLLibraryFunctionSignature> _uniqueOwnedFunctions = new HashSet<LSLLibraryFunctionSignature>(new LambdaEqualityComparer<object>(ReferenceEquals,RuntimeHelpers.GetHashCode));
+        private readonly HashSet<LSLLibraryConstantSignature> _uniqueOwnedConstants = new HashSet<LSLLibraryConstantSignature>(new LambdaEqualityComparer<object>(ReferenceEquals, RuntimeHelpers.GetHashCode));
+        private readonly HashSet<LSLLibraryEventSignature> _uniqueOwnedEvents = new HashSet<LSLLibraryEventSignature>(new LambdaEqualityComparer<object>(ReferenceEquals, RuntimeHelpers.GetHashCode));
+
+
+        private void SignaturesSubsetsChanged(object sender)
+        {
+            throw new InvalidOperationException(
+                string.Format("The given library signature is owned by an '{0}' and it does not allow you to change the signature's Subsets.  ", GetType().Name) +
+                "Clone the signature with its clone constructor before attempting to modify its Subsets collection.");
+        }
+
+
         /// <summary>
         /// Clear all library functions defined in this library data provider.
         /// </summary>
         public void ClearLibraryFunctions()
         {
+            foreach (var fun in _uniqueOwnedFunctions)
+            {
+                fun.Subsets.OnSubsetsChanged -= SignaturesSubsetsChanged;
+            }
             _functionSignaturesBySubsetAndName.Clear();
         }
 
@@ -335,6 +353,10 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         public void ClearEventHandlers()
         {
+            foreach (var ev in _uniqueOwnedEvents)
+            {
+                ev.Subsets.OnSubsetsChanged -= SignaturesSubsetsChanged;
+            }
             _eventSignaturesBySubsetAndName.Clear();
         }
 
@@ -344,6 +366,11 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         public void ClearLibraryConstants()
         {
+            foreach (var c in _uniqueOwnedConstants)
+            {
+                c.Subsets.OnSubsetsChanged -= SignaturesSubsetsChanged;
+            }
+
             _constantSignaturesBySubsetAndName.Clear();
         }
 
@@ -454,8 +481,22 @@ namespace LibLSLCC.LibraryData
                                                                    "; belongs to the subset \"" + subset +
                                                                    "\" but that subset has no associated SubsetDescription.");
                 }
+
+               
+
                 _subsetDescriptions.Add(subset, candidate);
             }
+
+
+
+            if (!_uniqueOwnedEvents.Contains(signature))
+            {
+                _uniqueOwnedEvents.Add(signature);
+                signature.Subsets.OnSubsetsChanged += SignaturesSubsetsChanged;
+            }
+            
+            
+
 
             foreach (var subset in signature.Subsets)
             {
@@ -469,6 +510,7 @@ namespace LibLSLCC.LibraryData
                 }
             }
         }
+
 
 
 
@@ -554,6 +596,14 @@ namespace LibLSLCC.LibraryData
             }
 
 
+            if (!_uniqueOwnedConstants.Contains(signature))
+            {
+                _uniqueOwnedConstants.Add(signature);
+                signature.Subsets.OnSubsetsChanged += SignaturesSubsetsChanged;
+            }
+
+
+
             foreach (var subset in signature.Subsets)
             {
                 if (_constantSignaturesBySubsetAndName.ContainsKey(subset))
@@ -619,6 +669,14 @@ namespace LibLSLCC.LibraryData
             }
 
 
+            if (!_uniqueOwnedFunctions.Contains(signature))
+            {
+                _uniqueOwnedFunctions.Add(signature);
+                signature.Subsets.OnSubsetsChanged += SignaturesSubsetsChanged;
+            }
+
+
+
             foreach (var subset in signature.Subsets)
             {
                 if (!_functionSignaturesBySubsetAndName.ContainsKey(subset))
@@ -682,7 +740,7 @@ namespace LibLSLCC.LibraryData
 
 
 
-        private void ActiveSubsetsOnOnSubsetsChanged(object o, string s)
+        private void ActiveSubsetsOnOnSubsetsChanged(object o)
         {
             if (!LiveFiltering)
             {
