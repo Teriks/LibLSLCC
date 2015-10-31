@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         public LSLFunctionSignature(LSLFunctionSignature other)
         {
             Name = other.Name;
-            _parameters = other._parameters.ToList();
+            _parameters = new GenericArray<LSLParameter>(other._parameters);
             ReturnType = other.ReturnType;
             HasVariadicParameter = other.HasVariadicParameter;
             VariadicParameterIndex = other.VariadicParameterIndex;

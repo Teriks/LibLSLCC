@@ -54,6 +54,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LSLCCEditor.Utility;
 using Microsoft.Win32;
@@ -95,7 +96,7 @@ namespace LSLCCEditor.EditorTabUI
             _owner = owner;
             OwnerTabCollection = ownerTabCollection;
 
-            ActiveLibraryDataSubsetsCache = new HashSet<string>(dataProvider.ActiveSubsets.Subsets);
+            ActiveLibraryDataSubsetsCache = new HashSet<string>(dataProvider.ActiveSubsets);
 
 
             Content = new EditorTabContent(this)

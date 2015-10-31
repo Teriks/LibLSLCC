@@ -68,7 +68,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         public LSLEventSignature(LSLEventSignature other)
         {
             Name = other.Name;
-            _parameters = other._parameters.ToList();
+            _parameters = new GenericArray<LSLParameter>(other._parameters);
         }
 
         /// <summary>

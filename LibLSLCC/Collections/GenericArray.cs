@@ -24,12 +24,21 @@ namespace LibLSLCC.Collections
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenericArray{T}"/> class.
+        /// Initializes a new instance of the <see cref="GenericArray{T}"/> class by wrapping an <see cref="IList{T}"/>.
         /// </summary>
         /// <param name="list">The list.</param>
-        public GenericArray(IList<T> list)
+        private GenericArray(IList<T> list)
         {
             _data = list;
+        }
+
+        /// <summary>
+        /// Create a new instance of an <see cref="GenericArray{T}"/> class by wrapping an <see cref="IList{T}"/>.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public static GenericArray<T> CreateWrapper(IList<T> list)
+        {
+            return new GenericArray<T>(list);
         }
 
         /// <summary>
@@ -199,16 +208,6 @@ namespace LibLSLCC.Collections
         }
 
 
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="List{T}"/> to <see cref="GenericArray{T}"/>.
-        /// </summary>
-        /// <param name="other">The <see cref="List{T}"/> to convert from.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator GenericArray<T>(List<T> other)
-        {
-            return new GenericArray<T>(other);
-        }
+
     }
 }

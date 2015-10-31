@@ -1597,7 +1597,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
                 else
                 {
-                    _referencesToNotYetDefinedFunctions.Add(functionSignature.Name, new GenericArray<LSLFunctionCallNode> {node});
+                    _referencesToNotYetDefinedFunctions.Add(functionSignature.Name, new List<LSLFunctionCallNode> {node});
                 }
             }
         }
@@ -3391,8 +3391,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private readonly HashSet<RuleContext> _multipleStringAssignmentWarned = new HashSet<RuleContext>();
 
-        private readonly HashMap<string, GenericArray<LSLFunctionCallNode>> _referencesToNotYetDefinedFunctions =
-            new HashMap<string, GenericArray<LSLFunctionCallNode>>();
+        private readonly Dictionary<string, List<LSLFunctionCallNode>> _referencesToNotYetDefinedFunctions =
+            new Dictionary<string, List<LSLFunctionCallNode>>();
 
         /// <summary>
         ///     Only used by CheckForMultipleListAssignment

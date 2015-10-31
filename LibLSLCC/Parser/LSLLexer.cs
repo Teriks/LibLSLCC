@@ -63,7 +63,9 @@ public partial class LSLLexer : Lexer {
 
 
 
-		public GenericArray<LSLComment> Comments = new GenericArray<LSLComment>();
+		public GenericArray<LSLComment> _comments = new GenericArray<LSLComment>();
+
+		public IReadOnlyGenericArray<LSLComment> Comments { get {return _comments; } }
 
 
 
@@ -172,7 +174,7 @@ public partial class LSLLexer : Lexer {
 		switch (actionIndex) {
 		case 0: 
 		                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-							Comments.Add(new LSLComment()
+							_comments.Add(new LSLComment()
 							{
 								Text = this.Text, 
 		                        SourceCodeRange = new LSLSourceCodeRange(
@@ -191,7 +193,7 @@ public partial class LSLLexer : Lexer {
 		switch (actionIndex) {
 		case 1: 
 		                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-							Comments.Add(new LSLComment()
+							_comments.Add(new LSLComment()
 							{
 								Text = this.Text, 
 		                        SourceCodeRange = new LSLSourceCodeRange(

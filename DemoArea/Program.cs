@@ -165,7 +165,6 @@ namespace Tests
 
 
 
-        public int CONSTANT_A = 5;
 
 
         //if we don't provide an instance, the ValueString will be used.
@@ -210,11 +209,13 @@ namespace Tests
             return "";
         }
 
-
+        //the first parameter is missing an attribute, the default
+        //serializer options say to remove it from the generated signature
+        [LSLFunction(LSLType.Float)]
         public string function2(
             int arg1,
-            string arg2,
-            params string[] variadic)
+            [LSLParam(LSLType.String)] string arg2,
+            [LSLParam(LSLType.Void)] params object[] variadic)
         {
             return "";
         }

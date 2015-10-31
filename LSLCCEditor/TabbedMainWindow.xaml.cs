@@ -296,7 +296,7 @@ namespace LSLCCEditor
             }
 
 
-            _libraryDataProvider.ActiveSubsets.RemoveSubset(subsetName);
+            _libraryDataProvider.ActiveSubsets.Remove(subsetName);
             tab.ActiveLibraryDataSubsetsCache.Remove(subsetName);
 
             if (!_uncheckingLibraryDataTabItemProgrammatically)
@@ -341,7 +341,7 @@ namespace LSLCCEditor
             }
 
 
-            _libraryDataProvider.ActiveSubsets.AddSubset(subsetName);
+            _libraryDataProvider.ActiveSubsets.Add(subsetName);
             tab.ActiveLibraryDataSubsetsCache.Add(subsetName);
             tab.Content.Editor.UpdateHighlightingFromDataProvider();
         }

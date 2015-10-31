@@ -374,8 +374,8 @@ private static class UTILITIES
         }
 
 
-        private readonly HashMap<LSLType, string> _modInvokeFunctionMap
-            = new HashMap<LSLType, string>
+        private readonly Dictionary<LSLType, string> _modInvokeFunctionMap
+            = new Dictionary<LSLType, string>
             {
                 {LSLType.Void, "modInvokeN"},
                 {LSLType.String, "modInvokeS"},

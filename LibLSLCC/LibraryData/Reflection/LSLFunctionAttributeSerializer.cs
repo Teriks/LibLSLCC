@@ -14,9 +14,15 @@ namespace LibLSLCC.LibraryData.Reflection
 
         public ILSLTypeConverter FallBackParameterTypeConverter { get; set; }
 
+        public bool AttributedParametersOnly { get; set; }
+
 
         public class Info
         {
+            public bool ModInvoke { get; set; }
+
+            public bool Deprecated { get; set; }
+
             public bool Variadic { get; set; }
 
             public bool ExplicitReturnTypePresent { get; set; }
@@ -62,6 +68,16 @@ namespace LibLSLCC.LibraryData.Reflection
                 result.ExplicitReturnTypePresent = true;
                 result.ReturnType =
                     (LSLType) attr.NamedArguments.First(x => x.MemberInfo.Name == "ReturnType").TypedValue.Value;
+            }
+
+            if (attr.NamedArguments.Any(x => x.MemberInfo.Name == "ModInvoke"))
+            {
+                result.ModInvoke = (bool)attr.NamedArguments.First(x => x.MemberInfo.Name == "ModInvoke").TypedValue.Value;
+            }
+
+            if (attr.NamedArguments.Any(x => x.MemberInfo.Name == "Deprecated"))
+            {
+                result.ModInvoke = (bool)attr.NamedArguments.First(x => x.MemberInfo.Name == "Deprecated").TypedValue.Value;
             }
 
 
@@ -165,7 +181,9 @@ namespace LibLSLCC.LibraryData.Reflection
                 
                 if (paramAttributes.Count == 0)
                 {
-                    //without attribute
+                    //without attribute, only add if AttributedParametersOnly is false.
+
+                    if(AttributedParametersOnly) continue;
 
                     if (preferedParameterConverter == null)
                     {
@@ -182,6 +200,7 @@ namespace LibLSLCC.LibraryData.Reflection
                     isVariadic =
                         param.GetCustomAttributesData()
                             .Any(x => x.Constructor.DeclaringType == typeof (ParamArrayAttribute));
+
                     var cSharpParameterType = isVariadic ? param.ParameterType.GetElementType() : param.ParameterType;
 
 
@@ -226,10 +245,26 @@ namespace LibLSLCC.LibraryData.Reflection
                     isVariadic = param.GetCustomAttributesData().
                         Any(x => x.Constructor.DeclaringType == typeof (ParamArrayAttribute));
 
+
+                    if (pType == LSLType.Void && !isVariadic)
+                    {
+                        var cSharpParameterType = param.ParameterType;
+
+                        throw new LSLLibraryDataAttributeException(
+                            string.Format(
+                                "[LSLFunctionAttribute] on method '{0}' declared in Type '{1}', used an [LSLParam(LSLType.Void)] attribute on a non variadic parameter of Type '{2}'.",
+                                method.Name,
+                                method.DeclaringType.FullName,
+                                cSharpParameterType.FullName));
+                    }
+
+
                     if (isVariadic)
                     {
                         result.Variadic = true;
                     }
+
+
 
                     result.Parameters.Add(new LSLParameter(pType, param.Name, isVariadic));
                 }

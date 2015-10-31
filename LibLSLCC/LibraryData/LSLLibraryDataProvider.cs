@@ -84,7 +84,7 @@ namespace LibLSLCC.LibraryData
         {
             get
             {
-                return ActiveSubsets.Subsets.Select(x =>
+                return ActiveSubsets.Select(x =>
                 {
                     LSLLibrarySubsetDescription desc;
                     return SubsetDescriptions.TryGetValue(x, out desc) ? desc.FriendlyName : x;
@@ -124,7 +124,7 @@ namespace LibLSLCC.LibraryData
             get
             {
                 
-                var events = ActiveSubsets.Subsets.SelectMany(x =>
+                var events = ActiveSubsets.SelectMany(x =>
                 {
                     HashMap<string, LSLLibraryEventSignature> subsetContent;
                     return _eventSignaturesBySubsetAndName.TryGetValue(x, out subsetContent) ? subsetContent.Values : new GenericArray<LSLLibraryEventSignature>();
@@ -165,7 +165,7 @@ namespace LibLSLCC.LibraryData
             {
                 if (!LiveFiltering)
                 {
-                    return ActiveSubsets.Subsets
+                    return ActiveSubsets
                         .Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
                         .SelectMany(subset => _functionSignaturesBySubsetAndName[subset].Values.ToGenericArray())
                         .Cast<IReadOnlyGenericArray<LSLLibraryFunctionSignature>>().ToList();
@@ -174,7 +174,7 @@ namespace LibLSLCC.LibraryData
 
                 var functionGroups = new Dictionary<string, GenericArray<LSLLibraryFunctionSignature>>();
 
-                foreach (var subset in ActiveSubsets.Subsets.Where(x=>_functionSignaturesBySubsetAndName.ContainsKey(x)))
+                foreach (var subset in ActiveSubsets.Where(x=>_functionSignaturesBySubsetAndName.ContainsKey(x)))
                 {
 
                     var subsetFunctions = _functionSignaturesBySubsetAndName[subset].Values.SelectMany(x=>x).ToGenericArray();
@@ -209,7 +209,7 @@ namespace LibLSLCC.LibraryData
                         else
                         {
                             //add the first overload to the groupings
-                            functionGroups.Add(subsetFunction.Name, new List<LSLLibraryFunctionSignature> { subsetFunction });
+                            functionGroups.Add(subsetFunction.Name, new GenericArray<LSLLibraryFunctionSignature> { subsetFunction });
                         }
                     }
                     
@@ -231,7 +231,7 @@ namespace LibLSLCC.LibraryData
         {
             get
             {
-                var constants = ActiveSubsets.Subsets.SelectMany(x =>
+                var constants = ActiveSubsets.SelectMany(x =>
                 {
                     HashMap<string, LSLLibraryConstantSignature> subsetContent;
                     return _constantSignaturesBySubsetAndName.TryGetValue(x, out subsetContent) ? subsetContent.Values : new GenericArray<LSLLibraryConstantSignature>();
@@ -268,6 +268,8 @@ namespace LibLSLCC.LibraryData
 
         private readonly HashMap<string, HashMap<string, LSLLibraryEventSignature>>
            _eventSignaturesBySubsetAndName = new HashMap<string, HashMap<string, LSLLibraryEventSignature>>();
+
+
 
         private readonly HashMap<string, LSLLibrarySubsetDescription> _subsetDescriptions 
             = new HashMap<string, LSLLibrarySubsetDescription>();
@@ -335,7 +337,7 @@ namespace LibLSLCC.LibraryData
         {
             HashMap<string, LSLLibrarySubsetDescription> dictRef;
 
-            if (!LiveFiltering && !ActiveSubsets.Subsets.Contains(description.Subset))
+            if (!LiveFiltering && !ActiveSubsets.Contains(description.Subset))
             {
                 dictRef = _candidateSubsetDescriptions;
             }
@@ -395,7 +397,7 @@ namespace LibLSLCC.LibraryData
                 }
             }
 
-            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets.Subsets))
+            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets))
             {
                 //don't add it
                 return;
@@ -491,7 +493,7 @@ namespace LibLSLCC.LibraryData
                 }
             }
 
-            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets.Subsets))
+            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets))
             {
                 //don't add it
                 return;
@@ -555,7 +557,7 @@ namespace LibLSLCC.LibraryData
 
             }
 
-            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets.Subsets))
+            if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets))
             {
                 //don't add it
                 return;
@@ -655,7 +657,7 @@ namespace LibLSLCC.LibraryData
         public bool EventHandlerExist(string name)
         {
             var match = 
-                ActiveSubsets.Subsets.Where(x=>_eventSignaturesBySubsetAndName.ContainsKey(x))
+                ActiveSubsets.Where(x=>_eventSignaturesBySubsetAndName.ContainsKey(x))
                 .FirstOrDefault(x => _eventSignaturesBySubsetAndName[x].ContainsKey(name));
 
             return match != null;
@@ -673,7 +675,7 @@ namespace LibLSLCC.LibraryData
         /// </exception>
         public LSLLibraryEventSignature GetEventHandlerSignature(string name)
         {
-            return GetEventHandlerSignature(name, ActiveSubsets.Subsets);
+            return GetEventHandlerSignature(name, ActiveSubsets);
         }
 
 
@@ -712,7 +714,7 @@ namespace LibLSLCC.LibraryData
         public bool LibraryFunctionExist(string name)
         {
             var match =
-                ActiveSubsets.Subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+                ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
                 .FirstOrDefault(x => _functionSignaturesBySubsetAndName[x].ContainsKey(name));
 
             return match != null;
@@ -727,7 +729,7 @@ namespace LibLSLCC.LibraryData
         public bool IsConsideredOverload(LSLFunctionSignature signatureToTest)
         {
             var match =
-               ActiveSubsets.Subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+               ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
                .FirstOrDefault(x =>
                {
                    var subsetDict = _functionSignaturesBySubsetAndName[x];
@@ -751,7 +753,7 @@ namespace LibLSLCC.LibraryData
         public bool LibraryFunctionExist(LSLFunctionSignature signatureToTest)
         {
             var match =
-               ActiveSubsets.Subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+               ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
                .FirstOrDefault(x =>
                {
                    var subsetDict = _functionSignaturesBySubsetAndName[x];
@@ -780,7 +782,7 @@ namespace LibLSLCC.LibraryData
         /// </exception>
         public IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
         {
-            return GetLibraryFunctionSignatures(name, ActiveSubsets.Subsets);
+            return GetLibraryFunctionSignatures(name, ActiveSubsets);
         }
 
 
@@ -843,7 +845,7 @@ namespace LibLSLCC.LibraryData
         public bool LibraryConstantExist(string name)
         {
             var match =
-                ActiveSubsets.Subsets.Where(x => _constantSignaturesBySubsetAndName.ContainsKey(x))
+                ActiveSubsets.Where(x => _constantSignaturesBySubsetAndName.ContainsKey(x))
                 .FirstOrDefault(x => _constantSignaturesBySubsetAndName[x].ContainsKey(name));
 
             return match != null;
@@ -862,7 +864,7 @@ namespace LibLSLCC.LibraryData
         /// </exception>
         public LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
         {
-            return GetLibraryConstantSignature(name, ActiveSubsets.Subsets);
+            return GetLibraryConstantSignature(name, ActiveSubsets);
         }
 
 

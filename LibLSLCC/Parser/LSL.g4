@@ -55,7 +55,9 @@ grammar LSL;
 
 @lexer::members {
 
-	public GenericArray<LSLComment> Comments = new GenericArray<LSLComment>();
+	public GenericArray<LSLComment> _comments = new GenericArray<LSLComment>();
+
+	public IReadOnlyGenericArray<LSLComment> Comments { get {return _comments; } }
 
 
 
@@ -510,7 +512,7 @@ Newline
 BlockComment
 : '/*' .*? '*/' {
                     var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-					Comments.Add(new LSLComment()
+					_comments.Add(new LSLComment()
 					{
 						Text = this.Text, 
                         SourceCodeRange = new LSLSourceCodeRange(
@@ -528,7 +530,7 @@ BlockComment
 LineComment
 : '//' ~[\r\n]* {
                     var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-					Comments.Add(new LSLComment()
+					_comments.Add(new LSLComment()
 					{
 						Text = this.Text, 
                         SourceCodeRange = new LSLSourceCodeRange(

@@ -130,6 +130,15 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
 
             /// <summary>
+            /// Initializes a new instance of the <see cref="OverloadMatch{T}"/> class with an <see cref="List{T}"/> containing signature matches, a wrapper is created around the list.
+            /// </summary>
+            /// <param name="matches">The matches.</param>
+            internal OverloadMatch(List<T> matches)
+            {
+                Matches = matches.WrapWithGenericArray();
+            }
+
+            /// <summary>
             /// Initializes a new instance of the <see cref="OverloadMatch{T}"/> class with no signature matches at all.
             /// </summary>
             internal OverloadMatch()
@@ -180,7 +189,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             //such as for LSL's (key to string) and (string to key) conversion.
             var matches =
                 functionSignatures.Where(
-                    functionSignature => TryMatch(functionSignature, expressionNodes, typeComparer).Success).ToGenericArray();
+                    functionSignature => TryMatch(functionSignature, expressionNodes, typeComparer).Success).ToList();
 
             
 
@@ -198,7 +207,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             //Rank and group the matches by the number implicit type conversions that occur.
             //Implicit conversion is the only real match quality degradation that can occur in LSL.
-            var rankingToSignatureGroup = new HashMap<int, GenericArray<T>>();
+            var rankingToSignatureGroup = new Dictionary<int, List<T>>();
 
         
             foreach (var match in matches)
@@ -227,7 +236,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 }
 
                 //group by rank, using the HashMap object.
-                GenericArray<T> signaturesWithTheSameRank = null;
+                List<T> signaturesWithTheSameRank = null;
 
                 //get a reference to a group with the same rank, if one exists
                 if (rankingToSignatureGroup.TryGetValue(matchRank, out signaturesWithTheSameRank))
@@ -237,7 +246,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 else
                 {
                     //first group seen with this rank, make a new group
-                    signaturesWithTheSameRank = new GenericArray<T> {match};
+                    signaturesWithTheSameRank = new List<T> {match};
                     rankingToSignatureGroup.Add(matchRank, signaturesWithTheSameRank);
                 }
             }
@@ -251,7 +260,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
 
             //Find the grouping with the smallest ranking number, this is the best group to look in.
-            KeyValuePair<int, GenericArray<T>> ?groupingWithTheBestRank = null;
+            KeyValuePair<int, List<T>> ?groupingWithTheBestRank = null;
 
             foreach (var groupPair in rankingToSignatureGroup)
             {

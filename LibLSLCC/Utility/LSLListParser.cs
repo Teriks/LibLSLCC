@@ -246,10 +246,10 @@ namespace LibLSLCC.Utility
         ///     Encountered an un-parseable expression in the list, only literal values and possibly variable names are acceptable
         ///     when parsing.
         /// </exception>
-        public static GenericArray<ILSLListExpr> ParseList(string list,
+        public static List<ILSLListExpr> ParseList(string list,
             LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
         {
-            return _ParseList(list, parsingFlags).ToGenericArray();
+            return _ParseList(list, parsingFlags).ToList();
         }
 
 
@@ -261,7 +261,7 @@ namespace LibLSLCC.Utility
         /// <param name="expressions">The resulting expression list will be put at this location if the parse succeeded, otherwise it will be null.</param>
         /// <param name="parsingFlags">Optional parsing flags.</param>
         /// <returns></returns>
-        public static bool TryParseList(string list, out GenericArray<ILSLListExpr> expressions, LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
+        public static bool TryParseList(string list, out List<ILSLListExpr> expressions, LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
         {
             try
             {

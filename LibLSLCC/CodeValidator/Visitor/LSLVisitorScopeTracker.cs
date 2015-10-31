@@ -65,23 +65,23 @@ namespace LibLSLCC.CodeValidator.Visitor
     {
         private readonly Stack<LSLControlStatementNode> _controlStatementStack = new Stack<LSLControlStatementNode>();
 
-        private readonly HashMap<LSLParser.CodeScopeContext, HashMap<string, LSLLabelStatementNode>> _labelScopes
-            = new HashMap<LSLParser.CodeScopeContext, HashMap<string, LSLLabelStatementNode>>();
+        private readonly Dictionary<LSLParser.CodeScopeContext, Dictionary<string, LSLLabelStatementNode>> _labelScopes
+            = new Dictionary<LSLParser.CodeScopeContext, Dictionary<string, LSLLabelStatementNode>>();
 
-        private readonly HashMap<string, LSLVariableDeclarationNode> _parameterScopeVariables =
-            new HashMap<string, LSLVariableDeclarationNode>();
+        private readonly Dictionary<string, LSLVariableDeclarationNode> _parameterScopeVariables =
+            new Dictionary<string, LSLVariableDeclarationNode>();
 
         private readonly Stack<LSLParser.CodeScopeContext> _scopeStack = new Stack<LSLParser.CodeScopeContext>();
         private readonly Stack<LSLCodeScopeType> _scopeTypeStack = new Stack<LSLCodeScopeType>();
 
-        private readonly Stack<HashMap<string, LSLVariableDeclarationNode>> _scopeVariables =
-            new Stack<HashMap<string, LSLVariableDeclarationNode>>();
+        private readonly Stack<Dictionary<string, LSLVariableDeclarationNode>> _scopeVariables =
+            new Stack<Dictionary<string, LSLVariableDeclarationNode>>();
 
         private readonly Stack<bool> _singleBlockStatementTrackingStack = new Stack<bool>();
 
-        private HashMap<string, LSLStateScopeNode> _definedStates = new HashMap<string, LSLStateScopeNode>();
-        private HashMap<string, LSLPreDefinedFunctionSignature> _functionDefinitions = new HashMap<string, LSLPreDefinedFunctionSignature>();
-        private HashMap<string, LSLVariableDeclarationNode> _globalVariables = new HashMap<string, LSLVariableDeclarationNode>();
+        private readonly HashMap<string, LSLStateScopeNode> _definedStates = new HashMap<string, LSLStateScopeNode>();
+        private readonly HashMap<string, LSLPreDefinedFunctionSignature> _functionDefinitions = new HashMap<string, LSLPreDefinedFunctionSignature>();
+        private readonly HashMap<string, LSLVariableDeclarationNode> _globalVariables = new HashMap<string, LSLVariableDeclarationNode>();
 
         public LSLVisitorScopeTracker(ILSLValidatorServiceProvider validatorServiceProvider)
         {
@@ -106,19 +106,19 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
         // ReSharper disable once ConvertToAutoProperty
-        public HashMap<string, LSLStateScopeNode> DefinedStates
+        public IReadOnlyHashMap<string, LSLStateScopeNode> DefinedStates
         {
             get { return _definedStates; }
         }
 
         // ReSharper disable once ConvertToAutoProperty
-        public HashMap<string, LSLPreDefinedFunctionSignature> FunctionDefinitions
+        public IReadOnlyHashMap<string, LSLPreDefinedFunctionSignature> FunctionDefinitions
         {
             get { return _functionDefinitions; }
         }
 
         // ReSharper disable once ConvertToAutoProperty
-        public HashMap<string, LSLVariableDeclarationNode> GlobalVariables
+        public IReadOnlyHashMap<string, LSLVariableDeclarationNode> GlobalVariables
         {
             get { return _globalVariables; }
         }
@@ -208,7 +208,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public void SetStateNode(string name, LSLStateScopeNode value)
         {
-            DefinedStates[name] = value;
+            _definedStates[name] = value;
         }
 
         public bool FunctionIsPreDefined(string name)
@@ -356,7 +356,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             //it does not modify the tree node we put it
             if (scope == LSLVariableScope.Global)
             {
-                GlobalVariables.Add(decl.Name, decl);
+                _globalVariables.Add(decl.Name, decl);
             }
             if (scope == LSLVariableScope.Local)
             {
@@ -434,9 +434,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             CurrentEventHandlerContext = null;
             CurrentFunctionBodySignature = null;
             CurrentFunctionContext = null;
-            FunctionDefinitions.Clear();
-            GlobalVariables.Clear();
-            DefinedStates.Clear();
+            _functionDefinitions.Clear();
+            _globalVariables.Clear();
+            _definedStates.Clear();
             _parameterScopeVariables.Clear();
             _scopeStack.Clear();
             _scopeTypeStack.Clear();
@@ -448,12 +448,12 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public void PreDefineState(string name)
         {
-            DefinedStates.Add(name, null);
+            _definedStates.Add(name, null);
         }
 
         public void PreDefineFunction(LSLPreDefinedFunctionSignature lslFunctionSignature)
         {
-            FunctionDefinitions.Add(lslFunctionSignature.Name, lslFunctionSignature);
+            _functionDefinitions.Add(lslFunctionSignature.Name, lslFunctionSignature);
         }
 
         public void EnterCodeScopeDuringPrePass(LSLParser.CodeScopeContext context)
@@ -461,7 +461,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             _scopeTypeStack.Push(LSLAntlrTreeIntrospector.ResolveCodeScopeNodeType(context));
             _singleBlockStatementTrackingStack.Push(false);
             _scopeStack.Push(context);
-            _labelScopes.Add(context, new HashMap<string, LSLLabelStatementNode>());
+            _labelScopes.Add(context, new Dictionary<string, LSLLabelStatementNode>());
         }
 
         public void EnterSingleStatementBlock(LSLParser.CodeStatementContext statement)
@@ -485,7 +485,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private void EnterLocalVariableScope()
         {
-            _scopeVariables.Push(new HashMap<string, LSLVariableDeclarationNode>());
+            _scopeVariables.Push(new Dictionary<string, LSLVariableDeclarationNode>());
         }
 
         private void ExitLocalVariableScope()

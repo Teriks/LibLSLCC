@@ -158,6 +158,19 @@ namespace LibLSLCC.LibraryData.Reflection
         /// </value>
         public bool AttributedMethodsOnly { get; set; }
 
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the serializer should only add parameters marked with an <see cref="LSLParamAttribute"/> to de-serialized <see cref="LSLLibraryFunctionSignature"/> objects.
+        /// This option is only effective on methods that have an <see cref="LSLFunctionAttribute"/>.
+        /// The default value is <c>true</c>.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> If the serializer should only de-serialize methods marked with an <see cref="LSLFunctionAttribute"/>; otherwise, <c>false</c>.
+        /// </value>
+        public bool AttributedParametersOnly { get; set; }
+
+
+
         /// <summary>
         /// Gets or sets a value indicating whether the serializer should only de-serialize fields and properties marked with an <see cref="LSLConstantAttribute"/>.
         /// The default value is <c>true</c>.
@@ -175,6 +188,7 @@ namespace LibLSLCC.LibraryData.Reflection
         {
             AttributedConstantsOnly = true;
             AttributedMethodsOnly = true;
+            AttributedParametersOnly = true;
         }
 
 
@@ -423,6 +437,37 @@ namespace LibLSLCC.LibraryData.Reflection
         }
 
 
+        /// <summary>
+        /// de-serialize a <see cref="LSLLibraryConstantSignature"/> from a <see cref="MemberInfo"/> object.
+        /// The passed <see cref="MemberInfo"/> object must derive from either <see cref="PropertyInfo"/> or <see cref="FieldInfo"/>.
+        /// </summary>
+        /// <param name="info">The <see cref="MemberInfo"/> object to de-serialize from.</param>
+        /// <param name="optionalInstance">
+        /// An optional object instance to provide to serializer.
+        /// Instance properties will be considered <c>null</c> if one is not provided.
+        /// </param>
+        /// <exception cref="LSLLibraryDataReflectionException">Thrown if <paramref name="info"/> does not derive from either <see cref="PropertyInfo"/> or <see cref="FieldInfo"/>.</exception>
+        /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
+        public LSLLibraryConstantSignature DeSerializeConstantGeneric(MemberInfo info, object optionalInstance = null)
+        {
+            var prop = info as PropertyInfo;
+            var field = info as FieldInfo;
+
+            if (prop != null || field != null)
+            {
+
+                var constantTypeConverter =
+                    LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
+                var valueStringConverter =
+                    LSLLibraryDataSerializableAttribute.GetValueStringConverter(info.DeclaringType);
+
+                return _DoDeSerializeConstant(info, constantTypeConverter, valueStringConverter, optionalInstance);
+            }
+
+            throw new LSLLibraryDataReflectionException(
+                string.Format("DeSerializeConstant(MemberInfo,object); was passed an '{0}' in the info parameter, which derived from neither PropertyInfo or FieldInfo.", info.GetType().Name));
+        }
+
 
         /// <summary>
         /// de-serialize a <see cref="LSLLibraryConstantSignature"/> from a <see cref="FieldInfo"/> object.
@@ -451,14 +496,20 @@ namespace LibLSLCC.LibraryData.Reflection
             {
                 //prefer the converters on the class we are serializing to ours if they are not null
                 FallBackReturnTypeConverter = optionalClassReturnTypeConverter ?? ReturnTypeConverter,
-                FallBackParameterTypeConverter = optionalClassParamTypeConverter ?? ParamTypeConverter
+                FallBackParameterTypeConverter = optionalClassParamTypeConverter ?? ParamTypeConverter,
+                AttributedParametersOnly = AttributedParametersOnly
+                
             };
 
             var attributeInfo = attributeSerializer.GetInfo(info);
 
             if (attributeInfo != null)
             {
-                return new LSLLibraryFunctionSignature(attributeInfo.ReturnType, info.Name, attributeInfo.Parameters);
+                return new LSLLibraryFunctionSignature(attributeInfo.ReturnType, info.Name, attributeInfo.Parameters)
+                {
+                    ModInvoke = attributeInfo.ModInvoke,
+                    Deprecated = attributeInfo.Deprecated
+                };
             }
 
 
@@ -488,7 +539,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 return null;
             }
 
-            var parameters = new GenericArray<LSLParameter>();
+            var parameters = new List<LSLParameter>();
             foreach (var param in info.GetParameters())
             {
                 var isVariadic =

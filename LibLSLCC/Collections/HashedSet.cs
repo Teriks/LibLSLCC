@@ -64,13 +64,22 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HashedSet{T}"/> class.
+        /// Initializes a new instance of the <see cref="HashedSet{T}"/> classby wrapping an <see cref="ISet{T}"/>.
         /// </summary>
         /// <param name="items">The items.</param>
-        public HashedSet(ISet<T> items)
+        private HashedSet(ISet<T> items)
         {
             _items = items;
-          
+        }
+
+
+        /// <summary>
+        /// Create a new instance of an <see cref="HashedSet{T}"/> class by wrapping an <see cref="ISet{T}"/>.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        public static ISet<T> CreateWrapper(ISet<T> items)
+        {
+            return new HashedSet<T>(items);
         }
 
         /// <summary>
@@ -302,9 +311,5 @@ namespace LibLSLCC.Collections
         }
 
 
-        public static implicit operator HashedSet<T>(HashSet<T> b)
-        {
-            return new HashedSet<T>(b);
-        }
     }
 }

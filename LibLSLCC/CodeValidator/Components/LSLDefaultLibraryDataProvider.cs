@@ -73,7 +73,6 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
         /// <summary>
         /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file.
         /// </summary>
@@ -83,9 +82,10 @@ namespace LibLSLCC.CodeValidator.Components
         /// </param>
         /// <param name="libraryBaseData">The base library data to use.</param>
         /// <param name="dataAdditions">Library data additions.</param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
-        public LSLDefaultLibraryDataProvider(bool liveFiltering, LSLLibraryBaseData libraryBaseData,
-            LSLLibraryDataAdditions dataAdditions = LSLLibraryDataAdditions.None) : this(GetSubsets(libraryBaseData,dataAdditions),liveFiltering)
+        public LSLDefaultLibraryDataProvider(LSLLibraryBaseData libraryBaseData,
+            LSLLibraryDataAdditions dataAdditions, bool liveFiltering, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : this(GetSubsets(libraryBaseData,dataAdditions),liveFiltering, loadOptions)
         {
 
         }
@@ -99,8 +99,9 @@ namespace LibLSLCC.CodeValidator.Components
         /// If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query results will change.
         /// Otherwise if this is false, only subsets present upon construction will be loaded.
         /// </param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
-        public LSLDefaultLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true) : base(activeSubsets, liveFiltering)
+        public LSLDefaultLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : base(activeSubsets, liveFiltering)
         {
             using (var libraryData = GetDefaultLibraryDataStream())
             {
@@ -115,6 +116,8 @@ namespace LibLSLCC.CodeValidator.Components
                 FillFromXml(reader);
             }
         }
+
+
 
         /// <summary>
         /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file in live filtering mode with no active subsets set.
@@ -183,7 +186,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
     /// <summary>
-    /// Represents the available additionaly library subsets in LSLDefaultLibraryDataProvider.xml
+    /// Represents the available additional library subsets in LSLDefaultLibraryDataProvider.xml
     /// </summary>
     [Flags]
     public enum LSLLibraryDataAdditions

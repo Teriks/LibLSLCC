@@ -246,7 +246,7 @@ namespace lslcc
             foreach (var library in libraries)
             {
                 if (defaultProvider.SubsetDescriptions.ContainsKey(library)){
-                    defaultProvider.ActiveSubsets.AddSubset(library);
+                    defaultProvider.ActiveSubsets.Add(library);
                 }
                 else
                 {

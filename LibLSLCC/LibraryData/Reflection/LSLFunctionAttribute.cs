@@ -46,6 +46,25 @@ namespace LibLSLCC.LibraryData.Reflection
             
         }
 
+
+        /// <summary>
+        /// Gets a value indicating what serialized <see cref="LSLLibraryFunctionSignature"/> objects should have <see cref="LSLLibraryFunctionSignature.Deprecated"/> set to.
+        /// </summary>
+        /// <value>
+        /// The value to set <see cref="LSLLibraryFunctionSignature.Deprecated"/> to.
+        /// </value>
+        public bool Deprecated { get;  set; }
+
+
+        /// <summary>
+        /// Gets a value indicating what serialized <see cref="LSLLibraryFunctionSignature"/> objects should have <see cref="LSLLibraryFunctionSignature.ModInvoke"/> set to.
+        /// </summary>
+        /// <value>
+        /// The value to set <see cref="LSLLibraryFunctionSignature.ModInvoke"/> to.
+        /// </value>
+        public bool ModInvoke { get;  set; }
+
+
         /// <summary>
         /// Initializes the attribute with an explicit return type.
         /// </summary>

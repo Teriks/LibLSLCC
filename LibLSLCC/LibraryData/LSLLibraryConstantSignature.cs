@@ -67,8 +67,8 @@ namespace LibLSLCC.LibraryData
     [XmlRoot("LibraryConstant")]
     public sealed class LSLLibraryConstantSignature : IXmlSerializable, ILSLLibrarySignature
     {
-        private HashMap<string, string> _properties = new HashMap<string, string>();
-        private HashedSet<string> _subsets = new HashedSet<string>();
+        private Dictionary<string, string> _properties = new Dictionary<string, string>();
+        private LSLLibraryDataSubsetCollection _subsets = new LSLLibraryDataSubsetCollection();
 
 
 
@@ -89,8 +89,8 @@ namespace LibLSLCC.LibraryData
         {
             
             DocumentationString = other.DocumentationString;
-            _subsets = new HashedSet<string>(other._subsets);
-            _properties = other._properties.ToHashMap(x => x.Key, y => y.Value);
+            _subsets = new LSLLibraryDataSubsetCollection(other._subsets);
+            _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
             _type = other.Type;
             _valueString = other.ValueString;
         }
@@ -156,10 +156,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// The library subsets this signature belongs to/is shared among.
         /// </summary>
-        public IReadOnlyHashedSet<string> Subsets
-        {
-            get { return _subsets; }
-        }
+        public LSLLibraryDataSubsetCollection Subsets { get { return _subsets; } }
 
 
         /// <summary>
@@ -535,7 +532,7 @@ namespace LibLSLCC.LibraryData
                 }
                 else if (reader.Name == "Subsets")
                 {
-                    SetSubsets(reader.Value);
+                    Subsets.SetSubsets(reader.Value);
                     hasSubsets = true;
                 }
                 else if (reader.Name == "Type")
@@ -677,47 +674,6 @@ namespace LibLSLCC.LibraryData
         public override string ToString()
         {
             return SignatureString;
-        }
-
-        /// <summary>
-        /// Sets the library subsets this LSLLibraryConstantSignature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings</param>
-        public void SetSubsets(IEnumerable<string> subsets)
-        {
-            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
-        }
-
-        /// <summary>
-        /// Sets the library subsets this LSLLibraryConstantSignature belongs to by parsing them out of a comma separated string of names.
-        /// </summary>
-        /// <param name="subsets">A comma separated list of subset names in a string.</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
-        public void SetSubsets(string subsets)
-        {
-
-            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
-        }
-
-
-        /// <summary>
-        /// Adds to the current library subsets this LSLLibraryConstantSignature belongs to by parsing them out of a comma separated string of names.
-        /// </summary>
-        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
-        public void AddSubsets(string subsets)
-        {
-            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
-        }
-
-
-        /// <summary>
-        /// Adds to the current library subsets this LSLLibraryConstantSignature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings to add.</param>
-        public void AddSubsets(IEnumerable<string> subsets)
-        {
-            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
         }
 
 

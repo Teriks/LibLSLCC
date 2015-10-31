@@ -71,8 +71,8 @@ namespace LibLSLCC.AutoComplete
         private static readonly Regex JumpRegex = new Regex("jump\\s*(" + LSLTokenTools.IDRegexString + ")");
         private static readonly Regex LabelRegex = new Regex("@\\s*(" + LSLTokenTools.IDRegexString + ")");
 
-        private readonly Stack<HashMap<string, LocalVariable>> _localVariables =
-            new Stack<HashMap<string, LocalVariable>>();
+        private readonly Stack<Dictionary<string, LocalVariable>> _localVariables =
+            new Stack<Dictionary<string, LocalVariable>>();
 
         private readonly HashMap<string, LocalParameter> _parameters = new HashMap<string, LocalParameter>();
         private readonly GenericArray<StateBlock> _stateBlocks = new GenericArray<StateBlock>();
@@ -199,17 +199,17 @@ namespace LibLSLCC.AutoComplete
             get { return _localVariables.SelectMany(x => x.Values); }
         }
 
-        public IDictionary<string, GlobalFunction> GlobalFunctionsDictionary
+        public IReadOnlyHashMap<string, GlobalFunction> GlobalFunctionsDictionary
         {
             get { return _globalFunctions; }
         }
 
-        public IDictionary<string, GlobalVariable> GlobalVariablesDictionary
+        public IReadOnlyHashMap<string, GlobalVariable> GlobalVariablesDictionary
         {
             get { return _globalVariables; }
         }
 
-        public IDictionary<string, LocalParameter> LocalParametersDictionary
+        public IReadOnlyHashMap<string, LocalParameter> LocalParametersDictionary
         {
             get { return _parameters; }
         }
@@ -552,11 +552,9 @@ namespace LibLSLCC.AutoComplete
 
         public class GlobalFunction
         {
-            public GlobalFunction(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
-                LSLSourceCodeRange nameRange,
-                IReadOnlyGenericArray<LocalParameter> parameters)
+            public GlobalFunction(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange, List<LocalParameter> parameters)
             {
-                Parameters = parameters;
+                Parameters = parameters.WrapWithGenericArray();
                 Name = name;
                 ReturnType = type;
                 SourceCodeRange = range;
@@ -569,9 +567,9 @@ namespace LibLSLCC.AutoComplete
             }
 
             public GlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
-                IReadOnlyGenericArray<LocalParameter> parameters)
+                List<LocalParameter> parameters)
             {
-                Parameters = parameters;
+                Parameters = parameters.WrapWithGenericArray();
                 Name = name;
                 ReturnType = "";
                 SourceCodeRange = range;
@@ -1202,7 +1200,7 @@ namespace LibLSLCC.AutoComplete
                 return v;
             }
 
-            readonly Stack<GenericArray<GlobalVariable>> _globalVariablesHidden = new Stack<GenericArray<GlobalVariable>>(); 
+            readonly Stack<List<GlobalVariable>> _globalVariablesHidden = new Stack<List<GlobalVariable>>(); 
 
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
             {
@@ -1275,7 +1273,7 @@ namespace LibLSLCC.AutoComplete
                 var returnTypeText = context.return_type == null ? "" : context.return_type.Text;
 
 
-                var parms = new GenericArray<LocalParameter>();
+                var parms = new List<LocalParameter>();
 
                 if (context.parameters != null && context.parameters.children != null)
                 {
@@ -1634,7 +1632,7 @@ namespace LibLSLCC.AutoComplete
                 _parent.InSingleStatementCodeScopeTopLevel = false;
                 _parent.InMultiStatementCodeScopeTopLevel = true;
 
-                _globalVariablesHidden.Push(new GenericArray<GlobalVariable>());
+                _globalVariablesHidden.Push(new List<GlobalVariable>());
 
 
                 if (context.Parent is LSLParser.FunctionDeclarationContext ||
@@ -1651,7 +1649,7 @@ namespace LibLSLCC.AutoComplete
                     }
                 }
 
-                _parent._localVariables.Push(new HashMap<string, LocalVariable>());
+                _parent._localVariables.Push(new Dictionary<string, LocalVariable>());
 
                 foreach (var i in context.codeStatement())
                 {

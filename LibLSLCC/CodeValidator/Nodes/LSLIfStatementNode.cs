@@ -103,7 +103,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return Code == null ? new GenericArray<LSLConstantJumpDescription>() : Code.ConstantJumps; }
+            get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps; }
         }
 
         internal LSLParser.IfStatementContext ParserContext { get; private set; }

@@ -95,7 +95,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return Code == null ? new GenericArray<LSLConstantJumpDescription>() : Code.ConstantJumps ; }
+            get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps ; }
         }
 
         public LSLCodeScopeNode Code { get; private set; }

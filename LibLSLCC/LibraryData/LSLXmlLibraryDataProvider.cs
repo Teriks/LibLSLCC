@@ -55,11 +55,44 @@ using System.Xml.Serialization;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
+    /// Indicates to the XML library data provider what library data elements should be loaded.
+    /// </summary>
+    [Flags]
+    public enum LSLLibraryDataLoadOptions
+    {
+        /// <summary>
+        /// Constants, Functions and Event handler definitions should all be loaded.
+        /// </summary>
+        All = Functions|Constants|Events,
+
+        /// <summary>
+        /// Load Function definitions.
+        /// </summary>
+        Functions = 1,
+
+        /// <summary>
+        /// Load Constant definitions.
+        /// </summary>
+        Constants = 2,
+
+        /// <summary>
+        /// Load Event definitions.
+        /// </summary>
+        Events = 4
+    }
+
+    /// <summary>
     ///     A library data provider that reads LSL library data from XML
     /// </summary>
     public class LSLXmlLibraryDataProvider : LSLLibraryDataProvider,
         IXmlSerializable
     {
+
+        /// <summary>
+        /// The root element name used for LSL Library Data XML
+        /// </summary>
+        public static readonly string RootElementName = LSLLibraryDataXmlSerializer.RootElementName;
+
 
         /// <summary>
         /// Construct an LSLXmlLibraryDataProvider with the option to enable live filtering mode in the base class
@@ -105,6 +138,11 @@ namespace LibLSLCC.LibraryData
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
+            _ReadXml(reader);
+        }
+
+        private void _ReadXml(XmlReader reader, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
+        {
             var lineInfo = (IXmlLineInfo) reader;
             try
             {
@@ -117,25 +155,32 @@ namespace LibLSLCC.LibraryData
                     AddSubsetDescription(desc);
                 };
 
-                serializer.ReadLibraryFunctionDefinition += signature =>
+                if((loadOptions & LSLLibraryDataLoadOptions.Functions) == LSLLibraryDataLoadOptions.Functions)
                 {
-                    lineInfo = serializer.CurrentLineInfo;
-                    DefineFunction(signature);
-                };
+                    serializer.ReadLibraryFunctionDefinition += signature =>
+                    {
+                        lineInfo = serializer.CurrentLineInfo;
+                        DefineFunction(signature);
+                    };
+                }
 
-                serializer.ReadLibraryEventHandlerDefinition += signature =>
+                if ((loadOptions & LSLLibraryDataLoadOptions.Events) == LSLLibraryDataLoadOptions.Events)
                 {
-                    lineInfo = serializer.CurrentLineInfo;
-                    DefineEventHandler(signature);
-                };
+                    serializer.ReadLibraryEventHandlerDefinition += signature =>
+                    {
+                        lineInfo = serializer.CurrentLineInfo;
+                        DefineEventHandler(signature);
+                    };
+                }
 
-
-                serializer.ReadLibraryConstantDefinition += signature =>
+                if ((loadOptions & LSLLibraryDataLoadOptions.Constants) == LSLLibraryDataLoadOptions.Constants)
                 {
-                    lineInfo = serializer.CurrentLineInfo;
-                    DefineConstant(signature);
-                };
-
+                    serializer.ReadLibraryConstantDefinition += signature =>
+                    {
+                        lineInfo = serializer.CurrentLineInfo;
+                        DefineConstant(signature);
+                    };
+                }
 
                 serializer.Parse(reader);
             }
@@ -170,11 +215,10 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
         /// <param name="writeRootElement">Whether or not to write the root element for this object</param>
-        /// <param name="rootElementName">The root element name to write the library data into as content.</param>
-        public void WriteXml(XmlWriter writer, bool writeRootElement, string rootElementName = "LSLLibraryData")
+        public void WriteXml(XmlWriter writer, bool writeRootElement)
         {
             LSLLibraryDataXmlSerializer.WriteXml(SubsetDescriptions.Values, LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
-                LibraryConstants, writer, writeRootElement, rootElementName);
+                LibraryConstants, writer, writeRootElement);
         }
 
 
@@ -182,11 +226,11 @@ namespace LibLSLCC.LibraryData
         /// Fills a library data provider from an XML reader object, the data provider is cleared of all definitions first.
         /// </summary>
         /// <param name="data">The XML reader to read from.</param>
-        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
-        public void FillFromXml(XmlReader data, string rootElementName = "LSLLibraryData")
+        public void FillFromXml(XmlReader data, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (data == null)
             {
@@ -195,10 +239,7 @@ namespace LibLSLCC.LibraryData
 
             ClearLibraryData();
 
-            data.ReadStartElement(rootElementName);
-
-            IXmlSerializable serializable = this;
-            serializable.ReadXml(data);
+            _ReadXml(data, loadOptions);
 
             data.ReadEndElement();
         }
@@ -208,21 +249,20 @@ namespace LibLSLCC.LibraryData
         /// Adds additional library data provider from an XML reader object, the data provider is not cleared first.
         /// </summary>
         /// <param name="data">The XML reader to read from.</param>
-        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
-        public void AddFromXml(XmlReader data, string rootElementName = "LSLLibraryData")
+        public void AddFromXml(XmlReader data, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (data == null)
             {
                 throw new ArgumentNullException("data");
             }
 
-            data.ReadStartElement(rootElementName);
+            data.ReadStartElement(RootElementName);
 
-            IXmlSerializable serializable = this;
-            serializable.ReadXml(data);
+            _ReadXml(data, loadOptions);
 
             data.ReadEndElement();
         }
@@ -233,7 +273,7 @@ namespace LibLSLCC.LibraryData
         /// Encoding is detected using the BOM (Byte Order Mark) of the file.
         /// </summary>
         /// <param name="filename">The XML file to read library data from.</param>
-        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
         /// <exception cref="ArgumentNullException">When the 'filename' parameter is null.</exception>
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
@@ -241,7 +281,7 @@ namespace LibLSLCC.LibraryData
         /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
-        public void AddFromXml(string filename, string rootElementName = "LSLLibraryData")
+        public void AddFromXml(string filename, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (filename == null)
             {
@@ -256,28 +296,26 @@ namespace LibLSLCC.LibraryData
             using (var reader = new XmlTextReader(new StreamReader(filename, true)))
             {
 
-                reader.ReadStartElement(rootElementName);
+                reader.ReadStartElement(RootElementName);
 
-                IXmlSerializable serializable = this;
-                serializable.ReadXml(reader);
+                _ReadXml(reader, loadOptions);
 
                 reader.ReadEndElement();
             }
         }
 
 
-
         /// <summary>
         /// Adds additional library data by parsing every XML file in a given directory, the data provider is not cleared first.
         /// </summary>
         /// <param name="path">The directory path.</param>
-        /// <param name="rootElementName">Name of the root element.</param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="System.ArgumentNullException">path</exception>
         /// <exception cref="System.ArgumentException">path</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
-        public void AddFromXmlDirectory(string path, string rootElementName = "LSLLibraryData")
+        public void AddFromXmlDirectory(string path, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (path == null)
             {
@@ -293,7 +331,7 @@ namespace LibLSLCC.LibraryData
             {
                 try
                 {
-                    AddFromXml(file, rootElementName);
+                    AddFromXml(file, loadOptions);
                 }
                 catch (LSLLibraryDataXmlSyntaxException e)
                 {
@@ -307,13 +345,13 @@ namespace LibLSLCC.LibraryData
         /// Fills a library data provider by parsing every XML file in a given directory, the data provider is cleared of all definitions first.
         /// </summary>
         /// <param name="path">The directory path.</param>
-        /// <param name="rootElementName">Name of the root element.</param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="System.ArgumentNullException">path</exception>
         /// <exception cref="System.ArgumentException">path</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
-        public void FillFromXmlDirectory(string path, string rootElementName = "LSLLibraryData")
+        public void FillFromXmlDirectory(string path, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (path == null)
             {
@@ -331,7 +369,7 @@ namespace LibLSLCC.LibraryData
             {
                 try
                 {
-                    AddFromXml(file, rootElementName);
+                    AddFromXml(file, loadOptions);
                 }
                 catch (LSLLibraryDataXmlSyntaxException e)
                 {
@@ -345,7 +383,7 @@ namespace LibLSLCC.LibraryData
         /// Encoding is detected using the BOM (Byte Order Mark) of the file.
         /// </summary>
         /// <param name="filename">The XML file to read library data from.</param>
-        /// <param name="rootElementName">The root element name of the top level XML node containing library data.</param>
+        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
         /// <exception cref="ArgumentNullException">When the 'filename' parameter is null.</exception>
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
@@ -353,7 +391,7 @@ namespace LibLSLCC.LibraryData
         /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
-        public void FillFromXml(string filename, string rootElementName = "LSLLibraryData")
+        public void FillFromXml(string filename, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (filename == null)
             {
@@ -370,13 +408,14 @@ namespace LibLSLCC.LibraryData
             using (var reader = new XmlTextReader(new StreamReader(filename, true)))
             {
 
-                reader.ReadStartElement(rootElementName);
+                reader.ReadStartElement(RootElementName);
 
-                IXmlSerializable serializable = this;
-                serializable.ReadXml(reader);
+                _ReadXml(reader, loadOptions);
 
                 reader.ReadEndElement();
             }
         }
+
+
     }
 }

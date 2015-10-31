@@ -68,12 +68,22 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class.
+        /// Initializes a new instance of the <see cref="HashMap{TKey, TValue}"/> class by wrapping an <see cref="IDictionary{TKey, TValue}"/>.
         /// </summary>
         /// <param name="items">The items.</param>
-        public HashMap(IDictionary<TKey, TValue> items)
+        private HashMap(IDictionary<TKey, TValue> items)
         {
             _items = items;
+        }
+
+
+        /// <summary>
+        /// Create a new instance of an <see cref="HashMap{TKey, TValue}"/> class by wrapping an <see cref="IDictionary{TKey, TValue}"/>.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        public static HashMap<TKey, TValue> CreateWrapper(IDictionary<TKey, TValue> items)
+        {
+            return new HashMap<TKey, TValue>(items);
         }
 
         /// <summary>
@@ -347,9 +357,5 @@ namespace LibLSLCC.Collections
 
 
 
-        public static implicit operator HashMap<TKey, TValue>(Dictionary<TKey, TValue> b)
-        {
-            return new HashMap<TKey, TValue>(b);
-        }
     }
 }

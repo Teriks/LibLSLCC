@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
     public class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
     {
-        private readonly GenericArray<LSLElseIfStatementNode> _elseIfStatements = new GenericArray<LSLElseIfStatementNode>();
+        private readonly List<LSLElseIfStatementNode> _elseIfStatements = new List<LSLElseIfStatementNode>();
         private LSLElseStatementNode _elseStatement;
         private LSLIfStatementNode _ifStatement;
 // ReSharper disable UnusedParameter.Local
@@ -169,7 +169,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         public IEnumerable<LSLElseIfStatementNode> ElseIfStatements
         {
-            get { return _elseIfStatements ?? new GenericArray<LSLElseIfStatementNode>(); }
+            get { return _elseIfStatements ?? new List<LSLElseIfStatementNode>(); }
         }
 
         internal LSLParser.ControlStructureContext ParserContext { get; private set; }

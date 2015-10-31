@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
@@ -34,33 +35,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <summary>
         /// The library subsets this signature belongs to/is shared among.
         /// </summary>
-        IReadOnlyHashedSet<string> Subsets { get; }
+        LSLLibraryDataSubsetCollection Subsets { get; }
 
 
-        /// <summary>
-        /// Adds to the current library subsets this signature belongs to by parsing them out of a comma separated string of names.
-        /// </summary>
-        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
-        void AddSubsets(string subsets);
-
-
-        /// <summary>
-        /// Sets the library subsets this signature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings</param>
-        void AddSubsets(IEnumerable<string> subsets);
-
-
-        /// <summary>
-        /// Sets the library subsets this signature belongs to by parsing them out of a comma separated string of names.
-        /// </summary>
-        /// <param name="subsets">A comma separated list of subset names in a string.</param>
-        void SetSubsets(string subsets);
-
-        /// <summary>
-        /// Sets the library subsets this signature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings</param>
-        void SetSubsets(IEnumerable<string> subsets);
     }
 }

@@ -92,6 +92,11 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         public IXmlLineInfo CurrentLineInfo { get; private set; }
 
+        /// <summary>
+        /// The root element name used for LSL Library Data XML
+        /// </summary>
+        public static readonly string RootElementName = "LSLLibraryData";
+
 
         /// <summary>
         /// This event is fired when a function definition has been retrieved from XML markup.
@@ -159,9 +164,8 @@ namespace LibLSLCC.LibraryData
         /// Starts a parse at the current node in the given XmlReader, the default element name to consume the content of is 'LSLLibraryData'
         /// </summary>
         /// <param name="reader">The XmlReader object to read XML from.</param>
-        /// <param name="rootElementName">The name of the root element, it will be consumed first and the content will be read from it.</param>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
-        public void Parse(XmlReader reader, string rootElementName = "LSLLibraryData")
+        public void Parse(XmlReader reader)
         {
             CurrentLineInfo = (IXmlLineInfo) reader;
 
@@ -207,7 +211,7 @@ namespace LibLSLCC.LibraryData
 
                         canRead = reader.Read();
                     }
-                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == rootElementName)
+                    else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == RootElementName)
                     {
                         break;
                     }
@@ -249,19 +253,17 @@ namespace LibLSLCC.LibraryData
         /// <param name="libraryConstants">The library constant signatures to serialize</param>
         /// <param name="writer">The XmlWriter object to serialize to.</param>
         /// <param name="writeRootElement">Boolean defining whether or not to write a root element to the stream that houses the signatures, or to just write the signatures without putting them in a root element.</param>
-        /// <param name="rootElementName">The name of the root element, which is houses the serialized library signature definitions.  The default name is 'LSLLibraryData'</param>
         public static void WriteXml(
             IEnumerable<LSLLibrarySubsetDescription> librarySubsetDescriptions,
             IEnumerable<LSLLibraryFunctionSignature> libraryFunctions,
             IEnumerable<LSLLibraryEventSignature> libraryEventSignatures,
             IEnumerable<LSLLibraryConstantSignature> libraryConstants,
             XmlWriter writer,
-            bool writeRootElement = true,
-            string rootElementName = "LSLLibraryData")
+            bool writeRootElement = true)
         {
             if (writeRootElement)
             {
-                writer.WriteStartElement(rootElementName);
+                writer.WriteStartElement(RootElementName);
             }
 
 

@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -63,8 +64,8 @@ namespace LibLSLCC.LibraryData
     [XmlRoot("EventHandler")]
     public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable, ILSLLibrarySignature
     {
-        private HashMap<string, string> _properties = new HashMap<string, string>();
-        private HashedSet<string> _subsets = new HashedSet<string>();
+        private Dictionary<string, string> _properties = new Dictionary<string, string>();
+        private LSLLibraryDataSubsetCollection _subsets = new LSLLibraryDataSubsetCollection();
 
 
         private LSLLibraryEventSignature()
@@ -91,8 +92,8 @@ namespace LibLSLCC.LibraryData
             : base(other)
         {
             DocumentationString = other.DocumentationString;
-            _subsets = new HashedSet<string>(other._subsets);
-            _properties = other._properties.ToHashMap(x => x.Key, y => y.Value);
+            _subsets = new LSLLibraryDataSubsetCollection(other._subsets);
+            _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
         }
 
 
@@ -121,7 +122,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// The library subsets that this LSLLibraryEventSignature belongs to.
         /// </summary>
-        public IReadOnlyHashedSet<string> Subsets
+        public LSLLibraryDataSubsetCollection Subsets
         {
             get { return _subsets; }
         }
@@ -198,7 +199,7 @@ namespace LibLSLCC.LibraryData
             {
                 if (reader.Name == "Subsets")
                 {
-                    SetSubsets(reader.Value);
+                    Subsets.SetSubsets(reader.Value);
                     hasSubsets = true;
                 }
                 else if (reader.Name == "Name")
@@ -354,49 +355,6 @@ namespace LibLSLCC.LibraryData
             return new LSLLibraryEventSignature(LSLEventSignature.Parse(str));
         }
 
-
-        /// <summary>
-        /// Sets the library subsets this LSLLibraryEventSignature belongs to by parsing them out of a comma separated string of names.
-        /// </summary>
-        /// <param name="subsets">A comma separated list of subset names in a string.</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
-        public void SetSubsets(string subsets)
-        {
-            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
-        }
-
-
-        /// <summary>
-        /// Adds to the current library subsets this LSLLibraryEventSignature belongs to by parsing them out of a comma separated string of names.
-        /// </summary>
-        /// <param name="subsets">A comma separated list of subset names in a string to add.</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
-        public void AddSubsets(string subsets)
-        {
-            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ParseSubsets(subsets));
-        }
-
-
-        /// <summary>
-        /// Sets the library subsets this signature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
-        public void AddSubsets(IEnumerable<string> subsets)
-        {
-            _subsets.UnionWith(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
-        }
-
-
-        /// <summary>
-        /// Sets the library subsets this signature belongs to.
-        /// </summary>
-        /// <param name="subsets">An enumerable of subset name strings</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
-        public void SetSubsets(IEnumerable<string> subsets)
-        {
-            _subsets = new HashedSet<string>(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
-        }
 
 
         /// <summary>
