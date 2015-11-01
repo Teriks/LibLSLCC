@@ -51,7 +51,7 @@ namespace LibLSLCC.LibraryData
     /// <summary>
     /// Collection wrapper for library subset strings
     /// </summary>
-    public class LSLLibraryDataSubsetCollection : IEnumerable<string>, ISet<string>
+    public class LSLLibraryDataSubsetCollection : ISet<string>, IReadOnlyHashedSet<string>
     {
         private readonly HashSet<string> _subsets;
 

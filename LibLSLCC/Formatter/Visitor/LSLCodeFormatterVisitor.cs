@@ -60,7 +60,7 @@ namespace LibLSLCC.Formatter.Visitor
     /// <summary>
     /// An LSL Syntax tree visitor that formats code.
     /// </summary>
-    public class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
+    internal class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
     {
         private readonly Stack<bool> _binaryExpressionWrappingEnabledStack = new Stack<bool>();
         private readonly LinkedList<LSLComment> _comments = new LinkedList<LSLComment>();

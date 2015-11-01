@@ -61,6 +61,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Compilers;
+using LibLSLCC.Formatter;
 using LibLSLCC.Formatter.Visitor;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
@@ -653,10 +654,10 @@ namespace LSLCCEditor
                 return;
             }
 
-            var formatter = new LSLCodeFormatterVisitor();
+            var formatter = new LSLCodeFormatter();
 
             var str = new StringWriter();
-            formatter.WriteAndFlush(tab.SourceCode, validated, str);
+            formatter.Format(tab.SourceCode, validated, str);
 
             var st = str.ToString();
             if (tab.SourceCode != st)

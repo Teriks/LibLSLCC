@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.LibraryData.Reflection

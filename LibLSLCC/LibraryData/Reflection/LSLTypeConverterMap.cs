@@ -53,7 +53,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// <summary>
     /// Implements <see cref="ILSLTypeConverter"/> as an simple <see cref="IDictionary{Type,LSLType}"/>.
     /// </summary>
-    public class LSLTypeConverterMap : IDictionary<Type, CodeValidator.Enums.LSLType>, ILSLTypeConverter
+    public class LSLTypeConverterMap : IDictionary<Type, LSLType>, ILSLTypeConverter
     {
         private readonly IDictionary<Type,LSLType> _map;
 

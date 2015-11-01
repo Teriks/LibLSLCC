@@ -50,7 +50,6 @@ using System.Reflection;
 using System.Text;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers;
 using LibLSLCC.LibraryData;
