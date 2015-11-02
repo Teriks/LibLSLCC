@@ -144,7 +144,9 @@ namespace Tests
             return "";
         }
 
-
+        //This explicitly defines everything, it overrides any conversion
+        //that may take place, its also the way you would attribute your methods 
+        //if you do not wish to use converters at all.
         [LSLFunction(LSLType.Float)]
         public string function(
             [LSLParam(LSLType.Integer)] int arg1,
