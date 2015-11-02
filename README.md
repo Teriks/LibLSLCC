@@ -76,7 +76,7 @@ The Code Validator/OpenSim Code Generator Features:
  * Correct Code generation for jumps over declared variables.
 	
  * Jumps no longer require a "NoOp()" after them, LibLSLCC simply detects when
-   they are not followed by any statements.
+   they are not followed by any statements and are at the end of a scope.
 	
  * Full and optimized support for the CO-OP script stop strategy in OpenSim.
    An option to enable this is not in the editor yet, but the OpenSim fork enables it
