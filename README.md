@@ -185,11 +185,17 @@ type so you can build the LSLCCEditorInstaller project.
 If you do not have WiX installed the project will still load but Visual Studio will show an error about LSLCCEditorInstaller
 being an unsupported project type.  If you don't care about building the installer for the editor just click through the error
 and the project will be ignored when you try to build.
- 
-If you only wish to build the LibLSLCC library, you can go to Build -> Configuration Manager in Visual Studios and uncheck 'Build'
-next to every project in the solution besides LibLSLCC.  You must first set the active solution configuration to the desired build
-type (Release or Debug), and the active solution platform to the desired architecture before doing this, so that the settings actually
-apply to the type of build you want.
+
+
+Or:
+
+
+If you only wish to build the LibLSLCC library and Editor on windows without an Editor installer; you can use the provided 
+**LibLSLCC-Windows-NoInstaller.sln** solution file, which excludes the installer for the Editor all together.
+
+
+If you don't really care about building the Editor at all either, the **MonoDevelop-LibLSLCC.sln** can be built on Windows
+too.  It only includes the LibLSLCC project, LibraryDataScrapingTools, DemoArea and lslcc_cmd project.
  
 
  
