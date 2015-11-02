@@ -9,13 +9,13 @@ but that are not implemented in either the Linden compiler or current OpenSim co
 
 Warnings for things such as: 
 
-	* Constant expressions in conditional/loop statements
+	* Constant expressions in conditional/loop statements.
 	
-	* Un-used variables
+	* Un-used variables.
 	
-	* Dead code
+	* Dead code.
 	
-	* Depreciated function usage
+	* Deprecated function usage.
 	
 	
 That's not everything just some common ones.. this list is pretty long.
