@@ -154,8 +154,7 @@ namespace Tests
             return "";
         }
 
-        //the first parameter is missing an attribute, the default
-        //serializer options say to remove it from the generated signature
+
         [LSLFunction(LSLType.Float)]
         public string function(
             int arg1,
