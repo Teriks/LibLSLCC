@@ -263,11 +263,10 @@ private static class UTILITIES
         public override bool VisitPrefixOperation(ILSLPrefixOperationNode node)
         {
             if (node.RightExpression.Type == LSLType.Rotation ||
-                node.RightExpression.Type == LSLType.Vector && node.OperationString == "+")
+                node.RightExpression.Type == LSLType.Vector && node.OperationString == "-")
             {
                 Writer.Write("UTILITIES.Negate(");
                 Visit(node.RightExpression);
-
                 Writer.Write(")");
             }
             else
