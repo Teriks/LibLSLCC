@@ -57,6 +57,7 @@ namespace LibLSLCC.LibraryData.Reflection
         public ILSLTypeConverter FallBackParameterTypeConverter { get; set; }
 
         public bool AttributedParametersOnly { get; set; }
+        public Func<ParameterInfo, bool> ParameterFilter { get; set; }
 
 
         public class Info
@@ -207,8 +208,12 @@ namespace LibLSLCC.LibraryData.Reflection
 
             var preferedParameterConverter = result.ParamTypeConverter ?? FallBackParameterTypeConverter;
 
-            var parameters = method.GetParameters().ToList();
+            var parameters = method.GetParameters().AsEnumerable();
 
+            if (ParameterFilter != null)
+            {
+                parameters = parameters.Where(x => !ParameterFilter(x));
+            }
 
             foreach (var param in parameters)
             {
