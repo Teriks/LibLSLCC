@@ -18,7 +18,7 @@ Warnings for things such as:
 	* Depreciated function usage
 	
 	
-That’s not everything just some common ones.. this list is pretty long.
+That's not everything just some common ones.. this list is pretty long.
 I suggest you mess around with the editor releases to discover what all 
 LibLSLCC can tell you about your code.
 	
