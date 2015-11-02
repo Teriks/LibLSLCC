@@ -109,17 +109,6 @@ namespace Tests
             };
 
 
-
-            LSLDefaultLibraryDataProvider y = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl,LSLLibraryDataAdditions.None, false);
-
-
-            var j = y.GetLibraryFunctionSignatures("llAbs").First();
-
-            j.Subsets.Add("test");
-
-
-
-
             Console.WriteLine("Methods....\n\n");
 
             var methods = x.DeSerializeMethods(typeof(AttributeReflectionTest)).ToList();
