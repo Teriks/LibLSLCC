@@ -107,7 +107,7 @@ namespace LibLSLCC.Compilers
         /// <summary>
         /// The name of the namespace the class should reside in if GenerateClass is set to true.
         /// </summary>
-        public string GenerateClassNamespace { get; set; }
+        public string GeneratedClassNamespace { get; set; }
 
         /// <summary>
         /// The name of the class around the generated code if GeneratedClass is set to true.
@@ -145,7 +145,7 @@ namespace LibLSLCC.Compilers
             var compilerSettings = new LSLOpenSimCSCompilerSettings(libraryData)
             {
                 GenerateClass = true,
-                GenerateClassNamespace = "SecondLife",
+                GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "XEngineScript",
                 GeneratedClassInherit = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
                 GeneratedConstructorDefinition = "public XEngineScript(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle) {}",
@@ -167,7 +167,7 @@ namespace LibLSLCC.Compilers
             var compilerSettings = new LSLOpenSimCSCompilerSettings(libraryData)
             {
                 GenerateClass = true,
-                GenerateClassNamespace = "SecondLife",
+                GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "LSLScript",
                 GeneratedClassInherit = "LSLScriptBase",
                 GeneratedConstructorDefinition = "public LSLScript() : base() {}",

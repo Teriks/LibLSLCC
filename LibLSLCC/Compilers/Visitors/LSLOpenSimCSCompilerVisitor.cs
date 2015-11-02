@@ -1210,29 +1210,36 @@ private static class UTILITIES
         {
             if (Settings.GenerateClass)
             {
-                foreach (var ns in Settings.GeneratedNamespaceImports)
+                if (Settings.GeneratedClassNamespace != null)
                 {
-                    Writer.WriteLine("using "+ns+";");
-                    Writer.Write(Environment.NewLine);
+                    foreach (var ns in Settings.GeneratedNamespaceImports)
+                    {
+                        Writer.WriteLine("using " + ns + ";");
+                        Writer.Write(Environment.NewLine);
+                    }
                 }
 
                 Writer.Write(Environment.NewLine);
 
-                if (!string.IsNullOrWhiteSpace(Settings.GenerateClassNamespace))
+                if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassNamespace))
                 {
-                    Writer.WriteLine("namespace {0}", Settings.GenerateClassNamespace);
+                    Writer.WriteLine("namespace {0}", Settings.GeneratedClassNamespace);
                     Writer.WriteLine("{");
                     _indentLevel++;
                 }
 
+                var cName = string.IsNullOrWhiteSpace(Settings.GeneratedClassName)
+                    ? "Script"
+                    : Settings.GeneratedClassName;
+
                 if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassInherit))
                 {
-                    Writer.WriteLine(GenIndent() + "class {0} : {1}", Settings.GeneratedClassName,
+                    Writer.WriteLine(GenIndent() + "class {0} : {1}", cName,
                         Settings.GeneratedClassInherit);
                 }
                 else
                 {
-                    Writer.WriteLine(GenIndent() + "class {0}", Settings.GeneratedClassName);
+                    Writer.WriteLine(GenIndent() + "class {0}",  cName);
                 }
 
                 Writer.WriteLine(GenIndent() + "{");
@@ -1241,7 +1248,11 @@ private static class UTILITIES
 
                 _indentLevel++;
 
-                WriteMultiLineIndentedString(Settings.GeneratedConstructorDefinition);
+
+                if (!string.IsNullOrWhiteSpace(Settings.GeneratedConstructorDefinition))
+                {
+                    WriteMultiLineIndentedString(Settings.GeneratedConstructorDefinition);
+                }
             }
             else
             {
@@ -1315,7 +1326,7 @@ private static class UTILITIES
 
             if (Settings.GenerateClass)
             {
-                if (!string.IsNullOrWhiteSpace(Settings.GenerateClassNamespace))
+                if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassNamespace))
                 {
                     _indentLevel--;
 
