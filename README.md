@@ -1,4 +1,4 @@
-#About LibLSLCC and LibLSLCCEditor 
+#About LibLSLCC 
  
 The LibLSLCC library is a compiler framework for writing LSL compilers.
 
@@ -97,9 +97,13 @@ Code Validator/OpenSim Code Generator Features:
 	  I put a lot of time into this.
 	  
 	
-	
+#About LibLSLCCEditor
+
   
-The project also includes full featured LSL Editor with:
+The project also includes full featured LSL Editor that was originally built to test the compiler library.
+It has since developed into a full blown multi-tabbed IDE that is built on top of LibLSLCC's parsing framework. 
+
+It Features:
 	
 	* Syntax Highlighting.
 	
@@ -113,13 +117,10 @@ The project also includes full featured LSL Editor with:
 	
 	* Library data for both Linden and Opensim SecondLife servers. 
 	
-	* Compile to CSharp code for OpenSim.
+	* Compilation to CSharp code for OpenSim.
 	 (CO-OP script stop mode cannot be enabled in the editor yet.)
+	
 
-	
-	
-Which was built to test the compiler library originally but has developed into a full blown multi-tabbed 
-IDE that is built on top of LibLSLCC's parsing framework. 
  
 
 #Project Dependencies
