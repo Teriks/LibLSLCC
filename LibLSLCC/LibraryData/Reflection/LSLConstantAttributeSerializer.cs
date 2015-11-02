@@ -97,6 +97,22 @@ namespace LibLSLCC.LibraryData.Reflection
                 return null;
             }
 
+
+            var propertyInfo = info as PropertyInfo;
+            var fieldInfo = info as FieldInfo;
+
+            bool isProperty = propertyInfo != null;
+
+
+            bool isStatic = isProperty ? propertyInfo.GetGetMethod(true).IsStatic : fieldInfo.IsStatic;
+
+
+
+            Type memberType = isProperty ? propertyInfo.PropertyType : fieldInfo.FieldType;
+
+
+
+
             var attrList =
                 info.GetCustomAttributesData()
                     .Where(x => x.Constructor.DeclaringType == typeof (LSLConstantAttribute))
@@ -210,12 +226,9 @@ namespace LibLSLCC.LibraryData.Reflection
             }
 
 
-            var propertyInfo = info as PropertyInfo;
-            var fieldInfo = info as FieldInfo;
+            
 
-            Type memberType;
-
-            object fieldValue = null;
+            object retrievedMemberValue = null;
 
 
             if (propertyInfo != null)
@@ -232,99 +245,59 @@ namespace LibLSLCC.LibraryData.Reflection
                                 info.Name, info.DeclaringType.FullName));
                     }
                 }
+            }
 
-                if (propertyInfo.GetGetMethod(true).IsStatic)
+
+            if (isStatic)
+            {
+                retrievedMemberValue = isProperty ? propertyInfo.GetValue(null, null) : fieldInfo.GetValue(null);
+
+                if (retrievedMemberValue == null)
                 {
-                    fieldValue = propertyInfo.GetValue(null, null);
-
-                    if (fieldValue == null)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Static Property '{0}' in class '{1}' is tagged with [LSLConstantAttribute] and returned a null value.",
-                                info.Name, info.DeclaringType.FullName));
-                    }
+                    throw new LSLLibraryDataAttributeException(
+                        string.Format(
+                            "Static {0} '{1}' in class '{2}' is tagged with [LSLConstantAttribute] and returned a null value.", 
+                            isProperty ? "Property" : "Field",
+                            info.Name, info.DeclaringType.FullName));
                 }
-                else if (this.OptionalDeclaringTypeInstance == null)
+            }
+            else if (OptionalDeclaringTypeInstance == null)
+            {
+                if (!result.ExplicitValueStringPresent)
                 {
-                    if (!result.ExplicitValueStringPresent)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Instance Property '{0}' in class '{1}' has cannot have its value retrieved because no instance of '{1}' was supplied and [LSLConstantAttribute.ValueString] was not explicitly set.",
-                                info.Name, info.DeclaringType.FullName));
-                    }
-                }
-                else
-                {
-                    if (this.OptionalDeclaringTypeInstance.GetType() != info.DeclaringType)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Instance Property '{0}' in class '{1}' has cannot have its value retrieved because an instance of '{2}' was supplied to retrieve it from and an instance of '{1}' is required.",
-                                info.Name, info.DeclaringType.FullName, OptionalDeclaringTypeInstance.GetType().FullName));
-                    }
-
-
-                    fieldValue = propertyInfo.GetValue(OptionalDeclaringTypeInstance, null);
-
-                    if (fieldValue == null)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Instance Property '{0}' in class '{1}' is tagged with [LSLConstantAttribute] and returned a null value.",
-                                info.Name, info.DeclaringType.FullName));
-                    }
+                    throw new LSLLibraryDataAttributeException(
+                        string.Format(
+                            "Instance {0} '{1}' in class '{2}' has cannot have its value retrieved because no instance of '{1}' was supplied and [LSLConstantAttribute.ValueString] was not explicitly set.",
+                            isProperty ? "Property" : "Field",
+                            info.Name, info.DeclaringType.FullName));
                 }
             }
             else
             {
-                memberType = fieldInfo.FieldType;
-
-                if (fieldInfo.IsStatic)
+                if (OptionalDeclaringTypeInstance.GetType() != info.DeclaringType)
                 {
-                    fieldValue = fieldInfo.GetValue(null);
-
-                    if (fieldValue == null)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Static Field '{0}' in class '{1}' is tagged with [LSLConstantAttribute] and returned a null value.",
-                                info.Name, info.DeclaringType.FullName));
-                    }
+                    throw new LSLLibraryDataAttributeException(
+                        string.Format(
+                            "Instance {0} '{1}' in class '{2}' has cannot have its value retrieved because an instance of '{3}' was supplied to retrieve it from and an instance of '{2}' is required.",
+                            isProperty ? "Property" : "Field",
+                            info.Name, 
+                            info.DeclaringType.FullName, 
+                            OptionalDeclaringTypeInstance.GetType().FullName));
                 }
-                else if (OptionalDeclaringTypeInstance == null)
+
+
+                retrievedMemberValue = isProperty ? propertyInfo.GetValue(OptionalDeclaringTypeInstance, null) : fieldInfo.GetValue(OptionalDeclaringTypeInstance);
+
+                if (retrievedMemberValue == null)
                 {
-                    if (!result.ExplicitValueStringPresent)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Instance Field '{0}' in class '{1}' has cannot have its value retrieved because no instance of '{1}' was supplied and [LSLConstantAttribute.ValueString] was not explicitly set.",
-                                info.Name, info.DeclaringType.FullName));
-                    }
-                }
-                else
-                {
-                    if (OptionalDeclaringTypeInstance.GetType() != info.DeclaringType)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Instance Field '{0}' in class '{1}' has cannot have its value retrieved because an instance of '{2}' was supplied to retrieve it from and an instance of '{1}' is required.",
-                                info.Name, info.DeclaringType.FullName, OptionalDeclaringTypeInstance.GetType().FullName));
-                    }
-
-
-                    fieldValue = fieldInfo.GetValue(OptionalDeclaringTypeInstance);
-
-                    if (fieldValue == null)
-                    {
-                        throw new LSLLibraryDataAttributeException(
-                            string.Format(
-                                "Instance Field '{0}' in class '{1}' is tagged with [LSLConstantAttribute] and returned a null value.",
-                                info.Name, info.DeclaringType.FullName));
-                    }
+                    throw new LSLLibraryDataAttributeException(
+                        string.Format(
+                            "Instance {0} '{1}' in class '{2}' is tagged with [LSLConstantAttribute] and returned a null value.",
+                            isProperty ? "Property" : "Field",
+                            info.Name, info.DeclaringType.FullName));
                 }
             }
+  
 
 
             if (!result.ExplicitValueStringPresent && result.ValueStringConverterInstance == null &&
@@ -332,7 +305,7 @@ namespace LibLSLCC.LibraryData.Reflection
             {
                 throw new LSLLibraryDataAttributeException(
                     string.Format(
-                        (fieldValue == null ? "Property" : "Field") +
+                        (isProperty ? "Property" : "Field") +
                         " '{0}' in class '{1}' uses an [LSLContantAttribute] without an [LSLContantAttribute.ValueString] or" +
                         " [LSLContantAttribute.ValueStringConverter], one or the other is required if no fall-back value string converter is defined in the serializer.",
                         info.Name, info.DeclaringType.FullName));
@@ -342,7 +315,7 @@ namespace LibLSLCC.LibraryData.Reflection
             {
                 throw new LSLLibraryDataAttributeException(
                     string.Format(
-                        (fieldValue == null ? "Property" : "Field") +
+                        (isProperty ? "Property" : "Field") +
                         " '{0}' in class '{1}' uses an [LSLContantAttribute] without a [LSLContantAttribute.Type] or" +
                         " [LSLContantAttribute.TypeConverter], one or the other is required if no fall-back type converter is defined in the serializer.",
                         info.Name, info.DeclaringType.FullName));
@@ -359,7 +332,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            (fieldValue == null ? "Property" : "Field") +
+                            (isProperty ? "Property" : "Field") +
                             " '{0}' in class '{1}' was declared with the Type '{2}' that was unable to be converted by the selected type converter of Type '{3}'.",
                             info.Name, info.DeclaringType.FullName, memberType.FullName, converter.GetType().FullName));
                 }
@@ -368,7 +341,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            (fieldValue == null ? "Property" : "Field") +
+                            (isProperty ? "Property" : "Field") +
                             " '{0}' in class '{1}' was declared with the Type '{2}' that the selected type converter of Type '{3}' converted into 'LSLType.Void'.",
                             info.Name, info.DeclaringType.FullName, memberType.FullName, converter.GetType().FullName));
                 }
@@ -384,23 +357,23 @@ namespace LibLSLCC.LibraryData.Reflection
 
                 var converter = result.ValueStringConverterInstance ?? FallBackValueStringConverter;
 
-                if (!converter.Convert(result.Type, fieldValue.ToString(), out convertedValueString))
+                if (!converter.Convert(result.Type, retrievedMemberValue.ToString(), out convertedValueString))
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            (fieldValue == null ? "Property" : "Field") +
+                            (isProperty ? "Property" : "Field") +
                             " '{0}' in class '{1}' was declared with the (ToString'd) value '{2}' that was unable to be converted by the selected value string converter of Type '{3}'.",
-                            info.Name, info.DeclaringType.FullName, fieldValue, converter.GetType().FullName));
+                            info.Name, info.DeclaringType.FullName, retrievedMemberValue, converter.GetType().FullName));
                 }
 
                 if (convertedValueString == null)
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            (fieldValue == null ? "Property" : "Field") +
+                            (isProperty ? "Property" : "Field") +
                             " '{0}' in class '{1}' was declared with the (ToString'd) value '{2}' that the value" +
                             " string converter of Type '{3}' converted into 'null', null conversion result is not allowed.",
-                            info.Name, info.DeclaringType.FullName, fieldValue, converter.GetType().FullName));
+                            info.Name, info.DeclaringType.FullName, retrievedMemberValue, converter.GetType().FullName));
                 }
 
                 result.RetrievedValueString = convertedValueString;
