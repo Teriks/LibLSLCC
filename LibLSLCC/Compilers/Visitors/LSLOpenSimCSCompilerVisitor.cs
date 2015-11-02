@@ -102,10 +102,6 @@ private static class UTILITIES
         vector.z=(-vector.z);
         return vector;
     }
-    public static LSL_Types.list Copy(LSL_Types.list l_in)
-    {
-        return l_in.GetSublist(0, l_in.Length);
-    }
 }
 ";
 

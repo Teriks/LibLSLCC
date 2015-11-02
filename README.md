@@ -1,30 +1,125 @@
 #About LibLSLCC and LibLSLCCEditor 
  
+The LibLSLCC library is a compiler framework for writing LSL compilers.
+
+The LibLSLCC code validator/syntax tree builder provides **full front end syntax checking of LSL**.
+It even includes extended warnings that you would find in most compilers for other languages,
+but that are not implemented in either the Linden compiler or current OpenSim compiler.
+
+
+Warnings for things such as: 
+
+	* Constant expressions in if statements
+	
+	* Un-used variables
+	
+	* Dead code
+	
+	* Depreciated function usage
+	
+	
+That’s not everything just some common ones.. this list is pretty long.
+I suggest you mess around with the editor releases to discover what all 
+LibLSLCC can tell you about your code.
+	
+	
+LibLSLCC can also be used for general purpose LSL parsing tasks, it provides
+its own rich syntax tree (Created as LSL code is validated) that has been completely
+abstracted from ANTLR.  The syntax tree is tailored specifically for dealing with LSL,
+and there is an interface for every node so that you can implement your own code DOM 
+if want to.
+
+
+====
+
+
+LibLSLCC includes a CSharp code generator that targets the OpenSim runtime.
+
+The Code Validator and OpenSim code generator in LibLSLCC have both been designed
+with the intent of implementing Linden LSL with 100 percent cross compatibility.
+
+The project is basically a complete reverse engineering of the Linden compiler's
+Grammar/Rules and generated code behavior.
+
+
+
+I have integrated LibLSLCC into OpenSim, See Here:
+
+       https://github.com/Teriks/OpenSim_With_LibLSLCC 
  
-The LibLSLCC Library was designed to be a drop in replacement for OpenSim's default compiler. 
-LibLSLCC implements an true compiler for LSL with full front end syntax checking, true to Linden LSL  
-Operator precedence, and compatibility fixes for issues that the default OpenSim compiler and OpenSim LSL runtime suffers from.  
-  
-The LibLSLCC compiler also provides helpful extended syntax warnings, errors and code validations not present in the Linden compiler.  
-  
-  
-The project includes full featured LSL Editor with context aware auto complete, go to definition (navigation by symbol), code formatting, and library data 
-for both Linden and Opensim SecondLife servers.  It was built to test the compiler originally but has developed into a full blown multi tabbed IDE. 
- 
- 
- 
-As of 10/2/2015 I have integrated my compiler into the OpenSim 0.8.2.0 Development version and 
-made the code public 
- 
- 
-See: 
- 
-        https://github.com/Teriks/OpenSim_With_LibLSLCC 
- 
-        Or 
+       Or 
          
-        https://gitlab.com/erihoss/OpenSim_With_LibLSLCC 
-         
+       https://gitlab.com/erihoss/OpenSim_With_LibLSLCC 
+
+
+	   
+	   
+Code Validator/OpenSim Code Generator Features:
+
+	* Full front end Syntax Checking, including dead code detection.  
+	  no more esoteric CSharp compiler errors or line mapping funkyness.
+	
+	* Dead code elimination from generated code where applicable.
+	  This includes un-used functions and global variables, as well
+	  as any dead code in a function/event body that does not cause a compile 
+	  error and is safe to remove given its context.
+	
+	* Correct code generation for global variables that reference each other.
+	
+	* Symbol name mangling specific to globals/parameters/locals and user defined functions.
+	  This completely abstracts variable scoping rules from the CSharp compiler.
+	  All variable scoping rules are handled by the front end LibLSLCC Code Validator.
+	  The scoping rules implemented are %100 true to LSL.
+	  
+	  This also has the effect of removing the possibility of causing a CSharp syntax
+	  error by using a keyword/Class name as a variable or function name.
+	  
+	  
+	* Correct Code generation for jumps over declared variables.
+	
+	* Jumps no longer require a "NoOp()" after them, LibLSLCC simply detects when
+	  they are not followed by any statements.
+	
+	* Full and optimized support for CO-OP script stop strategy in OpenSim.
+	  An option to enable this is not in the editor yet, but the OpenSim fork enables it
+	  when it's seen in OpenSim.ini.
+	
+	* Correct order of operations via the use of operator function stubs
+	  that are generated on demand.  Old mono list optimizations will now
+	  port over without breaking, as well as other funky scripts that rely
+	  on Right to Left evaluation being the norm.
+	  
+	* Correct treatment of vectors/rotations/lists and strings as booleans.
+	
+	* Vectors and rotations can now be negated.
+	
+	* At this point I am scratching my head because I cannot remember what else...
+	  I put a lot of time into this.
+	  
+	
+	
+  
+The project also includes full featured LSL Editor with:
+	
+	* Syntax Highlighting.
+	
+	* Documentation tooltips.
+
+	* Context aware auto complete.
+	
+	* Go to definition (navigation by symbol).
+	
+	* Code formatting.
+	
+	* Library data for both Linden and Opensim SecondLife servers. 
+	
+	* Compile to CSharp code for OpenSim.
+	 (CO-OP script stop mode cannot be enabled in the editor yet.)
+
+	
+	
+Which was built to test the compiler library originally but has developed into a full blown multi-tabbed 
+IDE that is built on top of LibLSLCC's parsing framework. 
  
          
  
