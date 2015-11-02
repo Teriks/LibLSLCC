@@ -45,11 +45,11 @@ Grammar/Rules and generated code behavior.
 
 I have integrated LibLSLCC into OpenSim, See Here:
 
-       https://github.com/Teriks/OpenSim_With_LibLSLCC 
+https://github.com/Teriks/OpenSim_With_LibLSLCC 
  
-       Or 
+Or:
          
-       https://gitlab.com/erihoss/OpenSim_With_LibLSLCC 
+https://gitlab.com/erihoss/OpenSim_With_LibLSLCC 
 
 
 ====   
