@@ -56,46 +56,46 @@ I have integrated LibLSLCC into OpenSim, See Here:
 	   
 Code Validator/OpenSim Code Generator Features:
 
-	* Full front end Syntax Checking, including dead code detection.  
+ * Full front end Syntax Checking, including dead code detection.  
 	  no more esoteric CSharp compiler errors or line mapping funkyness.
 	
-	* Dead code elimination from generated code where applicable.
+ * Dead code elimination from generated code where applicable.
 	  This includes un-used functions and global variables, as well
 	  as any dead code in a function/event body that does not cause a compile 
 	  error and is safe to remove given its context.
 	
-	* Correct code generation for global variables that reference each other.
+ * Correct code generation for global variables that reference each other.
 	
-	* Symbol name mangling specific to globals/parameters/locals and user defined functions.
-	  This completely abstracts variable scoping rules from the CSharp compiler.
-	  All variable scoping rules are handled by the front end LibLSLCC Code Validator.
-	  The scoping rules implemented are %100 true to LSL.
+ * Symbol name mangling specific to globals/parameters/locals and user defined functions.
+   This completely abstracts variable scoping rules from the CSharp compiler.
+   All variable scoping rules are handled by the front end LibLSLCC Code Validator.
+   The scoping rules implemented are %100 true to LSL.
+   
+   This also has the effect of removing the possibility of causing a CSharp syntax
+   error by using a keyword/Class name as a variable or function name.
 	  
-	  This also has the effect of removing the possibility of causing a CSharp syntax
-	  error by using a keyword/Class name as a variable or function name.
 	  
+ * Correct Code generation for jumps over declared variables.
+	
+ * Jumps no longer require a "NoOp()" after them, LibLSLCC simply detects when
+   they are not followed by any statements.
+	
+ * Full and optimized support for CO-OP script stop strategy in OpenSim.
+   An option to enable this is not in the editor yet, but the OpenSim fork enables it
+   when it's seen in OpenSim.ini.
+	
+ * Correct order of operations via the use of operator function stubs
+   that are generated on demand.  Old mono list optimizations will now
+   port over without breaking, as well as other funky scripts that rely
+   on Right to Left evaluation being the norm.
 	  
-	* Correct Code generation for jumps over declared variables.
+ * Correct treatment of vectors/rotations/lists and strings as booleans.
 	
-	* Jumps no longer require a "NoOp()" after them, LibLSLCC simply detects when
-	  they are not followed by any statements.
+ * Vectors and rotations can now be negated.
 	
-	* Full and optimized support for CO-OP script stop strategy in OpenSim.
-	  An option to enable this is not in the editor yet, but the OpenSim fork enables it
-	  when it's seen in OpenSim.ini.
-	
-	* Correct order of operations via the use of operator function stubs
-	  that are generated on demand.  Old mono list optimizations will now
-	  port over without breaking, as well as other funky scripts that rely
-	  on Right to Left evaluation being the norm.
-	  
-	* Correct treatment of vectors/rotations/lists and strings as booleans.
-	
-	* Vectors and rotations can now be negated.
-	
-	* At this point I am scratching my head because I cannot remember what else...
-	  I put a lot of time into this.
-	  
+ * At this point I am scratching my head because I cannot remember what else...
+   I put a lot of time into this.
+	 
 	
 #About LibLSLCCEditor
 
@@ -105,19 +105,19 @@ It has since developed into a full blown multi-tabbed IDE that is built on top o
 
 It Features:
 	
-	* Syntax Highlighting.
+ * Syntax Highlighting.
 	
-	* Documentation tooltips.
+ * Documentation tooltips.
 
-	* Context aware auto complete.
+ * Context aware auto complete.
 	
-	* Go to definition (navigation by symbol).
+ * Go to definition (navigation by symbol).
 	
-	* Code formatting.
+ * Code formatting.
 	
-	* Library data for both Linden and Opensim SecondLife servers. 
+ * Library data for both Linden and Opensim SecondLife servers. 
 	
-	* Compilation to CSharp code for OpenSim.
+ * Compilation to CSharp code for OpenSim.
 	 (CO-OP script stop mode cannot be enabled in the editor yet.)
 	
 
