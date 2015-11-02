@@ -9,7 +9,7 @@ but that are not implemented in either the Linden compiler or current OpenSim co
 
 Warnings for things such as: 
 
-	* Constant expressions in if statements
+	* Constant expressions in conditional/loop statements
 	
 	* Un-used variables
 	
