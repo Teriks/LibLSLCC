@@ -9,13 +9,13 @@ but that are not implemented in either the Linden compiler or current OpenSim co
 
 Warnings for things such as: 
 
-	* Constant expressions in conditional/loop statements.
+ * Constant expressions in conditional/loop statements.
 	
-	* Un-used variables.
+ * Un-used variables.
 	
-	* Dead code.
+ * Dead code.
 	
-	* Deprecated function usage.
+ * Deprecated function usage.
 	
 	
 That's not everything just some common ones.. this list is pretty long.
@@ -52,17 +52,17 @@ I have integrated LibLSLCC into OpenSim, See Here:
        https://gitlab.com/erihoss/OpenSim_With_LibLSLCC 
 
 
+====   
 	   
-	   
-Code Validator/OpenSim Code Generator Features:
+The Code Validator/OpenSim Code Generator Features:
 
  * Full front end Syntax Checking, including dead code detection.  
-	  no more esoteric CSharp compiler errors or line mapping funkyness.
+   no more esoteric CSharp compiler errors or line mapping funkyness.
 	
  * Dead code elimination from generated code where applicable.
-	  This includes un-used functions and global variables, as well
-	  as any dead code in a function/event body that does not cause a compile 
-	  error and is safe to remove given its context.
+   This includes un-used functions and global variables, as well
+   as any dead code in a function/event body that does not cause a compile 
+   error and is safe to remove given its context.
 	
  * Correct code generation for global variables that reference each other.
 	
