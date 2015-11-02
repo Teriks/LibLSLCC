@@ -1,5 +1,5 @@
 ﻿<LSLLibraryData>
-  
+
   <!-- Subset descriptions are required -->
   <SubsetDescription Subset="lsl" FriendlyName="Standard LSL">
     <Description>The standard library functions supported by Linden Lab's SecondLife servers.</Description>
@@ -19,9 +19,13 @@
   <SubsetDescription Subset="os-lightshare" FriendlyName="OS Lightshare">
     <Description>A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings.</Description>
   </SubsetDescription>
+  <SubsetDescription Subset="os-attach-temp" FriendlyName="OS Attach Temp">
+    <Description>An optional OpenSim module that adds llAttachToAvatarTemp to the OpenSim script library.</Description>
+  </SubsetDescription>
   <SubsetDescription Subset="os-mod-api"  FriendlyName="OS Mod Invoke">
     <Description>A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers.</Description>
   </SubsetDescription>
+
   <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="Value" Type="Integer" />
     <DocumentationString>Returns the absolute (positive) version of Value.</DocumentationString>
@@ -76,9 +80,10 @@
     <Parameter Name="AttachmentPoint" Type="Integer" />
     <DocumentationString>Attach to avatar at point AttachmentPoint.  Requires the PERMISSION_ATTACH runtime permission.</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llAttachToAvatarTemp" ReturnType="Void" Subsets="lsl">
+  <LibraryFunction Name="llAttachToAvatarTemp" ReturnType="Void" Subsets="lsl,os-attach-temp">
     <Parameter Name="AttachPoint" Type="Integer" />
     <DocumentationString>Follows the same convention as llAttachToAvatar, with the exception that the object will not create new inventory for the user, and will disappear on detach or disconnect.</DocumentationString>
+    <Property Name="ModInvoke" Value="true"/>
   </LibraryFunction>
   <LibraryFunction Name="llAvatarOnLinkSitTarget" ReturnType="Key" Subsets="lsl,os-lsl">
     <Parameter Name="LinkNumber" Type="Integer" />
@@ -1038,19 +1043,6 @@
     <Property Name="Deprecated" Value="true" />
     <DocumentationString>Make a fountain of particles. Deprecated: Use llParticleSystem instead.  Make a fountain of particles using texture from the objects inventory. Deprecated: Use llParticleSystem instead.</DocumentationString>
   </LibraryFunction>
-  <!--   <LibraryFunction Name="llMakeFountain" ReturnType="Void" Subsets="lsl,os-lsl">
-    <Parameter Name="particles" Type="Integer" />
-    <Parameter Name="scale" Type="Float" />
-    <Parameter Name="vel" Type="Float" />
-    <Parameter Name="lifetime" Type="Float" />
-    <Parameter Name="arc" Type="Float" />
-    <Parameter Name="bounce" Type="Integer" />
-    <Parameter Name="texture" Type="String" />
-    <Parameter Name="offset" Type="Vector" />
-    <Parameter Name="bounce_offset" Type="Float" />
-    <Property Name="Deprecated" Value="true" />
-    <DocumentationString />
-  </LibraryFunction> -->
   <LibraryFunction Name="llMakeSmoke" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="Particles" Type="Integer" />
     <Parameter Name="Scale" Type="Float" />
@@ -1067,7 +1059,7 @@
     <Parameter Name="AvatarID" Type="Key" />
     <DocumentationString>Adds or removes agents from the estate's agent access or ban lists, or groups to the estate's group access list. Action is one of the ESTATE_ACCESS_ALLOWED_* operations to perform.  Returns an integer representing a boolean, TRUE if the call was successful; FALSE if throttled, invalid action, invalid or null id or object owner is not allowed to manage the estate.  The object owner is notified of any changes, unless PERMISSION_SILENT_ESTATE_MANAGEMENT has been granted to the script.</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llHashMapDestination" ReturnType="Void" Subsets="lsl,os-lsl">
+  <LibraryFunction Name="llMapDestination" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="RegionName" Type="String" />
     <Parameter Name="Position" Type="Vector" />
     <Parameter Name="Direction" Type="Vector" />
@@ -2267,10 +2259,10 @@
     <Parameter Name="rawAvatarId" Type="String" />
     <DocumentationString />
   </LibraryFunction>
-  <LibraryFunction Name="osGetHashMapTexture" ReturnType="String" Subsets="ossl">
+  <LibraryFunction Name="osGetMapTexture" ReturnType="String" Subsets="ossl">
     <DocumentationString>Returns the map texture key for the current region</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="osGetRegionHashMapTexture" ReturnType="String" Subsets="ossl">
+  <LibraryFunction Name="osGetRegionMapTexture" ReturnType="String" Subsets="ossl">
     <Parameter Name="regionName" Type="String" />
     <DocumentationString>Returns the map texture key for a specified region</DocumentationString>
   </LibraryFunction>
@@ -5575,215 +5567,286 @@
   </LibraryConstant>
   <LibraryConstant Name="PHYS_CENTER_OF_MASS" Type="Integer" Value="1" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR" Type="Integer" Value="14700" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR_X" Type="Integer" Value="14701" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LIMIT_LINEAR_X" Type="Integer" Value="14702" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR_Y" Type="Integer" Value="14703" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LIMIT_LINEAR_Y" Type="Integer" Value="14704" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_LINEAR_Z" Type="Integer" Value="14705" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LIMIT_LINEAR_Z" Type="Integer" Value="14706" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR" Type="Integer" Value="14707" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR_X" Type="Integer" Value="14708" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LIMIT_ANGULAR_X" Type="Integer" Value="14709" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR_Y" Type="Integer" Value="14710" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LIMIT_ANGULAR_Y" Type="Integer" Value="14711" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LOCK_ANGULAR_Z" Type="Integer" Value="14712" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LIMIT_ANGULAR_Z" Type="Integer" Value="14713" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR" Type="Integer" Value="14714" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR_X" Type="Integer" Value="14715" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR_Y" Type="Integer" Value="14716" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_LINEAR_Z" Type="Integer" Value="14717" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR" Type="Integer" Value="14718" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR_X" Type="Integer" Value="14719" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR_Y" Type="Integer" Value="14720" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK_ANGULAR_Z" Type="Integer" Value="14721" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_UNLOCK" Type="Integer" Value="14722" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINKSET_TYPE_CONSTRAINT" Type="Integer" Value="0" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;Links are created with physics constraint objects. Used for flexible objects. Not a good default as it uses more CPU</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINKSET_TYPE_COMPOUND" Type="Integer" Value="1" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;Linkset is constructed as a compound object made up of the shapes of all the children. The most efficient linkset implementation and the default</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINKSET_TYPE_MANUAL" Type="Integer" Value="2" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;NOT IMPLEMENTED. Linkset is implemented by CPU code that moves each of the object in the linkset independently</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_FIXED" Type="Integer" Value="1234" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;Link is fixed and unmovable. Default. Implemented as a 6 degree-of-freedom constraint with no motion in either the linear or angular directions</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_HINGE" Type="Integer" Value="4" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_SPRING" Type="Integer" Value="9" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_6DOF" Type="Integer" Value="6" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_LINK_TYPE_SLIDER" Type="Integer" Value="7" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINA_LOC" Type="Integer" Value="14401" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINA_ROT" Type="Integer" Value="14402" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINB_LOC" Type="Integer" Value="14403" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_FRAMEINB_ROT" Type="Integer" Value="14404" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_LINEAR_LIMIT_LOW" Type="Integer" Value="14405" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_LINEAR_LIMIT_HIGH" Type="Integer" Value="14406" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ANGULAR_LIMIT_LOW" Type="Integer" Value="14407" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ANGULAR_LIMIT_HIGH" Type="Integer" Value="14408" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_USE_FRAME_OFFSET" Type="Integer" Value="14409" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ENABLE_TRANSMOTOR" Type="Integer" Value="14410" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_TRANSMOTOR_MAXVEL" Type="Integer" Value="14411" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_TRANSMOTOR_MAXFORCE" Type="Integer" Value="14412" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_CFM" Type="Integer" Value="14413" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_ERP" Type="Integer" Value="14414" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SOLVER_ITERATIONS" Type="Integer" Value="14415" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_AXIS_ENABLE" Type="Integer" Value="14416" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;[PHYS_PARAM_SPRING_AXIS_ENABLE, int axisCode, bool flag]</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_DAMPING" Type="Integer" Value="14417" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;[PHYS_PARAM_SPRING_DAMPING, int axisCode, float damping]</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_STIFFNESS" Type="Integer" Value="14418" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;[PHYS_PARAM_SPRING_STIFFNESS, int axisCode, float stiffness]</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_LINK_TYPE" Type="Integer" Value="14419" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_USE_LINEAR_FRAMEA" Type="Integer" Value="14420" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_PARAM_SPRING_EQUILIBRIUM_POINT" Type="Integer" Value="14421" Subsets="os-bullet-physics">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ALL" Type="Integer" Value="-1" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;(-1) make changes to all axis</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_ALL" Type="Integer" Value="-2" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;all linear axis (X, Y, Z)</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_ALL" Type="Integer" Value="-3" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;all angular axis (X, Y, Z)</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_X" Type="Integer" Value="0" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;X linear axis</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_Y" Type="Integer" Value="1" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;Y linear axis</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_LINEAR_Z" Type="Integer" Value="2" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;Z linear axis</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_X" Type="Integer" Value="3" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;X angular axis</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_Y" Type="Integer" Value="4" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;Y angular axis</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="PHYS_AXIS_ANGULAR_Z" Type="Integer" Value="5" Subsets="os-bullet-physics">
     <DocumentationString>Bulletsim;Z angular axis</DocumentationString>
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_NODETYPE_UNDEF" Type="Integer" Value="0" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_NODETYPE_OBJECT" Type="Integer" Value="1" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_NODETYPE_ARRAY" Type="Integer" Value="2" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_NODETYPE_VALUE" Type="Integer" Value="3" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_VALUETYPE_UNDEF" Type="Integer" Value="0" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_VALUETYPE_BOOLEAN" Type="Integer" Value="1" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_VALUETYPE_INTEGER" Type="Integer" Value="2" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_VALUETYPE_FLOAT" Type="Integer" Value="3" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
   <LibraryConstant Name="JSON_VALUETYPE_STRING" Type="Integer" Value="4" Subsets="os-json-store">
     <DocumentationString />
+    <Property Name="Expand" Value="true"/>
   </LibraryConstant>
 </LSLLibraryData>

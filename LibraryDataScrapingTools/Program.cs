@@ -74,7 +74,8 @@ namespace LibraryDataScrapingTools
             new LSLLibrarySubsetDescription("os-bullet-physics", "OS Bullet Physics","A set of functions for interacting with bullet physics constraints on OpenSim servers which have extended physics enabled."),
             new LSLLibrarySubsetDescription("os-mod-api", "OS Mod Invoke","A set of functions from OpenSim's JsonStore region module for manipulating JSON objects stored in script memory."),
             new LSLLibrarySubsetDescription("os-json-store","OS Json Store","A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers."),
-            new LSLLibrarySubsetDescription("os-lightshare","OS Light Share","A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings.")
+            new LSLLibrarySubsetDescription("os-lightshare","OS Light Share","A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings."),
+            new LSLLibrarySubsetDescription("os-attach-temp","OS Attach Temp","An optional OpenSim module that adds llAttachToAvatarTemp to the OpenSim script library.")
         };
 
         private static void Run(TextWriter logFile)
@@ -157,7 +158,7 @@ namespace LibraryDataScrapingTools
             }
 
 
-
+           
 
             MessageBox.Show("Select the keywords_lsl_default.xml from an up to date viewers program folder under the app_settings folder.",
                 "Select LLSD File", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -200,7 +201,7 @@ namespace LibraryDataScrapingTools
             }
 
 
-            var llsdData = new LLSDLibraryData(openLLSDDialog.FileName, new[] { "lsl" });
+           var llsdData = new LLSDLibraryData(openLLSDDialog.FileName, new[] { "lsl" });
 
 
 
@@ -217,6 +218,7 @@ namespace LibraryDataScrapingTools
             openSimData.IncludeFunctionContainingInterface("IMOD_Api", new[] { "os-mod-api" });
             openSimData.IncludeAttributedModuleClass("ExtendedPhysics", new[] { "os-bullet-physics" });
             openSimData.IncludeAttributedModuleClass("JsonStoreScriptModule", new[] { "os-json-store" });
+            openSimData.IncludeAttributedModuleClass("TempAttachmentsModule", new[] { "os-attach-temp" });
 
 
 
@@ -229,43 +231,6 @@ namespace LibraryDataScrapingTools
             var provider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
             provider.AddSubsetDescriptions(SubsetDescriptions);
 
-            foreach (var c in llsdData.LSLConstants())
-            {
-                if (provider.LibraryConstantExist(c.Name)) continue;
-
-                if (openSim.LSLConstantExist(c.Name))
-                {
-                    var constant = openSim.LSLConstant(c.Name);
-                    c.Subsets.AddSubsets(constant.Subsets);
-                }
-
-                provider.DefineConstant(c);
-            }
-
-            foreach (var c in llsdData.LSLFunctions())
-            {
-                if (provider.GetLibraryFunctionSignature(c) != null) continue;
-
-                if (openSim.LSLFunctionExist(c.Name))
-                {
-                    var overloads = openSim.LSLFunctionOverloads(c.Name);
-                    c.Subsets.AddSubsets(overloads.First().Subsets);
-                }
-
-                provider.DefineFunction(c);
-            }
-
-            foreach (var c in llsdData.LSLEvents())
-            {
-                if (provider.EventHandlerExist(c.Name)) continue;
-
-                if (openSimLibraryReflectedTypeData.EventNames.Contains(c.Name))
-                {
-                    c.Subsets.AddSubsets("os-lsl");
-                }
-
-                provider.DefineEventHandler(c);
-            }
 
 
             SecondlifeWikiLibraryData wikiData = new SecondlifeWikiLibraryData(new[] { "lsl" });
@@ -429,6 +394,55 @@ namespace LibraryDataScrapingTools
 
 
 
+            foreach (var c in llsdData.LSLConstants())
+            {
+                if (provider.LibraryConstantExist(c.Name)) continue;
+
+                if (openSim.LSLConstantExist(c.Name))
+                {
+                    var constant = openSim.LSLConstant(c.Name);
+                    c.Subsets.AddSubsets(constant.Subsets);
+                    c.Expand = constant.Expand;
+                }
+
+                provider.DefineConstant(c);
+            }
+
+            foreach (var c in llsdData.LSLFunctions())
+            {
+                if (provider.LibraryFunctionExist(c.Name)) continue;
+
+                if (openSim.LSLFunctionExist(c.Name))
+                {
+                    var overloads = openSim.LSLFunctionOverloads(c.Name).Where(x => x.ParameterCount == c.ParameterCount).ToList();
+
+                    if (overloads.Any())
+                    {
+                        var osFunc = overloads.First();
+
+                        c.Subsets.AddSubsets(osFunc.Subsets);
+                        c.ModInvoke = osFunc.ModInvoke;
+                    }
+                }
+
+                provider.DefineFunction(c);
+            }
+
+            foreach (var c in llsdData.LSLEvents())
+            {
+                if (provider.EventHandlerExist(c.Name)) continue;
+
+                if (openSimLibraryReflectedTypeData.EventNames.Contains(c.Name))
+                {
+                    c.Subsets.AddSubsets("os-lsl");
+                }
+
+                provider.DefineEventHandler(c);
+            }
+
+
+
+
             foreach (var c in openSim.LSLConstants().Where(x => !provider.LibraryConstantExist(x.Name)))
             {
                 Log.WriteLineWithHeader("[NOTICE, OPENSIM CONSTANT ADDED]:",
@@ -442,25 +456,26 @@ namespace LibraryDataScrapingTools
 
             //this will work as long as open sim does not start creating function overloads
             //for standard linden functions..
-            foreach (var c in openSim.LSLFunctions().Where(x => !provider.LibraryFunctionExist(x.Name)).ToList())
+            foreach (var c in openSim.LSLFunctions().ToList())
             {
-                if(provider.LibraryFunctionExist(c.Name))
+
+                if (provider.LibraryFunctionExist(c.Name))
                 {
-                    Log.WriteLineWithHeader("[NOTICE, OPENSIM FUNCTION OVERLOADED]:",
-                    "The function {0}; was found in the OpenSim binaries but already existed in the current set of functions with a different signature, creating overload.",
+                    var overloads = provider.GetLibraryFunctionSignatures(c.Name);
+
+                    //heuristic, since OpenSim sometimes uses 'string' parameters
+                    //where it should be using 'key parameters, using IsDuplicateDefinition
+                    //would result in unnecessary overloads being added for linden functions
+                    if(overloads.Any(x=>x.ParameterCount==c.ParameterCount)) continue;
+                }
+
+                Log.WriteLineWithHeader("[NOTICE, OPENSIM FUNCTION ADDED]:",
+                    "The function {0}; was found in the OpenSim binaries but was not in the current set of functions, adding it to the current set of data.",
                     c.SignatureString);
-                }
-                else
-                {
-                    Log.WriteLineWithHeader("[NOTICE, OPENSIM FUNCTION ADDED]:",
-                        "The function {0}; was found in the OpenSim binaries but was not in the current set of functions, adding it to the current set of data.",
-                        c.SignatureString);
-                }
 
                 c.DocumentationString = docProvider.DocumentFunction(c);
                 provider.DefineFunction(c);
             }
-
 
 
             MessageBox.Show("Select a place to save the generated LibLSLCC library data.",

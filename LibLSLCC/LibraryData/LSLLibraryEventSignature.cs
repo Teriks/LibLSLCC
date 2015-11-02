@@ -329,6 +329,10 @@ namespace LibLSLCC.LibraryData
                 writer.WriteEndElement();
             }
 
+            writer.WriteStartElement("DocumentationString");
+            writer.WriteString(DocumentationString);
+            writer.WriteEndElement();
+
             foreach (var prop in Properties)
             {
                 writer.WriteStartElement("Property");
@@ -336,10 +340,6 @@ namespace LibLSLCC.LibraryData
                 writer.WriteAttributeString("Value", prop.Value);
                 writer.WriteEndElement();
             }
-
-            writer.WriteStartElement("DocumentationString");
-            writer.WriteString(DocumentationString);
-            writer.WriteEndElement();
         }
 
         /// <summary>

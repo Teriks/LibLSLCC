@@ -228,10 +228,19 @@ namespace LibLSLCC.LibraryData
 
                         if (functionGroups.ContainsKey(subsetFunction.Name))
                         {
+                            bool shared = false;
                             var overloads = functionGroups[subsetFunction.Name];
                             //check the overloads for duplicates that exist already, from another subset thats active
                             foreach (var overload in overloads)
                             {
+                                if (ReferenceEquals(subsetFunction, overload))
+                                {
+                                    //don't add a shared definition to the overload group
+                                    //it already exists in it once.
+                                    shared = true;
+                                    break;
+                                }
+
                                 //the reference check is to make sure its not shared across subsets.
                                 if (overload.DefinitionIsDuplicate(subsetFunction) &&
                                     !ReferenceEquals(subsetFunction, overload))
@@ -241,13 +250,15 @@ namespace LibLSLCC.LibraryData
                                             "LibraryFunctions {{get}} failed because the function '{0};' with subsets '{1}' is duplicate with the function '{2}' with subsets '{3}'.",
                                             subsetFunction.SignatureString,
                                             string.Join(",", subsetFunction.Subsets),
-                                            overload.SignatureString.Length,
-                                            string.Join(",", overload.Subsets)))
-                                        ;
+                                            overload.SignatureString,
+                                            string.Join(",", overload.Subsets)));
                                 }
                             }
 
-                            overloads.Add(subsetFunction);
+                            if (!shared)
+                            {
+                                overloads.Add(subsetFunction);
+                            }
                         }
                         else
                         {

@@ -228,20 +228,23 @@ namespace LibraryDataScrapingTools.OpenSimLibraryReflection
 
             foreach (var assembly in AllOpenSimAssemblies.Values)
             {
+                const BindingFlags bindingFlags =
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
                 try
                 {
                     var types = assembly.GetTypes();
 
-                    var interfaces = types.Where(x => x.GetInterfaces().FirstOrDefault(y => y.Name == "INonSharedRegionModule") != null);
+                    var interfaces = types.Where(x => x.GetInterfaces().Any(y => y.Name == "INonSharedRegionModule"));
 
                     _scriptModuleClasses.AddRange(
-                        interfaces.Where(t => t.GetFields().FirstOrDefault(h => h.GetCustomAttributes(true).FirstOrDefault(
+                        interfaces.Where(t => 
+                        t.GetFields(bindingFlags).Cast<MemberInfo>().Concat(t.GetMethods(bindingFlags))
+                        .Any(h => h.GetCustomAttributes(true).Any(
                             x =>
                             {
                                 var n = x.GetType().Name;
-                                return n == "ScriptConstantAttribute" || n == "ScriptInvocationAttribute"
-                                    ;
-                            }) != null) != null).ToList()
+                                return n == "ScriptConstantAttribute" || n == "ScriptInvocationAttribute";
+                            }))).ToList()
                         );
                 }
                 catch (ReflectionTypeLoadException e)
