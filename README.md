@@ -121,7 +121,49 @@ The project also includes full featured LSL Editor with:
 Which was built to test the compiler library originally but has developed into a full blown multi-tabbed 
 IDE that is built on top of LibLSLCC's parsing framework. 
  
-         
+
+#Project Dependencies
+
+All binary dependencies are distributed with the build.
+You should not need to add any binaries yourself.
+
+===
+
+The LibLSLCC library itself depends on the **CSharp ANTLR 4.5.1 Runtime**.
+
+You can find a license for ANTLR 4 in the **ThirdPartyLicenses** folder
+of the build directory.
+
+For more information about **ANTLR** go here:
+
+http://www.antlr.org/index.html
+
+
+===
+
+The ***LibraryDataScrapingTools** project depends on **System.Data.SQLite**
+when compiled on Windows.  When its compiled on mono it uses **Mono.Data.Sqlite**.
+
+see here: 
+
+https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki
+
+
+===
+
+The LSLCCEditor application depends on **AvalonEdit**, and a few pieces
+of code forked from **AvalonEdit**.  You can also find a license for **AvalonEdit**
+in the **ThirdPartyLicenses** folder of the build directory.
+
+ 
+For more information about **AvalonEdit** go here:
+
+http://avalonedit.net/
+
+
+=== 
+
+ 
  
 #Building LibLSLCC and LSLCCEditor 
  
