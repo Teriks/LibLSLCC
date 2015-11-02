@@ -1208,9 +1208,12 @@ private static class UTILITIES
 
         public override bool VisitCompilationUnit(ILSLCompilationUnitNode unode)
         {
+            bool hasGeneratedClassNameSpaceName = !string.IsNullOrWhiteSpace(Settings.GeneratedClassNamespace);
+
+
             if (Settings.GenerateClass)
             {
-                if (Settings.GeneratedClassNamespace != null)
+                if (Settings.GeneratedNamespaceImports != null)
                 {
                     foreach (var ns in Settings.GeneratedNamespaceImports)
                     {
@@ -1221,7 +1224,7 @@ private static class UTILITIES
 
                 Writer.Write(Environment.NewLine);
 
-                if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassNamespace))
+                if (hasGeneratedClassNameSpaceName)
                 {
                     Writer.WriteLine("namespace {0}", Settings.GeneratedClassNamespace);
                     Writer.WriteLine("{");
@@ -1324,18 +1327,20 @@ private static class UTILITIES
             WriteBinaryOperatorOverloadStubs();
 
 
-            if (Settings.GenerateClass)
+
+            if (!Settings.GenerateClass) return false;
+
+
+
+            if (hasGeneratedClassNameSpaceName)
             {
-                if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassNamespace))
-                {
-                    _indentLevel--;
+                _indentLevel--;
 
-                    Writer.WriteLine(GenIndent() + "}");
-                }
-
-
-                Writer.WriteLine("}");
+                Writer.WriteLine(GenIndent() + "}");
             }
+
+
+            Writer.WriteLine("}");
 
 
             return false;
