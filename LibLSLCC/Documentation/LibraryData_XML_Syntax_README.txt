@@ -15,8 +15,6 @@ LibLSLCC can load this data in one of two ways:
 LSLCCEditor uses live filtering so it can quickly activate/de-activate a library subsets
 based on the Library settings applied to an editor tab.
 
-While my OpenSim integration loads only the subsets enabled in OpenSim.ini during start up to save memory.
-
 
 ================================
 ===  Library Data XML Syntax ===
@@ -52,14 +50,14 @@ If they do not match this pattern, a syntax error will be thrown from the loader
 @@@ FriendlyName Attribute @@@
 
 The friendly name of a subset is basically just a description, it has no format rules.   It's used by LSLCCEditor
-to present the user with a GUI friendly name for a library subset.  It's not really used for anything in OpenSim.
+to present the user with a GUI friendly name for a library subset.
 
 
 /// Description Node (Child) ////
 
 
 The Description node that exists as a child of SubsetDescription just contains a description for the subset,
-It's used to show a description tool-tip in LSLCCEditor but is not used in OpenSim.
+It's used to show a description tool-tip in LSLCCEditor.
 
 
 
