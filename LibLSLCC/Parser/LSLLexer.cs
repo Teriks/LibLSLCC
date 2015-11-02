@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from J:\Projects\csharp\LibLSLCC\LibLSLCC\Parser\LSL.g4 by ANTLR 4.5.1
+// Generated from Parser\LSL.g4 by ANTLR 4.5.1
 
 // Unreachable code detected
 #pragma warning disable 0162
