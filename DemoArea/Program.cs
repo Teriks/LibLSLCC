@@ -358,6 +358,7 @@ default{
                 compilerSettings.GenerateClass = true;
                 compilerSettings.GeneratedClassName = "MyClass";
                 compilerSettings.GeneratedConstructorDefinition = "public MyClass(){}";
+                compilerSettings.GeneratedClassNamespace = "MyNameSpace";
 
                 LSLOpenSimCSCompiler compiler = new LSLOpenSimCSCompiler(compilerSettings);
 
