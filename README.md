@@ -66,10 +66,10 @@ The Code Validator/OpenSim Code Generator Features:
 	
  * Correct code generation for global variables that reference each other.
 	
- * Symbol name mangling specific to globals/parameters/locals and user defined functions.
-   This completely abstracts variable scoping rules from the CSharp compiler.
-   All variable scoping rules are handled by the front end LibLSLCC Code Validator.
-   The scoping rules implemented are %100 true to LSL.  This also removes the possibility 
+ * Symbol name mangling specific to globals/parameters/locals variables/labels and 
+   user defined functions.  This completely abstracts variable scoping rules from the CSharp 
+   compiler underneath.  All variable scoping rules are handled by the front end LibLSLCC Code Validator.
+   The scoping rules implemented are %100 true to LSL.  Symbol mangling also removes the possibility 
    of causing a CSharp syntax error by using a keyword/Class name as a variable or function name.
 	  
 	  
