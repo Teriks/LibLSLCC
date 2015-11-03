@@ -216,7 +216,11 @@ namespace LSLCCEditor
 
             TabControl.SelectedIndex = 0;
 
-            SetLibraryMenuFromTab((EditorTab)TabControl.SelectedItem);
+            var initialTab = (EditorTab) TabControl.SelectedItem;
+
+            SetLibraryMenuFromTab(initialTab);
+
+            FindDialogManager.CurrentEditor = initialTab.Content.Editor.Editor;
 
             _selectingStartupTabDuringWindowLoad = false;
 
