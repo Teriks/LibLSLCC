@@ -139,7 +139,7 @@ namespace Tests
 
 
         //A function that explicitly returns LSLType.Float.
-        //The class level parameter converter is used to convert the parameters.
+        //The class level parameter converter is used to convert the parameter types.
         [LSLFunction(LSLType.Float)]
         public string function(
             string arg1,
@@ -148,6 +148,31 @@ namespace Tests
         {
             return "";
         }
+
+
+        //A function that explicitly returns LSLType.Float.
+        //The member level parameter converter specified in the attribute is used to convert the parameter types.
+        [LSLFunction(LSLType.Float, ParamTypeConverter = typeof(MySimpleConverter))]
+        public string function2(
+            string arg1,
+            string arg2,
+            params string[] variadic)
+        {
+            return "";
+        }
+
+
+        //The member level parameter converter's specified in the attribute are used to convert the return type and parameter types respectively.
+        [LSLFunction(ReturnTypeConverter = typeof(MySimpleConverter), ParamTypeConverter = typeof(MySimpleConverter))]
+        public string function3(
+            string arg1,
+            string arg2,
+            params string[] variadic)
+        {
+            return "";
+        }
+
+
 
         //This explicitly defines everything, it overrides any conversion
         //that may take place, its also the way you would attribute your methods 
