@@ -132,8 +132,8 @@ namespace Tests
 
 
 
-        //The converter on the property attribute will be used instead of the serializer's or class level converter.
-        //you can override type converters and value string converters at the class and member level.
+        //The converter on the property attribute will be used instead of the serializer's or the class level converter.
+        //You can override type converters and value string converters at the member level.
         [LSLConstant(LSLType.Key, ValueStringConverter = typeof(PreferedValueStringConverter))]
         static public string CONSTANT_D { get { return "hello world"; } }
 
