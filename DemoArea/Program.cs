@@ -112,7 +112,7 @@ namespace Tests
 
 
 
-        //the explicitly specified value string will be used to define
+        //The explicitly specified value string will be used to define
         //a value for this constant, even when an object instance
         //is passed to the class serializer.
         [LSLConstant(LSLType.Integer, ValueString = "5")]
@@ -120,8 +120,8 @@ namespace Tests
 
 
 
-        //the serializer will read private properties and fields
-        //the type and value string converter used here is the one in the class attribute.
+        //The serializer will read private properties and fields
+        //The type and value string converters used here are the one's specified in the class attribute.
         [LSLConstant]
         static public string CONSTANT_B { private get { return "hello"; } set { value = ""; } }
 
@@ -132,14 +132,14 @@ namespace Tests
 
 
 
-        //the converter on the property attribute will be used instead of the serializer's or class level converter.
+        //The converter on the property attribute will be used instead of the serializer's or class level converter.
         //you can override type converters and value string converters at the class and member level.
         [LSLConstant(LSLType.Key, ValueStringConverter = typeof(PreferedValueStringConverter))]
         static public string CONSTANT_D { get { return "hello world"; } }
 
 
-        //a function that explicitly returns LSLType.Float
-        //the class level parameter converter is used to convert the parameters.
+        //A function that explicitly returns LSLType.Float.
+        //The class level parameter converter is used to convert the parameters.
         [LSLFunction(LSLType.Float)]
         public string function(
             string arg1,
@@ -161,8 +161,8 @@ namespace Tests
             return "";
         }
 
-        //a function that explicitly returns LSLType.Float
-        //the class level parameter converter is used to convert the first parameter
+        //A function that explicitly returns LSLType.Float.
+        //The class level parameter converter is used to convert the first parameter
         //since it has no attribute, the rest have their LSLType's explicitly defined.
         [LSLFunction(LSLType.Float)]
         public string function(
