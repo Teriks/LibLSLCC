@@ -292,25 +292,26 @@ namespace Tests
 
             foreach (var c in constants)
             {
-                //don't add anything here to the provider, just demonstrating the difference between
-                //serializing classes with non-static fields with and without providing the serializer a class instance.
+                //Don't add anything to the provider here.  Just demonstrating the difference between
+                //serializing classes that contain static or non-static fields when providing an object instance
+                //to the serializer.
                 Console.WriteLine(c.ToString());
             }
 
 
 
 
-            //set up the implementations LSLCodeValidator relies on's
+            //Set up the implementations LSLCodeValidator relies on's
             var validatorServices = new LSLCustomValidatorServiceProvider();
 
             validatorServices.ExpressionValidator = new LSLDefaultExpressionValidator();
             validatorServices.StringLiteralPreProcessor = new LSLDefaultStringPreProcessor();
 
-            //these both print to stdout by default.
+            //These both print to stdout by default.
             validatorServices.SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
             validatorServices.SyntaxWarningListener = new LSLDefaultSyntaxWarningListener();
 
-            //use ours, we only defined a few things
+            //Use ours, we only defined a few things
             validatorServices.LibraryDataProvider = myProvider;
 
 
