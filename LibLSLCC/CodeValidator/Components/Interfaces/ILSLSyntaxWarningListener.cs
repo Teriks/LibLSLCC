@@ -285,5 +285,22 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="location">The location in source code where the deprecated function was called.</param>
         /// <param name="functionSignature">The library function signature of the deprecated function that was called.</param>
         void UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location, LSLLibraryFunctionSignature functionSignature);
+
+
+        /// <summary>
+        /// A library constant that was marked as being deprecated was used.
+        /// </summary>
+        /// <param name="location">The location in source code where the deprecated constant was referenced.</param>
+        /// <param name="constantSignature">The library constant signature of the deprecated constant that was referenced.</param>
+        void UseOfDeprecatedLibraryConstant(LSLSourceCodeRange location, LSLLibraryConstantSignature constantSignature);
+
+
+
+        /// <summary>
+        /// A library event handler that was marked as being deprecated was used.
+        /// </summary>
+        /// <param name="location">The location in source code where the deprecated event handler was referenced.</param>
+        /// <param name="eventSignature">The library event signature of the deprecated event handler that was referenced.</param>
+        void UseOfDeprecatedLibraryEventHandler(LSLSourceCodeRange location, LSLLibraryEventSignature eventSignature);
     }
 }

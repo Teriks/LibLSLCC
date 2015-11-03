@@ -120,7 +120,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
             if (attr.NamedArguments.Any(x => x.MemberInfo.Name == "Deprecated"))
             {
-                result.ModInvoke = (bool)attr.NamedArguments.First(x => x.MemberInfo.Name == "Deprecated").TypedValue.Value;
+                result.Deprecated = (bool)attr.NamedArguments.First(x => x.MemberInfo.Name == "Deprecated").TypedValue.Value;
             }
 
 

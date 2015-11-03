@@ -955,6 +955,20 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxWarningListener.UseOfDeprecatedLibraryFunction(location, functionSignature));
         }
 
+        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryConstant(LSLSourceCodeRange location, LSLLibraryConstantSignature constantSignature)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.UseOfDeprecatedLibraryConstant(location, constantSignature));
+        }
+
+        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(LSLSourceCodeRange location, LSLLibraryEventSignature eventSignature)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(location, eventSignature));
+        }
+
         void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
             LSLConditionalStatementType conditionalStatementType)
         {

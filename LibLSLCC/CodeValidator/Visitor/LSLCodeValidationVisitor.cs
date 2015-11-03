@@ -1405,18 +1405,6 @@ namespace LibLSLCC.CodeValidator.Visitor
             var eventHandlerSignature = new LSLParsedEventHandlerSignature(context.handler_name.Text, parameterList);
 
 
-            //Warn about parameters that hide global variables
-            foreach (var parameter in parameterList.Parameters)
-            {
-                if (ScopingManager.GlobalVariableDefined(parameter.Name))
-                {
-                    SyntaxWarningListener.ParameterHidesGlobalVariable(parameter.SourceCodeRange,
-                        eventHandlerSignature,
-                        parameter,
-                        ScopingManager.ResolveVariable(parameter.Name));
-                }
-            }
-
 
             if (!LibraryDataProvider.EventHandlerExist(context.handler_name.Text))
             {
@@ -1430,6 +1418,14 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             var librarySignature = LibraryDataProvider.GetEventHandlerSignature(context.handler_name.Text);
+
+
+
+            if (librarySignature != null && librarySignature.Deprecated)
+            {
+                SyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(new LSLSourceCodeRange(context.handler_name), librarySignature);
+            }
+
 
             //the library signature may not have been defined, see above
             //but we want to continue processing errors in the code body of the event handler.
@@ -1448,6 +1444,21 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 isError = true;
             }
+
+
+
+            //Warn about parameters that hide global variables
+            foreach (var parameter in parameterList.Parameters)
+            {
+                if (ScopingManager.GlobalVariableDefined(parameter.Name))
+                {
+                    SyntaxWarningListener.ParameterHidesGlobalVariable(parameter.SourceCodeRange,
+                        eventHandlerSignature,
+                        parameter,
+                        ScopingManager.ResolveVariable(parameter.Name));
+                }
+            }
+
 
 
             var eventPrePass = ScopingManager.EnterEventScope(context, eventHandlerSignature);
@@ -2413,9 +2424,18 @@ namespace LibLSLCC.CodeValidator.Visitor
                 LSLVariableDeclarationNode declaration;
                 if (LibraryDataProvider.LibraryConstantExist(idText))
                 {
+
+                    var librarySignature = LibraryDataProvider.GetLibraryConstantSignature(idText);
+
                     declaration =
-                        LSLVariableDeclarationNode.CreateLibraryConstant(
-                            LibraryDataProvider.GetLibraryConstantSignature(idText).Type, idText);
+                        LSLVariableDeclarationNode.CreateLibraryConstant(librarySignature.Type, idText);
+
+                    if (librarySignature.Deprecated)
+                    {
+                        SyntaxWarningListener.UseOfDeprecatedLibraryConstant(
+                            new LSLSourceCodeRange(context.variable), librarySignature);
+                    }
+
                 }
                 else
                 {

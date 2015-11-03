@@ -444,6 +444,29 @@ namespace LibLSLCC.CodeValidator.Components
                     "The library function \"{0}\" is deprecated, it is recommended you use an alternative or remove it.", functionSignature.Name));
         }
 
+        /// <summary>
+        /// A library constant that was marked as being deprecated was used.
+        /// </summary>
+        /// <param name="location">The location in source code where the deprecated constant was referenced.</param>
+        /// <param name="constantSignature">The library constant signature of the deprecated constant that was referenced.</param>
+        public virtual void UseOfDeprecatedLibraryConstant(LSLSourceCodeRange location, LSLLibraryConstantSignature constantSignature)
+        {
+            OnWarning(location,
+                string.Format(
+                    "The library constant \"{0}\" is deprecated, it is recommended you use an alternative or remove it.", constantSignature.Name));
+        }
+
+        /// <summary>
+        /// A library event handler that was marked as being deprecated was used.
+        /// </summary>
+        /// <param name="location">The location in source code where the deprecated event handler was referenced.</param>
+        /// <param name="eventSignature">The library event signature of the deprecated event handler that was referenced.</param>
+        public virtual void UseOfDeprecatedLibraryEventHandler(LSLSourceCodeRange location, LSLLibraryEventSignature eventSignature)
+        {
+            OnWarning(location,
+                string.Format(
+                    "The library event handler \"{0}\" is deprecated, it is recommended you use an alternative or remove it.", eventSignature.Name));
+        }
 
 
         /// <summary>

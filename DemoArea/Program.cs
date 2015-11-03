@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -119,6 +120,10 @@ namespace Tests
         public int CONSTANT_X = 10;
 
 
+        //This constant gets expanded into the generated source, and also generates a deprecation warning.
+        [LSLConstant(LSLType.Integer, Expand = true, Deprecated = true)]
+        static public int CONSTANT_Y = 10;
+
 
         //The serializer will read private properties and fields
         //The type and value string converters used here are the one's specified in the class attribute.
@@ -198,6 +203,17 @@ namespace Tests
             return "";
         }
 
+
+        //A mod invoke function.  Also, the class converters can convert the return type and parameter
+        //types for us since we did not specify them explicitly here.
+        //
+        //This function is also marked as deprecated, so it generates a warning when you use it from LSL.
+        [LSLFunction(ModInvoke = true, Deprecated = true)]
+        public object[] myModuleFunction(string param)
+        {
+            return new object[0];
+        }
+
     }
 
 
@@ -253,6 +269,10 @@ namespace Tests
                 //Constants too.
                 AttributedConstantsOnly = false,
 
+                //we can converter non attributed parameter types, for sure.
+                //don't exclude them from the de-serialized signatures.
+                AttributedParametersOnly = false,
+
                 
             };
 
@@ -275,6 +295,7 @@ namespace Tests
             //define an event with no parameters, make sure its subsets are set so that it gets put in the "my-lsl" subset.
             myProvider.DefineEventHandler(new LSLLibraryEventSignature("my_event") {Subsets = { "my-lsl" } });
 
+            myProvider.DefineEventHandler(new LSLLibraryEventSignature("my_deprecated_event") { Subsets = { "my-lsl" }, Deprecated = true });
 
 
             Console.WriteLine("Methods....\n\n");
@@ -359,13 +380,24 @@ default{
             //Valid to call AttributeReflectionTestClass.function(int arg1, string arg2, params int[] variadic);
             //No syntax errors, the function is overloaded and also variadic.
             
-            string test = ""hello world"";
+            string testStr = ""hello world"";
 
             integer i = 0;
-            for(;i<100;i++)
+            for(; i < CONSTANT_X ; i++)
             {
-                function(0, test , 1,2,3,4,5);
+                //reference a deprecated constant, causes a warning
+                integer expand = CONSTANT_Y;
+
+                function(expand, testStr , 1,2,3,4,5);
+
+                list testList = myModuleFunction(""hi there"");
             }
+
+    }
+
+
+    my_deprecated_event(){
+        //reference a deprecated event, causes a deprecation warning.
 
     }
 

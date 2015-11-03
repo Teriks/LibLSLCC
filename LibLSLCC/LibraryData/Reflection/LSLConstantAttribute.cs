@@ -72,7 +72,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <value>
         ///  The value to set <see cref="LSLLibraryConstantSignature.Expand"/> to.
         /// </value>
-        public bool Expand { get; private set; }
+        public bool Expand { get;  set; }
 
         /// <summary>
         /// Gets a value indicating what serialized <see cref="LSLLibraryConstantSignature"/> objects should have <see cref="LSLLibraryConstantSignature.Deprecated"/> set to.
@@ -80,7 +80,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <value>
         ///  The value to set <see cref="LSLLibraryConstantSignature.Deprecated"/> to.
         /// </value>
-        public bool Deprecated { get; private set; }
+        public bool Deprecated { get; set; }
 
 
         /// <summary>
