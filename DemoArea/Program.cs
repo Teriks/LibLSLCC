@@ -82,7 +82,7 @@ namespace Tests
     }
 
 
-    //this overrides the converter in the serializer at the class level
+    //this overrides the converters in the serializer at the class level
     [LSLLibraryDataSerializable(
         ReturnTypeConverter = typeof(MySimpleConverter),
         ParamTypeConverter = typeof(MySimpleConverter),
@@ -112,13 +112,16 @@ namespace Tests
 
 
 
-        //if we don't provide an instance, the ValueString will be used.
+        //the explicitly specified value string will be used to define
+        //a value for this constant, even when an object instance
+        //is passed to the class serializer.
         [LSLConstant(LSLType.Integer, ValueString = "5")]
-        public int CONSTANT_X = 5;
+        public int CONSTANT_X = 10;
 
 
 
         //the serializer will read private properties and fields
+        //the type and value string converter used here is the one in the class attribute.
         [LSLConstant]
         static public string CONSTANT_B { private get { return "hello"; } set { value = ""; } }
 
@@ -135,6 +138,8 @@ namespace Tests
         static public string CONSTANT_D { get { return "hello world"; } }
 
 
+        //a function that explicitly returns LSLType.Float
+        //the class level parameter converter is used to convert the parameters.
         [LSLFunction(LSLType.Float)]
         public string function(
             string arg1,
@@ -156,7 +161,9 @@ namespace Tests
             return "";
         }
 
-
+        //a function that explicitly returns LSLType.Float
+        //the class level parameter converter is used to convert the first parameter
+        //since it has no attribute, the rest have their LSLType's explicitly defined.
         [LSLFunction(LSLType.Float)]
         public string function(
             int arg1,
