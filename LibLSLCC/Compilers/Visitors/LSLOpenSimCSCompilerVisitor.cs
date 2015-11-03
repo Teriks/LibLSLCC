@@ -892,8 +892,11 @@ private static class UTILITIES
 
             _indentLevel++;
 
+            //only generate code for global variables that are referenced from somewhere.
+            var referencedGlobalVariables = node.GlobalVariableDeclarations.Where(x => x.References.Count != 0).ToList();
+
             //define public members, without initialization
-            foreach (var gvar in node.GlobalVariableDeclarations)
+            foreach (var gvar in referencedGlobalVariables)
             {
                 Writer.WriteLine(GenIndent() + "public " +
                                  LSLAtomType_To_CSharpType(gvar.Type) +
@@ -910,7 +913,7 @@ private static class UTILITIES
             //initialize them in the constructor, as LSL allows its globals to reference each other
             //and CSharp does not allow class members to reference each other when being initialized
             //in the top level of the class
-            foreach (var gvar in node.GlobalVariableDeclarations)
+            foreach (var gvar in referencedGlobalVariables)
             {
                 Writer.Write(GenIndent() + "Var_" + gvar.Name + " = ");
                 if (gvar.HasDeclarationExpression)
@@ -1280,7 +1283,12 @@ private static class UTILITIES
                 CreateGlobalVariablesClass(unode);
             }
 
-            if (unode.FunctionDeclarations.Count > 0)
+
+            //only visit function declarations that have references to them
+            //we do not need to generate code for functions that were never referenced.
+            var referencedUserDefinedFunctions = unode.FunctionDeclarations.Where(x => x.References.Count != 0).ToList();
+
+            if (referencedUserDefinedFunctions.Count > 0)
             {
                 Writer.WriteLine(GenIndent() + "//============================");
                 Writer.WriteLine(GenIndent() + "//== User Defined Functions ==");
@@ -1289,7 +1297,7 @@ private static class UTILITIES
             }
 
 
-            foreach (var ctx in unode.FunctionDeclarations)
+            foreach (var ctx in referencedUserDefinedFunctions)
             {
                 VisitFunctionDeclaration(ctx);
                 Writer.Write(Environment.NewLine + Environment.NewLine);
@@ -1379,6 +1387,7 @@ private static class UTILITIES
         /// <returns>default(T)</returns>
         public override bool VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
+
             Writer.Write(GenIndent() + "public ");
 
             if (node.ReturnType != LSLType.Void)
