@@ -515,6 +515,8 @@ namespace LSLCCEditor
 
 #if !DEBUG
             bool compileSuccess = false;
+#else
+            bool compileSuccess = true;
 #endif
 
             using (var outfile = File.OpenWrite(destinationFile))
@@ -541,9 +543,9 @@ namespace LSLCCEditor
                         "Unknown Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     
                 }
-#endif
-
+#else
                 compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
+#endif
             }
 
 #if !DEBUG
