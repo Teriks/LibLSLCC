@@ -262,7 +262,7 @@ the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
 #Building LibLSLCC on *Nix Platforms with xbuild from the shell
 
 
-To build LibLSLCC from the command line using mono and xbuild on nix*, first install Mono 
+To build LibLSLCC from the command line using mono and xbuild on nix platforms, first install Mono 
 for your distribution then CD into the LibLSLCC source tree where **LibLSLCC-NoEditor.sln** resides.
 
 enter the command:
