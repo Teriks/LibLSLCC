@@ -2057,9 +2057,9 @@
   <LibraryFunction Name="lsClearWindlightScene" ReturnType="Void" Subsets="os-lightshare">
     <DocumentationString>Remove Windlight settings from a region</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="print" ReturnType="Void" Subsets="os-lsl">
+  <LibraryFunction Name="print" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="str" Type="String" />
-    <DocumentationString />
+    <DocumentationString>This does not seem to do anything, at least in SecondLife.</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="SetPrimitiveParamsEx" ReturnType="Void" Subsets="os-lsl">
     <Parameter Name="prim" Type="String" />
