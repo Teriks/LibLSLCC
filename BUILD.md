@@ -41,16 +41,17 @@ build with every version of Visual Studio starting with VS2010.
 #Building LibLSLCC on *Nix Platforms with monodevelop 
 
 
-Use **LibLSLCC-NoEditor.sln** when building for Mono with monodevelop or xbuild.
+Use **LibLSLCC-NoEditor.sln** when building for Mono.
  
 Only the LibLSLCC, LibraryDataScrapingTools, lslcc_cmd and DemoArea projects are buildable on Mono 
 and the **LibLSLCC-NoEditor.sln** includes only these projects for convenience.
 
-Java is also required when building on *Nix platforms so that the ANTRL 4 tool can run.  Make sure you have the latest
-version of Java available for your distribution installed and that it is runnable from the command line.
+Java is also required when building on *Nix platforms so that the ANTRL 4 tool can run.  
+Make sure you have the latest version of Java available for your distribution installed and
+that it is runnable from the command line.
  
 You can open the provided **LibLSLCC-NoEditor.sln** solution on Linux using the latest version of MonoDevelop,
-Or you can build it from the command line using the xbuild command.
+Or you can build it from the command line using the xbuild command (See the next section).
  
 Other than some of the projects in the solution being un-buildable under Mono, the build on *Nix platforms behaves
 the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
@@ -59,8 +60,8 @@ the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
 #Building LibLSLCC on *Nix Platforms with xbuild from the shell
 
 
-To build LibLSLCC from the command line using mono and xbuild on linux, first install Mono for your distribution
-then CD into the LibLSLCC source tree where **LibLSLCC-NoEditor.sln** resides.
+To build LibLSLCC from the command line using mono and xbuild on nix*, first install Mono 
+for your distribution then CD into the LibLSLCC source tree where **LibLSLCC-NoEditor.sln** resides.
 
 enter the command:
 
