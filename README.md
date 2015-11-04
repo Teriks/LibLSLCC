@@ -198,7 +198,7 @@ http://avalonedit.net/
 
 === 
 
- 
+
  
 #Building LibLSLCC and LSLCCEditor On Windows
 
@@ -215,6 +215,9 @@ install the WiX Installer Toolset from http://wixtoolset.org/.  WiX will integra
 and allow you to load the WiX Project type, so you can build the **LSLCCEditorInstaller** project that
 is part of this particular solution file.
 
+Please make note that WiX will only integrate with Visual Studio if it is installed *After*
+you install the version of Visual Studio your going to use.  See http://wixtoolset.org/ for 
+all versions of Visual Studio that WiX it is compatible with.
 
 **LibLSLCC-WithEditor-WithInstaller.sln** will only build the installer project when building for
 **x64** or **x86** in **Release** mode.  The WiX installer build will not be triggered if you have the
@@ -280,4 +283,3 @@ LibLSLCC should start building.
 Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  
 
 This is not a problem as "Mono.Data.Sqlite" it is only used when running on Mono.
-
