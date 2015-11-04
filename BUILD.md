@@ -35,7 +35,8 @@ VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.
 and WiX v3.10.1 does not support integration with VS2010.
 
 If you happen to be using a version of Visual Studio that is incompatible with **WiX** or the **LSLCCEditor** portion of the
-build, and you just want to build the library portion of the project;  Use **LibLSLCC-NoEditor.sln**.
+build, and you just want to build the library portion of the project; 
+Use **LibLSLCC-NoEditor.sln**.
 
 
 It contains only the library project and projects from the source tree which have a .NET 4.0 compatibility profile.
