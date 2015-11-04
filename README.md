@@ -168,9 +168,8 @@ http://avalonedit.net/
 #Building LibLSLCC and LSLCCEditor On Windows
 
  
- 
 LibLSLCC requires Java to be installed so that the ANTLR 4 parser generator tool 
-(Which is written in Java) can be run as part of the pre-build step for the LibLSLCC Library.  
+can be run as part of the pre-build step for the LibLSLCC Library.  
 
 The java executable will need to be in your PATH so that it can run from the command prompt. 
 Fortunately installing java itself sets this up for you by default.
@@ -206,8 +205,7 @@ build with every version of Visual Studio starting with VS2010.
  
 
 
-#Building LibLSLCC on *Nix Platforms with xbuild/monodevelop 
-
+#Building LibLSLCC on *Nix Platforms with monodevelop 
 
 
 Use **LibLSLCC-NoEditor.sln** when building for Mono with monodevelop or xbuild.
@@ -221,5 +219,19 @@ version of Java available for your distribution installed and that it is runnabl
 You can open the provided **LibLSLCC-NoEditor.sln** solution on Linux using the latest version of MonoDevelop,
 Or you can build it from the command line using the xbuild command.
  
-Other than some of the projects in the solution being un-buildable under Mono, the build on *Nix platforms behaves the exact same way
-under xbuild/monodevelop as it does under MSBuild on Windows.
+Other than some of the projects in the solution being un-buildable under Mono, the build on *Nix platforms behaves
+the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
+
+
+#Building LibLSLCC on *Nix Platforms with xbuild from the shell
+
+
+To build LibLSLCC from the command line using mono and xbuild on linux, first install Mono for your distribution
+then CD into the LibLSLCC source tree where **LibLSLCC-NoEditor.sln** resides.
+
+enter the command:
+
+	xbuild /p:Configuration=Release LibLSLCC-NoEditor.sln
+	
+
+LibLSLCC should start building.
