@@ -199,8 +199,8 @@ Additionally **LSLCCEditor** and **LSLCCEditor.CompletionUI** can only be built 
 that support targeting the .NET 4.5 framework.
 
 I have not tested other versions of Visual Studio besides VS2010 with the **LSLCCEditor** portion of the build.
-VS2010 for sure does not work, as the editor uses a .NET framework level (4.5) that is too high for it to compile, 
-and WiX v3.10.1 does not support integration with VS2010 anymore.
+VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.5) that is too high for it to compile, 
+and WiX v3.10.1 does not support integration with VS2010.
 
 
 If you happen to be using a version of Visual Studio that is incompatible with **WiX** or the **LSLCCEditor** portion of the
