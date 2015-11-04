@@ -102,8 +102,8 @@ The Code Validator/OpenSim Code Generator Features:
 The project also includes full featured LSL Editor that was originally built to test the compiler library.
 It has since developed into a full blown multi-tabbed IDE that is built on top of LibLSLCC's parsing framework.
 
-Please take note that LibLSLCCEditor is a Windows only project, and you can only build 
-the **LibLSLCC-WithEditor*.sln** solution's on Windows using a version of Visual Studio that
+Please take note that **LibLSLCCEditor** and its related projects are Windows only, and you can 
+only build the **LibLSLCC-WithEditor*.sln** solution's on Windows using a version of Visual Studio that
 support's targeting the .NET 4.5 framework.  
 
 VS2015 is your best bet, its what I use personally.  However if your version of Visual Studio's
