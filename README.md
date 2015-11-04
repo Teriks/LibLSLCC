@@ -216,28 +216,30 @@ and allow you to load the WiX Project type, so you can build the **LSLCCEditorIn
 is part of this particular solution file.
 
 
-All C# projects in the solution can be built using Microsoft Visual Studio Express/Comunity Edition 2015.
+**LibLSLCC-WithEditor-WithInstaller.sln** will only build the installer project when
+building for **x64** or **x86**.  The WiX installer build will not be triggered if you have the "Platform"
+setting set to AnyCPU in Visual Studio, you much change it to either **x64** or **x86**.
 
 
 **LSLCCEditor** and **LSLCCEditor.CompletionUI** are only buildable on Windows as they depend on WPF and AvalonEdit, 
 but the **LibLSLCC** project and related projects are cross platform.  
 
+
 Additionally **LSLCCEditor** and **LSLCCEditor.CompletionUI** can only be built in versions of Visual Studio 
-that support targeting the .NET 4.5 framework.
+that support targeting the .NET 4.5 framework. (VS2012+)
+
 
 I have not tested other versions of Visual Studio besides VS2010 with the **LSLCCEditor** portion of the build.
-VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.5) that is too high for it to compile, 
+VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.5) that is too high for it to target, 
 and WiX v3.10.1 does not support integration with VS2010.
 
-
 If you happen to be using a version of Visual Studio that is incompatible with **WiX** or the **LSLCCEditor** portion of the
-build, and you just want to build the library portion of the project;  You can use **LibLSLCC-NoEditor.sln**.
+build, and you just want to build the library portion of the project;  Use **LibLSLCC-NoEditor.sln**.
 
 
 It contains only the library project and projects from the source tree which have a .NET 4.0 compatibility profile.
 The projects in the **LibLSLCC-NoEditor.sln** solution have been tested with VS2010 so far, they will most likely
 build with every version of Visual Studio starting with VS2010.
- 
 
 
 #Building LibLSLCC on *Nix Platforms with monodevelop 
