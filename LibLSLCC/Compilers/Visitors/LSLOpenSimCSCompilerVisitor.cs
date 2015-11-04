@@ -884,6 +884,22 @@ private static class UTILITIES
         {
             _creatingGlobalsClass = true;
 
+
+            //only generate code for global variables that are referenced from somewhere.
+            var referencedGlobalVariables = node.GlobalVariableDeclarations.Where(x => x.References.Count != 0).ToList();
+
+
+            if (referencedGlobalVariables.Count == 0)
+            {
+                //don't even bother to create the container class if we do not have any global variables
+                //or none of them were ever referenced anywhere.
+
+                _creatingGlobalsClass = false;
+
+                return;
+            }
+
+
             Writer.WriteLine(GenIndent() + "//===============================");
             Writer.WriteLine(GenIndent() + "//== Global Variable Container ==");
             Writer.WriteLine(GenIndent() + "//===============================");
@@ -892,8 +908,6 @@ private static class UTILITIES
 
             _indentLevel++;
 
-            //only generate code for global variables that are referenced from somewhere.
-            var referencedGlobalVariables = node.GlobalVariableDeclarations.Where(x => x.References.Count != 0).ToList();
 
             //define public members, without initialization
             foreach (var gvar in referencedGlobalVariables)
@@ -1130,8 +1144,9 @@ private static class UTILITIES
                     .Cast<ILSLVariableDeclarationNode>();
 
 
-
-            foreach (var deadVariableDeclarationNode in deadVariableDeclarationNodes)
+            //we also want to filter out variables that were never referenced, using: References.Count != 0
+            //we do not have to generate code for variables that were never referenced anywhere
+            foreach (var deadVariableDeclarationNode in deadVariableDeclarationNodes.Where(x=>x.References.Count != 0))
             {
                 var variableName = "Var" + node.ScopeId + "_" + deadVariableDeclarationNode.Name;
 
@@ -1278,10 +1293,9 @@ private static class UTILITIES
             Writer.Write(Environment.NewLine);
 
 
-            if (unode.GlobalVariableDeclarations.Count > 0)
-            {
-                CreateGlobalVariablesClass(unode);
-            }
+            //this method will only create a global variable container
+            //if necessary
+            CreateGlobalVariablesClass(unode);
 
 
             //only visit function declarations that have references to them
@@ -1538,6 +1552,9 @@ private static class UTILITIES
             //Labels should not be omitted if they are dead code, they can be referenced still and if the definition is missing that a problem.
             //if (node.IsDeadCode) return false;
 
+            //we can however, remove the label from the generated source code if it was never referenced.
+            if (node.JumpsToHere.Count == 0) return false;
+
             if (Settings.InsertCoOpTerminationCalls)
             {
                 Writer.WriteLine(GenIndent() + "LSLLabel_" + node.LabelName + ":" + Settings.CoOpTerminationFunctionCall + ";");
@@ -1573,9 +1590,11 @@ private static class UTILITIES
                are put in the generated code.  They are put at the top of the scope they are declared in,
                and initialize with their default values.  They are written out in the VisitCodeScope method
                before we even get to this point in the syntax tree, so they do not need to be written again.
+
+               Also, if the variable is never referenced, there is no need to generate code for it.
             */
             
-            if (node.IsDeadCode) return false;
+            if (node.IsDeadCode || node.References.Count == 0) return false;
 
 
             Writer.Write(GenIndent());
