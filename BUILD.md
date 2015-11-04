@@ -9,6 +9,9 @@ First off:
  * Building **LibLSLCC-NoEditor.sln** should work with **VS2010 and up**.
  
  
+===
+ 
+ 
 LibLSLCC requires Java to be installed so that the ANTLR 4 parser generator tool 
 can be run as part of the pre-build step for the LibLSLCC Library.  
 
