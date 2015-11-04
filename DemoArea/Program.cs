@@ -423,7 +423,7 @@ default{
                 compilerSettings.InsertCoOpTerminationCalls = true;
                 compilerSettings.GenerateClass = true;
                 compilerSettings.GeneratedClassName = "MyClass";
-                compilerSettings.GeneratedConstructorDefinition = "public MyClass(){}";
+                compilerSettings.GeneratedConstructorSignature = "()";
                 compilerSettings.GeneratedClassNamespace = "MyNameSpace";
 
                 LSLOpenSimCSCompiler compiler = new LSLOpenSimCSCompiler(compilerSettings);

@@ -55,6 +55,10 @@ using LibLSLCC.LibraryData;
 
 namespace LibLSLCC.Compilers
 {
+
+    
+
+
     // ReSharper disable InconsistentNaming
     /// <summary>
     /// Settings for the <see cref="LSLOpenSimCSCompiler"/> class.
@@ -62,6 +66,15 @@ namespace LibLSLCC.Compilers
     public class LSLOpenSimCSCompilerSettings
         // ReSharper restore InconsistentNaming
     {
+
+        public enum AccessibilityLevel
+        {
+            Public,
+            Private,
+            Internal,
+            Protected,
+        }
+
 
         /// <summary>
         /// Construct an <see cref="LSLOpenSimCSCompilerSettings"/> object that uses a given <see cref="ILSLLibraryDataProvider"/> implementation
@@ -73,7 +86,7 @@ namespace LibLSLCC.Compilers
             GenerateClass = false;
             GeneratedClassName = null;
             GeneratedClassInherit = null;
-            GeneratedConstructorDefinition = null;
+            GeneratedConstructorSignature = null;
             LibraryDataProvider = libraryDataProvider;
             InsertCoOpTerminationCalls = false;
             CoOpTerminationFunctionCall = "opensim_reserved_CheckForCoopTermination()";
@@ -122,15 +135,30 @@ namespace LibLSLCC.Compilers
 
 
         /// <summary>
-        /// The constructor definition to be inserted into the generated class if GenerateClass is set to true, this string is copied verbatim.
+        /// The constructor signature to be inserted into the generated class if GenerateClass is set to true, this string is copied verbatim.
+        /// example: (int parameter) : base(parameter)
         /// </summary>
-        public string GeneratedConstructorDefinition { get; set; }
+        public string GeneratedConstructorSignature { get; set; }
+
+        /// <summary>
+        /// The accessibility of the constructor signature to be inserted into the generated class if GenerateClass is set to true.
+        /// defaults to AccessibilityLevel.Public.
+        /// </summary>
+        public AccessibilityLevel GeneratedConstructorAccessibility { get; set; }
+
 
         /// <summary>
         /// The library data provider to use for the compilation process, it is used to lookup library function calls
         /// and determine if the use of ModInvoke is necessary to invoke a particular function from the source script.
         /// </summary>
         public ILSLLibraryDataProvider LibraryDataProvider { get; private set; }
+
+
+        /// <summary>
+        /// String content to be placed at the very beginning of the generated script, use this to place comments.
+        /// If its null or empty then the compiler ignores it.
+        /// </summary>
+        public string ScriptHeader { get; set; }
 
 
         /// <summary>
@@ -148,7 +176,7 @@ namespace LibLSLCC.Compilers
                 GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "XEngineScript",
                 GeneratedClassInherit = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
-                GeneratedConstructorDefinition = "public XEngineScript(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle) {}",
+                GeneratedConstructorSignature = "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)",
                 GeneratedNamespaceImports = new HashSet<string> { "OpenSim.Region.ScriptEngine.Shared","System.Collections.Generic" }
             };
 
@@ -170,7 +198,7 @@ namespace LibLSLCC.Compilers
                 GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "LSLScript",
                 GeneratedClassInherit = "LSLScriptBase",
-                GeneratedConstructorDefinition = "public LSLScript() : base() {}",
+                GeneratedConstructorSignature = "() : base()",
                 GeneratedNamespaceImports = new HashSet<string> { "LibLSLCC.LSLRuntime", "System.Collections.Generic" }
             };
 

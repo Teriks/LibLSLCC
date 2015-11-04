@@ -20,7 +20,7 @@
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" Executed="Save_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" Executed="SaveAs_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}"
-                        Executed="CompileForOpenSim_OnClick" />
+                        Executed="CompileForOpenSimClientSide_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}"
                         Executed="ClearCompilerMessages_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}"
@@ -60,7 +60,7 @@
         </Grid.RowDefinitions>
 
 
-        <Menu Grid.Row="0">
+        <Menu Grid.Row="0" Name="ToolbarMenu">
             <MenuItem Header="File">
                 <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewFile_OnClick" />
                 <MenuItem Header="Save" InputGestureText="Ctrl+S" Click="Save_OnClick"
@@ -73,7 +73,11 @@
             </MenuItem>
             <MenuItem Header="Compile"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
-                <MenuItem Header="For OpenSim" InputGestureText="Ctrl+Alt+C" Click="CompileForOpenSim_OnClick" />
+                <MenuItem Header="OpenSim (Client Side)" InputGestureText="Ctrl+Alt+C" Click="CompileForOpenSimClientSide_OnClick" />
+                <MenuItem Header="OpenSim (Server Side)" Click="CompileForOpenSimServerSide_OnClick" />
+                <Separator/>
+                <MenuItem Header="OpenSim (Client Side, CO-OP Stop)" Click="CompileForOpenSimClientSideCOOP_OnClick" />
+                <MenuItem Header="OpenSim (Server Side, CO-OP Stop)" Click="CompileForOpenSimServerSideCOOP_OnClick" />
             </MenuItem>
 
             <MenuItem Header="Tools"

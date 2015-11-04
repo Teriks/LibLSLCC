@@ -105,15 +105,110 @@ private static class UTILITIES
 }
 ";
 
-        private readonly bool _parenthesizeExpressions = true;
-        private bool _creatingGlobalsClass;
+
+        private const string FallbackClassName = "LSLScript";
+
+        /// <summary>
+        /// Name of the class that will contain global variables
+        /// if the user specifies not to generate a script class.
+        /// 
+        /// Global variables are initialized inside of a container if
+        /// the library user does not specify that a class should be generated.
+        /// </summary>
+        private const string GlobalsContainerClassName = "GLOBALS";
+
+
+        /// <summary>
+        /// The global container field name that the globals container class
+        /// gets assigned to in the generated script, when not generating a class.
+        /// </summary>
+        private const string GlobalContainerFieldName = "Globals";
+
+
+        /// <summary>
+        /// The name prefix used when defining global variables inside of the
+        /// global variable container class.
+        /// </summary>
+        private const string GlobalContainerFieldsNamePrefix = "Var_";
+
+
+        /// <summary>
+        /// The name prefix used when defining global variables inside of the
+        /// script class itself when a class and class constructor is 
+        /// generated for the script.
+        /// </summary>
+        private const string GlobalFieldsNamePrefix = "GlobalVar_";
+
+
+        /// <summary>
+        /// The local variable prefix to mangle local variables with, 
+        /// the compiler appends the integer scope level after this prefix, followed
+        /// by an underscore.
+        /// </summary>
+        private const string LocalVariableNamePrefix = "LocalVar";
+
+
+        /// <summary>
+        /// The name prefix to mangle parameters names in event handlers and function declarations with.
+        /// </summary>
+        private const string LocalParameterNamePrefix = "Param_";
+
+
+        /// <summary>
+        /// The name prefix to mangle user defined function names with.
+        /// </summary>
+        private const string FunctionNamePrefix = "Func_";
+
+
+
+
+
+        /// <summary>
+        /// Tracks what state body that LSL code generation is taking place in
+        /// use to determine the names of generated event handler functions.
+        /// </summary>
         private string _currentLSLStateBody;
+
+
+
+        /// <summary>
+        /// The indent level, used to create pretty output
+        /// </summary>
         private int _indentLevel;
+
+
+        /// <summary>
+        /// Keeps track of what binary operations have been used in the script, stubs are dynamically generated for them
+        /// at the end of the class.
+        /// 
+        /// The stubs reverse the order of evaluation for binary operators.
+        /// </summary>
+        private readonly HashSet<LSLBinaryOperationSignature> _binOpsUsed = new HashSet<LSLBinaryOperationSignature>();
+
+
+        /// <summary>
+        /// Gets or sets the code generation settings.
+        /// this must not be null, when <see cref="WriteAndFlush"/> is called.
+        /// </summary>
+        /// <value>
+        /// The code generation settings.
+        /// </value>
         public LSLOpenSimCSCompilerSettings Settings { get; set; }
+
+
         public TextWriter Writer { get; private set; }
+
+
+
 
         public void WriteAndFlush(ILSLCompilationUnitNode node, TextWriter writer, bool closeStream = true)
         {
+
+            if (Settings == null)
+            {
+                throw new InvalidOperationException(GetType().Name+".Settings property cannot be null!");
+            }
+
             Writer = writer;
 
             Visit(node);
@@ -125,10 +220,10 @@ private static class UTILITIES
             }
         }
 
+
         public void Reset()
         {
             _currentLSLStateBody = "";
-            _creatingGlobalsClass = false;
             _indentLevel = 0;
             _binOpsUsed.Clear();
         }
@@ -136,8 +231,6 @@ private static class UTILITIES
         #region Expressions
 
         #region BasicExpressions
-
-        private readonly HashSet<LSLBinaryOperationSignature> _binOpsUsed = new HashSet<LSLBinaryOperationSignature>();
 
 
         public override bool VisitBinaryExpression(ILSLBinaryExpressionNode node)
@@ -182,7 +275,7 @@ private static class UTILITIES
             {
                 if (node.LeftExpression.Type == LSLType.Integer && node.RightExpression.Type == LSLType.Float)
                 {
-                    if (parenths && _parenthesizeExpressions)
+                    if (parenths)
                     {
                         Writer.Write("(");
                     }
@@ -194,7 +287,7 @@ private static class UTILITIES
                     Visit(node.RightExpression);
                     Writer.Write(".value)");
 
-                    if (parenths && _parenthesizeExpressions)
+                    if (parenths)
                     {
                         Writer.Write(")");
                     }
@@ -242,7 +335,7 @@ private static class UTILITIES
         {
             var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
 
-            if (parenths && _parenthesizeExpressions)
+            if (parenths)
             {
                 Writer.Write("(");
             }
@@ -250,7 +343,7 @@ private static class UTILITIES
             Visit(node.LeftExpression);
             Writer.Write(node.OperationString);
 
-            if (parenths && _parenthesizeExpressions)
+            if (parenths)
             {
                 Writer.Write(")");
             }
@@ -273,7 +366,7 @@ private static class UTILITIES
             {
                 var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
 
-                if (parenths && _parenthesizeExpressions)
+                if (parenths)
                 {
                     Writer.Write("(");
                 }
@@ -282,7 +375,7 @@ private static class UTILITIES
                 Visit(node.RightExpression);
 
 
-                if (parenths && _parenthesizeExpressions)
+                if (parenths)
                 {
                     Writer.Write(")");
                 }
@@ -331,17 +424,11 @@ private static class UTILITIES
 
             Writer.Write("(" + LSLAtomType_To_CSharpType(node.CastToType) + ")");
 
-            if (_parenthesizeExpressions)
-            {
-                Writer.Write("(");
-            }
 
+            Writer.Write("(");
             Visit(node.CastedExpression);
+            Writer.Write(")");
 
-            if (_parenthesizeExpressions)
-            {
-                Writer.Write(")");
-            }
             return false;
         }
 
@@ -351,7 +438,7 @@ private static class UTILITIES
 
         public override bool VisitUserFunctionCall(ILSLFunctionCallNode node)
         {
-            var functionName = "Func_" + node.Name;
+            var functionName = FunctionNamePrefix + node.Name;
 
             if (node.ParameterExpressions.Count > 0)
             {
@@ -367,6 +454,8 @@ private static class UTILITIES
             }
             return false;
         }
+
+
 
 
         private readonly Dictionary<LSLType, string> _modInvokeFunctionMap
@@ -432,13 +521,22 @@ private static class UTILITIES
 
         public override bool VisitGlobalVariableReference(ILSLVariableNode node)
         {
-            if (_creatingGlobalsClass)
+
+            if (Settings.GenerateClass)
             {
-                Writer.Write("this.Var_" + node.Name);
+                //we are referencing a class field defined in the generated script class.
+                //because we were able to generate a constructor to initialize them from
+                //instead of making a new object to contain them.
+                Writer.Write("this." + GlobalFieldsNamePrefix + node.Name);
             }
             else
             {
-                Writer.Write("this.Globals.Var_" + node.Name);
+                //reference them in the globals field, it has an instance of the globals
+                //class since we did not generate a script constructor.
+                //
+                //the user specified not to generate a class so variable initialization cannot
+                //happen in the constructor, since they may not have provided a class name.
+                Writer.Write("this." + GlobalContainerFieldName + "." + GlobalContainerFieldsNamePrefix + node.Name);
             }
             return false;
         }
@@ -451,14 +549,14 @@ private static class UTILITIES
                 If a variable is declared inside of dead code, it is put at the very top of the scope it was 
                 defined in and initialized with the default value for its type.
             */
-            Writer.Write("Var" + node.Declaration.ScopeId + "_" + node.Name);
+            Writer.Write(LocalVariableNamePrefix + node.Declaration.ScopeId + "_" + node.Name);
             return false;
         }
 
 
         public override bool VisitParameterVariableReference(ILSLVariableNode node)
         {
-            Writer.Write("Param_" + node.Name);
+            Writer.Write(LocalParameterNamePrefix + node.Name);
             return false;
         }
 
@@ -880,9 +978,71 @@ private static class UTILITIES
         }
 
 
+
+        private void CreateGlobalVariablesConstructor(ILSLCompilationUnitNode node)
+        {
+
+            //only generate code for global variables that are referenced from somewhere.
+            var referencedGlobalVariables = node.GlobalVariableDeclarations.Where(x => x.References.Count != 0).ToList();
+
+
+            //define public members, without initialization
+            foreach (var gvar in referencedGlobalVariables)
+            {
+                Writer.WriteLine(GenIndent() + "public " +
+                                 LSLAtomType_To_CSharpType(gvar.Type) +
+                                 " " + GlobalFieldsNamePrefix + gvar.Name + ";");
+            }
+
+
+            if (referencedGlobalVariables.Count > 0)
+            {
+                Writer.Write(Environment.NewLine + Environment.NewLine);
+            }
+
+            //use the fall-back class name if the settings did not specify one
+            var className = string.IsNullOrWhiteSpace(Settings.GeneratedClassName) ?  FallbackClassName : Settings.GeneratedClassName;
+
+            var constructorSig = string.IsNullOrWhiteSpace(Settings.GeneratedConstructorSignature) ? "()" : Settings.GeneratedConstructorSignature;
+
+            Writer.WriteLine(GenIndent() + Settings.GeneratedConstructorAccessibility.ToString().ToLower() + " " + className + constructorSig);
+            Writer.WriteLine(GenIndent() + "{");
+
+            _indentLevel++;
+
+
+            //initialize them in the constructor, as LSL allows its globals to reference each other
+            //and CSharp does not allow class members to reference each other when being initialized
+            //in the top level of the class
+            foreach (var gvar in referencedGlobalVariables)
+            {
+                Writer.Write(GenIndent() + GlobalFieldsNamePrefix + gvar.Name + " = ");
+
+                if (gvar.HasDeclarationExpression)
+                {
+                    Visit(gvar.DeclarationExpression);
+                    Writer.WriteLine(";");
+                }
+                else
+                {
+                    Writer.Write(LSLType_To_CSharpDefaultInitializer(gvar.TypeString));
+                    Writer.WriteLine(";");
+                }
+            }
+
+
+            _indentLevel--;
+
+            Writer.WriteLine(GenIndent() + "}");
+
+            Writer.Write(Environment.NewLine + Environment.NewLine);
+        }
+
+
+
+
         private void CreateGlobalVariablesClass(ILSLCompilationUnitNode node)
         {
-            _creatingGlobalsClass = true;
 
 
             //only generate code for global variables that are referenced from somewhere.
@@ -894,8 +1054,6 @@ private static class UTILITIES
                 //don't even bother to create the container class if we do not have any global variables
                 //or none of them were ever referenced anywhere.
 
-                _creatingGlobalsClass = false;
-
                 return;
             }
 
@@ -903,7 +1061,7 @@ private static class UTILITIES
             Writer.WriteLine(GenIndent() + "//===============================");
             Writer.WriteLine(GenIndent() + "//== Global Variable Container ==");
             Writer.WriteLine(GenIndent() + "//===============================");
-            Writer.WriteLine(GenIndent() + "private class GLOBALS");
+            Writer.WriteLine(GenIndent() + "private class " + GlobalsContainerClassName);
             Writer.WriteLine(GenIndent() + "{");
 
             _indentLevel++;
@@ -914,8 +1072,7 @@ private static class UTILITIES
             {
                 Writer.WriteLine(GenIndent() + "public " +
                                  LSLAtomType_To_CSharpType(gvar.Type) +
-                                 " Var_" +
-                                 gvar.Name + ";");
+                                 " " + GlobalContainerFieldsNamePrefix + gvar.Name + ";");
             }
 
             Writer.WriteLine(GenIndent() + "public GLOBALS()");
@@ -929,7 +1086,7 @@ private static class UTILITIES
             //in the top level of the class
             foreach (var gvar in referencedGlobalVariables)
             {
-                Writer.Write(GenIndent() + "Var_" + gvar.Name + " = ");
+                Writer.Write(GenIndent() + "this." + GlobalContainerFieldsNamePrefix + gvar.Name + " = ");
                 if (gvar.HasDeclarationExpression)
                 {
                     Visit(gvar.DeclarationExpression);
@@ -956,7 +1113,6 @@ private static class UTILITIES
 
             Writer.Write(Environment.NewLine + Environment.NewLine);
 
-            _creatingGlobalsClass = false;
         }
 
 
@@ -1229,6 +1385,16 @@ private static class UTILITIES
             bool hasGeneratedClassNameSpaceName = !string.IsNullOrWhiteSpace(Settings.GeneratedClassNamespace);
 
 
+            if (!string.IsNullOrWhiteSpace(Settings.ScriptHeader))
+            {
+                Writer.WriteLine(Settings.ScriptHeader);
+                Writer.Write(Environment.NewLine);
+            }
+
+            
+            Writer.WriteLine(GenIndent() + "//Compiled by LibLSLCC, Date: {0}", DateTime.Now);
+            Writer.Write(Environment.NewLine);
+
             if (Settings.GenerateClass)
             {
                 if (Settings.GeneratedNamespaceImports != null)
@@ -1236,7 +1402,6 @@ private static class UTILITIES
                     foreach (var ns in Settings.GeneratedNamespaceImports)
                     {
                         Writer.WriteLine("using " + ns + ";");
-                        Writer.Write(Environment.NewLine);
                     }
                 }
 
@@ -1250,7 +1415,7 @@ private static class UTILITIES
                 }
 
                 var cName = string.IsNullOrWhiteSpace(Settings.GeneratedClassName)
-                    ? "Script"
+                    ? FallbackClassName
                     : Settings.GeneratedClassName;
 
                 if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassInherit))
@@ -1269,23 +1434,9 @@ private static class UTILITIES
 
                 _indentLevel++;
 
-
-                if (!string.IsNullOrWhiteSpace(Settings.GeneratedConstructorDefinition))
-                {
-                    WriteMultiLineIndentedString(Settings.GeneratedConstructorDefinition);
-                }
+            
             }
-            else
-            {
-                Writer.WriteLine(GenIndent() + "//C#");
-                Writer.WriteLine(GenIndent() + "//OpenSim CSharp code, CSharp scripting must be enabled on the server to run.");
-                Writer.WriteLine(GenIndent() + "//Do not remove the first comment.");
-                Writer.WriteLine(GenIndent() + "//Compiled by LibLSLCC, Date: {0}", DateTime.Now);
-
-
-                Writer.Write(Environment.NewLine);
-            }
-
+            
 
             WriteUtilityLibrary();
 
@@ -1293,9 +1444,24 @@ private static class UTILITIES
             Writer.Write(Environment.NewLine);
 
 
-            //this method will only create a global variable container
-            //if necessary
-            CreateGlobalVariablesClass(unode);
+            if (Settings.GenerateClass)
+            {
+                //If we are generating a class, we can define the global variables in the class body
+                //and init them in the constructor.
+                //
+                //This allows global variables to reference each other.
+                //
+                //This also supports for script resets in OpenSim.
+                //OpenSim can serialize and de-serialze the global variables this way
+                //when saving and restoring script state since they are just fields in the class body.
+                CreateGlobalVariablesConstructor(unode);
+            }
+            else
+            {
+                //this method will only create a global variable container
+                //if no class is being generated, this does not support script resets in OpenSim.
+                CreateGlobalVariablesClass(unode);
+            }
 
 
             //only visit function declarations that have references to them
@@ -1413,7 +1579,7 @@ private static class UTILITIES
                 Writer.Write("void ");
             }
 
-            var functionName = "Func_" + node.Name;
+            var functionName = FunctionNamePrefix + node.Name;
 
 
             Writer.Write(functionName + "(");
@@ -1469,7 +1635,7 @@ private static class UTILITIES
 
         public override bool VisitParameterDefinition(ILSLParameterNode node)
         {
-            Writer.Write(LSLAtomType_To_CSharpType(node.Type) + " Param_" + node.Name);
+            Writer.Write(LSLAtomType_To_CSharpType(node.Type) + " " + LocalParameterNamePrefix + node.Name);
             return false;
         }
 
@@ -1600,7 +1766,7 @@ private static class UTILITIES
             Writer.Write(GenIndent());
 
 
-            var variableName = "Var" + node.ScopeId + "_" + node.Name;
+            var variableName = LocalVariableNamePrefix + node.ScopeId + "_" + node.Name;
 
 
             if (!node.HasDeclarationExpression)

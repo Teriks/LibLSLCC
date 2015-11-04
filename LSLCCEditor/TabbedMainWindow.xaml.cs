@@ -135,6 +135,7 @@ namespace LSLCCEditor
            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 #endif
             InitializeComponent();
+
         }
 
 
@@ -414,7 +415,9 @@ namespace LSLCCEditor
             return t;
         }
 
-        private void CompileForOpenSim_OnClick(object sender, RoutedEventArgs e)
+ 
+
+        private void CompileForOpenSimClickStub()
         {
             if (TabControl.SelectedItem == null) return;
 
@@ -443,24 +446,24 @@ namespace LSLCCEditor
             try
             {
 #endif
-            var showDialog = saveDialog.ShowDialog();
-            if (showDialog != null && showDialog.Value)
-            {
-                if (!tab.MemoryOnly)
+                var showDialog = saveDialog.ShowDialog();
+                if (showDialog != null && showDialog.Value)
                 {
-                    try
+                    if (!tab.MemoryOnly)
                     {
-                        tab.SaveTabToFile();
+                        try
+                        {
+                            tab.SaveTabToFile();
+                        }
+                        catch (Exception err)
+                        {
+                            MessageBox.Show(err.Message, "Could Not Save Before Compiling",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
                     }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(err.Message, "Could Not Save Before Compiling",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-                    }
+                    CompileCurrentEditorText(saveDialog.FileName);
                 }
-                CompileCurrentEditorText(saveDialog.FileName);
-            }
 #if !DEBUG
             }
             catch (Exception err)
@@ -471,6 +474,89 @@ namespace LSLCCEditor
             }
 #endif
         }
+
+
+
+        private LSLOpenSimCSCompilerSettings _openSimCompilerSettings;
+
+
+
+        private const string _clientSideScriptCompilerHeader =
+@"//c#
+/** 
+*  Do not remove //c# from the first line of this script.
+*
+*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
+*
+*  Please note this script does not support being reset, because a constructor was not generated.
+*  Compile using the server side script option to generate a script constructor.
+*
+*  Server side scripts can be uploaded from your viewer to the LibLSLCC OpenSim Fork 
+*  when the 'CreateClassWrapperForCSharpScripts' is set to 'false' under the [LibLCLCC] OpenSim.ini config section.
+*
+*  This code will run on an unmodified OpenSim server, however script resets will not reset global variables,
+*  and OpenSim will be unable to save the state of this script as its global variables are created in an object container.
+*
+*/ 
+";
+
+
+        private const string _serverSideScriptCompilerHeader =
+@"//c#
+/** 
+*  Do not remove //c# from the first line of this script.
+*
+*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
+*
+*  This is a server side script.  It constitutes a fully generated script class that
+*  will be sent to the CSharp compiler in OpenSim.  This code supports script resets.
+*
+*  Note that 'CreateClassWrapperForCSharpScripts' must be set to 'false' under the [LibLCLCC] 
+*  OpenSim.ini config section in order for this script to upload from the viewer.
+*
+*  That particular setting is specific to the LibLSLCC OpenSim Fork, it is not available 
+*  in regular OpenSim.
+*
+*/ 
+";
+
+
+        private void CompileForOpenSimServerSide_OnClick(object sender, RoutedEventArgs e)
+        {
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault(_libraryDataProvider);
+            _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
+
+
+            CompileForOpenSimClickStub();
+        }
+
+
+        private void CompileForOpenSimClientSide_OnClick(object sender, RoutedEventArgs e)
+        {
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable(_libraryDataProvider);
+            _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
+
+
+            CompileForOpenSimClickStub();
+        }
+
+        private void CompileForOpenSimClientSideCOOP_OnClick(object sender, RoutedEventArgs e)
+        {
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable(_libraryDataProvider);
+            _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
+            _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
+            CompileForOpenSimClickStub();
+        }
+
+        private void CompileForOpenSimServerSideCOOP_OnClick(object sender, RoutedEventArgs e)
+        {
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault(_libraryDataProvider);
+            _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
+            _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
+            CompileForOpenSimClickStub();
+        }
+
+
 
         private void NewFile_OnClick(object sender, RoutedEventArgs e)
         {
@@ -521,8 +607,8 @@ namespace LSLCCEditor
 
             using (var outfile = File.OpenWrite(destinationFile))
             {
-                var compiler = new LSLOpenSimCSCompiler(LSLOpenSimCSCompilerSettings
-                    .OpenSimClientUploadable(_validatorServices.LibraryDataProvider));
+
+                var compiler = new LSLOpenSimCSCompiler(_openSimCompilerSettings);
 
 #if !DEBUG
 
