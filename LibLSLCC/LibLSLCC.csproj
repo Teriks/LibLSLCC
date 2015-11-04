@@ -24,7 +24,6 @@
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <NoWarn>3003;3001;3002</NoWarn>
-    <LangVersion>5</LangVersion>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -36,7 +35,6 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>3003;3001;3002</NoWarn>
-    <LangVersion>5</LangVersion>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -49,7 +47,6 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>3003;3001;3002</NoWarn>
-    <LangVersion>5</LangVersion>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -63,7 +60,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <NoWarn>3003;3001;3002</NoWarn>
-    <LangVersion>5</LangVersion>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -75,7 +71,6 @@
     <NoWarn>3003;3001;3002</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>5</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -87,7 +82,6 @@
     <NoWarn>3003;3001;3002</NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>5</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

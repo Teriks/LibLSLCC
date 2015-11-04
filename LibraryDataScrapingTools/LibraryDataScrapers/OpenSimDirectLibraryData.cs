@@ -221,7 +221,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 var constant = constantContrainerType.GetField(name, bindingFlags);
 
-                if (!constant.GetCustomAttributes(ScriptModuleConstantAttribute).Any()) continue;
+                if (!constant.GetCustomAttributes(ScriptModuleConstantAttribute,true).Any()) continue;
 
                 if (constant != null)
                 {
@@ -536,7 +536,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             var methods = containerType.GetMethods(bindingFlags)
                 .Where(x =>
-                    x.GetCustomAttributes(ScriptModuleFunctionAttribute).Any());
+                    x.GetCustomAttributes(ScriptModuleFunctionAttribute, true).Any());
 
 
             var subsets = _subsetsMap[containerType];
