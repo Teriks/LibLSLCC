@@ -218,7 +218,7 @@ is part of this particular solution file.
 
 **LibLSLCC-WithEditor-WithInstaller.sln** will only build the installer project when
 building for **x64** or **x86**.  The WiX installer build will not be triggered if you have the "Platform"
-setting set to AnyCPU in Visual Studio, you much change it to either **x64** or **x86**.
+setting set to AnyCPU in Visual Studio, you must change it to either **x64** or **x86**.
 
 
 **LSLCCEditor** and **LSLCCEditor.CompletionUI** are only buildable on Windows as they depend on WPF and AvalonEdit, 
