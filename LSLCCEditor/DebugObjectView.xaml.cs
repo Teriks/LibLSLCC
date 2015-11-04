@@ -20,7 +20,7 @@ namespace LSLCCEditor
 
             foreach (var member in members)
             {
-                var val = member.GetValue(lslAutoCompleteParser.GetType(), null);
+                var val = member.GetValue(lslAutoCompleteParser);
                 if (val == null) val = "NULL";
 
                 Properties.Items.Add(member.Name + " = "+val+";");
