@@ -9,7 +9,7 @@ https://github.com/Teriks/LibLSLCC/releases
 Each release contains an AnyCPU, x86 and x64 version of LibLSLCC
 with a documentation .XML file generated for the library.
 
-They also include platform specific installers for LSLCCEditor.
+Releases also include platform specific installers for LSLCCEditor.
 
 
 Granted, I only really need to release an AnyCPU binary, but since
