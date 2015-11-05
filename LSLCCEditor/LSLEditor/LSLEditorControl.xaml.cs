@@ -255,6 +255,12 @@ namespace LSLCCEditor.LSLEditor
 
         private void AutoCompleteLibraryConstantsCommand(object o)
         {
+            if (CurrentCompletionWindow != null)
+            {
+                CurrentCompletionWindow.CompletionList.RequestInsertion(EventArgs.Empty);
+                return;
+            }
+
             SuggestLibraryConstants();
         }
 
@@ -274,6 +280,12 @@ namespace LSLCCEditor.LSLEditor
 
         private void AutoCompleteLibraryFunctionsCommand(object o)
         {
+            if (CurrentCompletionWindow != null)
+            {
+                CurrentCompletionWindow.CompletionList.RequestInsertion(EventArgs.Empty);
+                return;
+            }
+
             SuggestLibraryFunctions();
         }
 
