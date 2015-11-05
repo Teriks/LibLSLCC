@@ -856,10 +856,10 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.NegateOperationOnRotationLiteralInStaticContext(location));
         }
 
-        void ILSLSyntaxErrorListener.CastExpressionInStaticContext(LSLSourceCodeRange location)
+        void ILSLSyntaxErrorListener.CastExpressionUsedInStaticContext(LSLSourceCodeRange location)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.CastExpressionInStaticContext(location));
+                () => SyntaxErrorListener.CastExpressionUsedInStaticContext(location));
         }
 
         void ILSLSyntaxErrorListener.PostfixOperationOnNonVariable(LSLSourceCodeRange location, LSLPostfixOperationType type)

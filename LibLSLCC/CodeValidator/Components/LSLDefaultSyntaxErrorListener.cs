@@ -908,7 +908,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// A cast expression was used inside of a static context, IE during the declaration of a global variable.
         /// </summary>
         /// <param name="location">The location of the error.</param>
-        public virtual void CastExpressionInStaticContext(LSLSourceCodeRange location)
+        public virtual void CastExpressionUsedInStaticContext(LSLSourceCodeRange location)
         {
             OnError(location, "Cast expressions cannot be used in a static context.");
         }
