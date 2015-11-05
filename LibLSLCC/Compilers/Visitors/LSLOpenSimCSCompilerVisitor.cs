@@ -142,8 +142,7 @@ private static class UTILITIES
 
         /// <summary>
         /// The local variable prefix to mangle local variables with, 
-        /// the compiler appends the integer scope level after this prefix, followed
-        /// by an underscore.
+        /// the compiler appends an integral scope ID after this prefix, followed by an underscore.
         /// </summary>
         private const string LocalVariableNamePrefix = "LocalVar";
 
