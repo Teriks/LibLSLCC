@@ -222,6 +222,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return CastedExpression != null && CastedExpression.IsConstant; }
         }
 
+        public bool HasPossibleSideEffects
+        {
+            get { return CastedExpression != null && CastedExpression.HasPossibleSideEffects; }
+        }
+
 
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.

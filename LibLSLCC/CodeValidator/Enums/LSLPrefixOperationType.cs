@@ -127,6 +127,19 @@ namespace LibLSLCC.CodeValidator.Enums
         }
 
 
+
+        /// <summary>
+        /// Determines whether the given prefix operation is a modifying operation.
+        /// Currently only <see cref="LSLPrefixOperationType.Decrement"/> and <see cref="LSLPrefixOperationType.Increment"/> are considered modifying operations.
+        /// </summary>
+        /// <param name="type">If the prefix operation modifies the expression to its right.</param>
+        /// <returns></returns>
+        public static bool IsModifying(this LSLPrefixOperationType type)
+        {
+            return type == LSLPrefixOperationType.Decrement || type == LSLPrefixOperationType.Increment;
+        }
+
+
         /// <summary>
         /// Parses a <see cref="LSLPrefixOperationType"/> from its source code string representation.
         /// </summary>

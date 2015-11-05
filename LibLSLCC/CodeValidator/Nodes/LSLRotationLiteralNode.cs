@@ -308,6 +308,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
+        public bool HasPossibleSideEffects
+        {
+            get
+            {
+                var precondition = XExpression != null && YExpression != null && ZExpression != null && SExpression != null;
+                return precondition && (XExpression.HasPossibleSideEffects || YExpression.HasPossibleSideEffects || ZExpression.HasPossibleSideEffects || SExpression.HasPossibleSideEffects);
+            }
+        }
+
 
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.

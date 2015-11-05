@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("expressionListNode");
             }
 
-
+            HasPossibleSideEffects = expressionListNode.AnyExpressionHasPossibleSideEffects;
             IsConstant = expressionListNode.AllExpressionsConstant;
             ParserContext = context;
             ExpressionListNode = expressionListNode;
@@ -154,7 +154,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 HasErrors = HasErrors,
                 IsConstant = IsConstant,
                 Parent = Parent,
-                ParserContext = ParserContext
+                ParserContext = ParserContext,
+                HasPossibleSideEffects = HasPossibleSideEffects
             };
         }
 
@@ -219,6 +220,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// True if the expression is constant and can be calculated at compile time.
         /// </summary>
         public bool IsConstant { get; private set; }
+
+        public bool HasPossibleSideEffects { get; private set; }
 
 
         /// <summary>

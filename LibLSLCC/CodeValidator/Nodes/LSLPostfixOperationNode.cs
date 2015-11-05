@@ -235,6 +235,20 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return LeftExpression != null && LeftExpression.IsConstant; }
         }
 
+        /// <summary>
+        /// True if the expression has possible side effects, calls a function, modifies program state. ect.
+        /// </summary>
+        public bool HasPossibleSideEffects {
+            get
+            {
+                if (LeftExpression == null) return false;
+
+                var modifiesVariables = Operation.IsModifying() && LeftExpression.IsVariable();
+
+                return (LeftExpression.HasPossibleSideEffects || modifiesVariables);
+            }
+        }
+
 
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.

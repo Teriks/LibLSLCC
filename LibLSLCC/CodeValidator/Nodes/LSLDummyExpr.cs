@@ -90,7 +90,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return new LSLSourceCodeRange(); }
         }
 
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceCodeRangesAvailable { get; set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
@@ -119,6 +119,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         public bool IsConstant { get; set; }
+        public bool HasPossibleSideEffects { get; set; }
 
 
         public ILSLExprNode Clone()
@@ -129,7 +130,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 ExpressionType = ExpressionType,
                 Type = Type,
                 HasErrors = HasErrors,
-                IsConstant = IsConstant
+                IsConstant = IsConstant,
+                HasPossibleSideEffects = HasPossibleSideEffects
             };
         }
 

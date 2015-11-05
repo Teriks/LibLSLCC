@@ -479,14 +479,7 @@ namespace LibLSLCC.CodeValidator.Components
                     err.StringIndex));
         }
 
-        /// <summary>
-        /// A call to function was attempted in a static context.  For example, inside of a global variables declaration expression.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        public virtual void CallToFunctionInStaticContext(LSLSourceCodeRange location)
-        {
-            OnError(location, "Functions cannot be called in a static context, ie. assigning global variables");
-        }
+
 
         /// <summary>
         /// A modifying assignment was attempted on a non variable expression.  Something like: ((a+b) += 3;) occurred, or even (llAbs(2.3) *= 3;)
@@ -582,10 +575,82 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
         /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
         /// <param name="accessedMember">The member the user attempted to access.</param>
-        public void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location, ILSLVariableNode libraryConstantReferenceNode,
+        public virtual void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location, ILSLVariableNode libraryConstantReferenceNode,
             LSLLibraryConstantSignature libraryConstantSignature, string accessedMember)
         {
             OnError(location, "The member access operator is not allowed on library constants, even if they are vector or rotation constants.");
+        }
+
+
+        /// <summary>
+        /// A call to function was attempted in a static context.  For example, inside of a global variables declaration expression.
+        /// </summary>
+        /// <param name="location">Location in source code.</param>
+        public virtual void CallToFunctionInStaticContext(LSLSourceCodeRange location)
+        {
+            OnError(location, "Functions cannot be called in a static context.");
+        }
+
+
+        /// <summary>
+        /// A binary operator was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        public virtual void BinaryOperatorUsedInStaticContext(LSLSourceCodeRange location)
+        {
+            OnError(location, "Binary operators cannot be used in a static context.");
+        }
+
+
+        /// <summary>
+        /// A parenthesized expression was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        public virtual void ParenthesizedExpressionUsedInStaticContext(LSLSourceCodeRange location)
+        {
+            OnError(location, "Parenthesized expressions cannot be used in a static context.");
+        }
+
+
+        /// <summary>
+        /// A postfix expression was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        public virtual void PostfixOperationUsedInStaticContext(LSLSourceCodeRange location)
+        {
+            OnError(location, "Postfix expressions cannot be used in a static context.");
+        }
+
+
+        /// <summary>
+        /// An invalid prefix expression was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        public virtual void InvalidPrefixOperationUsedInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type)
+        {
+            OnError(location, string.Format("The Prefix operator '{0}' cannot be used in a static context.", type.ToOperatorString()));
+        }
+
+
+        /// <summary>
+        /// A prefix expression with a global variable on the right was used in a static context. (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        public virtual void InvalidPrefixOperationUsedGlobalVariableInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type)
+        {
+            OnError(location, string.Format("The Prefix operator '{0}' cannot be used in a static context with a variable operand.", type.ToOperatorString()));
+        }
+
+        /// <summary>
+        /// A postfix operation was applied to an expression that was not a variable.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        public virtual void PostfixOperationOnNonVariable(LSLSourceCodeRange location, LSLPostfixOperationType type)
+        {
+            OnError(location, string.Format("The Postfix operator '{0}' cannot be used with a non-variable operand.", type.ToOperatorString()));
         }
 
 
@@ -808,6 +873,48 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
+        /// A modifying prefix operation was applied to an expression that was not a variable.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        public virtual void ModifyingPrefixOperationOnNonVariable(LSLSourceCodeRange location, LSLPrefixOperationType type)
+        {
+            OnError(location,string.Format("Prefix operator '{0}' cannot be used with a non-variable operand.", type.ToOperatorString()));
+        }
+
+        /// <summary>
+        /// The negate prefix operator was used on a non float or integer literal in a static context.
+        /// IE, a global variable declaration.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        public virtual void NegateOperationOnVectorLiteralInStaticContext(LSLSourceCodeRange location)
+        {
+            OnError(location, "The negate operator cannot be used on vector literals in a static context.");
+        }
+
+
+        /// <summary>
+        /// The negate prefix operator was used on a rotation literal in a static context.
+        /// IE, a global variable declaration.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        public virtual void NegateOperationOnRotationLiteralInStaticContext(LSLSourceCodeRange location)
+        {
+            OnError(location, "The negate operator cannot be used on rotation literals in a static context.");
+        }
+
+
+        /// <summary>
+        /// A cast expression was used inside of a static context, IE during the declaration of a global variable.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        public virtual void CastExpressionInStaticContext(LSLSourceCodeRange location)
+        {
+            OnError(location, "Cast expressions cannot be used in a static context.");
+        }
+
+
+        /// <summary>
         /// A hook for intercepting error messages produced by the implementations of all other functions in the LSLDefaultSyntaxErrorListener object.
         /// The default behavior is to write error messages to the Console.
         /// </summary>
@@ -842,5 +949,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             return oneBasedLine;
         }
+
+
     }
 }

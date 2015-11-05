@@ -344,6 +344,19 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return false; }
         }
 
+        /// <summary>
+        /// True if the expression has possible side effects, calls a function, modifies program state. ect.
+        /// </summary>
+        public bool HasPossibleSideEffects
+        {
+            get
+            {
+                //function calls can ALWAYS have some sort of side effect on the program state.
+                return true;
+                
+            }
+        }
+
 
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.

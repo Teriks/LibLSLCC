@@ -159,6 +159,17 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return true; }
         }
 
+        /// <summary>
+        /// True if the expression has possible side effects, calls a function, modifies program state. ect.
+        /// </summary>
+        public bool HasPossibleSideEffects {
+            get
+            {
+                //a literal expression node can never change the state of the surrounding program
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// Deep clones the expression node.  It should clone the node and also clone all of its children.

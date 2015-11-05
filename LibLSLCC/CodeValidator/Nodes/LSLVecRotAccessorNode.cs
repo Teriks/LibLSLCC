@@ -261,6 +261,14 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return AccessedExpression != null && AccessedExpression.IsConstant; }
         }
 
+        public bool HasPossibleSideEffects
+        {
+            get
+            {
+                return AccessedExpression != null && AccessedExpression.HasPossibleSideEffects;
+            }
+        }
+
 
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.

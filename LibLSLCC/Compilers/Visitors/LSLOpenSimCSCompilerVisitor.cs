@@ -981,8 +981,14 @@ private static class UTILITIES
 
         private void CreateGlobalVariablesConstructor(ILSLCompilationUnitNode node)
         {
-
             //only generate code for global variables that are referenced from somewhere.
+            //complex expressions and functions cannot be used in a variable declaration.
+            //
+            //you are limited to using a literal, or a reference to another global variable.
+            //the only operator thats really allowed in a global declaration expression tree is negation.
+            //
+            //therefore we do not need to check if theres a modifying operation in the declaration expression
+            //before pruning out global variables that are never referenced.
             var referencedGlobalVariables = node.GlobalVariableDeclarations.Where(x => x.References.Count != 0).ToList();
 
 
@@ -1043,9 +1049,14 @@ private static class UTILITIES
 
         private void CreateGlobalVariablesClass(ILSLCompilationUnitNode node)
         {
-
-
             //only generate code for global variables that are referenced from somewhere.
+            //complex expressions and functions cannot be used in a variable declaration.
+            //
+            //you are limited to using a literal, or a reference to another global variable.
+            //the only operator thats really allowed in a global declaration expression tree is negation.
+            //
+            //therefore we do not need to check if theres a modifying operation in the declaration expression
+            //before pruning out global variables that are never referenced.
             var referencedGlobalVariables = node.GlobalVariableDeclarations.Where(x => x.References.Count != 0).ToList();
 
 
@@ -1300,10 +1311,14 @@ private static class UTILITIES
                     .Cast<ILSLVariableDeclarationNode>();
 
 
-            //we also want to filter out variables that were never referenced, using: References.Count != 0
-            //we do not have to generate code for variables that were never referenced anywhere
-            foreach (var deadVariableDeclarationNode in deadVariableDeclarationNodes.Where(x=>x.References.Count != 0))
+
+            foreach (var deadVariableDeclarationNode in deadVariableDeclarationNodes)
             {
+
+                //we also want to filter out variables that were never referenced, and who's declarations have no side effect on program state.
+                if (SafeToPruneLocalVariableDeclaration(deadVariableDeclarationNode)) continue;
+
+
                 var variableName = "Var" + node.ScopeId + "_" + deadVariableDeclarationNode.Name;
 
                 Writer.Write(GenIndent());
@@ -1329,6 +1344,9 @@ private static class UTILITIES
 
             return false;
         }
+
+
+
 
 
         private void WriteBinaryOperatorOverloadStubs()
@@ -1749,6 +1767,34 @@ private static class UTILITIES
         }
 
 
+
+
+        /// <summary>
+        /// Returns true if a given variable declaration node has no references to it later in the source code, and
+        /// its declaration contains no expressions that could modify program state.
+        /// </summary>
+        /// <param name="declarationNode">The declaration node to test.</param>
+        /// <returns></returns>
+        private static bool SafeToPruneLocalVariableDeclaration(ILSLVariableDeclarationNode declarationNode)
+        {
+            if (declarationNode.References.Count == 0)
+            {
+                //the declaration can safely be pruned if it has no declaration expression.
+                //simply defining it can have no effect on the program.
+                if (!declarationNode.HasDeclarationExpression) return true;
+
+                if (declarationNode.HasDeclarationExpression && !declarationNode.DeclarationExpression.HasPossibleSideEffects)
+                {
+                    //prune the variable if its declaration cannot possibly have any side effects on the program state.
+                    //this meaning its declaration contains no function calls or operations that modify variables.
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+
         public override bool VisitLocalVariableDeclaration(ILSLVariableDeclarationNode node)
         {
             /* 
@@ -1758,9 +1804,15 @@ private static class UTILITIES
                before we even get to this point in the syntax tree, so they do not need to be written again.
 
                Also, if the variable is never referenced, there is no need to generate code for it.
+
+               SafeToPruneLocalVariableDeclaration is used to check if the variable has no references
+               to it, and if its declaration expression contains no operations that can modify the program state.
+
+               if it meets those criteria, it can safely be pruned from the generated code.
             */
-            
-            if (node.IsDeadCode || node.References.Count == 0) return false;
+
+            if (node.IsDeadCode || SafeToPruneLocalVariableDeclaration(node)) return false;
+
 
 
             Writer.Write(GenIndent());

@@ -169,6 +169,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
+        /// True if any expressions in the expression list are considered to possibly have side effects on the state of the program.
+        /// </summary>
+        public bool AnyExpressionHasPossibleSideEffects
+        {
+            get { return ExpressionNodes.Any(lslExprNode => lslExprNode.HasPossibleSideEffects); }
+        }
+
+        /// <summary>
         /// True if this expression list node actually has expression children, False if it is empty.
         /// </summary>
         public bool HasExpressionNodes

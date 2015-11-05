@@ -203,6 +203,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return InnerExpression != null && InnerExpression.IsConstant; }
         }
 
+        public bool HasPossibleSideEffects
+        {
+            get { return InnerExpression != null && InnerExpression.HasPossibleSideEffects; }
+        }
+
 
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.

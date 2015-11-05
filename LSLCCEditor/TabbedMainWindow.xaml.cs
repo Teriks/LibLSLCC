@@ -491,9 +491,6 @@ namespace LSLCCEditor
 *  Please note this script does not support being reset, because a constructor was not generated.
 *  Compile using the server side script option to generate a script constructor.
 *
-*  Server side scripts can be uploaded from your viewer to the LibLSLCC OpenSim Fork 
-*  when the 'CreateClassWrapperForCSharpScripts' is set to 'false' under the [LibLCLCC] OpenSim.ini config section.
-*
 *  This code will run on an unmodified OpenSim server, however script resets will not reset global variables,
 *  and OpenSim will be unable to save the state of this script as its global variables are created in an object container.
 *
@@ -502,20 +499,27 @@ namespace LSLCCEditor
 
 
         private const string _serverSideScriptCompilerHeader =
-@"//c#
+@"//c#-raw
 /** 
-*  Do not remove //c# from the first line of this script.
+*  Do not remove //c#-raw from the first line of this script.
 *
 *  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
 *
 *  This is a server side script.  It constitutes a fully generated script class that
 *  will be sent to the CSharp compiler in OpenSim.  This code supports script resets.
 *
-*  Note that 'CreateClassWrapperForCSharpScripts' must be set to 'false' under the [LibLCLCC] 
-*  OpenSim.ini config section in order for this script to upload from the viewer.
+*  This script is meant to upload compatible with the LibLSLCC OpenSim fork.
 *
-*  That particular setting is specific to the LibLSLCC OpenSim Fork, it is not available 
-*  in regular OpenSim.
+*  If you are running a version of OpenSim with the LibLSLCC compiler enabled, you must add 'csraw'
+*  to the allowed list of compiler languages under [XEngine] for this script to successfully upload.
+*
+*  Adding 'csraw' to your allowed language list when using the old OpenSim compiler will have no effect
+*  besides an error being written to your log file.  OpenSim will run but you will not actually be able
+*  to use the 'csraw' upload type.
+*
+*  Note that you can also set 'CreateClassWrapperForCSharpScripts' to 'false' under the [LibLCLCC]
+*  OpenSim.ini config section in order to enable 'csraw' mode uploads for every CSharp script sent to the 
+*  LibLSLCC compiler;  Including those marked with '//c#' if you have 'cs' in your list of allowed languages.
 *
 */ 
 ";

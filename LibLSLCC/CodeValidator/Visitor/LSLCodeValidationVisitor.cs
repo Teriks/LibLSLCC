@@ -197,7 +197,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var expressionList = context.expressionList();
             if (expressionList == null)
             {
-                return result;
+                return ReturnFromVisit(context, result);
             }
 
             if (expressionList.children == null)
@@ -258,7 +258,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var expressionList = context.expressionList();
             if (expressionList == null)
             {
-                return result;
+                return ReturnFromVisit(context, result);
             }
 
             if (expressionList.children == null)
@@ -325,7 +325,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var expressionList = context.expressionList();
             if (expressionList == null)
             {
-                return result;
+                return ReturnFromVisit(context, result);
             }
 
             if (expressionList.children == null)
@@ -402,7 +402,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             if (expressionList == null)
             {
-                return result;
+                return ReturnFromVisit(context, result);
             }
 
             if (expressionList.children == null)
@@ -2631,6 +2631,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
+            if (ScopingManager.InGlobalScope)
+            {
+                SyntaxErrorListener.ParenthesizedExpressionUsedInStaticContext(new LSLSourceCodeRange(context));
+
+                return ReturnFromVisit(context,
+                    LSLParenthesizedExpressionNode.GetError(new LSLSourceCodeRange(context)));
+            }
+
+
             var result = VisitExpressionContent(context.expr_value);
 
             if (result.HasErrors)
@@ -2646,6 +2655,20 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private LSLBinaryExpressionNode VisitBinaryExpression(BinaryExpressionContext context)
         {
+
+            bool usedInStaticContext = ScopingManager.InGlobalScope;
+
+            if (usedInStaticContext)
+            {
+                var sourceRange = new LSLSourceCodeRange(context.OperationToken);
+
+                SyntaxErrorListener.
+                    BinaryOperatorUsedInStaticContext(sourceRange);
+
+                return LSLBinaryExpressionNode.GetError(sourceRange);
+            }
+
+
             var exprLvalue = VisitExpressionContent(context.LeftContext);
             var exprRvalue = VisitExpressionContent(context.RightContext);
 
@@ -2710,6 +2733,18 @@ namespace LibLSLCC.CodeValidator.Visitor
                 throw LSLCodeValidatorInternalException
                     .VisitContextInvalidState("VisitExpr_TypeCast");
             }
+
+
+
+            if (ScopingManager.InGlobalScope)
+            {
+                var sourceRange = new LSLSourceCodeRange(context);
+
+                SyntaxErrorListener.CastExpressionInStaticContext(sourceRange);
+
+                return LSLTypecastExprNode.GetError(sourceRange);
+            }
+
 
             var exprRvalue = VisitExpressionContent(context.expr_rvalue);
 
@@ -2971,6 +3006,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
+
             var exprRvalue = VisitExpressionContent(context.expr_rvalue);
 
 
@@ -2985,17 +3021,62 @@ namespace LibLSLCC.CodeValidator.Visitor
                 };
 
 
-            if (exprRvalue.ExpressionType == LSLExpressionType.LibraryConstant &&
-                (context.operation.Text == "++" || context.operation.Text == "--"))
+            if (exprRvalue.ExpressionType == LSLExpressionType.LibraryConstant && result.Operation.IsModifying())
             {
                 SyntaxErrorListener.ModifiedLibraryConstant(
                     exprRvalue.SourceCodeRange, context.expr_rvalue.GetText());
+
                 result.HasErrors = true;
+                return ReturnFromVisit(context, result);
             }
 
 
+            if (ScopingManager.InGlobalScope)
+            {
+
+                if (result.RightExpression.ExpressionType == LSLExpressionType.GlobalVariable)
+                {
+                    SyntaxErrorListener.InvalidPrefixOperationUsedGlobalVariableInStaticContext(new LSLSourceCodeRange(context), result.Operation);
+
+                    result.HasErrors = true;
+                    return ReturnFromVisit(context, result);
+                }
+                if (result.Operation != LSLPrefixOperationType.Negative)
+                {
+                    SyntaxErrorListener.InvalidPrefixOperationUsedInStaticContext(new LSLSourceCodeRange(context), result.Operation);
+
+                    result.HasErrors = true;
+                    return ReturnFromVisit(context, result);
+                }
+                if (result.RightExpression.Type == LSLType.Vector)
+                {
+                    SyntaxErrorListener.NegateOperationOnVectorLiteralInStaticContext(
+                        new LSLSourceCodeRange(context));
+
+                    result.HasErrors = true;
+                    return ReturnFromVisit(context, result);
+                }
+                if (result.RightExpression.Type == LSLType.Rotation)
+                {
+                    SyntaxErrorListener.NegateOperationOnRotationLiteralInStaticContext(
+                        new LSLSourceCodeRange(context));
+
+                    result.HasErrors = true;
+                    return ReturnFromVisit(context, result);
+                }
+            }
+
+
+            if (result.Operation.IsModifying() && !result.RightExpression.IsVariable())
+            {
+                SyntaxErrorListener.ModifyingPrefixOperationOnNonVariable(new LSLSourceCodeRange(context), result.Operation);
+                result.HasErrors = true;
+                return ReturnFromVisit(context, result);
+            }
+
             return ReturnFromVisit(context, result);
         }
+
 
 
         public override ILSLSyntaxTreeNode VisitExpr_PostfixOperation(LSLParser.Expr_PostfixOperationContext context)
@@ -3005,6 +3086,16 @@ namespace LibLSLCC.CodeValidator.Visitor
                 return ReturnFromVisit(context, LSLPostfixOperationNode
                     .GetError(new LSLSourceCodeRange(context)));
             }
+
+
+
+            if (ScopingManager.InGlobalScope)
+            {
+                SyntaxErrorListener.PostfixOperationUsedInStaticContext(new LSLSourceCodeRange(context));
+
+                return ReturnFromVisit(context,LSLPostfixOperationNode.GetError(new LSLSourceCodeRange(context)));
+            }
+
 
             var exprLvalue = VisitExpressionContent(context.expr_lvalue);
 
@@ -3019,13 +3110,18 @@ namespace LibLSLCC.CodeValidator.Visitor
             };
 
 
-            if (exprLvalue.ExpressionType == LSLExpressionType.LibraryConstant &&
-                (context.operation.Text == "++" || context.operation.Text == "--")
-                )
+            if (exprLvalue.ExpressionType == LSLExpressionType.LibraryConstant && result.Operation.IsModifying())
             {
                 SyntaxErrorListener.ModifiedLibraryConstant(
                     exprLvalue.SourceCodeRange, context.expr_lvalue.GetText());
                 result.HasErrors = true;
+                return ReturnFromVisit(context, result);
+            }
+            if (!exprLvalue.IsVariable())
+            {
+                SyntaxErrorListener.PostfixOperationOnNonVariable(new LSLSourceCodeRange(context), result.Operation);
+                result.HasErrors = true;
+                return ReturnFromVisit(context, result);
             }
 
 

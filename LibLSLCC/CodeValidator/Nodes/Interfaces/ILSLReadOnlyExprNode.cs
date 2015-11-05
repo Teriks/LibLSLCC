@@ -74,6 +74,12 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
+        /// True if the expression has possible side effects, calls a function, modifies program state somehow. ect.
+        /// </summary>
+        bool HasPossibleSideEffects { get; }
+
+
+        /// <summary>
         /// Should produce a user friendly description of the expressions return type.
         /// This is used in some syntax error messages, Ideally you should enclose your description in
         /// parenthesis or something that will make it stand out in a string.

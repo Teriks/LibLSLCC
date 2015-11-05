@@ -208,6 +208,21 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
+        public bool HasPossibleSideEffects
+        {
+            get
+            {
+
+                if (LeftExpression == null || RightExpression == null) return false;
+
+                var eitherSideHaveSideEffects = (LeftExpression.HasPossibleSideEffects || RightExpression.HasPossibleSideEffects);
+
+                var operatorModifiesLeftVariable = LeftExpression.IsVariable() && Operation.IsAssignOrModifyAssign();
+
+                return (eitherSideHaveSideEffects || operatorModifiesLeftVariable);
+            }
+        }
+
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.
         /// This is used in some syntax error messages, Ideally you should enclose your description in

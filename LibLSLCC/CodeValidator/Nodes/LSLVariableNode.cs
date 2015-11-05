@@ -357,6 +357,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool IsConstant { get; set; }
 
+        /// <summary>
+        /// True if the expression has possible side effects, calls a function, modifies program state. ect.
+        /// </summary>
+        public bool HasPossibleSideEffects { get { return false; } } //variable nodes (references) are never an expression that can cause a program's state to be altered
+
 
         /// <summary>
         /// Should produce a user friendly description of the expressions return type.

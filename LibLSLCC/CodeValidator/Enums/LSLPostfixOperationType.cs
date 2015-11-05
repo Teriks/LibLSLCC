@@ -99,6 +99,18 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
+        /// Determines whether the given postfix operation is a modifying operation.
+        /// Both <see cref="LSLPostfixOperationType.Decrement"/> and <see cref="LSLPostfixOperationType.Increment"/> are modifying operations.
+        /// </summary>
+        /// <param name="type">If the postfix operation modifies the expression to its left.</param>
+        /// <returns></returns>
+        public static bool IsModifying(this LSLPostfixOperationType type)
+        {
+            return type == LSLPostfixOperationType.Decrement || type == LSLPostfixOperationType.Increment;
+        }
+
+
+        /// <summary>
         /// Parses a <see cref="LSLPostfixOperationType"/> from its source code string representation.
         /// </summary>
         /// <param name="operationString">The string to attempt to parse an <see cref="LSLPostfixOperationType"/> from.</param>

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLSyntaxErrorListener.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -151,7 +154,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="index">The index in the initializer list that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid list initializer content.</param>
         void InvalidListContent(LSLSourceCodeRange location, int index, ILSLExprNode invalidExpressionContent);
-
 
 
         /// <summary>
@@ -515,8 +517,9 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
         /// <param name="ambigiousMatches">All of the function overloads the call to the library function matched up with.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
-        void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName, 
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions);
+        void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName,
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambigiousMatches,
+            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions);
 
 
         /// <summary>
@@ -526,9 +529,84 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
         /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
         /// <param name="accessedMember">The member the user attempted to access.</param>
-        void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location, 
-            ILSLVariableNode libraryConstantReferenceNode, 
-            LSLLibraryConstantSignature libraryConstantSignature, 
+        void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location,
+            ILSLVariableNode libraryConstantReferenceNode,
+            LSLLibraryConstantSignature libraryConstantSignature,
             string accessedMember);
+
+
+        /// <summary>
+        /// A binary operator was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        void BinaryOperatorUsedInStaticContext(LSLSourceCodeRange location);
+
+        /// <summary>
+        /// A parenthesized expression was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        void ParenthesizedExpressionUsedInStaticContext(LSLSourceCodeRange location);
+
+
+        /// <summary>
+        /// A postfix expression was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        void PostfixOperationUsedInStaticContext(LSLSourceCodeRange location);
+
+
+        /// <summary>
+        /// An invalid prefix expression was used in a static context (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        void InvalidPrefixOperationUsedInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type);
+
+        /// <summary>
+        /// A prefix expression with a global variable on the right was used in a static context. (a global variable declaration expression)
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        void InvalidPrefixOperationUsedGlobalVariableInStaticContext(LSLSourceCodeRange location,
+            LSLPrefixOperationType type);
+
+
+        /// <summary>
+        /// A postfix operation was applied to an expression that was not a variable.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        void PostfixOperationOnNonVariable(LSLSourceCodeRange location, LSLPostfixOperationType type);
+
+
+        /// <summary>
+        /// A modifying prefix operation was applied to an expression that was not a variable.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        /// <param name="type">The operation type.</param>
+        void ModifyingPrefixOperationOnNonVariable(LSLSourceCodeRange location, LSLPrefixOperationType type);
+
+
+        /// <summary>
+        /// The negate prefix operator was used on a vector literal in a static context.
+        /// IE, a global variable declaration.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        void NegateOperationOnVectorLiteralInStaticContext(LSLSourceCodeRange location);
+
+
+        /// <summary>
+        /// The negate prefix operator was used on a rotation literal in a static context.
+        /// IE, a global variable declaration.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        void NegateOperationOnRotationLiteralInStaticContext(LSLSourceCodeRange location);
+
+
+        /// <summary>
+        /// A cast expression was used inside of a static context, IE during the declaration of a global variable.
+        /// </summary>
+        /// <param name="location">The location of the error.</param>
+        void CastExpressionInStaticContext(LSLSourceCodeRange location);
     }
 }
