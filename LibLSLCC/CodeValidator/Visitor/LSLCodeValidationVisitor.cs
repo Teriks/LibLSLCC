@@ -2740,7 +2740,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 var sourceRange = new LSLSourceCodeRange(context);
 
-                SyntaxErrorListener.CastExpressionInStaticContext(sourceRange);
+                SyntaxErrorListener.CastExpressionUsedInStaticContext(sourceRange);
 
                 return LSLTypecastExprNode.GetError(sourceRange);
             }

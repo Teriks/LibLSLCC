@@ -61,6 +61,55 @@ namespace lslcc
 {
     internal class Program
     {
+
+
+        private const string _clientSideScriptCompilerHeader =
+@"//c#
+/** 
+*  Do not remove //c# from the first line of this script.
+*
+*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
+*
+*  Please note this script does not support being reset, because a constructor was not generated.
+*  Compile using the server side script option to generate a script constructor.
+*
+*  This code will run on an unmodified OpenSim server, however script resets will not reset global variables,
+*  and OpenSim will be unable to save the state of this script as its global variables are created in an object container.
+*
+*/ 
+";
+
+
+        private const string _serverSideScriptCompilerHeader =
+@"//c#-raw
+/** 
+*  Do not remove //c#-raw from the first line of this script.
+*
+*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
+*
+*  This is a server side script.  It constitutes a fully generated script class that
+*  will be sent to the CSharp compiler in OpenSim.  This code supports script resets.
+*
+*  This script is meant to upload compatible with the LibLSLCC OpenSim fork.
+*
+*  If you are running a version of OpenSim with the LibLSLCC compiler enabled, you must add 'csraw'
+*  to the allowed list of compiler languages under [XEngine] for this script to successfully upload.
+*
+*  Adding 'csraw' to your allowed language list when using the old OpenSim compiler will have no effect
+*  besides an error being written to your log file.  OpenSim will run but you will not actually be able
+*  to use the 'csraw' upload type.
+*
+*  Note that you can also set 'CreateClassWrapperForCSharpScripts' to 'false' under the [LibLCLCC]
+*  OpenSim.ini config section in order to enable 'csraw' mode uploads for every CSharp script sent to the 
+*  LibLSLCC compiler;  Including those marked with '//c#' if you have 'cs' in your list of allowed languages.
+*
+*/ 
+";
+
+
+
+
+
         private static void WriteHelp()
         {
             var defaultLibraryDataProvider = new LSLDefaultLibraryDataProvider();
@@ -73,6 +122,13 @@ namespace lslcc
             Console.WriteLine("-librarysubsets:" + Environment.NewLine);
             Console.WriteLine("Set the available library subsets when compiling ( Separated by semi-colons ; )");
             Console.WriteLine("All acceptable values are: "+ string.Join(";",defaultLibraryDataProvider.PossibleSubsets) + Environment.NewLine);
+            Console.WriteLine("======================================" + Environment.NewLine);
+            Console.WriteLine("-servercode (Default)" + Environment.NewLine);
+            Console.WriteLine("Compile server side code, code that OpenSim would pass directly to the CSharp compiler.");
+            Console.WriteLine("======================================" + Environment.NewLine);
+            Console.WriteLine("-clientcode" + Environment.NewLine);
+            Console.WriteLine("Compile client up-loadable code that works with all versions of OpenSim, ");
+            Console.WriteLine("but does not support script resets.");
             Console.WriteLine("======================================" + Environment.NewLine);
             Console.WriteLine("-h: help");
             Console.WriteLine("-v: lslcc, version and info");
@@ -138,6 +194,11 @@ namespace lslcc
             string inFile = null;
             string outFile = null;
 
+
+            bool serverCode = false;
+            bool clientCode = false;
+            
+
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
@@ -194,6 +255,24 @@ namespace lslcc
                     case "v":
                         WriteAbout();
                         return;
+
+                    case "clientcode":
+                        if (serverCode)
+                        {
+                            Console.WriteLine("Cannot specify -clientcode because -servercode was already specified.");
+                        }
+
+                        clientCode = true;
+                        break;
+
+                    case "servercode":
+                        if (clientCode)
+                        {
+                            Console.WriteLine("Cannot specify -servercode because -clientcode was already specified.");
+                        }
+
+                        serverCode = true;
+                        break;
                     default:
                         Console.WriteLine("Unknown switch:" + arg + ", use -h for help");
                         return;
@@ -293,6 +372,31 @@ namespace lslcc
 
 
 
+            LSLOpenSimCSCompilerSettings compilerSettings;
+
+            if (!serverCode && !clientCode)
+            {
+                serverCode = true;
+            }
+
+            if (serverCode)
+            {
+                compilerSettings =
+                    LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault(
+                        validator.ValidatorServices.LibraryDataProvider);
+
+                compilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
+            }
+            else
+            {
+                compilerSettings =
+                    LSLOpenSimCSCompilerSettings.OpenSimClientUploadable(
+                        validator.ValidatorServices.LibraryDataProvider);
+
+                compilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
+            }
+
+
             if (!validator.HasSyntaxErrors)
             {
                 if (File.Exists(outFile))
@@ -301,7 +405,7 @@ namespace lslcc
                 }
                 using (var outfile = File.OpenWrite(outFile))
                 {
-                    var compiler = new LSLOpenSimCSCompiler(validator.ValidatorServices.LibraryDataProvider);
+                    var compiler = new LSLOpenSimCSCompiler(compilerSettings);
                     try
                     {
                         compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
