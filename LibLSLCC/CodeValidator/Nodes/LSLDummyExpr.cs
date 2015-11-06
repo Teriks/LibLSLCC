@@ -118,10 +118,21 @@ namespace LibLSLCC.CodeValidator.Nodes
         public LSLExpressionType ExpressionType { get; set; }
 
 
+        /// <summary>
+        /// True if the expression is constant and can be calculated at compile time.
+        /// </summary>
         public bool IsConstant { get; set; }
+
+        /// <summary>
+        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        /// </summary>
         public bool HasPossibleSideEffects { get; set; }
 
 
+        /// <summary>
+        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// </summary>
+        /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
             return new LSLDummyExpr
@@ -136,12 +147,23 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
+        /// <summary>
+        /// Should produce a user friendly description of the expressions return type.
+        /// This is used in some syntax error messages, Ideally you should enclose your description in
+        /// parenthesis or something that will make it stand out in a string.
+        /// </summary>
+        /// <returns></returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");
         }
 
 
+        /// <summary>
+        /// Deep clone the expression node into a new node.
+        /// This should deep clone all of the node's children as well.
+        /// </summary>
+        /// <returns>Cloned <see cref="ILSLReadOnlyExprNode"/></returns>
         ILSLReadOnlyExprNode ILSLReadOnlyExprNode.Clone()
         {
             return Clone();

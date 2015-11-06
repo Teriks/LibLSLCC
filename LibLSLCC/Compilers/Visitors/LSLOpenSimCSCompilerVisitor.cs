@@ -1756,7 +1756,7 @@ private static class UTILITIES
         {
             if (node.IsDeadCode) return false;
 
-            if (node.HasEffect)
+            if (node.HasPossibleSideEffects)
             {
                 Writer.Write(GenIndent());
                 Visit(node.Expression);

@@ -287,19 +287,20 @@ namespace LibLSLCC.CodeValidator.Visitor
             foreach (var expressionContext in expressionContexts)
             {
                 var ctx = (LSLParser.ExpressionContext) expressionContext;
-                var expressionHasEffect = DoesExpressionHaveEffect(ctx);
-
-                if (!expressionHasEffect)
-                {
-                    SyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(
-                        new LSLSourceCodeRange(ctx),
-                        expressionIndex, expressionContexts.Count);
-                }
 
                 var expression = VisitTopOfExpression(ctx);
                 if (expression.HasErrors)
                 {
                     result.HasErrors = true;
+                }
+                else
+                {
+                    if (!expression.HasPossibleSideEffects)
+                    {
+                        SyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(
+                            new LSLSourceCodeRange(ctx),
+                            expressionIndex, expressionContexts.Count);
+                    }
                 }
 
                 result.AddExpression(expression);
@@ -355,19 +356,21 @@ namespace LibLSLCC.CodeValidator.Visitor
             foreach (var expressionContext in expressionContexts)
             {
                 var ctx = (LSLParser.ExpressionContext) expressionContext;
-                var expressionHasEffect = DoesExpressionHaveEffect(ctx);
-
-                if (!expressionHasEffect)
-                {
-                    SyntaxWarningListener.ForLoopInitExpressionHasNoEffect(
-                        new LSLSourceCodeRange(ctx),
-                        expressionIndex, expressionContexts.Count);
-                }
 
                 var expression = VisitTopOfExpression(ctx);
+
                 if (expression.HasErrors)
                 {
                     result.HasErrors = true;
+                }
+                else
+                {
+                    if (!expression.HasPossibleSideEffects)
+                    {
+                        SyntaxWarningListener.ForLoopInitExpressionHasNoEffect(
+                            new LSLSourceCodeRange(ctx),
+                            expressionIndex, expressionContexts.Count);
+                    }
                 }
 
                 result.AddExpression(expression);
@@ -1935,18 +1938,16 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .VisitContextInvalidState("VisitExpressionStatement");
             }
 
+            var expression = VisitTopOfExpression(context.expression_rule);
 
-            var expressionHasEffect = DoesExpressionHaveEffect(context.expression_rule);
 
-            if (!expressionHasEffect)
+            if (!expression.HasErrors && !expression.HasPossibleSideEffects)
             {
                 SyntaxWarningListener.ExpressionStatementHasNoEffect(new LSLSourceCodeRange(context));
             }
 
-            var expression = VisitTopOfExpression(context.expression_rule);
 
-
-            var result = new LSLExpressionStatementNode(context, expression, InSingleStatementBlock, expressionHasEffect)
+            var result = new LSLExpressionStatementNode(context, expression, InSingleStatementBlock)
             {
                 HasErrors = expression.HasErrors
             };
@@ -3306,46 +3307,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 #region GeneralUtilitys
 
-        private static bool DoesExpressionHaveEffect(LSLParser.ExpressionContext context)
-        {
-            var postfixOperationContext = context as LSLParser.Expr_PostfixOperationContext;
-
-            if (postfixOperationContext != null)
-            {
-                var opType =
-                    LSLPostfixOperationTypeTools.
-                        ParseFromOperator(postfixOperationContext.operation.Text);
-
-                return opType == LSLPostfixOperationType.Increment || opType == LSLPostfixOperationType.Decrement;
-            }
-
-            var prefixOperationContext = context as LSLParser.Expr_PrefixOperationContext;
-
-            if (prefixOperationContext != null)
-            {
-                var opType =
-                    LSLPrefixOperationTypeTools.
-                        ParseFromOperator(prefixOperationContext.operation.Text);
-
-                return opType == LSLPrefixOperationType.Increment || opType == LSLPrefixOperationType.Decrement;
-            }
-
-            if (context is LSLParser.Expr_ModifyingAssignmentContext)
-            {
-                return true;
-            }
-            if (context is LSLParser.Expr_AssignmentContext)
-            {
-                return true;
-            }
-            if (context is LSLParser.Expr_FunctionCallContext)
-            {
-                return true;
-            }
-            return false;
-        }
-
-
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "context")]
         private static ILSLSyntaxTreeNode ReturnFromVisit(IParseTree context, ILSLSyntaxTreeNode nodeData)
         {
@@ -3355,41 +3316,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 #endregion
 
-#region ConstantAnalysisUtilitys
-
-        /*private readonly Stack<bool> _branchScopeStack = new Stack<bool>();
 
 
-        private bool InConstantBranch()
-        {
-            return !_branchScopeStack.Any() || _branchScopeStack.Peek();
-        }
-
-
-        private void EnterBranchStatement(bool branchConditionConstant)
-        {
-            _branchScopeStack.Push(branchConditionConstant);
-        }
-
-
-        private void ExitBranchStatement()
-        {
-            _branchScopeStack.Pop();
-        }
-
-
-        private void EnterLoopStatement(bool loopConditionConstant)
-        {
-            _branchScopeStack.Push(loopConditionConstant);
-        }
-
-
-        private void ExitLoopStatement()
-        {
-            _branchScopeStack.Pop();
-        }*/
-
-#endregion
 
 #region ExpressionValidationStubs
 
@@ -3495,7 +3423,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         // (as opposed to the weird and suboptimal right to left evaluation order of Linden Labs LSL compiler)
         //
         // The goal is to help detect list and string optimization hacks that date back to before LSL compiled into 
-        // Mono/Net Bytecode, and warn that they are invalid
+        // Mono/Net Byte-code, and warn that they are invalid
 
         private readonly HashSet<RuleContext> _multipleListAssignmentWarned = new HashSet<RuleContext>();
 

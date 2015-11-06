@@ -203,6 +203,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return InnerExpression != null && InnerExpression.IsConstant; }
         }
 
+        /// <summary>
+        /// True if the expression has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        /// </summary>
         public bool HasPossibleSideEffects
         {
             get { return InnerExpression != null && InnerExpression.HasPossibleSideEffects; }

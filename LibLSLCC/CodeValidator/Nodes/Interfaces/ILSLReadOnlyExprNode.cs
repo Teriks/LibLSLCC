@@ -74,7 +74,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// True if the expression has possible side effects, calls a function, modifies program state somehow. ect.
+        /// True if the expression has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
         /// </summary>
         bool HasPossibleSideEffects { get; }
 

@@ -222,6 +222,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return CastedExpression != null && CastedExpression.IsConstant; }
         }
 
+
+        /// <summary>
+        /// True if the expression has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        /// </summary>
         public bool HasPossibleSideEffects
         {
             get { return CastedExpression != null && CastedExpression.HasPossibleSideEffects; }

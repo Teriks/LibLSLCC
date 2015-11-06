@@ -270,6 +270,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
+
+        /// <summary>
+        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        /// </summary>
         public bool HasPossibleSideEffects
         {
             get

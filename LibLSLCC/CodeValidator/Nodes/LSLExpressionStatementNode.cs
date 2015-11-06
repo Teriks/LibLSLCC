@@ -65,8 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLExpressionStatementNode(LSLParser.ExpressionStatementContext context, ILSLExprNode expression,
-            bool isSingleBlockStatement, bool hasEffect)
+        internal LSLExpressionStatementNode(LSLParser.ExpressionStatementContext context, ILSLExprNode expression, bool isSingleBlockStatement)
         {
             if (context == null)
             {
@@ -79,7 +78,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             IsSingleBlockStatement = isSingleBlockStatement;
-            HasEffect = hasEffect;
             ParserContext = context;
             Expression = expression;
 
@@ -91,6 +89,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         internal LSLParser.ExpressionStatementContext ParserContext { get; private set; }
+
+
         public ILSLExprNode Expression { get; private set; }
 
 
@@ -153,10 +153,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
+
         /// <summary>
-        /// True if the expression statement has some modifying affect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
         /// </summary>
-        public bool HasEffect { get; set; }
+        public bool HasPossibleSideEffects {
+            get { return Expression != null && Expression.HasPossibleSideEffects; }
+        }
 
 
         /// <summary>

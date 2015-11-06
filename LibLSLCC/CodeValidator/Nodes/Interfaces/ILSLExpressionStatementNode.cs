@@ -57,6 +57,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// True if the expression statement has some modifying affect on a local parameter or global/local variable;  or is a function call.  False otherwise.
         /// </summary>
-        bool HasEffect { get; set; }
+        bool HasPossibleSideEffects { get; }
     }
 }

@@ -221,6 +221,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool IsConstant { get; private set; }
 
+
+        /// <summary>
+        /// True if the expression has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        /// </summary>
         public bool HasPossibleSideEffects { get; private set; }
 
 
