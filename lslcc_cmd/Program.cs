@@ -64,7 +64,10 @@ namespace lslcc
 {
     internal class Program
     {
-        private const string _clientSideScriptCompilerHeader =
+        private static string InternalErrorMessage = "Please create a bug report with the code that caused this message, and the message itself.";
+
+
+        private const string ClientSideScriptCompilerHeader =
             @"//c#
 /** 
 *  Do not remove //c# from the first line of this script.
@@ -81,7 +84,7 @@ namespace lslcc
 ";
 
 
-        private const string _serverSideScriptCompilerHeader =
+        private const string ServerSideScriptCompilerHeader =
             @"//c#-raw
 /** 
 *  Do not remove //c#-raw from the first line of this script.
@@ -325,7 +328,10 @@ namespace lslcc
             }
         }
 
-
+        private static void ShowCommandWarning(string notice, params object[] formatArgs)
+        {
+            Console.WriteLine("WARNING: " + notice, formatArgs);
+        }
 
         private static void ShowCommandNotice(string notice, params object[] formatArgs)
         {
@@ -577,7 +583,7 @@ namespace lslcc
                 }
                 else
                 {
-                    Console.WriteLine("WARNING: Library subset '{0}' does not exist and was ignored.", library);
+                    ShowCommandWarning("Library subset '{0}' does not exist and was ignored.", library);
                 }
             }
 
@@ -586,6 +592,7 @@ namespace lslcc
 
 
             ILSLCompilationUnitNode validated;
+
 
 
             try
@@ -639,15 +646,21 @@ namespace lslcc
             catch (LSLCodeValidatorInternalException error)
             {
                 Console.WriteLine();
-                Console.WriteLine("Code Validator internal error: \"" + error.Message + "\"");
-                Console.WriteLine("Please report to the developer the code that caused this message.");
+                Console.WriteLine("Code Validator, internal error:");
+                Console.WriteLine();
+                Console.WriteLine(error.Message);
+                Console.WriteLine();
+                Console.WriteLine(InternalErrorMessage);
                 return;
             }
             catch (Exception error)
             {
                 Console.WriteLine();
-                Console.WriteLine("Code Validator unknown error: \"" + error.Message + "\"");
-                Console.WriteLine("Please report to the developer the code that caused this message.");
+                Console.WriteLine("Code Validator, unknown error:");
+                Console.WriteLine();
+                Console.WriteLine(error.Message);
+                Console.WriteLine();
+                Console.WriteLine(InternalErrorMessage);
                 return;
             }
 
@@ -670,7 +683,7 @@ namespace lslcc
                     LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault(
                         validator.ValidatorServices.LibraryDataProvider);
 
-                compilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
+                compilerSettings.ScriptHeader = ServerSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
             }
             else
@@ -679,7 +692,7 @@ namespace lslcc
                     LSLOpenSimCSCompilerSettings.OpenSimClientUploadable(
                         validator.ValidatorServices.LibraryDataProvider);
 
-                compilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
+                compilerSettings.ScriptHeader = ClientSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
             }
 
@@ -696,15 +709,21 @@ namespace lslcc
                     catch (LSLCompilerInternalException error)
                     {
                         Console.WriteLine();
-                        Console.WriteLine("Compiler internal error: \"" + error.Message + "\"");
-                        Console.WriteLine("Please report to the developer the code that caused this message.");
+                        Console.WriteLine("Compiler internal error:");
+                        Console.WriteLine();
+                        Console.WriteLine(error.Message);
+                        Console.WriteLine();
+                        Console.WriteLine(InternalErrorMessage);
                         return;
                     }
                     catch (Exception error)
                     {
                         Console.WriteLine();
-                        Console.WriteLine("Compiler unknown error: \"" + error.Message + "\"");
-                        Console.WriteLine("Please report to the developer the code that caused this message.");
+                        Console.WriteLine("Compiler unknown error:");
+                        Console.WriteLine();
+                        Console.WriteLine(error.Message);
+                        Console.WriteLine();
+                        Console.WriteLine(InternalErrorMessage);
                         return;
                     }
                 }
