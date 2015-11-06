@@ -56,7 +56,6 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers;
 using LibLSLCC.LibraryData;
-using LibLSLCC.LibraryData.Reflection;
 
 #endregion
 
@@ -64,7 +63,8 @@ namespace lslcc
 {
     internal class Program
     {
-        private static string InternalErrorMessage = "Please create a bug report with the code that caused this message, and the message itself.";
+        private static string InternalErrorMessage =
+            "Please create a bug report with the code that caused this message, and the message itself.";
 
 
         private const string ClientSideScriptCompilerHeader =
@@ -112,7 +112,7 @@ namespace lslcc
 
         private static bool FileNameIsValid(string fileName)
         {
-            System.IO.FileInfo fi = null;
+            FileInfo fi = null;
 
             try
             {
@@ -179,6 +179,7 @@ namespace lslcc
                 ArgsConsumed = 0;
             }
 
+
             public int ArgsConsumed { get; private set; }
 
             public bool OptionValid { get; set; }
@@ -205,7 +206,6 @@ namespace lslcc
         private static HandleSwitchResult HandleSwitches(string[] args,
             IDictionary<string, Func<string[], int, SwitchResult>> handlers)
         {
-
             HandleSwitchResult handleSwitchResult = new HandleSwitchResult();
 
             for (var i = 0; i < args.Length;)
@@ -243,6 +243,163 @@ namespace lslcc
 
 
 
+        [AttributeUsage(AttributeTargets.Field)]
+        private sealed class ReturnCodeHelp : Attribute
+        {
+            public ReturnCodeHelp(string help)
+            {
+                Help = help;
+            }
+
+            public string Help { get; private set; }
+        }
+
+
+        private static class ReturnCode
+        {
+            [ReturnCodeHelp("Success (Including when -h,-v or -returncodes is used).")]
+            public const int Success = 0;
+
+            [ReturnCodeHelp("Syntax Errors encountered while compiling.")]
+            public const int SyntaxErrors = 1;
+
+            [ReturnCodeHelp("Input File was not specified with -o.")]
+            public const int MissingInputFile = 2;
+
+            [ReturnCodeHelp(
+                "An option was not valid given the previously defined options, or it did not like the parameters given to it."
+                )]
+            public const int InvalidOption = 3;
+
+            [ReturnCodeHelp("IO failure while trying to read the input file.")]
+            public const int InputFileUnreadable = 4;
+
+            [ReturnCodeHelp("IO failure while trying to write to the output file.")]
+            public const int OutputFileUnwritable = 5;
+
+            [ReturnCodeHelp("An unknown option was passed to the command.")]
+            public const int UnknownOption = 6;
+
+            [ReturnCodeHelp("(ICE) Code Validator experienced a known internal error.")]
+            public const int CodeValidatorInternalError = 7;
+
+            [ReturnCodeHelp("(ICE) Code Validator experienced an un-handled internal error.")]
+            public const int CodeValidatorUnknownError = 8;
+
+            [ReturnCodeHelp("(ICE) Compiler experienced a known internal error.")]
+            public const int CompilerInternalError = 9;
+
+            [ReturnCodeHelp("(ICE) Compiler experienced an un-handled internal error.")]
+            public const int CompilerUnknownError = 10;
+        }
+
+
+
+
+        private static void WriteReturnCodes()
+        {
+            const string indent = "    ";
+
+            Console.WriteLine("======================================");
+
+            var fields = typeof (ReturnCode).GetFields().ToList();
+
+            foreach (var field in fields)
+            {
+                var attr = field.GetCustomAttributes(typeof (ReturnCodeHelp), false).ToList();
+                if (attr.Count <= 0) continue;
+
+                var help = attr[0] as ReturnCodeHelp;
+
+                if (help == null) continue;
+
+                Console.WriteLine();
+                Console.WriteLine("Code " + field.GetValue(null) + " = " + field.Name + ":");
+                Console.WriteLine();
+                Console.WriteLine(indent + "" + help.Help);
+                Console.WriteLine();
+                Console.WriteLine("======================================");
+            }
+
+            Console.WriteLine();
+        }
+
+
+
+        private static void WriteHelp()
+        {
+            const string indent = "    ";
+
+            var defaultLibraryDataProvider = new LSLDefaultLibraryDataProvider();
+
+
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+            Console.WriteLine("Usage: lslcc -i script.lsl -o script.cs");
+            Console.WriteLine();
+            Console.WriteLine("-i: input file.");
+            Console.WriteLine("-o: (Optional) output file.");
+            Console.WriteLine();
+            Console.WriteLine(indent +
+                              "If you do not specify an output file, the name of the input file is used and given a '.cs' extension.");
+            Console.WriteLine(indent + "In that case the file is output to the current working directory.");
+            Console.WriteLine();
+
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+            Console.WriteLine("-librarysubsets: (Optional, default is lsl)");
+            Console.WriteLine();
+            Console.WriteLine(indent + "Set the available library subsets when compiling ( Separated by semi-colons ; )");
+            Console.WriteLine(indent +
+                              "Spaces are not allowed between the names and the semi-colons unless you quote the string.");
+            Console.WriteLine();
+            Console.WriteLine(indent + "All acceptable values are:");
+            Console.WriteLine();
+            Console.WriteLine(indent + "" + string.Join(";", defaultLibraryDataProvider.PossibleSubsets));
+            Console.WriteLine();
+
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+            Console.WriteLine("-servercode: (Default)");
+            Console.WriteLine();
+            Console.WriteLine(indent +
+                              "Compile server side code, code that OpenSim would pass directly to the CSharp compiler.");
+            Console.WriteLine(indent +
+                              "This type of code supports script resets, but un-modified builds of OpenSim provide no way to upload it from your client.");
+            Console.WriteLine();
+
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+            Console.WriteLine("-clientcode:");
+            Console.WriteLine();
+            Console.WriteLine(indent + "Compile client up-loadable code that works with all versions of OpenSim, ");
+            Console.WriteLine(indent + "but does not support script resets.");
+            Console.WriteLine();
+
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+            Console.WriteLine("-coop-stop:");
+            Console.WriteLine();
+            Console.WriteLine(indent +
+                              "Insert cooperative termination calls used by OpenSim when co-op script stop mode is enabled.");
+            Console.WriteLine();
+
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+            Console.WriteLine("-returncodes: show lslcc return code descriptions.");
+            Console.WriteLine();
+            Console.WriteLine("-h: show lslcc general help.");
+            Console.WriteLine();
+            Console.WriteLine("-v: show lslcc version and program info.");
+
+            Console.WriteLine();
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+        }
+
+
+
+
         private static void WriteAbout()
         {
             Console.WriteLine("=================================");
@@ -258,55 +415,6 @@ namespace lslcc
             Console.WriteLine("Version: 0.1.0");
             Console.WriteLine("=================================");
         }
-
-
-
-
-        private static void WriteHelp()
-        {
-            var defaultLibraryDataProvider = new LSLDefaultLibraryDataProvider();
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("Usage: lslcc -i script.lsl -o script.cs -librarysubsets lsl");
-            Console.WriteLine("-i: input file.");
-            Console.WriteLine("-o: (Optional) output file.");
-            Console.WriteLine();
-            Console.WriteLine("If you do not specify an output file, the name of the input file is used and given a '.cs' extension.");
-            Console.WriteLine("In that case the file is output to the current working directory.");
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-librarysubsets: (Optional, default is lsl)");
-            Console.WriteLine();
-            Console.WriteLine("Set the available library subsets when compiling ( Separated by semi-colons ; )");
-            Console.WriteLine("All acceptable values are: (Spaces are not allowed)");
-            Console.WriteLine();
-            Console.WriteLine(string.Join(";", defaultLibraryDataProvider.PossibleSubsets));
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-servercode: (Default)");
-            Console.WriteLine();
-            Console.WriteLine("Compile server side code, code that OpenSim would pass directly to the CSharp compiler.");
-            Console.WriteLine("This type of code supports script resets, but un-modified builds of OpenSim provide no way to upload it from your client.");
-
-            Console.WriteLine("======================================");
-            Console.WriteLine("-clientcode:");
-            Console.WriteLine();
-            Console.WriteLine("Compile client up-loadable code that works with all versions of OpenSim, ");
-            Console.WriteLine("but does not support script resets.");
-
-            Console.WriteLine("======================================");
-            Console.WriteLine("-coop-stop:");
-            Console.WriteLine();
-            Console.WriteLine("Insert cooperative termination calls used by OpenSim when co-op script stop mode is enabled.");
-
-            Console.WriteLine("======================================");
-            Console.WriteLine("-h: help");
-            Console.WriteLine("-v: lslcc, version and info");
-        }
-
 
 
         private class Options
@@ -328,14 +436,16 @@ namespace lslcc
             }
         }
 
+
         private static void ShowCommandWarning(string notice, params object[] formatArgs)
         {
             Console.WriteLine("WARNING: " + notice, formatArgs);
         }
 
+
         private static void ShowCommandNotice(string notice, params object[] formatArgs)
         {
-            Console.WriteLine("NOTICE: "+ notice, formatArgs);
+            Console.WriteLine("NOTICE: " + notice, formatArgs);
         }
 
 
@@ -345,8 +455,7 @@ namespace lslcc
         }
 
 
-
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             Options options = new Options();
 
@@ -384,7 +493,6 @@ namespace lslcc
 
                 return result;
             });
-
 
 
             switchHandlers.Add("-o", (argArray, index) =>
@@ -440,7 +548,6 @@ namespace lslcc
             });
 
 
-
             switchHandlers.Add("-clientcode", (argArray, index) =>
             {
                 var result = new SwitchResult();
@@ -483,7 +590,7 @@ namespace lslcc
             {
                 options.CoOpStop = true;
 
-                return new SwitchResult { OptionValid = true};
+                return new SwitchResult {OptionValid = true};
             });
 
 
@@ -491,7 +598,7 @@ namespace lslcc
             {
                 WriteHelp();
 
-                return new SwitchResult { OptionValid = true, Terminates = true };
+                return new SwitchResult {OptionValid = true, Terminates = true};
             });
 
 
@@ -499,34 +606,45 @@ namespace lslcc
             {
                 WriteAbout();
 
-                return new SwitchResult { OptionValid = true, Terminates = true };
+                return new SwitchResult {OptionValid = true, Terminates = true};
             });
 
+
+            switchHandlers.Add("-returncodes", (argArray, index) =>
+            {
+                WriteReturnCodes();
+
+                return new SwitchResult {OptionValid = true, Terminates = true};
+            });
 
 
             var switchResults = HandleSwitches(args, switchHandlers);
 
 
-
             if (switchResults.UnknownOption)
             {
                 ShowCommandError("Unknown Option '{0}',  use -h for help.", switchResults.UnknownOptionString);
-                ShowCommandNotice("Arguments Passed: '{0}'",  string.Join(" ", args.Select(x=> x.Contains(' ') ? '"'+x+'"' : x)));
-                return;
+                ShowCommandNotice("Arguments Passed: '{0}'",
+                    string.Join(" ", args.Select(x => x.Contains(' ') ? '"' + x + '"' : x)));
+                return ReturnCode.UnknownOption;
             }
 
 
-            if (switchResults.InvalidOption || switchResults.TerminationRequested)
+            if (switchResults.InvalidOption)
             {
-                return;
+                return ReturnCode.InvalidOption;
             }
 
+            if (switchResults.TerminationRequested)
+            {
+                return ReturnCode.Success;
+            }
 
 
             if (options.InFile == null)
             {
                 ShowCommandError("Input file not specified, use -h for help.");
-                return;
+                return ReturnCode.MissingInputFile;
             }
 
 
@@ -549,14 +667,13 @@ namespace lslcc
             Console.WriteLine("Compiling \"" + options.InFile + "\"...");
 
 
-
             //==========
             // Validate Code, Build Tree
             //==========
 
             //so we can print the errors exactly when we want to
             var syntaxListener = new LSLSyntaxListenerPriorityQueue(
-                new LSLDefaultSyntaxErrorListener(), 
+                new LSLDefaultSyntaxErrorListener(),
                 new LSLDefaultSyntaxWarningListener()
                 );
 
@@ -594,14 +711,13 @@ namespace lslcc
             ILSLCompilationUnitNode validated;
 
 
-
             try
             {
                 using (var infile = new StreamReader(options.InFile))
                 {
                     validated = validator.Validate(infile);
 
-                    
+
                     if (validator.HasSyntaxErrors)
                     {
                         Console.WriteLine();
@@ -625,7 +741,7 @@ namespace lslcc
                             Console.WriteLine("===============================");
                             Console.WriteLine();
                         }
-                                           
+
                         Console.WriteLine("Syntax Warnings:");
                         Console.WriteLine();
 
@@ -635,13 +751,19 @@ namespace lslcc
                         Console.WriteLine();
                     }
 
-
                     if (validator.HasSyntaxErrors)
                     {
                         Console.WriteLine("Compilation phase did not start due to syntax errors.");
-                        return;
+                        return ReturnCode.SyntaxErrors;
                     }
                 }
+            }
+            catch (IOException error)
+            {
+                ShowCommandError("Input File '{0}' could not be read from.", options.InFile);
+                Console.WriteLine();
+                Console.WriteLine("REASON: " + error.Message);
+                return ReturnCode.InputFileUnreadable;
             }
             catch (LSLCodeValidatorInternalException error)
             {
@@ -651,7 +773,7 @@ namespace lslcc
                 Console.WriteLine(error.Message);
                 Console.WriteLine();
                 Console.WriteLine(InternalErrorMessage);
-                return;
+                return ReturnCode.CodeValidatorInternalError;
             }
             catch (Exception error)
             {
@@ -661,7 +783,7 @@ namespace lslcc
                 Console.WriteLine(error.Message);
                 Console.WriteLine();
                 Console.WriteLine(InternalErrorMessage);
-                return;
+                return ReturnCode.CodeValidatorUnknownError;
             }
 
 
@@ -702,38 +824,41 @@ namespace lslcc
                 using (var outfile = File.Create(options.OutFile))
                 {
                     var compiler = new LSLOpenSimCSCompiler(compilerSettings);
-                    try
-                    {
-                        compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
-                    }
-                    catch (LSLCompilerInternalException error)
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Compiler internal error:");
-                        Console.WriteLine();
-                        Console.WriteLine(error.Message);
-                        Console.WriteLine();
-                        Console.WriteLine(InternalErrorMessage);
-                        return;
-                    }
-                    catch (Exception error)
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Compiler unknown error:");
-                        Console.WriteLine();
-                        Console.WriteLine(error.Message);
-                        Console.WriteLine();
-                        Console.WriteLine(InternalErrorMessage);
-                        return;
-                    }
+
+                    compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
                 }
 
                 Console.WriteLine("Finished, output to \"" + options.OutFile + "\"");
             }
-            catch (IOException)
+            catch (IOException error)
             {
                 ShowCommandError("Output File '{0}' could not be written to.", options.OutFile);
+                Console.WriteLine();
+                Console.WriteLine("REASON: " + error.Message);
+                return ReturnCode.OutputFileUnwritable;
             }
+            catch (LSLCompilerInternalException error)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Compiler internal error:");
+                Console.WriteLine();
+                Console.WriteLine(error.Message);
+                Console.WriteLine();
+                Console.WriteLine(InternalErrorMessage);
+                return ReturnCode.CompilerInternalError;
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Compiler unknown error:");
+                Console.WriteLine();
+                Console.WriteLine(error.Message);
+                Console.WriteLine();
+                Console.WriteLine(InternalErrorMessage);
+                return ReturnCode.CompilerUnknownError;
+            }
+
+            return ReturnCode.Success;
         }
     }
 }

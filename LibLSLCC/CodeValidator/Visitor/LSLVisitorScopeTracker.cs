@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: LSLVisitorScopeTracker.cs
 // 
@@ -13,9 +12,9 @@
 // All rights reserved.
 // 
 // 
-// This file is part of LibLSLCC.
+// This file is part of LibLSLCC-WithEditor-WithInstaller.
 // 
-// LibLSLCC is distributed under the following BSD 3-Clause License
+// LibLSLCC-WithEditor-WithInstaller is distributed under the following BSD 3-Clause License
 // 
 // 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 #region Imports
 
 using System.Collections.Generic;
@@ -455,6 +452,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             CurrentEventHandlerContext = null;
             CurrentFunctionBodySignature = null;
             CurrentFunctionContext = null;
+
             _functionDefinitions.Clear();
             _globalVariables.Clear();
             _definedStates.Clear();
@@ -464,6 +462,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             _scopeVariables.Clear();
             _singleBlockStatementTrackingStack.Clear();
             _controlStatementStack.Clear();
+
             CurrentScopeId = 0;
         }
 
