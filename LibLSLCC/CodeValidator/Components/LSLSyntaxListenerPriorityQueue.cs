@@ -850,6 +850,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// A prefix expression was used in a static context (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
+        /// <param name="type">The prefix operation type.</param>
         void ILSLSyntaxErrorListener.InvalidPrefixOperationUsedInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
