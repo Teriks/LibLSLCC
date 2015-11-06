@@ -63,10 +63,39 @@ namespace lslcc
 {
     internal class Program
     {
-        private static string InternalErrorMessage =
+        private const string InternalErrorMessage =
             "Please create a bug report with the code that caused this message, and the message itself.";
 
 
+        /// <summary>
+        /// The output header for lslcc related command errors.
+        /// this is not related to syntax error messages from the compiler itself.
+        /// </summary>
+        private const string CmdErrorHeader = "ERROR: ";
+
+        /// <summary>
+        /// The output header for lslcc related command warnings.
+        /// this is not related to syntax warning messages from the compiler itself.
+        /// </summary>
+        private const string CmdWarningHeader = "WARNING: ";
+
+        /// <summary>
+        /// The output header for lslcc related command notices.
+        /// this is not related to messages from the compiler itself.
+        /// </summary>
+        private const string CmdNoticeHeader = "NOTICE: ";
+
+
+        /// <summary>
+        /// The output header that gets placed before the raw content of an exception message of any sort.
+        /// </summary>
+        private const string CmdExceptionHeader = "REASON: ";
+
+
+        /// <summary>
+        /// The client side script compiler header.
+        /// This content gets placed at the top of scripts compiled with the -clientcode switch.
+        /// </summary>
         private const string ClientSideScriptCompilerHeader =
             @"//c#
 /** 
@@ -83,7 +112,10 @@ namespace lslcc
 */ 
 ";
 
-
+        /// <summary>
+        /// The server side script compiler header.
+        /// This content gets placed at the top of scripts compiled with the -servercode switch.
+        /// </summary>
         private const string ServerSideScriptCompilerHeader =
             @"//c#-raw
 /** 
@@ -110,6 +142,9 @@ namespace lslcc
 */ 
 ";
 
+
+
+
         private static bool FileNameIsValid(string fileName)
         {
             FileInfo fi = null;
@@ -135,6 +170,7 @@ namespace lslcc
 
             return true;
         }
+
 
 
         private static DateTime RetrieveLinkerTimestamp()
@@ -165,6 +201,8 @@ namespace lslcc
             dt = dt.AddHours(TimeZone.CurrentTimeZone.GetUtcOffset(dt).Hours);
             return dt;
         }
+
+
 
 
         private class SwitchResult
@@ -203,10 +241,11 @@ namespace lslcc
         }
 
 
+
         private static HandleSwitchResult HandleSwitches(string[] args,
             IDictionary<string, Func<string[], int, SwitchResult>> handlers)
         {
-            HandleSwitchResult handleSwitchResult = new HandleSwitchResult();
+            var handleSwitchResult = new HandleSwitchResult();
 
             for (var i = 0; i < args.Length;)
             {
@@ -255,6 +294,8 @@ namespace lslcc
         }
 
 
+
+
         private static class ReturnCode
         {
             [ReturnCodeHelp("Success (Including when -h,-v or -returncodes is used).")]
@@ -277,7 +318,7 @@ namespace lslcc
             [ReturnCodeHelp("IO failure while trying to write to the output file.")]
             public const int OutputFileUnwritable = 5;
 
-            [ReturnCodeHelp("An unknown option was passed to the command.")]
+            [ReturnCodeHelp("An unknown option was passed to lslcc.")]
             public const int UnknownOption = 6;
 
             [ReturnCodeHelp("(ICE) Code Validator experienced a known internal error.")]
@@ -400,6 +441,7 @@ namespace lslcc
 
 
 
+
         private static void WriteAbout()
         {
             Console.WriteLine("=================================");
@@ -415,6 +457,7 @@ namespace lslcc
             Console.WriteLine("Version: 0.1.0");
             Console.WriteLine("=================================");
         }
+
 
 
         private class Options
@@ -437,22 +480,6 @@ namespace lslcc
         }
 
 
-        private static void ShowCommandWarning(string notice, params object[] formatArgs)
-        {
-            Console.WriteLine("WARNING: " + notice, formatArgs);
-        }
-
-
-        private static void ShowCommandNotice(string notice, params object[] formatArgs)
-        {
-            Console.WriteLine("NOTICE: " + notice, formatArgs);
-        }
-
-
-        private static void ShowCommandError(string error, params object[] formatArgs)
-        {
-            Console.WriteLine("ERROR: " + error, formatArgs);
-        }
 
 
         public static int Main(string[] args)
@@ -472,7 +499,7 @@ namespace lslcc
 
                 if (!FileNameIsValid(fileArg))
                 {
-                    ShowCommandError("Input File '{0}' has an invalid file name.", fileArg);
+                    Console.WriteLine(CmdErrorHeader+"Input File '{0}' has an invalid file name.", fileArg);
                     result.OptionValid = false;
                 }
                 else if (options.InFile == null && File.Exists(fileArg))
@@ -482,12 +509,12 @@ namespace lslcc
                 }
                 else if (options.InFile == null)
                 {
-                    ShowCommandError("Input File \"" + fileArg + "\" does not exist.");
+                    Console.WriteLine(CmdErrorHeader+"Input File \"" + fileArg + "\" does not exist.");
                     result.OptionValid = false;
                 }
                 else
                 {
-                    ShowCommandError("Input file specified multiple times, use -h for help.");
+                    Console.WriteLine(CmdErrorHeader+"Input file specified multiple times, use -h for help.");
                     result.OptionValid = false;
                 }
 
@@ -503,7 +530,7 @@ namespace lslcc
 
                 if (!FileNameIsValid(fileArg))
                 {
-                    ShowCommandError("Output File '{0}' has an invalid file name.", fileArg);
+                    Console.WriteLine(CmdErrorHeader+"Output File '{0}' has an invalid file name.", fileArg);
                     result.OptionValid = false;
                 }
                 else if (options.OutFile == null)
@@ -513,7 +540,7 @@ namespace lslcc
                 }
                 else
                 {
-                    ShowCommandError("Output file specified multiple times, use -h for help.");
+                    Console.WriteLine(CmdErrorHeader+"Output file specified multiple times, use -h for help.");
                     result.OptionValid = false;
                 }
 
@@ -535,7 +562,7 @@ namespace lslcc
                     }
                     else
                     {
-                        ShowCommandError(
+                        Console.WriteLine(CmdErrorHeader+
                             "LibrarySubset '{0}' has an invalid name, it does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).",
                             lib);
 
@@ -554,7 +581,7 @@ namespace lslcc
 
                 if (options.ServerCode)
                 {
-                    ShowCommandError("Cannot specify -clientcode because -servercode was already specified.");
+                    Console.WriteLine(CmdErrorHeader+"Cannot specify -clientcode because -servercode was already specified.");
                     result.OptionValid = false;
                 }
                 else
@@ -573,7 +600,7 @@ namespace lslcc
 
                 if (options.ClientCode)
                 {
-                    ShowCommandError("Cannot specify -servercode because -clientcode was already specified.");
+                    Console.WriteLine(CmdErrorHeader+"Cannot specify -servercode because -clientcode was already specified.");
                     result.OptionValid = false;
                 }
                 else
@@ -623,8 +650,8 @@ namespace lslcc
 
             if (switchResults.UnknownOption)
             {
-                ShowCommandError("Unknown Option '{0}',  use -h for help.", switchResults.UnknownOptionString);
-                ShowCommandNotice("Arguments Passed: '{0}'",
+                Console.WriteLine(CmdErrorHeader+"Unknown Option '{0}',  use -h for help.", switchResults.UnknownOptionString);
+                Console.WriteLine(CmdNoticeHeader+"Arguments Passed: '{0}'",
                     string.Join(" ", args.Select(x => x.Contains(' ') ? '"' + x + '"' : x)));
                 return ReturnCode.UnknownOption;
             }
@@ -643,7 +670,7 @@ namespace lslcc
 
             if (options.InFile == null)
             {
-                ShowCommandError("Input file not specified, use -h for help.");
+                Console.WriteLine(CmdErrorHeader+"Input file not specified, use -h for help.");
                 return ReturnCode.MissingInputFile;
             }
 
@@ -652,14 +679,14 @@ namespace lslcc
             {
                 options.OutFile = Path.GetFileNameWithoutExtension(options.InFile) + ".cs";
 
-                ShowCommandNotice("Output file not specified, using '{0}'.", options.OutFile);
+                Console.WriteLine(CmdNoticeHeader+"Output file not specified, using '{0}'.", options.OutFile);
             }
 
 
             if (options.LibrarySubsets.Count == 0)
             {
                 options.LibrarySubsets.Add("lsl");
-                ShowCommandNotice("No library subsets specified, adding 'lsl'.");
+                Console.WriteLine(CmdNoticeHeader+"No library subsets specified, adding 'lsl'.");
             }
 
 
@@ -700,7 +727,7 @@ namespace lslcc
                 }
                 else
                 {
-                    ShowCommandWarning("Library subset '{0}' does not exist and was ignored.", library);
+                    Console.WriteLine(CmdWarningHeader+"Library subset '{0}' does not exist and was ignored.", library);
                 }
             }
 
@@ -760,17 +787,17 @@ namespace lslcc
             }
             catch (IOException error)
             {
-                ShowCommandError("Input File '{0}' could not be read from.", options.InFile);
+                Console.WriteLine(CmdErrorHeader+"Input File '{0}' could not be read from.", options.InFile);
                 Console.WriteLine();
-                Console.WriteLine("REASON: " + error.Message);
+                Console.WriteLine(CmdExceptionHeader + error.Message);
                 return ReturnCode.InputFileUnreadable;
             }
             catch (LSLCodeValidatorInternalException error)
             {
                 Console.WriteLine();
-                Console.WriteLine("Code Validator, internal error:");
+                Console.WriteLine("Code Validator, internal error.");
                 Console.WriteLine();
-                Console.WriteLine(error.Message);
+                Console.WriteLine(CmdExceptionHeader + error.Message);
                 Console.WriteLine();
                 Console.WriteLine(InternalErrorMessage);
                 return ReturnCode.CodeValidatorInternalError;
@@ -778,9 +805,9 @@ namespace lslcc
             catch (Exception error)
             {
                 Console.WriteLine();
-                Console.WriteLine("Code Validator, unknown error:");
+                Console.WriteLine("Code Validator, unknown error.");
                 Console.WriteLine();
-                Console.WriteLine(error.Message);
+                Console.WriteLine(CmdExceptionHeader + error.Message);
                 Console.WriteLine();
                 Console.WriteLine(InternalErrorMessage);
                 return ReturnCode.CodeValidatorUnknownError;
@@ -832,9 +859,9 @@ namespace lslcc
             }
             catch (IOException error)
             {
-                ShowCommandError("Output File '{0}' could not be written to.", options.OutFile);
+                Console.WriteLine(CmdErrorHeader+"Output File '{0}' could not be written to.", options.OutFile);
                 Console.WriteLine();
-                Console.WriteLine("REASON: " + error.Message);
+                Console.WriteLine(CmdExceptionHeader + error.Message);
                 return ReturnCode.OutputFileUnwritable;
             }
             catch (LSLCompilerInternalException error)
@@ -842,7 +869,7 @@ namespace lslcc
                 Console.WriteLine();
                 Console.WriteLine("Compiler internal error:");
                 Console.WriteLine();
-                Console.WriteLine(error.Message);
+                Console.WriteLine(CmdExceptionHeader + error.Message);
                 Console.WriteLine();
                 Console.WriteLine(InternalErrorMessage);
                 return ReturnCode.CompilerInternalError;
@@ -852,7 +879,7 @@ namespace lslcc
                 Console.WriteLine();
                 Console.WriteLine("Compiler unknown error:");
                 Console.WriteLine();
-                Console.WriteLine(error.Message);
+                Console.WriteLine(CmdExceptionHeader + error.Message);
                 Console.WriteLine();
                 Console.WriteLine(InternalErrorMessage);
                 return ReturnCode.CompilerUnknownError;
