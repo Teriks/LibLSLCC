@@ -12,9 +12,9 @@
 // All rights reserved.
 // 
 // 
-// This file is part of LibLSLCC-WithEditor-WithInstaller.
+// This file is part of LibLSLCC.
 // 
-// LibLSLCC-WithEditor-WithInstaller is distributed under the following BSD 3-Clause License
+// LibLSLCC is distributed under the following BSD 3-Clause License
 // 
 // 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
