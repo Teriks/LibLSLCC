@@ -194,10 +194,10 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
     /// <summary>
-    ///     An interface for a strategy used by <see cref="LSLCodeValidator"/> to validate and retrieve the return type of
+    ///     An interface used by <see cref="LSLCodeValidator"/> to validate and retrieve the return type of
     ///     expressions such as binary expressions, as well as other expressions that return a type.
     ///     this interface also defines type validation for expressions in boolean condition areas, vectors, rotations, lists
-    ///     and function call parameters
+    ///     and function call parameters.
     /// </summary>
     public interface ILSLExpressionValidator
     {

@@ -143,9 +143,9 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
 
     /// <summary>
-    ///     An interface for a strategy in <see cref="LSLCodeValidator"/> that pre-processes string literals encountered
+    ///     An interface use by <see cref="LSLCodeValidator"/> to pre-processes string literals encountered
     ///     in source code before the text is stored in the <see cref="LSLStringLiteralNode.PreProccessedText"/> property of the <see cref="LSLStringLiteralNode"/>
-    ///     validator node
+    ///     validator node.
     /// </summary>
     public interface ILSLStringPreProcessor
     {

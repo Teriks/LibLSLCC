@@ -52,7 +52,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// An interface for a strategy that provides data about the standard LSL library to <see cref="LSLCodeValidator"/>
+    /// An interface for providing data about the standard LSL library to <see cref="LSLCodeValidator"/>.
     /// </summary>
     public interface ILSLLibraryDataProvider
     {
