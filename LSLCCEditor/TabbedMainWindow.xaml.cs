@@ -579,6 +579,7 @@ namespace LSLCCEditor
             tab.SaveTabToFileInteractive();
         }
 
+
         private void CompileCurrentEditorText(string destinationFile)
         {
             if (TabControl.SelectedItem == null) return;

@@ -356,8 +356,9 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="labelName">The name of the label being redefined.</param>
         public virtual void RedefinedLabel(LSLSourceCodeRange location, string labelName)
         {
-            OnError(location, string.Format("Label {0} is already defined", labelName));
+            OnError(location, string.Format("Label \"{0}\" has already defined", labelName));
         }
+
 
         /// <summary>
         /// A vector or rotation component accessor was used on a vector or rotation literal. (This is not allowed)

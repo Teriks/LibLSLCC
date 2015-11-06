@@ -65,6 +65,32 @@ namespace LibLSLCC.CodeValidator.Components
         private readonly PriorityQueue<int, Action> _warningActionQueue = new PriorityQueue<int, Action>();
 
 
+
+
+        /// <summary>
+        /// Gets the number of syntax warnings that have been queued.
+        /// </summary>
+        /// <value>
+        /// The number of syntax warnings queued.
+        /// </value>
+        public int NumberOfSyntaxWarnings
+        {
+            get { return _warningActionQueue.Count; }
+        }
+
+
+        /// <summary>
+        /// Gets the number of syntax errors that have been queued.
+        /// </summary>
+        /// <value>
+        /// The number of syntax errors queued.
+        /// </value>
+        public int NumberOfSyntaxErrors
+        {
+            get { return _errorActionQueue.Count; }
+        }
+
+
         /// <summary>
         /// Construct a <see cref="LSLSyntaxListenerPriorityQueue"/> by wrapping another <see cref="ILSLSyntaxErrorListener"/> and <see cref="ILSLSyntaxWarningListener"/>
         /// </summary>
@@ -840,25 +866,25 @@ namespace LibLSLCC.CodeValidator.Components
 
         void ILSLSyntaxErrorListener.ModifyingPrefixOperationOnNonVariable(LSLSourceCodeRange location, LSLPrefixOperationType type)
         {
-            _warningActionQueue.Enqueue(location.StartIndex,
+            _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.ModifyingPrefixOperationOnNonVariable(location, type));
         }
 
         void ILSLSyntaxErrorListener.NegateOperationOnVectorLiteralInStaticContext(LSLSourceCodeRange location)
         {
-            _warningActionQueue.Enqueue(location.StartIndex,
+            _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.NegateOperationOnVectorLiteralInStaticContext(location));
         }
 
         void ILSLSyntaxErrorListener.NegateOperationOnRotationLiteralInStaticContext(LSLSourceCodeRange location)
         {
-            _warningActionQueue.Enqueue(location.StartIndex,
+            _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.NegateOperationOnRotationLiteralInStaticContext(location));
         }
 
         void ILSLSyntaxErrorListener.CastExpressionUsedInStaticContext(LSLSourceCodeRange location)
         {
-            _warningActionQueue.Enqueue(location.StartIndex,
+            _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.CastExpressionUsedInStaticContext(location));
         }
 
@@ -1051,7 +1077,30 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        /// <summary>
+        /// Invoke all the queued errors on <see cref="SyntaxErrorListener"/>
+        /// so that the syntax errors are reported in order by their position in source code.
+        /// </summary>
+        public void InvokeQueuedErrors()
+        {
+            while (!_errorActionQueue.IsEmpty)
+            {
+                _errorActionQueue.DequeueValue()();
+            }
+        }
 
+
+        /// <summary>
+        /// Invoke all the queued errors on <see cref="SyntaxWarningListener"/>
+        /// so that the syntax warnings are reported in order by their position in source code.
+        /// </summary>
+        public void InvokeQueuedWarnings()
+        {
+            while (!_warningActionQueue.IsEmpty)
+            {
+                _warningActionQueue.DequeueValue()();
+            }
+        }
 
         /// <summary>
         /// Invoke all the queued warnings and errors on <see cref="SyntaxErrorListener"/> and <see cref="SyntaxWarningListener"/>
@@ -1059,15 +1108,9 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         public void InvokeQueuedActions()
         {
-            while (!_errorActionQueue.IsEmpty)
-            {
-                _errorActionQueue.DequeueValue()();
-            }
+            InvokeQueuedErrors();
 
-            while (!_warningActionQueue.IsEmpty)
-            {
-                _warningActionQueue.DequeueValue()();
-            }
+            InvokeQueuedWarnings();
         }
 
 

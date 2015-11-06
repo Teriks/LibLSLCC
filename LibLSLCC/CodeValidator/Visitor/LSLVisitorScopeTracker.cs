@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLVisitorScopeTracker.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
@@ -58,8 +61,11 @@ namespace LibLSLCC.CodeValidator.Visitor
 {
     internal interface ILSLTreePreePass
     {
-        bool HasErrors { get; }
+        bool HasSyntaxErrors { get; }
+
+        bool HasSyntaxWarnings { get; }
     }
+
 
     internal class LSLVisitorScopeTracker
     {
@@ -80,14 +86,19 @@ namespace LibLSLCC.CodeValidator.Visitor
         private readonly Stack<bool> _singleBlockStatementTrackingStack = new Stack<bool>();
 
         private readonly HashMap<string, LSLStateScopeNode> _definedStates = new HashMap<string, LSLStateScopeNode>();
-        private readonly HashMap<string, LSLPreDefinedFunctionSignature> _functionDefinitions = new HashMap<string, LSLPreDefinedFunctionSignature>();
-        private readonly HashMap<string, LSLVariableDeclarationNode> _globalVariables = new HashMap<string, LSLVariableDeclarationNode>();
+
+        private readonly HashMap<string, LSLPreDefinedFunctionSignature> _functionDefinitions =
+            new HashMap<string, LSLPreDefinedFunctionSignature>();
+
+        private readonly HashMap<string, LSLVariableDeclarationNode> _globalVariables =
+            new HashMap<string, LSLVariableDeclarationNode>();
+
 
         public LSLVisitorScopeTracker(ILSLValidatorServiceProvider validatorServiceProvider)
         {
-
             ValidatorServiceProvider = validatorServiceProvider;
         }
+
 
         public ulong CurrentScopeId { get; private set; }
         public ILSLValidatorServiceProvider ValidatorServiceProvider { get; private set; }
@@ -123,15 +134,18 @@ namespace LibLSLCC.CodeValidator.Visitor
             get { return _globalVariables; }
         }
 
+
         public bool InsideEventHandlerBody
         {
             get { return CurrentEventHandlerSignature != null; }
         }
 
+
         public bool InsideVoidFunction
         {
             get { return InsideFunctionBody && CurrentFunctionBodySignature.ReturnType == LSLType.Void; }
         }
+
 
         public LSLParsedEventHandlerSignature CurrentEventHandlerSignature { get; private set; }
 
@@ -148,6 +162,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
         }
 
+
         public LSLParser.CodeScopeContext CurrentCodeScopeContext
         {
             get
@@ -161,10 +176,12 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
         }
 
+
         public bool InsideFunctionBody
         {
             get { return CurrentFunctionBodySignature != null; }
         }
+
 
         public LSLPreDefinedFunctionSignature CurrentFunctionBodySignature { get; private set; }
         internal LSLParser.FunctionDeclarationContext CurrentFunctionContext { get; private set; }
@@ -221,6 +238,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             return FunctionDefinitions[name];
         }
 
+
         public ILSLTreePreePass EnterFunctionScope(LSLParser.FunctionDeclarationContext context,
             LSLPreDefinedFunctionSignature functionSignature)
         {
@@ -245,9 +263,9 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
             }
 
-            var labelCollector = DoLabelCollectorPrePass(context);
-            return labelCollector;
+            return DoLabelCollectorPrePass(context);
         }
+
 
         public void ExitFunctionScope()
         {
@@ -257,16 +275,18 @@ namespace LibLSLCC.CodeValidator.Visitor
             _labelScopes.Clear();
         }
 
+
         public ILSLTreePreePass EnterCompilationUnit(LSLParser.CompilationUnitContext context)
         {
-            var compilationUnitPrepass = DoFunctionAndStateDefinitionPrePass(context);
-            return compilationUnitPrepass;
+            return DoFunctionAndStateDefinitionPrePass(context);
         }
+
 
         public void ExitCompilationUnit()
         {
             Reset();
         }
+
 
         public ILSLTreePreePass EnterEventScope(LSLParser.EventHandlerContext context,
             LSLParsedEventHandlerSignature eventSig)
@@ -291,14 +311,15 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
             }
 
-            var labelCollector = DoLabelCollectorPrePass(context);
-            return labelCollector;
+            return DoLabelCollectorPrePass(context);
         }
+
 
         public void EnterControlStatement(LSLControlStatementNode statement)
         {
             _controlStatementStack.Push(statement);
         }
+
 
         public void ExitControlStatement()
         {
@@ -498,27 +519,26 @@ namespace LibLSLCC.CodeValidator.Visitor
             _labelScopes[CurrentCodeScopeContext][name] = statement;
         }
 
-        private FunctionAndStateDefinitionPrePass DoFunctionAndStateDefinitionPrePass(
+        private LSLFunctionAndStateDefinitionPrePass DoFunctionAndStateDefinitionPrePass(
             LSLParser.CompilationUnitContext context)
         {
-            var r = new FunctionAndStateDefinitionPrePass(this, ValidatorServiceProvider);
+            var r = new LSLFunctionAndStateDefinitionPrePass(this, ValidatorServiceProvider);
             r.Visit(context);
             return r;
         }
 
-        private LabelCollectorPrePass DoLabelCollectorPrePass(
+        private LSLLabelCollectorPrePass DoLabelCollectorPrePass(
             LSLParser.EventHandlerContext context)
         {
-            var r = new LabelCollectorPrePass(this, ValidatorServiceProvider);
+            var r = new LSLLabelCollectorPrePass(this, ValidatorServiceProvider);
             r.Visit(context);
             return r;
         }
 
-        private LabelCollectorPrePass DoLabelCollectorPrePass(
+        private LSLLabelCollectorPrePass DoLabelCollectorPrePass(
             LSLParser.FunctionDeclarationContext context)
         {
-            var r = new LabelCollectorPrePass(this,
-                ValidatorServiceProvider);
+            var r = new LSLLabelCollectorPrePass(this, ValidatorServiceProvider);
             r.Visit(context);
             return r;
         }
@@ -526,340 +546,6 @@ namespace LibLSLCC.CodeValidator.Visitor
         public void ResetScopeId()
         {
             CurrentScopeId = 0;
-        }
-
-        public class FunctionAndStateDefinitionPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
-        {
-            private readonly LSLVisitorScopeTracker _scopingManager;
-            private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
-
-            public FunctionAndStateDefinitionPrePass(LSLVisitorScopeTracker scopingManager,
-                ILSLValidatorServiceProvider validatorServiceProvider)
-            {
-                _scopingManager = scopingManager;
-                _validatorServiceProvider = validatorServiceProvider;
-            }
-
-            public bool HasErrors { get; private set; }
-
-            public override bool VisitCompilationUnit(LSLParser.CompilationUnitContext context)
-            {
-                if (context == null)
-                {
-                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitCompilationUnit", true);
-                }
-
-
-                var defaultStateRule = context.defaultState();
-
-                if (defaultStateRule == null)
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.MissingDefaultState();
-                    HasErrors = true;
-                }
-                else
-                {
-                    Visit(defaultStateRule);
-                }
-
-                foreach (var func in context.functionDeclaration())
-                {
-                    Visit(func);
-                }
-
-                foreach (var state in context.definedState())
-                {
-                    Visit(state);
-                }
-
-                return true;
-            }
-
-            public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
-            {
-                if (context == null || context.children == null)
-                {
-                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitDefaultState", true);
-                }
-
-
-                _scopingManager.PreDefineState("default");
-
-
-                if (!context.eventHandler().Any())
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.StateHasNoEventHandlers(
-                        new LSLSourceCodeRange(context.state_name),
-                        "default");
-                    HasErrors = true;
-                    return false;
-                }
-
-
-                var eventHandlerNames = new HashSet<string>();
-
-                foreach (var ctx in context.eventHandler())
-                {
-                    if (ctx.handler_name == null)
-                    {
-                        throw LSLCodeValidatorInternalException
-                            .VisitContextInInvalidState("VisitDefaultState", typeof (LSLParser.EventHandlerContext), true);
-                    }
-
-                    if (eventHandlerNames.Contains(ctx.handler_name.Text))
-                    {
-                        _validatorServiceProvider.SyntaxErrorListener.RedefinedEventHandler(
-                            new LSLSourceCodeRange(ctx.handler_name),
-                            ctx.handler_name.Text,
-                            context.state_name.Text);
-                        HasErrors = true;
-                        return false;
-                    }
-                    eventHandlerNames.Add(ctx.handler_name.Text);
-                }
-
-
-                return true;
-            }
-
-            public override bool VisitDefinedState(LSLParser.DefinedStateContext context)
-            {
-                if (context == null || Utility.AnyNull(context.children, context.state_name))
-                {
-                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitDefinedState", true);
-                }
-
-
-                if (context.state_name.Text == "default")
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.RedefinedDefaultState(
-                        new LSLSourceCodeRange(context.state_name));
-                    HasErrors = true;
-                    return false;
-                }
-
-
-                if (_scopingManager.StatePreDefined(context.state_name.Text))
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.RedefinedStateName(
-                        new LSLSourceCodeRange(context.state_name),
-                        context.state_name.Text);
-                    HasErrors = true;
-                    return false;
-                }
-
-
-                _scopingManager.PreDefineState(context.state_name.Text);
-
-
-                if (!context.eventHandler().Any())
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.StateHasNoEventHandlers(
-                        new LSLSourceCodeRange(context.state_name),
-                        context.state_name.Text);
-                    HasErrors = true;
-                    return false;
-                }
-
-
-                var eventHandlerNames = new HashSet<string>();
-
-                foreach (var ctx in context.eventHandler())
-                {
-                    if (ctx.handler_name == null)
-                    {
-                        throw LSLCodeValidatorInternalException
-                            .VisitContextInInvalidState("VisitDefinedState",
-                                typeof (LSLParser.EventHandlerContext), true);
-                    }
-
-                    if (eventHandlerNames.Contains(ctx.handler_name.Text))
-                    {
-                        _validatorServiceProvider.SyntaxErrorListener.RedefinedEventHandler(
-                            new LSLSourceCodeRange(ctx.handler_name),
-                            ctx.handler_name.Text,
-                            context.state_name.Text);
-
-                        HasErrors = true;
-                        return false;
-                    }
-                    eventHandlerNames.Add(ctx.handler_name.Text);
-                }
-
-
-                return true;
-            }
-
-            public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
-            {
-                if (context == null || Utility.AnyNull(context.function_name, context.code))
-                {
-                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitFunctionDeclaration", true);
-                }
-
-                if (_validatorServiceProvider.LibraryDataProvider.LibraryFunctionExist(context.function_name.Text))
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.RedefinedStandardLibraryFunction(
-                        new LSLSourceCodeRange(context.function_name), context.function_name.Text,
-                        _validatorServiceProvider.LibraryDataProvider.GetLibraryFunctionSignatures(
-                            context.function_name.Text));
-                    HasErrors = true;
-                    return false;
-                }
-
-
-                if (_scopingManager.FunctionIsPreDefined(context.function_name.Text))
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.RedefinedFunction(
-                        new LSLSourceCodeRange(context.function_name),
-                        _scopingManager.ResolveFunctionPreDefine(context.function_name.Text));
-                    HasErrors = true;
-                    return false;
-                }
-
-
-                var parameterListNode = LSLParameterListNode.BuildDirectlyFromContext(
-                    context.parameters,
-                    _validatorServiceProvider);
-
-                if (parameterListNode.HasErrors)
-                {
-                    HasErrors = true;
-                    return false;
-                }
-
-                var returnType = LSLType.Void;
-
-                if (context.return_type != null)
-                {
-                    returnType =
-                        LSLTypeTools.FromLSLTypeString(context.return_type.Text);
-                }
-
-
-                var func = new LSLPreDefinedFunctionSignature(returnType,
-                    context.function_name.Text,
-                    parameterListNode);
-
-                _scopingManager.PreDefineFunction(func);
-
-
-                base.VisitFunctionDeclaration(context);
-
-                return true;
-            }
-        }
-
-        public class LabelCollectorPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
-        {
-            private readonly LSLVisitorScopeTracker _scopingManager;
-
-            private readonly Stack<StatementIndexContainer> _statementIndexStack =
-                new Stack<StatementIndexContainer>();
-
-            private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
-            private ulong _currentScopeId;
-
-            public LabelCollectorPrePass(LSLVisitorScopeTracker scopingManager,
-                ILSLValidatorServiceProvider validatorServiceProvider)
-            {
-                _scopingManager = scopingManager;
-                _validatorServiceProvider = validatorServiceProvider;
-                _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = 0});
-            }
-
-            public bool HasErrors { get; private set; }
-
-            public override bool VisitCodeStatement(LSLParser.CodeStatementContext context)
-            {
-                base.VisitCodeStatement(context);
-                _statementIndexStack.Peek().Index++;
-                return false;
-            }
-
-            public override bool VisitCodeScopeOrSingleBlockStatement(
-                LSLParser.CodeScopeOrSingleBlockStatementContext context)
-            {
-                if (context == null || !Utility.OnlyOneNotNull(context.code, context.statement))
-                {
-                    throw
-                        LSLCodeValidatorInternalException.
-                            VisitContextInvalidState("VisitCodeScopeOrSingleBlockStatement",
-                                true);
-                }
-
-
-                if (context.statement != null)
-                {
-                    _scopingManager.EnterSingleStatementBlock(context.statement);
-
-                    _currentScopeId++;
-                    _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = _currentScopeId});
-                    base.VisitCodeScopeOrSingleBlockStatement(context);
-                    _statementIndexStack.Pop();
-                    _scopingManager.ExitSingleStatementBlock();
-                }
-                if (context.code != null)
-                {
-                    base.VisitCodeScopeOrSingleBlockStatement(context);
-                }
-
-                return true;
-            }
-
-            public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
-            {
-                if (context == null || context.children == null)
-                {
-                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitCodeScope", true);
-                }
-
-                _scopingManager.EnterCodeScopeDuringPrePass(context);
-                _currentScopeId++;
-                _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = _currentScopeId});
-                var result = base.VisitCodeScope(context);
-                _statementIndexStack.Pop();
-                _scopingManager.ExitCodeScopeDuringPrePass();
-                return result;
-            }
-
-            public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
-            {
-                if (context == null || context.label_name == null)
-                {
-                    throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitLabelStatement", true);
-                }
-
-
-                if (_scopingManager.LabelPreDefinedAnywhere(context.label_name.Text))
-                {
-                    _validatorServiceProvider.SyntaxErrorListener.RedefinedLabel(
-                        new LSLSourceCodeRange(context),
-                        context.label_name.Text);
-                    HasErrors = true;
-                    return false;
-                }
-
-
-                var ctx = new LSLLabelStatementNode(context, _scopingManager.InSingleStatementBlock);
-
-                var statementIndexInfo = _statementIndexStack.Peek();
-
-                ctx.ScopeId = statementIndexInfo.ScopeId;
-
-                ctx.StatementIndex = statementIndexInfo.Index;
-
-                _scopingManager.PreDefineLabel(context.label_name.Text, ctx);
-
-
-                return base.VisitLabelStatement(context);
-            }
-
-            private class StatementIndexContainer
-            {
-                public int Index;
-                public ulong ScopeId;
-            }
         }
     }
 }

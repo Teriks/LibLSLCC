@@ -95,9 +95,10 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public LSLCodeValidator()
         {
-            _validationVisitor = new LSLCodeValidationVisitor(new LSLDefaultValidatorServiceProvider());
-            _antlrLexerErrorHandler = new LSLAntlrErrorHandler<int>(_validationVisitor.SyntaxErrorListener);
-            _antlrParserErrorHandler = new LSLAntlrErrorHandler<IToken>(_validationVisitor.SyntaxErrorListener);
+            var validationServices = new LSLDefaultValidatorServiceProvider();
+            _validationVisitor = new LSLCodeValidationVisitor(validationServices);
+            _antlrLexerErrorHandler = new LSLAntlrErrorHandler<int>(validationServices.SyntaxErrorListener);
+            _antlrParserErrorHandler = new LSLAntlrErrorHandler<IToken>(validationServices.SyntaxErrorListener);
         }
 
         /// <summary>
@@ -110,6 +111,12 @@ namespace LibLSLCC.CodeValidator
         /// Set to true if the last call to validate revealed syntax errors and returned null
         /// </summary>
         public bool HasSyntaxErrors { get; private set; }
+
+
+        /// <summary>
+        /// Set to true if the last call to validate generated syntax warnings
+        /// </summary>
+        public bool HasSyntaxWarnings { get; set; }
 
 
         /// <summary>
@@ -130,7 +137,9 @@ namespace LibLSLCC.CodeValidator
             var tokenStream = new CommonTokenStream(lexer);
 
             var parser = new LSLParser(tokenStream);
+
             parser.RemoveErrorListeners();
+
             parser.AddErrorListener(_antlrParserErrorHandler);
 
             var parseTree = parser.compilationUnit();
@@ -142,17 +151,30 @@ namespace LibLSLCC.CodeValidator
                 return null;
             }
 
-            var r = _validationVisitor.ValidateAndBuildTree(parseTree);
-
-            if (r.HasErrors)
+            try
             {
-                HasSyntaxErrors = true;
-                return null;
+                var tree = _validationVisitor.ValidateAndBuildTree(parseTree);
+
+                if (_validationVisitor.HasSyntaxWarnings)
+                {
+                    HasSyntaxWarnings = true;
+                }
+
+                if (tree.HasErrors)
+                {
+                    HasSyntaxErrors = true;
+                    return null;
+                }
+
+                tree.Comments = lexer.Comments;
+
+                return tree;
+
             }
-
-            r.Comments = lexer.Comments;
-
-            return r;
+            finally
+            {
+                _validationVisitor.Reset();
+            }
         }
     }
 }

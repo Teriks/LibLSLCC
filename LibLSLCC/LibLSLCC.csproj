@@ -100,6 +100,8 @@
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
     <Compile Include="CodeValidator\Components\LSLCustomValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
+    <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
+    <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
     <Compile Include="LibraryData\LSLDefaultLibraryDataProvider.cs" />
     <Compile Include="LibraryData\ILSLLibrarySignature.cs" />
