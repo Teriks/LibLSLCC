@@ -1,4 +1,4 @@
-#Binary Releases
+# Binary Releases
 
 If you don't want to build the Library or Editor to use it,
 I release the latest binaries for the project in each GitHub release.
@@ -24,7 +24,7 @@ for different platforms (x64 or x86).
 My OpenSim Fork uses the AnyCPU binary as its compatibile across platforms.
 
 
-#About LibLSLCC 
+# About LibLSLCC 
 
  
 The LibLSLCC library is a compiler framework for writing LSL compilers.
@@ -123,7 +123,7 @@ The Code Validator/OpenSim Code Generator Features:
    I put a lot of time into this.
 	 
 	
-#About LibLSLCCEditor
+# About LibLSLCCEditor
 
   
 The project also includes full featured LSL Editor that was originally built to test the compiler library.
@@ -157,7 +157,7 @@ LSLCCEditor Features:
 
  
 
-#Project Dependencies
+# Project Dependencies
 
 All binary dependencies are distributed with the build.
 You should not need to add any binaries yourself.
@@ -200,7 +200,7 @@ http://avalonedit.net/
 
 
  
-#Building LibLSLCC and LSLCCEditor On Windows
+# Building LibLSLCC and LSLCCEditor On Windows
 
 First off:
 
@@ -256,7 +256,7 @@ The projects in the **LibLSLCC-NoEditor.sln** solution have been tested with VS2
 build with every version of Visual Studio starting with VS2010.
 
 
-#Building LibLSLCC on *Nix Platforms with monodevelop 
+# Building LibLSLCC on *Nix Platforms with monodevelop 
 
 
 Use **LibLSLCC-NoEditor.sln** when building for Mono.
@@ -275,7 +275,7 @@ Other than some of the projects in the solution being un-buildable under Mono, t
 the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
 
 
-#Building LibLSLCC on *Nix Platforms with xbuild from the shell
+# Building LibLSLCC on *Nix Platforms with xbuild from the shell
 
 
 To build LibLSLCC from the command line using mono and xbuild on nix platforms, first install Mono 
@@ -289,7 +289,7 @@ enter the command:
 LibLSLCC should start building.
 
 
-#About Build Warnings
+# About Build Warnings
 
 Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  
 
