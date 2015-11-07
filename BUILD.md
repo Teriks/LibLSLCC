@@ -1,4 +1,4 @@
-#Building LibLSLCC and LSLCCEditor On Windows
+# Building LibLSLCC and LSLCCEditor On Windows
 
 First off:
 
@@ -54,7 +54,7 @@ The projects in the **LibLSLCC-NoEditor.sln** solution have been tested with VS2
 build with every version of Visual Studio starting with VS2010.
 
 
-#Building LibLSLCC on *Nix Platforms with monodevelop 
+# Building LibLSLCC on *Nix Platforms with monodevelop 
 
 
 Use **LibLSLCC-NoEditor.sln** when building for Mono.
@@ -73,7 +73,7 @@ Other than some of the projects in the solution being un-buildable under Mono, t
 the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
 
 
-#Building LibLSLCC on *Nix Platforms with xbuild from the shell
+# Building LibLSLCC on *Nix Platforms with xbuild from the shell
 
 
 To build LibLSLCC from the command line using mono and xbuild on nix platforms, first install Mono 
@@ -87,7 +87,7 @@ enter the command:
 LibLSLCC should start building.
 
 
-#About Build Warnings
+# About Build Warnings
 
 Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  
 
