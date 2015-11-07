@@ -243,9 +243,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 if (RightExpression == null) return false;
 
-                var modifiesVariables = Operation.IsModifying() && RightExpression.IsVariable();
+                var modifiesState = Operation.IsModifying() && RightExpression.IsVariableOrParameter();
 
-                return (RightExpression.HasPossibleSideEffects || modifiesVariables);
+                return (RightExpression.HasPossibleSideEffects || modifiesState);
             }
         }
 

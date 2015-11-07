@@ -219,7 +219,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
                 var eitherSideHaveSideEffects = (LeftExpression.HasPossibleSideEffects || RightExpression.HasPossibleSideEffects);
 
-                var operatorModifiesLeftVariable = LeftExpression.IsVariable() && Operation.IsAssignOrModifyAssign();
+                var operatorModifiesLeftVariable = LeftExpression.IsVariableOrParameter() && Operation.IsAssignOrModifyAssign();
 
                 return (eitherSideHaveSideEffects || operatorModifiesLeftVariable);
             }

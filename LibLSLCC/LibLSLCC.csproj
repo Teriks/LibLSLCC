@@ -324,10 +324,27 @@
     <None Include="Documentation\LibraryData_XML_Syntax_README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="BeforeBuild" Outputs="Parser\LSLParser.cs;Parser\LSLVisitor.cs;Parser\LSLListener.cs;Parser\LSLLexer.cs;Parser\LSLLexer.tokens;Parser\LSL.tokens;Parser\LSLBaseVisitor.cs;Parser\LSLBaseListener.cs;">
-    <Exec Command="java -classpath antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.Parser Parser\LSL.g4">
-    </Exec>
+  
+  <PropertyGroup>
+    <AntlrInput>Parser\LSL.g4</AntlrInput>
+    <AntlrOutput>
+    Parser\LSLParser.cs;
+    Parser\LSLLexer.cs;
+    Parser\LSLBaseVisitor.cs;
+    Parser\LSLVisitor.cs;
+    Parser\LSLBaseListener.cs;
+    Parser\LSLListener.cs;
+    Parser\LSLVisitor.cs;
+    Parser\LSL.tokens;
+    Parser\LSLLexer.tokens;
+    </AntlrOutput>
+  </PropertyGroup>
+  
+  <Target Name="BeforeBuild"  Inputs="$(AntlrInput)" Outputs="$(AntlrOutput)">
+      <Message Importance="High" Text="Running ANTLR: $(AntlrInput)"/>
+      <Exec Command="java -classpath antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.Parser $(AntlrInput)"/>
   </Target>
+  
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(ThirdPartyLicenses)" DestinationFolder="bin\ThirdPartyLicenses" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(License)" DestinationFolder="bin" SkipUnchangedFiles="true" />

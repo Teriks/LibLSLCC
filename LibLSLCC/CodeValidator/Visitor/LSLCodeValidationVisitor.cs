@@ -3138,7 +3138,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            if (result.Operation.IsModifying() && !result.RightExpression.IsVariable())
+            if (result.Operation.IsModifying() && !result.RightExpression.IsVariableOrParameter())
             {
                 GenSyntaxError().ModifyingPrefixOperationOnNonVariable(new LSLSourceCodeRange(context), result.Operation);
                 result.HasErrors = true;
@@ -3188,7 +3188,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 result.HasErrors = true;
                 return ReturnFromVisit(context, result);
             }
-            if (!exprLvalue.IsVariable())
+            if (!exprLvalue.IsVariableOrParameter())
             {
                 GenSyntaxError().PostfixOperationOnNonVariable(new LSLSourceCodeRange(context), result.Operation);
                 result.HasErrors = true;

@@ -51,6 +51,10 @@ os.chdir(os.path.dirname(MSBUILD));
 
 #build LibLSLCC in Any CPU mode since the editor installer does not depend on it
 subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=Any CPU', '/p:TargetFrameworkVersion=v4.0']);
+subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU', '/p:TargetFrameworkVersion=v4.0']);
+
+subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=x86', '/p:TargetFrameworkVersion=v4.0']);
+subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=x64', '/p:TargetFrameworkVersion=v4.0']);
 
 #build an Any CPU lslcc binary for distribution
 subprocess.call([MSBUILD, SOLUTION, '/t:lslcc_cmd', '/p:Configuration=Release', '/p:Platform=Any CPU', '/p:TargetFrameworkVersion=v4.0']);

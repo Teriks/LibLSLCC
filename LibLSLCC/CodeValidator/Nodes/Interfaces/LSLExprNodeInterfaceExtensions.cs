@@ -133,6 +133,19 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
+        /// Determines if an expression node represents a reference to a global/local variable or parameter reference.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a reference to either a global/local variable or parameter reference.</returns>
+        public static bool IsVariableOrParameter(this ILSLReadOnlyExprNode node)
+        {
+            return node.ExpressionType == LSLExpressionType.GlobalVariable    ||
+                   node.ExpressionType == LSLExpressionType.LocalVariable     ||
+                   node.ExpressionType == LSLExpressionType.ParameterVariable ;
+        }
+
+
+        /// <summary>
         /// Determines if an expression node represents a reference to a local variable.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
