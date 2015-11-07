@@ -63,12 +63,12 @@ namespace LSLCCEditor.Utility
         {
             if (execute == null)
             {
-                throw new ArgumentNullException(nameof(execute));
+                throw new ArgumentNullException("execute");
             }
 
             if (canExecute == null)
             {
-                throw new ArgumentNullException(nameof(canExecute));
+                throw new ArgumentNullException("canExecute");
             }
 
             _execute = execute;

@@ -51,13 +51,30 @@ namespace LSLCCEditor.CompletionUI
         }
 
 
+        private bool _substringSearchWhileFiltering = true;
+        private bool _camelCaseMatching = true;
+        private bool _caseInsensitiveMatching = true;
 
-        public bool SubstringSearchWhileFiltering { get; set; } = true;
 
-        public bool CamelCaseMatching { get; set; } = true;
+        public bool SubstringSearchWhileFiltering
+        {
+            get { return _substringSearchWhileFiltering; }
+            set { _substringSearchWhileFiltering = value; }
+        }
+
+        public bool CamelCaseMatching
+        {
+            get { return _camelCaseMatching; }
+            set { _camelCaseMatching = value; }
+        }
 
 
-        public bool CaseInsensitiveMatching { get; set; } = true;
+        public bool CaseInsensitiveMatching
+        {
+            get { return _caseInsensitiveMatching; }
+            set { _caseInsensitiveMatching = value; }
+        }
+
 
         /// <summary>
         /// Dependency property for <see cref="EmptyTemplate" />.
@@ -252,6 +269,7 @@ namespace LSLCCEditor.CompletionUI
         // SelectItem gets called twice for every typed character (once from FormatLine), this helps execute SelectItem only once
         string currentText;
         ObservableCollection<ICompletionData> currentList;
+
 
         /// <summary>
         /// Selects the best match, and filter the items if turned on using <see cref="IsFiltering" />.

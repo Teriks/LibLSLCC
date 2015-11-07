@@ -61,6 +61,8 @@ namespace LSLCCEditor.LSLEditor
     {
         private readonly string _label;
         private readonly string _text;
+        private HashSet<char> _indentBreakCharacters = new HashSet<char>();
+        private Brush _colorBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
 
         public LSLCompletionData(string label, string text, double priority)
         {
@@ -81,8 +83,18 @@ namespace LSLCCEditor.LSLEditor
         public bool OffsetCaretAfterInsert { get; set; }
         public bool InsertTextAtCaretAfterOffset { get; set; }
         public string CaretOffsetInsertionText { get; set; }
-        public HashSet<char> IndentBreakCharacters { get; set; } = new HashSet<char>();
-        public Brush ColorBrush { get; set; } = new SolidColorBrush(Color.FromRgb(50, 52, 138));
+
+        public HashSet<char> IndentBreakCharacters
+        {
+            get { return _indentBreakCharacters; }
+            set { _indentBreakCharacters = value; }
+        }
+
+        public Brush ColorBrush
+        {
+            get { return _colorBrush; }
+            set { _colorBrush = value; }
+        }
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {

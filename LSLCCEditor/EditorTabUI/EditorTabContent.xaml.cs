@@ -69,6 +69,7 @@ namespace LSLCCEditor.EditorTabUI
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         private readonly EditorTab _ownerTab;
+        private ObservableCollection<CompilerMessage> _compilerMessages = new ObservableCollection<CompilerMessage>();
 
         public EditorTabContent(EditorTab owner)
         {
@@ -88,8 +89,11 @@ namespace LSLCCEditor.EditorTabUI
             set { SetValue(SourceCodeProperty, value); }
         }
 
-        public ObservableCollection<CompilerMessage> CompilerMessages { get; set; } =
-            new ObservableCollection<CompilerMessage>();
+        public ObservableCollection<CompilerMessage> CompilerMessages
+        {
+            get { return _compilerMessages; }
+            set { _compilerMessages = value; }
+        }
 
         private void CompilerMessageItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

@@ -70,8 +70,9 @@ if not ON_WINDOWS:
 
 #build the installers on windows
 if ON_WINDOWS:
-    subprocess.call([MSBUILD, SOLUTION, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86', '/p:TargetFrameworkVersion=v4.5']);
-    subprocess.call([MSBUILD, SOLUTION, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64', '/p:TargetFrameworkVersion=v4.5']);
+    print(MSBUILD)
+    subprocess.call([MSBUILD, SOLUTION,  '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86', '/p:TargetFrameworkVersion=v4.5']);
+    subprocess.call([MSBUILD, SOLUTION,  '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64', '/p:TargetFrameworkVersion=v4.5']);
 
 
 os.chdir(old_wd);

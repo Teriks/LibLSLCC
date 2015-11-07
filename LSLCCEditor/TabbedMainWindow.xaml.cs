@@ -247,7 +247,12 @@ namespace LSLCCEditor
         }
 
 
-        public ObservableCollection<EditorTab> EditorTabs { get; set; } = new ObservableCollection<EditorTab>();
+        public ObservableCollection<EditorTab> EditorTabs
+        {
+            get { return _editorTabs; }
+            set { _editorTabs = value; }
+        }
+
         private FindReplaceMgr FindDialogManager { get; set; }
 
 
@@ -255,7 +260,7 @@ namespace LSLCCEditor
         {
             if (tab == null)
             {
-                throw new ArgumentNullException(nameof(tab));
+                throw new ArgumentNullException("tab");
             }
 
             _settingLibraryMenuProgrammaticallyFromTabCache = true;
@@ -478,7 +483,7 @@ namespace LSLCCEditor
 
 
         private LSLOpenSimCSCompilerSettings _openSimCompilerSettings;
-
+        private ObservableCollection<EditorTab> _editorTabs = new ObservableCollection<EditorTab>();
 
 
         private const string _clientSideScriptCompilerHeader =
@@ -985,7 +990,7 @@ namespace LSLCCEditor
         {
             var tab = TabControl.SelectedItem as EditorTab;
 
-            tab?.CompilerMessages.Clear();
+            if (tab != null) tab.CompilerMessages.Clear();
         }
 
         private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener

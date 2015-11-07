@@ -25,6 +25,7 @@
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
@@ -37,6 +38,7 @@
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +51,7 @@
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -62,6 +65,7 @@
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -73,6 +77,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\AnyCPU\Release\</OutputPath>
@@ -84,6 +89,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
@@ -324,7 +330,6 @@
     <None Include="Documentation\LibraryData_XML_Syntax_README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  
   <PropertyGroup>
     <AntlrInput>Parser\LSL.g4</AntlrInput>
     <AntlrOutput>
@@ -339,12 +344,10 @@
     Parser\LSLLexer.tokens;
     </AntlrOutput>
   </PropertyGroup>
-  
-  <Target Name="BeforeBuild"  Inputs="$(AntlrInput)" Outputs="$(AntlrOutput)">
-      <Message Importance="High" Text="Running ANTLR: $(AntlrInput)"/>
-      <Exec Command="java -classpath antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.Parser $(AntlrInput)"/>
+  <Target Name="BeforeBuild" Inputs="$(AntlrInput)" Outputs="$(AntlrOutput)">
+    <Message Importance="High" Text="Running ANTLR: $(AntlrInput)" />
+    <Exec Command="java -classpath antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.Parser $(AntlrInput)" />
   </Target>
-  
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(ThirdPartyLicenses)" DestinationFolder="bin\ThirdPartyLicenses" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(License)" DestinationFolder="bin" SkipUnchangedFiles="true" />

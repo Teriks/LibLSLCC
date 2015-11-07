@@ -156,9 +156,9 @@ namespace LSLCCEditor.LSLEditor
             public void IndentLine(TextDocument document, DocumentLine line)
             {
                 if (document == null)
-                    throw new ArgumentNullException(nameof(document));
+                    throw new ArgumentNullException("document");
                 if (line == null)
-                    throw new ArgumentNullException(nameof(line));
+                    throw new ArgumentNullException("line");
                 var previousLine = line.PreviousLine;
                 if (previousLine != null)
                 {

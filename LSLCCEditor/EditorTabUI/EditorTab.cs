@@ -91,7 +91,7 @@ namespace LSLCCEditor.EditorTabUI
         private FileSystemWatcher _fileWatcher;
         private string _tabName;
 
-        public EditorTab(TabControl owner, IList<EditorTab> ownerTabCollection, LSLLibraryDataProvider dataProvider, string sourceCode = "")
+        public EditorTab(TabControl owner, IList<EditorTab> ownerTabCollection, LSLLibraryDataProvider dataProvider)
         {
             _owner = owner;
             OwnerTabCollection = ownerTabCollection;
@@ -126,7 +126,7 @@ namespace LSLCCEditor.EditorTabUI
 
 
 
-        public IList<EditorTab> OwnerTabCollection { get; }
+        public IList<EditorTab> OwnerTabCollection { get; private set; }
 
         public IEnumerable<EditorTab> OtherTabs
         {
@@ -275,7 +275,7 @@ namespace LSLCCEditor.EditorTabUI
 
         private void WatchNewFile(string fileName)
         {
-            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
+            if (fileName == null) throw new ArgumentNullException("fileName");
 
             RemoveFileWatcher();
 
