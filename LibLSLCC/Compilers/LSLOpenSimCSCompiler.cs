@@ -80,14 +80,12 @@ namespace LibLSLCC.Compilers
         /// Construct an <see cref="LSLOpenSimCSCompilerSettings"/> object that uses a given <see cref="ILSLLibraryDataProvider"/> implementation
         /// to provide library data to the compiler.
         /// </summary>
-        /// <param name="libraryDataProvider">The <see cref="ILSLLibraryDataProvider"/> implementation to use.</param>
-        public LSLOpenSimCSCompilerSettings(ILSLLibraryDataProvider libraryDataProvider)
+        public LSLOpenSimCSCompilerSettings()
         {
             GenerateClass = false;
             GeneratedClassName = null;
             GeneratedClassInherit = null;
             GeneratedConstructorSignature = null;
-            LibraryDataProvider = libraryDataProvider;
             InsertCoOpTerminationCalls = false;
             CoOpTerminationFunctionCall = "opensim_reserved_CheckForCoopTermination()";
         }
@@ -147,11 +145,6 @@ namespace LibLSLCC.Compilers
         public AccessibilityLevel GeneratedConstructorAccessibility { get; set; }
 
 
-        /// <summary>
-        /// The library data provider to use for the compilation process, it is used to lookup library function calls
-        /// and determine if the use of ModInvoke is necessary to invoke a particular function from the source script.
-        /// </summary>
-        public ILSLLibraryDataProvider LibraryDataProvider { get; private set; }
 
 
         /// <summary>
@@ -166,11 +159,10 @@ namespace LibLSLCC.Compilers
         /// "XEngineScript" that derives from "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase" and contains all the generated code.
         /// This class will be put in the namespace "SecondLife" and "OpenSim.Region.ScriptEngine.Shared" will be added to the namespace imports.
         /// </summary>
-        /// <param name="libraryData">The <see cref="ILSLLibraryDataProvider"/> implementation to use.</param>
         /// <returns>The generated <see cref="LSLOpenSimCSCompilerSettings"/> settings object.</returns>
-        public static LSLOpenSimCSCompilerSettings OpenSimServerSideDefault(ILSLLibraryDataProvider libraryData)
+        public static LSLOpenSimCSCompilerSettings OpenSimServerSideDefault()
         {
-            var compilerSettings = new LSLOpenSimCSCompilerSettings(libraryData)
+            var compilerSettings = new LSLOpenSimCSCompilerSettings()
             {
                 GenerateClass = true,
                 GeneratedClassNamespace = "SecondLife",
@@ -188,11 +180,10 @@ namespace LibLSLCC.Compilers
         /// The settings object will be setup to generate a class named "LSLScript" that derives from "LSLScriptBase".
         /// This class will be put into the namespace "SecondLife" and "LibLSLCC.LSLRuntime" will be added to the namespace imports.
         /// </summary>
-        /// <param name="libraryData">The <see cref="ILSLLibraryDataProvider"/> implementation to use.</param>
         /// <returns>The generated <see cref="LSLOpenSimCSCompilerSettings"/> settings object.</returns>
-        public static LSLOpenSimCSCompilerSettings LibLSLCCRuntimeDefault(ILSLLibraryDataProvider libraryData)
+        public static LSLOpenSimCSCompilerSettings LibLSLCCRuntimeDefault()
         {
-            var compilerSettings = new LSLOpenSimCSCompilerSettings(libraryData)
+            var compilerSettings = new LSLOpenSimCSCompilerSettings()
             {
                 GenerateClass = true,
                 GeneratedClassNamespace = "SecondLife",
@@ -210,11 +201,10 @@ namespace LibLSLCC.Compilers
         /// Create a settings object that will settings that will make the <see cref="LSLOpenSimCSCompiler"/> generate code that is up-loadable
         /// to an OpenSim server via the in viewer editor.  (This only works if the OpenSim server has CSharp scripting enabled)
         /// </summary>
-        /// <param name="libraryData">The <see cref="ILSLLibraryDataProvider"/> implementation to use.</param>
         /// <returns>The generated <see cref="LSLOpenSimCSCompilerSettings"/> settings object.</returns>
-        public static LSLOpenSimCSCompilerSettings OpenSimClientUploadable(ILSLLibraryDataProvider libraryData)
+        public static LSLOpenSimCSCompilerSettings OpenSimClientUploadable()
         {
-            var compilerSettings = new LSLOpenSimCSCompilerSettings(libraryData);
+            var compilerSettings = new LSLOpenSimCSCompilerSettings();
             return compilerSettings;
         }
     }
@@ -236,25 +226,46 @@ namespace LibLSLCC.Compilers
         /// Construct an <see cref="LSLOpenSimCSCompiler"/> using the specified settings object.
         /// </summary>
         /// <param name="settings"><see cref="LSLOpenSimCSCompilerSettings"/> to use.</param>
+        /// <param name="libraryDataProvider">An <see cref="ILSLLibraryDataProvider"/> implementation.</param>
         /// <exception cref="ArgumentNullException">If 'settings' is null.</exception>
-        public LSLOpenSimCSCompiler(LSLOpenSimCSCompilerSettings settings)
+        public LSLOpenSimCSCompiler(ILSLLibraryDataProvider libraryDataProvider, LSLOpenSimCSCompilerSettings settings)
         {
             if (settings == null)
             {
                 throw new ArgumentNullException("settings");
             }
 
+            LibraryDataProvider = libraryDataProvider;
             Settings = settings;
         }
+
 
         /// <summary>
         /// Construct an <see cref="LSLOpenSimCSCompiler"/> using the default settings and the provided <see cref="ILSLLibraryDataProvider"/> object.
         /// </summary>
-        /// <param name="libraryData">An <see cref="ILSLLibraryDataProvider"/> implementation.</param>
-        public LSLOpenSimCSCompiler(ILSLLibraryDataProvider libraryData)
+        /// <param name="libraryDataProvider">An <see cref="ILSLLibraryDataProvider"/> implementation.</param>
+        public LSLOpenSimCSCompiler(ILSLLibraryDataProvider libraryDataProvider)
         {
-            Settings = new LSLOpenSimCSCompilerSettings(libraryData);
+            LibraryDataProvider = libraryDataProvider;
+            Settings = new LSLOpenSimCSCompilerSettings();
         }
+
+
+
+        public ILSLLibraryDataProvider LibraryDataProvider
+        {
+            get { return _visitor.LibraryDataProvider; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+                _visitor.LibraryDataProvider = value;
+            }
+        }
+
+
 
         /// <summary>
         /// Settings for the OpenSim CSharp Compiler

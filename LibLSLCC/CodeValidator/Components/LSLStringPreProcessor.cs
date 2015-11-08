@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLDefaultStringPreProcessor.cs
+// File: LSLStringPreProcessor.cs
 // 
 // 
 // ============================================================
@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator.Components
     /// <summary>
     /// The default implementation of <see cref="ILSLStringPreProcessor"/> for the library
     /// </summary>
-    public class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
+    public class LSLStringPreProcessor : ILSLStringPreProcessor
     {
 
         private readonly List<LSLStringCharacterError> _invalidEscapeCodes = new List<LSLStringCharacterError>();
@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         /// Construct the default implementation of <see cref="ILSLStringPreProcessor"/>
         /// </summary>
-        public LSLDefaultStringPreProcessor()
+        public LSLStringPreProcessor()
         {
             HasErrors = false;
             Result = "";

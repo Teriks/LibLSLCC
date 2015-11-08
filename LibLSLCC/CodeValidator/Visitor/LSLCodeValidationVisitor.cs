@@ -296,7 +296,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 result.AddExpression(expression);
 
-                if (!expression.HasErrors && !ExpressionValidator.ValidListContent(expression))
+                if (!expression.HasErrors && !ExpressionValidator.ValidateListContent(expression))
                 {
                     GenSyntaxError().InvalidListContent(expression.SourceCodeRange, i, expression);
 
@@ -3260,21 +3260,21 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            if (!ExpressionValidator.ValidVectorContent(x))
+            if (!ExpressionValidator.ValidateVectorContent(x))
             {
                 GenSyntaxError().InvalidVectorContent(
                     new LSLSourceCodeRange(context.vector_x), LSLVectorComponent.X, x);
                 result.HasErrors = true;
             }
 
-            if (!ExpressionValidator.ValidVectorContent(y))
+            if (!ExpressionValidator.ValidateVectorContent(y))
             {
                 GenSyntaxError().InvalidVectorContent(
                     new LSLSourceCodeRange(context.vector_y), LSLVectorComponent.Y, y);
                 result.HasErrors = true;
             }
 
-            if (!ExpressionValidator.ValidVectorContent(z))
+            if (!ExpressionValidator.ValidateVectorContent(z))
             {
                 GenSyntaxError().InvalidVectorContent(
                     new LSLSourceCodeRange(context.vector_z), LSLVectorComponent.Z, z);
@@ -3341,28 +3341,28 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            if (!ExpressionValidator.ValidRotationContent(x))
+            if (!ExpressionValidator.ValidateRotationContent(x))
             {
                 GenSyntaxError().InvalidRotationContent(
                     new LSLSourceCodeRange(context.rotation_x), LSLRotationComponent.X, x);
                 result.HasErrors = true;
             }
 
-            if (!ExpressionValidator.ValidRotationContent(y))
+            if (!ExpressionValidator.ValidateRotationContent(y))
             {
                 GenSyntaxError().InvalidRotationContent(
                     new LSLSourceCodeRange(context.rotation_y), LSLRotationComponent.Y, y);
                 result.HasErrors = true;
             }
 
-            if (!ExpressionValidator.ValidRotationContent(z))
+            if (!ExpressionValidator.ValidateRotationContent(z))
             {
                 GenSyntaxError().InvalidRotationContent(
                     new LSLSourceCodeRange(context.rotation_z), LSLRotationComponent.Z, z);
                 result.HasErrors = true;
             }
 
-            if (!ExpressionValidator.ValidRotationContent(s))
+            if (!ExpressionValidator.ValidateRotationContent(s))
             {
                 GenSyntaxError().InvalidRotationContent(
                     new LSLSourceCodeRange(context.rotation_s), LSLRotationComponent.S, s);

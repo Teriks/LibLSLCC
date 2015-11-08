@@ -25,7 +25,6 @@
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
-    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
@@ -38,7 +37,6 @@
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -51,7 +49,6 @@
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -65,7 +62,6 @@
     <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -77,7 +73,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
-    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\AnyCPU\Release\</OutputPath>
@@ -89,7 +84,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
@@ -104,12 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
-    <Compile Include="CodeValidator\Components\LSLCustomValidatorServiceProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
+    <Compile Include="CodeValidator\Components\LSLValidatorServiceProvider.cs" />
+    <Compile Include="CodeValidator\Components\LSLExpressionValidator.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
-    <Compile Include="LibraryData\LSLDefaultLibraryDataProvider.cs" />
+    <Compile Include="LibraryData\LSLEmbeddedLibraryDataProvider.cs" />
     <Compile Include="LibraryData\ILSLLibrarySignature.cs" />
     <Compile Include="LibraryData\LSLLibraryDataSubsetCollection.cs" />
     <Compile Include="LibraryData\LSLLibraryDataSubsetNameParser.cs" />
@@ -170,10 +164,10 @@
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxErrorListener.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\LSLValidatorServiceProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLDefaultStringPreProcessor.cs" />
+    <Compile Include="CodeValidator\Components\LSLStringPreProcessor.cs" />
     <Compile Include="LibraryData\LSLXmlLibraryDataProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLDefaultSyntaxErrorListener.cs" />
-    <Compile Include="CodeValidator\Components\LSLDefaultSyntaxWarningListener.cs" />
+    <Compile Include="CodeValidator\Components\LSLSyntaxErrorListener.cs" />
+    <Compile Include="CodeValidator\Components\LSLSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Enums\LSLCodeScopeType.cs" />
     <Compile Include="CodeValidator\Enums\LSLType.cs" />
     <Compile Include="CodeValidator\Enums\LSLExpressionType.cs" />
@@ -192,7 +186,6 @@
     <Compile Include="CodeValidator\Primitives\LSLParameter.cs" />
     <Compile Include="CodeValidator\Primitives\LSLParsedEventHandlerSignature.cs" />
     <Compile Include="CodeValidator\Primitives\LSLPreDefinedFunctionSignature.cs" />
-    <Compile Include="CodeValidator\Components\LSLDefaultValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLBinaryExpressionNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLExpressionListNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLExprNode.cs" />
@@ -318,7 +311,7 @@
     <None Include="Parser\LSL.g4" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LibraryData\LSLDefaultLibraryDataProvider.xml" />
+    <EmbeddedResource Include="LibraryData\LSLEmbeddedLibraryDataProvider.xml" />
   </ItemGroup>
   <ItemGroup>
     <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt" />

@@ -62,11 +62,10 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Compilers;
 using LibLSLCC.Formatter;
-using LibLSLCC.Formatter.Visitor;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
 using LSLCCEditor.EditorTabUI;
-using LSLCCEditor.FindReplace;
+using LSLCCEditor.FindReplaceUI;
 using Microsoft.Win32;
 
 #endregion
@@ -104,7 +103,7 @@ namespace LSLCCEditor
 
         private Timer _tabDragTimer;
 
-        private LSLCustomValidatorServiceProvider _validatorServices;
+        private LSLValidatorServiceProvider _validatorServices;
 
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -163,10 +162,10 @@ namespace LSLCCEditor
 
 
 
-            _validatorServices = new LSLCustomValidatorServiceProvider
+            _validatorServices = new LSLValidatorServiceProvider
             {
-                ExpressionValidator = new LSLDefaultExpressionValidator(),
-                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                ExpressionValidator = new LSLExpressionValidator(new LSLExpressionValidatorSettings() {ImplicitParamToListConversion = true}),
+                StringLiteralPreProcessor = new LSLStringPreProcessor(),
                 SyntaxErrorListener = new WindowSyntaxErrorListener(this),
                 SyntaxWarningListener = new WindowSyntaxWarningListener(this),
                 LibraryDataProvider = _libraryDataProvider
@@ -532,7 +531,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimServerSide_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault(_libraryDataProvider);
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault();
             _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
 
 
@@ -542,7 +541,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimClientSide_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable(_libraryDataProvider);
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable();
             _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
 
 
@@ -551,7 +550,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimClientSideCOOP_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable(_libraryDataProvider);
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable();
             _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
             _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
             CompileForOpenSimClickStub();
@@ -559,7 +558,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimServerSideCOOP_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault(_libraryDataProvider);
+            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault();
             _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
             _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
             CompileForOpenSimClickStub();
@@ -618,7 +617,7 @@ namespace LSLCCEditor
             using (var outfile = File.OpenWrite(destinationFile))
             {
 
-                var compiler = new LSLOpenSimCSCompiler(_openSimCompilerSettings);
+                var compiler = new LSLOpenSimCSCompiler(_libraryDataProvider, _openSimCompilerSettings);
 
 #if !DEBUG
 
@@ -993,7 +992,7 @@ namespace LSLCCEditor
             if (tab != null) tab.CompilerMessages.Clear();
         }
 
-        private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
+        private class WindowSyntaxWarningListener : LSLSyntaxWarningListener
         {
             private readonly TabbedMainWindow _parent;
 
@@ -1009,7 +1008,7 @@ namespace LSLCCEditor
             }
         }
 
-        private class WindowSyntaxErrorListener : LSLDefaultSyntaxErrorListener
+        private class WindowSyntaxErrorListener : LSLSyntaxErrorListener
         {
             private readonly TabbedMainWindow _parent;
 
@@ -1023,6 +1022,12 @@ namespace LSLCCEditor
                 var tab = (EditorTab) _parent.TabControl.SelectedItem;
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error", location, message));
             }
+        }
+
+        private void SettingsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = new SettingsUI.SettingsWindow {Owner = this};
+            menu.ShowDialog();
         }
     }
 }

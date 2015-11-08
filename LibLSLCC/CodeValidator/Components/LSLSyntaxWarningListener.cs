@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLDefaultSyntaxWarningListener.cs
+// File: LSLSyntaxWarningListener.cs
 // 
 // 
 // ============================================================
@@ -60,7 +60,7 @@ namespace LibLSLCC.CodeValidator.Components
     /// The default library implementation of <see cref="ILSLSyntaxWarningListener"/> that can write warning
     /// information to an arbitrary output stream.  The default stream is standard out.
     /// </summary>
-    public class LSLDefaultSyntaxWarningListener : ILSLSyntaxWarningListener
+    public class LSLSyntaxWarningListener : ILSLSyntaxWarningListener
     {
 
 
@@ -527,7 +527,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// A hook for intercepting warning messages produced by the implementations of all other functions in the LSLDefaultSyntaxWarningListener object.
+        /// A hook for intercepting warning messages produced by the implementations of all other functions in the LSLSyntaxWarningListener object.
         /// The default behavior is to write error messages to the Console.
         /// </summary>
         /// <param name="location">Location in source code for the warning.</param>

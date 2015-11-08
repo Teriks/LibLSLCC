@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLDefaultLibraryDataProvider.cs
+// File: LSLEmbeddedLibraryDataProvider.cs
 // 
 // 
 // ============================================================
@@ -52,11 +52,11 @@ using System.Xml;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    ///     The LSLDefaultLibraryDataProvider reads XML from the embedded resource
-    ///     LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLDefaultLibraryDataProvider.xml
+    ///     The LSLEmbeddedLibraryDataProvider reads XML from the embedded resource
+    ///     LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLEmbeddedLibraryDataProvider.xml
     ///     to define its data
     /// </summary>
-    public class LSLDefaultLibraryDataProvider : LSLXmlLibraryDataProvider
+    public class LSLEmbeddedLibraryDataProvider : LSLXmlLibraryDataProvider
     {
         private LSLLibraryBaseData _liveFilteringBaseLibraryData;
         private LSLLibraryDataAdditions _liveFilteringLibraryDataAdditions;
@@ -67,13 +67,13 @@ namespace LibLSLCC.LibraryData
         /// <returns>A stream containing the default library XML data embedded in LibLSLCC</returns>
         public static Stream GetDefaultLibraryDataStream()
         {
-            return typeof(LSLDefaultLibraryDataProvider).Assembly.GetManifestResourceStream(
-                    "LibLSLCC.LibraryData.LSLDefaultLibraryDataProvider.xml");
+            return typeof(LSLEmbeddedLibraryDataProvider).Assembly.GetManifestResourceStream(
+                    "LibLSLCC.LibraryData.LSLEmbeddedLibraryDataProvider.xml");
         }
 
 
         /// <summary>
-        /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file.
+        /// Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
         /// </summary>
         /// <param name="liveFiltering">
         /// If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query results will change.
@@ -83,7 +83,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="dataAdditions">Library data additions.</param>
         /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
-        public LSLDefaultLibraryDataProvider(LSLLibraryBaseData libraryBaseData,
+        public LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData libraryBaseData,
             LSLLibraryDataAdditions dataAdditions, bool liveFiltering, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : this(GetSubsets(libraryBaseData,dataAdditions),liveFiltering, loadOptions)
         {
 
@@ -91,7 +91,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file.
+        /// Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
         /// </summary>
         /// <param name="activeSubsets">The library subsets to utilize.</param>
         /// <param name="liveFiltering">
@@ -100,14 +100,14 @@ namespace LibLSLCC.LibraryData
         /// </param>
         /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
-        public LSLDefaultLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : base(activeSubsets, liveFiltering)
+        public LSLEmbeddedLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : base(activeSubsets, liveFiltering)
         {
             using (var libraryData = GetDefaultLibraryDataStream())
             {
                 if (libraryData == null)
                 {
                     throw new InvalidOperationException(
-                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml");
+                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLEmbeddedLibraryDataProvider.xml");
                 }
 
                 var reader = new XmlTextReader(libraryData);
@@ -119,17 +119,17 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Constructs an LSLDefaultLibraryDataProvider using the embedded LSLDefaultLibraryDataProvider.xml file in live filtering mode with no active subsets set.
+        /// Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file in live filtering mode with no active subsets set.
         /// </summary>
         /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
-        public LSLDefaultLibraryDataProvider() : base(true)
+        public LSLEmbeddedLibraryDataProvider() : base(true)
         {
             using (var libraryData = GetDefaultLibraryDataStream())
             {
                 if (libraryData == null)
                 {
                     throw new InvalidOperationException(
-                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLDefaultLibraryDataProvider.xml");
+                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLEmbeddedLibraryDataProvider.xml");
                 }
 
                 var reader = new XmlTextReader(libraryData);
@@ -185,7 +185,7 @@ namespace LibLSLCC.LibraryData
 
 
     /// <summary>
-    /// Represents the available additional library subsets in LSLDefaultLibraryDataProvider.xml
+    /// Represents the available additional library subsets in LSLEmbeddedLibraryDataProvider.xml
     /// </summary>
     [Flags]
     public enum LSLLibraryDataAdditions
@@ -265,7 +265,7 @@ namespace LibLSLCC.LibraryData
 
 
     /// <summary>
-    /// Represents the available base library subsets in LSLDefaultLibraryDataProvider.xml
+    /// Represents the available base library subsets in LSLEmbeddedLibraryDataProvider.xml
     /// </summary>
     public enum LSLLibraryBaseData
     {

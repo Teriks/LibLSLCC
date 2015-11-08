@@ -90,12 +90,12 @@ namespace LibLSLCC.CodeValidator
         }
 
         /// <summary>
-        /// Construct an LSLCodeValidator using LSLDefaultValidatorServiceProvider for the ValidatorServices property.
-        /// <see cref="LSLDefaultValidatorServiceProvider"/>
+        /// Construct an <see cref="LSLCodeValidator"/> using <see cref="LSLValidatorServiceProvider.Default"/> to initialize the <see cref="ValidatorServices"/> property.
+        /// <see cref="LSLValidatorServiceProvider.Default"/>
         /// </summary>
         public LSLCodeValidator()
         {
-            var validationServices = new LSLDefaultValidatorServiceProvider();
+            var validationServices = LSLValidatorServiceProvider.Default();
             _validationVisitor = new LSLCodeValidationVisitor(validationServices);
             _antlrLexerErrorHandler = new LSLAntlrErrorHandler<int>(validationServices.SyntaxErrorListener);
             _antlrParserErrorHandler = new LSLAntlrErrorHandler<IToken>(validationServices.SyntaxErrorListener);

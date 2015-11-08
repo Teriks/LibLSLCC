@@ -27,6 +27,11 @@
   </SubsetDescription>
 
   <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
+    <Parameter Name="Value" Type="List" />
+    <Parameter Name="Value2" Type="List" />
+    <DocumentationString>Returns the absolute (positive) version of Value.</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="Value" Type="Integer" />
     <DocumentationString>Returns the absolute (positive) version of Value.</DocumentationString>
   </LibraryFunction>

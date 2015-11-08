@@ -71,6 +71,7 @@
                           Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}" />
                 <MenuItem Header="Open New Tab" InputGestureText="Ctrl+Alt+O" Click="Open_OnClick" />
             </MenuItem>
+            <MenuItem Header="Settings" Click="SettingsMenu_Click"/>
             <MenuItem Header="Compile"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
                 <MenuItem Header="OpenSim (Client Side)" InputGestureText="Ctrl+Alt+C" Click="CompileForOpenSimClientSide_OnClick" />

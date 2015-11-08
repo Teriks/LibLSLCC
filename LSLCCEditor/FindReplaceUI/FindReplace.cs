@@ -53,10 +53,11 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
+using LSLCCEditor.FindReplaceUI;
 
 #endregion
 
-namespace LSLCCEditor.FindReplace
+namespace LSLCCEditor.FindReplaceUI
 {
     /// <summary>
     ///     This class ensures that the settings and text to be found is preserved when the find/replace dialog is closed

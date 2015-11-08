@@ -209,7 +209,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <returns>A matching <see cref="LSLFunctionSignature"/> overload or null.</returns>
         public static OverloadMatch<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator) where T : LSLFunctionSignature
         {
-            return MatchOverloads(functionSignatures, expressionNodes,(expressionValidator.ValidFunctionParameter));
+            return MatchOverloads(functionSignatures, expressionNodes,(expressionValidator.ValidateFunctionParameter));
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         public static Match TryMatch( LSLFunctionSignature functionSignature, IReadOnlyGenericArray<ILSLExprNode> expressions, ILSLExpressionValidator expressionValidator)
         {
 
-            return TryMatch(functionSignature,expressions,(expressionValidator.ValidFunctionParameter));
+            return TryMatch(functionSignature,expressions,(expressionValidator.ValidateFunctionParameter));
         }
 
 

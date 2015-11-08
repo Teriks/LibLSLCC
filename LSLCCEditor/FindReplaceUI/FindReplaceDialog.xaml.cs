@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLCustomValidatorServiceProvider.cs
+// File: FindReplaceDialog.xaml.cs
 // 
 // 
 // ============================================================
@@ -42,49 +42,46 @@
 #endregion
 #region Imports
 
-using LibLSLCC.CodeValidator.Components.Interfaces;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.LibraryData;
+using System.Windows;
+using System.Windows.Input;
+using LSLCCEditor.FindReplaceUI;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components
+namespace LSLCCEditor.FindReplaceUI
 {
     /// <summary>
-    ///     An <see cref="ILSLValidatorServiceProvider"/> implementation that allows you to assign values
-    ///     to members which will be used directly as part of <see cref="LSLCodeValidator"/>'s implementation
+    ///     Interaction logic for FindReplaceDialog.xaml
     /// </summary>
-    public class LSLCustomValidatorServiceProvider : ILSLValidatorServiceProvider
+    public partial class FindReplaceDialog : Window
     {
-        /// <summary>
-        /// The expression validator is in charge of determining if two types are valid
-        /// in a binary expression.  Among other things, like checking if an expression
-        /// of some type can be passed into a function parameter.
-        /// </summary>
-        public ILSLExpressionValidator ExpressionValidator { get; set; }
+        private readonly FindReplaceMgr _theVm;
 
-        /// <summary>
-        /// The library data provider gives the code validator information about standard library functions,
-        /// constants and events that exist in the LSL namespace.
-        /// </summary>
-        public ILSLLibraryDataProvider LibraryDataProvider { get; set; }
+        public FindReplaceDialog(FindReplaceMgr theVm)
+        {
+            DataContext = _theVm = theVm;
+            InitializeComponent();
+        }
 
-        /// <summary>
-        /// The string literal pre-processor is in charge of pre-processing string literals
-        /// from source code before the value is assigned to a <see cref="LSLStringLiteralNode"/> object
-        /// </summary>
-        public ILSLStringPreProcessor StringLiteralPreProcessor { get; set; }
+        private void FindNextClick(object sender, RoutedEventArgs e)
+        {
+            _theVm.FindNext();
+        }
 
-        /// <summary>
-        /// The syntax error listener is an interface that listens for syntax
-        /// errors from the code validator
-        /// </summary>
-        public ILSLSyntaxErrorListener SyntaxErrorListener { get; set; }
+        private void ReplaceClick(object sender, RoutedEventArgs e)
+        {
+            _theVm.Replace();
+        }
 
-        /// <summary>
-        /// The syntax error listener is an interface that listens for syntax
-        /// warnings from the code validator
-        /// </summary>
-        public ILSLSyntaxWarningListener SyntaxWarningListener { get; set; }
+        private void ReplaceAllClick(object sender, RoutedEventArgs e)
+        {
+            _theVm.ReplaceAll();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
+        }
     }
 }

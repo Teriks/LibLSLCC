@@ -348,14 +348,14 @@ namespace Tests
 
 
             //Set up the implementations LSLCodeValidator relies on's
-            var validatorServices = new LSLCustomValidatorServiceProvider();
+            var validatorServices = new LSLValidatorServiceProvider();
 
-            validatorServices.ExpressionValidator = new LSLDefaultExpressionValidator();
-            validatorServices.StringLiteralPreProcessor = new LSLDefaultStringPreProcessor();
+            validatorServices.ExpressionValidator = new LSLExpressionValidator();
+            validatorServices.StringLiteralPreProcessor = new LSLStringPreProcessor();
 
             //These both print to stdout by default.
-            validatorServices.SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
-            validatorServices.SyntaxWarningListener = new LSLDefaultSyntaxWarningListener();
+            validatorServices.SyntaxErrorListener = new LSLSyntaxErrorListener();
+            validatorServices.SyntaxWarningListener = new LSLSyntaxWarningListener();
 
             //Use ours, we only defined a few things
             validatorServices.LibraryDataProvider = myProvider;
@@ -418,7 +418,7 @@ default{
             {
                 Console.WriteLine("\n\nNo syntax errors!\n\n");
 
-                var compilerSettings = new LSLOpenSimCSCompilerSettings(myProvider);
+                var compilerSettings = new LSLOpenSimCSCompilerSettings();
 
                 compilerSettings.InsertCoOpTerminationCalls = true;
                 compilerSettings.GenerateClass = true;
@@ -426,7 +426,7 @@ default{
                 compilerSettings.GeneratedConstructorSignature = "()";
                 compilerSettings.GeneratedClassNamespace = "MyNameSpace";
 
-                LSLOpenSimCSCompiler compiler = new LSLOpenSimCSCompiler(compilerSettings);
+                LSLOpenSimCSCompiler compiler = new LSLOpenSimCSCompiler(myProvider, compilerSettings);
 
 
                 MemoryStream memStream = new MemoryStream();

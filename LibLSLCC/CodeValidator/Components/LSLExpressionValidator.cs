@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: LSLDefaultExpressionValidator.cs
+// File: LSLExpressionValidator.cs
 // 
 // 
 // ============================================================
@@ -54,21 +54,53 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Components
 {
+
+    /// Settings for the <see cref="LSLExpressionValidator"/> class.
+    public class LSLExpressionValidatorSettings
+    {
+        /// <summary>
+        /// Determines whether to allow all types to implicitly convert into a list in function parameters.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if all types can implicitly convert into a list when passed into a list parameter.
+        /// </value>
+        public bool ImplicitParamToListConversion { get; set; }
+    }
+
+
+
     /// <summary>
     ///     The default expression validator can validate and return results for all possible binary operations, unary
     ///     operations
     ///     etc.. in standard LSL
     ///     validations for expression types in lists/vectors/rotations and function call parameters match that of standard LSL
     /// </summary>
-    public class LSLDefaultExpressionValidator : ILSLExpressionValidator
+    public class LSLExpressionValidator : ILSLExpressionValidator
     {
         private readonly Dictionary<string, LSLType> _operations = new Dictionary<string, LSLType>();
+
+
+
+        public LSLExpressionValidatorSettings Settings { get; set; }
+
+
+
+
+        public LSLExpressionValidator() : this(new LSLExpressionValidatorSettings())
+        {
+
+        }
+
+
 
         /// <summary>
         /// Constructs the expression validator
         /// </summary>
-        public LSLDefaultExpressionValidator()
+        public LSLExpressionValidator(LSLExpressionValidatorSettings settings)
         {
+
+            Settings = settings;
+
             AddBinaryOperation(LSLType.Integer, LSLBinaryOperationType.Add, LSLType.Integer, LSLType.Integer);
             AddBinaryOperation(LSLType.Integer, LSLBinaryOperationType.Add, LSLType.Float, LSLType.Float);
             AddBinaryOperation(LSLType.Float, LSLBinaryOperationType.Add, LSLType.Float, LSLType.Float);
@@ -294,7 +326,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a vector literal.</returns>
-        public bool ValidVectorContent(ILSLExprNode type)
+        public bool ValidateVectorContent(ILSLExprNode type)
         {
             return !type.HasErrors && type.Type == LSLType.Float || type.Type == LSLType.Integer;
         }
@@ -305,7 +337,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a rotation literal.</returns>
-        public bool ValidRotationContent(ILSLExprNode type)
+        public bool ValidateRotationContent(ILSLExprNode type)
         {
             return !type.HasErrors &&  (type.Type == LSLType.Float || type.Type == LSLType.Integer);
         }
@@ -316,7 +348,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a list literal.</returns>
-        public bool ValidListContent(ILSLExprNode type)
+        public bool ValidateListContent(ILSLExprNode type)
         {
             //check for void required, we do not want functions returning void in a list
             return !type.HasErrors && type.Type != LSLType.List && type.Type != LSLType.Void;
@@ -349,7 +381,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="parameter">The parameter definition.</param>
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
         /// <returns></returns>
-        public bool ValidFunctionParameter(
+        public bool ValidateFunctionParameter(
             LSLParameter parameter,
             ILSLExprNode parameterExpressionPassed)
         {
@@ -363,6 +395,10 @@ namespace LibLSLCC.CodeValidator.Components
                 return true;
             }
 
+            if (Settings.ImplicitParamToListConversion && parameter.Type == LSLType.List)
+            {
+                return true;
+            }
 
             var left = new LSLDummyExpr
             {

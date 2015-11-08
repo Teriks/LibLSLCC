@@ -53,6 +53,7 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 using LibLSLCC.Collections;
+using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
 
 #endregion
@@ -193,6 +194,11 @@ private static class UTILITIES
         /// The code generation settings.
         /// </value>
         public LSLOpenSimCSCompilerSettings Settings { get; set; }
+
+
+
+        public ILSLLibraryDataProvider LibraryDataProvider { get; set; }
+
 
 
         public TextWriter Writer { get; private set; }
@@ -421,6 +427,16 @@ private static class UTILITIES
                 return false;
             }
 
+            //the compiler uses strings for keys unless testing a boolean
+            //when a key is used for a boolean condition LSL_Types.key is constructed around the expression
+            if ((node.CastToType == LSLType.String || node.CastToType == LSLType.Key) &&
+                (node.CastedExpression.Type == LSLType.String || node.CastedExpression.Type == LSLType.Key))
+            {
+                Visit(node.CastedExpression);
+                return false;
+            }
+
+
             Writer.Write("(" + LSLAtomType_To_CSharpType(node.CastToType) + ")");
 
 
@@ -475,7 +491,7 @@ private static class UTILITIES
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
-            var libDataNode = Settings.LibraryDataProvider.GetLibraryFunctionSignature(node.Signature);
+            var libDataNode = LibraryDataProvider.GetLibraryFunctionSignature(node.Signature);
 
 
 
@@ -598,7 +614,7 @@ private static class UTILITIES
 
         public override bool VisitLibraryConstantVariableReference(ILSLVariableNode node)
         {
-            var x = Settings.LibraryDataProvider.GetLibraryConstantSignature(node.Name);
+            var x = LibraryDataProvider.GetLibraryConstantSignature(node.Name);
             if (x.Expand)
             {
                 switch (x.Type)
@@ -675,13 +691,14 @@ private static class UTILITIES
         }
 
 
-       
+
+
 
         public override bool VisitLibraryFunctionCallParameters(ILSLExpressionListNode node)
         {
             /* leaving this skeleton function here and using it to visit all library function call parameters.
                In-case I find a reason that code generation needs to be different for library function call parameters in the future. */
-               
+
 
             VisitExpressionList(node);
             return false;
@@ -726,7 +743,7 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
+                    LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
@@ -786,7 +803,7 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
+                    LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
@@ -879,7 +896,7 @@ private static class UTILITIES
             if (parentFunctionCallNode != null && parentFunctionCallNode.IsLibraryFunctionCall())
             {
                 var libDataNode =
-                    Settings.LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
+                    LibraryDataProvider.GetLibraryFunctionSignature(parentFunctionCallNode.Signature);
 
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
@@ -1139,27 +1156,50 @@ private static class UTILITIES
 
         private void WriteBooleanConditionContent(LSLType expressionType, ILSLReadOnlyExprNode conditionExpression)
         {
-            if (expressionType == LSLType.Key)
+            switch (expressionType)
             {
-                Writer.Write("new LSL_Types.key(");
-                Visit(conditionExpression);
-                Writer.Write(")");
-            }
-            else if (
-                expressionType == LSLType.Vector ||
-                expressionType == LSLType.Rotation ||
-                expressionType == LSLType.List ||
-                expressionType == LSLType.String)
-            {
-                //have to use our small utility class to convert these to bool
-                //as they would be in Linden Labs LSL
-                Writer.Write("UTILITIES.ToBool(");
-                Visit(conditionExpression);
-                Writer.Write(")");
-            }
-            else
-            {
-                Visit(conditionExpression);
+                case LSLType.Key:
+
+                    Writer.Write("new LSL_Types.key(");
+
+                    var isTypeCast = conditionExpression as ILSLTypecastExprNode;
+                    if (isTypeCast != null)
+                    {
+                        var isStringLiteral = isTypeCast.CastedExpression as ILSLStringLiteralNode;
+
+                        //slight optimization
+                        if (isStringLiteral != null)
+                        {
+                            Writer.Write(isStringLiteral.PreProccessedText);
+                        }
+                        else
+                        {
+                            Visit(conditionExpression);
+                        }
+                    }
+                    else
+                    {
+                        Visit(conditionExpression);
+                    }
+
+                    Writer.Write(")");
+                    break;
+
+                case LSLType.Vector:
+                case LSLType.Rotation:
+                case LSLType.List:
+                case LSLType.String:
+
+                    //have to use our small utility class to convert these to bool
+                    //as they would be in Linden Labs LSL
+                    Writer.Write("UTILITIES.ToBool(");
+                    Visit(conditionExpression);
+                    Writer.Write(")");
+                    break;
+
+                default:
+                    Visit(conditionExpression);
+                    break;
             }
         }
 

@@ -50,12 +50,13 @@ using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
+using LSLCCEditor.FindReplaceUI;
 using RichTextBox = System.Windows.Controls.RichTextBox;
 using TextBox = System.Windows.Controls.TextBox;
 
 #endregion
 
-namespace LSLCCEditor.FindReplace
+namespace LSLCCEditor.FindReplaceUI
 {
     /// <summary>
     ///     Adapter for Avalonedit TextEditor

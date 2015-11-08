@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLDefaultValidatorServiceProvider.cs
+// File: LSLValidatorServiceProvider.cs
 // 
 // 
 // ============================================================
@@ -43,6 +43,7 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.LibraryData;
 
 #endregion
@@ -50,52 +51,55 @@ using LibLSLCC.LibraryData;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// The default implementation of <see cref="ILSLValidatorServiceProvider"/> for the library
+    ///     A basic <see cref="ILSLValidatorServiceProvider"/> implementation that allows you to assign values
+    ///     to members which will be used directly as part of <see cref="LSLCodeValidator"/>'s implementation.
+    ///     <see cref="Default"/> will return a copy of this object with all the default implementations assigned to its properties. 
     /// </summary>
-    public class LSLDefaultValidatorServiceProvider : ILSLValidatorServiceProvider
+    public class LSLValidatorServiceProvider : ILSLValidatorServiceProvider
     {
         /// <summary>
-        /// Construct the default implementation of <see cref="ILSLValidatorServiceProvider"/> for the library
+        /// The expression validator is in charge of determining if two types are valid
+        /// in a binary expression.  Among other things, like checking if an expression
+        /// of some type can be passed into a function parameter.
         /// </summary>
-        public LSLDefaultValidatorServiceProvider()
+        public ILSLExpressionValidator ExpressionValidator { get; set; }
+
+        /// <summary>
+        /// The library data provider gives the code validator information about standard library functions,
+        /// constants and events that exist in the LSL namespace.
+        /// </summary>
+        public ILSLLibraryDataProvider LibraryDataProvider { get; set; }
+
+        /// <summary>
+        /// The string literal pre-processor is in charge of pre-processing string literals
+        /// from source code before the value is assigned to a <see cref="LSLStringLiteralNode"/> object
+        /// </summary>
+        public ILSLStringPreProcessor StringLiteralPreProcessor { get; set; }
+
+        /// <summary>
+        /// The syntax error listener is an interface that listens for syntax
+        /// errors from the code validator
+        /// </summary>
+        public ILSLSyntaxErrorListener SyntaxErrorListener { get; set; }
+
+        /// <summary>
+        /// The syntax error listener is an interface that listens for syntax
+        /// warnings from the code validator
+        /// </summary>
+        public ILSLSyntaxWarningListener SyntaxWarningListener { get; set; }
+
+
+
+
+        public static LSLValidatorServiceProvider Default()
         {
-            ExpressionValidator = new LSLDefaultExpressionValidator();
-
-            LibraryDataProvider = new LSLDefaultLibraryDataProvider(LSLLibraryBaseData.StandardLsl,LSLLibraryDataAdditions.None, false);
-
-            SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
-            SyntaxWarningListener = new LSLDefaultSyntaxWarningListener();
-            StringLiteralPreProcessor = new LSLDefaultStringPreProcessor();
+            var d = new LSLValidatorServiceProvider();
+            d.SyntaxErrorListener = new LSLSyntaxErrorListener();
+            d.ExpressionValidator = new LSLExpressionValidator();
+            d.LibraryDataProvider = new LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData.StandardLsl, LSLLibraryDataAdditions.None, false); ;
+            d.StringLiteralPreProcessor = new LSLStringPreProcessor();
+            d.SyntaxWarningListener = new LSLSyntaxWarningListener();
+            return d;
         }
-
-        /// <summary>
-        /// The default implementation uses a LSLDefaultExpressionValidator(); instance.
-        /// see: <see cref="LSLDefaultExpressionValidator"/>
-        /// </summary>
-        public ILSLExpressionValidator ExpressionValidator { get; private set; }
-
-        /// <summary>
-        /// The default implementation uses a LSLDefaultLibraryDataProvider(false, LSLLibraryBaseData.StandardLsl); instance.
-        /// see: <see cref="LSLDefaultLibraryDataProvider"/>
-        /// </summary>
-        public ILSLLibraryDataProvider LibraryDataProvider { get; private set; }
-
-        /// <summary>
-        /// The default implementation uses a LSLDefaultStringPreProcessor(); instance.
-        /// see: <see cref="LSLDefaultStringPreProcessor"/>
-        /// </summary>
-        public ILSLStringPreProcessor StringLiteralPreProcessor { get; private set; }
-
-        /// <summary>
-        /// The default implementation uses a LSLDefaultSyntaxErrorListener(); instance.
-        /// see: <see cref="LSLDefaultSyntaxErrorListener"/>
-        /// </summary>
-        public ILSLSyntaxErrorListener SyntaxErrorListener { get; private set; }
-
-        /// <summary>
-        /// The default implementation uses a LSLDefaultSyntaxWarningListener(); instance.
-        /// see: <see cref="LSLDefaultSyntaxWarningListener"/>
-        /// </summary>
-        public ILSLSyntaxWarningListener SyntaxWarningListener { get; private set; }
     }
 }

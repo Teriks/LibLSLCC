@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: LSLDefaultSyntaxErrorListener.cs
+// File: LSLSyntaxErrorListener.cs
 // 
 // 
 // ============================================================
@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator.Components
     /// The default implementation of <see cref="ILSLSyntaxErrorListener"/> for the library.  
     /// It writes error information to standard out or an arbitrary stream.
     /// </summary>
-    public class LSLDefaultSyntaxErrorListener : ILSLSyntaxErrorListener
+    public class LSLSyntaxErrorListener : ILSLSyntaxErrorListener
     {
         /// <summary>
         /// A parsing error at the grammar level has occurred somewhere in the source code.
@@ -916,7 +916,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// A hook for intercepting error messages produced by the implementations of all other functions in the LSLDefaultSyntaxErrorListener object.
+        /// A hook for intercepting error messages produced by the implementations of all other functions in the LSLSyntaxErrorListener object.
         /// The default behavior is to write error messages to the Console.
         /// </summary>
         /// <param name="location">Location in source code for the error.</param>

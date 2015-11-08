@@ -261,14 +261,14 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="type">The expression the user is attempting to use to initialize one of the components of a vector literal.</param>
         /// <returns>True if the expression can be used in a vector literal initializer list, false if otherwise.</returns>
-        bool ValidVectorContent(ILSLExprNode type);
+        bool ValidateVectorContent(ILSLExprNode type);
 
         /// <summary>
         /// Validates that a given expression is able to be used inside of a rotation literal initializer list.
         /// </summary>
         /// <param name="type">The expression the user is attempting to use to initialize one of the components of a rotation literal.</param>
         /// <returns>True if the expression can be used in a rotation literal initializer list, false if otherwise.</returns>
-        bool ValidRotationContent(ILSLExprNode type);
+        bool ValidateRotationContent(ILSLExprNode type);
 
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="type">The expression the user is attempting to use to initialize a list literal element.</param>
         /// <returns>True if the expression can be used in a list literal initializer list, false if otherwise.</returns>
-        bool ValidListContent(ILSLExprNode type);
+        bool ValidateListContent(ILSLExprNode type);
 
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="parameter">The parameter definition.</param>
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
         /// <returns></returns>
-        bool ValidFunctionParameter(LSLParameter parameter,
+        bool ValidateFunctionParameter(LSLParameter parameter,
             ILSLExprNode parameterExpressionPassed);
     }
 }

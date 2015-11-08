@@ -371,7 +371,7 @@ namespace lslcc
         {
             const string indent = "    ";
 
-            var defaultLibraryDataProvider = new LSLDefaultLibraryDataProvider();
+            var defaultLibraryDataProvider = new LSLEmbeddedLibraryDataProvider();
 
 
             Console.WriteLine("======================================");
@@ -425,6 +425,15 @@ namespace lslcc
                               "Insert cooperative termination calls used by OpenSim when co-op script stop mode is enabled.");
             Console.WriteLine();
 
+
+            Console.WriteLine("======================================");
+            Console.WriteLine();
+            Console.WriteLine("-implicit-param-tolist:");
+            Console.WriteLine();
+            Console.WriteLine(indent + "Allow implicit conversion of all LSL types into list within function call parameters.");
+            Console.WriteLine(indent + "Example: llListFindList([\"john\", \"smith\", \"jane\"], \"smith\");");
+            Console.WriteLine();
+
             Console.WriteLine("======================================");
             Console.WriteLine();
             Console.WriteLine("-returncodes: show lslcc return code descriptions.");
@@ -469,6 +478,8 @@ namespace lslcc
             public bool ClientCode { get; set; }
 
             public bool CoOpStop { get; set; }
+
+            public bool ImplicitParamToList { get; set; }
 
             public HashSet<string> LibrarySubsets { get; set; }
 
@@ -621,6 +632,14 @@ namespace lslcc
             });
 
 
+            switchHandlers.Add("-implicit-param-tolist", (argArray, index) =>
+            {
+                options.ImplicitParamToList = true;
+
+                return new SwitchResult { OptionValid = true };
+            });
+
+
             switchHandlers.Add("-h", (argArray, index) =>
             {
                 WriteHelp();
@@ -700,21 +719,27 @@ namespace lslcc
 
             //so we can print the errors exactly when we want to
             var syntaxListener = new LSLSyntaxListenerPriorityQueue(
-                new LSLDefaultSyntaxErrorListener(),
-                new LSLDefaultSyntaxWarningListener()
+                new LSLSyntaxErrorListener(),
+                new LSLSyntaxWarningListener()
                 );
 
 
-            var validatorServices = new LSLCustomValidatorServiceProvider
+            var expressionValidatorSettings = new LSLExpressionValidatorSettings
             {
-                ExpressionValidator = new LSLDefaultExpressionValidator(),
-                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                ImplicitParamToListConversion = options.ImplicitParamToList
+            };
+
+
+            var validatorServices = new LSLValidatorServiceProvider
+            {
+                ExpressionValidator = new LSLExpressionValidator(expressionValidatorSettings),
+                StringLiteralPreProcessor = new LSLStringPreProcessor(),
                 SyntaxErrorListener = syntaxListener,
                 SyntaxWarningListener = syntaxListener
             };
 
 
-            var defaultProvider = new LSLDefaultLibraryDataProvider();
+            var defaultProvider = new LSLEmbeddedLibraryDataProvider();
 
             validatorServices.LibraryDataProvider = defaultProvider;
 
@@ -829,8 +854,7 @@ namespace lslcc
             if (options.ServerCode)
             {
                 compilerSettings =
-                    LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault(
-                        validator.ValidatorServices.LibraryDataProvider);
+                    LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault();
 
                 compilerSettings.ScriptHeader = ServerSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
@@ -838,8 +862,7 @@ namespace lslcc
             else
             {
                 compilerSettings =
-                    LSLOpenSimCSCompilerSettings.OpenSimClientUploadable(
-                        validator.ValidatorServices.LibraryDataProvider);
+                    LSLOpenSimCSCompilerSettings.OpenSimClientUploadable();
 
                 compilerSettings.ScriptHeader = ClientSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
@@ -850,7 +873,7 @@ namespace lslcc
             {
                 using (var outfile = File.Create(options.OutFile))
                 {
-                    var compiler = new LSLOpenSimCSCompiler(compilerSettings);
+                    var compiler = new LSLOpenSimCSCompiler(defaultProvider, compilerSettings);
 
                     compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
                 }
