@@ -59,12 +59,12 @@ namespace LibLSLCC.CodeValidator.Components
     public class LSLExpressionValidatorSettings
     {
         /// <summary>
-        /// Determines whether to allow all types to implicitly convert into a list in function parameters.
+        /// Determines whether to allow all types to implicitly convert into a list.
         /// </summary>
         /// <value>
-        /// <c>true</c> if all types can implicitly convert into a list when passed into a list parameter.
+        /// <c>true</c> if all types can implicitly convert into a list.
         /// </value>
-        public bool ImplicitParamToListConversion { get; set; }
+        public bool ImplicitConversionsToList { get; set; }
     }
 
 
@@ -395,10 +395,6 @@ namespace LibLSLCC.CodeValidator.Components
                 return true;
             }
 
-            if (Settings.ImplicitParamToListConversion && parameter.Type == LSLType.List)
-            {
-                return true;
-            }
 
             var left = new LSLDummyExpr
             {
@@ -498,6 +494,7 @@ namespace LibLSLCC.CodeValidator.Components
                 return LSLExpressionValidatorResult.Error;
             }
 
+
             if (left.Type == LSLType.List && operation == LSLBinaryOperationType.AddAssign)
             {
                 return LSLExpressionValidatorResult.List;
@@ -523,6 +520,12 @@ namespace LibLSLCC.CodeValidator.Components
                 {
                     return LSLExpressionValidatorResult.List;
                 }
+            }
+
+
+            if (Settings.ImplicitConversionsToList && left.Type == LSLType.List)
+            {
+                return LSLExpressionValidatorResult.List;
             }
 
 

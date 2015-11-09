@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lslcc_cmd", "lslcc_cmd\lslc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LSLCCEditor", "LSLCCEditor\LSLCCEditor.csproj", "{E26C039C-2901-4883-B251-1B0E74C11809}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryDataScrapingTools", "LibraryDataScrapingTools\LibraryDataScrapingTools.csproj", "{E87079FD-D178-48A0-B761-68169760B8C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryDataScrapingTool", "LibraryDataScrapingTool\LibraryDataScrapingTool.csproj", "{E87079FD-D178-48A0-B761-68169760B8C4}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "LSLCCEditorInstaller", "LSLCCEditorInstaller\LSLCCEditorInstaller.wixproj", "{1AAA0D14-0DA7-4ECE-9F2E-17EF4110394B}"
 	ProjectSection(ProjectDependencies) = postProject

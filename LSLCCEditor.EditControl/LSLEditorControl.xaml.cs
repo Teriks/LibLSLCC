@@ -95,13 +95,19 @@ namespace LSLCCEditor.EditControl
         }
 
 
+
+        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
+            "Settings", typeof (LSLEditorControlSettings), typeof (LSLEditorControl), new PropertyMetadata(default(LSLEditorControlSettings)));
+
         public LSLEditorControlSettings Settings
         {
-            get { return _settings; }
-            set  { _settings = value; }
+            get { return (LSLEditorControlSettings) GetValue(SettingsProperty); }
+            set { SetValue(SettingsProperty, value); }
         }
 
-        private LSLEditorControlSettings _settings = new LSLEditorControlSettings();
+
+
+
 
         public delegate void TextChangedEventHandler(object sender, EventArgs e);
 
@@ -216,6 +222,9 @@ namespace LSLCCEditor.EditControl
 
             Editor.TextArea.IndentationStrategy =
                 new LSLIndentStrategy();
+
+
+            Settings = new LSLEditorControlSettings();
 
             Settings.CaseInsensitiveAutoCompleteMatching = true;
 

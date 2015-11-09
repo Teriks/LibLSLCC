@@ -122,7 +122,10 @@
     <Compile Include="SettingsUI\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings\DefaultValueFactoryAttribute.cs" />
+    <Compile Include="Settings\IDefaultSettingsValueFactory.cs" />
     <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SettingsNode.cs" />
     <Compile Include="TabbedMainWindow.xaml.cs">
       <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
     </Compile>

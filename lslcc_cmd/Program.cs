@@ -726,7 +726,7 @@ namespace lslcc
 
             var expressionValidatorSettings = new LSLExpressionValidatorSettings
             {
-                ImplicitParamToListConversion = options.ImplicitParamToList
+                ImplicitConversionsToList = options.ImplicitParamToList
             };
 
 

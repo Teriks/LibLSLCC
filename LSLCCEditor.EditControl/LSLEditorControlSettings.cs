@@ -1,4 +1,5 @@
 using System.Windows.Media;
+using LSLCCEditor.Utility;
 
 namespace LSLCCEditor.EditControl
 {
@@ -17,7 +18,11 @@ namespace LSLCCEditor.EditControl
         private XmlBrush _stateNameCompleteBrush = new SolidColorBrush(Colors.Black);
         private XmlBrush _labelNameJumpTargetCompleteBrush = new SolidColorBrush(Colors.Black);
         private XmlBrush _controlStatementCompleteBrush = new SolidColorBrush(Colors.Black);
-        private bool _caseInsensitiveAutoCompleteMatching;
+
+        private bool _caseInsensitiveAutoCompleteMatching = true;
+        private bool _camelCaseAutoCompleteMatching = false;
+        private bool _substringSearchAutoCompleteMatching = false;
+        private bool _constantCompletionFirstCharIsCaseSensitive = true;
 
 
         public XmlBrush BuiltInTypeCompleteBrush
@@ -104,8 +109,22 @@ namespace LSLCCEditor.EditControl
             set { _caseInsensitiveAutoCompleteMatching = value; }
         }
 
-        public bool CamelCaseAutoCompleteMatching { get; set; }
-        public bool SubstringSearchAutoCompleteMatching { get; set; }
-        public bool ConstantCompletionFirstCharIsCaseSensitive { get; set; }
+        public bool CamelCaseAutoCompleteMatching
+        {
+            get { return _camelCaseAutoCompleteMatching; }
+            set { _camelCaseAutoCompleteMatching = value; }
+        }
+
+        public bool SubstringSearchAutoCompleteMatching
+        {
+            get { return _substringSearchAutoCompleteMatching; }
+            set { _substringSearchAutoCompleteMatching = value; }
+        }
+
+        public bool ConstantCompletionFirstCharIsCaseSensitive
+        {
+            get { return _constantCompletionFirstCharIsCaseSensitive; }
+            set { _constantCompletionFirstCharIsCaseSensitive = value; }
+        }
     }
 }

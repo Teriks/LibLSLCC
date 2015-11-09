@@ -118,6 +118,9 @@ namespace LSLCCEditor.EditorTabUI
             CloseAllLeftCommand = new RelayCommand(CloseAllLeftImpl);
 
 
+            
+
+
             TabName = "New Script";
             ChangesPending = false;
             MemoryOnly = true;

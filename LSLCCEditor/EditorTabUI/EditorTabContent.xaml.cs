@@ -49,6 +49,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.LibraryData;
+using LSLCCEditor.Settings;
 
 #endregion
 
@@ -75,6 +76,9 @@ namespace LSLCCEditor.EditorTabUI
         {
             InitializeComponent();
             _ownerTab = owner;
+
+
+            Editor.Settings = AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration];
         }
 
         public ILSLLibraryDataProvider LibraryDataProvider

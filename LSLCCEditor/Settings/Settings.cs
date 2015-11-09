@@ -11,30 +11,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.Compilers;
-using LSLCCEditor.EditControl;
 
 namespace LSLCCEditor.Settings
 {
-
-    /// <summary>
-    /// The settings node that gets serialized by <see cref="AppSettings.Load"/>
-    /// All members should have a publicly accessible constructor with no parameters, and be friendly to XmlSerializer
-    /// </summary>
-    public class SettingsNode
-    {
-
-        public LSLEditorControlSettings EditorControlSettings { get; set; }
-
-        public LSLExpressionValidatorSettings ExpressionValidatorSettings { get; set; }
-
-        public LSLOpenSimCSCompilerSettings OpenSimCSCompilerSettings { get; set; }
-
-
-    }
-
-
     public static class AppSettings
     {
         public static SettingsNode Settings { get; private set; }
@@ -46,7 +25,6 @@ namespace LSLCCEditor.Settings
 
 
 
-        private static readonly FieldInfo[] SettingsFields;
 
         private static readonly PropertyInfo[] SettingsProperties;
 
@@ -58,7 +36,6 @@ namespace LSLCCEditor.Settings
 
             SettingsFile = Path.Combine(AppDataDir, "settings.xml");
 
-            SettingsFields = typeof(SettingsNode).GetFields(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance).ToArray();
             SettingsProperties = typeof(SettingsNode).GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance).ToArray();
         }
 
@@ -78,32 +55,41 @@ namespace LSLCCEditor.Settings
 
         private static void InitNullSettingsProperties()
         {
-            foreach (var field in SettingsFields)
-            {
-                if (field.GetValue(Settings) != null) continue;
-
-                if (field.FieldType.GetConstructors().Any(x => !x.GetParameters().Any()))
-                {
-                    field.SetValue(Settings, Activator.CreateInstance(field.FieldType));
-                }
-                else
-                {
-                    throw new Exception(typeof(AppSettings).FullName + ".InitNullSettingsProperties():  SettingsNode field/property has no default parameterless constructor.");
-                }
-            }
-
-
             foreach (var field in SettingsProperties)
             {
-                if (field.GetValue(Settings) != null) continue;
 
-                if (field.PropertyType.GetConstructors().Any(x => !x.GetParameters().Any()))
+                var fieldValue = field.GetValue(Settings);
+
+                var attr = field.GetCustomAttributes(typeof(DefaultValueFactoryAttribute), true).ToList();
+                if (attr.Any())
                 {
-                    field.SetValue(Settings, Activator.CreateInstance(field.PropertyType));
+                    var factory = ((DefaultValueFactoryAttribute)attr.First());
+                    if (factory.Factory.NeedsToBeReset(Settings, fieldValue))
+                    {
+                        field.SetValue(Settings, factory.Factory.GetDefaultValue(Settings));
+                    }
                 }
-                else
+                else if (fieldValue == null)
                 {
-                    throw new Exception(typeof(AppSettings).FullName+".InitNullSettingsProperties():  SettingsNode field/property has no default parameterless constructor.");
+                    attr = field.GetCustomAttributes(typeof(DefaultValueFactoryAttribute), true).ToList();
+                    if (attr.Any())
+                    {
+                        var defaultValue = ((DefaultValueAttribute) attr.First());
+
+                        field.SetValue(Settings, defaultValue.Value);
+                    }
+                    else
+                    {
+                        var constructors = field.PropertyType.GetConstructors();
+                        if (constructors.Any(x => !x.GetParameters().Any()))
+                        {
+                            field.SetValue(Settings, Activator.CreateInstance(field.PropertyType));
+
+                        }
+
+                        throw new Exception(typeof (AppSettings).FullName +
+                                            ".InitNullSettingsProperties():  SettingsNode property has no default parameterless constructor.");
+                    }
                 }
             }
         }

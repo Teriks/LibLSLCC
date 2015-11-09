@@ -146,7 +146,7 @@ namespace LSLCCEditor
 
             _validatorServices = new LSLValidatorServiceProvider
             {
-                ExpressionValidator = new LSLExpressionValidator(new LSLExpressionValidatorSettings() {ImplicitParamToListConversion = true}),
+                ExpressionValidator = new LSLExpressionValidator(new LSLExpressionValidatorSettings() {ImplicitConversionsToList = true}),
                 StringLiteralPreProcessor = new LSLStringPreProcessor(),
                 SyntaxErrorListener = new WindowSyntaxErrorListener(this),
                 SyntaxWarningListener = new WindowSyntaxWarningListener(this),
