@@ -55,9 +55,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LSLCompletionData.cs" />
+    <Compile Include="LSLEditorCompletionBrushes.cs" />
     <Compile Include="LSLEditorControl.xaml.cs">
       <DependentUpon>LSLEditorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LSLEditorControlHighlightingColors.cs" />
     <Compile Include="LSLEditorControlSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

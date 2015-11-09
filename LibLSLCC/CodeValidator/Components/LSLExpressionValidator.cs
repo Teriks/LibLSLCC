@@ -43,12 +43,14 @@
 #region Imports
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -56,15 +58,24 @@ namespace LibLSLCC.CodeValidator.Components
 {
 
     /// Settings for the <see cref="LSLExpressionValidator"/> class.
-    public class LSLExpressionValidatorSettings
+    public class LSLExpressionValidatorSettings : LSLSettingsBase
     {
+        private bool _implicitConversionsToList;
+
+
+
+
         /// <summary>
         /// Determines whether to allow all types to implicitly convert into a list.
         /// </summary>
         /// <value>
         /// <c>true</c> if all types can implicitly convert into a list.
         /// </value>
-        public bool ImplicitConversionsToList { get; set; }
+        public bool ImplicitConversionsToList
+        {
+            get { return _implicitConversionsToList; }
+            set { SetField(ref _implicitConversionsToList,value, "ImplicitConversionsToList"); }
+        }
     }
 
 

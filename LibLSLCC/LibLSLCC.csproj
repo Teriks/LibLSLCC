@@ -53,6 +53,8 @@
     <Compile Include="CodeValidator\Components\LSLExpressionValidator.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
+    <Compile Include="Collections\ObservableHashSet.cs" />
+    <Compile Include="Compilers\LSLOpenSimCSCompilerSettings.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
     <Compile Include="LibraryData\LSLEmbeddedLibraryDataProvider.cs" />
     <Compile Include="LibraryData\ILSLLibrarySignature.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Collections\IReadOnlyGenericArray.cs" />
     <Compile Include="Collections\IReadOnlyHashMap.cs" />
     <Compile Include="Utility\LambdaEqualityComparer.cs" />
+    <Compile Include="Utility\LSLSettingsBase.cs" />
     <Compile Include="Utility\LSLTokenTools.cs" />
     <Compile Include="Utility\LSLFormatTools.cs" />
     <Compile Include="AutoComplete\LSLCommentStringSkipper.cs" />

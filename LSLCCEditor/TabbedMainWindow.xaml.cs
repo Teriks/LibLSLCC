@@ -55,6 +55,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
@@ -1008,6 +1009,9 @@ namespace LSLCCEditor
 
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
         {
+            AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration].HighlightingColors.EventColor = Color.FromRgb(1,1,1);
+
+
             var menu = new SettingsUI.SettingsWindow {Owner = this};
             menu.ShowDialog();
         }

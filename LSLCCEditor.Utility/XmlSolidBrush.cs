@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: XmlBrush.cs
+// File: XmlSolidBrush.cs
 // 
 // 
 // ============================================================
@@ -47,24 +47,24 @@ using System.Xml.Serialization;
 
 namespace LSLCCEditor.Utility
 {
-    [XmlRoot(ElementName = "Brush")]
-    public class XmlBrush : XmlSerializableXaml<Brush>
+    [XmlRoot(ElementName = "SolidBrush")]
+    public class XmlSolidBrush : XmlSerializableXaml<SolidColorBrush>
     {
-        public XmlBrush()
+        public XmlSolidBrush()
         {
         }
 
-        public XmlBrush(Brush content) : base(content)
+        public XmlSolidBrush(SolidColorBrush content) : base(content)
         {
         }
 
-        public static implicit operator XmlBrush(Brush brush)
+        public static implicit operator XmlSolidBrush(SolidColorBrush brush)
         {
-           return new XmlBrush(brush);
+           return new XmlSolidBrush(brush);
         }
 
         public static implicit operator
-            Brush(XmlBrush xmlBrush)
+            SolidColorBrush(XmlSolidBrush xmlBrush)
         {
             return xmlBrush.Content;
         }

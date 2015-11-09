@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.Compilers;
