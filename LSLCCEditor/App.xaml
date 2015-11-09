@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:completionUi="clr-namespace:LSLCCEditor.CompletionUI;assembly=LSLCCEditor.CompletionUI"
 
-             StartupUri="TabbedMainWindow.xaml">
+             StartupUri="TabbedMainWindow.xaml" Startup="App_OnStartup" Exit="App_OnExit">
     <Application.Resources>
 
         <Style TargetType="{x:Type ListBoxItem}" x:Key="CompletionListBoxItem">

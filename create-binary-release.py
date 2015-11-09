@@ -41,30 +41,21 @@ old_wd = os.getcwd()
 
 os.chdir(os.path.dirname(MSBUILD))
 
-# build LibLSLCC in Any CPU mode since the editor installer does not depend on it
-subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0'])
-subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0'])
 
-subprocess.call(
-    [MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=x86', '/p:TargetFrameworkVersion=v4.0'])
-subprocess.call(
-    [MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=x64', '/p:TargetFrameworkVersion=v4.0'])
 
 # build an Any CPU lslcc binary for distribution
 subprocess.call([MSBUILD, SOLUTION, '/t:lslcc_cmd', '/p:Configuration=Release', '/p:Platform=Any CPU',
                  '/p:TargetFrameworkVersion=v4.0'])
 
 
-# these won't get built in the next step if we are not on windows
+# these won't get built in the next step if we are not on windows.
 # when building the editor installer they are auto built because they are dependencies
 # but not on mono
 if not ON_WINDOWS:
-    subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=x86',
-                     '/p:TargetFrameworkVersion=v4.0'])
-    subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=x64',
-                     '/p:TargetFrameworkVersion=v4.0'])
+    subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=Any CPU',
+                 '/p:TargetFrameworkVersion=v4.0'])
+    subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                 '/p:TargetFrameworkVersion=v4.0'])
 
 
 # build the installers on windows
@@ -102,10 +93,6 @@ installerExtension = '.msi'
 
 lib_anyCpu = os.path.join(libraryPath, 'bin', 'AnyCPU')
 
-lib_x86 = os.path.join(libraryPath, 'bin', 'x86')
-
-lib_x64 = os.path.join(libraryPath, 'bin', 'x64')
-
 lib_thirdparty_licenses = os.path.join(libraryPath, 'bin', 'ThirdPartyLicenses')
 
 lib_licence = os.path.join(libraryPath, 'bin', 'LICENSE')
@@ -115,6 +102,10 @@ lslcc_anyCpu = os.path.join(lslccPath, 'bin', 'AnyCPU')
 if os.path.isdir(outputDir):
     shutil.rmtree(outputDir, True)
 
+
+while os.path.isdir(outputDir):
+    print("Waiting for rmtree...");
+    
 os.mkdir(outputDir)
 
 
@@ -149,9 +140,9 @@ def remove_second_folder_down(path):
 
 # make the timestamped binary release zip file
 with zipfile.ZipFile(binariesZip, 'w') as zip_file:
+
     zip_dir_relative(lib_anyCpu, zip_file, archDirTransform=remove_second_folder_down)
-    zip_dir_relative(lib_x64, zip_file, archDirTransform=remove_second_folder_down)
-    zip_dir_relative(lib_x86, zip_file, archDirTransform=remove_second_folder_down)
+	
     zip_dir_relative(lib_thirdparty_licenses, zip_file, archDirTransform=remove_second_folder_down)
 
     lslccArchDir = os.path.basename(lslccPath)

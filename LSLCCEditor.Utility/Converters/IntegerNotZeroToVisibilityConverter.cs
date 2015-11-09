@@ -49,7 +49,7 @@ using System.Windows.Data;
 
 #endregion
 
-namespace LSLCCEditor.Converters
+namespace LSLCCEditor.Utility.Converters
 {
     [ValueConversion(typeof (int), typeof (Visibility))]
     public class IntegerNotZeroToVisibilityConverter : IValueConverter

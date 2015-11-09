@@ -47,6 +47,8 @@
         <File Id="AntlrRuntime" Source="$(var.SourceDir)Antlr4.Runtime.dll" />
         <File Id="LibLSLCC" Source="$(var.SourceDir)LibLSLCC.dll" />
         <File Id="LSLCCEditor.CompletionUI" Source="$(var.SourceDir)LSLCCEditor.CompletionUI.dll" />
+        <File Id="LSLCCEditor.EditControl" Source="$(var.SourceDir)LSLCCEditor.EditControl.dll" />
+        <File Id="LSLCCEditor.Utility" Source="$(var.SourceDir)LSLCCEditor.Utility.dll" />
         <File Id="LSLCCEditor.exe.config" Source="$(var.SourceDir)LSLCCEditor.exe.config" />
         <File Id="Icon" Source="$(var.SourceDir)..\..\..\lsl_script_icon.ico" />
       </Component>

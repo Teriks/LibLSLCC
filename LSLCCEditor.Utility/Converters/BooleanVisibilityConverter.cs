@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: BooleanConverter.cs
+// File: BooleanVisibilityConverter.cs
 // 
 // 
 // ============================================================
@@ -42,34 +42,17 @@
 #endregion
 #region Imports
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Windows.Data;
+using System.Windows;
 
 #endregion
 
-namespace LSLCCEditor.Converters
+namespace LSLCCEditor.Utility.Converters
 {
-    public class BooleanConverter<T> : IValueConverter
+    public sealed class BooleanToVisibilityConverter : BooleanConverter<Visibility>
     {
-        public BooleanConverter(T trueValue, T falseValue)
+        public BooleanToVisibilityConverter() :
+            base(Visibility.Visible, Visibility.Collapsed)
         {
-            True = trueValue;
-            False = falseValue;
-        }
-
-        public T True { get; set; }
-        public T False { get; set; }
-
-        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value is bool && ((bool) value) ? True : False;
-        }
-
-        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value is T && EqualityComparer<T>.Default.Equals((T) value, True);
         }
     }
 }

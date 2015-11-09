@@ -66,6 +66,7 @@ using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
 using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplaceUI;
+using LSLCCEditor.Settings;
 using Microsoft.Win32;
 
 #endregion
@@ -106,41 +107,22 @@ namespace LSLCCEditor
         private LSLValidatorServiceProvider _validatorServices;
 
 
-        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            e.Handled = true;
 
-            var details = "";
-            var i = e.Exception;
-
-            while (i != null)
-            {
-                details += i.Message + "\n\n";
-                i = i.InnerException;
-            }
-
-            MessageBox.Show("An unexpected error has occurred.  The program will need to exit.\n" +
-                            "Error details:\n\n" + details,
-                "Unexpected error", MessageBoxButton.OK);
-
-            Application.Current.Shutdown();
-        }
 
 
 
         public TabbedMainWindow()
         {
-#if !DEBUG
-           Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
-#endif
+
             InitializeComponent();
+            Initialize();
 
         }
 
 
-
-        private void TabbedMainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        private void Initialize()
         {
+
 
             _libraryDataProvider = new LSLXmlLibraryDataProvider(new[] { "lsl" });
 

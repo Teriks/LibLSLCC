@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:lslEditor="clr-namespace:LSLCCEditor.LSLEditor"
+             xmlns:editControl="clr-namespace:LSLCCEditor.EditControl;assembly=LSLCCEditor.EditControl"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <Border BorderThickness="1" Grid.Row="0" BorderBrush="Black" Margin="5,5,5,5">
-            <lslEditor:LSLEditorControl x:FieldModifier="public" x:Name="Editor"
+            <editControl:LSLEditorControl x:FieldModifier="public" x:Name="Editor" 
                                         Text="{Binding SourceCode}"
                                         LibraryDataProvider="{Binding LibraryDataProvider}"
                                         TextChanged="Editor_OnTextChanged" />

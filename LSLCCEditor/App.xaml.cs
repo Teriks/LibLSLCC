@@ -43,6 +43,8 @@
 #region Imports
 
 using System.Windows;
+using System.Windows.Threading;
+using LSLCCEditor.Settings;
 
 #endregion
 
@@ -53,5 +55,42 @@ namespace LSLCCEditor
     /// </summary>
     public partial class App : Application
     {
+
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+
+            var details = "";
+            var i = e.Exception;
+
+            while (i != null)
+            {
+                details += i.Message + "\n\n";
+                i = i.InnerException;
+            }
+
+            MessageBox.Show("An unexpected error has occurred.  The program will need to exit.\n" +
+                            "Error details:\n\n" + details,
+                "Unexpected error", MessageBoxButton.OK);
+
+            Application.Current.Shutdown();
+        }
+
+
+
+        private void App_OnStartup(object sender, StartupEventArgs e)
+        {
+
+#if !DEBUG
+           Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+#endif
+
+            AppSettings.Load();
+        }
+
+        private void App_OnExit(object sender, ExitEventArgs e)
+        {
+            AppSettings.Save();
+        }
     }
 }

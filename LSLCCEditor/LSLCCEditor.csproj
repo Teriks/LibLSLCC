@@ -73,46 +73,6 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime, Version=4.5.1.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -148,21 +108,13 @@
       <DependentUpon>DebugObjectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorTabUI\CompilerMessage.cs" />
-    <Compile Include="Converters\BooleanConverter.cs" />
-    <Compile Include="Converters\BooleanVisibilityConverter.cs" />
-    <Compile Include="Converters\IntegerNotZeroToVisibilityConverter.cs" />
     <Compile Include="EditorTabUI\EditorTab.cs" />
     <Compile Include="EditorTabUI\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\InverseBooleanConverter.cs" />
-    <Compile Include="LSLEditor\LSLEditorControl.xaml.cs">
-      <DependentUpon>LSLEditorControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="EditorTabUI\EditorTabContent.xaml.cs">
       <DependentUpon>EditorTabContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LSLEditor\LSLEditorControlSettings.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SettingsUI\CompilerPane.xaml.cs">
       <DependentUpon>CompilerPane.xaml</DependentUpon>
@@ -171,7 +123,6 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\Settings.cs" />
-    <Compile Include="Utility\RelayCommand.cs" />
     <Compile Include="TabbedMainWindow.xaml.cs">
       <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
     </Compile>
@@ -195,11 +146,6 @@
     <Compile Include="FindReplaceUI\FindReplace.cs" />
     <Compile Include="FindReplaceUI\FindReplaceDialog.xaml.cs" />
     <Compile Include="FindReplaceUI\IFindReplaceMgr.cs" />
-    <Compile Include="LSLEditor\LSLCompletionData.cs" />
-    <Page Include="LSLEditor\LSLEditorControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="EditorTabUI\EditorTabContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -236,9 +182,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="LSLEditor\LSL.xshd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -258,6 +201,14 @@
     <ProjectReference Include="..\LSLCCEditor.CompletionUI\LSLCCEditor.CompletionUI.csproj">
       <Project>{4a763c47-5d8a-4f56-8fb3-7aa63b1ba09f}</Project>
       <Name>LSLCCEditor.CompletionUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LSLCCEditor.EditControl\LSLCCEditor.EditControl.csproj">
+      <Project>{d19a381e-dbd0-4eed-9493-1d5725fe3dd4}</Project>
+      <Name>LSLCCEditor.EditControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LSLCCEditor.Utility\LSLCCEditor.Utility.csproj">
+      <Project>{5f5e22b6-4800-41c6-a5a3-2895bd4bce66}</Project>
+      <Name>LSLCCEditor.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

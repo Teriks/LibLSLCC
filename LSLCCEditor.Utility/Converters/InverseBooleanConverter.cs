@@ -48,7 +48,7 @@ using System.Windows.Data;
 
 #endregion
 
-namespace LSLCCEditor.Converters
+namespace LSLCCEditor.Utility.Converters
 {
     [ValueConversion(typeof (bool), typeof (bool))]
     public class InverseBooleanConverter : IValueConverter

@@ -55,7 +55,7 @@ using LibLSLCC.Utility;
 
 #endregion
 
-namespace LSLCCEditor.LSLEditor
+namespace LSLCCEditor.EditControl
 {
     public class LSLCompletionData : ICompletionData
     {
