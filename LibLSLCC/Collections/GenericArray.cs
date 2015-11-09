@@ -40,8 +40,11 @@
 // 
 // 
 #endregion
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LibLSLCC.Collections
 {
@@ -52,7 +55,7 @@ namespace LibLSLCC.Collections
     /// This class supports a read only covariant interface in NET 4.0 via <see cref="IReadOnlyGenericArray{T}"/>.
     /// </remarks>
     /// <typeparam name="T">The type contained by the <see cref="GenericArray{T}"/></typeparam>
-    public class GenericArray<T> : IReadOnlyGenericArray<T>, IList<T>
+    public class GenericArray<T> : IReadOnlyGenericArray<T>, IList<T>, ICloneable
     {
         private readonly IList<T> _data;
 
@@ -250,6 +253,9 @@ namespace LibLSLCC.Collections
         }
 
 
-
+        public object Clone()
+        {
+            return new GenericArray<T>(this.AsEnumerable());
+        }
     }
 }

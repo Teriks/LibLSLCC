@@ -1,9 +1,10 @@
 using System.Windows.Media;
+using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
 
 namespace LSLCCEditor.EditControl
 {
-    public class LSLEditorCompletionBrushes : SettingsClassBase
+    public class LSLEditorCompletionBrushes :  SettingsBaseClass
     {
         private XmlSolidBrush _typeBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
         private XmlSolidBrush _eventHandlerBrush = new SolidColorBrush(Color.FromRgb(0, 76, 127));

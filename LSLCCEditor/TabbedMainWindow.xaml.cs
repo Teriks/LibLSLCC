@@ -147,8 +147,8 @@ namespace LSLCCEditor
 
             _validatorServices = new LSLValidatorServiceProvider
             {
-                ExpressionValidator = new LSLExpressionValidator(new LSLExpressionValidatorSettings() {ImplicitConversionsToList = true}),
-                StringLiteralPreProcessor = new LSLStringPreProcessor(),
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
                 SyntaxErrorListener = new WindowSyntaxErrorListener(this),
                 SyntaxWarningListener = new WindowSyntaxWarningListener(this),
                 LibraryDataProvider = _libraryDataProvider
@@ -464,7 +464,7 @@ namespace LSLCCEditor
 
 
 
-        private LSLOpenSimCSCompilerSettings _openSimCompilerSettings;
+        private LSLOpenSimCompilerSettings _openSimCompilerSettings;
         private ObservableCollection<EditorTab> _editorTabs = new ObservableCollection<EditorTab>();
 
 
@@ -514,7 +514,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimServerSide_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault();
+            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault();
             _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
 
 
@@ -524,7 +524,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimClientSide_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable();
+            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable();
             _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
 
 
@@ -533,7 +533,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimClientSideCOOP_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable();
+            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable();
             _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
             _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
             CompileForOpenSimClickStub();
@@ -541,7 +541,7 @@ namespace LSLCCEditor
 
         private void CompileForOpenSimServerSideCOOP_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault();
+            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault();
             _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
             _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
             CompileForOpenSimClickStub();
@@ -600,7 +600,7 @@ namespace LSLCCEditor
             using (var outfile = File.OpenWrite(destinationFile))
             {
 
-                var compiler = new LSLOpenSimCSCompiler(_libraryDataProvider, _openSimCompilerSettings);
+                var compiler = new LSLOpenSimCompiler(_libraryDataProvider, _openSimCompilerSettings);
 
 #if !DEBUG
 
@@ -975,7 +975,7 @@ namespace LSLCCEditor
             if (tab != null) tab.CompilerMessages.Clear();
         }
 
-        private class WindowSyntaxWarningListener : LSLSyntaxWarningListener
+        private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
         {
             private readonly TabbedMainWindow _parent;
 
@@ -991,7 +991,7 @@ namespace LSLCCEditor
             }
         }
 
-        private class WindowSyntaxErrorListener : LSLSyntaxErrorListener
+        private class WindowSyntaxErrorListener : LSLDefaultSyntaxErrorListener
         {
             private readonly TabbedMainWindow _parent;
 
@@ -1009,9 +1009,6 @@ namespace LSLCCEditor
 
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
         {
-            AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration].HighlightingColors.EventColor = Color.FromRgb(1,1,1);
-
-
             var menu = new SettingsUI.SettingsWindow {Owner = this};
             menu.ShowDialog();
         }

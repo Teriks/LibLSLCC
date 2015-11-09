@@ -6,10 +6,27 @@ using System.Text;
 
 namespace LibLSLCC.Collections
 {
-    public class ObservableSet<T> : ObservableCollection<T>
+    public class ObservableSet<T> : ObservableCollection<T>, ICloneable
     {
 
-        private readonly HashSet<T>  _hashSet = new HashSet<T>(); 
+        private readonly HashSet<T>  _hashSet;
+
+
+        public ObservableSet()
+        {
+            _hashSet = new HashSet<T>();
+        }
+
+        public ObservableSet(IEnumerable<T> collection )
+        {
+            _hashSet = new HashSet<T>();
+
+            foreach (var item in collection.Where(x=>!_hashSet.Contains(x)))
+            {
+                this.Add(item);
+            }
+        }
+
 
         protected override void ClearItems()
         {
@@ -36,6 +53,11 @@ namespace LibLSLCC.Collections
             if (_hashSet.Contains(item)) return;
             _hashSet.Add(item);
             base.SetItem(index, item);
+        }
+
+        public object Clone()
+        {
+            return new ObservableSet<T>(_hashSet);
         }
     }
 }

@@ -1,9 +1,10 @@
 using System.Windows.Media;
+using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
 
 namespace LSLCCEditor.EditControl
 {
-    public class LSLEditorControlHighlightingColors : SettingsClassBase
+    public class LSLEditorControlHighlightingColors : SettingsBaseClass
     {
         private XmlColor _stateKeywordColor = Color.FromRgb(127, 0, 38);
         private XmlColor _libraryFunctionColor = Color.FromRgb(127, 0, 38);

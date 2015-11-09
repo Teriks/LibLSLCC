@@ -50,11 +50,11 @@
   <ItemGroup>
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
     <Compile Include="CodeValidator\Components\LSLValidatorServiceProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLExpressionValidator.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Collections\ObservableHashSet.cs" />
-    <Compile Include="Compilers\LSLOpenSimCSCompilerSettings.cs" />
+    <Compile Include="Compilers\LSLOpenSimCompilerSettings.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
     <Compile Include="LibraryData\LSLEmbeddedLibraryDataProvider.cs" />
     <Compile Include="LibraryData\ILSLLibrarySignature.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="Collections\IReadOnlyGenericArray.cs" />
     <Compile Include="Collections\IReadOnlyHashMap.cs" />
     <Compile Include="Utility\LambdaEqualityComparer.cs" />
-    <Compile Include="Utility\LSLSettingsBase.cs" />
+    <Compile Include="Utility\SettingsBaseClass.cs" />
     <Compile Include="Utility\LSLTokenTools.cs" />
     <Compile Include="Utility\LSLFormatTools.cs" />
     <Compile Include="AutoComplete\LSLCommentStringSkipper.cs" />
@@ -118,10 +118,10 @@
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxErrorListener.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\LSLValidatorServiceProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLStringPreProcessor.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultStringPreProcessor.cs" />
     <Compile Include="LibraryData\LSLXmlLibraryDataProvider.cs" />
-    <Compile Include="CodeValidator\Components\LSLSyntaxErrorListener.cs" />
-    <Compile Include="CodeValidator\Components\LSLSyntaxWarningListener.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultSyntaxErrorListener.cs" />
+    <Compile Include="CodeValidator\Components\LSLDefaultSyntaxWarningListener.cs" />
     <Compile Include="CodeValidator\Enums\LSLCodeScopeType.cs" />
     <Compile Include="CodeValidator\Enums\LSLType.cs" />
     <Compile Include="CodeValidator\Enums\LSLExpressionType.cs" />
@@ -240,8 +240,8 @@
     <Compile Include="Collections\HashMap.cs" />
     <Compile Include="Collections\HashedSet.cs" />
     <Compile Include="Compilers\LSLCompilerInternalException.cs" />
-    <Compile Include="Compilers\LSLOpenSimCSCompiler.cs" />
-    <Compile Include="Compilers\Visitors\LSLOpenSimCSCompilerVisitor.cs" />
+    <Compile Include="Compilers\LSLOpenSimCompiler.cs" />
+    <Compile Include="Compilers\Visitors\LSLOpenSimCompilerVisitor.cs" />
     <Compile Include="CodeValidator\Visitor\LSLCodeValidationVisitor.cs" />
     <Compile Include="CodeValidator\Visitor\LSLCodeValidationVisitorSubClasses.cs" />
     <Compile Include="CodeValidator\Visitor\LSLVisitorScopeTracker.cs" />

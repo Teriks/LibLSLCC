@@ -56,7 +56,7 @@ namespace LibLSLCC.Collections
     /// </summary>
     /// <typeparam name="TPriority">Type of priorities</typeparam>
     /// <typeparam name="TValue">Type of values</typeparam>
-    public class PriorityQueue<TPriority, TValue> : ICollection<KeyValuePair<TPriority, TValue>>
+    public class PriorityQueue<TPriority, TValue> : ICollection<KeyValuePair<TPriority, TValue>>, ICloneable
     {
         private readonly List<KeyValuePair<TPriority, TValue>> _baseHeap;
         private readonly IComparer<TPriority> _comparer;
@@ -485,5 +485,15 @@ namespace LibLSLCC.Collections
         }
 
         #endregion
+
+        public object Clone()
+        {
+            var instance = new PriorityQueue<TPriority, TValue>(this._comparer);
+            foreach (var item in _baseHeap)
+            {
+                instance._baseHeap.Add(item);
+            }
+            return instance;
+        }
     }
 }

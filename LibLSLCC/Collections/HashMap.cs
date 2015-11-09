@@ -62,7 +62,7 @@ namespace LibLSLCC.Collections
     /// <typeparam name="TValue">The value type for the <see cref="HashMap{TKey,TValue}"/>.</typeparam>
     [Serializable]
     public class HashMap<TKey, TValue> : IReadOnlyHashMap<TKey, TValue>, ISerializable,
-        IDeserializationCallback, IDictionary<TKey,TValue>
+        IDeserializationCallback, IDictionary<TKey,TValue>, ICloneable
     {
         private readonly IDictionary<TKey, TValue> _items;
 
@@ -356,6 +356,16 @@ namespace LibLSLCC.Collections
         }
 
 
+        public object Clone()
+        {
+            var copy = new HashMap<TKey, TValue>();
 
+            foreach (var kvp in this)
+            {
+                copy.Add(kvp.Key,kvp.Value);
+            }
+
+            return copy;
+        }
     }
 }

@@ -428,14 +428,6 @@ namespace lslcc
 
             Console.WriteLine("======================================");
             Console.WriteLine();
-            Console.WriteLine("-implicit-param-tolist:");
-            Console.WriteLine();
-            Console.WriteLine(indent + "Allow implicit conversion of all LSL types into list within function call parameters.");
-            Console.WriteLine(indent + "Example: llListFindList([\"john\", \"smith\", \"jane\"], \"smith\");");
-            Console.WriteLine();
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
             Console.WriteLine("-returncodes: show lslcc return code descriptions.");
             Console.WriteLine();
             Console.WriteLine("-h: show lslcc general help.");
@@ -478,8 +470,6 @@ namespace lslcc
             public bool ClientCode { get; set; }
 
             public bool CoOpStop { get; set; }
-
-            public bool ImplicitParamToList { get; set; }
 
             public HashSet<string> LibrarySubsets { get; set; }
 
@@ -632,14 +622,6 @@ namespace lslcc
             });
 
 
-            switchHandlers.Add("-implicit-param-tolist", (argArray, index) =>
-            {
-                options.ImplicitParamToList = true;
-
-                return new SwitchResult { OptionValid = true };
-            });
-
-
             switchHandlers.Add("-h", (argArray, index) =>
             {
                 WriteHelp();
@@ -719,21 +701,16 @@ namespace lslcc
 
             //so we can print the errors exactly when we want to
             var syntaxListener = new LSLSyntaxListenerPriorityQueue(
-                new LSLSyntaxErrorListener(),
-                new LSLSyntaxWarningListener()
+                new LSLDefaultSyntaxErrorListener(),
+                new LSLDefaultSyntaxWarningListener()
                 );
 
-
-            var expressionValidatorSettings = new LSLExpressionValidatorSettings
-            {
-                ImplicitConversionsToList = options.ImplicitParamToList
-            };
 
 
             var validatorServices = new LSLValidatorServiceProvider
             {
-                ExpressionValidator = new LSLExpressionValidator(expressionValidatorSettings),
-                StringLiteralPreProcessor = new LSLStringPreProcessor(),
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
                 SyntaxErrorListener = syntaxListener,
                 SyntaxWarningListener = syntaxListener
             };
@@ -844,7 +821,7 @@ namespace lslcc
             //==========
 
 
-            LSLOpenSimCSCompilerSettings compilerSettings;
+            LSLOpenSimCompilerSettings compilerSettings;
 
             if (!options.ServerCode && !options.ClientCode)
             {
@@ -854,7 +831,7 @@ namespace lslcc
             if (options.ServerCode)
             {
                 compilerSettings =
-                    LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault();
+                    LSLOpenSimCompilerSettings.OpenSimServerSideDefault();
 
                 compilerSettings.ScriptHeader = ServerSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
@@ -862,7 +839,7 @@ namespace lslcc
             else
             {
                 compilerSettings =
-                    LSLOpenSimCSCompilerSettings.OpenSimClientUploadable();
+                    LSLOpenSimCompilerSettings.OpenSimClientUploadable();
 
                 compilerSettings.ScriptHeader = ClientSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
@@ -873,7 +850,7 @@ namespace lslcc
             {
                 using (var outfile = File.Create(options.OutFile))
                 {
-                    var compiler = new LSLOpenSimCSCompiler(defaultProvider, compilerSettings);
+                    var compiler = new LSLOpenSimCompiler(defaultProvider, compilerSettings);
 
                     compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
                 }

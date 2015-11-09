@@ -42,8 +42,10 @@
 #endregion
 #region Imports
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -57,7 +59,7 @@ namespace LibLSLCC.Collections
     /// This collection supports a read only interface in NET 4.0 via <see cref="IReadOnlyHashedSet{T}"/>.
     /// </remarks>
     /// <typeparam name="T">The type of object(s) that the <see cref="HashSet{T}"/> can contain.</typeparam>
-    public class HashedSet<T> : IReadOnlyHashedSet<T>, ISet<T>
+    public class HashedSet<T> : IReadOnlyHashedSet<T>, ISet<T>, ICloneable
     {
         private readonly ISet<T> _items;
 
@@ -311,5 +313,9 @@ namespace LibLSLCC.Collections
         }
 
 
+        public object Clone()
+        {
+            return new HashSet<T>(this.AsEnumerable());
+        }
     }
 }

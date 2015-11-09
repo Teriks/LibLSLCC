@@ -30,7 +30,7 @@ namespace LSLCCEditor.SettingsUI
             var myType = typeof(SettingsWindow);
             var panes = myType.Assembly.GetTypes().Where(t => string.Equals(t.Namespace, myType.Namespace, StringComparison.Ordinal) && t.GetInterfaces().Any(i => i == typeof(ISettingsPane)));
 
-            foreach (ISettingsPane pane in panes.Select(Activator.CreateInstance))
+            foreach (ISettingsPane pane in panes.Select(Activator.CreateInstance).OrderBy(x=>((ISettingsPane)x).Priority))
             {
                 _settingPanes.Add(pane);
             }
@@ -40,13 +40,5 @@ namespace LSLCCEditor.SettingsUI
         {
             get { return _settingPanes; }
         }
-    }
-
-
-    public interface ISettingsPane
-    {
-        string Title { get; }
-
-        void Init(SettingsWindow window);
     }
 }

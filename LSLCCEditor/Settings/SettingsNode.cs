@@ -1,6 +1,8 @@
+using System.Configuration;
 using System.Linq;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.Compilers;
+using LibLSLCC.Utility;
 using LSLCCEditor.EditControl;
 using LSLCCEditor.Utility;
 
@@ -8,12 +10,16 @@ namespace LSLCCEditor.Settings
 {
 
 
-    public class CompilerSettingsNode
+    public class CompilerSettingsNode : SettingsBaseClass
     {
-        public LSLExpressionValidatorSettings ExpressionValidatorSettings { get; set; }
+        private LSLOpenSimCompilerSettings _openSimCompilerSettings;
 
-        public LSLOpenSimCSCompilerSettings OpenSimCSCompilerSettings { get; set; }
 
+        public LSLOpenSimCompilerSettings OpenSimCompilerSettings
+        {
+            get { return _openSimCompilerSettings; }
+            set { SetField(ref _openSimCompilerSettings,value,"OpenSimCompilerSettings"); }
+        }
     }
 
 
@@ -121,8 +127,7 @@ namespace LSLCCEditor.Settings
 
                 var clientCode = new CompilerSettingsNode
                 {
-                    ExpressionValidatorSettings = new LSLExpressionValidatorSettings(),
-                    OpenSimCSCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
                 };
 
 
@@ -131,11 +136,10 @@ namespace LSLCCEditor.Settings
 
                 var clientCodeCoOp = new CompilerSettingsNode
                 {
-                    ExpressionValidatorSettings = new LSLExpressionValidatorSettings(),
-                    OpenSimCSCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimClientUploadable()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
                 };
 
-                clientCodeCoOp.OpenSimCSCompilerSettings.InsertCoOpTerminationCalls = true;
+                clientCodeCoOp.OpenSimCompilerSettings.InsertCoOpTerminationCalls = true;
 
 
                 d.Add("OpenSim Client Code (co-op Stop)", clientCodeCoOp);
@@ -143,8 +147,7 @@ namespace LSLCCEditor.Settings
 
                 var serverCode = new CompilerSettingsNode
                 {
-                    ExpressionValidatorSettings = new LSLExpressionValidatorSettings(),
-                    OpenSimCSCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
                 };
 
 
@@ -154,14 +157,13 @@ namespace LSLCCEditor.Settings
 
                 var serverCodeCoOp = new CompilerSettingsNode
                 {
-                    ExpressionValidatorSettings = new LSLExpressionValidatorSettings(),
-                    OpenSimCSCompilerSettings = LSLOpenSimCSCompilerSettings.OpenSimServerSideDefault()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
                 };
 
-                serverCodeCoOp.OpenSimCSCompilerSettings.InsertCoOpTerminationCalls = true;
+                serverCodeCoOp.OpenSimCompilerSettings.InsertCoOpTerminationCalls = true;
 
 
-                d.Add("OpenSim Server Code (co-op Stop)", serverCode);
+                d.Add("OpenSim Server Code (co-op Stop)", serverCodeCoOp);
 
 
                 return d;

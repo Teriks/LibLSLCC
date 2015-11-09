@@ -1,11 +1,8 @@
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using LSLCCEditor.Utility;
+using LibLSLCC.Utility;
 
 namespace LSLCCEditor.EditControl
 {
-    public class LSLEditorControlSettings : SettingsClassBase
+    public class LSLEditorControlSettings : SettingsBaseClass
     {
 
 

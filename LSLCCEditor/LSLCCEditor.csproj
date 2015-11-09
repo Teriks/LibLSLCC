@@ -143,6 +143,13 @@
     <Compile Include="SettingsUI\CompilerPane.xaml.cs">
       <DependentUpon>CompilerPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsUI\CompletionPane.xaml.cs">
+      <DependentUpon>CompletionPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsUI\EditorPane.xaml.cs">
+      <DependentUpon>EditorPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsUI\ISettingsPane.cs" />
     <Compile Include="SettingsUI\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -178,6 +185,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsUI\CompilerPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsUI\CompletionPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsUI\EditorPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
