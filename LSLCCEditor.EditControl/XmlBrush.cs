@@ -23,13 +23,7 @@ namespace LSLCCEditor.EditControl
         public void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
-            var color = reader.ReadContentAsString();
-
-            XmlDocument doc = new XmlDocument();
-
-            doc.LoadXml(color);
-
-            Brush = (Brush)XamlReader.Load(new XmlNodeReader(doc));
+            Brush = (Brush)XamlReader.Load(reader);
         }
 
         public void WriteXml(XmlWriter writer)
