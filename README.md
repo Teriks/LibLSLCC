@@ -6,22 +6,11 @@ I release the latest binaries for the project in each GitHub release.
 https://github.com/Teriks/LibLSLCC/releases
 
 
-Each release contains an AnyCPU, x86 and x64 version of LibLSLCC
-with a documentation .XML file generated for the library.
+Each release contains an AnyCPU Release/Debug version of LibLSLCC,
+a binary copy of lslcc (The command line compiler), and an XML documentation 
+file generated for the library by Visual Studio/MSBuild.
 
 Releases also include platform specific installers for LSLCCEditor.
-
-
-Granted, I only really need to release an AnyCPU binary, but since
-LSLCCEditor uses a platform specific binary when building with an installer
-I supply all possible binary types for LibLSLCC in the release.
-
-The x64 and x86 platform specific binaries are just a side effect
-of the WiX installer having to be configured differently when building 
-for different platforms (x64 or x86).
-
-
-My OpenSim Fork uses the AnyCPU binary as its compatibile across platforms.
 
 
 # About LibLSLCC 
