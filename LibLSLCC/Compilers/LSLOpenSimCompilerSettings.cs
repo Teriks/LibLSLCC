@@ -175,8 +175,8 @@ namespace LibLSLCC.Compilers
                 GeneratedConstructorSignature = "() : base()"
             };
 
-            compilerSettings.GeneratedNamespaceImports.Add("OpenSim.Region.ScriptEngine.Shared");
-            compilerSettings.GeneratedNamespaceImports.Add("System.Collections.Generic");
+            //compilerSettings.GeneratedNamespaceImports.Add("OpenSim.Region.ScriptEngine.Shared");
+            //compilerSettings.GeneratedNamespaceImports.Add("System.Collections.Generic");
 
             return compilerSettings;
         }
