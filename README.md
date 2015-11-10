@@ -7,7 +7,7 @@ https://github.com/Teriks/LibLSLCC/releases
 
 
 Each release contains an AnyCPU Release/Debug version of LibLSLCC,
-a binary copy of lslcc (The command line compiler), and an XML documentation 
+an AnyCPU binary copy of lslcc (The command line compiler), and an XML documentation 
 file generated for the library by Visual Studio/MSBuild.
 
 Releases also include platform specific installers for LSLCCEditor.
