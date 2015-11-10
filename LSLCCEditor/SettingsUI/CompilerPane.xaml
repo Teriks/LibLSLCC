@@ -29,7 +29,7 @@
                 <Button Width="90" Height="27" Click="RevertButton_OnClick">Revert</Button>
             </StackPanel>
         </Grid>
-        <StackPanel Orientation="Vertical"  Grid.Column="1">
+        <StackPanel Orientation="Vertical"  Grid.Column="1" Margin="0,0,0,15">
             
             <StackPanel.Resources>
                 <Style TargetType="{x:Type CheckBox}">
@@ -40,8 +40,52 @@
                 </Style>
             </StackPanel.Resources> 
             
-            <ComboBox ItemsSource="{Binding ElementName=_this, Path=CompilerConfigurations}" SelectedItem="{Binding ElementName=_this, Path=SelectedCompilerConfiguration}"></ComboBox>
+            <ComboBox ItemsSource="{Binding ElementName=_this, Path=CompilerConfigurations}" SelectedItem="{Binding ElementName=_this, Path=SelectedCompilerConfiguration}" Width="Auto"/>
             <CheckBox DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">Insert Co-Op Termination Calls</CheckBox>
+            
+            
+            <GroupBox Header="Co-Op Termination:" IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">
+            <Grid  >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="50"></RowDefinition>
+                    </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type TextBox}" >
+                        <Setter Property="Height" Value="29"/>
+                        <Setter Property="Grid.Column" Value="1"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="{x:Type ComboBox}" >
+                        <Setter Property="Height" Value="29"/>
+                        <Setter Property="Grid.Column" Value="1"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="Grid.Column" Value="0"/>
+                    </Style>
+                </Grid.Resources>
+
+                <Label  Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=CoOpTerminationFunctionName}">Function Call:</Label>
+                <TextBox Grid.Row="0" Grid.Column="1"  Name="CoOpTerminationFunctionName" DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" 
+                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall}" Width="Auto">
+                    <TextBox.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Function signature to use for co-op script stop termination calls."></TextBlock>
+                        </ToolTip>
+                    </TextBox.ToolTip>
+                 </TextBox>
+            </Grid>
+          </GroupBox>
+            
+            
             <CheckBox DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}" Margin="7,13,0,15">Generate Class</CheckBox>
 
             <GroupBox Header="Class Options:" IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
@@ -132,18 +176,23 @@
             
             
             <GroupBox Header="Imports" IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
-                <DataGrid Height="150" DataContext="{Binding ElementName=_this}" 
+                <DataGrid Height="200" DataContext="{Binding ElementName=_this}" 
                           
                           ItemsSource="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports}" 
                           AutoGenerateColumns="False" Padding="5" CanUserResizeColumns="True" CanUserResizeRows="False">
                     
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Path=Name}" Width="400"  Header="Namespace"></DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Path=Name}" Width="500"  Header="Namespace"></DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
             
-
+            <GroupBox Header="Script Header:">
+                
+                <TextBox Height="300" DataContext="{Binding ElementName=_this}" Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.ScriptHeader}"/>
+       
+                
+            </GroupBox>
 
         </StackPanel>
 

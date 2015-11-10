@@ -15,7 +15,7 @@
 
 
             <Border Grid.Column="0">
-                <ListBox Name="SettingsPagesList" BorderBrush="Gainsboro" BorderThickness="0,0,1,0"  ItemsSource="{Binding Path=SettingPanes}">
+                <ListBox Name="SettingsPagesList" BorderBrush="Gainsboro" BorderThickness="1,1,0.5,1"  ItemsSource="{Binding Path=SettingPanes}" HorizontalContentAlignment="Center">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Title}"></TextBlock>
@@ -24,9 +24,11 @@
                 </ListBox>
             </Border>
 
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <ContentPresenter   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}"></ContentPresenter>
-            </ScrollViewer>
+            <Border Grid.Column="1" BorderBrush="Gainsboro" BorderThickness="0.5,1,1,1" >
+                <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <ContentPresenter   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}" Margin="5"></ContentPresenter>
+                </ScrollViewer>
+            </Border>
         </Grid>
     </Grid>
 </Window>
