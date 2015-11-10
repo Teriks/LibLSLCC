@@ -107,8 +107,6 @@ The Code Validator/OpenSim Code Generator Features:
    immediately after them in the generated code.
 	
  * Full and optimized support for the CO-OP script stop strategy in OpenSim.
-   An option to enable this is not in the editor yet, but the OpenSim fork enables it
-   when it's seen in OpenSim.ini.
 	
  * Correct order of operations via the use of operator function stubs
    that are generated on demand.  Old mono list optimizations will now
