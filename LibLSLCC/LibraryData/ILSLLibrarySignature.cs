@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System.Collections.Generic;
 
 namespace LibLSLCC.LibraryData

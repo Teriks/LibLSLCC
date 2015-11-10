@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: LSLEditorControl.xaml.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 #region Imports
 
 using System;

@@ -1,5 +1,4 @@
 #region FileInfo
-
 // 
 // File: ILSLSyntaxErrorListener.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
