@@ -393,8 +393,7 @@ expressionList:
 	;
 
 
-//probably not correct, seems to get the tree I need though
-//LSL has weird operator precedence that I have not fully figured out
+//probably not correct, gets the tree I need though
 expression:
 
 
