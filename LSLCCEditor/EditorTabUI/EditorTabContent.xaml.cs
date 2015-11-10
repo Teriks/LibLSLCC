@@ -78,7 +78,7 @@ namespace LSLCCEditor.EditorTabUI
             _ownerTab = owner;
 
 
-            Editor.Settings = AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration];
+            Editor.Settings = AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration].EditorControlSettings;
         }
 
         public ILSLLibraryDataProvider LibraryDataProvider

@@ -14,6 +14,9 @@ using System.Xml.Serialization;
 
 namespace LSLCCEditor.Settings
 {
+
+ 
+
     public static class AppSettings
     {
         public static SettingsNode Settings { get; private set; }
@@ -25,9 +28,6 @@ namespace LSLCCEditor.Settings
 
 
 
-
-        private static readonly PropertyInfo[] SettingsProperties;
-
         static AppSettings()
         {
             AppDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LibLSLCC", "LSLCCEditor");
@@ -36,7 +36,6 @@ namespace LSLCCEditor.Settings
 
             SettingsFile = Path.Combine(AppDataDir, "settings.xml");
 
-            SettingsProperties = typeof(SettingsNode).GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance).ToArray();
         }
 
 
@@ -53,20 +52,23 @@ namespace LSLCCEditor.Settings
             }
         }
 
-        private static void InitNullSettingsProperties()
+        public static void InitNullSettingsProperties(object instance)
         {
-            foreach (var field in SettingsProperties)
+            var settingsProperties = instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance).ToArray();
+
+
+            foreach (var field in settingsProperties)
             {
 
-                var fieldValue = field.GetValue(Settings);
+                var fieldValue = field.GetValue(instance);
 
                 var attr = field.GetCustomAttributes(typeof(DefaultValueFactoryAttribute), true).ToList();
                 if (attr.Any())
                 {
                     var factory = ((DefaultValueFactoryAttribute)attr.First());
-                    if (factory.Factory.NeedsToBeReset(Settings, fieldValue))
+                    if (factory.Factory.CheckForNecessaryResets(instance, fieldValue))
                     {
-                        field.SetValue(Settings, factory.Factory.GetDefaultValue(Settings));
+                        field.SetValue(instance, factory.Factory.GetDefaultValue(instance));
                     }
                 }
                 else if (fieldValue == null)
@@ -76,14 +78,14 @@ namespace LSLCCEditor.Settings
                     {
                         var defaultValue = ((DefaultValueAttribute) attr.First());
 
-                        field.SetValue(Settings, defaultValue.Value);
+                        field.SetValue(instance, defaultValue.Value);
                     }
                     else
                     {
                         var constructors = field.PropertyType.GetConstructors();
                         if (constructors.Any(x => !x.GetParameters().Any()))
                         {
-                            field.SetValue(Settings, Activator.CreateInstance(field.PropertyType));
+                            field.SetValue(instance, Activator.CreateInstance(field.PropertyType));
 
                         }
 
@@ -129,13 +131,13 @@ namespace LSLCCEditor.Settings
                 }
 
 
-                InitNullSettingsProperties();
+                InitNullSettingsProperties(Settings);
             }
             else
             {
                 Settings = new SettingsNode();
 
-                InitNullSettingsProperties();
+                InitNullSettingsProperties(Settings);
 
                 Save();
             }

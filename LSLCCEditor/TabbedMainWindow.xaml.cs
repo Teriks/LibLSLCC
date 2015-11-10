@@ -468,85 +468,14 @@ namespace LSLCCEditor
         private ObservableCollection<EditorTab> _editorTabs = new ObservableCollection<EditorTab>();
 
 
-        private const string _clientSideScriptCompilerHeader =
-@"//c#
-/** 
-*  Do not remove //c# from the first line of this script.
-*
-*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
-*
-*  Please note this script does not support being reset, because a constructor was not generated.
-*  Compile using the server side script option to generate a script constructor.
-*
-*  This code will run on an unmodified OpenSim server, however script resets will not reset global variables,
-*  and OpenSim will be unable to save the state of this script as its global variables are created in an object container.
-*
-*/ 
-";
 
-
-        private const string _serverSideScriptCompilerHeader =
-@"//c#-raw
-/** 
-*  Do not remove //c#-raw from the first line of this script.
-*
-*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
-*
-*  This is a server side script.  It constitutes a fully generated script class that
-*  will be sent to the CSharp compiler in OpenSim.  This code supports script resets.
-*
-*  This script is meant to upload compatible with the LibLSLCC OpenSim fork.
-*
-*  If you are running a version of OpenSim with the LibLSLCC compiler enabled, you must add 'csraw'
-*  to the allowed list of compiler languages under [XEngine] for this script to successfully upload.
-*
-*  Adding 'csraw' to your allowed language list when using the old OpenSim compiler will have no effect
-*  besides an error being written to your log file.  OpenSim will run but you will not actually be able
-*  to use the 'csraw' upload type.
-*
-*  Note that you can also set 'CreateClassWrapperForCSharpScripts' to 'false' under the [LibLCLCC]
-*  OpenSim.ini config section in order to enable 'csraw' mode uploads for every CSharp script sent to the 
-*  LibLSLCC compiler;  Including those marked with '//c#' if you have 'cs' in your list of allowed languages.
-*
-*/ 
-";
-
-
-        private void CompileForOpenSimServerSide_OnClick(object sender, RoutedEventArgs e)
+        private void Compile_OnClick(object sender, RoutedEventArgs e)
         {
-            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault();
-            _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
-
+            _openSimCompilerSettings = 
+                AppSettings.Settings.CompilerConfigurations[AppSettings.Settings.CurrentCompilerConfiguration].OpenSimCompilerSettings;
 
             CompileForOpenSimClickStub();
         }
-
-
-        private void CompileForOpenSimClientSide_OnClick(object sender, RoutedEventArgs e)
-        {
-            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable();
-            _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
-
-
-            CompileForOpenSimClickStub();
-        }
-
-        private void CompileForOpenSimClientSideCOOP_OnClick(object sender, RoutedEventArgs e)
-        {
-            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable();
-            _openSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
-            _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
-            CompileForOpenSimClickStub();
-        }
-
-        private void CompileForOpenSimServerSideCOOP_OnClick(object sender, RoutedEventArgs e)
-        {
-            _openSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault();
-            _openSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
-            _openSimCompilerSettings.InsertCoOpTerminationCalls = true;
-            CompileForOpenSimClickStub();
-        }
-
 
 
         private void NewFile_OnClick(object sender, RoutedEventArgs e)
@@ -967,6 +896,9 @@ namespace LSLCCEditor
 
             _droppingTabAfterDragging = false;
         }
+
+
+
 
         private void ClearCompilerMessages_OnClick(object sender, RoutedEventArgs e)
         {

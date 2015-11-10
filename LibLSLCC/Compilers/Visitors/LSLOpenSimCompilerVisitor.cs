@@ -1458,7 +1458,7 @@ private static class UTILITIES
                 {
                     foreach (var ns in Settings.GeneratedNamespaceImports)
                     {
-                        Writer.WriteLine("using " + ns + ";");
+                        Writer.WriteLine("using " + ns.Name + ";");
                     }
                 }
 

@@ -8,74 +8,125 @@ using LSLCCEditor.Utility;
 
 namespace LSLCCEditor.Settings
 {
-
-
-    public class CompilerSettingsNode : SettingsBaseClass
-    {
-        private LSLOpenSimCompilerSettings _openSimCompilerSettings;
-
-
-        public LSLOpenSimCompilerSettings OpenSimCompilerSettings
-        {
-            get { return _openSimCompilerSettings; }
-            set { SetField(ref _openSimCompilerSettings,value,"OpenSimCompilerSettings"); }
-        }
-    }
-
-
-
     /// <summary>
     /// The settings node that gets serialized by <see cref="AppSettings.Load"/>
     /// All members should have a publicly accessible constructor with no parameters, and be friendly to XmlSerializer
     /// </summary>
-    public class SettingsNode
+    public class SettingsNode : SettingsBaseClass
     {
         private XmlDictionary<string, CompilerSettingsNode> _compilerConfigurations;
+        private XmlDictionary<string, EditorControlSettingsNode> _editorControlConfigurations;
+        private string _currentEditorControlConfiguration;
+        private string _currentCompilerConfiguration;
+
+
+
+
+
+        private const string _clientSideScriptCompilerHeader =
+@"//c#
+/** 
+*  Do not remove //c# from the first line of this script.
+*
+*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
+*
+*  Please note this script does not support being reset, because a constructor was not generated.
+*  Compile using the server side script option to generate a script constructor.
+*
+*  This code will run on an unmodified OpenSim server, however script resets will not reset global variables,
+*  and OpenSim will be unable to save the state of this script as its global variables are created in an object container.
+*
+*/ 
+";
+
+
+        private const string _serverSideScriptCompilerHeader =
+@"//c#-raw
+/** 
+*  Do not remove //c#-raw from the first line of this script.
+*
+*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
+*
+*  This is a server side script.  It constitutes a fully generated script class that
+*  will be sent to the CSharp compiler in OpenSim.  This code supports script resets.
+*
+*  This script is meant to upload compatible with the LibLSLCC OpenSim fork.
+*
+*  If you are running a version of OpenSim with the LibLSLCC compiler enabled, you must add 'csraw'
+*  to the allowed list of compiler languages under [XEngine] for this script to successfully upload.
+*
+*  Adding 'csraw' to your allowed language list when using the old OpenSim compiler will have no effect
+*  besides an error being written to your log file.  OpenSim will run but you will not actually be able
+*  to use the 'csraw' upload type.
+*
+*  Note that you can also set 'CreateClassWrapperForCSharpScripts' to 'false' under the [LibLCLCC]
+*  OpenSim.ini config section in order to enable 'csraw' mode uploads for every CSharp script sent to the 
+*  LibLSLCC compiler;  Including those marked with '//c#' if you have 'cs' in your list of allowed languages.
+*
+*/ 
+";
+
+
 
         private class EditorControlConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool NeedsToBeReset(SettingsNode settingsNode, object obj)
+            public bool CheckForNecessaryResets(object settingsNode, object propertyValues)
             {
-                if (obj == null) return true;
+                if (settingsNode == null) return true;
 
-                var dict = (XmlDictionary<string, LSLEditorControlSettings>)obj;
+                var dict = (XmlDictionary<string, EditorControlSettingsNode>)propertyValues;
 
 
-                if (dict.Count == 0)
+                if (dict == null || dict.Count == 0)
                 {
                     return true;
+                }
+
+                foreach (var kvp in dict.ToList())
+                {
+                    if (kvp.Value != null) continue;
+
+                    var initNode = new EditorControlSettingsNode();
+                    dict[kvp.Key] = initNode;
+                    AppSettings.InitNullSettingsProperties(initNode);
                 }
 
                 return false;
             }
 
-            public object GetDefaultValue(SettingsNode settingsNode)
+            public object GetDefaultValue(object settingsNode)
             {
-                var d = new XmlDictionary<string, LSLEditorControlSettings>();
+                var d = new XmlDictionary<string, EditorControlSettingsNode>();
 
                 
 
-                d.Add("Default", new LSLEditorControlSettings());
+                d.Add("Default", new EditorControlSettingsNode() {EditorControlSettings = new LSLEditorControlSettings()});
 
                 return d;
             }
         }
 
-        [DefaultValueFactory(typeof(EditorControlConfigurationsDefaultFactory))]
-        public XmlDictionary<string, LSLEditorControlSettings> EditorControlConfigurations { get; set; }
 
+        [DefaultValueFactory(typeof (EditorControlConfigurationsDefaultFactory))]
+        public XmlDictionary<string, EditorControlSettingsNode> EditorControlConfigurations
+        {
+            get { return _editorControlConfigurations; }
+            set { SetField(ref _editorControlConfigurations,value, "EditorControlConfigurations"); }
+        }
 
 
         private class CurrentEditorConfigurationDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool NeedsToBeReset(SettingsNode settingsNode, object obj)
+            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
             {
-                if (obj == null) return true;
+                if (propertyValue == null) return true;
 
-                var val = obj.ToString();
-                
+                var val = propertyValue.ToString();
 
-                if (!settingsNode.EditorControlConfigurations.ContainsKey(val))
+
+                var settingsNodeInstance = (SettingsNode) settingsNode;
+
+                if (!settingsNodeInstance.EditorControlConfigurations.ContainsKey(val))
                 {
                     return true;
                 }
@@ -88,39 +139,54 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(SettingsNode settingsNode)
+            public object GetDefaultValue(object settingsNode)
             {
-                if (settingsNode.EditorControlConfigurations.ContainsKey("Default"))
+                var settingsNodeInstance = (SettingsNode)settingsNode;
+
+                if (settingsNodeInstance.EditorControlConfigurations.ContainsKey("Default"))
                 {
                     return "Default";
                 }
-                return settingsNode.EditorControlConfigurations.First().Key;
+                return settingsNodeInstance.EditorControlConfigurations.First().Key;
             }
         }
 
 
         [DefaultValueFactory(typeof (CurrentEditorConfigurationDefaultFactory))]
-        public string CurrentEditorControlConfiguration { get; set; }
+        public string CurrentEditorControlConfiguration
+        {
+            get { return _currentEditorControlConfiguration; }
+            set { SetField(ref _currentEditorControlConfiguration, value, "CurrentEditorControlConfiguration"); }
+        }
 
 
         private class CompilerConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool NeedsToBeReset(SettingsNode settingsNode, object obj)
+            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
             {
-                if (obj == null) return true;
+                if (propertyValue == null) return true;
 
-                var dict = (XmlDictionary<string, CompilerSettingsNode>) obj;
+                var dict = (XmlDictionary<string, CompilerSettingsNode>)propertyValue;
 
 
-                if (dict.Count == 0)
+                if (dict == null || dict.Count == 0)
                 {
                     return true;
+                }
+
+                foreach (var kvp in dict.ToList())
+                {
+                    if (kvp.Value != null) continue;
+
+                    var initNode = new CompilerSettingsNode();
+                    dict[kvp.Key] = initNode;
+                    AppSettings.InitNullSettingsProperties(initNode);
                 }
 
                 return false;
             }
 
-            public object GetDefaultValue(SettingsNode settingsNode)
+            public object GetDefaultValue(object settingsNode)
             {
                 var d = new XmlDictionary<string, CompilerSettingsNode>();
 
@@ -130,7 +196,7 @@ namespace LSLCCEditor.Settings
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
                 };
 
-
+                clientCode.OpenSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
                 d.Add("OpenSim Client Code", clientCode);
 
 
@@ -139,6 +205,7 @@ namespace LSLCCEditor.Settings
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
                 };
 
+                clientCodeCoOp.OpenSimCompilerSettings.ScriptHeader = _clientSideScriptCompilerHeader;
                 clientCodeCoOp.OpenSimCompilerSettings.InsertCoOpTerminationCalls = true;
 
 
@@ -150,7 +217,7 @@ namespace LSLCCEditor.Settings
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
                 };
 
-
+                serverCode.OpenSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
                 d.Add("OpenSim Server Code", serverCode);
 
 
@@ -160,6 +227,7 @@ namespace LSLCCEditor.Settings
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
                 };
 
+                serverCodeCoOp.OpenSimCompilerSettings.ScriptHeader = _serverSideScriptCompilerHeader;
                 serverCodeCoOp.OpenSimCompilerSettings.InsertCoOpTerminationCalls = true;
 
 
@@ -175,20 +243,21 @@ namespace LSLCCEditor.Settings
         public XmlDictionary<string, CompilerSettingsNode> CompilerConfigurations
         {
             get { return _compilerConfigurations; }
-            set { _compilerConfigurations = value; }
+            set { SetField(ref _compilerConfigurations, value, "CompilerConfigurations"); }
         }
 
 
         private class CurrentCompilerConfigurationDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool NeedsToBeReset(SettingsNode settingsNode, object obj)
+            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
             {
-                if (obj == null) return true;
+                if (propertyValue == null) return true;
 
-                var val = obj.ToString();
+                var val = propertyValue.ToString();
 
+                var settingsNodeInstance = (SettingsNode) settingsNode;
 
-                if (!settingsNode.CompilerConfigurations.ContainsKey(val))
+                if (!settingsNodeInstance.CompilerConfigurations.ContainsKey(val))
                 {
                     return true;
                 }
@@ -201,18 +270,24 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(SettingsNode settingsNode)
+            public object GetDefaultValue(object settingsNode)
             {
-                if (settingsNode.EditorControlConfigurations.ContainsKey("OpenSim Client Code"))
+                var settingsNodeInstance = (SettingsNode)settingsNode;
+
+                if (settingsNodeInstance.EditorControlConfigurations.ContainsKey("OpenSim Client Code"))
                 {
                     return "OpenSim Client Code";
                 }
-                return settingsNode.CompilerConfigurations.First().Key;
+                return settingsNodeInstance.CompilerConfigurations.First().Key;
             }
         }
 
 
         [DefaultValueFactory(typeof (CurrentCompilerConfigurationDefaultFactory))]
-        public string CurrentCompilerConfiguration { get; set; }
+        public string CurrentCompilerConfiguration
+        {
+            get { return _currentCompilerConfiguration; }
+            set { SetField(ref _currentCompilerConfiguration, value, "CurrentCompilerConfiguration"); }
+        }
     }
 }

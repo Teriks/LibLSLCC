@@ -19,18 +19,8 @@ namespace LibLSLCC.Compilers
         private string _generatedClassInherit;
         private string _generatedConstructorSignature;
         private AccessibilityLevel _generatedConstructorAccessibility;
-        private ObservableSet<string> _generatedNamespaceImports;
+        private ObservableSet<NameSpaceImport> _generatedNamespaceImports;
         private string _scriptHeader;
-
-
-
-        public enum AccessibilityLevel
-        {
-            Public,
-            Private,
-            Internal,
-            Protected,
-        }
 
 
         /// <summary>
@@ -77,7 +67,7 @@ namespace LibLSLCC.Compilers
         /// <summary>
         /// This hashed set should contain all the namespace's that the generated code should import
         /// </summary>
-        public ObservableSet<string> GeneratedNamespaceImports
+        public ObservableSet<NameSpaceImport> GeneratedNamespaceImports
         {
             get { return _generatedNamespaceImports; }
             set { SetField(ref _generatedNamespaceImports, value, "GeneratedNamespaceImports"); }
@@ -159,7 +149,7 @@ namespace LibLSLCC.Compilers
                 GeneratedClassName = "XEngineScript",
                 GeneratedClassInherit = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
                 GeneratedConstructorSignature = "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)",
-                GeneratedNamespaceImports = new ObservableSet<string> { "OpenSim.Region.ScriptEngine.Shared","System.Collections.Generic" }
+                GeneratedNamespaceImports = new ObservableSet<NameSpaceImport> { "OpenSim.Region.ScriptEngine.Shared","System.Collections.Generic" }
             };
 
             return compilerSettings;
@@ -180,7 +170,7 @@ namespace LibLSLCC.Compilers
                 GeneratedClassName = "LSLScript",
                 GeneratedClassInherit = "LSLScriptBase",
                 GeneratedConstructorSignature = "() : base()",
-                GeneratedNamespaceImports = new ObservableSet<string> { "LibLSLCC.LSLRuntime", "System.Collections.Generic" }
+                GeneratedNamespaceImports = new ObservableSet<NameSpaceImport> { "LibLSLCC.LSLRuntime", "System.Collections.Generic" }
             };
 
             return compilerSettings;
@@ -197,5 +187,13 @@ namespace LibLSLCC.Compilers
             var compilerSettings = new LSLOpenSimCompilerSettings();
             return compilerSettings;
         }
+    }
+
+    public enum AccessibilityLevel
+    {
+        Public,
+        Private,
+        Internal,
+        Protected,
     }
 }

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
+    <Compile Include="Converters\EnumValuesExtension.cs" />
     <Compile Include="Converters\IntegerNotZeroToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LSLCCEditor.SettingsUI"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="347" Width="594" Name="_this" DataContext="{Binding ElementName=_this}">
+        Title="SettingsWindow" Height="467" Width="824" Name="_this" DataContext="{Binding ElementName=_this}">
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -24,9 +24,9 @@
                 </ListBox>
             </Border>
 
-            <Border Grid.Column="1">
-                <ContentPresenter Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}"></ContentPresenter>
-            </Border>
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <ContentPresenter   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}"></ContentPresenter>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>

@@ -55,6 +55,7 @@
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Collections\ObservableHashSet.cs" />
     <Compile Include="Compilers\LSLOpenSimCompilerSettings.cs" />
+    <Compile Include="Compilers\NameSpaceImport.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
     <Compile Include="LibraryData\LSLEmbeddedLibraryDataProvider.cs" />
     <Compile Include="LibraryData\ILSLLibrarySignature.cs" />

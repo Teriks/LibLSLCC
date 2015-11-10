@@ -3,8 +3,8 @@ namespace LSLCCEditor.Settings
     public interface IDefaultSettingsValueFactory
     {
 
-        bool NeedsToBeReset(SettingsNode settingsNode, object obj);
+        bool CheckForNecessaryResets(object objectInstance, object settingValue);
 
-        object GetDefaultValue(SettingsNode settingsNode);
+        object GetDefaultValue(object objectInstance);
     }
 }
