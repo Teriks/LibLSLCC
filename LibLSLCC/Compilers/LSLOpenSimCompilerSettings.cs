@@ -107,7 +107,7 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        /// This hashed set should contain all the namespace's that the generated code should import
+        /// This set should contain all the namespace's that the generated code should import
         /// </summary>
         public ObservableSet<NameSpaceImport> GeneratedNamespaceImports
         {

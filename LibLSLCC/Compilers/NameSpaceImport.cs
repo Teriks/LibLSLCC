@@ -40,6 +40,8 @@
 // 
 // 
 #endregion
+
+using System;
 using LibLSLCC.Utility;
 
 namespace LibLSLCC.Compilers
@@ -69,6 +71,21 @@ namespace LibLSLCC.Compilers
             set { SetField(ref _name,value, "Name"); }
         }
 
+        public override int GetHashCode()
+        {
+            if (Name == null) return -1;
+            return Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var ns = obj as NameSpaceImport;
+            if (ns == null) return false;
+
+            if (ns.Name != null && Name != null) return Name.Equals(ns.Name, StringComparison.Ordinal);
+
+            return ns.Name == Name;
+        }
 
         public override string ToString()
         {
