@@ -69,7 +69,7 @@ if ON_WINDOWS:
 os.chdir(old_wd)
 
 curTime = datetime.datetime.now()
-release_stamp = '{dt.day}-{dt.month}-{dt.year}_{dt:%I}-{dt:%M}{dt:%p}'.format(dt=curTime)
+release_stamp = '{dt.month}-{dt.day}-{dt.year}_{dt:%I}-{dt:%M}{dt:%p}'.format(dt=curTime)
 
 
 print('Release Stamp: ' + release_stamp)
