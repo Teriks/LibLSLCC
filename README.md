@@ -116,6 +116,8 @@ The Code Validator/OpenSim Code Generator Features:
  * Correct treatment of vectors/rotations/lists and strings as booleans.
 	
  * Vectors and rotations can now be negated.
+ 
+ * Support for certain unicode characters in script symbols, (Same characters the linden Compiler allows)
 	
  * At this point I am scratching my head because I cannot remember what else...
    I put a lot of time into this.
