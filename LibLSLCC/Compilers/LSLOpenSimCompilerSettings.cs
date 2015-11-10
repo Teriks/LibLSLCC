@@ -19,7 +19,7 @@ namespace LibLSLCC.Compilers
         private string _generatedClassInherit;
         private string _generatedConstructorSignature;
         private AccessibilityLevel _generatedConstructorAccessibility;
-        private ObservableSet<NameSpaceImport> _generatedNamespaceImports;
+        private ObservableSet<NameSpaceImport> _generatedNamespaceImports = new ObservableSet<NameSpaceImport>();
         private string _scriptHeader;
 
 
@@ -148,9 +148,12 @@ namespace LibLSLCC.Compilers
                 GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "XEngineScript",
                 GeneratedClassInherit = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
-                GeneratedConstructorSignature = "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)",
-                GeneratedNamespaceImports = new ObservableSet<NameSpaceImport> { "OpenSim.Region.ScriptEngine.Shared","System.Collections.Generic" }
+                GeneratedConstructorSignature = "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)"
             };
+
+
+            compilerSettings.GeneratedNamespaceImports.Add("OpenSim.Region.ScriptEngine.Shared");
+            compilerSettings.GeneratedNamespaceImports.Add("System.Collections.Generic");
 
             return compilerSettings;
         }
@@ -169,9 +172,11 @@ namespace LibLSLCC.Compilers
                 GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "LSLScript",
                 GeneratedClassInherit = "LSLScriptBase",
-                GeneratedConstructorSignature = "() : base()",
-                GeneratedNamespaceImports = new ObservableSet<NameSpaceImport> { "LibLSLCC.LSLRuntime", "System.Collections.Generic" }
+                GeneratedConstructorSignature = "() : base()"
             };
+
+            compilerSettings.GeneratedNamespaceImports.Add("OpenSim.Region.ScriptEngine.Shared");
+            compilerSettings.GeneratedNamespaceImports.Add("System.Collections.Generic");
 
             return compilerSettings;
         }
