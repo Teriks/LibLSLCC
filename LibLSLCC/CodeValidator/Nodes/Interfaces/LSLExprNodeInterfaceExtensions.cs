@@ -139,9 +139,10 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <returns>True if the expression node represents a reference to a vector or rotation variable component via the dot operator.</returns>
         public static bool IsVectorOrRotationComponent(this ILSLReadOnlyExprNode node)
         {
-            return node.ExpressionType == 
-                LSLExpressionType.VectorOrRotationComponentAccess;
+            return node.ExpressionType == LSLExpressionType.VectorComponentAccess || 
+                   node.ExpressionType == LSLExpressionType.RotationComponentAccess;
         }
+
 
         /// <summary>
         /// Determines whether the given expression is a modifiable L-Value.

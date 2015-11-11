@@ -191,7 +191,7 @@
     <Compile Include="CodeValidator\Enums\LSLTupleComponent.cs" />
     <Compile Include="CodeValidator\Nodes\LSLTypecastExprNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLVariableNode.cs" />
-    <Compile Include="CodeValidator\Nodes\LSLVecRotAccessorNode.cs" />
+    <Compile Include="CodeValidator\Nodes\LSLTupleAccessorNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLVectorLiteralNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLSyntaxTreeNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLDoLoopNode.cs" />
