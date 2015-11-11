@@ -49,41 +49,69 @@ using System.Text;
 
 namespace LibLSLCC.Utility
 {
-    public abstract class SettingsBaseClass : ICloneable
+    public abstract class SettingsBaseClass : ICloneable, INotifyPropertyChanged, INotifyPropertyChanging
     {
-        private readonly Dictionary<object, Action<object, object, PropertyChangedEventArgs>> _subscribed = new Dictionary<object, Action<object, object, PropertyChangedEventArgs>>();
+        private readonly Dictionary<object, Action<object, object, PropertyChangedEventArgs>> _subscribedChanged = new Dictionary<object, Action<object, object, PropertyChangedEventArgs>>();
+        private readonly Dictionary<object, Action<object, object, PropertyChangingEventArgs>> _subscribedChanging = new Dictionary<object, Action<object, object, PropertyChangingEventArgs>>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
 
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        protected virtual void OnPropertyChanging(string propertyName)
+        {
+            var handler = PropertyChanging;
+            if (handler != null) handler(this, new PropertyChangingEventArgs(propertyName));
+            foreach (var subscriber in _subscribedChanging)
+            {
+                subscriber.Value(this, subscriber.Key, new PropertyChangingEventArgs(propertyName));
+            }
+        }
+
+
         public void SubscribePropertyChanged(object owner, Action<object, object, PropertyChangedEventArgs> handler)
         {
-            _subscribed.Add(owner, handler);
+            _subscribedChanged.Add(owner, handler);
         }
 
         public void UnSubscribePropertyChanged(object owner)
         {
-            _subscribed.Remove(owner);
+            _subscribedChanged.Remove(owner);
         }
 
-        
+
+        public void SubscribePropertyChanging(object owner, Action<object, object, PropertyChangingEventArgs> handler)
+        {
+            _subscribedChanging.Add(owner, handler);
+        }
+
+        public void UnSubscribePropertyChanging(object owner)
+        {
+            _subscribedChanging.Remove(owner);
+        }
+
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
+
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            foreach (var subscriber in _subscribedChanged)
+            {
+                subscriber.Value(this, subscriber.Key, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
 
         protected bool SetField<T>(ref T field, T value, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+
+            OnPropertyChanging(propertyName);
             field = value;
             OnPropertyChanged(propertyName);
-            foreach (var handler in _subscribed)
-            {
-                handler.Value(this, handler.Key, new PropertyChangedEventArgs(propertyName));
-            }
+
             return true;
         }
 
@@ -134,5 +162,7 @@ namespace LibLSLCC.Utility
 
             return instance;
         }
+
+
     }
 }

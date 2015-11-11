@@ -46,6 +46,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +60,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LibLSLCC.Collections;
 using LibLSLCC.Compilers;
 using LSLCCEditor.Settings;
 
@@ -88,10 +91,21 @@ namespace LSLCCEditor.SettingsUI
 
             pane.ConstructorAccessibilityLevel =
                 pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorAccessibility;
+
+
+            pane.NamespaceImports = new ObservableCollection<NamespaceImport>(pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports);
         }
 
 
 
+        public static readonly DependencyProperty NamespaceImportsProperty = DependencyProperty.Register(
+            "NamespaceImports", typeof (ObservableCollection<NamespaceImport>), typeof (CompilerPane), new PropertyMetadata(default(ObservableCollection<NamespaceImport>)));
+
+        public ObservableCollection<NamespaceImport> NamespaceImports
+        {
+            get { return (ObservableCollection<NamespaceImport>) GetValue(NamespaceImportsProperty); }
+            set { SetValue(NamespaceImportsProperty, value); }
+        }
 
         public static readonly DependencyProperty CurrentCompilerConfigurationProperty = DependencyProperty.Register(
             "CurrentCompilerConfiguration", typeof (CompilerSettingsNode), typeof (CompilerPane),
@@ -120,13 +134,13 @@ namespace LSLCCEditor.SettingsUI
             Title = "Compiler Settings";
 
             CompilerConfigurations = new ObservableCollection<string>(ApplicationSettings.CompilerConfigurations.Keys);
+            NamespaceImports = new ObservableCollection<NamespaceImport>();
 
 
             InitializeComponent();
             
 
             SelectedCompilerConfiguration = CompilerConfigurations.First();
-
             
         }
 
@@ -155,10 +169,19 @@ namespace LSLCCEditor.SettingsUI
 
         public void Init(SettingsWindow window)
         {
+
+            ObservableHashSet<NamespaceImport> test = new ObservableHashSet<NamespaceImport>();
+
+
+            test.Add("test");
+
+
+            test[0].Name = "FUCKUP";
         }
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
+            
             AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfiguration] = CurrentCompilerConfiguration;
             AppSettings.Save();
         }
@@ -168,7 +191,25 @@ namespace LSLCCEditor.SettingsUI
             CurrentCompilerConfiguration =
                 (CompilerSettingsNode)AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfiguration].Clone();
         }
+
+ 
+        private void DataGrid_OnRowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            var ns = e.Row.Item as NamespaceImport;
+
+            if (CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Contains(ns))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(ns);
+            }
+        }
+
     }
+
+
 
 
 

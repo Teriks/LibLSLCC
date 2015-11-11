@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: NameSpaceImport.cs
+// File: NamespaceImport.cs
 // 
 // 
 // ============================================================
@@ -42,27 +42,29 @@
 #endregion
 
 using System;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 namespace LibLSLCC.Compilers
 {
-    public class NameSpaceImport : SettingsBaseClass
+    public class NamespaceImport : SettingsBaseClass, IObservableHashSetItem
     {
         private string _name;
+        private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string> {"Name"};
 
-        public NameSpaceImport()
+        public NamespaceImport()
         {
 
         }
 
-        public NameSpaceImport(string name)
+        public NamespaceImport(string name)
         {
             Name = name;
         }
 
-        public static implicit operator NameSpaceImport(string name)
+        public static implicit operator NamespaceImport(string name)
         {
-            return new NameSpaceImport(name);
+            return new NamespaceImport(name);
         }
 
         public string Name
@@ -79,7 +81,7 @@ namespace LibLSLCC.Compilers
 
         public override bool Equals(object obj)
         {
-            var ns = obj as NameSpaceImport;
+            var ns = obj as NamespaceImport;
             if (ns == null) return false;
 
             if (ns.Name != null && Name != null) return Name.Equals(ns.Name, StringComparison.Ordinal);
@@ -90,6 +92,11 @@ namespace LibLSLCC.Compilers
         public override string ToString()
         {
             return Name;
+        }
+
+        public IReadOnlyHashedSet<string> HashEqualityPropertyNames
+        {
+            get { return _hashEqualityPropertyNames; }
         }
     }
 }

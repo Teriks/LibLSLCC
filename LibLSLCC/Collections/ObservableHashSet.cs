@@ -43,23 +43,32 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace LibLSLCC.Collections
 {
-    public class ObservableSet<T> : ObservableCollection<T>, ICloneable
+
+    public interface IObservableHashSetItem : INotifyPropertyChanging
+    {
+        IReadOnlyHashedSet<string> HashEqualityPropertyNames { get; }
+    }
+
+
+    public class ObservableHashSet<T> : ObservableCollection<T>, ICloneable
     {
 
         private readonly HashSet<T>  _hashSet;
 
 
-        public ObservableSet()
+        public ObservableHashSet()
         {
             _hashSet = new HashSet<T>();
         }
 
-        public ObservableSet(IEnumerable<T> collection )
+        public ObservableHashSet(IEnumerable<T> collection )
         {
             _hashSet = new HashSet<T>();
 
@@ -72,13 +81,35 @@ namespace LibLSLCC.Collections
 
         protected override void ClearItems()
         {
+
+            foreach (var item in _hashSet)
+            {
+                var observable = item as IObservableHashSetItem;
+
+                if (observable != null)
+                {
+                    observable.PropertyChanging -= ObservableOnPropertyChanging;
+                }
+            }
+
             _hashSet.Clear();
+
             base.ClearItems();
         }
 
         protected override void RemoveItem(int index)
         {
-            _hashSet.Remove(this[index]);
+            var item = this[index];
+            if (_hashSet.Remove(item))
+            {
+                var observable = item as IObservableHashSetItem;
+
+                if (observable != null)
+                {
+                    observable.PropertyChanging -= ObservableOnPropertyChanging;
+                }
+            }
+
             base.RemoveItem(index);
         }
 
@@ -86,20 +117,53 @@ namespace LibLSLCC.Collections
         protected override void InsertItem(int index, T item)
         {
             if (_hashSet.Contains(item)) return;
+
             _hashSet.Add(item);
+
+
+            var observable = item as IObservableHashSetItem;
+            if (observable != null)
+            {
+                observable.PropertyChanging += ObservableOnPropertyChanging;
+            }
+
             base.InsertItem(index, item);
         }
 
         protected override void SetItem(int index, T item)
         {
             if (_hashSet.Contains(item)) return;
+
+
+            var observable = item as IObservableHashSetItem;
+            if (observable != null)
+            {
+                observable.PropertyChanging += ObservableOnPropertyChanging;
+            }
+
             _hashSet.Add(item);
+
+
+
+
             base.SetItem(index, item);
+        }
+
+        private void ObservableOnPropertyChanging(object sender, PropertyChangingEventArgs propertyChangingEventArgs)
+        {
+            var item = sender as IObservableHashSetItem;
+
+            if (item != null && item.HashEqualityPropertyNames.Contains(propertyChangingEventArgs.PropertyName))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Cannot change property '{0}' of type '{1}' when the object belongs to an ObservableHashSet, as it will effect the hash value of the object.",
+                    propertyChangingEventArgs.PropertyName, item.GetType().Name));
+            }
         }
 
         public object Clone()
         {
-            return new ObservableSet<T>(_hashSet);
+            return new ObservableHashSet<T>(_hashSet);
         }
     }
 }

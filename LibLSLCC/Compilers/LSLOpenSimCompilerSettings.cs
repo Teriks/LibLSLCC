@@ -61,7 +61,7 @@ namespace LibLSLCC.Compilers
         private string _generatedClassInherit;
         private string _generatedConstructorSignature;
         private AccessibilityLevel _generatedConstructorAccessibility;
-        private ObservableSet<NameSpaceImport> _generatedNamespaceImports = new ObservableSet<NameSpaceImport>();
+        private ObservableHashSet<NamespaceImport> _generatedNamespaceImports = new ObservableHashSet<NamespaceImport>();
         private string _scriptHeader;
 
 
@@ -109,7 +109,7 @@ namespace LibLSLCC.Compilers
         /// <summary>
         /// This set should contain all the namespace's that the generated code should import
         /// </summary>
-        public ObservableSet<NameSpaceImport> GeneratedNamespaceImports
+        public ObservableHashSet<NamespaceImport> GeneratedNamespaceImports
         {
             get { return _generatedNamespaceImports; }
             set { SetField(ref _generatedNamespaceImports, value, "GeneratedNamespaceImports"); }

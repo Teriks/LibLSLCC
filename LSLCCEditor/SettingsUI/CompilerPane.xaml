@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
       xmlns:compilers="clr-namespace:LibLSLCC.Compilers;assembly=LibLSLCC"
+      xmlns:settingsUi="clr-namespace:LSLCCEditor.SettingsUI"
       mc:Ignorable="d" Name="_this" d:DesignWidth="700"  d:DesignHeight="500" Padding="0,0,15,0" MinWidth="600">
 
     <UserControl.Resources>
@@ -176,18 +177,20 @@
             
             
             <GroupBox Header="Imports" IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
+
                 <DataGrid Height="200" DataContext="{Binding ElementName=_this}" 
                           
-                          ItemsSource="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports}" 
-                          AutoGenerateColumns="False" Padding="5" CanUserResizeColumns="True" CanUserResizeRows="False">
-                    
+                          ItemsSource="{Binding ElementName=_this, Path=NamespaceImports}" 
+                          AutoGenerateColumns="False" Padding="5" CanUserResizeColumns="True" CanUserResizeRows="False" RowEditEnding="DataGrid_OnRowEditEnding">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Path=Name}" Width="500"  Header="Namespace"></DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}"  Width="500"  Header="Namespace" >
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
             
             <GroupBox Header="Script Header:">
+                
                 
                 <TextBox Height="300" DataContext="{Binding ElementName=_this}" Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.ScriptHeader}"/>
        
