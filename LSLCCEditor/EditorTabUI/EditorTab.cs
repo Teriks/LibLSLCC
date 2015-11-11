@@ -57,6 +57,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LSLCCEditor.Utility;
+using LSLCCEditor.Utility.Binding;
 using Microsoft.Win32;
 
 #endregion

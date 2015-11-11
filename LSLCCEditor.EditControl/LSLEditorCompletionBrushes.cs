@@ -41,12 +41,14 @@
 // 
 #endregion
 using System.Windows.Media;
+using LibLSLCC.Settings;
 using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
+using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl
 {
-    public class LSLEditorCompletionBrushes :  SettingsBaseClass
+    public class LSLEditorCompletionBrushes :  SettingsBaseClass<LSLEditorCompletionBrushes>
     {
         private XmlSolidBrush _typeBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
         private XmlSolidBrush _eventHandlerBrush = new SolidColorBrush(Color.FromRgb(0, 76, 127));

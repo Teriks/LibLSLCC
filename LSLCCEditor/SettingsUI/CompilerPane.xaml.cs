@@ -44,25 +44,18 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LibLSLCC.Collections;
 using LibLSLCC.Compilers;
+using LibLSLCC.Compilers.OpenSim;
+using LibLSLCC.CSharp;
 using LSLCCEditor.Settings;
+using LSLCCEditor.Utility.Validation;
 
 namespace LSLCCEditor.SettingsUI
 {
@@ -85,32 +78,46 @@ namespace LSLCCEditor.SettingsUI
 
 
             pane.CurrentCompilerConfiguration =
-                (CompilerSettingsNode)
-                AppSettings.Settings.CompilerConfigurations[dependencyPropertyChangedEventArgs.NewValue.ToString()].Clone();
+                AppSettings.Settings.CompilerConfigurations[dependencyPropertyChangedEventArgs.NewValue.ToString()]
+                    .Clone();
 
 
             pane.ConstructorAccessibilityLevel =
                 pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorAccessibility;
 
 
-            pane.NamespaceImports = new ObservableCollection<NamespaceImport>(pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports);
+
+
+            var className = pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName;
+            if (className != null)
+            {
+                pane.GeneratedClassName = className.ToString();
+            }
+            else
+            {
+                pane.GeneratedClassName = "LSLScript";
+            }
+
+
+            var classNamespace = pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassNamespace;
+
+            if (classNamespace != null)
+            {
+                pane.GeneratedClassNamespace = classNamespace.ToString();
+            }
+            else
+            {
+                pane.GeneratedClassNamespace = "";
+            }
+
         }
 
 
 
-        public static readonly DependencyProperty NamespaceImportsProperty = DependencyProperty.Register(
-            "NamespaceImports", typeof (ObservableCollection<NamespaceImport>), typeof (CompilerPane), new PropertyMetadata(default(ObservableCollection<NamespaceImport>)));
-
-        public ObservableCollection<NamespaceImport> NamespaceImports
-        {
-            get { return (ObservableCollection<NamespaceImport>) GetValue(NamespaceImportsProperty); }
-            set { SetValue(NamespaceImportsProperty, value); }
-        }
 
         public static readonly DependencyProperty CurrentCompilerConfigurationProperty = DependencyProperty.Register(
             "CurrentCompilerConfiguration", typeof (CompilerSettingsNode), typeof (CompilerPane),
             new PropertyMetadata(default(CompilerSettingsNode)));
-
 
 
         public CompilerSettingsNode CurrentCompilerConfiguration
@@ -134,19 +141,17 @@ namespace LSLCCEditor.SettingsUI
             Title = "Compiler Settings";
 
             CompilerConfigurations = new ObservableCollection<string>(ApplicationSettings.CompilerConfigurations.Keys);
-            NamespaceImports = new ObservableCollection<NamespaceImport>();
+
+            SelectedCompilerConfiguration = CompilerConfigurations.First();
 
 
             InitializeComponent();
-            
-
-            SelectedCompilerConfiguration = CompilerConfigurations.First();
-            
         }
 
 
         public static readonly DependencyProperty ConstructorAccessibility = DependencyProperty.Register(
-            "ConstructorAccessibility", typeof (AccessibilityLevel), typeof (CompilerPane), new PropertyMetadata(default(AccessibilityLevel)));
+            "ConstructorAccessibility", typeof (AccessibilityLevel), typeof (CompilerPane),
+            new PropertyMetadata(default(AccessibilityLevel)));
 
         public AccessibilityLevel ConstructorAccessibilityLevel
         {
@@ -155,7 +160,7 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-        public SettingsNode ApplicationSettings
+        public AppSettingsNode ApplicationSettings
         {
             get { return AppSettings.Settings; }
         }
@@ -168,42 +173,172 @@ namespace LSLCCEditor.SettingsUI
         public string Title { get; private set; }
 
         public void Init(SettingsWindow window)
-        {
-
+        { 
         }
+
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports = new ObservableHashSet<NamespaceImport>(this.NamespaceImports);
-            AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfiguration] = CurrentCompilerConfiguration;
-            AppSettings.Save();
+            if (CoOpTerminationOptionsExpander.IsValid() && ClassOptionsExpander.IsValid())
+            {
+                AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfiguration] =
+                    CurrentCompilerConfiguration;
+                AppSettings.Save();
+            }
+            else
+            {
+                MessageBox.Show("Could not save configuration as some settings were invalid.",
+                    "Invalid Settings Detected", MessageBoxButton.OK,MessageBoxImage.Error);
+            }
+
         }
 
         private void RevertButton_OnClick(object sender, RoutedEventArgs e)
         {
             CurrentCompilerConfiguration =
-                (CompilerSettingsNode)AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfiguration].Clone();
+                AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfiguration].Clone();
         }
 
- 
-        private void DataGrid_OnRowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
-        {
-            var ns = e.Row.Item as NamespaceImport;
 
-            if (string.IsNullOrWhiteSpace(ns.Name))
+
+        private void NamespaceImportAdd_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (NameSpaceAddTextbox.IsValid())
             {
-                e.Cancel = true;
+                CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(
+                    new CSharpNamespace(NamespaceImportAddText));
             }
-            else if (CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Contains(ns))
+        }
+
+        private void NamespaceListboxPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
             {
-                e.Cancel = true;
+                object[] selected = new object [NamespaceNameListBox.SelectedItems.Count];
+
+                NamespaceNameListBox.SelectedItems.CopyTo(selected,0);
+
+                foreach (var item in selected)
+                {
+                    CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Remove(
+                        (CSharpNamespace) item);
+                }
+            }
+        }
+
+        private void NamespaceListBoxContextMenuDelete_OnClick(object sender, RoutedEventArgs e)
+        {
+            object[] selected = new object[NamespaceNameListBox.SelectedItems.Count];
+
+            NamespaceNameListBox.SelectedItems.CopyTo(selected, 0);
+
+            foreach (var item in selected)
+            {
+                CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Remove(
+                    (CSharpNamespace)item);
+            }
+        }
+
+
+
+        public static readonly DependencyProperty GeneratedClassNamespaceProperty = DependencyProperty.Register(
+            "GeneratedClassNamespace", typeof (string), typeof (CompilerPane), new PropertyMetadata(default(string), GeneratedNamespaceNamePropertyChanged));
+
+        private static void GeneratedNamespaceNamePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var pane = (CompilerPane) dependencyObject;
+            var nVal = (string) dependencyPropertyChangedEventArgs.NewValue;
+
+            if (string.IsNullOrWhiteSpace(nVal))
+            {
+                pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassNamespace = null;
+                return;
+            }
+
+            var c = CSharpNamespaceNameValidator.Validate(nVal);
+            if (c.Success)
+            {
+                pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassNamespace =
+                    new CSharpNamespace((string) dependencyPropertyChangedEventArgs.NewValue);
             }
             else
             {
-                CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(ns);
+                throw new Exception(c.ErrorDescription);
             }
         }
 
+
+
+
+        public string GeneratedClassNamespace
+        {
+            get { return (string) GetValue(GeneratedClassNamespaceProperty); }
+            set
+            {
+                SetValue(GeneratedClassNamespaceProperty, value);
+            }
+        }
+
+
+
+        public static readonly DependencyProperty GeneratedClassNameProperty = DependencyProperty.Register(
+            "GeneratedClassName", typeof (string), typeof (CompilerPane), new PropertyMetadata(default(string), GeneratedClassNameChanged));
+
+        private static void GeneratedClassNameChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var pane = (CompilerPane)dependencyObject;
+            var nVal = (string)dependencyPropertyChangedEventArgs.NewValue;
+
+            if (string.IsNullOrWhiteSpace(nVal))
+            {
+                throw new Exception("must provide a class name.");
+            }
+
+            var c = CSharpClassNameValidator.Validate(nVal);
+            if (c.Success)
+            {
+                pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName =
+                    new CSharpClassName((string)dependencyPropertyChangedEventArgs.NewValue);
+            }
+            else
+            {
+                throw new Exception(c.ErrorDescription);
+            }
+        }
+
+        public string GeneratedClassName
+        {
+            get { return (string) GetValue(GeneratedClassNameProperty); }
+            set { SetValue(GeneratedClassNameProperty, value); }
+        }
+
+
+
+
+        public static readonly DependencyProperty NamespaceImportAddTextProperty = DependencyProperty.Register(
+            "NamespaceImportAddText", typeof (string), typeof (CompilerPane), new PropertyMetadata(default(string), NamespaceImportAddtext));
+
+        private static void NamespaceImportAddtext(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var nVal = (string)dependencyPropertyChangedEventArgs.NewValue;
+
+            if (string.IsNullOrWhiteSpace(nVal))
+            {
+                throw new Exception("must provide a namespace name.");
+            }
+
+            var c = CSharpNamespaceNameValidator.Validate(nVal);
+            if (!c.Success)
+            {
+                throw new Exception(c.ErrorDescription);
+            }
+        }
+
+        public string NamespaceImportAddText
+        {
+            get { return (string) GetValue(NamespaceImportAddTextProperty); }
+            set { SetValue(NamespaceImportAddTextProperty, value); }
+        }
     }
 
 

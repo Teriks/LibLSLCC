@@ -67,9 +67,11 @@ using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
+using LibLSLCC.Settings;
 using LibLSLCC.Utility;
 using LSLCCEditor.EditControl;
 using LSLCCEditor.Utility;
+using LSLCCEditor.Utility.Binding;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
 
 #endregion
@@ -117,10 +119,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private static void SettingsPropertyChanged(object sender, object subscriber, PropertyChangedEventArgs propertyChangedEventArgs)
+        private static void SettingsPropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlHighlightingColors> settingsPropertyChangedEventArgs)
         {
 
-            var suber = (LSLEditorControl) subscriber;
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
 
             if (suber.LibraryDataProvider != null)
             {
@@ -130,16 +132,11 @@ namespace LSLCCEditor.EditControl
         }
 
 
-
-
-
         public LSLEditorControlSettings Settings
         {
             get { return (LSLEditorControlSettings) GetValue(SettingsProperty); }
             set { SetValue(SettingsProperty, value); }
         }
-
-
 
 
 

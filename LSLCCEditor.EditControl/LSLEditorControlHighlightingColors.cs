@@ -41,12 +41,14 @@
 // 
 #endregion
 using System.Windows.Media;
+using LibLSLCC.Settings;
 using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
+using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl
 {
-    public class LSLEditorControlHighlightingColors : SettingsBaseClass
+    public class LSLEditorControlHighlightingColors : SettingsBaseClass<LSLEditorControlHighlightingColors>
     {
         private XmlColor _stateKeywordColor = Color.FromRgb(127, 0, 38);
         private XmlColor _libraryFunctionColor = Color.FromRgb(127, 0, 38);

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +7,7 @@ using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.Compilers;
+using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
 
@@ -283,9 +281,6 @@ namespace Tests
 
 
 
-
-
-           
             //declare the subset my-lsl for use.
             myProvider.AddSubsetDescription(new LSLLibrarySubsetDescription("my-lsl", "My LSL Demo"));
 

@@ -55,6 +55,7 @@ using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers;
+using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.LibraryData;
 
 #endregion

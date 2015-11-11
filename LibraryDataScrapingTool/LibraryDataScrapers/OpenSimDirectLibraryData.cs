@@ -221,31 +221,36 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 var constant = constantContrainerType.GetField(name, bindingFlags);
 
-                if (!constant.GetCustomAttributes(ScriptModuleConstantAttribute,true).Any()) continue;
-
-                if (constant != null)
+                if (constant == null)
                 {
-                    var type = LslTypeFromCsharpType(constant.FieldType);
-                    if (type != null)
-                    {
-                        var con = new LSLLibraryConstantSignature(type.Value, constant.Name,
-                            constant.GetValue(null).ToString());
-                        con.Expand = true;
-                        con.DocumentationString = _documentationProvider.DocumentConstant(con);
-                        con.Subsets.SetSubsets(subsets);
-                        return con;
-                    }
-
                     Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ",
-                        "constant {0} of {1}, type is an un-recognized data type ({2})",
-                        name, constantContrainerType.FullName, constant.Name);
+                    "constant {0} does not exist in {1}",
+                    name, constantContrainerType.FullName);
 
                     return null;
                 }
 
+                if(constant.GetCustomAttributes(ScriptModuleConstantAttribute,true).Any()) continue;
+
+                
+                var type = LslTypeFromCsharpType(constant.FieldType);
+
+                if (type != null)
+                {
+                    var con = new LSLLibraryConstantSignature(type.Value, constant.Name,
+                        constant.GetValue(null).ToString());
+                    con.Expand = true;
+                    con.DocumentationString = _documentationProvider.DocumentConstant(con);
+                    con.Subsets.SetSubsets(subsets);
+                    return con;
+                }
+
                 Log.WriteLineWithHeader("[OpenSimLibraryDataReflector]: ",
-                    "constant {0} does not exist in {1}",
-                    name, constantContrainerType.FullName);
+                    "constant {0} of {1}, type is an un-recognized data type ({2})",
+                    name, constantContrainerType.FullName, constant.Name);
+
+                return null;
+
             }
 
             return null;

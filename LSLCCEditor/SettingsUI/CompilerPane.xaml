@@ -1,203 +1,247 @@
 ﻿<UserControl x:Class="LSLCCEditor.SettingsUI.CompilerPane"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
-      xmlns:compilers="clr-namespace:LibLSLCC.Compilers;assembly=LibLSLCC"
-      xmlns:settingsUi="clr-namespace:LSLCCEditor.SettingsUI"
-      mc:Ignorable="d" Name="_this" d:DesignWidth="700"  d:DesignHeight="500" Padding="0,0,15,0" MinWidth="600">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
+             xmlns:openSim="clr-namespace:LibLSLCC.Compilers.OpenSim;assembly=LibLSLCC"
+             mc:Ignorable="d" Name="_this" Padding="0,0,25,0" >
 
-    <UserControl.Resources>
-
-            
-    </UserControl.Resources>
     <Grid>
-        
-        
-       <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="Margin" Value="10,0,5,7"></Setter>
+                        <Setter Property="Margin" Value="10,0,10,7" />
+                        <Setter Property="Padding" Value="15,0,15,0" />
                     </Style>
                 </StackPanel.Resources>
-                <Button Width="90" Height="27" Click="SaveButton_OnClick">Save</Button>
-                <Button Width="90" Height="27" Click="RevertButton_OnClick">Revert</Button>
+                <Button Width="Auto" Height="27" Click="SaveButton_OnClick">Save</Button>
+                <Button Width="Auto" Height="27" Click="RevertButton_OnClick">Revert</Button>
             </StackPanel>
         </Grid>
-        <StackPanel Orientation="Vertical"  Grid.Column="1" Margin="0,0,0,15">
-            
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0,0,0,15">
+
             <StackPanel.Resources>
                 <Style TargetType="{x:Type CheckBox}">
-                    <Setter Property="Margin" Value="7,13,0,7"/>
+                    <Setter Property="Margin" Value="9,5,0,5" />
                 </Style>
                 <Style TargetType="{x:Type Grid}">
-                    <Setter Property="Margin" Value="4,10,15,5"/>
+                    <Setter Property="Margin" Value="2" />
                 </Style>
-            </StackPanel.Resources> 
-            
-            <ComboBox ItemsSource="{Binding ElementName=_this, Path=CompilerConfigurations}" SelectedItem="{Binding ElementName=_this, Path=SelectedCompilerConfiguration}" Width="Auto"/>
-            <CheckBox DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">Insert Co-Op Termination Calls</CheckBox>
-            
-            
-            <GroupBox Header="Co-Op Termination:" IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">
-            <Grid  >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                        <RowDefinition Height="50"></RowDefinition>
+                <Style TargetType="{x:Type Expander}">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Padding" Value="2" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                <Label Target="{Binding ElementName=CompilerConfigurationCombobox}">Configuration:</Label>
+                <ComboBox Name="CompilerConfigurationCombobox"
+                          ItemsSource="{Binding ElementName=_this, Path=CompilerConfigurations}"
+                          SelectedItem="{Binding ElementName=_this, Path=SelectedCompilerConfiguration, Mode=TwoWay}" />
+            </StackPanel>
+
+
+            <CheckBox DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
+                      IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">
+                Insert Co-Op Termination Calls
+            </CheckBox>
+
+
+            <Expander Header="Co-Op Termination Options" Name="CoOpTerminationOptionsExpander"
+                      IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
                     </Grid.RowDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="{x:Type TextBox}" >
-                        <Setter Property="Height" Value="29"/>
-                        <Setter Property="Grid.Column" Value="1"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    </Style>
-                    <Style TargetType="{x:Type ComboBox}" >
-                        <Setter Property="Height" Value="29"/>
-                        <Setter Property="Grid.Column" Value="1"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    </Style>
-                    <Style TargetType="{x:Type Label}">
-                        <Setter Property="HorizontalAlignment" Value="Right"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="Grid.Column" Value="0"/>
-                    </Style>
-                </Grid.Resources>
-
-                <Label  Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=CoOpTerminationFunctionName}">Function Call:</Label>
-                <TextBox Grid.Row="0" Grid.Column="1"  Name="CoOpTerminationFunctionName" DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" 
-                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall}" Width="Auto">
-                    <TextBox.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Function signature to use for co-op script stop termination calls."></TextBlock>
-                        </ToolTip>
-                    </TextBox.ToolTip>
-                 </TextBox>
-            </Grid>
-          </GroupBox>
-            
-            
-            <CheckBox DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}" Margin="7,13,0,15">Generate Class</CheckBox>
-
-            <GroupBox Header="Class Options:" IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
-            <Grid  >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"></RowDefinition>
-                    <RowDefinition Height="50"></RowDefinition>
-                    <RowDefinition Height="50"></RowDefinition>
-                    <RowDefinition Height="50"></RowDefinition>
-                    <RowDefinition Height="50"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="{x:Type TextBox}" >
-                        <Setter Property="Height" Value="29"/>
-                        <Setter Property="Grid.Column" Value="1"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    </Style>
-                    <Style TargetType="{x:Type ComboBox}" >
-                        <Setter Property="Height" Value="29"/>
-                        <Setter Property="Grid.Column" Value="1"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    </Style>
-                    <Style TargetType="{x:Type Label}">
-                        <Setter Property="HorizontalAlignment" Value="Right"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="Grid.Column" Value="0"/>
-                    </Style>
-                </Grid.Resources>
-
-                <Label  Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=NameSpaceName}">Namespace:</Label>
-                <TextBox Grid.Row="0" Grid.Column="1"  Name="NameSpaceName" DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" 
-                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassNamespace}" Width="Auto">
-                    <TextBox.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Leave blank to disable namespace generation."></TextBlock>
-                        </ToolTip>
-                    </TextBox.ToolTip>
-                 </TextBox>
-                
-                
-                <Label  Grid.Row="1" Grid.Column="0"  Target="{Binding ElementName=ClassName}">Class Name:</Label>
-                <TextBox Grid.Row="1"  Grid.Column="1" Name="ClassName" DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" 
-                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName}" Width="Auto">
-                    <TextBox.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="The name of the generated script class."></TextBlock>
-                        </ToolTip>
-                    </TextBox.ToolTip>
-                </TextBox>
-                
-                
-                
-                <Label  Grid.Row="2" Grid.Column="0"  Target="{Binding ElementName=InheritedClasses}">Inherited Classes:</Label>
-                <TextBox Grid.Row="2" Grid.Column="1" Name="InheritedClasses" DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" 
-                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassInherit}" Width="Auto">
-                    <TextBox.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Comma separated list of inherited class names."></TextBlock>
-                        </ToolTip>
-                    </TextBox.ToolTip>
-                </TextBox>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Height" Value="29" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="Height" Value="29" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
 
 
-                <Label  Grid.Row="3" Grid.Column="0"  Target="{Binding ElementName=ConstructorSignature}">Constructor Signature:</Label>
-                    <TextBox Grid.Row="3"  Grid.Column="1" Name="ConstructorSignature" DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" 
-                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorSignature}" Width="Auto">
+                    </Grid.Resources>
+
+                    <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=CoOpTerminationFunctionName}">Function Call:</Label>
+                    <TextBox Grid.Row="0" Grid.Column="1" Name="CoOpTerminationFunctionName"
+                             DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
+                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall}"
+                             Width="Auto">
                         <TextBox.ToolTip>
                             <ToolTip>
-                                <TextBlock Text="Example: (int myParam) : base(myParam)"></TextBlock>
+                                <TextBlock Text="Function signature to use for co-op script stop termination calls." />
+                            </ToolTip>
+                        </TextBox.ToolTip>
+                    </TextBox>
+                </Grid>
+            </Expander>
+
+
+            <CheckBox
+                DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
+                IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
+                Generate Class
+            </CheckBox>
+
+            <Expander Header="Class Options" Name="ClassOptionsExpander"
+                      IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Height" Value="29" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="Height" Value="29" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+
+                        </Style>
+                    </Grid.Resources>
+                    
+                    
+                     <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=ClassName}">Class Name (Required):</Label>
+                    <TextBox Grid.Row="0" Grid.Column="1" Name="ClassName"
+                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
+                             DataContext="{Binding ElementName=_this}" Text="{Binding Path=GeneratedClassName, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                             Width="Auto">
+                    </TextBox>
+                    
+
+                    <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=NameSpaceName}">Namespace:</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" Name="NameSpaceName"
+                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
+                             DataContext="{Binding ElementName=_this}" Text="{Binding Path=GeneratedClassNamespace, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                             Width="Auto">
+                    </TextBox>
+
+
+  
+
+
+                    <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=InheritedClasses}">Inherited Classes:</Label>
+                    <TextBox Grid.Row="2" Grid.Column="1" Name="InheritedClasses"
+                             DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName}"
+                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassInherit}"
+                             Width="Auto">
+                        <TextBox.ToolTip>
+                            <ToolTip>
+                                <TextBlock Text="Comma separated list of inherited class names." />
+                            </ToolTip>
+                        </TextBox.ToolTip>
+                    </TextBox>
+
+
+                    <Label Grid.Row="3" Grid.Column="0" Target="{Binding ElementName=ConstructorSignature}">Constructor Signature:</Label>
+                    <TextBox Grid.Row="3" Grid.Column="1" Name="ConstructorSignature"
+                             DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
+                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorSignature}"
+                             Width="Auto">
+                        <TextBox.ToolTip>
+                            <ToolTip>
+                                <TextBlock Text="Example: (int myParam) : base(myParam)" />
                             </ToolTip>
                         </TextBox.ToolTip>
                     </TextBox>
 
                     <Label Grid.Row="4" Grid.Column="0" Target="{Binding ElementName=ConstructorAccesibility}">Constructor Accessibility:</Label>
-                
-                <ComboBox  Grid.Row="4" Grid.Column="1" Name="ConstructorAccesibility" Width="140" HorizontalAlignment="Left" 
-                           ItemsSource="{Binding Source={converters:EnumValues {x:Type compilers:AccessibilityLevel}}}" SelectedItem="{Binding ElementName=_this, 
-                    Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorAccessibility}"/>
-  
-            </Grid>
-           </GroupBox>
-            
-            
-            <GroupBox Header="Imports" >
 
-                <DataGrid Height="200" DataContext="{Binding ElementName=_this}" 
-                          IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}"
-                          ItemsSource="{Binding ElementName=_this, Path=NamespaceImports}" 
-                          AutoGenerateColumns="False" Padding="5" CanUserResizeColumns="True" CanUserResizeRows="False" RowEditEnding="DataGrid_OnRowEditEnding">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}"  Width="500"  Header="Namespace" >
-                        </DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </GroupBox>
-            
-            <GroupBox Header="Script Header:">
+                    <ComboBox Grid.Row="4" Grid.Column="1" Name="ConstructorAccesibility" HorizontalAlignment="Left"
+                              ItemsSource="{Binding Source={converters:EnumValues {x:Type openSim:AccessibilityLevel}}}"
+                              SelectedItem="{Binding ElementName=_this, 
+                    Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorAccessibility}" />
+
+                </Grid>
+            </Expander>
+
+
+            <Expander Header="Imports"
+                      IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
                 
-                
-                <TextBox Height="300" DataContext="{Binding ElementName=_this}" Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.ScriptHeader}"/>
-       
-                
-            </GroupBox>
+                <Expander.Resources>
+                    
+                </Expander.Resources>
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <converters:ElementValidConverter x:Key="ElementValidConverter"/>
+                    </StackPanel.Resources>
+                    <ListBox Name="NamespaceNameListBox" Height="100" ScrollViewer.CanContentScroll="True"
+                                PreviewKeyDown="NamespaceListboxPreviewKeyDown" SelectionMode="Extended"
+                                ItemsSource="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Delete" Click="NamespaceListBoxContextMenuDelete_OnClick" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+    
+                    <DockPanel Margin="0,10,0,0" HorizontalAlignment="Stretch">
+                        <Label Target="{Binding ElementName=NameSpaceAddTextbox}">Name:</Label>
+                        <TextBox Name="NameSpaceAddTextbox" Margin="0,0,5,0" VerticalContentAlignment="Center"
+                                 HorizontalAlignment="Stretch" 
+                                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
+                                 Text="{Binding ElementName=_this, Path=NamespaceImportAddText, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}">
+                        </TextBox>
+                    </DockPanel>
+                    <Button HorizontalAlignment="Right" Click="NamespaceImportAdd_OnClick" Margin="2,10,5,5" 
+                            IsEnabled="{Binding ElementName=NameSpaceAddTextbox, Path=Text, Converter={StaticResource ElementValidConverter}, ConverterParameter={x:Reference NameSpaceAddTextbox}}"
+                            Padding="15,0,15,0">
+                        Add
+                    </Button>
+                </StackPanel>
+            </Expander>
+
+            <Expander Header="Script Header">
+
+
+                <TextBox Height="300" DataContext="{Binding ElementName=_this}"
+                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.ScriptHeader}" />
+
+
+            </Expander>
 
         </StackPanel>
 
     </Grid>
-</UserControl >
+</UserControl>

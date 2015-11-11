@@ -33,6 +33,8 @@ namespace LSLCCEditor.SettingsUI
             var compilerPane = new CompilerPane();
             _settingPanes.Add(compilerPane);
             compilerPane.Init(this);
+
+            SettingsPagesList.SelectedItem = compilerPane; 
         }
 
         public ObservableCollection<ISettingsPane> SettingPanes

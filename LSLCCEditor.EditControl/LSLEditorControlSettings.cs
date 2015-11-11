@@ -40,11 +40,13 @@
 // 
 // 
 #endregion
+
+using LibLSLCC.Settings;
 using LibLSLCC.Utility;
 
 namespace LSLCCEditor.EditControl
 {
-    public class LSLEditorControlSettings : SettingsBaseClass
+    public class LSLEditorControlSettings : SettingsBaseClass<LSLEditorControlSettings>
     {
 
 

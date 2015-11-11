@@ -161,8 +161,21 @@ namespace LibLSLCC.Collections
             }
         }
 
-        public object Clone()
+
+        public ObservableHashSet<T> Clone()
         {
+            ICloneable i = this;
+            return (ObservableHashSet<T>)i.Clone();
+        }
+
+        object ICloneable.Clone()
+        {
+
+            if (typeof (T).GetInterfaces().Any(x => x == typeof (ICloneable)))
+            {
+                return new ObservableHashSet<T>(_hashSet.Select(x=>(T)((ICloneable)x).Clone()));
+            }
+
             return new ObservableHashSet<T>(_hashSet);
         }
     }
