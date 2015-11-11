@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator.Enums
         /// <summary>
         /// A node that represents a vector component access expression on a vector variable.
         /// </summary>
-        VectorComponentAccess,
+        VectorOrRotationComponentAccess,
 
         /// <summary>
         /// A node that represents a rotation component access expression on a rotation variable.

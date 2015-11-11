@@ -247,7 +247,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get
             {
                 return AccessedType == LSLType.Vector
-                    ? LSLExpressionType.VectorComponentAccess
+                    ? LSLExpressionType.VectorOrRotationComponentAccess
                     : LSLExpressionType.RotationComponentAccess;
             }
         }

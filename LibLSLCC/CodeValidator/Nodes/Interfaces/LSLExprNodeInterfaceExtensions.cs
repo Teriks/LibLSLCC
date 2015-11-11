@@ -133,6 +133,29 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
+        /// Determines whether the expression is a reference to a vector or rotation component, using the dot operator.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression node represents a reference to a vector or rotation variable component via the dot operator.</returns>
+        public static bool IsVectorOrRotationComponent(this ILSLReadOnlyExprNode node)
+        {
+            return node.ExpressionType == 
+                LSLExpressionType.VectorOrRotationComponentAccess;
+        }
+
+        /// <summary>
+        /// Determines whether the given expression is a modifiable L-Value.
+        /// This is true if its a global variable, local variable, local parameter or a reference to a vector component via the dot operator.
+        /// </summary>
+        /// <param name="node">The expression node to test.</param>
+        /// <returns>True if the expression is a modifiable L-Value.</returns>
+        public static bool IsModifiableLeftValue(this ILSLReadOnlyExprNode node)
+        {
+            return node.IsVariableOrParameter() || node.IsVectorOrRotationComponent();
+        }
+
+
+        /// <summary>
         /// Determines if an expression node represents a reference to a global/local variable or parameter reference.
         /// </summary>
         /// <param name="node">The expression node to test.</param>

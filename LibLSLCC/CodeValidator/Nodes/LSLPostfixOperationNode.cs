@@ -243,7 +243,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 if (LeftExpression == null) return false;
 
-                var modifiesState = Operation.IsModifying() && LeftExpression.IsVariableOrParameter();
+                var modifiesState = Operation.IsModifying() && LeftExpression.IsModifiableLeftValue();
 
                 return (LeftExpression.HasPossibleSideEffects || modifiesState);
             }
