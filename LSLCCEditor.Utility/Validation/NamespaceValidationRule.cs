@@ -46,7 +46,7 @@ using LibLSLCC.CSharp;
 
 namespace LSLCCEditor.Utility.Validation
 {
-    public class NamespaceValidationRule : ValidationRule
+    class NamespaceValidationRule : ValidationRule
     {
         public bool AllowBlank { get; set; }
 

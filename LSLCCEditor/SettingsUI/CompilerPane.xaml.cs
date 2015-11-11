@@ -150,12 +150,12 @@ namespace LSLCCEditor.SettingsUI
 
 
         public static readonly DependencyProperty ConstructorAccessibility = DependencyProperty.Register(
-            "ConstructorAccessibility", typeof (AccessibilityLevel), typeof (CompilerPane),
-            new PropertyMetadata(default(AccessibilityLevel)));
+            "ConstructorAccessibility", typeof (MemberAccessibilityLevel), typeof (CompilerPane),
+            new PropertyMetadata(default(MemberAccessibilityLevel)));
 
-        public AccessibilityLevel ConstructorAccessibilityLevel
+        public MemberAccessibilityLevel ConstructorAccessibilityLevel
         {
-            get { return (AccessibilityLevel) GetValue(ConstructorAccessibility); }
+            get { return (MemberAccessibilityLevel) GetValue(ConstructorAccessibility); }
             set { SetValue(ConstructorAccessibility, value); }
         }
 

@@ -167,7 +167,7 @@ private static class UTILITIES
         /// Tracks what state body that LSL code generation is taking place in
         /// use to determine the names of generated event handler functions.
         /// </summary>
-        private string _currentLSLStateBody;
+        private string _currentLslStateBody;
 
 
 
@@ -228,7 +228,7 @@ private static class UTILITIES
 
         public void Reset()
         {
-            _currentLSLStateBody = "";
+            _currentLslStateBody = "";
             _indentLevel = 0;
             _binOpsUsed.Clear();
         }
@@ -1027,7 +1027,9 @@ private static class UTILITIES
 
             var constructorSig = string.IsNullOrWhiteSpace(Settings.GeneratedConstructorSignature) ? "()" : Settings.GeneratedConstructorSignature;
 
-            Writer.WriteLine(GenIndent() + Settings.GeneratedConstructorAccessibility.ToString().ToLower() + " " + className + constructorSig);
+
+
+            Writer.WriteLine(GenIndent() + Settings.GeneratedConstructorAccessibility.ToCSharpKeyword(true) + className + constructorSig);
             Writer.WriteLine(GenIndent() + "{");
 
             _indentLevel++;
@@ -1471,18 +1473,24 @@ private static class UTILITIES
                     _indentLevel++;
                 }
 
-                var cName = Settings.GeneratedClassName == null
+                var className = Settings.GeneratedClassName == null
                     ? FallbackClassName.FullSignature
                     : Settings.GeneratedClassName.FullSignature;
 
+                var classAccessibilityString = 
+                    Settings.GeneratedClassAccessibility.ToCSharpKeyword(true);
+
+
                 if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassInherit))
                 {
-                    Writer.WriteLine(GenIndent() + "class {0} : {1}", cName,
+                    Writer.WriteLine(GenIndent() + "{0}class {1} : {2}",
+                        classAccessibilityString,  className,
                         Settings.GeneratedClassInherit);
                 }
                 else
                 {
-                    Writer.WriteLine(GenIndent() + "class {0}",  cName);
+                    Writer.WriteLine(GenIndent() + "{0}class {1}",  
+                        classAccessibilityString, className);
                 }
 
                 Writer.WriteLine(GenIndent() + "{");
@@ -1596,7 +1604,7 @@ private static class UTILITIES
         {
             Writer.Write(GenIndent());
 
-            var handlerName = _currentLSLStateBody + "_event_" + node.Name;
+            var handlerName = _currentLslStateBody + "_event_" + node.Name;
 
 
             if (node.HasParameterNodes)
@@ -1656,7 +1664,7 @@ private static class UTILITIES
 
         public override bool VisitDefaultState(ILSLStateScopeNode node)
         {
-            _currentLSLStateBody = "default";
+            _currentLslStateBody = "default";
 
             var eventHandlers = node.EventHandlers;
             var i = 0;
@@ -1674,7 +1682,7 @@ private static class UTILITIES
 
         public override bool VisitDefinedState(ILSLStateScopeNode node)
         {
-            _currentLSLStateBody = node.StateName;
+            _currentLslStateBody = node.StateName;
 
             var eventHandlers = node.EventHandlers;
             var i = 0;

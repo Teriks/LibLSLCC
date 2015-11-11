@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System;
 using LibLSLCC.Collections;
 using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
@@ -61,9 +62,10 @@ namespace LibLSLCC.Compilers.OpenSim
         private CSharpClassName _generatedClassName;
         private string _generatedClassInherit;
         private string _generatedConstructorSignature;
-        private AccessibilityLevel _generatedConstructorAccessibility;
+        private MemberAccessibilityLevel _generatedConstructorAccessibility;
         private ObservableHashSet<CSharpNamespace> _generatedNamespaceImports = new ObservableHashSet<CSharpNamespace>();
         private string _scriptHeader;
+        private ClassAccessibilityLevel _generatedClassAccessibility;
 
 
         /// <summary>
@@ -155,11 +157,23 @@ namespace LibLSLCC.Compilers.OpenSim
             set { SetField(ref _generatedConstructorSignature, value, "GeneratedConstructorSignature"); }
         }
 
+
+        /// <summary>
+        /// The accessibility level of the class if GenerateClass is set to true.
+        /// defaults to <see cref="ClassAccessibilityLevel.Default"/>.
+        /// </summary>
+        public ClassAccessibilityLevel GeneratedClassAccessibility
+        {
+            get { return _generatedClassAccessibility; }
+            set { SetField(ref _generatedClassAccessibility, value, "GeneratedClassAccessibility"); }
+        }
+
+
         /// <summary>
         /// The accessibility of the constructor signature to be inserted into the generated class if GenerateClass is set to true.
-        /// defaults to AccessibilityLevel.Public.
+        /// defaults to <see cref="MemberAccessibilityLevel.Public"/>.
         /// </summary>
-        public AccessibilityLevel GeneratedConstructorAccessibility
+        public MemberAccessibilityLevel GeneratedConstructorAccessibility
         {
             get { return _generatedConstructorAccessibility; }
             set { SetField(ref _generatedConstructorAccessibility, value, "GeneratedConstructorAccessibility"); }
@@ -237,11 +251,5 @@ namespace LibLSLCC.Compilers.OpenSim
         }
     }
 
-    public enum AccessibilityLevel
-    {
-        Public,
-        Private,
-        Internal,
-        Protected,
-    }
+
 }
