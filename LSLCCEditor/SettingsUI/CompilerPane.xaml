@@ -176,10 +176,10 @@
            </GroupBox>
             
             
-            <GroupBox Header="Imports" IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
+            <GroupBox Header="Imports" >
 
                 <DataGrid Height="200" DataContext="{Binding ElementName=_this}" 
-                          
+                          IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}"
                           ItemsSource="{Binding ElementName=_this, Path=NamespaceImports}" 
                           AutoGenerateColumns="False" Padding="5" CanUserResizeColumns="True" CanUserResizeRows="False" RowEditEnding="DataGrid_OnRowEditEnding">
                     <DataGrid.Columns>

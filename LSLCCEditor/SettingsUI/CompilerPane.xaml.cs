@@ -170,18 +170,11 @@ namespace LSLCCEditor.SettingsUI
         public void Init(SettingsWindow window)
         {
 
-            ObservableHashSet<NamespaceImport> test = new ObservableHashSet<NamespaceImport>();
-
-
-            test.Add("test");
-
-
-            test[0].Name = "FUCKUP";
         }
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports = new ObservableHashSet<NamespaceImport>(this.NamespaceImports);
             AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfiguration] = CurrentCompilerConfiguration;
             AppSettings.Save();
         }
@@ -197,7 +190,11 @@ namespace LSLCCEditor.SettingsUI
         {
             var ns = e.Row.Item as NamespaceImport;
 
-            if (CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Contains(ns))
+            if (string.IsNullOrWhiteSpace(ns.Name))
+            {
+                e.Cancel = true;
+            }
+            else if (CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Contains(ns))
             {
                 e.Cancel = true;
             }

@@ -57,6 +57,10 @@ namespace LSLCCEditor.Settings
             var settingsProperties = instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance).ToArray();
 
 
+            const BindingFlags constructorBindingFlags =
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
+
             foreach (var field in settingsProperties)
             {
 
@@ -82,15 +86,16 @@ namespace LSLCCEditor.Settings
                     }
                     else
                     {
-                        var constructors = field.PropertyType.GetConstructors();
-                        if (constructors.Any(x => !x.GetParameters().Any()))
+                        var constructors = field.PropertyType.GetConstructors(constructorBindingFlags).Where(x=>!x.GetParameters().Any()).ToList();
+                        if (!constructors.Any())
                         {
-                            field.SetValue(instance, Activator.CreateInstance(field.PropertyType));
-
+                            throw new Exception(typeof (AppSettings).FullName +
+                                                ".InitNullSettingsProperties():  SettingsNode property has no parameterless constructor.");
                         }
 
-                        throw new Exception(typeof (AppSettings).FullName +
-                                            ".InitNullSettingsProperties():  SettingsNode property has no default parameterless constructor.");
+                        var constructor = constructors.First();
+                            
+                        field.SetValue(instance, constructor.Invoke(null));
                     }
                 }
             }

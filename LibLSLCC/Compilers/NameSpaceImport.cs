@@ -52,13 +52,17 @@ namespace LibLSLCC.Compilers
         private string _name;
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string> {"Name"};
 
-        public NamespaceImport()
+        private NamespaceImport()
         {
 
         }
 
         public NamespaceImport(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Name cannot be null or whitespace.", "name");
+            }
             Name = name;
         }
 
@@ -70,7 +74,14 @@ namespace LibLSLCC.Compilers
         public string Name
         {
             get { return _name; }
-            set { SetField(ref _name,value, "Name"); }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException(GetType().Name+".Name cannot be null or whitespace.", "value");
+                }
+                SetField(ref _name,value, "Name");
+            }
         }
 
         public override int GetHashCode()
