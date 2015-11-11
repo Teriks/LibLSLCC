@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System;
 using System.Windows.Markup;
 using System.Xml;
@@ -58,7 +57,7 @@ namespace LSLCCEditor.Utility.Xml
 
         public XmlSchema GetSchema()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void ReadXml(XmlReader reader)
