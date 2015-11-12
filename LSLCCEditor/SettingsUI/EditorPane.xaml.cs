@@ -27,13 +27,8 @@ namespace LSLCCEditor.SettingsUI
             Title = "Editor Settings";
         }
 
-        public int Priority{ get { return 3; } }
-
         public string Title { get; private set; }
+        public SettingsWindow Owner { get; set; }
 
-        public void Init(SettingsWindow window)
-        {
-            
-        }
     }
 }

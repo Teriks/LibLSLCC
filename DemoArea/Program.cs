@@ -8,6 +8,7 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers.OpenSim;
+using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
 
@@ -273,7 +274,6 @@ namespace Tests
 
                 
             };
-
 
 
             //a provider with no live filtering enabled, only load functions with the subset "my-lsl"

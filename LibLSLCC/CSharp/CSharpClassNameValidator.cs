@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpClassNameValidator.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,6 +109,23 @@ namespace LibLSLCC.CSharp
         public CSharpClassNameValidationResult[] GenericArguments { get; internal set; }
     }
 
+    /// <summary>
+    /// Context of a class name signature
+    /// </summary>
+    public enum CSharpClassNameType
+    {
+        /// <summary>
+        /// The class name signature is used to declare a class, it could be a generic type definition signature.
+        /// </summary>
+        Declaration,
+
+        /// <summary>
+        /// The class name signature is used to refer to the class in a initialized context such as 
+        /// after the new keyword or in a cast, it still might be generic with filled out type parameters.
+        /// </summary>
+        Initialization
+    }
+
 
     /// <summary>
     /// Tools to check the validity of raw class type names in strings
@@ -113,45 +133,87 @@ namespace LibLSLCC.CSharp
     public static class CSharpClassNameValidator
     {
         /// <summary>
-        /// Validates that the specified input string is syntacticly valid C# type reference, including generic types.
+        /// Validates that the specified input string is syntacticly valid C# type reference or class definition signature, including generic types.
+        /// The function is context sensitive to whether or not the name signature is used for declaring a class or initializing a new type.
+        /// 
+        /// <paramref name="signatureType"/> can be set to <see cref="CSharpClassNameType.Declaration"/> or <see cref="CSharpClassNameType.Initialization"/> respectively.
         /// </summary>
+        /// <remarks>
+        /// This function will detect misuse of keywords and built in type names the class definition signature used to define a type, even generic types, when used in
+        /// <see cref="CSharpClassNameType.Declaration"/> mode.  <see cref="CSharpClassNameType.Initialization"/> mode allows for qualified name references using the '.' operator.
+        /// </remarks>
         /// <param name="input">The input string containing the proposed type value.</param>
+        /// <param name="signatureType">The context this signature is being used in, class declaration, or class initialization.</param>
         /// <returns><see cref="CSharpClassNameValidationResult"/></returns>
-        public static CSharpClassNameValidationResult Validate(string input)
+        public static CSharpClassNameValidationResult Validate(string input,
+            CSharpClassNameType signatureType = CSharpClassNameType.Declaration)
         {
-            return _Validate(input, 0);
+            return _Validate(input, signatureType, 0);
         }
 
-        private static CSharpClassNameValidationResult _Validate(string input, int index)
+        private class Qualification
         {
-            string basePart = "";
-            List<CSharpClassNameValidationResult> genericArgs = new List<CSharpClassNameValidationResult>();
-
-            List<Tuple<StringBuilder, int>> qualifications = new List<Tuple<StringBuilder, int>>()
+            public Qualification(StringBuilder builder, int parseIndex)
             {
-                new Tuple<StringBuilder, int>(new StringBuilder(), 0)
+                Builder = builder;
+                ParseIndex = parseIndex;
+            }
+
+            public StringBuilder Builder { get; set; }
+            public int ParseIndex { get; set; }
+        }
+
+        private static CSharpClassNameValidationResult _Validate(string input, CSharpClassNameType signatureType,
+            int index)
+        {
+            string fullyQualifiedName = "";
+            var genericArgs = new List<CSharpClassNameValidationResult>();
+
+            var qualifications = new List<Qualification>()
+            {
+                new Qualification(new StringBuilder(), index)
             };
 
 
             string genericPart = "";
             bool isGeneric = false;
 
+
             int genericBrackets = 0;
 
             foreach (var c in input)
             {
                 index++;
+                qualifications.Last().ParseIndex = index;
 
+                //enter generic arguments
                 if (c == '<')
                 {
                     isGeneric = true;
                     genericBrackets++;
                 }
 
+                //check if we have gotten to the generic part of the type signature yet (if any)
                 if (!isGeneric)
                 {
                     if (c == '.')
                     {
+                        //qualifier operator is not allowed anywhere in declaration signatures because
+                        //they only consist of a raw type name and generic argument specifications
+                        if (signatureType == CSharpClassNameType.Declaration)
+                        {
+                            return new CSharpClassNameValidationResult
+                            {
+                                Success = false,
+                                ErrorDescription =
+                                    string.Format(
+                                        "Index {0}: '.' name qualifier operator is not valid in a class name/generic " +
+                                        "type parameter used in the declaration class.", index),
+                                ErrorIndex = index,
+                            };
+                        }
+
+                        //detect a missing qualifier section that's terminated with a dot.
                         if (string.IsNullOrWhiteSpace(qualifications.Last().ToString()))
                         {
                             return new CSharpClassNameValidationResult
@@ -163,20 +225,25 @@ namespace LibLSLCC.CSharp
                             };
                         }
 
-                        qualifications.Add(new Tuple<StringBuilder, int>(new StringBuilder(), index));
+                        qualifications.Add(new Qualification(new StringBuilder(), index));
                     }
                     else
                     {
-                        qualifications.Last().Item1.Append(c);
+                        qualifications.Last().Builder.Append(c);
                     }
                 }
 
                 if (genericBrackets == 0 && !isGeneric)
                 {
-                    basePart += c;
+                    //accumulate to our fully qualified name
+                    fullyQualifiedName += c;
                 }
                 else if (genericBrackets == 0 && isGeneric)
                 {
+                    //we have exited even pairs of brackets and are on the
+                    //other side of the generic arguments at the end of the signature
+                    //there should not be anything here
+
                     return new CSharpClassNameValidationResult
                     {
                         Success = false,
@@ -186,107 +253,135 @@ namespace LibLSLCC.CSharp
                 }
                 else if (!(genericBrackets == 1 && c == '<'))
                 {
+                    //passed the start of the first < in the signature by 1
                     if ((c == ',' || c == '>') && genericBrackets == 1)
                     {
-                        var validateGenericArgument = _Validate(genericPart.Trim(), index);
+                        //we have accumulated a type argument suitable for recursive decent
+                        //validate it recursively
+                        var validateGenericArgument = _Validate(genericPart.Trim(), signatureType, index);
 
+                        //return immediately on failure
                         if (!validateGenericArgument.Success) return validateGenericArgument;
 
+                        //add the validated 'tree'
                         genericArgs.Add(validateGenericArgument);
 
+                        //reset the accumulator
                         genericPart = "";
                     }
                     else
                     {
+                        //acumulate until we hit a comma or the > character
                         genericPart += c;
                     }
                 }
 
                 if (c == '>')
                 {
+                    //exit a generic type scope
                     genericBrackets--;
                 }
-
-                
             }
 
+            
             if (genericBrackets > 0)
             {
+                //something is amiss with bracket matching
                 return new CSharpClassNameValidationResult
                 {
                     Success = false,
-                    ErrorDescription = "mismatched generic brackets."
+                    ErrorDescription = string.Format("Index {0}: mismatched generic brackets.", index),
+                    ErrorIndex = index
                 };
             }
 
-
+            //there may be only one qualification, in which case
+            //the base name is also the fully qualified name.
             var baseName = qualifications.Last();
 
             if (qualifications.Count > 1)
             {
+                //uses qualified names, this is definitely an initialization signature
+                //because the qualifier '.' operator returns an error in declaration signatures
+                //above the recursive call to validate
+
                 foreach (var name in qualifications)
                 {
-                    if (string.IsNullOrWhiteSpace(name.Item1.ToString()))
+                    if (string.IsNullOrWhiteSpace(name.Builder.ToString()))
                     {
                         return new CSharpClassNameValidationResult
                         {
                             Success = false,
                             ErrorDescription =
-                                string.Format("Index {0}:  qualified type name '{1}' is incomplete.", name.Item2,
-                                    basePart),
-                            ErrorIndex = name.Item2
+                                string.Format("Index {0}:  qualified type name '{1}' is incomplete.", name.ParseIndex,
+                                    fullyQualifiedName),
+                            ErrorIndex = name.ParseIndex
                         };
                     }
                 }
 
-                foreach (var name in qualifications)
+                //is my fully qualified non generic type a known built in type?
+                if ((Type.GetType(fullyQualifiedName, false) == null))
                 {
-                    //allow primitive types like int
-                    if (Type.GetType(basePart, false) == null &&
-                        !CSharpCompilerSingleton.Compiler.IsValidIdentifier(name.Item1.ToString()))
+                    //no, not build in type, check everything for syntax errors
+
+                    foreach (var name in qualifications)
                     {
-                        return new CSharpClassNameValidationResult
+                        //check for syntax errors in the qualified name pieces, they need to be valid ID's and not keywords
+                        //IsValidIdentifier takes care of both these criteria
+                        if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(name.Builder.ToString()))
                         {
-                            Success = false,
-                            ErrorDescription =
-                                string.Format("Index {0}: '{1}' is not valid in the given qualified type name '{2}'.",
-                                    name.Item2, name.Item1, basePart),
-                            ErrorIndex = name.Item2
-                        };
+                            //sound something funky
+                            return new CSharpClassNameValidationResult
+                            {
+                                Success = false,
+                                ErrorDescription =
+                                    string.Format(
+                                        "Index {0}: '{1}' is not valid in the given qualified type name '{2}'.",
+                                        name.ParseIndex, name.Builder, fullyQualifiedName),
+                                ErrorIndex = name.ParseIndex
+                            };
+                        }
                     }
                 }
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(baseName.Item1.ToString()))
+                //single type argument to a generic type
+                if (string.IsNullOrWhiteSpace(baseName.Builder.ToString()))
                 {
                     return new CSharpClassNameValidationResult
                     {
                         Success = false,
-                        ErrorDescription = string.Format("Index {0}:  missing generic type specifier/type name.", baseName.Item2),
-                        ErrorIndex = baseName.Item2,
+                        ErrorDescription = string.Format("Index {0}:  missing generic {1} name.",
+                            baseName.ParseIndex,
+                            signatureType == CSharpClassNameType.Declaration ? "argument" : "type"),
+                        ErrorIndex = baseName.ParseIndex,
                     };
                 }
 
-                //allow primitive types like int 
-                if (Type.GetType(baseName.Item1.ToString(), false) == null &&
-                    !CSharpCompilerSingleton.Compiler.IsValidIdentifier(baseName.Item1.ToString()))
+                //allow built in types only in initialization signatures, always disallow keywords and non ID's
+                //IsValidIdentifier takes care of the later
+                if ((Type.GetType(baseName.Builder.ToString(), false) == null && signatureType == CSharpClassNameType.Declaration) &&
+                    !CSharpCompilerSingleton.Compiler.IsValidIdentifier(baseName.Builder.ToString()))
                 {
                     return new CSharpClassNameValidationResult
                     {
                         Success = false,
                         ErrorDescription =
-                            string.Format("Index {0}: '{1}' is not a valid type name.", baseName.Item2, baseName.Item1),
-                        ErrorIndex = baseName.Item2
+                            string.Format("Index {0}: '{1}' is not a valid {2} name.", baseName.ParseIndex,
+                                baseName.Builder,
+                                signatureType == CSharpClassNameType.Declaration ? "generic argument" : "type"),
+                        ErrorIndex = baseName.ParseIndex
                     };
                 }
             }
 
-
+            //success
             return new CSharpClassNameValidationResult()
             {
-                QualifiedName = basePart,
-                BaseName = baseName.Item1.ToString(),
+                QualifiedName = fullyQualifiedName,
+                BaseName = baseName.Builder.ToString(),
                 GenericArguments = genericArgs.ToArray(),
                 IsGeneric = isGeneric,
                 Success = true

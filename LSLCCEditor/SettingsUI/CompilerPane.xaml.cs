@@ -144,8 +144,14 @@ namespace LSLCCEditor.SettingsUI
 
             SelectedCompilerConfiguration = CompilerConfigurations.First();
 
-
+            this.Loaded += OnLoaded;
             InitializeComponent();
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Owner.MinWidth = Owner.ActualWidth+50;
+            Owner.MinHeight = Owner.ActualHeight+50;
         }
 
 
@@ -171,10 +177,7 @@ namespace LSLCCEditor.SettingsUI
         }
 
         public string Title { get; private set; }
-
-        public void Init(SettingsWindow window)
-        { 
-        }
+        public SettingsWindow Owner { get; set; }
 
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)

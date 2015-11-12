@@ -1,11 +1,13 @@
-﻿namespace LSLCCEditor.SettingsUI
+﻿using System.Windows.Forms;
+
+namespace LSLCCEditor.SettingsUI
 {
     public interface ISettingsPane
     {
-        int Priority { get; }
 
         string Title { get; }
 
-        void Init(SettingsWindow window);
+
+        SettingsWindow Owner { get; set; }
     }
 }

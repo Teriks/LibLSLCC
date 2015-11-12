@@ -6,7 +6,7 @@
              xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
              xmlns:openSim="clr-namespace:LibLSLCC.Compilers.OpenSim;assembly=LibLSLCC"
              xmlns:cSharp="clr-namespace:LibLSLCC.CSharp;assembly=LibLSLCC"
-             mc:Ignorable="d" Name="_this" Padding="0,0,25,0" >
+             mc:Ignorable="d" Name="_this" MinWidth="500" Padding="5">
 
     <Grid>
 

@@ -26,12 +26,10 @@ namespace LSLCCEditor.SettingsUI
             Title = "Completion Settings";
         }
 
-        public int Priority { get { return 2; } }
-        public string Title { get; private set; }
 
-        public void Init(SettingsWindow window)
-        {
-            
-        }
+        public string Title { get; private set; }
+        public SettingsWindow Owner { get; set; }
+
+
     }
 }

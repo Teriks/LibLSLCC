@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Settings" Height="467" Width="824" Name="_this" DataContext="{Binding ElementName=_this}" SizeToContent="Width" ResizeMode="CanResizeWithGrip">
+        Title="Settings" Height="467" Width="824" Name="_this" DataContext="{Binding ElementName=_this}" ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -12,7 +12,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".30*"/>
+                <ColumnDefinition Width=".28*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
@@ -27,9 +27,12 @@
                 </ListBox>
             </Border>
 
-            <Border Grid.Column="1" BorderBrush="Gainsboro" BorderThickness="0.5,1,1,1" >
-                <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                    <ContentPresenter  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}" Margin="5"></ContentPresenter>
+            <Border Grid.Column="1" BorderBrush="Gainsboro" BorderThickness="0.5,1,1,1"  >
+                <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
+                    <ContentPresenter 
+                                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}" Margin="5" >
+                        
+                    </ContentPresenter>
                 </ScrollViewer>
             </Border>
         </Grid>

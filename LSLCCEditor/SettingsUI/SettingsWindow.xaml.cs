@@ -30,9 +30,9 @@ namespace LSLCCEditor.SettingsUI
             var myType = typeof(SettingsWindow);
             var panes = myType.Assembly.GetTypes().Where(t => string.Equals(t.Namespace, myType.Namespace, StringComparison.Ordinal) && t.GetInterfaces().Any(i => i == typeof(ISettingsPane)));
 
-            var compilerPane = new CompilerPane();
+            var compilerPane = new CompilerPane() {Owner = this};
             _settingPanes.Add(compilerPane);
-            compilerPane.Init(this);
+            
 
             SettingsPagesList.SelectedItem = compilerPane; 
         }
