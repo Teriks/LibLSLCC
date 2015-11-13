@@ -56,7 +56,7 @@ if want to.
 LibLSLCC includes a CSharp code generator that targets the OpenSim runtime.
 
 The Code Validator and OpenSim code generator in LibLSLCC have both been designed
-with the intent of implementing Linden LSL with 100 percent cross compatibility.
+with the intent of implementing Linden LSL with near 100 percent cross compatibility.
 
 The project is basically a complete reverse engineering of the Linden compiler's
 Grammar/Rules and generated code behavior.
@@ -106,9 +106,9 @@ The Code Validator/OpenSim Code Generator Features:
    port over without breaking, as well as other funky scripts that rely
    on Right to Left evaluation being the norm.
 	  
- * Correct treatment of vectors/rotations/lists and strings as booleans.
+ * Correct treatment of vectors/rotations/lists/keys and strings as booleans.
 	
- * Vectors and rotations can now be negated.
+ * Negatable vectors and rotations.
  
  * Support for certain unicode characters in script symbols, (Same characters the linden Compiler allows)
 	
@@ -122,9 +122,11 @@ The Code Validator/OpenSim Code Generator Features:
 The project also includes full featured LSL Editor that was originally built to test the compiler library.
 It has since developed into a full blown multi-tabbed IDE that is built on top of LibLSLCC's parsing framework.
 
-Please take note that LibLSLCCEditor and its related projects are **Windows Only**, and you can 
-only build the **LibLSLCC-WithEditor*.sln** solution's on Windows using a version of Visual Studio that
-support's targeting the .NET 4.5 framework.  
+Please take note that LSLCCEditor and its related projects are **Windows Only**, and you can 
+only build the __LibLSLCC-WithEditor*.sln__ solution's on Windows using a version of Visual Studio that
+support's targeting the .NET 4.5 framework.
+
+
 
 VS2015 is your best bet, its what I use personally.  However if your version of Visual Studio's
 support's .NET 4.5, you will probably be able to build the Editor project files with it.
@@ -144,8 +146,8 @@ LSLCCEditor Features:
 	
  * Library data for both Linden and Opensim SecondLife servers. 
 	
- * Compilation to CSharp code for OpenSim.
-	 (CO-OP script stop mode cannot be enabled in the editor yet.)
+ * Compilation to CSharp code for OpenSim as either
+    client uploadable code or plain server side code. 
 	
 
  
@@ -169,7 +171,7 @@ http://www.antlr.org/index.html
 
 ===
 
-The ***LibraryDataScrapingTools** project depends on **System.Data.SQLite**
+The ***LibraryDataScrapingTool** project depends on **System.Data.SQLite**
 when compiled on Windows.  When its compiled on mono it uses **Mono.Data.Sqlite**.
 
 see here: 
