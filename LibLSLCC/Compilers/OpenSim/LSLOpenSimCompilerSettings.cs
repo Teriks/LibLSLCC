@@ -63,7 +63,7 @@ namespace LibLSLCC.Compilers.OpenSim
         private string _generatedClassInherit;
         private string _generatedConstructorSignature;
         private MemberAccessibilityLevel _generatedConstructorAccessibility;
-        private ObservableHashSet<CSharpNamespace> _generatedNamespaceImports = new ObservableHashSet<CSharpNamespace>();
+        private ObservableSettingsHashSet<CSharpNamespace> _generatedNamespaceImports = new ObservableSettingsHashSet<CSharpNamespace>();
         private string _scriptHeader;
         private ClassAccessibilityLevel _generatedClassAccessibility;
 
@@ -112,7 +112,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <summary>
         /// This set should contain all the namespace's that the generated code should import
         /// </summary>
-        public ObservableHashSet<CSharpNamespace> GeneratedNamespaceImports
+        public ObservableSettingsHashSet<CSharpNamespace> GeneratedNamespaceImports
         {
             get { return _generatedNamespaceImports; }
             set { SetField(ref _generatedNamespaceImports, value, "GeneratedNamespaceImports"); }

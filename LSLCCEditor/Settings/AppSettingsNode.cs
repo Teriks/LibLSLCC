@@ -40,6 +40,8 @@
 // 
 // 
 #endregion
+
+using System;
 using System.Linq;
 using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;
@@ -56,13 +58,18 @@ namespace LSLCCEditor.Settings
     /// </summary>
     public class AppSettingsNode : SettingsBaseClass<AppSettingsNode>
     {
-        private XmlDictionary<string, CompilerSettingsNode> _compilerConfigurations;
+        private XmlDictionary<string, CompilerConfigurationNode> _compilerConfigurations;
         private XmlDictionary<string, EditorControlSettingsNode> _editorControlConfigurations;
         private string _currentEditorControlConfiguration;
         private string _currentCompilerConfiguration;
+        private bool _canEdit;
 
 
-
+        public bool CanEdit
+        {
+            get { return _canEdit; }
+            set { _canEdit = value; }
+        }
 
 
         private const string ClientSideScriptCompilerHeader =
@@ -208,10 +215,10 @@ namespace LSLCCEditor.Settings
         {
             public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
             {
+
                 if (propertyValue == null) return true;
 
-                var dict = (XmlDictionary<string, CompilerSettingsNode>)propertyValue;
-
+                var dict = (XmlDictionary<string, CompilerConfigurationNode>)propertyValue;
 
                 if (dict.Count == 0)
                 {
@@ -222,7 +229,7 @@ namespace LSLCCEditor.Settings
                 {
                     if (kvp.Value != null) continue;
 
-                    var initNode = new CompilerSettingsNode();
+                    var initNode = new CompilerConfigurationNode();
                     dict[kvp.Key] = initNode;
                     DefaultValueInitializer.Init(initNode);
                 }
@@ -232,10 +239,10 @@ namespace LSLCCEditor.Settings
 
             public object GetDefaultValue(object settingsNode)
             {
-                var d = new XmlDictionary<string, CompilerSettingsNode>();
+                var d = new XmlDictionary<string, CompilerConfigurationNode>();
 
 
-                var clientCode = new CompilerSettingsNode
+                var clientCode = new CompilerConfigurationNode
                 {
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
                 };
@@ -244,7 +251,7 @@ namespace LSLCCEditor.Settings
                 d.Add("OpenSim Client Code", clientCode);
 
 
-                var clientCodeCoOp = new CompilerSettingsNode
+                var clientCodeCoOp = new CompilerConfigurationNode
                 {
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
                 };
@@ -256,7 +263,7 @@ namespace LSLCCEditor.Settings
                 d.Add("OpenSim Client Code (co-op Stop)", clientCodeCoOp);
 
 
-                var serverCode = new CompilerSettingsNode
+                var serverCode = new CompilerConfigurationNode
                 {
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
                 };
@@ -266,7 +273,7 @@ namespace LSLCCEditor.Settings
 
 
 
-                var serverCodeCoOp = new CompilerSettingsNode
+                var serverCodeCoOp = new CompilerConfigurationNode
                 {
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
                 };
@@ -286,7 +293,7 @@ namespace LSLCCEditor.Settings
 
 
         [DefaultValueFactory(typeof (CompilerConfigurationsDefaultFactory), initOrder: 2)]
-        public XmlDictionary<string, CompilerSettingsNode> CompilerConfigurations
+        public XmlDictionary<string, CompilerConfigurationNode> CompilerConfigurations
         {
             get { return _compilerConfigurations; }
             set { SetField(ref _compilerConfigurations, value, "CompilerConfigurations"); }
@@ -336,6 +343,61 @@ namespace LSLCCEditor.Settings
         {
             get { return _currentCompilerConfiguration; }
             set { SetField(ref _currentCompilerConfiguration, value, "CurrentCompilerConfiguration"); }
+        }
+
+        public void AddCompilerConfiguration(string configurationName)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.", "configurationName");
+            }
+
+            if (CompilerConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(string.Format("Compiler configuration named {0} already exist.", "configurationName"));
+            }
+
+
+            ;
+            CompilerConfigurations.Add(configurationName, DefaultValueInitializer.Init(new CompilerConfigurationNode()));
+        }
+
+
+        public void RemoveCompilerConfiguration(string configurationName, string newCurrentConfiguration)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.", "configurationName");
+            }
+
+            if (string.IsNullOrWhiteSpace(newCurrentConfiguration))
+            {
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.", "newCurrentConfiguration");
+            }
+
+
+            if (!CompilerConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(string.Format("Compiler configuration named {0} does not exist.", "configurationName"));
+            }
+
+            if (!CompilerConfigurations.ContainsKey(newCurrentConfiguration))
+            {
+                throw new ArgumentException(string.Format("Compiler configuration named {0} does not exist.", "newCurrentConfiguration"));
+            }
+
+            if (CompilerConfigurations.Count == 1)
+            {
+                throw new InvalidOperationException(
+                    "There must be at least one compiler configuration present in the "+
+                    "application settings, cannot remove the configuration as it is the only one present.");
+            }
+            
+
+            CompilerConfigurations.Remove(configurationName);
+
+            CurrentCompilerConfiguration = newCurrentConfiguration;
+
         }
     }
 }

@@ -73,7 +73,7 @@ namespace LibLSLCC.CSharp
                 throw new ArgumentException("Class signature string cannot be whitespace.", "fullSignature");
             }
 
-            _validatedName = CSharpClassNameValidator.Validate(fullSignature);
+            _validatedName = CSharpClassNameValidator.ValidateDeclaration(fullSignature);
 
             if (!_validatedName.Success)
             {
@@ -114,7 +114,7 @@ namespace LibLSLCC.CSharp
                     throw new ArgumentException("Class signature string cannot be whitespace.", "value");
                 }
 
-                var vName = CSharpClassNameValidator.Validate(value);
+                var vName = CSharpClassNameValidator.ValidateDeclaration(value);
 
                 if (!vName.Success)
                 {

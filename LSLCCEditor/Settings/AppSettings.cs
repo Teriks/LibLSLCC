@@ -52,31 +52,40 @@ namespace LSLCCEditor.Settings
 
     public static class AppSettings
     {
+        private const string CurrentSettingsVersion = "DEE025C9-87F0-40DB-95DB9-992A01A1B11D9";
+
         private static readonly SettingsManager<AppSettingsNode> SettingsManager =
             new SettingsManager<AppSettingsNode>();
+
+        private static string _appDataDir;
+        private static string _settingsFile;
+        private static string _settingsVersionFile;
 
 
         public static AppSettingsNode Settings { get { return SettingsManager.Settings; } }
 
 
-        public static string AppDataDir { get; private set; }
-
-        public static string SettingsFile { get; private set; }
-
-
-
-        static AppSettings()
+        public static string AppDataDir
         {
-            AppDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LibLSLCC", "LSLCCEditor");
-
-            Directory.CreateDirectory(AppDataDir);
-
-            SettingsFile = Path.Combine(AppDataDir, "settings.xml");
-
-
-            SettingsManager.ConfigError += SettingsManagerOnConfigError;
-
+            get
+            {
+                return _appDataDir ??
+                       (_appDataDir =
+                           Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LibLSLCC",
+                               "LSLCCEditor"));
+            }
         }
+
+        public static string SettingsFile
+        {
+            get { return _settingsFile ?? (_settingsFile = Path.Combine(AppDataDir, "settings.xml")); }
+        }
+
+        public static string SettingsVersionFile
+        {
+            get { return _settingsVersionFile ?? (_settingsVersionFile = Path.Combine(AppDataDir, "settings.ver")); }
+        }
+
 
         private static void SettingsManagerOnConfigError(object sender, SettingsManagerConfigErrorEventArgs settingsManagerConfigErrorEventArgs)
         {
@@ -84,7 +93,7 @@ namespace LSLCCEditor.Settings
             {
                 case SettingsErrorType.SyntaxError:
                     MessageBox.Show(
-                        "There was a problem with the application settings, defaults have been re-applied",
+                        "There was a problem with the application settings, default settings have been re-applied.",
                         "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 
@@ -116,6 +125,52 @@ namespace LSLCCEditor.Settings
 
         public static void Load()
         {
+
+            Directory.CreateDirectory(AppDataDir);
+
+            try
+            {
+                if (!File.Exists(SettingsVersionFile))
+                {
+                    File.WriteAllText(SettingsVersionFile, CurrentSettingsVersion);
+                }
+                else
+                {
+                    var versionCheck = File.ReadAllText(SettingsVersionFile);
+                    if (versionCheck != CurrentSettingsVersion)
+                    {
+                        if (File.Exists(SettingsFile))
+                        {
+                            File.Delete(SettingsFile);
+                        }
+
+                        File.WriteAllText(SettingsVersionFile, CurrentSettingsVersion);
+
+                        MessageBox.Show(
+                        "A version change in the application settings has been detected, " +
+                        "default settings will be applied.  ", "Settings Version Change",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(
+                    "There was a problem reading/writing the application settings files, " +
+                    "please make sure they are not locked by another application.  "
+                    + "The application will now exit."
+                    + Environment.NewLine
+                    + Environment.NewLine + "Error: " + e.Message, "Settings Read Error",
+                    MessageBoxButtons.OK);
+
+                Application.Exit();
+
+            }
+
+
+            SettingsManager.ConfigError += SettingsManagerOnConfigError;
+
             SettingsManager.Load(SettingsFile);
         }
     }

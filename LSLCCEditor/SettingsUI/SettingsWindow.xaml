@@ -4,7 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Settings" Height="467" Width="824" Name="_this" DataContext="{Binding ElementName=_this}" ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight">
+        Title="Settings" Height="467" Width="824" Name="_this"
+        DataContext="{Binding ElementName=_this}"
+        ResizeMode="CanResizeWithGrip"
+        SizeToContent="WidthAndHeight" 
+        WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>

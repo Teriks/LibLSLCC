@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using LibLSLCC.Settings;
 using LibLSLCC.Utility;
 

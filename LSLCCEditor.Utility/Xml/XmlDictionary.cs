@@ -40,16 +40,18 @@
 // 
 // 
 #endregion
-using System.Collections.Generic;
+using System;
+using System.Collections.Specialized;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibLSLCC.Collections;
 
 namespace LSLCCEditor.Utility.Xml
 {
     [XmlRoot("Map")]
     public class XmlDictionary<TKey, TValue>
-        : Dictionary<TKey, TValue>, IXmlSerializable
+        : ObservableDictionary<TKey, TValue>, IXmlSerializable
     {
         #region IXmlSerializable Members
         public XmlSchema GetSchema()
@@ -110,5 +112,6 @@ namespace LSLCCEditor.Utility.Xml
             }
         }
         #endregion
+
     }
 }

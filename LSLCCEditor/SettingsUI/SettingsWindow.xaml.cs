@@ -20,7 +20,7 @@ namespace LSLCCEditor.SettingsUI
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        public readonly ObservableCollection<ISettingsPane> _settingPanes = new ObservableCollection<ISettingsPane>();
+        private readonly ObservableCollection<ISettingsPane> _settingPanes = new ObservableCollection<ISettingsPane>();
 
         public SettingsWindow()
         {
@@ -30,7 +30,7 @@ namespace LSLCCEditor.SettingsUI
             var myType = typeof(SettingsWindow);
             var panes = myType.Assembly.GetTypes().Where(t => string.Equals(t.Namespace, myType.Namespace, StringComparison.Ordinal) && t.GetInterfaces().Any(i => i == typeof(ISettingsPane)));
 
-            var compilerPane = new CompilerPane() {Owner = this};
+            var compilerPane = new CompilerPane() {OwnerSettingsWindow = this};
             _settingPanes.Add(compilerPane);
             
 

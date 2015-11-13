@@ -50,13 +50,11 @@ using System.Text;
 
 namespace LibLSLCC.Collections
 {
-
-    public interface IObservableHashSetItem : INotifyPropertyChanging
-    {
-        IReadOnlyHashedSet<string> HashEqualityPropertyNames { get; }
-    }
-
-
+    /// <summary>
+    /// Observable HashSet
+    /// </summary>
+    /// <seealso cref="IObservableHashSetItem"/>
+    /// <typeparam name="T">The item type the hash set holds.</typeparam>
     public class ObservableHashSet<T> : ObservableCollection<T>, ICloneable
     {
 
@@ -161,14 +159,8 @@ namespace LibLSLCC.Collections
             }
         }
 
-
-        public ObservableHashSet<T> Clone()
-        {
-            ICloneable i = this;
-            return (ObservableHashSet<T>)i.Clone();
-        }
-
-        object ICloneable.Clone()
+        
+        public virtual object Clone()
         {
 
             if (typeof (T).GetInterfaces().Any(x => x == typeof (ICloneable)))

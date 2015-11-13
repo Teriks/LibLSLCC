@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -354,9 +355,6 @@ namespace Tests
 
             //Use ours, we only defined a few things
             validatorServices.LibraryDataProvider = myProvider;
-
-
-
 
 
             Console.WriteLine("\n\nSyntax Checking Demo Code...\n\n");

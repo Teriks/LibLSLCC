@@ -68,7 +68,6 @@ namespace LibLSLCC.CSharp
 
         public static CSharpNamespaceValidatorResult Validate(string namespaceName)
         {
-
             if (DoubleDot.IsMatch(namespaceName))
             {
                 return new CSharpNamespaceValidatorResult(false, "'..' is not valid in a namespace name.");
@@ -78,7 +77,7 @@ namespace LibLSLCC.CSharp
             {
                 if (string.IsNullOrWhiteSpace(item))
                 {
-                    return new CSharpNamespaceValidatorResult(false, "namespace is incomplete.");
+                    return new CSharpNamespaceValidatorResult(false, "The namespace name is incomplete.");
                 }
 
                 if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(item))

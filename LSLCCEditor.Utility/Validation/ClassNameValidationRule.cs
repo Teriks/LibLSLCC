@@ -65,7 +65,7 @@ namespace LSLCCEditor.Utility.Validation
                 return AllowBlank ? ValidationResult.ValidResult : new ValidationResult(false, "you must supply a class name.");
             }
 
-            var result = CSharpClassNameValidator.Validate(input);
+            var result = CSharpClassNameValidator.ValidateDeclaration(input);
 
             if (result.IsGeneric && !AllowGenerics)
             {

@@ -54,6 +54,8 @@
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Collections\CloneableExtensions.cs" />
+    <Compile Include="Collections\IObservableHashSetItem.cs" />
+    <Compile Include="Collections\ObservableDictionary.cs" />
     <Compile Include="Collections\ObservableHashSet.cs" />
     <Compile Include="CSharp\ClassAccessibilityLevel.cs" />
     <Compile Include="CSharp\CSharpClassName.cs" />
@@ -89,9 +91,12 @@
     <Compile Include="LibraryData\Reflection\LSLReflectionTypeMappingException.cs" />
     <Compile Include="LibraryData\Reflection\LSLMultiMethodFilter.cs" />
     <Compile Include="LibraryData\Reflection\LSLTypeConverterMap.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Settings\DefaultValueFactoryAttribute.cs" />
     <Compile Include="Settings\DefaultValueInitializer.cs" />
     <Compile Include="Settings\IDefaultSettingsValueFactory.cs" />
+    <Compile Include="Settings\ObservableSettingsCollection.cs" />
+    <Compile Include="Settings\ObservableSettingsHashSet.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\SettingsPropertyChangedEventArgs.cs" />
     <Compile Include="Settings\SettingsPropertyChangingEventArgs.cs" />

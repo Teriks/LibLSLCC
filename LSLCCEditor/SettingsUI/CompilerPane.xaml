@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
-             xmlns:openSim="clr-namespace:LibLSLCC.Compilers.OpenSim;assembly=LibLSLCC"
              xmlns:cSharp="clr-namespace:LibLSLCC.CSharp;assembly=LibLSLCC"
-             mc:Ignorable="d" Name="_this" MinWidth="500" Padding="5">
+             mc:Ignorable="d" Name="_this" MinWidth="500" Padding="5" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
 
     <Grid>
 
@@ -22,9 +21,13 @@
                         <Setter Property="Margin" Value="10,0,10,7" />
                         <Setter Property="Padding" Value="15,0,15,0" />
                     </Style>
+                    <converters:IntegerGreaterThanToBoolConverter GreaterThan="1" x:Key="IntegerGreaterThanOne" ></converters:IntegerGreaterThanToBoolConverter>
                 </StackPanel.Resources>
-                <Button Width="Auto" Height="27" Click="SaveButton_OnClick">Save</Button>
-                <Button Width="Auto" Height="27" Click="RevertButton_OnClick">Revert</Button>
+                <Button Width="Auto" Height="27" Click="New_OnClick">New</Button>
+                <Button Width="Auto" Height="27" Click="Save_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Save</Button>
+                <Button Width="Auto" Height="27" Click="Revert_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Revert</Button>
+                <Button Width="Auto" Height="27" Click="Delete_OnClick" IsEnabled="{Binding ElementName=_this, Path=CompilerConfigurationNames.Count, 
+                    Converter={StaticResource IntegerGreaterThanOne}}">Delete</Button>
             </StackPanel>
         </Grid>
         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0,0,0,15">
@@ -42,25 +45,26 @@
                     <Setter Property="BorderThickness" Value="2" />
                     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
                     <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                    
                 </Style>
             </StackPanel.Resources>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                 <Label Target="{Binding ElementName=CompilerConfigurationCombobox}">Configuration:</Label>
                 <ComboBox Name="CompilerConfigurationCombobox"
-                          ItemsSource="{Binding ElementName=_this, Path=CompilerConfigurations}"
-                          SelectedItem="{Binding ElementName=_this, Path=SelectedCompilerConfiguration, Mode=TwoWay}" />
+                          DataContext="{Binding ElementName=_this}"
+                          ItemsSource="{Binding Path=CompilerConfigurationNames, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding Path=SelectedCompilerConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
 
 
-            <CheckBox DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
-                      IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">
+            <CheckBox DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}" Checked="InsertCoOpTerminationCalls_Checked" Unchecked="InsertCoOpTerminationCalls_Unchecked"
+                      IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls, UpdateSourceTrigger=PropertyChanged}">
                 Insert Co-Op Termination Calls
             </CheckBox>
 
 
-            <Expander Header="Co-Op Termination Options" Name="CoOpTerminationOptionsExpander"
-                      IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.InsertCoOpTerminationCalls}">
+            <Expander Header="Co-Op Termination Options" Name="CoOpTerminationOptionsExpander">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -91,7 +95,7 @@
                     <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=CoOpTerminationFunctionName}">Function Call:</Label>
                     <TextBox Grid.Row="0" Grid.Column="1" Name="CoOpTerminationFunctionName"
                              DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
-                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall}"
+                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
                         <TextBox.ToolTip>
                             <ToolTip>
@@ -105,12 +109,13 @@
 
             <CheckBox
                 DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
-                IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
+                IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass, UpdateSourceTrigger=PropertyChanged}"
+                Unchecked="GenerateClass_OnUnchecked" Checked="GenerateClass_OnChecked"
+                >
                 Generate Class
             </CheckBox>
 
-            <Expander Header="Class Options" Name="ClassOptionsExpander"
-                      IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
+            <Expander Header="Class Options" Name="ClassOptionsExpander" IsEnabled="False">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -146,7 +151,8 @@
                      <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=ClassName}">Class Name (Required):</Label>
                     <TextBox Grid.Row="0" Grid.Column="1" Name="ClassName"
                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
-                             DataContext="{Binding ElementName=_this}" Text="{Binding Path=GeneratedClassName, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                             DataContext="{Binding ElementName=_this}" 
+                             Text="{Binding Path=GeneratedClassName, TargetNullValue ='', ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
                     </TextBox>
                     
@@ -154,7 +160,8 @@
                     <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=NameSpaceName}">Namespace:</Label>
                     <TextBox Grid.Row="1" Grid.Column="1" Name="NameSpaceName"
                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
-                             DataContext="{Binding ElementName=_this}" Text="{Binding Path=GeneratedClassNamespace, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                             DataContext="{Binding ElementName=_this}" 
+                             Text="{Binding Path=GeneratedClassNamespace, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
                     </TextBox>
 
@@ -165,7 +172,7 @@
                     <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=InheritedClasses}">Inherited Classes:</Label>
                     <TextBox Grid.Row="2" Grid.Column="1" Name="InheritedClasses"
                              DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName}"
-                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassInherit}"
+                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassInherit, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
                         <TextBox.ToolTip>
                             <ToolTip>
@@ -178,7 +185,7 @@
                     <Label Grid.Row="3" Grid.Column="0" Target="{Binding ElementName=ConstructorSignature}">Constructor Signature:</Label>
                     <TextBox Grid.Row="3" Grid.Column="1" Name="ConstructorSignature"
                              DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
-                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorSignature}"
+                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorSignature, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
                         <TextBox.ToolTip>
                             <ToolTip>
@@ -193,7 +200,7 @@
                     <ComboBox Grid.Row="4" Grid.Column="1" Name="ClassAccesibility" HorizontalAlignment="Left"
                               ItemsSource="{Binding Source={converters:EnumValues {x:Type cSharp:ClassAccessibilityLevel}}}"
                               SelectedItem="{Binding ElementName=_this, 
-                    Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassAccessibility}" />
+                    Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassAccessibility, UpdateSourceTrigger=PropertyChanged}" />
                     
 
                     <Label Grid.Row="5" Grid.Column="0" Target="{Binding ElementName=ConstructorAccesibility}">Constructor Accessibility:</Label>
@@ -201,28 +208,24 @@
                     <ComboBox Grid.Row="5" Grid.Column="1" Name="ConstructorAccesibility" HorizontalAlignment="Left"
                               ItemsSource="{Binding Source={converters:EnumValues {x:Type cSharp:MemberAccessibilityLevel}}}"
                               SelectedItem="{Binding ElementName=_this, 
-                    Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorAccessibility}" />
+                    Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorAccessibility, UpdateSourceTrigger=PropertyChanged}" />
 
                 </Grid>
             </Expander>
 
 
-            <Expander Header="Imports"
-                      IsEnabled="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GenerateClass}">
-                
-                <Expander.Resources>
-                    
-                </Expander.Resources>
+            <Expander Header="Imports" Name="ImportsExpander" IsEnabled="False">
                 <StackPanel>
                     <StackPanel.Resources>
                         <converters:ElementValidConverter x:Key="ElementValidConverter"/>
                     </StackPanel.Resources>
-                    <ListBox Name="NamespaceNameListBox" Height="100" ScrollViewer.CanContentScroll="True"
-                                PreviewKeyDown="NamespaceListboxPreviewKeyDown" SelectionMode="Extended"
+                    <ListBox Name="NamespaceNameListBox" Height="100"
+                                ScrollViewer.CanContentScroll="True"
+                                SelectionMode="Extended"
                                 ItemsSource="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports}">
                         <ListBox.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Delete" Click="NamespaceListBoxContextMenuDelete_OnClick" />
+                                <MenuItem Header="Delete"  />
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>
@@ -235,7 +238,7 @@
                                  Text="{Binding ElementName=_this, Path=NamespaceImportAddText, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}">
                         </TextBox>
                     </DockPanel>
-                    <Button HorizontalAlignment="Right" Click="NamespaceImportAdd_OnClick" Margin="2,10,5,5" 
+                    <Button HorizontalAlignment="Right"  Margin="2,10,5,5" 
                             IsEnabled="{Binding ElementName=NameSpaceAddTextbox, Path=Text, Converter={StaticResource ElementValidConverter}, ConverterParameter={x:Reference NameSpaceAddTextbox}}"
                             Padding="15,0,15,0">
                         Add
@@ -247,7 +250,7 @@
 
 
                 <TextBox Height="300" DataContext="{Binding ElementName=_this}"
-                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.ScriptHeader}" />
+                         Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.ScriptHeader, UpdateSourceTrigger=PropertyChanged}" />
 
 
             </Expander>

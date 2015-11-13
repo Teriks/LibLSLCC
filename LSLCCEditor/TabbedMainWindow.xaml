@@ -49,8 +49,8 @@
             <converters:BooleanToVisibilityConverter
                 x:Key="InverseBooleanToVisibilityConverter"
                 True="Collapsed" False="Visible" />
-            <converters:IntegerNotZeroToVisibilityConverter x:Key="IntegerNotZeroToVisibilityConverter" />
-            <converters:IntegerNotZeroToBoolConverter x:Key="IntegerNotZeroToBoolConverter" />
+            <converters:IntegerGreaterThanToVisibilityConverter x:Key="IntegerNotZeroToVisibilityConverter" />
+            <converters:IntegerGreaterThanToBoolConverter x:Key="IntegerNotZeroToBoolConverter" />
         </Grid.Resources>
 
         <Grid.RowDefinitions>
@@ -82,7 +82,7 @@
                 <MenuItem Header="Format" InputGestureText="Ctrl+Shift+F" Click="Format_OnClick" />
 
             </MenuItem>
-            <MenuItem Name="TabLibraryDataMenu" Header="Tab Library Data"></MenuItem>
+            <MenuItem Name="TabLibraryDataMenu" Header="Tab Library Data" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"></MenuItem>
             <MenuItem Header="Search"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
                 <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick" />
@@ -95,8 +95,9 @@
              <StackPanel Orientation="Horizontal">
             <Label Content="Compiler Configuration:" Target="{Binding ElementName=CompilerConfiguration}" />
             <ComboBox Name="CompilerConfiguration" ItemsSource="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CompilerConfigurations.Keys}"
-                      SelectedItem="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CurrentCompilerConfiguration}" Width="Auto"/>
-             </StackPanel>
+                      SelectedItem="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CurrentCompilerConfiguration, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+
+            </StackPanel>
         </Border>
         <Grid Grid.Row="2">
             <TabControl ItemsSource="{Binding EditorTabs}" x:Name="TabControl"

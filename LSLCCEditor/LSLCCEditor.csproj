@@ -153,7 +153,10 @@
     <Compile Include="SettingsUI\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings\CompilerSettingsNode.cs" />
+    <Compile Include="SettingsUI\UniqueNamerWindow.xaml.cs">
+      <DependentUpon>UniqueNamerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\CompilerConfigurationNode.cs" />
     <Compile Include="Settings\EditorControlSettingsNode.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\AppSettingsNode.cs" />
@@ -197,6 +200,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsUI\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsUI\UniqueNamerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

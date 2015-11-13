@@ -28,7 +28,7 @@ namespace LSLCCEditor.SettingsUI
         }
 
         public string Title { get; private set; }
-        public SettingsWindow Owner { get; set; }
+        public SettingsWindow OwnerSettingsWindow { get; set; }
 
     }
 }
