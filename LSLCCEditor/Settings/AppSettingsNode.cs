@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: AppSettingsNode.cs
 // 
@@ -39,6 +40,7 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
 using System;
@@ -62,18 +64,10 @@ namespace LSLCCEditor.Settings
         private XmlDictionary<string, EditorControlSettingsNode> _editorControlConfigurations;
         private string _currentEditorControlConfiguration;
         private string _currentCompilerConfiguration;
-        private bool _canEdit;
-
-
-        public bool CanEdit
-        {
-            get { return _canEdit; }
-            set { _canEdit = value; }
-        }
 
 
         private const string ClientSideScriptCompilerHeader =
-@"//c#
+            @"//c#
 /** 
 *  Do not remove //c# from the first line of this script.
 *
@@ -90,7 +84,7 @@ namespace LSLCCEditor.Settings
 
 
         private const string ServerSideScriptCompilerHeader =
-@"//c#-raw
+            @"//c#-raw
 /** 
 *  Do not remove //c#-raw from the first line of this script.
 *
@@ -116,14 +110,13 @@ namespace LSLCCEditor.Settings
 ";
 
 
-
         private class EditorControlConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
             public bool CheckForNecessaryResets(object settingsNode, object propertyValues)
             {
                 if (settingsNode == null) return true;
 
-                var dict = (XmlDictionary<string, EditorControlSettingsNode>)propertyValues;
+                var dict = (XmlDictionary<string, EditorControlSettingsNode>) propertyValues;
 
 
                 if (dict == null || dict.Count == 0)
@@ -147,20 +140,20 @@ namespace LSLCCEditor.Settings
             {
                 var d = new XmlDictionary<string, EditorControlSettingsNode>();
 
-                
 
-                d.Add("Default", new EditorControlSettingsNode() {EditorControlSettings = new LSLEditorControlSettings()});
+                d.Add("Default",
+                    new EditorControlSettingsNode() {EditorControlSettings = new LSLEditorControlSettings()});
 
                 return d;
             }
         }
 
 
-        [DefaultValueFactory(typeof (EditorControlConfigurationsDefaultFactory), initOrder:0)]
+        [DefaultValueFactory(typeof (EditorControlConfigurationsDefaultFactory), initOrder: 0)]
         public XmlDictionary<string, EditorControlSettingsNode> EditorControlConfigurations
         {
             get { return _editorControlConfigurations; }
-            set { SetField(ref _editorControlConfigurations,value, "EditorControlConfigurations"); }
+            set { SetField(ref _editorControlConfigurations, value, "EditorControlConfigurations"); }
         }
 
 
@@ -190,7 +183,7 @@ namespace LSLCCEditor.Settings
 
             public object GetDefaultValue(object settingsNode)
             {
-                var settingsNodeInstance = (AppSettingsNode)settingsNode;
+                var settingsNodeInstance = (AppSettingsNode) settingsNode;
 
                 if (settingsNodeInstance.EditorControlConfigurations.ContainsKey("Default"))
                 {
@@ -209,16 +202,13 @@ namespace LSLCCEditor.Settings
         }
 
 
-
-
         private class CompilerConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
             public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
             {
-
                 if (propertyValue == null) return true;
 
-                var dict = (XmlDictionary<string, CompilerConfigurationNode>)propertyValue;
+                var dict = (XmlDictionary<string, CompilerConfigurationNode>) propertyValue;
 
                 if (dict.Count == 0)
                 {
@@ -272,7 +262,6 @@ namespace LSLCCEditor.Settings
                 d.Add("OpenSim Server Code", serverCode);
 
 
-
                 var serverCodeCoOp = new CompilerConfigurationNode
                 {
                     OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
@@ -290,16 +279,12 @@ namespace LSLCCEditor.Settings
         }
 
 
-
-
         [DefaultValueFactory(typeof (CompilerConfigurationsDefaultFactory), initOrder: 2)]
         public XmlDictionary<string, CompilerConfigurationNode> CompilerConfigurations
         {
             get { return _compilerConfigurations; }
             set { SetField(ref _compilerConfigurations, value, "CompilerConfigurations"); }
         }
-
-
 
 
         private class CurrentCompilerConfigurationDefaultFactory : IDefaultSettingsValueFactory
@@ -327,7 +312,7 @@ namespace LSLCCEditor.Settings
 
             public object GetDefaultValue(object settingsNode)
             {
-                var settingsNodeInstance = (AppSettingsNode)settingsNode;
+                var settingsNodeInstance = (AppSettingsNode) settingsNode;
 
                 if (settingsNodeInstance.EditorControlConfigurations.ContainsKey("OpenSim Client Code"))
                 {
@@ -349,12 +334,15 @@ namespace LSLCCEditor.Settings
         {
             if (string.IsNullOrWhiteSpace(configurationName))
             {
-                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.", "configurationName");
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.",
+                    "configurationName");
             }
 
             if (CompilerConfigurations.ContainsKey(configurationName))
             {
-                throw new ArgumentException(string.Format("Compiler configuration named {0} already exist.", "configurationName"));
+                throw new ArgumentException(
+                    string.Format("Compiler configuration named {0} already exist.", configurationName),
+                    "configurationName");
             }
 
 
@@ -367,37 +355,42 @@ namespace LSLCCEditor.Settings
         {
             if (string.IsNullOrWhiteSpace(configurationName))
             {
-                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.", "configurationName");
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.",
+                    "configurationName");
             }
 
             if (string.IsNullOrWhiteSpace(newCurrentConfiguration))
             {
-                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.", "newCurrentConfiguration");
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.",
+                    "newCurrentConfiguration");
             }
 
 
             if (!CompilerConfigurations.ContainsKey(configurationName))
             {
-                throw new ArgumentException(string.Format("Compiler configuration named {0} does not exist.", "configurationName"));
+                throw new ArgumentException(
+                    string.Format("Compiler configuration named {0} does not exist.", configurationName),
+                    "configurationName");
             }
 
             if (!CompilerConfigurations.ContainsKey(newCurrentConfiguration))
             {
-                throw new ArgumentException(string.Format("Compiler configuration named {0} does not exist.", "newCurrentConfiguration"));
+                throw new ArgumentException(
+                    string.Format("Compiler configuration named {0} does not exist.", newCurrentConfiguration),
+                    "newCurrentConfiguration");
             }
 
             if (CompilerConfigurations.Count == 1)
             {
                 throw new InvalidOperationException(
-                    "There must be at least one compiler configuration present in the "+
+                    "There must be at least one compiler configuration present in the " +
                     "application settings, cannot remove the configuration as it is the only one present.");
             }
-            
+
 
             CompilerConfigurations.Remove(configurationName);
 
             CurrentCompilerConfiguration = newCurrentConfiguration;
-
         }
     }
 }
