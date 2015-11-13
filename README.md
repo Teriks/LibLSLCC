@@ -228,11 +228,11 @@ all versions of Visual Studio that WiX it is compatible with.
 "Platform" setting set to "AnyCPU" in Visual Studio, you must change it to either **x64** or **x86**.
 
 
-**LSLCCEditor** and **LSLCCEditor.CompletionUI** are only buildable on Windows as they depend on WPF and AvalonEdit, 
-but the **LibLSLCC** project and related projects are cross platform.  
+The **LSLCCEditor** related projects are only buildable on Windows as they depend on WPF and AvalonEdit, 
+but the **LibLSLCC** library, tools, and command line compiler are cross platform.  
 
 
-Additionally **LSLCCEditor** and **LSLCCEditor.CompletionUI** can only be built in versions of Visual Studio 
+Additionally the **LSLCCEditor** related projects can only be built in versions of Visual Studio 
 that support targeting the .NET 4.5 framework. (VS2012+)
 
 
