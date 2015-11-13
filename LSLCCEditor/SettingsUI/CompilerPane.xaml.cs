@@ -45,6 +45,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -78,6 +79,9 @@ namespace LSLCCEditor.SettingsUI
                 "SelectedCompilerConfigurationName", typeof (string), typeof (CompilerPane),
                 new PropertyMetadata(default(string), SelectedCompilerConfigurationNameChanged));
 
+        private NotifyCollectionChangedEventHandler _lastNamespaceImportsChangedHandler;
+
+
         private static void SelectedCompilerConfigurationNameChanged(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
@@ -89,6 +93,12 @@ namespace LSLCCEditor.SettingsUI
             if (oldValue != null)
             {
                 pane.CurrentCompilerConfiguration.UnSubscribePropertyChangedAll(pane);
+
+                if (pane._lastNamespaceImportsChangedHandler != null)
+                {
+                    pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports
+                        .CollectionChanged -= pane._lastNamespaceImportsChangedHandler;
+                }
             }
 
 
@@ -109,10 +119,25 @@ namespace LSLCCEditor.SettingsUI
             pane.CurrentCompilerConfiguration.SubscribePropertyChangedAll(pane,
                 AnyCurrentCompilerConfigSubPropertyChanged);
 
+            pane._lastNamespaceImportsChangedHandler =
+                (sender, args) =>
+                {
+                    if (AppSettings.Settings.CompilerConfigurations.ContainsKey(pane.SelectedCompilerConfigurationName))
+                    {
+                        var settingsConfig = AppSettings.Settings.CompilerConfigurations[pane.SelectedCompilerConfigurationName];
+
+                        pane.CurrentConfigIsEdited = !pane.CurrentCompilerConfiguration.Equals(settingsConfig);
+                    }
+                };
+
+            pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports
+                .CollectionChanged += pane._lastNamespaceImportsChangedHandler;
+
             var bindingExpression = pane.GetBindingExpression(GeneratedClassNameProperty);
             if (bindingExpression != null)
                 bindingExpression.UpdateSource();
         }
+
 
         private static void AnyCurrentCompilerConfigSubPropertyChanged(
             SettingsPropertyChangedEventArgs<object> settingsPropertyChangedEventArgs)
@@ -306,6 +331,7 @@ namespace LSLCCEditor.SettingsUI
             CompilerConfigurationNames.Add(name.ChosenName);
 
             CompilerConfigurationCombobox.SelectedIndex = CompilerConfigurationNames.Count-1;
+
         }
 
         private void GenerateClass_OnUnchecked(object sender, RoutedEventArgs e)
@@ -361,6 +387,22 @@ namespace LSLCCEditor.SettingsUI
         {
             get { return (string) GetValue(NamespaceImportAddTextProperty); }
             set { SetValue(NamespaceImportAddTextProperty, value); }
+        }
+
+        private void AddImport_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(new CSharpNamespace(NamespaceImportAddText));
+        }
+
+        private void importsDelete_OnClick(object sender, RoutedEventArgs e)
+        {
+            object[] ar = new object[NamespaceNameListBox.SelectedItems.Count];
+            NamespaceNameListBox.SelectedItems.CopyTo(ar, 0);
+
+            foreach (var obj in ar)
+            {
+                CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Remove((CSharpNamespace)obj);
+            }
         }
     }
 }

@@ -225,7 +225,7 @@
                                 ItemsSource="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports}">
                         <ListBox.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Delete"  />
+                                <MenuItem Header="Delete" Click="importsDelete_OnClick" />
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>
@@ -238,7 +238,7 @@
                                  Text="{Binding ElementName=_this, Path=NamespaceImportAddText, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}">
                         </TextBox>
                     </DockPanel>
-                    <Button HorizontalAlignment="Right"  Margin="2,10,5,5" 
+                    <Button HorizontalAlignment="Right"  Margin="2,10,5,5" Click="AddImport_OnClick"
                             IsEnabled="{Binding ElementName=NameSpaceAddTextbox, Path=Text, Converter={StaticResource ElementValidConverter}, ConverterParameter={x:Reference NameSpaceAddTextbox}}"
                             Padding="15,0,15,0">
                         Add
