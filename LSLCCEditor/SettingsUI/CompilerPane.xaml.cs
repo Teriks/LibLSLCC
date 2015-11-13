@@ -54,7 +54,6 @@ using LibLSLCC.Settings;
 using LSLCCEditor.Settings;
 using LSLCCEditor.Utility.Validation;
 using MessageBox = System.Windows.Forms.MessageBox;
-using ThicknessConverter = Xceed.Wpf.DataGrid.Converters.ThicknessConverter;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace LSLCCEditor.SettingsUI
