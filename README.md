@@ -171,7 +171,7 @@ http://www.antlr.org/index.html
 
 ===
 
-The ***LibraryDataScrapingTool** project depends on **System.Data.SQLite**
+The **LibraryDataScrapingTool** project depends on **System.Data.SQLite**
 when compiled on Windows.  When its compiled on mono it uses **Mono.Data.Sqlite**.
 
 see here: 
