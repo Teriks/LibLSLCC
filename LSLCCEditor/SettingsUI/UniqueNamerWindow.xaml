@@ -1,0 +1,43 @@
+﻿<Window x:Class="LSLCCEditor.SettingsUI.UniqueNamerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LSLCCEditor.SettingsUI"
+        xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
+        mc:Ignorable="d"
+        Title="Choose A Name" Height="182" MinWidth="500"
+        MaxHeight="182" MinHeight="182" Name="_this" DataContext="{Binding RelativeSource={RelativeSource Self}}" 
+        ResizeMode="NoResize"
+        SizeToContent="Width"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.Resources>
+            <converters:ElementValidConverter x:Key="ElementValidConverter"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" Margin="15,0,15,0" VerticalAlignment="Center">
+            <Label>Name:</Label>
+            <TextBox VerticalContentAlignment="Center" Name="NameEntryTextbox" Text="{Binding ChosenName, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"  
+                     ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+        </DockPanel>
+        <Border Grid.Row="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+        <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" >
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Padding" Value="15,0,15,0"></Setter>
+                    <Setter Property="Height" Value="22"/>
+                    <Setter Property="Margin" Value="0,0,15,0"></Setter>
+                </Style>
+            </StackPanel.Resources>
+            <Button Click="Cancel_OnClick">Cancel</Button>
+            <Button IsEnabled="{Binding Path=ChosenName, Converter={StaticResource ElementValidConverter}, ConverterParameter={x:Reference NameEntryTextbox}}" Click="Ok_OnClick">Okay</Button>
+        </StackPanel>
+       </Border>
+    </Grid>
+</Window>
