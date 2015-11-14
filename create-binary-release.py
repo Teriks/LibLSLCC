@@ -46,6 +46,11 @@ os.chdir(os.path.dirname(MSBUILD))
 # build an Any CPU lslcc binary for distribution
 subprocess.call([MSBUILD, SOLUTION, '/t:lslcc_cmd', '/p:Configuration=Release', '/p:Platform=Any CPU',
                  '/p:TargetFrameworkVersion=v4.0'])
+                 
+                 
+#build debug LibLSLCC         
+subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                 '/p:TargetFrameworkVersion=v4.0'])
 
 
 # this won't get built in the next step if we are not on windows.
@@ -56,9 +61,6 @@ if not ON_WINDOWS:
                  '/p:TargetFrameworkVersion=v4.0'])
 
 
-				 
-subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0'])
 
 # build the installers on windows
 if ON_WINDOWS:
@@ -152,7 +154,6 @@ with zipfile.ZipFile(binariesZip, 'w') as zip_file:
     #only the release build of lslcc_cmd gets put in the zip
 
     zip_dir_relative(os.path.join(lslcc_anyCpu, "Release"), zip_file, archDirTransform=remove_second_folder_down)
-    zip_dir_relative(os.path.join(lslcc_anyCpu, "Debug"), zip_file, archDirTransform=remove_second_folder_down)
 
     zip_file.write(lib_licence, os.path.basename('LICENSE'))
 
