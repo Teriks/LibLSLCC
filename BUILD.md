@@ -105,12 +105,12 @@ command from cmd if you want to specify any options.
  
 The option: **--no-editor**
 
-Will prevent the editor from being build, this has no effect on *nix because the editor is windows only and will not be built regardless
+Will prevent the editor from being built, this has no effect on *nix because the editor is windows only and will not be built regardless
 
    
 The option: **--no-installer** 
 
-will prevent the editor installer from being built, this has no effect on *nix since the installer is not build on *nix regardless.
+will prevent the editor installer from being built, this has no effect on *nix since the installer is not built on *nix regardless.
 
 
 ===
