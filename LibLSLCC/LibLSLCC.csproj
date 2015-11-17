@@ -73,7 +73,7 @@
     <Compile Include="LibraryData\LSLLibraryDataInvalidConstantTypeException.cs" />
     <Compile Include="LibraryData\LSLLibraryDataXmlSyntaxException.cs" />
     <Compile Include="LibraryData\Reflection\ILSLConstantFilter.cs" />
-    <Compile Include="LibraryData\Reflection\ILSLParameterTypeConverter.cs" />
+    <Compile Include="LibraryData\Reflection\ILSLParamTypeConverter.cs" />
     <Compile Include="LibraryData\Reflection\ILSLReturnTypeConverter.cs" />
     <Compile Include="LibraryData\Reflection\LSLMultiConstantFilter.cs" />
     <Compile Include="LibraryData\Reflection\ILSLMethodFilter.cs" />

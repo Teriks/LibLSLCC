@@ -69,14 +69,14 @@ namespace LibLSLCC.LibraryData.Reflection
 
         /// <summary>
         /// <para>
-        /// Gets or sets the <see cref="ILSLParameterTypeConverter"/> that is used in the case that no <see cref="LSLParamAttribute"/> is applied to a given method parameter, it takes the parameter type and converts it to an <see cref="LSLType"/>.
+        /// Gets or sets the <see cref="ILSLParamTypeConverter"/> that is used in the case that no <see cref="LSLParamAttribute"/> is applied to a given method parameter, it takes the parameter type and converts it to an <see cref="LSLType"/>.
         /// Parameters that do not have an <see cref="LSLParamAttribute"/> applied to them will use this converter to convert the .NET parameter type into an <see cref="LSLType"/>.
         /// This property is only optional if the class is using a defined <see cref="LSLLibraryDataSerializableAttribute.ParamTypeConverter"/> or <see cref="LSLLibraryDataReflectionSerializer.ParamTypeConverter"/> is set.
         /// Setting this property will override both <see cref="LSLLibraryDataSerializableAttribute.ParamTypeConverter"/> and <see cref="LSLLibraryDataReflectionSerializer.ParamTypeConverter"/>.
         /// </para>
         /// </summary>
         /// <value>
-        /// The type converter which should derive from <see cref="ILSLParameterTypeConverter"/>.
+        /// The type converter which should derive from <see cref="ILSLParamTypeConverter"/>.
         /// </value>
         public Type ParamTypeConverter { get; set; }
 

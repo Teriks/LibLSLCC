@@ -54,7 +54,7 @@ namespace LibLSLCC.LibraryData.Reflection
     {
         public ILSLReturnTypeConverter FallBackReturnTypeConverter { get; set; }
 
-        public ILSLParameterTypeConverter FallBackParameterTypeConverter { get; set; }
+        public ILSLParamTypeConverter FallBackParameterTypeConverter { get; set; }
 
         public bool AttributedParametersOnly { get; set; }
         public Func<ParameterInfo, bool> ParameterFilter { get; set; }
@@ -77,7 +77,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
             public ILSLReturnTypeConverter ReturnTypeConverter { get; set; }
 
-            public ILSLParameterTypeConverter ParamTypeConverter { get; set; }
+            public ILSLParamTypeConverter ParamTypeConverter { get; set; }
 
             public Info()
             {
@@ -192,17 +192,17 @@ namespace LibLSLCC.LibraryData.Reflection
                 var rtConverter =
                     (Type) attr.NamedArguments.First(x => x.MemberInfo.Name == "ParamTypeConverter").TypedValue.Value;
 
-                if (!rtConverter.GetInterfaces().Contains(typeof (ILSLParameterTypeConverter)))
+                if (!rtConverter.GetInterfaces().Contains(typeof (ILSLParamTypeConverter)))
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[LSLFunctionAttribute.ParamTypeConverter] of Type '{0}' on method '{1}' declared in Type '{2}' does not implement ILSLParameterTypeConverter.",
+                            "[LSLFunctionAttribute.ParamTypeConverter] of Type '{0}' on method '{1}' declared in Type '{2}' does not implement ILSLParamTypeConverter.",
                             rtConverter.FullName,
                             method.Name,
                             method.DeclaringType.FullName));
                 }
 
-                result.ParamTypeConverter = (ILSLParameterTypeConverter) Activator.CreateInstance(rtConverter);
+                result.ParamTypeConverter = (ILSLParamTypeConverter) Activator.CreateInstance(rtConverter);
             }
 
 

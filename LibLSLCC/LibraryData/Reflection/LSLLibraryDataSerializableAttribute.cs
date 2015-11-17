@@ -65,12 +65,12 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Gets or sets the <see cref="ILSLParameterTypeConverter"/> used to convert the parameter types of methods in a given class to <see cref="LSLType"/>'s.
+        /// Gets or sets the <see cref="ILSLParamTypeConverter"/> used to convert the parameter types of methods in a given class to <see cref="LSLType"/>'s.
         /// The parameter type converter defined in the class attribute can be overridden per method by <see cref="LSLFunctionAttribute.ParamTypeConverter"/>.
         /// This property will override <see cref="LSLLibraryDataReflectionSerializer.ParamTypeConverter"/> if it is set.
         /// </summary>
         /// <value>
-        /// The parameter type converter, should derive from <see cref="ILSLParameterTypeConverter"/>.
+        /// The parameter type converter, should derive from <see cref="ILSLParamTypeConverter"/>.
         /// </value>
         public Type ParamTypeConverter { get; set; }
 
@@ -141,9 +141,9 @@ namespace LibLSLCC.LibraryData.Reflection
             return _GetTypeConverter<ILSLReturnTypeConverter>(fromClass, "ReturnTypeConverter");
         }
 
-        internal static ILSLParameterTypeConverter GetParamTypeConverter(Type fromClass)
+        internal static ILSLParamTypeConverter GetParamTypeConverter(Type fromClass)
         {
-            return _GetTypeConverter<ILSLParameterTypeConverter>(fromClass, "ParamTypeConverter");
+            return _GetTypeConverter<ILSLParamTypeConverter>(fromClass, "ParamTypeConverter");
         }
 
         internal static ILSLConstantTypeConverter GetConstantTypeConverter(Type fromClass)

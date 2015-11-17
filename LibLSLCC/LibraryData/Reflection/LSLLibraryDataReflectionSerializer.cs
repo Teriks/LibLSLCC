@@ -180,14 +180,14 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Gets or sets base <see cref="ILSLParameterTypeConverter"/> to be used when a method parameter lacks an <see cref="LSLParamAttribute"/> or
+        /// Gets or sets base <see cref="ILSLParamTypeConverter"/> to be used when a method parameter lacks an <see cref="LSLParamAttribute"/> or
         /// when <see cref="LSLLibraryDataSerializableAttribute.ParamTypeConverter"/> or <see cref="LSLFunctionAttribute.ParamTypeConverter"/> is not specified
         /// to override it.
         /// </summary>
         /// <value>
         /// The parameter type converter.
         /// </value>
-        public ILSLParameterTypeConverter ParamTypeConverter { get; set; }
+        public ILSLParamTypeConverter ParamTypeConverter { get; set; }
 
 
         /// <summary>
@@ -557,7 +557,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
         private LSLLibraryFunctionSignature _DoDeSerializeMethod(MethodInfo info,
             ILSLReturnTypeConverter optionalClassReturnTypeConverter,
-            ILSLParameterTypeConverter optionalClassParamTypeConverter)
+            ILSLParamTypeConverter optionalClassParamTypeConverter)
         {
             var attributeSerializer = new LSLFunctionAttributeSerializer
             {

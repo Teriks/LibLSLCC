@@ -41,7 +41,7 @@ namespace Tests
     }
 
 
-    class MySimpleConverter : ILSLParameterTypeConverter, ILSLReturnTypeConverter, ILSLConstantTypeConverter
+    class MySimpleConverter : ILSLParamTypeConverter, ILSLReturnTypeConverter, ILSLConstantTypeConverter
     {
         private bool Convert(Type inType, out LSLType outType)
         {
