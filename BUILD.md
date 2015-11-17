@@ -93,21 +93,28 @@ Python 3 is required to run the python build scripts.
    
 **create-binary-release.py** can be used to create a timestamped binary release zip of the library.
 
-The installer files and created library zip will be placed in the folder specified by --dir, or 'BinaryRelease'
-in the build directory if --dir is not specified.
+The installer files and created library zip will be placed in the folder specified by **--dir**, 
+or 'BinaryRelease' in the build directory if **--dir** is not specified.
    
-you should call it with the python3 executable on *nix.  
+You should call it with the python3 executable on *nix.  
 
-On windows you can install python3 and click it, or use the command line if you want to specify any options.
+On windows you can install python3 and click it.
+
+You can also put the python install directory in your Windows PATH and use the python 
+command from cmd if you want to specify any options.
+ 
+The option: **--no-editor**
+
+Will prevent the editor from being build, this has no effect on *nix because the editor is windows only and will not be built regardless
+
    
-Running it with:
+The option: **--no-installer** 
 
-	python3 create-binary-release.py -h
-	
-will show the script options.
+will prevent the editor installer from being built, this has no effect on *nix since the installer is not build on *nix regardless.
 
 
 ===
+
 
 **clean.py** simply cleans all configurations/platforms of the build when you run it.
 
@@ -117,3 +124,8 @@ will show the script options.
 Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  
 
 This is not a problem as "Mono.Data.Sqlite" it is only used when running on Mono.
+
+On mono you may get alot of warnings about missing comments.
+
+They are suppressed in the windows build but not yet in the mono build as the warning numbers are different.
+You will also get warnings about unknown warning numbers being suppressed, but this is harmless.

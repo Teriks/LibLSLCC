@@ -293,9 +293,12 @@ Python 3 is required to run the python build scripts.
 The installer files and created library zip will be placed in the folder specified by **--dir**, 
 or 'BinaryRelease' in the build directory if **--dir** is not specified.
    
-you should call it with the python3 executable on *nix.  
+You should call it with the python3 executable on *nix.  
 
-On windows you can install python3 and click it, or use the command line if you want to specify any options.
+On windows you can install python3 and click it.
+
+You can also put the python install directory in your Windows PATH and use the python 
+command from cmd if you want to specify any options.
  
 The option: **--no-editor**
 
