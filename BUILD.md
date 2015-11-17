@@ -87,6 +87,31 @@ enter the command:
 LibLSLCC should start building.
 
 
+# Python Build Scripts
+
+Python 3 is required to run the python build scripts.
+   
+**create-binary-release.py** can be used to create a timestamped binary release zip of the library.
+
+The installer files and created library zip will be placed in the folder specified by --dir, or 'BinaryRelease'
+in the build directory if --dir is not specified.
+   
+you should call it with the python3 executable on *nix.  
+
+On windows you can install python3 and click it, or use the command line if you want to specify any options.
+   
+Running it with:
+
+	python3 create-binary-release.py -h
+	
+will show the script options.
+
+
+===
+
+**clean.py** simply cleans all configurations/platforms of the build when you run it.
+
+
 # About Build Warnings
 
 Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  

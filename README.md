@@ -284,8 +284,42 @@ enter the command:
 LibLSLCC should start building.
 
 
+# Python Build Scripts
+
+Python 3 is required to run the python build scripts.
+   
+**create-binary-release.py** can be used to create a timestamped binary release zip of the library.
+
+The installer files and created library zip will be placed in the folder specified by **--dir**, 
+or 'BinaryRelease' in the build directory if **--dir** is not specified.
+   
+you should call it with the python3 executable on *nix.  
+
+On windows you can install python3 and click it, or use the command line if you want to specify any options.
+ 
+The option: **--no-editor**
+
+Will prevent the editor from being build, this has no effect on *nix because the editor is windows only and will not be built regardless
+
+   
+The option: **--no-installer** 
+
+will prevent the editor installer from being built, this has no effect on *nix since the installer is not build on *nix regardless.
+
+
+===
+
+
+**clean.py** simply cleans all configurations/platforms of the build when you run it.
+
+
 # About Build Warnings
 
 Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  
 
 This is not a problem as "Mono.Data.Sqlite" it is only used when running on Mono.
+
+On mono you may get alot of warnings about missing comments.
+
+They are suppressed in the windows build but not yet in the mono build as the warning numbers are different.
+You will also get warnings about unknown warning numbers being suppressed, but this is harmless.

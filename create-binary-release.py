@@ -97,14 +97,8 @@ lib_licence = os.path.join(libraryPath, 'bin', 'LICENSE')
 
 lslcc_anyCpu = os.path.join(lslccPath, 'bin', 'AnyCPU')
 
-if os.path.isdir(outputDir):
-    shutil.rmtree(outputDir, True)
-
-
-while os.path.isdir(outputDir):
-    print("Waiting for rmtree...");
-    
-os.mkdir(outputDir)
+if not os.path.isdir(outputDir):
+    os.mkdir(outputDir)
 
 
 def zip_dir_relative(path, zip_file, **kwargs):
@@ -134,6 +128,8 @@ def remove_second_folder_down(path):
     pathParts = path.split(os.sep)
     pathParts.pop(1)
     return os.path.join(*pathParts)
+
+
 
 
 # make the timestamped binary release zip file
