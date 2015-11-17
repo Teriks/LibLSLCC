@@ -102,15 +102,11 @@ On windows you can install python3 and click it.
 
 You can also put the python install directory in your Windows PATH and use the python 
 command from cmd if you want to specify any options.
- 
-The option: **--no-editor**
-
-Will prevent the editor from being built, this has no effect on *nix because the editor is windows only and will not be built regardless
-
    
 The option: **--no-installer** 
 
-will prevent the editor installer from being built, this has no effect on *nix since the installer is not built on *nix regardless.
+Will prevent the editor and editor installer from being built, this has no effect on *nix since 
+the editor and it's installer are not built on *nix regardless;  They are Windows only.
 
 
 ===

@@ -13,6 +13,7 @@ scriptPath = os.path.dirname(os.path.realpath(__file__))
 
 
 args_parser = ArgumentParser()
+
 args_parser.add_argument(
     '--no-installer', 
     action='store_false', 
