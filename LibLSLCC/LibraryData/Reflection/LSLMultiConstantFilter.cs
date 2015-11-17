@@ -48,27 +48,27 @@ using System.Reflection;
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Allows multiple <see cref="ILSLReflectionConstantFilter"/> objects to participate in filtering/mutating constant
+    /// Allows multiple <see cref="ILSLConstantFilter"/> objects to participate in filtering/mutating constant
     /// signatures de-serialized from runtime types using <see cref="LSLLibraryDataReflectionSerializer"/>.
     /// </summary>
-    public class LSLMultiConstantFilter : ILSLReflectionConstantFilter, IEnumerable<ILSLReflectionConstantFilter>
+    public class LSLMultiConstantFilter : ILSLConstantFilter, IEnumerable<ILSLConstantFilter>
     {
 
         /// <summary>
-        /// A modifiable collection of all <see cref="ILSLReflectionConstantFilter"/> objects participating in filtering.
+        /// A modifiable collection of all <see cref="ILSLConstantFilter"/> objects participating in filtering.
         /// </summary>
         /// <value>
-        /// The <see cref="ILSLReflectionConstantFilter"/>'s being used to filter.
+        /// The <see cref="ILSLConstantFilter"/>'s being used to filter.
         /// </value>
         // ReSharper disable once CollectionNeverUpdated.Global
-        public List<ILSLReflectionConstantFilter> Filters { get; private set; }
+        public List<ILSLConstantFilter> Filters { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LSLMultiMethodFilter"/> class.
         /// </summary>
         public LSLMultiConstantFilter()
         {
-            Filters = new List<ILSLReflectionConstantFilter>();
+            Filters = new List<ILSLConstantFilter>();
         }
 
 
@@ -137,7 +137,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
         /// </returns>
         /// <filterpriority>1</filterpriority>
-        public IEnumerator<ILSLReflectionConstantFilter> GetEnumerator()
+        public IEnumerator<ILSLConstantFilter> GetEnumerator()
         {
             return Filters.GetEnumerator();
         }

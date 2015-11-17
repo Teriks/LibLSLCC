@@ -86,7 +86,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <value>
         /// The constant filter.
         /// </value>
-        public ILSLReflectionConstantFilter ConstantFilter { get; set; }
+        public ILSLConstantFilter ConstantFilter { get; set; }
 
 
         /// <summary>

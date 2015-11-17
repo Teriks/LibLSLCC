@@ -46,9 +46,9 @@ using System.Reflection;
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Implements <see cref="ILSLReflectionConstantFilter"/> using function objects.
+    /// Implements <see cref="ILSLConstantFilter"/> using function objects.
     /// </summary>
-    public class LSLLambdaConstantFilter : ILSLReflectionConstantFilter
+    public class LSLLambdaConstantFilter : ILSLConstantFilter
     {
 
         /// <summary>
