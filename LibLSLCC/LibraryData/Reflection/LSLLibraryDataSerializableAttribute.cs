@@ -54,34 +54,34 @@ namespace LibLSLCC.LibraryData.Reflection
     public class LSLLibraryDataSerializableAttribute : Attribute
     {
         /// <summary>
-        /// Gets or sets the <see cref="ILSLTypeConverter"/> used to convert the return types of methods in a given class to <see cref="LSLType"/>'s.
+        /// Gets or sets the <see cref="ILSLReturnTypeConverter"/> used to convert the return types of methods in a given class to <see cref="LSLType"/>'s.
         /// The return type converter defined in the class attribute can be overridden per method by <see cref="LSLFunctionAttribute.ReturnTypeConverter"/>.
         /// This property will override <see cref="LSLLibraryDataReflectionSerializer.ReturnTypeConverter"/> if it is set.
         /// </summary>
         /// <value>
-        /// The return type converter, should derive from <see cref="ILSLTypeConverter"/>.
+        /// The return type converter, should derive from <see cref="ILSLReturnTypeConverter"/>.
         /// </value>
         public Type ReturnTypeConverter { get; set; }
 
 
         /// <summary>
-        /// Gets or sets the <see cref="ILSLTypeConverter"/> used to convert the parameter types of methods in a given class to <see cref="LSLType"/>'s.
+        /// Gets or sets the <see cref="ILSLParameterTypeConverter"/> used to convert the parameter types of methods in a given class to <see cref="LSLType"/>'s.
         /// The parameter type converter defined in the class attribute can be overridden per method by <see cref="LSLFunctionAttribute.ParamTypeConverter"/>.
         /// This property will override <see cref="LSLLibraryDataReflectionSerializer.ParamTypeConverter"/> if it is set.
         /// </summary>
         /// <value>
-        /// The parameter type converter, should derive from <see cref="ILSLTypeConverter"/>.
+        /// The parameter type converter, should derive from <see cref="ILSLParameterTypeConverter"/>.
         /// </value>
         public Type ParamTypeConverter { get; set; }
 
 
         /// <summary>
-        /// Gets or sets the <see cref="ILSLTypeConverter"/> used to convert the types of fields/properties in a given class to <see cref="LSLType"/>'s.
+        /// Gets or sets the <see cref="ILSLConstantTypeConverter"/> used to convert the types of fields/properties in a given class to <see cref="LSLType"/>'s.
         /// The constant type converter defined in the class attribute can be overridden per method by <see cref="LSLConstantAttribute.TypeConverter"/>.
         /// This property will override <see cref="LSLLibraryDataReflectionSerializer.ConstantTypeConverter"/> if it is set.
         /// </summary>
         /// <value>
-        /// The parameter type converter, should derive from <see cref="ILSLTypeConverter"/>.
+        /// The parameter type converter, should derive from <see cref="ILSLConstantTypeConverter"/>.
         /// </value>
         public Type ConstantTypeConverter { get; set; }
 
@@ -136,19 +136,19 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
 
-        internal static ILSLTypeConverter GetReturnTypeConverter(Type fromClass)
+        internal static ILSLReturnTypeConverter GetReturnTypeConverter(Type fromClass)
         {
-            return _GetTypeConverter<ILSLTypeConverter>(fromClass, "ReturnTypeConverter");
+            return _GetTypeConverter<ILSLReturnTypeConverter>(fromClass, "ReturnTypeConverter");
         }
 
-        internal static ILSLTypeConverter GetParamTypeConverter(Type fromClass)
+        internal static ILSLParameterTypeConverter GetParamTypeConverter(Type fromClass)
         {
-            return _GetTypeConverter<ILSLTypeConverter>(fromClass, "ParamTypeConverter");
+            return _GetTypeConverter<ILSLParameterTypeConverter>(fromClass, "ParamTypeConverter");
         }
 
-        internal static ILSLTypeConverter GetConstantTypeConverter(Type fromClass)
+        internal static ILSLConstantTypeConverter GetConstantTypeConverter(Type fromClass)
         {
-            return _GetTypeConverter<ILSLTypeConverter>(fromClass, "ConstantTypeConverter");
+            return _GetTypeConverter<ILSLConstantTypeConverter>(fromClass, "ConstantTypeConverter");
         }
 
         internal static ILSLValueStringConverter GetValueStringConverter(Type fromClass)

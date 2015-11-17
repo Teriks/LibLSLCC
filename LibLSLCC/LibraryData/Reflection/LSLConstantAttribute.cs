@@ -110,13 +110,13 @@ namespace LibLSLCC.LibraryData.Reflection
 
         /// <summary>
         /// <para>
-        /// Gets or sets the type converter that is used in the case that no <see cref="Type"/> is given, it takes the property type and converts it to an <see cref="LSLType"/>.
+        /// Gets or sets the <see cref="ILSLConstantTypeConverter"/> that is used in the case that no <see cref="Type"/> is given, it takes the property type and converts it to an <see cref="LSLType"/>.
         /// This property is only optional if the class is using a defined <see cref="LSLLibraryDataSerializableAttribute.ConstantTypeConverter"/> or <see cref="LSLLibraryDataReflectionSerializer.ConstantTypeConverter"/> is set.
         /// Setting this property will override both <see cref="LSLLibraryDataSerializableAttribute.ConstantTypeConverter"/> and <see cref="LSLLibraryDataReflectionSerializer.ConstantTypeConverter"/>.
         /// </para>
         /// </summary>
         /// <value>
-        /// The type converter which should derive from <see cref="ILSLTypeConverter"/>.
+        /// The type converter which should derive from <see cref="ILSLConstantTypeConverter"/>.
         /// </value>
         public Type TypeConverter { get; set; }
 

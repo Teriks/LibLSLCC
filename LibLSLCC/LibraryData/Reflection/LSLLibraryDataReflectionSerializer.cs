@@ -158,36 +158,36 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Gets or sets base <see cref="ILSLTypeConverter"/> to be used when a field or property lacks an <see cref="LSLConstantAttribute"/> or
+        /// Gets or sets base <see cref="ILSLConstantTypeConverter"/> to be used when a field or property lacks an <see cref="LSLConstantAttribute"/> or
         /// when <see cref="LSLLibraryDataSerializableAttribute.ConstantTypeConverter"/> or <see cref="LSLConstantAttribute.TypeConverter"/> is not specified
         /// to override it.
         /// </summary>
         /// <value>
         /// The constant type converter.
         /// </value>
-        public ILSLTypeConverter ConstantTypeConverter { get; set; }
+        public ILSLConstantTypeConverter ConstantTypeConverter { get; set; }
 
 
         /// <summary>
-        /// Gets or sets base <see cref="ILSLTypeConverter"/> to be used when a method lacks an <see cref="LSLFunctionAttribute"/> or
+        /// Gets or sets base <see cref="ILSLReturnTypeConverter"/> to be used when a method lacks an <see cref="LSLFunctionAttribute"/> or
         /// when <see cref="LSLLibraryDataSerializableAttribute.ReturnTypeConverter"/> or <see cref="LSLFunctionAttribute.ReturnTypeConverter"/> is not specified
         /// to override it.
         /// </summary>
         /// <value>
         /// The return type converter.
         /// </value>
-        public ILSLTypeConverter ReturnTypeConverter { get; set; }
+        public ILSLReturnTypeConverter ReturnTypeConverter { get; set; }
 
 
         /// <summary>
-        /// Gets or sets base <see cref="ILSLTypeConverter"/> to be used when a method parameter lacks an <see cref="LSLParamAttribute"/> or
+        /// Gets or sets base <see cref="ILSLParameterTypeConverter"/> to be used when a method parameter lacks an <see cref="LSLParamAttribute"/> or
         /// when <see cref="LSLLibraryDataSerializableAttribute.ParamTypeConverter"/> or <see cref="LSLFunctionAttribute.ParamTypeConverter"/> is not specified
         /// to override it.
         /// </summary>
         /// <value>
         /// The parameter type converter.
         /// </value>
-        public ILSLTypeConverter ParamTypeConverter { get; set; }
+        public ILSLParameterTypeConverter ParamTypeConverter { get; set; }
 
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
         private LSLLibraryConstantSignature _DoDeSerializeConstant(
             MemberInfo info,
-            ILSLTypeConverter optionalClassConstantTypeConverter,
+            ILSLConstantTypeConverter optionalClassConstantTypeConverter,
             ILSLValueStringConverter optionalClassConstantValueStringConverter,
             object fieldValueInstance = null)
         {
@@ -366,18 +366,32 @@ namespace LibLSLCC.LibraryData.Reflection
             }
 
             LSLType propertyType;
-            if (!ConstantTypeConverter.Convert(fieldType, out propertyType))
+
+            if (isProperty)
             {
-                if (ThrowOnUnmappedTypeInConstant)
+                if (!ConstantTypeConverter.ConvertProperty(propertyInfo, out propertyType))
                 {
+                    if (!ThrowOnUnmappedTypeInConstant) return null;
+
                     throw new LSLReflectionTypeMappingException(
                         string.Format(
-                            "Class field/property '{0}' was declared with a Type {1} that could not be mapped by the ConstantTypeConverter of Type {2}",
+                            "Class property '{0}' was declared with a Type {1} that could not be mapped by the ConstantTypeConverter of Type {2}",
                             info.Name, fieldType.FullName, ConstantTypeConverter.GetType().FullName),
                         fieldType);
                 }
+            }
+            else
+            {
+                if (!ConstantTypeConverter.ConvertField(fieldInfo, out propertyType))
+                {
+                    if (!ThrowOnUnmappedTypeInConstant) return null;
 
-                return null;
+                    throw new LSLReflectionTypeMappingException(
+                        string.Format(
+                            "Class field '{0}' was declared with a Type {1} that could not be mapped by the ConstantTypeConverter of Type {2}",
+                            info.Name, fieldType.FullName, ConstantTypeConverter.GetType().FullName),
+                        fieldType);
+                }
             }
 
 
@@ -390,6 +404,7 @@ namespace LibLSLCC.LibraryData.Reflection
                         info.DeclaringType.FullName,
                         ConstantTypeConverter));
             }
+
 
             object fieldValue;
 
@@ -541,8 +556,8 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         private LSLLibraryFunctionSignature _DoDeSerializeMethod(MethodInfo info,
-            ILSLTypeConverter optionalClassReturnTypeConverter,
-            ILSLTypeConverter optionalClassParamTypeConverter)
+            ILSLReturnTypeConverter optionalClassReturnTypeConverter,
+            ILSLParameterTypeConverter optionalClassParamTypeConverter)
         {
             var attributeSerializer = new LSLFunctionAttributeSerializer
             {
@@ -581,7 +596,7 @@ namespace LibLSLCC.LibraryData.Reflection
             LSLType returnType;
 
 
-            if (!ReturnTypeConverter.Convert(info.ReturnType, out returnType))
+            if (!ReturnTypeConverter.ConvertReturn(info, out returnType))
             {
                 if (ThrowOnUnmappedReturnTypeInMethod)
                 {
@@ -610,7 +625,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 var cSharpParameterType = isVariadic ? param.ParameterType.GetElementType() : param.ParameterType;
 
                 LSLType parameterType;
-                if (!ParamTypeConverter.Convert(cSharpParameterType, out parameterType))
+                if (!ParamTypeConverter.ConvertParameter(param, cSharpParameterType, out parameterType))
                 {
                     if (ThrowOnUnmappedParamTypeInMethod)
                     {

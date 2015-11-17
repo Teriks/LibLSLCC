@@ -41,15 +41,9 @@ namespace Tests
     }
 
 
-    class MySimpleConverter : ILSLTypeConverter
+    class MySimpleConverter : ILSLParameterTypeConverter, ILSLReturnTypeConverter, ILSLConstantTypeConverter
     {
-        /// <summary>
-        /// Converts the specified <see cref="Type"/> into its corresponding <see cref="LSLType"/>
-        /// </summary>
-        /// <param name="inType">Runtime <see cref="Type"/> to convert.</param>
-        /// <param name="outType">Resulting <see cref="LSLType"/> from the conversion.</param>
-        /// <returns><c>true</c> if the conversion succeeded, <c>false</c> if it failed.</returns>
-        public bool Convert(Type inType, out LSLType outType)
+        private bool Convert(Type inType, out LSLType outType)
         {
             if (typeof (string) == inType)
             {
@@ -80,7 +74,56 @@ namespace Tests
             outType = LSLType.Void;
             return false;
         }
+
+
+        /// <summary>
+        /// Converts the specified <see cref="ParameterInfo"/> into its corresponding <see cref="LSLType"/>
+        /// </summary>
+        /// <param name="parameterInfo">Runtime <see cref="ParameterInfo"/> for converting to an <see cref="LSLType"/>.</param>
+        /// <param name="basicType">The basic type of the parameter, this will be the parameter arrays base type if the parameter is variadic.</param>
+        /// <param name="outType">Resulting <see cref="LSLType"/> from the conversion.</param>
+        /// <returns><c>true</c> if the conversion succeeded, <c>false</c> if it failed.</returns>
+        public bool ConvertParameter(ParameterInfo parameterInfo, Type basicType, out LSLType outType)
+        {
+            return Convert(basicType, out outType);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="MethodInfo"/> return type into its corresponding <see cref="LSLType"/>
+        /// </summary>
+        /// <param name="methodInfo">Runtime <see cref="Type"/> to convert.</param>
+        /// <param name="outType">Resulting <see cref="LSLType"/> from the conversion.</param>
+        /// <returns><c>true</c> if the conversion succeeded, <c>false</c> if it failed.</returns>
+        public bool ConvertReturn(MethodInfo methodInfo, out LSLType outType)
+        {
+            return Convert(methodInfo.ReturnType, out outType);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="FieldInfo"/> into its corresponding <see cref="LSLType"/>
+        /// </summary>
+        /// <param name="fieldInfo">Runtime <see cref="FieldInfo"/> to convert.</param>
+        /// <param name="outType">Resulting <see cref="LSLType"/> from the conversion.</param>
+        /// <returns><c>true</c> if the conversion succeeded, <c>false</c> if it failed.</returns>
+        public bool ConvertField(FieldInfo fieldInfo, out LSLType outType)
+        {
+            return Convert(fieldInfo.FieldType, out outType);
+        }
+
+        /// <summary>
+        /// Converts the specified <see cref="PropertyInfo"/> into its corresponding <see cref="LSLType"/>
+        /// </summary>
+        /// <param name="fieldInfo">Runtime <see cref="PropertyInfo"/> to convert.</param>
+        /// <param name="outType">Resulting <see cref="LSLType"/> from the conversion.</param>
+        /// <returns><c>true</c> if the conversion succeeded, <c>false</c> if it failed.</returns>
+        public bool ConvertProperty(PropertyInfo fieldInfo, out LSLType outType)
+        {
+            return Convert(fieldInfo.PropertyType, out outType);
+        }
     }
+
+
+
 
 
     //this overrides the converters in the serializer at the class level
@@ -229,13 +272,13 @@ namespace Tests
             var x = new LSLLibraryDataReflectionSerializer
             {
                 PropertyBindingFlags =
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,
+                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly,
 
                 FieldBindingFlags =
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,
+                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly,
 
                 MethodBindingFlags = 
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,
+                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly,
 
                 //a fall back value string converter used by the serializer
                 //or null.. not really used since the class we are reflecting

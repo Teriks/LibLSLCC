@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: ILSLReflectionConstantFilter.cs
+// File: ILSLConstantFilter.cs
 // 
 // 
 // ============================================================
@@ -47,7 +47,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// <summary>
     /// Allows modification of a constant signature after its basic information has been serialized, before its returned.
     /// </summary>
-    public interface ILSLReflectionConstantFilter
+    public interface ILSLConstantFilter
     {
 
         /// <summary>

@@ -52,9 +52,9 @@ namespace LibLSLCC.LibraryData.Reflection
 {
     internal class LSLFunctionAttributeSerializer
     {
-        public ILSLTypeConverter FallBackReturnTypeConverter { get; set; }
+        public ILSLReturnTypeConverter FallBackReturnTypeConverter { get; set; }
 
-        public ILSLTypeConverter FallBackParameterTypeConverter { get; set; }
+        public ILSLParameterTypeConverter FallBackParameterTypeConverter { get; set; }
 
         public bool AttributedParametersOnly { get; set; }
         public Func<ParameterInfo, bool> ParameterFilter { get; set; }
@@ -75,9 +75,9 @@ namespace LibLSLCC.LibraryData.Reflection
             public List<LSLParameter> Parameters { get; set; }
 
 
-            public ILSLTypeConverter ReturnTypeConverter { get; set; }
+            public ILSLReturnTypeConverter ReturnTypeConverter { get; set; }
 
-            public ILSLTypeConverter ParamTypeConverter { get; set; }
+            public ILSLParameterTypeConverter ParamTypeConverter { get; set; }
 
             public Info()
             {
@@ -138,18 +138,18 @@ namespace LibLSLCC.LibraryData.Reflection
                             method.Name, method.DeclaringType.FullName, rtConverter.FullName));
                 }
 
-                if (!rtConverter.GetInterfaces().Contains(typeof (ILSLTypeConverter)))
+                if (!rtConverter.GetInterfaces().Contains(typeof (ILSLReturnTypeConverter)))
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
                             "[LSLFunctionAttribute.ReturnTypeConverter] of Type '{0}' on method '{1}' declared in " +
-                            "Type '{2}' does not implement ILSLTypeConverter.",
+                            "Type '{2}' does not implement ILSLReturnTypeConverter.",
                             rtConverter.FullName,
                             method.Name, 
                             method.DeclaringType.FullName));
                 }
 
-                result.ReturnTypeConverter = (ILSLTypeConverter) Activator.CreateInstance(rtConverter);
+                result.ReturnTypeConverter = (ILSLReturnTypeConverter) Activator.CreateInstance(rtConverter);
             }
 
 
@@ -171,7 +171,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
                 LSLType returnType;
 
-                if (!preferedReturnTypeConverter.Convert(method.ReturnType, out returnType))
+                if (!preferedReturnTypeConverter.ConvertReturn(method, out returnType))
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
@@ -192,17 +192,17 @@ namespace LibLSLCC.LibraryData.Reflection
                 var rtConverter =
                     (Type) attr.NamedArguments.First(x => x.MemberInfo.Name == "ParamTypeConverter").TypedValue.Value;
 
-                if (!rtConverter.GetInterfaces().Contains(typeof (ILSLTypeConverter)))
+                if (!rtConverter.GetInterfaces().Contains(typeof (ILSLParameterTypeConverter)))
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[LSLFunctionAttribute.ParamTypeConverter] of Type '{0}' on method '{1}' declared in Type '{2}' does not implement ILSLTypeConverter.",
+                            "[LSLFunctionAttribute.ParamTypeConverter] of Type '{0}' on method '{1}' declared in Type '{2}' does not implement ILSLParameterTypeConverter.",
                             rtConverter.FullName,
                             method.Name,
                             method.DeclaringType.FullName));
                 }
 
-                result.ParamTypeConverter = (ILSLTypeConverter) Activator.CreateInstance(rtConverter);
+                result.ParamTypeConverter = (ILSLParameterTypeConverter) Activator.CreateInstance(rtConverter);
             }
 
 
@@ -251,7 +251,7 @@ namespace LibLSLCC.LibraryData.Reflection
                     var cSharpParameterType = isVariadic ? param.ParameterType.GetElementType() : param.ParameterType;
 
 
-                    if (!preferedParameterConverter.Convert(cSharpParameterType, out pType))
+                    if (!preferedParameterConverter.ConvertParameter(param, cSharpParameterType, out pType))
                     {
                         throw new LSLLibraryDataAttributeException(
                             string.Format(

@@ -71,7 +71,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
             public LSLType Type { get; internal set; }
 
-            public ILSLTypeConverter TypeConverterInstance { get; internal set; }
+            public ILSLConstantTypeConverter TypeConverterInstance { get; internal set; }
 
             public ILSLValueStringConverter ValueStringConverterInstance { get; internal set; }
 
@@ -85,7 +85,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
         public ILSLValueStringConverter FallBackValueStringConverter { get; set; }
 
-        public ILSLTypeConverter FallBackTypeConverter { get; set; }
+        public ILSLConstantTypeConverter FallBackTypeConverter { get; set; }
 
         public object OptionalDeclaringTypeInstance { get; set; }
 
@@ -205,16 +205,16 @@ namespace LibLSLCC.LibraryData.Reflection
                 var typeConverter =
                     (Type) namedArgs.First(x => x.MemberInfo.Name == "TypeConverter").TypedValue.Value;
 
-                if (typeConverter.GetInterfaces().Contains(typeof (ILSLTypeConverter)))
+                if (typeConverter.GetInterfaces().Contains(typeof (ILSLConstantTypeConverter)))
                 {
                     result.TypeConverterInstance =
-                        Activator.CreateInstance(typeConverter) as ILSLTypeConverter;
+                        Activator.CreateInstance(typeConverter) as ILSLConstantTypeConverter;
                 }
                 else
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[LSLConstantAttribute.TypeConverter] does not implement ILSLTypeConverter on property/field '{0}' in class '{1}'.",
+                            "[LSLConstantAttribute.TypeConverter] does not implement ILSLConstantTypeConverter on property/field '{0}' in class '{1}'.",
                             info.Name, info.DeclaringType.FullName));
                 }
             }
@@ -328,13 +328,27 @@ namespace LibLSLCC.LibraryData.Reflection
 
                 var converter = result.TypeConverterInstance ?? FallBackTypeConverter;
 
-                if (!converter.Convert(memberType, out lslType))
+                if (isProperty)
                 {
-                    throw new LSLLibraryDataAttributeException(
-                        string.Format(
-                            (isProperty ? "Property" : "Field") +
-                            " '{0}' in class '{1}' was declared with the Type '{2}' that was unable to be converted by the selected type converter of Type '{3}'.",
-                            info.Name, info.DeclaringType.FullName, memberType.FullName, converter.GetType().FullName));
+                    if (!converter.ConvertProperty(propertyInfo, out lslType))
+                    {
+                        throw new LSLLibraryDataAttributeException(
+                            string.Format(
+                                "Property '{0}' in class '{1}' was declared with the Type '{2}' that was unable to be converted by the selected type converter of Type '{3}'.",
+                                info.Name, info.DeclaringType.FullName, memberType.FullName,
+                                converter.GetType().FullName));
+                    }
+                }
+                else
+                {
+                    if (!converter.ConvertField(fieldInfo, out lslType))
+                    {
+                        throw new LSLLibraryDataAttributeException(
+                            string.Format(
+                                "Property '{0}' in class '{1}' was declared with the Type '{2}' that was unable to be converted by the selected type converter of Type '{3}'.",
+                                info.Name, info.DeclaringType.FullName, memberType.FullName,
+                                converter.GetType().FullName));
+                    }
                 }
 
                 if (lslType == LSLType.Void)
