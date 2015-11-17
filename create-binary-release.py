@@ -6,71 +6,64 @@ import datetime
 import shutil
 import platform
 import subprocess
+import BuildScripts.MSBuild
+from argparse import ArgumentParser
 
 scriptPath = os.path.dirname(os.path.realpath(__file__))
 
-PLATFORM = platform.system()
-ARCH = platform.machine()
 
-MSBUILD = ''
+args_parser = ArgumentParser()
+args_parser.add_argument(
+    '--no-installer', 
+    action='store_false', 
+    dest='build_installer',
+    help='Prevent the installer from being built if you do not have WiX;  On Mono it does not build regardless.'
+    )
 
-ON_WINDOWS = PLATFORM == 'Windows'
+args_parser.add_argument(
+    '--dir',
+    metavar='PATH',
+    default=os.path.join(scriptPath, 'BinaryRelease'), 
+    dest='output_dir',
+    help='The folder to create and place the binary release files in.'
+    )
 
-if ON_WINDOWS:
-    SOLUTION = os.path.join(scriptPath, 'LibLSLCC-WithEditor-WithInstaller.sln')
-    if ARCH != "AMD64":
-        MSBUILD = 'C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe'
-        if not os.path.isfile(MSBUILD):
-            MSBUILD = 'C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe'
-    else:
-        MSBUILD = 'C:/Program Files (x86)/MSBuild/12.0/bin/amd64/MSBuild.exe'
-        if not os.path.isfile(MSBUILD):
-            MSBUILD = 'C:/Program Files (x86)/MSBuild/14.0/bin/amd64/MSBuild.exe'
+args = args_parser.parse_args();
 
-    if not os.path.isfile(MSBUILD):
-        print("Neither MSBuild 12.0 or 14.0 could not be found, please install Visual Studios 2012+, OR:")
-        print("MSBuild 12.0 Standalone: https://www.microsoft.com/en-us/download/details.aspx?id=40760")
-        print("MSBuild 14.0 Standalone: https://www.microsoft.com/en-in/download/details.aspx?id=48159")
-else:
-    SOLUTION = os.path.join(scriptPath, 'LibLSLCC-NoEditor.sln')
-    MSBUILD = subprocess.check_output(['which', 'xbuild']).strip()
-    if not MSBUILD:
-        print("xbuild command is not present on your system, please install mono")
 
-old_wd = os.getcwd()
 
-os.chdir(os.path.dirname(MSBUILD))
+msbuild = BuildScripts.MSBuild.Tool();
 
+no_editor_solution = os.path.join(scriptPath, 'LibLSLCC-NoEditor.sln');
+editor_solution = os.path.join(scriptPath, 'LibLSLCC-WithEditor-WithInstaller.sln');
 
 
 # build an Any CPU lslcc binary for distribution
-subprocess.call([MSBUILD, SOLUTION, '/t:lslcc_cmd', '/p:Configuration=Release', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0'])
+msbuild.run(no_editor_solution, '/t:lslcc_cmd', '/p:Configuration=Release', '/p:Platform=Any CPU',
+                 '/p:TargetFrameworkVersion=v4.0')
                  
                  
 #build debug LibLSLCC         
-subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0'])
+msbuild.run(no_editor_solution, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                 '/p:TargetFrameworkVersion=v4.0')
 
 
 # this won't get built in the next step if we are not on windows.
 # when building the editor installer its a dependency
 # but not on mono
-if not ON_WINDOWS:
-    subprocess.call([MSBUILD, SOLUTION, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0'])
+if not msbuild.is_windows() or not args.build_installer:
+    msbuild.run(no_editor_solution, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=Any CPU',
+                 '/p:TargetFrameworkVersion=v4.0')
 
 
 
 # build the installers on windows
-if ON_WINDOWS:
-    print(MSBUILD)
-    subprocess.call([MSBUILD, SOLUTION, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86',
-                     '/p:TargetFrameworkVersion=v4.5'])
-    subprocess.call([MSBUILD, SOLUTION, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
-                     '/p:TargetFrameworkVersion=v4.5'])
+if msbuild.is_windows() and args.build_installer:
+    msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86',
+                     '/p:TargetFrameworkVersion=v4.5')
+    msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
+                     '/p:TargetFrameworkVersion=v4.5')
 
-os.chdir(old_wd)
 
 curTime = datetime.datetime.now()
 release_stamp = '{dt.month}-{dt.day}-{dt.year}_{dt:%I}-{dt:%M}{dt:%p}'.format(dt=curTime)
@@ -81,7 +74,8 @@ print('Release Stamp: ' + release_stamp)
 print('===========================================')
 print('\n')
 
-outputDir = os.path.join(scriptPath, 'BinaryRelease')
+
+outputDir = args.output_dir
 
 binariesZip = os.path.join(outputDir, 'LibLSLCC_Binaries_' + release_stamp + '.zip')
 
@@ -146,7 +140,7 @@ def remove_second_folder_down(path):
 with zipfile.ZipFile(binariesZip, 'w') as zip_file:
 
     zip_dir_relative(lib_anyCpu, zip_file, archDirTransform=remove_second_folder_down)
-	
+
     zip_dir_relative(lib_thirdparty_licenses, zip_file, archDirTransform=remove_second_folder_down)
 
     lslccArchDir = os.path.basename(lslccPath)
@@ -160,24 +154,25 @@ with zipfile.ZipFile(binariesZip, 'w') as zip_file:
 
 
 # copy and time stamp the installers when on windows
-if ON_WINDOWS:
+if msbuild.is_windows():
     x64_installer = os.path.relpath(os.path.join(installerPath, 'bin', 'x64', 'Release', installerBasicName + installerExtension), scriptPath)
     x86_installer = os.path.relpath(os.path.join(installerPath, 'bin', 'x86', 'Release', installerBasicName + installerExtension), scriptPath)
 
     x64_installerDest = os.path.relpath(os.path.join(outputDir, installerBasicName + '_x64_' + release_stamp + installerExtension), scriptPath)
     x86_installerDest = os.path.relpath(os.path.join(outputDir, installerBasicName + '_x86_' + release_stamp + installerExtension), scriptPath)
 
-    print('\n')
-    print('===========================================')
-    print('\n')
-
-    print('Copy x64 Installer:\n\t' + x64_installer + ' -> ' + x64_installerDest)
-    shutil.copy2(x64_installer, x64_installerDest)
-
-    print('\n')
-
-    print('Copy x64 Installer:\n\t' + x86_installer + ' -> ' + x86_installerDest)
-    shutil.copy2(x86_installer, x86_installerDest)
-
-    print('\n')
+    if args.build_installer:
+        print('\n')
+        print('===========================================')
+        print('\n')
+        
+        print('Copy x64 Installer:\n\t' + x64_installer + ' -> ' + x64_installerDest)
+        shutil.copy2(x64_installer, x64_installerDest)
+        
+        print('\n')
+        
+        print('Copy x64 Installer:\n\t' + x86_installer + ' -> ' + x86_installerDest)
+        shutil.copy2(x86_installer, x86_installerDest)
+        
+        print('\n')
 
