@@ -246,7 +246,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Serialize library signature definitions to an XmlWriter object/
+        /// Serialize library signature definitions to an XmlWriter object
         /// </summary>
         /// <param name="dataProvider">The data provider to serialize.</param>
         /// <param name="writer">The XmlWriter object to serialize to.</param>
