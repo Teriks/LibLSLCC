@@ -306,9 +306,6 @@ Will prevent the editor and editor installer from being built, this has no effec
 the editor and it's installer are not built on *nix regardless;  They are Windows only.
 
 
-===
-
-
 **clean.py** simply cleans all configurations/platforms of the build when you run it.
 
 
