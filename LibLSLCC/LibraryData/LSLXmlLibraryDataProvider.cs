@@ -205,8 +205,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
         void IXmlSerializable.WriteXml(XmlWriter writer)
         {
-            LSLLibraryDataXmlSerializer.WriteXml(SubsetDescriptions.Values, LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
-                LibraryConstants, writer, false);
+            LSLLibraryDataXmlSerializer.WriteXml(this, writer, false);
         }
 
 
@@ -217,8 +216,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="writeRootElement">Whether or not to write the root element for this object</param>
         public void WriteXml(XmlWriter writer, bool writeRootElement)
         {
-            LSLLibraryDataXmlSerializer.WriteXml(SubsetDescriptions.Values, LibraryFunctions.SelectMany(x => x), SupportedEventHandlers,
-                LibraryConstants, writer, writeRootElement);
+            LSLLibraryDataXmlSerializer.WriteXml(this, writer, writeRootElement);
         }
 
 

@@ -286,7 +286,7 @@ namespace LSLCCEditor.EditControl
 
         public IEnumerable<LSLLibraryEventSignature> EventSignatures
         {
-            get { return LibraryDataProvider.SupportedEventHandlers; }
+            get { return LibraryDataProvider.LibraryEvents; }
         }
 
         public IEnumerable<string> LibraryFunctionNames
@@ -2918,7 +2918,7 @@ namespace LSLCCEditor.EditControl
 
                     foreach (
                         var evnt in
-                            (from s in provider.SupportedEventHandlers orderby s.Name.Length descending select s))
+                            (from s in provider.LibraryEvents orderby s.Name.Length descending select s))
                     {
                         var rule = new HighlightingRule
                         {

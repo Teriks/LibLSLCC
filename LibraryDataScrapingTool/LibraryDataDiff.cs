@@ -174,14 +174,14 @@ namespace LibraryDataScrapingTools
 
         private void DiffEvents()
         {
-            if (Left.SupportedEventHandlers.Count() != Right.SupportedEventHandlers.Count())
+            if (Left.LibraryEvents.Count() != Right.LibraryEvents.Count())
             {
                 Log.WriteLineWithHeader("[Diff]: ", "Left number of events is not equal to right number of events");
             }
 
 
-            var leftEvents = new HashSet<LSLLibraryEventSignature>(Left.SupportedEventHandlers);
-            var rightEvents = new HashSet<LSLLibraryEventSignature>(Right.SupportedEventHandlers);
+            var leftEvents = new HashSet<LSLLibraryEventSignature>(Left.LibraryEvents);
+            var rightEvents = new HashSet<LSLLibraryEventSignature>(Right.LibraryEvents);
 
             if (!leftEvents.SetEquals(rightEvents))
             {

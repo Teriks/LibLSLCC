@@ -56,11 +56,19 @@ namespace LibLSLCC.LibraryData
     /// </summary>
     public interface ILSLLibraryDataProvider
     {
+        /// <summary>
+        /// Gets a map of subset descriptions for subset's used by signatures in this data provider.
+        /// </summary>
+        /// <value>
+        /// The subset description map.
+        /// </value>
+        IReadOnlyHashMap<string, LSLLibrarySubsetDescription> SubsetDescriptions { get; }
+
 
         /// <summary>
         ///     Enumerable of <see cref="LSLLibraryEventSignature"/> describing the event handlers supported according to this data provider
         /// </summary>
-        IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers { get; }
+        IEnumerable<LSLLibraryEventSignature> LibraryEvents { get; }
 
         /// <summary>
         ///     Enumerable of the <see cref="LSLLibraryFunctionSignature"/> overloads defined according to this data provider

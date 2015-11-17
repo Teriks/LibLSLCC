@@ -43,6 +43,7 @@
 #region Imports
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Serialization;
@@ -247,17 +248,10 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Serialize library signature definitions to an XmlWriter object/
         /// </summary>
-        /// <param name="librarySubsetDescriptions">The library subset descriptions to serialize.</param>
-        /// <param name="libraryFunctions">The library function signatures to serialize.</param>
-        /// <param name="libraryEventSignatures">The library event handler signatures to serialize.</param>
-        /// <param name="libraryConstants">The library constant signatures to serialize</param>
+        /// <param name="dataProvider">The data provider to serialize.</param>
         /// <param name="writer">The XmlWriter object to serialize to.</param>
         /// <param name="writeRootElement">Boolean defining whether or not to write a root element to the stream that houses the signatures, or to just write the signatures without putting them in a root element.</param>
-        public static void WriteXml(
-            IEnumerable<LSLLibrarySubsetDescription> librarySubsetDescriptions,
-            IEnumerable<LSLLibraryFunctionSignature> libraryFunctions,
-            IEnumerable<LSLLibraryEventSignature> libraryEventSignatures,
-            IEnumerable<LSLLibraryConstantSignature> libraryConstants,
+        public static void WriteXml(ILSLLibraryDataProvider dataProvider,
             XmlWriter writer,
             bool writeRootElement = true)
         {
@@ -267,28 +261,28 @@ namespace LibLSLCC.LibraryData
             }
 
 
-            foreach (var func in librarySubsetDescriptions)
+            foreach (var func in dataProvider.SubsetDescriptions.Values)
             {
                 writer.WriteStartElement("SubsetDescription");
                 ((IXmlSerializable)func).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
-            foreach (var func in libraryFunctions)
+            foreach (var func in dataProvider.LibraryFunctions.SelectMany(x=>x))
             {
                 writer.WriteStartElement("LibraryFunction");
                 ((IXmlSerializable)func).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
-            foreach (var ev in libraryEventSignatures)
+            foreach (var ev in dataProvider.LibraryEvents)
             {
                 writer.WriteStartElement("EventHandler");
                 ((IXmlSerializable)ev).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
-            foreach (var con in libraryConstants)
+            foreach (var con in dataProvider.LibraryConstants)
             {
                 writer.WriteStartElement("LibraryConstant");
                 ((IXmlSerializable)con).WriteXml(writer);

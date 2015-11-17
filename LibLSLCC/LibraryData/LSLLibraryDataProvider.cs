@@ -162,7 +162,7 @@ namespace LibLSLCC.LibraryData
         /// And that event was not shared across subsets.  This can only really happen when <see cref="LiveFiltering"/> is enabled.
         /// </exception>
         /// </summary>
-        public IEnumerable<LSLLibraryEventSignature> SupportedEventHandlers
+        public IEnumerable<LSLLibraryEventSignature> LibraryEvents
         {
             get
             {
@@ -187,7 +187,7 @@ namespace LibLSLCC.LibraryData
                     else
                     {
                         throw new LSLDuplicateSignatureException(
-                            string.Format("SupportedEventHandlers {{get}} failed because the event '{0};' exist in more than one active subset, ", evnt.SignatureString) +
+                            string.Format("LibraryEvents {{get}} failed because the event '{0};' exist in more than one active subset, ", evnt.SignatureString) +
                             "and it is not shared across the involved subsets.");
                     }
                 }
