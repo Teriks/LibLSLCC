@@ -40,6 +40,8 @@
 // 
 // 
 #endregion
+
+using System.Reflection;
 using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.LibraryData.Reflection
@@ -51,10 +53,11 @@ namespace LibLSLCC.LibraryData.Reflection
     public interface ILSLValueStringConverter
     {
         /// <summary>
-        /// Convert the value taken from a property or field with the <see cref="LSLConstantAttribute"/> into
+        /// Convert the value taken from a property with the <see cref="LSLConstantAttribute"/> into
         /// something that is valid to assign to <see cref="LSLLibraryConstantSignature.ValueString"/> given the specified
         /// <see cref="LSLType"/> that is to be assigned to <see cref="LSLLibraryConstantSignature.Type"/>.
         /// </summary>
+        /// <param name="propertyInfo">The <see cref="PropertyInfo"/> of the property the value was taken from.</param>
         /// <param name="constantType">The <see cref="LSLType"/> being assigned to <see cref="LSLLibraryConstantSignature.Type"/>.</param>
         /// <param name="fieldValue">The value taking from the property or field with an <see cref="LSLConstantAttribute"/>.</param>
         /// <param name="valueString">
@@ -65,6 +68,25 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <returns>
         /// True if the conversion succeeded, false if it did not.
         /// </returns>
-        bool Convert(LSLType constantType, object fieldValue, out string valueString);
+        bool ConvertProperty(PropertyInfo propertyInfo, LSLType constantType, object fieldValue, out string valueString);
+
+
+        /// <summary>
+        /// Convert the value taken from a field with the <see cref="LSLConstantAttribute"/> into
+        /// something that is valid to assign to <see cref="LSLLibraryConstantSignature.ValueString"/> given the specified
+        /// <see cref="LSLType"/> that is to be assigned to <see cref="LSLLibraryConstantSignature.Type"/>.
+        /// </summary>
+        /// <param name="fieldInfo">The <see cref="FieldInfo"/> of the field the value was taken from.</param>
+        /// <param name="constantType">The <see cref="LSLType"/> being assigned to <see cref="LSLLibraryConstantSignature.Type"/>.</param>
+        /// <param name="fieldValue">The value taking from the property or field with an <see cref="LSLConstantAttribute"/>.</param>
+        /// <param name="valueString">
+        /// The string to assign to <see cref="LSLLibraryConstantSignature.ValueString"/>.
+        /// this should be a string that <see cref="LSLLibraryConstantSignature"/> is able to parse for the given <see cref="LSLType"/>.
+        /// You should not assign <c>null</c> to <paramref name="valueString"/> if you intend to return <c>true</c>, this is invalid and the serializer will throw an exception.
+        /// </param>
+        /// <returns>
+        /// True if the conversion succeeded, false if it did not.
+        /// </returns>
+        bool ConvertField(FieldInfo fieldInfo, LSLType constantType, object fieldValue, out string valueString);
     }
 }

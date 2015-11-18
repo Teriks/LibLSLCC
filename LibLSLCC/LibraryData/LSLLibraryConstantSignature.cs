@@ -302,6 +302,34 @@ namespace LibLSLCC.LibraryData
             }
         }
 
+        public static bool ValidateValueString(LSLType type, string valueString)
+        {
+            try
+            {
+                var f = new LSLLibraryConstantSignature(type, "constant", valueString);
+                return true;
+            }
+            catch (LSLInvalidConstantValueStringException)
+            {
+                return false;
+            }
+        }
+
+        public static bool TryParseValueString(LSLType type, string valueString, out string formated)
+        {
+            try
+            {
+                var f = new LSLLibraryConstantSignature(type, "constant", valueString);
+                formated = f.ValueString;
+                return true;
+            }
+            catch (LSLInvalidConstantValueStringException)
+            {
+                formated = null;
+                return false;
+            }
+        }
+
         private void SetFloatValueString(string value)
         {
             string stripSpecifiers = value.TrimEnd('f', 'F', 'd', 'D');

@@ -371,7 +371,20 @@ namespace LibLSLCC.LibraryData.Reflection
 
                 var converter = result.ValueStringConverterInstance ?? FallBackValueStringConverter;
 
-                if (!converter.Convert(result.Type, retrievedMemberValue.ToString(), out convertedValueString))
+
+                bool conversionSuccess;
+                if (isProperty)
+                {
+                    conversionSuccess = converter.ConvertProperty(propertyInfo, result.Type, retrievedMemberValue.ToString(),
+                        out convertedValueString);
+                }
+                else
+                {
+                    conversionSuccess = converter.ConvertField(fieldInfo, result.Type, retrievedMemberValue.ToString(),
+                        out convertedValueString);
+                }
+
+                if (!conversionSuccess)
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(

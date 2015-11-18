@@ -248,11 +248,14 @@ namespace LibLSLCC.LibraryData.Reflection
         private LSLLibraryConstantSignature TryConvertConstantValueString(MemberInfo info,
             LSLLibraryConstantSignature sig, object value)
         {
-            bool isProperty = info is PropertyInfo;
+            var asProperty = info as PropertyInfo;
+            var asField = info as FieldInfo;
+
+            bool isProperty = asProperty != null;
 
             Type constantMemberType = isProperty
-                ? ((PropertyInfo) info).PropertyType
-                : ((FieldInfo) info).FieldType;
+                ? asProperty.PropertyType
+                : asField.FieldType;
 
 
             string fieldDescription = isProperty ? "Property" : "Field";
@@ -261,7 +264,19 @@ namespace LibLSLCC.LibraryData.Reflection
 
             string convertedValueString;
 
-            if (!ValueStringConverter.Convert(sig.Type, value, out convertedValueString))
+            bool conversionSuccess;
+            if (isProperty)
+            {
+                conversionSuccess = ValueStringConverter.ConvertProperty(asProperty, sig.Type, value,
+                    out convertedValueString);
+            }
+            else
+            {
+                conversionSuccess = ValueStringConverter.ConvertField(asField, sig.Type, value,
+                    out convertedValueString);
+            }
+
+            if (!conversionSuccess)
             {
                 return sig;
             }
