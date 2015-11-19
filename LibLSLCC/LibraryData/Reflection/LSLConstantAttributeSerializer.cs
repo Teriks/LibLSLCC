@@ -404,6 +404,18 @@ namespace LibLSLCC.LibraryData.Reflection
                 }
 
                 result.RetrievedValueString = convertedValueString;
+
+
+            }
+
+            if (!LSLLibraryConstantSignature.ValidateValueString(result.Type, result.RetrievedValueString))
+            {
+                throw new LSLLibraryDataAttributeException(
+                    string.Format(
+                        (isProperty ? "Property" : "Field") +
+                        " '{0}' in class '{1}' has a calculated ValueString of '{2}' that LSLLibraryConstantSignature.ValueString" +
+                        " is unable to parse for the given LSLType '{3}'",
+                        info.Name, info.DeclaringType.FullName, result.RetrievedValueString, result.Type));
             }
 
 

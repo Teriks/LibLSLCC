@@ -61,6 +61,13 @@ namespace LibLSLCC.LibraryData.Reflection
     public class LSLLibraryDataReflectionSerializer
     {
 
+        public delegate void AutoFilteredMethodEvent(object sender, MethodInfo member);
+        public delegate void AutoFilteredConstantEvent(object sender, MemberInfo member);
+        public delegate void AutoFilteredConstantFieldEvent(object sender, FieldInfo member);
+        public delegate void AutoFilteredConstantPropertyEvent(object sender, PropertyInfo member);
+
+
+
         /// <summary>
         /// Gets or sets the method filter which can pre-filter <see cref="MethodInfo"/> objects from the reflection search results.
         /// </summary>
@@ -117,33 +124,77 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Gets or sets a value indicating whether to throw a <see cref="LSLReflectionTypeMappingException"/> when <see cref="ReturnTypeConverter"/>
-        /// fails to map a type on a method without a <see cref="LSLFunctionAttribute"/>.  If false then the method is just discarded (filtered). 
+        /// Gets or sets a value indicating whether to filter methods lacking an <see cref="LSLFunctionAttribute"/> where the return
+        /// type of the method cannot be converted to an <see cref="LSLType"/> by the implementation of <see cref="ILSLReturnTypeConverter"/> 
+        /// assigned to <see cref="ReturnTypeConverter"/>.  If set to <c>false</c> an <see cref="LSLReflectionTypeMappingException"/> will
+        /// be thrown when a return type is found to be un-convertible.
         /// </summary>
         /// <value>
-        /// <c>true</c> if a failed return type conversion by <see cref="ReturnTypeConverter"/> on a method lacking an <see cref="LSLFunctionAttribute"/> causes an <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c>.
+        /// <c>true</c> to filter reflected methods lacking an <see cref="LSLFunctionAttribute"/> where the return type is un-convertible by 
+        /// <see cref="ReturnTypeConverter"/>;  otherwise, <c>false</c> to throw an <see cref="LSLReflectionTypeMappingException"/>.
         /// </value>
-        public bool ThrowOnUnmappedReturnTypeInMethod { get; set; }
+        public bool FilterMethodsWithUnmappedReturnTypes { get; set; }
 
 
         /// <summary>
-        /// Gets or sets a value indicating whether to throw a <see cref="LSLReflectionTypeMappingException"/> when <see cref="ParamTypeConverter"/>
-        /// fails to map a type on a method without a <see cref="LSLFunctionAttribute"/>.  If false then the method is just discarded (filtered). 
+        /// Occurs when <see cref="FilterMethodsWithUnmappedReturnTypes"/> is <c>true</c> and an un-attributed method is filtered because 
+        /// <see cref="ReturnTypeConverter"/> cannot successfully convert it's return type to an <see cref="LSLType"/>.
         /// </summary>
-        /// <value>
-        /// <c>true</c> if a failed return type conversion by <see cref="ParamTypeConverter"/> on a method lacking an <see cref="LSLFunctionAttribute"/> causes an <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c>.
-        /// </value>
-        public bool ThrowOnUnmappedParamTypeInMethod { get; set; }
+        public event AutoFilteredMethodEvent OnFilterMethodWithUnmappedReturnType;
 
 
         /// <summary>
-        /// Gets or sets a value indicating whether to throw a <see cref="LSLReflectionTypeMappingException"/> when <see cref="ConstantTypeConverter"/>
-        /// fails to map a type on a field/property without a <see cref="LSLConstantAttribute"/>.  If false then the field or property is just discarded (filtered). 
+        /// Gets or sets a value indicating whether to filter methods lacking an <see cref="LSLFunctionAttribute"/> where one or more parameter
+        /// types of the method cannot be converted to an <see cref="LSLType"/> by the implementation of <see cref="ILSLParamTypeConverter"/> 
+        /// assigned to <see cref="ParamTypeConverter"/>.  If set to <c>false</c> an <see cref="LSLReflectionTypeMappingException"/> will
+        /// be thrown when a parameter type is found to be un-convertible.
         /// </summary>
         /// <value>
-        /// <c>true</c> if a failed return type conversion by <see cref="ConstantTypeConverter"/> on a field or property lacking an <see cref="LSLConstantAttribute"/> causes an <see cref="LSLReflectionTypeMappingException"/> otherwise, <c>false</c>.
+        /// <c>true</c> to filter reflected methods lacking an <see cref="LSLFunctionAttribute"/> where a parameter type is un-convertible by 
+        /// <see cref="ParamTypeConverter"/>;  otherwise, <c>false</c> to throw an <see cref="LSLReflectionTypeMappingException"/>.
         /// </value>
-        public bool ThrowOnUnmappedTypeInConstant { get; set; }
+        public bool FilterMethodsWithUnmappedParamTypes { get; set; }
+
+
+        /// <summary>
+        /// Occurs when <see cref="FilterMethodsWithUnmappedParamTypes"/> is <c>true</c> and an un-attributed method is filtered because 
+        /// <see cref="ParamTypeConverter"/> cannot successfully convert one of it's parameter types to an <see cref="LSLType"/>.
+        /// </summary>
+        public event AutoFilteredMethodEvent OnFilterMethodWithUnmappedParamType;
+
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter field/properties lacking an <see cref="LSLConstantAttribute"/> where the declaration
+        /// type of the class member cannot be converted to an <see cref="LSLType"/> by the implementation of <see cref="ILSLConstantTypeConverter"/> 
+        /// assigned to <see cref="ConstantTypeConverter"/>.  If set to <c>false</c> an <see cref="LSLReflectionTypeMappingException"/> will
+        /// be thrown when a field/property type is found to be un-convertible.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> to filter reflected fields/properties lacking an <see cref="LSLConstantAttribute"/> where a declared type is
+        /// un-convertible by <see cref="ConstantTypeConverter"/>;  otherwise, <c>false</c> to throw an <see cref="LSLReflectionTypeMappingException"/>.
+        /// </value>
+        public bool FilterConstantsWithUnmappedTypes { get; set; }
+
+        /// <summary>
+        /// Occurs when <see cref="FilterConstantsWithUnmappedTypes"/> is <c>true</c> and an un-attributed constant is filtered because 
+        /// <see cref="ConstantTypeConverter"/> cannot successfully convert its type to an <see cref="LSLType"/>.
+        /// </summary>
+        public event AutoFilteredConstantEvent OnFilterConstantWithUnmappedType;
+
+
+        /// <summary>
+        /// Occurs when <see cref="FilterConstantsWithUnmappedTypes"/> is <c>true</c> and an un-attributed constant Property is filtered because 
+        /// <see cref="ConstantTypeConverter"/> cannot successfully convert its type to an <see cref="LSLType"/>.
+        /// </summary>
+        public event AutoFilteredConstantEvent OnFilterConstantPropertyWithUnmappedType;
+
+
+        /// <summary>
+        /// Occurs when <see cref="FilterConstantsWithUnmappedTypes"/> is <c>true</c> and an un-attributed constant Field is filtered because 
+        /// <see cref="ConstantTypeConverter"/> cannot successfully convert its type to an <see cref="LSLType"/>.
+        /// </summary>
+        public event AutoFilteredConstantEvent OnFilterConstantFieldWithUnmappedType;
+
 
 
         /// <summary>
@@ -198,8 +249,82 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <value>
         /// <c>true</c> to filter out null field/property values on field's/properties lacking an <see cref="LSLConstantAttribute"/>; otherwise, <c>false</c> to throw <see cref="LSLLibraryDataReflectionException"/>.
         /// </value>
-        public bool FilterNullFieldsAndProperties { get; set; }
+        public bool FilterNullConstants { get; set; }
 
+        /// <summary>
+        /// Occurs when <see cref="FilterNullConstants"/> is <c>true</c> and an un-attributed constant is filtered for having a null field/property value.
+        /// </summary>
+        public event AutoFilteredConstantEvent OnFilterNullConstant;
+
+        /// <summary>
+        /// Occurs when <see cref="FilterNullConstants"/> is <c>true</c> and an un-attributed constant is filtered for having a null property value.
+        /// </summary>
+        public event AutoFilteredConstantPropertyEvent OnFilterNullConstantProperty;
+
+        /// <summary>
+        /// Occurs when <see cref="FilterNullConstants"/> is <c>true</c> and an un-attributed constant is filtered for having a null field value.
+        /// </summary>
+        public event AutoFilteredConstantFieldEvent OnFilterNullConstantField;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter un-attributed fields and properties whose values where converted into an invalid/un-parsable
+        /// ValueString by <see cref="ValueStringConverter"/>.  This is only effective for properties/fields that lack an <see cref="LSLConstantAttribute"/>.  
+        /// ValueStrings returned from converters for attributed constants are always rigorously checked for errors, an <see cref="LSLLibraryDataReflectionException"/> 
+        /// will be thrown if there is a ValueString parsing error caused by an attributed constant.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> to filter out fields/property's with invalid ValueString's when they are lacking an <see cref="LSLConstantAttribute"/>;
+        ///  otherwise, <c>false</c> to throw <see cref="LSLLibraryDataReflectionException"/>.
+        /// </value>
+        public bool FilterInvalidValueStrings { get; set; }
+
+        /// <summary>
+        /// Occurs when <see cref="FilterInvalidValueStrings"/> is <c>true</c> and an un-attributed constant is filtered for having
+        /// an invalid ValueString generated for it by <see cref="ValueStringConverter"/>.
+        /// </summary>
+        public event AutoFilteredConstantEvent OnFilterInvalidValueString;
+
+        /// <summary>
+        /// Occurs when <see cref="FilterInvalidValueStrings"/> is <c>true</c> and an un-attributed constant Property is filtered for having
+        /// an invalid ValueString generated for it by <see cref="ValueStringConverter"/>.
+        /// </summary>
+        public event AutoFilteredConstantPropertyEvent OnFilterInvalidValueStringProperty;
+
+        /// <summary>
+        /// Occurs when <see cref="FilterInvalidValueStrings"/> is <c>true</c> and an un-attributed constant Field is filtered for having
+        /// an invalid ValueString generated for it by <see cref="ValueStringConverter"/>.
+        /// </summary>
+        public event AutoFilteredConstantFieldEvent OnFilterInvalidValueStringField;
+
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter fields and properties whose values failed to convert into a ValueString according to <see cref="ValueStringConverter"/>. 
+        /// This is only effective for properties/fields that lack an <see cref="LSLConstantAttribute"/>.  Failed conversions for attributed constants always throw an 
+        /// <see cref="LSLLibraryDataReflectionException"/>.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> to filter out fields/property's lacking an <see cref="LSLConstantAttribute"/> where <see cref="ValueStringConverter"/>
+        /// fails to convert their value to a ValueString;  otherwise, <c>false</c> to throw <see cref="LSLLibraryDataReflectionException"/>.
+        /// </value>
+        public bool FilterValueStringConversionFailures { get; set; }
+
+        /// <summary>
+        /// Occurs when <see cref="FilterValueStringConversionFailures"/> is <c>true</c> and an un-attributed constant is filtered because
+        /// <see cref="ValueStringConverter"/> reported a ValueString conversion failure for the constants retrieved value.
+        /// </summary>
+        public event AutoFilteredConstantEvent OnFilterValueStringConversionFailure;
+
+        /// <summary>
+        /// Occurs when <see cref="FilterValueStringConversionFailures"/> is <c>true</c> and an un-attributed constant Property is filtered because
+        /// <see cref="ValueStringConverter"/> reported a ValueString conversion failure for the constant Property's retrieved value.
+        /// </summary>
+        public event AutoFilteredConstantPropertyEvent OnFilterValueStringConversionFailureProperty;
+
+        /// <summary>
+        /// Occurs when <see cref="FilterValueStringConversionFailures"/> is <c>true</c> and an un-attributed constant Field is filtered because
+        /// <see cref="ValueStringConverter"/> reported a ValueString conversion failure for the constant Field's retrieved value.
+        /// </summary>
+        public event AutoFilteredConstantFieldEvent OnFilterValueStringConversionFailureField;
 
         /// <summary>
         /// Gets or sets a value indicating whether the serializer should only de-serialize methods marked with an <see cref="LSLFunctionAttribute"/>.
@@ -244,8 +369,14 @@ namespace LibLSLCC.LibraryData.Reflection
         }
 
 
+        private enum ValueStringConversionResult
+        {
+            Success,
+            ConverterReportedFailure,
+            ConverterProducedUnparsableString,
+        }
 
-        private LSLLibraryConstantSignature TryConvertConstantValueString(MemberInfo info,
+        private ValueStringConversionResult TryConvertAndAssignConstantValueString(MemberInfo info,
             LSLLibraryConstantSignature sig, object value)
         {
             var asProperty = info as PropertyInfo;
@@ -278,16 +409,33 @@ namespace LibLSLCC.LibraryData.Reflection
 
             if (!conversionSuccess)
             {
-                return sig;
+                if (!FilterValueStringConversionFailures)
+                {
+                    throw new LSLLibraryDataReflectionException(
+                    string.Format(
+                        "LSLLibraryDataReflectionSerializer.ValueStringConverter failed to convert value string " +
+                        "from {0} '{1}' of type '{2}' in class of type '{3}'.  " +
+                        "The retrieved {4} value was '{5}' (ToSTring'd):",
+                        fieldDescription,
+                        info.Name,
+                        constantMemberType.Name,
+                        info.DeclaringType,
+                        fieldDescriptionPossessive,
+                        value));
+                }
+                
+                InvokeOnFilterValueStringConversionFailure(info);
+                return ValueStringConversionResult.ConverterReportedFailure;
             }
 
             if (convertedValueString == null)
             {
+                //this is always an error
                 throw new LSLLibraryDataReflectionException(
                     string.Format(
-                        "LSLLibraryDataReflectionSerializer.ValueStringConverter returned a null ValueString " +
+                        "LSLLibraryDataReflectionSerializer.ValueStringConverter returned success and a null ValueString " +
                         "from {0} '{1}' of type '{2}' in class of type '{3}'.  " +
-                        "The {4} retrieved value was {5} (ToSTring'd):",
+                        "The retrieved {4} value was '{5}' (ToSTring'd):",
                         fieldDescription,
                         info.Name,
                         constantMemberType.Name,
@@ -303,25 +451,33 @@ namespace LibLSLCC.LibraryData.Reflection
             }
             catch (LSLInvalidConstantValueStringException e)
             {
-                throw new LSLLibraryDataReflectionException(
-                    string.Format(
-                        "LSLLibraryDataReflectionSerializer.ValueStringConverter returned the ValueString '{0}' that " +
-                        "LSLLibraryConstantSignature could not parse for LSLType '{1}'. The property value given to the converter was " +
-                        "taken from {2} '{3}' of type '{4}' in class of type '{5}'.  " +
-                        "The {6} value was '{7}' (ToString'd):" +
-                        LSLFormatTools.CreateNewLinesString(2) + e.Message,
-                        convertedValueString,
-                        sig.Type,
-                        fieldDescription,
-                        info.Name,
-                        constantMemberType.Name,
-                        info.DeclaringType.Name,
-                        fieldDescriptionPossessive,
-                        value));
+                if (!FilterInvalidValueStrings)
+                {
+                    throw new LSLLibraryDataReflectionException(
+                        string.Format(
+                            "LSLLibraryDataReflectionSerializer.ValueStringConverter returned the ValueString '{0}' that " +
+                            "LSLLibraryConstantSignature could not parse for LSLType '{1}'. The property value given to the converter was " +
+                            "taken from {2} '{3}' of type '{4}' in class of type '{5}'.  " +
+                            "The {6} value was '{7}' (ToString'd):" +
+                            LSLFormatTools.CreateNewLinesString(2) + e.Message,
+                            convertedValueString,
+                            sig.Type,
+                            fieldDescription,
+                            info.Name,
+                            constantMemberType.Name,
+                            info.DeclaringType.Name,
+                            fieldDescriptionPossessive,
+                            value));
+                }
+
+                InvokeOnFilterInvalidValueString(info);
+                return ValueStringConversionResult.ConverterProducedUnparsableString;
             }
 
-            return sig;
+            return ValueStringConversionResult.Success;
         }
+
+
 
 
         private LSLLibraryConstantSignature _DoDeSerializeConstant(
@@ -353,18 +509,24 @@ namespace LibLSLCC.LibraryData.Reflection
 
             if (attributeInfo != null)
             {
-                return new LSLLibraryConstantSignature(attributeInfo.Type, info.Name, attributeInfo.RetrievedValueString)
+                return new LSLLibraryConstantSignature(attributeInfo.Type, info.Name,
+                    attributeInfo.RetrievedValueString)
                 {
                     Deprecated = attributeInfo.Deprecated,
                     Expand = attributeInfo.Expand
                 };
             }
 
+
+
+
             if (AttributedConstantsOnly)
             {
                 //no attribute, and we did not want anything without an attribute to be serialized
                 return null;
             }
+
+
 
 
             if (propertyInfo != null && !propertyInfo.CanRead) return null;
@@ -380,13 +542,19 @@ namespace LibLSLCC.LibraryData.Reflection
                 return null;
             }
 
+
+
             LSLType propertyType;
 
             if (isProperty)
             {
                 if (!ConstantTypeConverter.ConvertProperty(propertyInfo, out propertyType))
                 {
-                    if (!ThrowOnUnmappedTypeInConstant) return null;
+                    if (FilterConstantsWithUnmappedTypes)
+                    {
+                        InvokeOnFilterConstantWithUnmappedType(info);
+                        return null;
+                    }
 
                     throw new LSLReflectionTypeMappingException(
                         string.Format(
@@ -399,7 +567,11 @@ namespace LibLSLCC.LibraryData.Reflection
             {
                 if (!ConstantTypeConverter.ConvertField(fieldInfo, out propertyType))
                 {
-                    if (!ThrowOnUnmappedTypeInConstant) return null;
+                    if (FilterConstantsWithUnmappedTypes)
+                    {
+                        InvokeOnFilterConstantWithUnmappedType(info);
+                        return null;
+                    }
 
                     throw new LSLReflectionTypeMappingException(
                         string.Format(
@@ -422,6 +594,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
             object fieldValue;
+            LSLLibraryConstantSignature result;
 
             if (!fieldIsStatic)
             {
@@ -432,8 +605,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataReflectionException(
                         string.Format(
-                            "Cannot retrieve field/property '{0}''s value from 'constantValueInstance' of Type {1}.  " +
-                            "Because the given {2}'.DeclaringType' (Type '{3}') did not " +
+                            "Cannot retrieve field/property '{0}''s value from 'constantValueInstance' of Type {1}.  Because the given {2}'.DeclaringType' (Type '{3}') did not " +
                             "equal 'constantValueInstance.GetType()' (Type '{1}'), and '{2}' described a non-static field which requires an object instance to retrieve a value from.",
                             info.Name,
                             fieldValueInstance.GetType().FullName,
@@ -445,46 +617,49 @@ namespace LibLSLCC.LibraryData.Reflection
                 fieldValue = isProperty
                     ? propertyInfo.GetValue(fieldValueInstance, null)
                     : fieldInfo.GetValue(fieldValueInstance);
+            }
+            // ReSharper disable once RedundantIfElseBlock
+            else
+            {
 
-                if (fieldValue == null && FilterNullFieldsAndProperties)
-                {
-                    return null;
-                }
-                if (fieldValue != null)
-                {
-                    return TryConvertConstantValueString(info, new LSLLibraryConstantSignature(propertyType, info.Name),
-                        fieldValue);
-                }
+                //static field/property detected
 
-                //throw if the field/property value was null and we asked the serializer to throw in this condition
-                throw new LSLLibraryDataReflectionException(
-                    string.Format("Instance field/property '{0}' belonging to type {1} returned a null field value.",
-                        info.Name, info.DeclaringType.FullName));
+                fieldValue = isProperty ? propertyInfo.GetValue(null, null) : fieldInfo.GetValue(null);
             }
 
 
-            //static field/property detected
 
-            fieldValue = isProperty ? propertyInfo.GetValue(null, null) : fieldInfo.GetValue(null);
-
-            if (fieldValue == null && FilterNullFieldsAndProperties)
+            if (fieldValue == null && FilterNullConstants)
             {
+                InvokeOnFilterNullConstant(info);
                 return null;
             }
             if (fieldValue != null)
             {
-                return TryConvertConstantValueString(info, new LSLLibraryConstantSignature(propertyType, info.Name),
-                    fieldValue);
+                result = new LSLLibraryConstantSignature(propertyType, info.Name);
+
+                var valueStringConverterResults = TryConvertAndAssignConstantValueString(info, result, fieldValue);
+
+                if (valueStringConverterResults != ValueStringConversionResult.Success)
+                {
+                    //filter, if the problem is not set to be filtered by the serializer
+                    //TryConvertAndAssignConstantValueString will throw an appropriate serialization exception
+                    return null;
+                }
+            }
+            else
+            {
+                //throw if the field/property value was null and we asked the serializer to throw in this condition
+                throw new LSLLibraryDataReflectionException(
+                    string.Format(
+                        "Instance field/property '{0}' belonging to type {1} returned a null field value.",
+                        info.Name, info.DeclaringType.FullName));
             }
 
-            //throw if the field/property value was null and we asked the serializer to throw in this condition
-            throw new LSLLibraryDataReflectionException(
-                string.Format("Static field/property '{0}' belonging to type {1} returned a null field value.",
-                    info.Name,
-                    info.DeclaringType.FullName));
-
-            //no value converter
+            return result;
         }
+
+
 
 
         /// <summary>
@@ -613,13 +788,15 @@ namespace LibLSLCC.LibraryData.Reflection
 
             if (!ReturnTypeConverter.ConvertReturn(info, out returnType))
             {
-                if (ThrowOnUnmappedReturnTypeInMethod)
+                if (FilterMethodsWithUnmappedReturnTypes)
                 {
-                    throw new LSLReflectionTypeMappingException(
-                        string.Format("Unmapped return type '{0}' in .NET function named '{1}': ", info.ReturnType.Name,
-                            info.Name), info.ReturnType);
+                    InvokeOnFilterMethodWithUnmappedReturnType(info);
+                    return null;
                 }
-                return null;
+
+                throw new LSLReflectionTypeMappingException(
+                    string.Format("Unmapped return type '{0}' in .NET function named '{1}': ", info.ReturnType.Name,
+                        info.Name), info.ReturnType);
             }
 
             var parameters = new List<LSLParameter>();
@@ -642,14 +819,17 @@ namespace LibLSLCC.LibraryData.Reflection
                 LSLType parameterType;
                 if (!ParamTypeConverter.ConvertParameter(param, cSharpParameterType, out parameterType))
                 {
-                    if (ThrowOnUnmappedParamTypeInMethod)
+                    if (FilterMethodsWithUnmappedParamTypes)
                     {
-                        throw new LSLReflectionTypeMappingException(
-                            string.Format(
-                                "Unmapped parameter type '{0}' in .NET function named '{1}' at parameter index {2}: ",
-                                param.ParameterType.Name, info.Name, param.Position), info.ReturnType);
+                        InvokeOnFilterMethodWithUnmappedParamType(info);
+                        return null;
                     }
-                    return null;
+
+
+                    throw new LSLReflectionTypeMappingException(
+                        string.Format(
+                            "Unmapped parameter type '{0}' in .NET function named '{1}' at parameter index {2}: ",
+                            param.ParameterType.Name, info.Name, param.Position), info.ReturnType);
                 }
 
                 var name = param.Name;
@@ -751,6 +931,116 @@ namespace LibLSLCC.LibraryData.Reflection
         public IEnumerable<LSLLibraryConstantSignature> DeSerializeConstants(object fieldValueInstance)
         {
             return DeSerializeConstants(fieldValueInstance.GetType(), fieldValueInstance);
+        }
+
+
+
+        protected virtual void InvokeOnFilterNullConstant(MemberInfo member)
+        {
+            var handler = OnFilterNullConstant;
+            if (handler != null) handler(this, member);
+
+            if (OnFilterNullConstantProperty != null)
+            {
+                var prop = member as PropertyInfo;
+                if (prop != null)
+                {
+                    OnFilterNullConstantProperty(this, prop);
+                }
+            }
+
+            if (OnFilterNullConstantField != null)
+            {
+                var field = member as FieldInfo;
+                if (field != null)
+                {
+                    OnFilterNullConstantField(this, field);
+                }
+            }
+        }
+
+        protected virtual void InvokeOnFilterInvalidValueString(MemberInfo member)
+        {
+            var handler = OnFilterInvalidValueString;
+            if (handler != null) handler(this, member);
+
+            if (OnFilterInvalidValueStringProperty != null)
+            {
+                var prop = member as PropertyInfo;
+                if (prop != null)
+                {
+                    OnFilterInvalidValueStringProperty(this, prop);
+                }
+            }
+
+            if (OnFilterInvalidValueStringField != null)
+            {
+                var field = member as FieldInfo;
+                if (field != null)
+                {
+                    OnFilterInvalidValueStringField(this, field);
+                }
+            }
+        }
+
+        protected virtual void InvokeOnFilterValueStringConversionFailure(MemberInfo member)
+        {
+            var handler = OnFilterValueStringConversionFailure;
+            if (handler != null) handler(this, member);
+
+            if (OnFilterValueStringConversionFailureProperty != null)
+            {
+                var prop = member as PropertyInfo;
+                if (prop != null)
+                {
+                    OnFilterValueStringConversionFailureProperty(this, prop);
+                }
+            }
+
+            if (OnFilterValueStringConversionFailureField != null)
+            {
+                var field = member as FieldInfo;
+                if (field != null)
+                {
+                    OnFilterValueStringConversionFailureField(this, field);
+                }
+            }
+        }
+
+        protected virtual void InvokeOnFilterConstantWithUnmappedType(MemberInfo member)
+        {
+            var handler = OnFilterConstantWithUnmappedType;
+            if (handler != null) handler(this, member);
+
+            if (OnFilterConstantPropertyWithUnmappedType != null)
+            {
+                var prop = member as PropertyInfo;
+                if (prop != null)
+                {
+                    OnFilterConstantPropertyWithUnmappedType(this, prop);
+                }
+            }
+
+            if (OnFilterConstantFieldWithUnmappedType != null)
+            {
+                var field = member as FieldInfo;
+                if (field != null)
+                {
+                    OnFilterConstantFieldWithUnmappedType(this, field);
+                }
+            }
+        }
+
+        protected virtual void InvokeOnFilterMethodWithUnmappedParamType(MethodInfo member)
+        {
+            var handler = OnFilterMethodWithUnmappedParamType;
+            if (handler != null) handler(this, member);
+        }
+
+        protected virtual void InvokeOnFilterMethodWithUnmappedReturnType(MethodInfo member)
+        {
+            var handler = OnFilterMethodWithUnmappedReturnType;
+            if (handler != null) handler(this, member);
         }
     }
 }
