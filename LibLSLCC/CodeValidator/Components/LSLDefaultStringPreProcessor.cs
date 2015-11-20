@@ -46,7 +46,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using LibLSLCC.CodeValidator.Components.Interfaces;
-using LibLSLCC.Collections;
 
 #endregion
 

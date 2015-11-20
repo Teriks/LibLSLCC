@@ -42,7 +42,6 @@
 #endregion
 
 using System.IO;
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.ScraperInterfaces;
 using OpenMetaverse.StructuredData;

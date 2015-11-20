@@ -49,8 +49,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.LibraryDataScrapers;
@@ -66,7 +64,7 @@ namespace LibraryDataScrapingTools
     internal class Program
     {
 
-        public static List<LSLLibrarySubsetDescription> SubsetDescriptions = new List<LSLLibrarySubsetDescription>
+        public static readonly List<LSLLibrarySubsetDescription> SubsetDescriptions = new List<LSLLibrarySubsetDescription>
         {
             new LSLLibrarySubsetDescription("lsl", "Linden LSL","The standard library functions supported by Linden Lab's SecondLife servers."),
             new LSLLibrarySubsetDescription("os-lsl", "OpenSim LSL","The subset of standard library functions from LSL supported by OpenSim SecondLife servers."),

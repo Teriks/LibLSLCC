@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Runtime.Serialization;
 using LibLSLCC.LibraryData;

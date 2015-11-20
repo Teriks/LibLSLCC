@@ -1,16 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LSLCCEditor.SettingsUI
 {
@@ -66,16 +56,16 @@ namespace LSLCCEditor.SettingsUI
 
         private void Ok_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Canceled = false;
-            this.Close();
+            Canceled = false;
+            Close();
         }
 
         public bool Canceled { get; private set; }
 
         private void Cancel_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Canceled = true;
-            this.Close();
+            Canceled = true;
+            Close();
         }
     }
 }

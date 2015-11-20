@@ -48,14 +48,14 @@ namespace LSLCCEditor.CompletionUI
         public CompletionWindow(TextArea textArea) : base(textArea)
         {
             // keep height automatic
-            this.CloseAutomatically = true;
-            this.SizeToContent = SizeToContent.Height;
-            this.MaxHeight = 300;
-            this.Width = 175;
-            this.Content = completionList;
+            CloseAutomatically = true;
+            SizeToContent = SizeToContent.Height;
+            MaxHeight = 300;
+            Width = 175;
+            Content = completionList;
             // prevent user from resizing window to 0x0
-            this.MinHeight = 15;
-            this.MinWidth = 30;
+            MinHeight = 15;
+            MinWidth = 30;
 
             toolTip.PlacementTarget = this;
             toolTip.Placement = PlacementMode.Right;
@@ -111,26 +111,26 @@ namespace LSLCCEditor.CompletionUI
             // If the Complete callback pushes stacked input handlers, we don't want to pop those when the CC window closes.
             var item = completionList.SelectedItem;
             if (item != null)
-                item.Complete(this.TextArea, new AnchorSegment(this.TextArea.Document, this.StartOffset, this.EndOffset - this.StartOffset), e);
+                item.Complete(TextArea, new AnchorSegment(TextArea.Document, StartOffset, EndOffset - StartOffset), e);
         }
 
         void AttachEvents()
         {
-            this.completionList.InsertionRequested += completionList_InsertionRequested;
-            this.completionList.SelectionChanged += completionList_SelectionChanged;
-            this.TextArea.Caret.PositionChanged += CaretPositionChanged;
-            this.TextArea.MouseWheel += textArea_MouseWheel;
-            this.TextArea.PreviewTextInput += textArea_PreviewTextInput;
+            completionList.InsertionRequested += completionList_InsertionRequested;
+            completionList.SelectionChanged += completionList_SelectionChanged;
+            TextArea.Caret.PositionChanged += CaretPositionChanged;
+            TextArea.MouseWheel += textArea_MouseWheel;
+            TextArea.PreviewTextInput += textArea_PreviewTextInput;
         }
 
         /// <inheritdoc/>
         protected override void DetachEvents()
         {
-            this.completionList.InsertionRequested -= completionList_InsertionRequested;
-            this.completionList.SelectionChanged -= completionList_SelectionChanged;
-            this.TextArea.Caret.PositionChanged -= CaretPositionChanged;
-            this.TextArea.MouseWheel -= textArea_MouseWheel;
-            this.TextArea.PreviewTextInput -= textArea_PreviewTextInput;
+            completionList.InsertionRequested -= completionList_InsertionRequested;
+            completionList.SelectionChanged -= completionList_SelectionChanged;
+            TextArea.Caret.PositionChanged -= CaretPositionChanged;
+            TextArea.MouseWheel -= textArea_MouseWheel;
+            TextArea.PreviewTextInput -= textArea_PreviewTextInput;
             base.DetachEvents();
         }
 
@@ -184,7 +184,7 @@ namespace LSLCCEditor.CompletionUI
         /// <inheritdoc/>
         protected override bool CloseOnFocusLost
         {
-            get { return this.CloseAutomatically; }
+            get { return CloseAutomatically; }
         }
 
         /// <summary>
@@ -197,12 +197,15 @@ namespace LSLCCEditor.CompletionUI
 
         void CaretPositionChanged(object sender, EventArgs e)
         {
-            int offset = this.TextArea.Caret.Offset;
-            if (offset == this.StartOffset)
+            int offset = TextArea.Caret.Offset;
+            if (offset == StartOffset)
             {
                 if (CloseAutomatically && CloseWhenCaretAtBeginning)
                 {
-                    Close();
+                    if (!InsertingIntoSelection)
+                    {
+                        Close();
+                    }
                 }
                 else
                 {
@@ -210,7 +213,7 @@ namespace LSLCCEditor.CompletionUI
                 }
                 return;
             }
-            if (offset < this.StartOffset || offset > this.EndOffset)
+            if (offset < StartOffset || offset > EndOffset)
             {
                 if (CloseAutomatically)
                 {
@@ -219,10 +222,10 @@ namespace LSLCCEditor.CompletionUI
             }
             else
             {
-                TextDocument document = this.TextArea.Document;
+                TextDocument document = TextArea.Document;
                 if (document != null)
                 {
-                    completionList.SelectItem(document.GetText(this.StartOffset, offset - this.StartOffset));
+                    completionList.SelectItem(document.GetText(StartOffset, offset - StartOffset));
                 }
             }
         }

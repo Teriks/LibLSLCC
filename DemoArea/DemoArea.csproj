@@ -7,8 +7,8 @@
     <ProjectGuid>{3FFB8F9B-B779-466D-8AC4-440B0C5FF31E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests</RootNamespace>
-    <AssemblyName>Tests</AssemblyName>
+    <RootNamespace>DemoArea</RootNamespace>
+    <AssemblyName>DemoArea</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,7 +30,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

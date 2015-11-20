@@ -40,12 +40,9 @@
 // 
 // 
 #endregion
+
 using System;
-using System.Collections.Generic;
-using System.Net.Configuration;
-using System.Text;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.Utility;
 
 namespace LibLSLCC.LibraryData.Reflection
 {

@@ -143,7 +143,7 @@ namespace LSLCCEditor.CompletionUI
             get { return listBox != null ? listBox.scrollViewer : null; }
         }
 
-        ObservableCollection<ICompletionData> completionData = new ObservableCollection<ICompletionData>();
+        readonly ObservableCollection<ICompletionData> completionData = new ObservableCollection<ICompletionData>();
 
         /// <summary>
         /// Gets the list to which completion data can be added.
@@ -281,7 +281,7 @@ namespace LSLCCEditor.CompletionUI
             if (listBox == null)
                 ApplyTemplate();
 
-            if (this.IsFiltering)
+            if (IsFiltering)
             {
                 SelectItemFiltering(text);
             }
@@ -298,9 +298,9 @@ namespace LSLCCEditor.CompletionUI
         void SelectItemFiltering(string query)
         {
             // if the user just typed one more character, don't filter all data but just filter what we are already displaying
-            var listToFilter = (this.currentList != null && (!string.IsNullOrEmpty(this.currentText)) && (!string.IsNullOrEmpty(query)) &&
-                                query.StartsWith(this.currentText, StringComparison.Ordinal)) ?
-                this.currentList : this.completionData;
+            var listToFilter = (currentList != null && (!string.IsNullOrEmpty(currentText)) && (!string.IsNullOrEmpty(query)) &&
+                                query.StartsWith(currentText, StringComparison.Ordinal)) ?
+                currentList : completionData;
 
             var matchingItems =
                 from item in listToFilter
@@ -329,7 +329,7 @@ namespace LSLCCEditor.CompletionUI
                 listBoxItems.Add(matchingItem.Item);
                 i++;
             }
-            this.currentList = listBoxItems;
+            currentList = listBoxItems;
             listBox.ItemsSource = listBoxItems;
             SelectIndexCentered(bestIndex);
         }

@@ -40,10 +40,9 @@
 // 
 // 
 #endregion
+
 using System.Windows.Media;
 using LibLSLCC.Settings;
-using LibLSLCC.Utility;
-using LSLCCEditor.Utility;
 using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl

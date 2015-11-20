@@ -220,7 +220,7 @@ namespace LibLSLCC.Settings
 
         public override int GetHashCode()
         {
-            var myType = this.GetType();
+            var myType = GetType();
 
             var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
             var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -253,7 +253,7 @@ namespace LibLSLCC.Settings
             if (other == null) return false;
 
 
-            var myType = this.GetType();
+            var myType = GetType();
 
             if (!myType.IsInstanceOfType(other))
             {
@@ -310,7 +310,7 @@ namespace LibLSLCC.Settings
 
         object ICloneable.Clone()
         {
-            var myType = this.GetType();
+            var myType = GetType();
 
             var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
             var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);

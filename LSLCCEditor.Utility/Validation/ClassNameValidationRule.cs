@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System.Globalization;
 using System.Windows.Controls;
 using LibLSLCC.CSharp;

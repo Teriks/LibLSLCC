@@ -49,7 +49,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;

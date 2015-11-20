@@ -42,6 +42,7 @@
 #endregion
 #region Imports
 
+using System;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
@@ -253,6 +254,14 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// This value is only relevant if HasIndexInfo is set to true.
         /// </summary>
         public int StopIndex { get; private set; }
+
+
+        public override string ToString()
+        {
+            return string.Format(
+                "(LineStart: {0}, LineEnd: {1}, ColumnStart: {2}, ColumnEnd: {3}, StartIndex: {4}, StopIndex: {5})",
+                LineStart,LineEnd,ColumnStart,ColumnEnd,StartIndex,StopIndex);
+        }
 
 
         /// <summary>

@@ -40,11 +40,8 @@
 // 
 // 
 #endregion
-using System;
-using System.Collections.Generic;
+
 using System.IO;
-using System.Linq;
-using System.Text;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Formatter.Visitor;
 

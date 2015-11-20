@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace LSLCCEditor.SettingsUI
+﻿namespace LSLCCEditor.SettingsUI
 {
     public interface ISettingsPane
     {

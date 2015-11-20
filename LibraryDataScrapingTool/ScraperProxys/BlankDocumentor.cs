@@ -42,7 +42,6 @@
 #endregion
 #region Imports
 
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.ScraperInterfaces;
 

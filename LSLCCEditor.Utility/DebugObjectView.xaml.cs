@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Windows;
 
-namespace LSLCCEditor
+namespace LSLCCEditor.Utility
 {
     /// <summary>
     /// Interaction logic for DebugObjectView.xaml

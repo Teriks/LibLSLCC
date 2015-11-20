@@ -50,7 +50,7 @@ namespace LSLCCEditor.CompletionUI
         /// </summary>
         public TextArea TextArea { get; private set; }
 
-        Window parentWindow;
+        readonly Window parentWindow;
         TextDocument document;
 
         /// <summary>
@@ -77,12 +77,12 @@ namespace LSLCCEditor.CompletionUI
         {
             if (textArea == null)
                 throw new ArgumentNullException("textArea");
-            this.TextArea = textArea;
+            TextArea = textArea;
             parentWindow = GetWindow(textArea);
-            this.Owner = parentWindow;
-            this.AddHandler(MouseUpEvent, new MouseButtonEventHandler(OnMouseUp), true);
+            Owner = parentWindow;
+            AddHandler(MouseUpEvent, new MouseButtonEventHandler(OnMouseUp), true);
 
-            StartOffset = EndOffset = this.TextArea.Caret.Offset;
+            StartOffset = EndOffset = TextArea.Caret.Offset;
 
             AttachEvents();
         }
@@ -90,29 +90,29 @@ namespace LSLCCEditor.CompletionUI
         #region Event Handlers
         void AttachEvents()
         {
-            document = this.TextArea.Document;
+            document = TextArea.Document;
             if (document != null)
             {
                 document.Changing += textArea_Document_Changing;
             }
             // LostKeyboardFocus seems to be more reliable than PreviewLostKeyboardFocus - see SD-1729
-            this.TextArea.LostKeyboardFocus += TextAreaLostFocus;
-            this.TextArea.TextView.ScrollOffsetChanged += TextViewScrollOffsetChanged;
-            this.TextArea.DocumentChanged += TextAreaDocumentChanged;
+            TextArea.LostKeyboardFocus += TextAreaLostFocus;
+            TextArea.TextView.ScrollOffsetChanged += TextViewScrollOffsetChanged;
+            TextArea.DocumentChanged += TextAreaDocumentChanged;
             if (parentWindow != null)
             {
                 parentWindow.LocationChanged += parentWindow_LocationChanged;
             }
 
             // close previous completion windows of same type
-            foreach (InputHandler x in this.TextArea.StackedInputHandlers.OfType<InputHandler>())
+            foreach (InputHandler x in TextArea.StackedInputHandlers.OfType<InputHandler>())
             {
-                if (x.window.GetType() == this.GetType())
-                    this.TextArea.PopStackedInputHandler(x);
+                if (x.window.GetType() == GetType())
+                    TextArea.PopStackedInputHandler(x);
             }
 
             myInputHandler = new InputHandler(this);
-            this.TextArea.PushStackedInputHandler(myInputHandler);
+            TextArea.PushStackedInputHandler(myInputHandler);
         }
 
         /// <summary>
@@ -124,14 +124,14 @@ namespace LSLCCEditor.CompletionUI
             {
                 document.Changing -= textArea_Document_Changing;
             }
-            this.TextArea.LostKeyboardFocus -= TextAreaLostFocus;
-            this.TextArea.TextView.ScrollOffsetChanged -= TextViewScrollOffsetChanged;
-            this.TextArea.DocumentChanged -= TextAreaDocumentChanged;
+            TextArea.LostKeyboardFocus -= TextAreaLostFocus;
+            TextArea.TextView.ScrollOffsetChanged -= TextViewScrollOffsetChanged;
+            TextArea.DocumentChanged -= TextAreaDocumentChanged;
             if (parentWindow != null)
             {
                 parentWindow.LocationChanged -= parentWindow_LocationChanged;
             }
-            this.TextArea.PopStackedInputHandler(myInputHandler);
+            TextArea.PopStackedInputHandler(myInputHandler);
         }
 
         #region InputHandler
@@ -187,7 +187,7 @@ namespace LSLCCEditor.CompletionUI
             if (!sourceIsInitialized)
                 return;
 
-            IScrollInfo scrollInfo = this.TextArea.TextView;
+            IScrollInfo scrollInfo = TextArea.TextView;
             Rect visibleRect = new Rect(scrollInfo.HorizontalOffset, scrollInfo.VerticalOffset, scrollInfo.ViewportWidth, scrollInfo.ViewportHeight);
             // close completion window when the user scrolls so far that the anchor position is leaving the visible area
             if (visibleRect.Contains(visualLocation) || visibleRect.Contains(visualLocationTop))
@@ -264,8 +264,8 @@ namespace LSLCCEditor.CompletionUI
         {
             if (CloseOnFocusLost)
             {
-                Debug.WriteLine("CloseIfFocusLost: this.IsActive=" + this.IsActive + " IsTextAreaFocused=" + IsTextAreaFocused);
-                if (!this.IsActive && !IsTextAreaFocused)
+                Debug.WriteLine("CloseIfFocusLost: this.IsActive=" + IsActive + " IsTextAreaFocused=" + IsTextAreaFocused);
+                if (!IsActive && !IsTextAreaFocused)
                 {
                     Close();
                 }
@@ -286,7 +286,7 @@ namespace LSLCCEditor.CompletionUI
             {
                 if (parentWindow != null && !parentWindow.IsActive)
                     return false;
-                return this.TextArea.IsKeyboardFocused;
+                return TextArea.IsKeyboardFocused;
             }
         }
 
@@ -297,13 +297,13 @@ namespace LSLCCEditor.CompletionUI
         {
             base.OnSourceInitialized(e);
 
-            if (document != null && this.StartOffset != this.TextArea.Caret.Offset)
+            if (document != null && StartOffset != TextArea.Caret.Offset)
             {
-                SetPosition(new TextViewPosition(document.GetLocation(this.StartOffset)));
+                SetPosition(new TextViewPosition(document.GetLocation(StartOffset)));
             }
             else
             {
-                SetPosition(this.TextArea.Caret.Position);
+                SetPosition(TextArea.Caret.Position);
             }
             sourceIsInitialized = true;
         }
@@ -333,7 +333,7 @@ namespace LSLCCEditor.CompletionUI
         /// </summary>
         protected void SetPosition(TextViewPosition position)
         {
-            TextView textView = this.TextArea.TextView;
+            TextView textView = TextArea.TextView;
 
             visualLocation = textView.GetVisualPosition(position, VisualYPosition.LineBottom);
             visualLocationTop = textView.GetVisualPosition(position, VisualYPosition.LineTop);
@@ -346,13 +346,13 @@ namespace LSLCCEditor.CompletionUI
         /// </summary>
         protected void UpdatePosition()
         {
-            TextView textView = this.TextArea.TextView;
+            TextView textView = TextArea.TextView;
             // PointToScreen returns device dependent units (physical pixels)
             Point location = textView.PointToScreen(visualLocation - textView.ScrollOffset);
             Point locationTop = textView.PointToScreen(visualLocationTop - textView.ScrollOffset);
 
             // Let's use device dependent units for everything
-            Size completionWindowSize = new Size(this.ActualWidth, this.ActualHeight).TransformToDevice(textView);
+            Size completionWindowSize = new Size(ActualWidth, ActualHeight).TransformToDevice(textView);
             Rect bounds = new Rect(location, completionWindowSize);
             Rect workingScreen = Screen.GetWorkingArea(location.ToSystemDrawing()).ToWpf();
             if (!workingScreen.Contains(bounds))
@@ -381,8 +381,8 @@ namespace LSLCCEditor.CompletionUI
             }
             // Convert the window bounds to device independent units
             bounds = bounds.TransformFromDevice(textView);
-            this.Left = bounds.X;
-            this.Top = bounds.Y;
+            Left = bounds.X;
+            Top = bounds.Y;
         }
 
         /// <inheritdoc/>
@@ -391,7 +391,7 @@ namespace LSLCCEditor.CompletionUI
             base.OnRenderSizeChanged(sizeInfo);
             if (sizeInfo.HeightChanged && IsUp)
             {
-                this.Top += sizeInfo.PreviousSize.Height - sizeInfo.NewSize.Height;
+                Top += sizeInfo.PreviousSize.Height - sizeInfo.NewSize.Height;
             }
         }
 
@@ -405,21 +405,46 @@ namespace LSLCCEditor.CompletionUI
 
         void textArea_Document_Changing(object sender, DocumentChangeEventArgs e)
         {
-            if (e.Offset + e.RemovalLength == this.StartOffset && e.RemovalLength > 0)
+            if (e.Offset + e.RemovalLength == StartOffset && e.RemovalLength > 0)
             {
-                Close(); // removal immediately in front of completion segment: close the window
-                         // this is necessary when pressing backspace after dot-completion
+                if (TextArea.Selection.Length == 0)
+                {
+                    Close(); // removal immediately in front of completion segment: close the window
+                    // this is necessary when pressing backspace after dot-completion
+                }
             }
             if (e.Offset == StartOffset && e.RemovalLength == 0 && ExpectInsertionBeforeStart)
             {
                 StartOffset = e.GetNewOffset(StartOffset, AnchorMovementType.AfterInsertion);
-                this.ExpectInsertionBeforeStart = false;
+                ExpectInsertionBeforeStart = false;
             }
             else
             {
                 StartOffset = e.GetNewOffset(StartOffset, AnchorMovementType.BeforeInsertion);
             }
-            EndOffset = e.GetNewOffset(EndOffset, AnchorMovementType.AfterInsertion);
+
+            if (TextArea.Selection.Length > 0)
+            {
+                InsertingIntoSelection = true;
+
+                EndOffset = StartOffset + e.InsertionLength;
+
+                int selectStart = TextArea.Document.GetOffset(TextArea.Selection.StartPosition.Location);
+                int selectEnd = TextArea.Document.GetOffset(TextArea.Selection.EndPosition.Location);
+
+                if (selectStart < selectEnd)
+                {
+                    EndOffset--;
+                    StartOffset--;
+                }
+            }
+            else
+            {
+                InsertingIntoSelection = false;
+                EndOffset = e.GetNewOffset(EndOffset, AnchorMovementType.AfterInsertion);
+            }
         }
+
+        protected bool InsertingIntoSelection { get; set; }
     }
 }

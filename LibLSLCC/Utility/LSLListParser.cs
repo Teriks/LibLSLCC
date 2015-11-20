@@ -50,7 +50,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion

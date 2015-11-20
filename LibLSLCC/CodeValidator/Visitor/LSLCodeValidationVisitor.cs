@@ -44,10 +44,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LibLSLCC.CodeValidator.Components;
@@ -215,9 +213,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public LSLCompilationUnitNode ValidateAndBuildTree(LSLParser.CompilationUnitContext tree)
         {
-            LSLCompilationUnitNode x;
-
-            x = VisitCompilationUnit(tree) as LSLCompilationUnitNode;
+            var x = VisitCompilationUnit(tree) as LSLCompilationUnitNode;
 
             if (x == null)
             {
@@ -3378,6 +3374,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 #region GeneralUtilitys
 
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "context")]
+        // ReSharper disable once UnusedParameter.Local
         private static ILSLSyntaxTreeNode ReturnFromVisit(IParseTree context, ILSLSyntaxTreeNode nodeData)
         {
             //mostly a debugging hook

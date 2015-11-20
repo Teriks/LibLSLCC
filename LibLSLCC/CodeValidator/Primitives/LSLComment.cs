@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.CodeValidator.Primitives
@@ -63,5 +64,10 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// The LSLCommentType type of the comment.
         /// </summary>
         public LSLCommentType Type { get; set; }
+
+        public override string ToString()
+        {
+            return Text;
+        }
     }
 }

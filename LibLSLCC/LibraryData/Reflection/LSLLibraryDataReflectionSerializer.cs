@@ -40,17 +40,14 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Antlr4.Runtime.Atn;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 namespace LibLSLCC.LibraryData.Reflection

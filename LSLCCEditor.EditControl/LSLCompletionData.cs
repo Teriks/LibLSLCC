@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,6 +53,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using LibLSLCC.Utility;
+using LSLCCEditor.Utility.Converters;
 
 #endregion
 
@@ -61,7 +63,7 @@ namespace LSLCCEditor.EditControl
     {
         private readonly string _label;
         private readonly string _text;
-        private HashSet<char> _indentBreakCharacters = new HashSet<char>();
+        private HashSet<string> _indentBreakCharacters = new HashSet<string>();
         private Brush _colorBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
 
         public LSLCompletionData(string label, string text, double priority)
@@ -84,7 +86,7 @@ namespace LSLCCEditor.EditControl
         public bool InsertTextAtCaretAfterOffset { get; set; }
         public string CaretOffsetInsertionText { get; set; }
 
-        public HashSet<char> IndentBreakCharacters
+        public HashSet<string> IndentBreakCharacters
         {
             get { return _indentBreakCharacters; }
             set { _indentBreakCharacters = value; }
@@ -96,102 +98,176 @@ namespace LSLCCEditor.EditControl
             set { _colorBrush = value; }
         }
 
-        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
+        private class MatchString
         {
-            var prep = string.IsNullOrWhiteSpace(PrependOnInsert) ? "" : PrependOnInsert;
-            var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
+            public string value;
+            public int indx;
 
-            var text = prep + Text + app;
-
-            bool indentBreakOccured = false;
-
-            if (ForceIndent)
+            public MatchString(string value)
             {
-                var indent = LSLFormatTools.CreateTabsString(IndentLevel);
+                this.value = value;
+                indx = value.Length - 1;
+            }
 
-                var result = "";
+            public override int GetHashCode()
+            {
+                return value.GetHashCode();
+            }
 
-                var lines = text.Split('\n').ToList();
+            public override bool Equals(object obj)
+            {
+                var o = obj as MatchString;
+                if (o == null) return false;
+                return value.Equals(o.value);
+            }
 
-                for (var i = 0; i < lines.Count; i++)
+            public char c()
+            {
+                return value[indx];
+            }
+        }
+        private static bool MatchOneOfBackwards(HashSet<string> strings, string input, int inputOffset)
+        {
+            var collection = strings.Select(x => new MatchString(x)).ToArray();
+            HashSet<string> matches = new HashSet<string>(strings);
+
+            while (inputOffset > 0 && matches.Count > 0)
+            {
+                foreach (var v in collection)
                 {
-                    string line;
-                    if (i == 0)
+                    var a = v.c();
+
+                    var b = input[inputOffset];
+
+                    if (a == b)
                     {
-                        var j = completionSegment.EndOffset - 1;
-                        var linePrefix = "";
-                        var start = j;
-                        var end = 0;
-                        while (j > 0)
+                        v.indx--;
+
+                        if (v.indx <= 0)
                         {
-                            var c = textArea.Document.Text[j];
-                            if (c == '\n' || IndentBreakCharacters.Contains(c))
-                            {
-                                end = j;
-                                if (c != '\n')
-                                {
-                                    indentBreakOccured = true;
-                                    linePrefix += c + "\n";
-                                }
-                                else
-                                {
-                                    linePrefix += c;
-                                }
-
-                                break;
-                            }
-                            j--;
+                            return true;
                         }
-
-
-                        textArea.Document.Remove(end, (start - end) + 1);
-
-
-                        line = linePrefix + indent + lines[i].Trim();
                     }
                     else
                     {
-                        line = indent + lines[i].Trim();
+                        matches.Remove(v.value);
                     }
-
-
-                    if (i != lines.Count - 1)
-                    {
-                        line += '\n';
-                    }
-
-                    result += line;
+                    
                 }
-
-                text = result;
+                inputOffset -= 1;
             }
 
-            int begining = completionSegment.Offset + IndentLevel + (indentBreakOccured ? 2 : 1);
+            return false;
+        }
 
-            textArea.Document.Replace(completionSegment, text);
+        private string IndentString(string str, string indentString, bool indentFront, int offsetIn, out int offsetOut)
+        {
+            offsetOut = offsetIn;
+            var s = "";
 
-            if (OffsetCaretAfterInsert)
+            if (indentFront)
             {
-
-                if (OffsetCaretFromBegining)
+                s = indentString;
+            }
+            int index = 0;
+            foreach (var c in str)
+            {
+                if (c == '\n')
                 {
-                    textArea.Caret.Offset = begining + CaretOffsetAfterInsert;
-                }
-                else if (OffsetCaretRelativeToDocument)
-                {
-                    textArea.Caret.Offset = CaretOffsetAfterInsert;
+                    s += c + indentString;
+                    if (index < offsetIn)
+                    {
+                        offsetOut += indentString.Length;
+                    }
                 }
                 else
                 {
-                    textArea.Caret.Offset = textArea.Caret.Offset + CaretOffsetAfterInsert;
+                    s += c;
+                }
+                index++;
+            }
+
+            return s;
+        }
+
+        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
+        {
+            
+
+
+            var prep = string.IsNullOrWhiteSpace(PrependOnInsert) ? "" : PrependOnInsert;
+            var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
+            var insertionText = string.IsNullOrWhiteSpace(CaretOffsetInsertionText) ? "" : CaretOffsetInsertionText;
+
+            //AvalonEdit apparently MODFIES segment descriptions passed to Document.Replace. wtf.exe
+            //this took me a long time to debug.
+            var completionOffset = completionSegment.Offset;
+
+            var text = prep + Text + app;
+
+            int offsetFromBegining = CaretOffsetAfterInsert;
+
+            bool lineBroken = false;
+            if (ForceIndent)
+            {
+                
+                var indent = LSLFormatTools.CreateTabsString(IndentLevel);
+
+                string accum = "";
+                int i;
+                int length = 0;
+                for (i = completionSegment.Offset - 1;
+                    i >= 0 &&
+                    textArea.Document.Text[i] != '\n';
+                    i--)
+                {
+                    if (MatchOneOfBackwards(IndentBreakCharacters, textArea.Document.Text, i))
+                    {
+
+                        lineBroken = true;
+                    }
+
+                    length++;
                 }
 
-                if (InsertTextAtCaretAfterOffset)
+                text = "\n" + IndentString(text, indent, true, offsetFromBegining,out offsetFromBegining);
+
+                if (!lineBroken)
                 {
-                    textArea.Document.Insert(textArea.Caret.Offset, CaretOffsetInsertionText);
+                    textArea.Document.Replace(i, length + completionSegment.Length + 1, text);
+                }
+                else
+                {
+                    textArea.Document.Replace(completionOffset, completionSegment.Length, text);
+                    completionOffset += IndentLevel + 1;
                 }
             }
+            else
+            {
+                textArea.Document.Replace(completionOffset, completionSegment.Length, text);
+            }
+
+            if (!OffsetCaretAfterInsert) return;
+
+            if (OffsetCaretFromBegining)
+            {
+                textArea.Caret.Offset = completionOffset + offsetFromBegining;
+            }
+            else if (OffsetCaretRelativeToDocument)
+            {
+                textArea.Caret.Offset = CaretOffsetAfterInsert;
+            }
+            else
+            {
+                textArea.Caret.Offset = textArea.Caret.Offset + CaretOffsetAfterInsert;
+            }
+
+            if (InsertTextAtCaretAfterOffset)
+            {
+                textArea.Document.Insert(textArea.Caret.Offset, insertionText);
+            }
         }
+
 
         public ImageSource Image
         {

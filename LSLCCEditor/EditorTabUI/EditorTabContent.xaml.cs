@@ -47,9 +47,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.LibraryData;
-using LSLCCEditor.Settings;
 
 #endregion
 

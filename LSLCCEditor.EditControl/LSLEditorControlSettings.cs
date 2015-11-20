@@ -40,8 +40,8 @@
 // 
 // 
 #endregion
+
 using LibLSLCC.Settings;
-using LibLSLCC.Utility;
 
 namespace LSLCCEditor.EditControl
 {
@@ -55,8 +55,8 @@ namespace LSLCCEditor.EditControl
         private LSLEditorCompletionBrushes _completionBrushes = new LSLEditorCompletionBrushes();
 
         private bool _caseInsensitiveAutoCompleteMatching = true;
-        private bool _camelCaseAutoCompleteMatching = false;
-        private bool _substringSearchAutoCompleteMatching = false;
+        private bool _camelCaseAutoCompleteMatching;
+        private bool _substringSearchAutoCompleteMatching;
         private bool _constantCompletionFirstCharIsCaseSensitive = true;
 
 

@@ -40,9 +40,9 @@
 // 
 // 
 #endregion
+
 using System;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.LibraryData.Reflection
 {

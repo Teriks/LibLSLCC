@@ -41,8 +41,6 @@
 // 
 #endregion
 
-using System;
-using LibLSLCC.Collections;
 using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Settings;

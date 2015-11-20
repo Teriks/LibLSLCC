@@ -53,10 +53,12 @@
     <Compile Include="Converters\IntegerGreaterThanToBoolConverter.cs" />
     <Compile Include="Converters\IntegerGreaterThanToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="DebugObjectView.xaml.cs">
+      <DependentUpon>DebugObjectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Validation\ClassNameValidationRule.cs" />
     <Compile Include="Validation\DependencyObjectValidationTool.cs" />
     <Compile Include="Validation\NamespaceValidationRule.cs" />
-    <Compile Include="Binding\ObservableBindingList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validation\RegexValidatorRule.cs" />
     <Compile Include="Binding\RelayCommand.cs" />
@@ -70,6 +72,12 @@
       <Project>{19F2CAF5-7C57-4A11-8AA3-DFD58F7AE289}</Project>
       <Name>LibLSLCC</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DebugObjectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

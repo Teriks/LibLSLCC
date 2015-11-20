@@ -397,7 +397,7 @@ expressionList:
 expression:
 
 
-    O_PAREN expr_value=expression C_PAREN													 #ParenthesizedExpression
+    open_parenth=O_PAREN expr_value=expression close_parenth=C_PAREN									  #ParenthesizedExpression
 
 |   function_name=ID (open_parenth=O_PAREN  expression_list=optionalExpressionList close_parenth=C_PAREN) #Expr_FunctionCall
 
@@ -407,7 +407,7 @@ expression:
 
 |   operation=(INCREMENT | DECREMENT| MINUS | PLUS| LOGICAL_NOT | BITWISE_NOT) expr_rvalue=expression  #Expr_PrefixOperation
 
-|   (O_PAREN cast_type=TYPE C_PAREN ) expr_rvalue=expression  #Expr_TypeCast
+|   (open_parenth=O_PAREN cast_type=TYPE close_parenth=C_PAREN) expr_rvalue=expression  #Expr_TypeCast
 
 |   expr_lvalue=expression operation=(MUL|DIV|MOD) expr_rvalue=expression             #Expr_MultDivMod
 |   expr_lvalue=expression operation=(MINUS|PLUS) expr_rvalue=expression              #Expr_AddSub

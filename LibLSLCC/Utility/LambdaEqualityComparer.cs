@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Collections.Generic;
 
@@ -77,7 +78,7 @@ namespace LibLSLCC.Utility
         /// <returns>
         /// true if the specified objects are equal; otherwise, false.
         /// </returns>
-        /// <param name="x">The first object of type <paramref name="T"/> to compare.</param><param name="y">The second object of type <paramref name="T"/> to compare.</param>
+        /// <param name="x">The first object of type <typeparamref name="T"/> to compare.</param><param name="y">The second object of type <typeparamref name="T"/> to compare.</param>
         public bool Equals(T x, T y)
         {
             return Cmp(x, y);

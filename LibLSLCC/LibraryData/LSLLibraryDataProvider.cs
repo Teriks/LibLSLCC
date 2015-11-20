@@ -40,11 +40,11 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;

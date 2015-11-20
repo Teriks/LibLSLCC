@@ -49,7 +49,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;

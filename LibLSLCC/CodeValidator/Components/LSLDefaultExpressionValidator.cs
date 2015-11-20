@@ -43,14 +43,11 @@
 #region Imports
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.Collections;
-using LibLSLCC.Utility;
 
 #endregion
 

@@ -41,8 +41,6 @@
 // 
 #endregion
 
-using System.ComponentModel;
-using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Settings;
 

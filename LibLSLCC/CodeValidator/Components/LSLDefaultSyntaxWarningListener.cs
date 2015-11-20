@@ -76,7 +76,7 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void MultipleListAssignmentsInExpression(LSLSourceCodeRange location)
         {
             OnWarning(location,
-                "Multiple list assignments in expression, may not evaluate how you expect");
+                "Multiple list assignments in expression, may not evaluate how you expect.");
         }
 
 
@@ -92,7 +92,7 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void MultipleStringAssignmentsInExpression(LSLSourceCodeRange location)
         {
             OnWarning(location,
-                "Multiple string assignments in expression, may not evaluate how you expect");
+                "Multiple string assignments in expression, may not evaluate how you expect.");
         }
 
 
@@ -111,14 +111,14 @@ namespace LibLSLCC.CodeValidator.Components
         {
             if (deadSegment.SourceCodeRange.IsSingleLine)
             {
-                OnWarning(location, "Unreachable code detected in function \"" + currentFunction.Name + "\"");
+                OnWarning(location, "Unreachable code detected in function \"" + currentFunction.Name + "\".");
             }
             else
             {
                 OnWarning(location,
                     string.Format(
                         "Unreachable code detected in function \"" + currentFunction.Name +
-                        "\" between lines {0} and {1}",
+                        "\" between lines {0} and {1}.",
                         MapLineNumber(deadSegment.SourceCodeRange.LineStart), 
                         MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
             }
@@ -137,14 +137,14 @@ namespace LibLSLCC.CodeValidator.Components
         {
             if (deadSegment.SourceCodeRange.IsSingleLine)
             {
-                OnWarning(location, "Unreachable code detected in event handler \"" + currentEvent.Name + "\"");
+                OnWarning(location, "Unreachable code detected in event handler \"" + currentEvent.Name + "\".");
             }
             else
             {
                 OnWarning(location,
                     string.Format(
                         "Unreachable code detected in event handler \"" + currentEvent.Name +
-                        "\" between lines {0} and {1}",
+                        "\" between lines {0} and {1}.",
                         MapLineNumber(deadSegment.SourceCodeRange.LineStart),
                         MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
             }
@@ -158,7 +158,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="location">The location in the source code.</param>
         public virtual void UselessSemiColon(LSLSourceCodeRange location)
         {
-            OnWarning(location, "Pointless semicolon detected");
+            OnWarning(location, "Pointless semicolon detected.");
         }
 
 
@@ -171,7 +171,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="location"></param>
         public virtual void ExpressionStatementHasNoEffect(LSLSourceCodeRange location)
         {
-            OnWarning(location, "Expression statement has no effect");
+            OnWarning(location, "Expression statement has no effect.");
         }
 
 
@@ -194,12 +194,12 @@ namespace LibLSLCC.CodeValidator.Components
         {
             if (expressionCountTotal == 1)
             {
-                OnWarning(location, "For loop afterthought has no effect");
+                OnWarning(location, "For loop afterthought has no effect.");
             }
             else
             {
                 OnWarning(location,
-                    string.Format("For loop afterthought number {0} has no effect", expressionIndex + 1));
+                    string.Format("For loop afterthought number {0} has no effect.", expressionIndex + 1));
             }
         }
 
@@ -223,12 +223,12 @@ namespace LibLSLCC.CodeValidator.Components
         {
             if (expressionCountTotal == 1)
             {
-                OnWarning(location, "For loop initializer expression has no effect");
+                OnWarning(location, "For loop initializer expression has no effect.");
             }
             else
             {
                 OnWarning(location,
-                    string.Format("For loop initializer number {0} has no effect", expressionIndex + 1));
+                    string.Format("For loop initializer number {0} has no effect.", expressionIndex + 1));
             }
         }
 
@@ -242,7 +242,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="castType">The type the user attempted to cast the expression to.</param>
         public virtual void RedundantCast(LSLSourceCodeRange location, LSLType castType)
         {
-            OnWarning(location, string.Format("Redundant cast to {0}", castType));
+            OnWarning(location, string.Format("Redundant cast to {0}.", castType));
         }
 
 
@@ -254,7 +254,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="function">The function declaration node of the un-referenced function.</param>
         public virtual void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function)
         {
-            OnWarning(location, string.Format("Function \"{0}\" was never used", function.Name));
+            OnWarning(location, string.Format("Function \"{0}\" was never used.", function.Name));
         }
 
 
@@ -266,7 +266,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="variable">The variable declaration node of the un-referenced global variable.</param>
         public virtual void GlobalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable)
         {
-            const string msg = "Global variable \"{0}\" was never used";
+            const string msg = "Global variable \"{0}\" was never used.";
 
 
             OnWarning(location, string.Format(msg, variable.Name));
@@ -282,7 +282,7 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
             LSLFunctionSignature inFunction)
         {
-            const string msg = "Local variable \"{0}\" was never used in function \"{1}\"";
+            const string msg = "Local variable \"{0}\" was never used in function \"{1}\".";
 
 
             OnWarning(location, string.Format(msg, variable.Name, inFunction.Name));
@@ -299,7 +299,7 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
             LSLEventSignature inEvent)
         {
-            const string msg = "Local variable \"{0}\" was never used in event \"{1}\"";
+            const string msg = "Local variable \"{0}\" was never used in event \"{1}\".";
 
             OnWarning(location, string.Format(msg, variable.Name, inEvent.Name));
         }
@@ -316,7 +316,7 @@ namespace LibLSLCC.CodeValidator.Components
             LSLFunctionSignature inFunction)
         {
             OnWarning(location,
-                string.Format("Parameter \"{0}\" was never used in function \"{1}\"", parameter.Name, inFunction.Name));
+                string.Format("Parameter \"{0}\" was never used in function \"{1}\".", parameter.Name, inFunction.Name));
         }
 
 
@@ -332,7 +332,7 @@ namespace LibLSLCC.CodeValidator.Components
             LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
-                string.Format("Parameter \"{0}\" of function \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                string.Format("Parameter \"{0}\" of function \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     parameter.Name, functionSignature.Name, globalVariable.Name,
                     MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
@@ -351,7 +351,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             OnWarning(location,
                 string.Format(
-                    "Parameter \"{0}\" of event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                    "Parameter \"{0}\" of event handler \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     parameter.Name, eventHandlerSignature.Name, globalVariable.Name,
                     MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
@@ -369,7 +369,7 @@ namespace LibLSLCC.CodeValidator.Components
             LSLPreDefinedFunctionSignature functionSignature,
             LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
         {
-            OnWarning(location, string.Format("Local variable \"{0}\" in function \"{1}\" hides parameter \"{2}\"",
+            OnWarning(location, string.Format("Local variable \"{0}\" in function \"{1}\" hides parameter \"{2}\".",
                 localVariable.Name, functionSignature.Name, parameter.Name));
         }
 
@@ -386,7 +386,7 @@ namespace LibLSLCC.CodeValidator.Components
             LSLParsedEventHandlerSignature eventHandlerSignature,
             LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
         {
-            OnWarning(location, string.Format("Local variable \"{0}\" in event handler \"{1}\" hides parameter \"{2}\"",
+            OnWarning(location, string.Format("Local variable \"{0}\" in event handler \"{1}\" hides parameter \"{2}\".",
                 localVariable.Name, eventHandlerSignature.Name, parameter.Name));
         }
 
@@ -405,7 +405,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             OnWarning(location,
                 string.Format(
-                    "Local variable \"{0}\" in function \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                    "Local variable \"{0}\" in function \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     localVariable.Name, functionSignature.Name, globalVariable.Name,
                     MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
@@ -425,7 +425,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             OnWarning(location,
                 string.Format(
-                    "Local variable \"{0}\" in event handler \"{1}\" hides global variable \"{2}\" defined on line {3}",
+                    "Local variable \"{0}\" in event handler \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     localVariable.Name, eventHandlerSignature.Name, globalVariable.Name,
                     MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
         }
@@ -479,23 +479,23 @@ namespace LibLSLCC.CodeValidator.Components
         {
             if (conditionalStatementType == LSLConditionalStatementType.If)
             {
-                OnWarning(location, "Conditional expression in 'if' branch is constant");
+                OnWarning(location, "Conditional expression in 'if' branch is constant.");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.ElseIf)
             {
-                OnWarning(location, "Conditional expression in 'else if' branch is constant");
+                OnWarning(location, "Conditional expression in 'else if' branch is constant.");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.For)
             {
-                OnWarning(location, "Conditional expression in 'for' loop is constant");
+                OnWarning(location, "Conditional expression in 'for' loop is constant.");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.While)
             {
-                OnWarning(location, "Conditional expression in 'while' loop is constant");
+                OnWarning(location, "Conditional expression in 'while' loop is constant.");
             }
             else if (conditionalStatementType == LSLConditionalStatementType.DoWhile)
             {
-                OnWarning(location, "Conditional expression in 'do while' loop is constant");
+                OnWarning(location, "Conditional expression in 'do while' loop is constant.");
             }
         }
 

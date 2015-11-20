@@ -73,7 +73,7 @@ namespace LSLCCEditor
                             "Error details:\n\n" + details,
                 "Unexpected error", MessageBoxButton.OK);
 
-            Application.Current.Shutdown();
+            Current.Shutdown();
         }
 
 

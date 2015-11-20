@@ -43,7 +43,6 @@
 #region Imports
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.ScraperInterfaces;

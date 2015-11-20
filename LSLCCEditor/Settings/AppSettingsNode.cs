@@ -45,11 +45,9 @@
 
 using System;
 using System.Linq;
-using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
-using LSLCCEditor.Utility;
 using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.Settings
@@ -138,11 +136,13 @@ namespace LSLCCEditor.Settings
 
             public object GetDefaultValue(object settingsNode)
             {
-                var d = new XmlDictionary<string, EditorControlSettingsNode>();
-
-
-                d.Add("Default",
-                    new EditorControlSettingsNode() {EditorControlSettings = new LSLEditorControlSettings()});
+                var d = new XmlDictionary<string, EditorControlSettingsNode>
+                {
+                    {
+                        "Default",
+                        new EditorControlSettingsNode() {EditorControlSettings = new LSLEditorControlSettings()}
+                    }
+                };
 
                 return d;
             }
@@ -346,7 +346,7 @@ namespace LSLCCEditor.Settings
             }
 
 
-            ;
+            
             CompilerConfigurations.Add(configurationName, DefaultValueInitializer.Init(new CompilerConfigurationNode()));
         }
 

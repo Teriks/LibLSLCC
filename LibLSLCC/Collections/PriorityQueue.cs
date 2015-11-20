@@ -488,7 +488,7 @@ namespace LibLSLCC.Collections
 
         public object Clone()
         {
-            var instance = new PriorityQueue<TPriority, TValue>(this._comparer);
+            var instance = new PriorityQueue<TPriority, TValue>(_comparer);
             foreach (var item in _baseHeap)
             {
                 instance._baseHeap.Add(item);

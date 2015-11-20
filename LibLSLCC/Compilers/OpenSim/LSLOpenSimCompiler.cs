@@ -44,9 +44,9 @@
 
 using System;
 using System.IO;
-using LibLSLCC.Compilers.OpenSim.Visitors;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
+using LibLSLCC.Compilers.OpenSim.Visitors;
 using LibLSLCC.LibraryData;
 
 #endregion

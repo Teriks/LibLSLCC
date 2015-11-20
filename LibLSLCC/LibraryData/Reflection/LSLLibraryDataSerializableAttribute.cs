@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
@@ -100,7 +101,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
         private static T _GetTypeConverter<T>(Type fromClass, string name) where T : class
         {
-            if (!Attribute.IsDefined(fromClass, typeof (LSLLibraryDataSerializableAttribute))) return null;
+            if (!IsDefined(fromClass, typeof (LSLLibraryDataSerializableAttribute))) return null;
 
             var attr =
                 fromClass.GetCustomAttributesData()

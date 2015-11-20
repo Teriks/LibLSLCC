@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +69,8 @@ namespace LibLSLCC.CSharp
 
 
     /// <summary>
-    /// Class name validation result's produced by <see cref="CSharpClassNameValidator.Validate"/>
+    /// Class name validation result's produced by <see cref="CSharpClassNameValidator.ValidateDeclaration"/> 
+    /// and <see cref="CSharpClassNameValidator.ValidateInitialization"/>.
     /// </summary>
     public class CSharpClassNameValidationResult
     {

@@ -104,9 +104,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DebugObjectView.xaml.cs">
-      <DependentUpon>DebugObjectView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="EditorTabUI\CompilerMessage.cs" />
     <Compile Include="EditorTabUI\EditorTab.cs" />
     <Compile Include="EditorTabUI\InputDialog.xaml.cs">
@@ -139,10 +136,6 @@
     <Compile Include="TabbedMainWindow.xaml.cs">
       <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="DebugObjectView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="FindReplaceUI\FindReplaceDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

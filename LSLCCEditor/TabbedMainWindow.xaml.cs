@@ -55,20 +55,19 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;
+using LibLSLCC.Compilers;
 using LibLSLCC.Formatter;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
 using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplaceUI;
 using LSLCCEditor.Settings;
+using LSLCCEditor.SettingsUI;
 using Microsoft.Win32;
 
 #endregion
@@ -82,17 +81,17 @@ namespace LSLCCEditor
     /// </summary>
     public partial class TabbedMainWindow : Window
     {
-        public static RoutedCommand FileNew = new RoutedCommand();
-        public static RoutedCommand FileOpen = new RoutedCommand();
-        public static RoutedCommand FileOpenNewTab = new RoutedCommand();
-        public static RoutedCommand FileSave = new RoutedCommand();
-        public static RoutedCommand FileSaveAs = new RoutedCommand();
-        public static RoutedCommand ToolsFormat = new RoutedCommand();
-        public static RoutedCommand ToolsSyntaxCheck = new RoutedCommand();
-        public static RoutedCommand ToolsClearMessages = new RoutedCommand();
-        public static RoutedCommand CompileOpenSim = new RoutedCommand();
-        public static RoutedCommand SearchFind = new RoutedCommand();
-        public static RoutedCommand SearchReplace = new RoutedCommand();
+        public static readonly RoutedCommand FileNew = new RoutedCommand();
+        public static readonly RoutedCommand FileOpen = new RoutedCommand();
+        public static readonly RoutedCommand FileOpenNewTab = new RoutedCommand();
+        public static readonly RoutedCommand FileSave = new RoutedCommand();
+        public static readonly RoutedCommand FileSaveAs = new RoutedCommand();
+        public static readonly RoutedCommand ToolsFormat = new RoutedCommand();
+        public static readonly RoutedCommand ToolsSyntaxCheck = new RoutedCommand();
+        public static readonly RoutedCommand ToolsClearMessages = new RoutedCommand();
+        public static readonly RoutedCommand CompileOpenSim = new RoutedCommand();
+        public static readonly RoutedCommand SearchFind = new RoutedCommand();
+        public static readonly RoutedCommand SearchReplace = new RoutedCommand();
 
         private bool _droppingTabAfterDragging;
 
@@ -942,7 +941,7 @@ namespace LSLCCEditor
 
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
         {
-            var menu = new SettingsUI.SettingsWindow {Owner = this};
+            var menu = new SettingsWindow {Owner = this};
             menu.ShowDialog();
         }
     }

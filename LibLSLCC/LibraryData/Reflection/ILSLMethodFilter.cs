@@ -40,8 +40,8 @@
 // 
 // 
 #endregion
+
 using System.Reflection;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 namespace LibLSLCC.LibraryData.Reflection
 {

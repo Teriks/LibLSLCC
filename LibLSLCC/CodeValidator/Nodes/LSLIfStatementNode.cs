@@ -48,7 +48,6 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
-using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion

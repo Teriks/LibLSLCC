@@ -40,8 +40,7 @@
 // 
 // 
 #endregion
-using System;
-using System.Collections.Specialized;
+
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -82,7 +81,7 @@ namespace LSLCCEditor.Utility.Xml
                 TValue value = (TValue)valueSerializer.Deserialize(reader);
                 reader.ReadEndElement();
 
-                this.Add(key, value);
+                Add(key, value);
 
                 reader.ReadEndElement();
                 reader.MoveToContent();
@@ -95,7 +94,7 @@ namespace LSLCCEditor.Utility.Xml
             XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
             XmlSerializer valueSerializer = new XmlSerializer(typeof(TValue));
 
-            foreach (TKey key in this.Keys)
+            foreach (TKey key in Keys)
             {
                 writer.WriteStartElement("item");
 

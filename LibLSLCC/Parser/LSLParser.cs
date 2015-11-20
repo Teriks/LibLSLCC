@@ -1752,12 +1752,14 @@ public partial class LSLParser : Parser {
 		}
 	}
 	public partial class ParenthesizedExpressionContext : ExpressionContext {
+		public IToken open_parenth;
 		public ExpressionContext expr_value;
+		public IToken close_parenth;
 		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
-		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
+		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public ParenthesizedExpressionContext(ExpressionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			ILSLListener typedListener = listener as ILSLListener;
@@ -1812,14 +1814,16 @@ public partial class LSLParser : Parser {
 		}
 	}
 	public partial class Expr_TypeCastContext : ExpressionContext {
+		public IToken open_parenth;
 		public IToken cast_type;
+		public IToken close_parenth;
 		public ExpressionContext expr_rvalue;
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
 		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
-		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public ITerminalNode TYPE() { return GetToken(LSLParser.TYPE, 0); }
+		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
 		public Expr_TypeCastContext(ExpressionContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			ILSLListener typedListener = listener as ILSLListener;
@@ -2276,9 +2280,9 @@ public partial class LSLParser : Parser {
 				Context = _localctx;
 				_prevctx = _localctx;
 				{
-				State = 243; Match(O_PAREN);
+				State = 243; ((Expr_TypeCastContext)_localctx).open_parenth = Match(O_PAREN);
 				State = 244; ((Expr_TypeCastContext)_localctx).cast_type = Match(TYPE);
-				State = 245; Match(C_PAREN);
+				State = 245; ((Expr_TypeCastContext)_localctx).close_parenth = Match(C_PAREN);
 				}
 				State = 247; ((Expr_TypeCastContext)_localctx).expr_rvalue = expression(14);
 				}
@@ -2288,9 +2292,9 @@ public partial class LSLParser : Parser {
 				_localctx = new ParenthesizedExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 248; Match(O_PAREN);
+				State = 248; ((ParenthesizedExpressionContext)_localctx).open_parenth = Match(O_PAREN);
 				State = 249; ((ParenthesizedExpressionContext)_localctx).expr_value = expression(0);
-				State = 250; Match(C_PAREN);
+				State = 250; ((ParenthesizedExpressionContext)_localctx).close_parenth = Match(C_PAREN);
 				}
 				break;
 			case 4:

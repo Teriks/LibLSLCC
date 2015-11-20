@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Runtime.Serialization;
 
@@ -97,7 +98,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="inner">The inner exception.</param>
         public LSLLibraryDataXmlSyntaxException(int lineNumber, string message, Exception inner) : base("[Line #"+lineNumber+"]: "+message, inner)
         {
-            this.LineNumber = lineNumber;
+            LineNumber = lineNumber;
         }
 
         /// <summary>

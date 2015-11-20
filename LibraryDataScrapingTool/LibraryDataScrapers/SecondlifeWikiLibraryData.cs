@@ -51,7 +51,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;

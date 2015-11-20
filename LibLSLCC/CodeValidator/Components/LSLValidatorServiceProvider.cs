@@ -93,12 +93,19 @@ namespace LibLSLCC.CodeValidator.Components
 
         public static LSLValidatorServiceProvider Default()
         {
-            var d = new LSLValidatorServiceProvider();
-            d.SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
-            d.ExpressionValidator = new LSLDefaultExpressionValidator();
-            d.LibraryDataProvider = new LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData.StandardLsl, LSLLibraryDataAdditions.None, false); ;
-            d.StringLiteralPreProcessor = new LSLDefaultStringPreProcessor();
-            d.SyntaxWarningListener = new LSLDefaultSyntaxWarningListener();
+            var d = new LSLValidatorServiceProvider
+            {
+                SyntaxErrorListener = new LSLDefaultSyntaxErrorListener(),
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+
+                LibraryDataProvider =
+                    new LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData.StandardLsl, LSLLibraryDataAdditions.None,
+                        false),
+
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                SyntaxWarningListener = new LSLDefaultSyntaxWarningListener()
+            };
+
             return d;
         }
     }

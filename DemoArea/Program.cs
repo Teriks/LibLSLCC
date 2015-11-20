@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,11 +8,10 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers.OpenSim;
-using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
 
-namespace Tests
+namespace DemoArea
 {
 
     class MyValueStringConverter : ILSLValueStringConverter

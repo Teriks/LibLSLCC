@@ -54,7 +54,7 @@ namespace LibraryDataScrapingTools
 
         private static readonly object LogLock = new object();
         private static int _lastWrittenLineCount = 1;
-        public static GenericArray<TextWriter> LogWriters = new GenericArray<TextWriter>();
+        public static readonly GenericArray<TextWriter> LogWriters = new GenericArray<TextWriter>();
 
         public static void WriteLine(string format, params object[] args)
         {

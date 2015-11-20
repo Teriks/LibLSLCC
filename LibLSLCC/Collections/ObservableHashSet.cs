@@ -40,13 +40,12 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace LibLSLCC.Collections
 {
@@ -72,7 +71,7 @@ namespace LibLSLCC.Collections
 
             foreach (var item in collection.Where(x=>!_hashSet.Contains(x)))
             {
-                this.Add(item);
+                Add(item);
             }
         }
 

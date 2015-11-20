@@ -35,9 +35,9 @@ namespace LSLCCEditor.CompletionUI
 
             // Find the scroll viewer:
             scrollViewer = null;
-            if (this.VisualChildrenCount > 0)
+            if (VisualChildrenCount > 0)
             {
-                Border border = this.GetVisualChild(0) as Border;
+                Border border = GetVisualChild(0) as Border;
                 if (border != null)
                     scrollViewer = border.Child as ScrollViewer;
             }
@@ -56,15 +56,15 @@ namespace LSLCCEditor.CompletionUI
                 }
                 else
                 {
-                    return (int)(this.Items.Count * scrollViewer.VerticalOffset / scrollViewer.ExtentHeight);
+                    return (int)(Items.Count * scrollViewer.VerticalOffset / scrollViewer.ExtentHeight);
                 }
             }
             set
             {
-                value = value.CoerceValue(0, this.Items.Count - this.VisibleItemCount);
+                value = value.CoerceValue(0, Items.Count - VisibleItemCount);
                 if (scrollViewer != null)
                 {
-                    scrollViewer.ScrollToVerticalOffset((double)value / this.Items.Count * scrollViewer.ExtentHeight);
+                    scrollViewer.ScrollToVerticalOffset((double)value / Items.Count * scrollViewer.ExtentHeight);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace LSLCCEditor.CompletionUI
                 {
                     return Math.Max(
                         3,
-                        (int)Math.Ceiling(this.Items.Count * scrollViewer.ViewportHeight
+                        (int)Math.Ceiling(Items.Count * scrollViewer.ViewportHeight
                                           / scrollViewer.ExtentHeight));
                 }
             }
@@ -95,7 +95,7 @@ namespace LSLCCEditor.CompletionUI
         /// </summary>
         public void ClearSelection()
         {
-            this.SelectedIndex = -1;
+            SelectedIndex = -1;
         }
 
         /// <summary>
@@ -103,12 +103,12 @@ namespace LSLCCEditor.CompletionUI
         /// </summary>
         public void SelectIndex(int index)
         {
-            if (index >= this.Items.Count)
-                index = this.Items.Count - 1;
+            if (index >= Items.Count)
+                index = Items.Count - 1;
             if (index < 0)
                 index = 0;
-            this.SelectedIndex = index;
-            this.ScrollIntoView(this.SelectedItem);
+            SelectedIndex = index;
+            ScrollIntoView(SelectedItem);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace LSLCCEditor.CompletionUI
         /// </summary>
         public void CenterViewOn(int index)
         {
-            this.FirstVisibleItem = index - VisibleItemCount / 2;
+            FirstVisibleItem = index - VisibleItemCount / 2;
         }
     }
 }

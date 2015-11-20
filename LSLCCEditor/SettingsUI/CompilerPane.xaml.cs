@@ -304,7 +304,7 @@ namespace LSLCCEditor.SettingsUI
                 AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfigurationName] =
                     CurrentCompilerConfiguration;
 
-                this.CurrentConfigIsEdited = false;
+                CurrentConfigIsEdited = false;
             }
             else
             {
@@ -390,7 +390,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void AddImport_OnClick(object sender, RoutedEventArgs e)
         {
-            this.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(new CSharpNamespace(NamespaceImportAddText));
+            CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(new CSharpNamespace(NamespaceImportAddText));
         }
 
         private void importsDelete_OnClick(object sender, RoutedEventArgs e)

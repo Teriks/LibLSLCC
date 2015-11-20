@@ -44,7 +44,6 @@
 
 using System.Windows;
 using System.Windows.Input;
-using LSLCCEditor.FindReplaceUI;
 
 #endregion
 

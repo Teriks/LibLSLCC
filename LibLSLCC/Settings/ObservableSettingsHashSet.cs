@@ -43,10 +43,8 @@
 
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using LibLSLCC.Collections;
 
 namespace LibLSLCC.Settings
@@ -65,12 +63,7 @@ namespace LibLSLCC.Settings
         {
             unchecked
             {
-                int hash = 19;
-                foreach (var item in this)
-                {
-                    hash = hash*31 + item.GetHashCode();
-                }
-                return hash;
+                return this.Aggregate(19, (current, item) => current*31 + item.GetHashCode());
             }
         }
 
