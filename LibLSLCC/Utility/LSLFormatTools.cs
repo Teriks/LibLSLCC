@@ -66,7 +66,7 @@ namespace LibLSLCC.Utility
         /// </returns>
         public static int GetStringSpacesIndented(this string str, int tabSize = 4)
         {
-            var columns = 0;
+            int columns = 0;
 
             foreach (var t in str)
             {
@@ -99,7 +99,7 @@ namespace LibLSLCC.Utility
         {
             if (str.Length == 0) return 0;
 
-            var columns = 0;
+            int columns = 0;
 
             for (var index = 0; index < str.Length; index++)
             {
@@ -145,7 +145,7 @@ namespace LibLSLCC.Utility
         public static string CreateTabCorrectSpaceString(int spaces, int tabSize = 4)
         {
             var space = "";
-            var actual = 0;
+            int actual = 0;
             for (var i = 0; i < (spaces/tabSize); i++)
             {
                 space += '\t';
@@ -228,5 +228,7 @@ namespace LibLSLCC.Utility
         {
             return CreateRepeatingString(newLines, "\n");
         }
+
+
     }
 }
