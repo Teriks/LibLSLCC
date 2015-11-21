@@ -49,6 +49,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.LibraryDataScrapers;
@@ -73,7 +75,8 @@ namespace LibraryDataScrapingTools
             new LSLLibrarySubsetDescription("os-mod-api", "OS Mod Invoke","A set of functions from OpenSim's JsonStore region module for manipulating JSON objects stored in script memory."),
             new LSLLibrarySubsetDescription("os-json-store","OS Json Store","A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers."),
             new LSLLibrarySubsetDescription("os-lightshare","OS Light Share","A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings."),
-            new LSLLibrarySubsetDescription("os-attach-temp","OS Attach Temp","An optional OpenSim module that adds llAttachToAvatarTemp to the OpenSim script library.")
+            new LSLLibrarySubsetDescription("os-attach-temp","OS Attach Temp","An optional OpenSim module that adds llAttachToAvatarTemp to the OpenSim script library."),
+            new LSLLibrarySubsetDescription("os-country","OS Country","An optional OpenSim module that allows for detecting an avatars country of origin.")
         };
 
         private static void Run(TextWriter logFile)
@@ -210,17 +213,25 @@ namespace LibraryDataScrapingTools
 
 
             openSimData.IncludeScriptConstantContainerClass(openSimLibraryReflectedTypeData.ScriptBaseClass, new[] { "os-lsl" });
+            openSimData.IncludeFunctionContainingInterface("ICM_Api", new[] { "os-country" });
             openSimData.IncludeFunctionContainingInterface("ILS_Api", new[] { "os-lightshare" });
             openSimData.IncludeFunctionContainingInterface("ILSL_Api", new[] { "os-lsl" });
             openSimData.IncludeFunctionContainingInterface("IOSSL_Api", new[] { "ossl" });
             openSimData.IncludeFunctionContainingInterface("IMOD_Api", new[] { "os-mod-api" });
             openSimData.IncludeAttributedModuleClass("ExtendedPhysics", new[] { "os-bullet-physics" });
             openSimData.IncludeAttributedModuleClass("JsonStoreScriptModule", new[] { "os-json-store" });
-            openSimData.IncludeAttributedModuleClass("TempAttachmentsModule", new[] { "os-attach-temp" });
+
+            //no longer has a script invocation attribute, so its there but wont be detected.
+            //stuff like this is why the scraper program is so ugly and I don't spend to much time improving it.
+            //openSimData.IncludeAttributedModuleClass("TempAttachmentsModule", new[] { "os-attach-temp" });
 
 
 
             var openSim = new LibraryDataSet(openSimData);
+
+            //meh
+            openSim.FunctionSet.Add(new LSLLibraryFunctionSignature(LSLType.Integer, "llAttachToAvatarTemp",
+                new[] {new LSLParameter(LSLType.Integer, "attachmentPoint", false)}));
 
 
             List<string> activeLibrarySubsets  = SubsetDescriptions.Select(x => x.Subset).ToList();
