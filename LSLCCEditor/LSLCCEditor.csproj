@@ -133,6 +133,7 @@
     <Compile Include="Settings\EditorControlSettingsNode.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\AppSettingsNode.cs" />
+    <Compile Include="Settings\FormatterSettingsNode.cs" />
     <Compile Include="TabbedMainWindow.xaml.cs">
       <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
     </Compile>

@@ -1,6 +1,6 @@
 using LibLSLCC.Settings;
 
-namespace LibLSLCC.Formatter.Visitor
+namespace LibLSLCC.Formatter
 {
     public class LSLCodeFormatterSettings : SettingsBaseClass<LSLCodeFormatterSettings>
     {
