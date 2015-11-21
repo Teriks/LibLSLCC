@@ -1312,8 +1312,7 @@ namespace LibLSLCC.AutoComplete
                 var val = base.VisitControlStructure(context);
 
 
-                if (context.Stop.Text != "}") return val;
-                if (context.Stop.StopIndex >= _parent._toOffset) return val;
+                if (context.Stop.Text != ";" || context.Stop.StopIndex >= _parent._toOffset) return val;
 
                 ControlStructureNestingDepth--;
                 if (ControlStructureNestingDepth == 0)
@@ -1518,7 +1517,7 @@ namespace LibLSLCC.AutoComplete
 
                 base.VisitFunctionDeclaration(context);
 
-                if ((context.Stop.StartIndex) > _parent._toOffset) return true;
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
 
 
 
@@ -1604,7 +1603,7 @@ namespace LibLSLCC.AutoComplete
 
                 base.VisitEventHandler(context);
 
-                if ((context.Stop.StartIndex) > _parent._toOffset) return true;
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
 
 
 
@@ -1652,7 +1651,7 @@ namespace LibLSLCC.AutoComplete
                 base.VisitDefaultState(context);
 
 
-                if (((context.Stop.StartIndex) > _parent._toOffset) || context.Stop.Text != "}") return true;
+                if (context.Stop.StartIndex > _parent._toOffset || context.Stop.Text != "}") return true;
 
                 _parent._nestableExpressionElementStack.Clear();
                 _parent.InState = false;
@@ -1698,7 +1697,7 @@ namespace LibLSLCC.AutoComplete
 
                 base.VisitDefinedState(context);
 
-                if (((context.Stop.StartIndex) > _parent._toOffset) || context.Stop.Text != "}") return true;
+                if (context.Stop.StartIndex > _parent._toOffset || context.Stop.Text != "}") return true;
 
                 _parent._nestableExpressionElementStack.Clear();
                 _parent.InState = false;
@@ -1709,13 +1708,13 @@ namespace LibLSLCC.AutoComplete
             }
 
 
+
             private void EnterSingleStatementCodeScope()
             {
                 CodeScopeLevel++;
                 ScopeLevel++;
                 _parent.InSingleStatementCodeScopeTopLevel = true;
             }
-
 
 
 
@@ -1823,7 +1822,7 @@ namespace LibLSLCC.AutoComplete
                     VisitCodeStatement(i);
                 }
 
-                if ((context.Stop.StartIndex) > _parent._toOffset) return true;
+                if (context.Stop.StartIndex > _parent._toOffset) return true;
 
 
                 foreach (var var in _globalVariablesHidden.Peek())
