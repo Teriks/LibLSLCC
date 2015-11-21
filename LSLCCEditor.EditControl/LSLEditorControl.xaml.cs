@@ -170,9 +170,6 @@ namespace LSLCCEditor.EditControl
         {
             "o", //after the o in 'do'
             ")", //after the control statement condition
-            ";",
-            "{",
-            "}"
         };
 
         private readonly object _userChangingTextLock = new object();

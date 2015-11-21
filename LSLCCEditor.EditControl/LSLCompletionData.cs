@@ -192,8 +192,8 @@ namespace LSLCCEditor.EditControl
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            
 
+            var t = textArea.Caret.Offset;
 
             var prep = string.IsNullOrWhiteSpace(PrependOnInsert) ? "" : PrependOnInsert;
             var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
@@ -213,7 +213,6 @@ namespace LSLCCEditor.EditControl
                 
                 var indent = LSLFormatTools.CreateTabsString(IndentLevel);
 
-                string accum = "";
                 int i;
                 int length = 0;
                 for (i = completionSegment.Offset - 1;
@@ -230,11 +229,12 @@ namespace LSLCCEditor.EditControl
                     length++;
                 }
 
-                text = "\n" + IndentString(text, indent, true, offsetFromBegining,out offsetFromBegining);
+                text = "\n" + IndentString(text, indent, true, offsetFromBegining, out offsetFromBegining);
 
                 if (!lineBroken)
                 {
                     textArea.Document.Replace(i, length + completionSegment.Length + 1, text);
+                    completionOffset = i + IndentLevel + 1;
                 }
                 else
                 {
