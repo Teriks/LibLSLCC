@@ -62,19 +62,25 @@ namespace LibLSLCC.Formatter.Visitor
     /// </summary>
     internal class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
     {
-        private readonly Stack<bool> _binaryExpressionWrappingEnabledStack = new Stack<bool>();
+        public LSLCodeFormatterSettings Settings { get; private set; }
+        private readonly Stack<bool> _expressionWrappingEnabledStack = new Stack<bool>();
         private readonly LinkedList<LSLComment> _comments = new LinkedList<LSLComment>();
         private int _indentLevel;
         private string _sourceReference;
         private int _writeColumn;
         private int _writeLine;
+        private int _tabsWrittenSinceLastLine;
+        private int _nonTabsWrittenSinceLastLine;
+        private int _binaryExpressionsSinceNewLine;
+
 
         /// <summary>
         /// Default constructor for the formatting visitor.
         /// </summary>
-        public LSLCodeFormatterVisitor()
+        public LSLCodeFormatterVisitor(LSLCodeFormatterSettings settings)
         {
-            _binaryExpressionWrappingEnabledStack.Push(true);
+            Settings = settings;
+            _expressionWrappingEnabledStack.Push(true);
         }
 
         /// <summary>
@@ -83,7 +89,7 @@ namespace LibLSLCC.Formatter.Visitor
         public TextWriter Writer { get; private set; }
 
 
-        private CodeWrappingContext LastCodeWrappingContext { get; set; }
+        private ExpressionWrappingContext LastExpressionWrappingContext { get; set; }
 
         private string GenIndent(int add = 0)
         {
@@ -92,26 +98,68 @@ namespace LibLSLCC.Formatter.Visitor
 
         private void Write(string str)
         {
-            var lastNewLine = -1;
+            if (str == string.Empty) return;
+
             for (var i = 0; i < str.Length; i++)
             {
-                if (str[i] == '\n')
+                char c = str[i];
+                if (c == '\n')
                 {
-                    lastNewLine = i;
                     _writeLine++;
+                    _writeColumn = 0;
+                    _tabsWrittenSinceLastLine = 0;
+                    _nonTabsWrittenSinceLastLine = 0;
+                    OnNewLineWritten();
+                }
+                else if (c == '\t')
+                {
+                    _tabsWrittenSinceLastLine++;
+                    OnTabWritten();
+                }
+                else
+                {
+                    _nonTabsWrittenSinceLastLine++;
+                    OnNonTabWritten();
+                }
+
+                if (c != '\n')
+                {
+                    _writeColumn++;
+                    OnColumnCharacterWritten();
                 }
             }
 
-            if (lastNewLine != -1)
-            {
-                _writeColumn = (str.GetStringSpacesEquivalent() - 1) - lastNewLine;
-            }
-            else
-            {
-                _writeColumn += str.GetStringSpacesEquivalent();
-            }
-
             Writer.Write(str);
+        }
+
+
+
+
+
+
+
+
+
+        private void OnColumnCharacterWritten()
+        {
+            
+        }
+
+        private void OnNonTabWritten()
+        {
+
+        }
+
+        private void OnTabWritten()
+        {
+
+        }
+
+
+
+        private void OnNewLineWritten()
+        {
+            _binaryExpressionsSinceNewLine = 0;
         }
 
         /// <summary>
@@ -239,11 +287,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitBinaryExpression(ILSLBinaryExpressionNode node)
         {
-            if ((node.Parent is ILSLVariableDeclarationNode || node.Parent is ILSLReturnStatementNode)
-                && ReferenceEquals(node.Parent, LastCodeWrappingContext.Statement))
-            {
-                LastCodeWrappingContext = new CodeWrappingContext(node, this);
-            }
+           
 
             Visit(node.LeftExpression);
 
@@ -253,39 +297,44 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(" ");
             }
 
-
+            _binaryExpressionsSinceNewLine++;
             Write(node.OperationString);
 
 
             var wrapEnabled =
-                _binaryExpressionWrappingEnabledStack.Peek();
-            if (LastCodeWrappingContext != null &&
+                _expressionWrappingEnabledStack.Peek();
+
+            bool wrapped = false;
+            if (LastExpressionWrappingContext != null &&
                 wrapEnabled &&
                 !(node.Parent is ILSLExpressionStatementNode) &&
                 !(node.Parent is ILSLParenthesizedExpressionNode) &&
-                ((_writeColumn - LastCodeWrappingContext.WriteColumn) > 60))
+                ((_writeColumn - LastExpressionWrappingContext.WriteColumn) > LastExpressionWrappingContext.ColumnsBeforeExpressionWrap
+                && _binaryExpressionsSinceNewLine >= LastExpressionWrappingContext.MinimumExpressionsToWrap))
             {
-                var indentLevel = LastCodeWrappingContext.WriteColumn;
-                Write("\n" + LSLFormatTools.CreateTabCorrectSpaceString(indentLevel));
+                wrapped = true;
+                Write("\n" + 
+                    LSLFormatTools.CreateTabsString(LastExpressionWrappingContext.TabsWrittenSinceLastLine) +
+                    LSLFormatTools.CreateTabCorrectSpaceString(LastExpressionWrappingContext.NonTabsWrittenSinceLastLine));
             }
 
 
-            if (!WriteCommentsBetweenRange(node.OperationSourceCodeRange, node.RightExpression.SourceCodeRange))
+            if (!wrapped && !WriteCommentsBetweenRange(node.OperationSourceCodeRange, node.RightExpression.SourceCodeRange))
             {
                 Write(" ");
             }
 
 
             var popEnableWrapping = false;
-            if (LastCodeWrappingContext != null
-                && (node.Parent is ILSLExpressionStatementNode
-                    && ReferenceEquals(node.Parent, LastCodeWrappingContext.Statement)))
+            if (LastExpressionWrappingContext != null
+                && (node.Parent is ILSLExpressionStatementNode && Settings.StatementExpressionWrapping
+                    && ReferenceEquals(node.Parent, LastExpressionWrappingContext.Statement)))
             {
                 if (node.Operation.IsAssignOrModifyAssign())
                 {
-                    LastCodeWrappingContext = new CodeWrappingContext(node, this);
+                    LastExpressionWrappingContext = new ExpressionWrappingContext(node, this);
                     popEnableWrapping = true;
-                    _binaryExpressionWrappingEnabledStack.Push(true);
+                    _expressionWrappingEnabledStack.Push(true);
                 }
             }
 
@@ -294,7 +343,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (popEnableWrapping)
             {
-                _binaryExpressionWrappingEnabledStack.Pop();
+                _expressionWrappingEnabledStack.Pop();
             }
 
             return true;
@@ -350,7 +399,7 @@ namespace LibLSLCC.Formatter.Visitor
             var cntr = 0;
 
 
-            _binaryExpressionWrappingEnabledStack.Push(false);
+            _expressionWrappingEnabledStack.Push(false);
 
             var parent = (ILSLFunctionCallNode) node.Parent;
             int start, len;
@@ -392,7 +441,7 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(_sourceReference.Substring(start, len));
             }
 
-            _binaryExpressionWrappingEnabledStack.Pop();
+            _expressionWrappingEnabledStack.Pop();
 
             return true;
         }
@@ -433,7 +482,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitParenthesizedExpression(ILSLParenthesizedExpressionNode node)
         {
-            _binaryExpressionWrappingEnabledStack.Push(false);
+            _expressionWrappingEnabledStack.Push(false);
             Write("(");
 
             WriteCommentsBetweenRange(node.SourceCodeRange.GetFirstCharRange(), node.InnerExpression.SourceCodeRange);
@@ -445,7 +494,7 @@ namespace LibLSLCC.Formatter.Visitor
             WriteCommentsBetweenRange(node.InnerExpression.SourceCodeRange, node.SourceCodeRange.GetLastCharRange());
 
             Write(")");
-            _binaryExpressionWrappingEnabledStack.Pop();
+            _expressionWrappingEnabledStack.Pop();
 
             return true;
         }
@@ -620,9 +669,21 @@ namespace LibLSLCC.Formatter.Visitor
 
             WriteCommentsBetweenRange(node.OpenParenthSourceCodeRange, node.ConditionExpression.SourceCodeRange);
 
-            _binaryExpressionWrappingEnabledStack.Push(false);
+
+            LastExpressionWrappingContext = new ExpressionWrappingContext(node,this)
+            {
+                ColumnsBeforeExpressionWrap = Settings.ColumnsBeforeDoWhileExpressionWrap,
+                MinimumExpressionsToWrap = Settings.MinimumExpressionsInDoWhileToWrap
+            };
+
+            _expressionWrappingEnabledStack.Push(Settings.DoWhileExpressionWrapping);
             Visit(node.ConditionExpression);
-            _binaryExpressionWrappingEnabledStack.Pop();
+            _expressionWrappingEnabledStack.Pop();
+
+
+            LastExpressionWrappingContext = null;
+
+
 
             WriteCommentsBetweenRange(node.ConditionExpression.SourceCodeRange, node.CloseParenthSourceCodeRange);
 
@@ -649,9 +710,9 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 WriteCommentsBetweenRange(node.OpenParenthSourceCodeRange, node.InitExpressionsList.SourceCodeRange);
 
-                _binaryExpressionWrappingEnabledStack.Push(false);
+                _expressionWrappingEnabledStack.Push(false);
                 Visit(node.InitExpressionsList);
-                _binaryExpressionWrappingEnabledStack.Pop();
+                _expressionWrappingEnabledStack.Pop();
 
                 WriteCommentsBetweenRange(node.InitExpressionsList.SourceCodeRange, node.FirstSemiColonSourceCodeRange);
             }
@@ -672,9 +733,9 @@ namespace LibLSLCC.Formatter.Visitor
                     node.ConditionExpression.SourceCodeRange);
 
 
-                _binaryExpressionWrappingEnabledStack.Push(false);
+                _expressionWrappingEnabledStack.Push(false);
                 Visit(node.ConditionExpression);
-                _binaryExpressionWrappingEnabledStack.Pop();
+                _expressionWrappingEnabledStack.Pop();
 
                 WriteCommentsBetweenRange(node.ConditionExpression.SourceCodeRange, node.SecondSemiColonSourceCodeRange);
             }
@@ -698,9 +759,9 @@ namespace LibLSLCC.Formatter.Visitor
                 WriteCommentsBetweenRange(commentsBetween, node.SecondSemiColonSourceCodeRange,
                     node.AfterthoughExpressions.SourceCodeRange);
 
-                _binaryExpressionWrappingEnabledStack.Push(false);
+                _expressionWrappingEnabledStack.Push(false);
                 Visit(node.AfterthoughExpressions);
-                _binaryExpressionWrappingEnabledStack.Pop();
+                _expressionWrappingEnabledStack.Pop();
 
                 WriteCommentsBetweenRange(node.AfterthoughExpressions.SourceCodeRange, node.CloseParenthSourceCodeRange);
             }
@@ -728,11 +789,22 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write("(");
 
-            WriteCommentsBetweenRange(node.OpenParenthSourceCodeRange, node.ConditionExpression.SourceCodeRange);
 
-            _binaryExpressionWrappingEnabledStack.Push(false);
+
+            LastExpressionWrappingContext = new ExpressionWrappingContext(node, this)
+            {
+                ColumnsBeforeExpressionWrap = Settings.ColumnsBeforeWhileExpressionWrap,
+                MinimumExpressionsToWrap = Settings.MinimumExpressionsInWhileToWrap
+            };
+
+            _expressionWrappingEnabledStack.Push(Settings.WhileExpressionWrapping);
             Visit(node.ConditionExpression);
-            _binaryExpressionWrappingEnabledStack.Pop();
+            _expressionWrappingEnabledStack.Pop();
+
+
+            LastExpressionWrappingContext = null;
+
+
 
             WriteCommentsBetweenRange(node.ConditionExpression.SourceCodeRange, node.CloseParenthSourceCodeRange);
 
@@ -1182,15 +1254,27 @@ namespace LibLSLCC.Formatter.Visitor
             }
             else
             {
-                Write("state " + snode.StateName + "");
+                Write("state");
+
+                if (!WriteCommentsBetweenRange(snode.StateKeywordSourceCodeRange, snode.StateNameSourceCodeRange))
+                {
+                    Write(" ");
+                }
+
+                Write(snode.StateName);
             }
 
-            if (!WriteCommentsBetweenRange(snode.StateNameSourceCodeRange, snode.OpenBraceSourceCodeRange))
+            WriteCommentsBetweenRange(snode.StateNameSourceCodeRange, snode.OpenBraceSourceCodeRange);
+
+            var spaceBeforeOpeningBrace = LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningStateBrace);
+            if (Settings.StateBracesOnNewLine)
             {
-                Write("\n");
+                Write(spaceBeforeOpeningBrace + "\n{\n");
             }
-
-            Write("{\n");
+            else
+            {
+                Write(spaceBeforeOpeningBrace + "{\n");
+            }
 
             _indentLevel++;
 
@@ -1199,258 +1283,201 @@ namespace LibLSLCC.Formatter.Visitor
             var indent = GenIndent();
 
 
-            if (nodes.Count > 0)
+
+            var comments =
+                GetComments(snode.OpenBraceSourceCodeRange.StartIndex, nodes[0].SourceCodeRange.StartIndex).ToList();
+
+            if (comments.Count > 0)
             {
-                var comments =
-                    GetComments(snode.OpenBraceSourceCodeRange.StartIndex, nodes[0].SourceCodeRange.StartIndex).ToList();
+                var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
+                                                        snode.OpenBraceSourceCodeRange.LineStart;
 
-                if (comments.Count > 0)
+                linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment > Settings.MaximumNewLinesAtBeginingOfStateScope
+                    ? Settings.MaximumNewLinesAtBeginingOfStateScope
+                    : linesBetweenNodeAndFirstComment;
+
+                Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
+
+                for (var j = 0; j < comments.Count; j++)
                 {
-                    var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
-                                                          snode.OpenBraceSourceCodeRange.LineStart;
+                    var comment = comments[j];
 
-                    linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment > 2
-                        ? 2
-                        : linesBetweenNodeAndFirstComment;
+                    Write(FormatComment(indent, comment));
 
-                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
-
-                    for (var j = 0; j < comments.Count; j++)
+                    if ((j + 1) < comments.Count)
                     {
-                        var comment = comments[j];
+                        var nextComment = comments[j + 1];
+                        var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
+                                                    comment.SourceCodeRange.LineEnd;
 
-                        Write(FormatComment(indent, comment));
-
-                        if ((j + 1) < comments.Count)
-                        {
-                            var nextComment = comments[j + 1];
-                            var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
-                                                       comment.SourceCodeRange.LineEnd;
-
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
-                        }
-                        else
-                        {
-                            var linesBetweenCommentAndNextNode = nodes[0].SourceCodeRange.LineStart -
-                                                                 comment.SourceCodeRange.LineEnd;
-
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode));
-                        }
-                    }
-                }
-                else
-                {
-                    var linesBetweenTwoNodes = nodes[0].SourceCodeRange.LineStart -
-                                               snode.OpenBraceSourceCodeRange.LineStart;
-
-                    linesBetweenTwoNodes = linesBetweenTwoNodes > 2 ? 2 : linesBetweenTwoNodes;
-
-                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes - 1));
-                }
-
-
-                for (var i = 0; i < nodes.Count; i++)
-                {
-                    var node = nodes[i];
-
-                    var singleLineBroken = 0;
-
-                    Write(indent);
-                    Visit(node);
-
-                    if ((i + 1) < nodes.Count)
-                    {
-                        var nextNode = nodes[i + 1];
-
-                        if (node.SourceCodeRange.LineStart == nextNode.SourceCodeRange.LineStart)
-                        {
-                            singleLineBroken = 1;
-                            Write("\n");
-                        }
-
-
-                        comments =
-                            GetComments(node.SourceCodeRange.StopIndex, nextNode.SourceCodeRange.StartIndex).ToList();
-
-                        if (comments.Count > 0)
-                        {
-                            var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
-                                                                  node.SourceCodeRange.LineEnd;
-
-                            if (linesBetweenNodeAndFirstComment <= 2)
-                            {
-                                linesBetweenNodeAndFirstComment = 3;
-                            }
-
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
-
-
-                            for (var j = 0; j < comments.Count; j++)
-                            {
-                                var comment = comments[j];
-
-                                Write(FormatComment(indent, comment));
-
-                                if ((j + 1) < comments.Count)
-                                {
-                                    var nextComment = comments[j + 1];
-                                    var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
-                                                               comment.SourceCodeRange.LineEnd;
-
-                                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
-                                }
-                                else
-                                {
-                                    var linesBetweenCommentAndNextNode = nextNode.SourceCodeRange.LineStart -
-                                                                         comment.SourceCodeRange.LineEnd;
-
-                                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var linesBetweenTwoNodes = (nextNode.SourceCodeRange.LineStart -
-                                                        node.SourceCodeRange.LineEnd);
-
-                            if (linesBetweenTwoNodes < 2) linesBetweenTwoNodes = (2 - singleLineBroken);
-
-
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes));
-                        }
+                        Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                     }
                     else
                     {
-                        comments = GetComments(node.SourceCodeRange.StopIndex, snode.SourceCodeRange.StopIndex).ToList();
+                        var linesBetweenCommentAndNextNode = nodes[0].SourceCodeRange.LineStart -
+                                                                comment.SourceCodeRange.LineEnd;
 
-                        if (comments.Count > 0)
-                        {
-                            var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
-                                                                  node.SourceCodeRange.LineEnd;
-
-                            if (linesBetweenNodeAndFirstComment == 0) linesBetweenNodeAndFirstComment = 1;
-
-
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
-
-
-                            for (var j = 0; j < comments.Count; j++)
-                            {
-                                var comment = comments[j];
-                                Write(FormatComment(indent, comment));
-
-                                if ((j + 1) < comments.Count)
-                                {
-                                    var nextComment = comments[j + 1];
-                                    var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
-                                                               comment.SourceCodeRange.LineEnd;
-
-                                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
-                                }
-                                else
-                                {
-                                    var linesBetweenCommentAndEndOfScope = snode.CloseBraceSourceCodeRange.LineEnd -
-                                                                           comment.SourceCodeRange.LineEnd;
-
-                                    linesBetweenCommentAndEndOfScope = linesBetweenCommentAndEndOfScope > 2
-                                        ? 2
-                                        : linesBetweenCommentAndEndOfScope;
-
-                                    if (linesBetweenCommentAndEndOfScope == 0)
-                                    {
-                                        linesBetweenCommentAndEndOfScope = 1;
-                                    }
-
-
-                                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndEndOfScope));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var linesBetweenNodeAndEndOfScope = snode.CloseBraceSourceCodeRange.LineEnd -
-                                                                node.SourceCodeRange.LineEnd;
-
-
-                            linesBetweenNodeAndEndOfScope = linesBetweenNodeAndEndOfScope > 2
-                                ? 2
-                                : linesBetweenNodeAndEndOfScope;
-
-                            if (linesBetweenNodeAndEndOfScope == 0)
-                            {
-                                linesBetweenNodeAndEndOfScope = 1;
-                            }
-
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndEndOfScope));
-                        }
+                        Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode));
                     }
                 }
             }
             else
             {
-                var comments =
-                    GetComments(snode.OpenBraceSourceCodeRange.StartIndex, snode.CloseBraceSourceCodeRange.StopIndex)
-                        .ToList();
+                var linesBetweenTwoNodes = nodes[0].SourceCodeRange.LineStart -
+                                            snode.OpenBraceSourceCodeRange.LineStart;
 
-                if (comments.Count > 0)
+                linesBetweenTwoNodes = linesBetweenTwoNodes > Settings.MaximumNewLinesAtBeginingOfStateScope ?
+                    Settings.MaximumNewLinesAtBeginingOfStateScope : linesBetweenTwoNodes;
+
+                Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes - 1));
+            }
+
+
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                var node = nodes[i];
+
+                var singleLineBroken = 0;
+
+                Write(indent);
+                Visit(node);
+
+                if ((i + 1) < nodes.Count)
                 {
-                    var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
-                                                          snode.OpenBraceSourceCodeRange.LineStart;
+                    var nextNode = nodes[i + 1];
 
-
-                    linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment > 2
-                        ? 2
-                        : linesBetweenNodeAndFirstComment;
-
-                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
-
-                    for (var j = 0; j < comments.Count; j++)
+                    if (node.SourceCodeRange.LineStart == nextNode.SourceCodeRange.LineStart)
                     {
-                        var comment = comments[j];
-                        Write(FormatComment(indent, comment));
+                        singleLineBroken = 1;
+                        Write("\n");
+                    }
 
-                        if ((j + 1) < comments.Count)
+
+                    comments =
+                        GetComments(node.SourceCodeRange.StopIndex, nextNode.SourceCodeRange.StartIndex).ToList();
+
+                    if (comments.Count > 0)
+                    {
+                        var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
+                                                                node.SourceCodeRange.LineEnd;
+
+                        if (linesBetweenNodeAndFirstComment < Settings.MinimumNewLinesBetweenEventAndFollowingComment)
                         {
-                            var nextComment = comments[j + 1];
-                            var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
-                                                       comment.SourceCodeRange.LineEnd;
-
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
+                            linesBetweenNodeAndFirstComment = Settings.MinimumNewLinesBetweenEventAndFollowingComment;
                         }
-                        else
+
+                        Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
+
+
+                        for (var j = 0; j < comments.Count; j++)
                         {
-                            var linesBetweenCommentAndEndOfScope = snode.CloseBraceSourceCodeRange.LineEnd -
-                                                                   comment.SourceCodeRange.LineEnd;
+                            var comment = comments[j];
 
-                            linesBetweenCommentAndEndOfScope = linesBetweenCommentAndEndOfScope > 2
-                                ? 2
-                                : linesBetweenCommentAndEndOfScope;
+                            Write(FormatComment(indent, comment));
 
-                            if (linesBetweenCommentAndEndOfScope == 0)
+                            if ((j + 1) < comments.Count)
                             {
-                                linesBetweenCommentAndEndOfScope = 1;
-                            }
+                                var nextComment = comments[j + 1];
+                                var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
+                                                            comment.SourceCodeRange.LineEnd;
 
-                            Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndEndOfScope));
+                                Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
+                            }
+                            else
+                            {
+                                var linesBetweenCommentAndNextNode = nextNode.SourceCodeRange.LineStart -
+                                                                        comment.SourceCodeRange.LineEnd;
+
+                                Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode));
+                            }
                         }
+                    }
+                    else
+                    {
+                        var linesBetweenTwoNodes = (nextNode.SourceCodeRange.LineStart -
+                                                    node.SourceCodeRange.LineEnd);
+
+                        if (linesBetweenTwoNodes < Settings.MinimumNewLinesBetweenEventHandlers)
+                        {
+                            linesBetweenTwoNodes = (Settings.MinimumNewLinesBetweenEventHandlers - singleLineBroken);
+                        }
+
+
+                        Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes));
                     }
                 }
                 else
                 {
-                    var linesBetweenNodeAndEndOfScope = snode.CloseBraceSourceCodeRange.LineEnd -
-                                                        snode.OpenBraceSourceCodeRange.LineStart;
+                    comments = GetComments(node.SourceCodeRange.StopIndex, snode.SourceCodeRange.StopIndex).ToList();
 
-                    linesBetweenNodeAndEndOfScope = linesBetweenNodeAndEndOfScope > 2
-                        ? 2
-                        : linesBetweenNodeAndEndOfScope;
+                    if (comments.Count > 0)
+                    {
+                        var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
+                                                                node.SourceCodeRange.LineEnd;
 
-                    Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndEndOfScope - 1));
+                        if (linesBetweenNodeAndFirstComment == 0) linesBetweenNodeAndFirstComment = 1;
+
+
+                        Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
+
+
+                        for (var j = 0; j < comments.Count; j++)
+                        {
+                            var comment = comments[j];
+                            Write(FormatComment(indent, comment));
+
+                            if ((j + 1) < comments.Count)
+                            {
+                                var nextComment = comments[j + 1];
+                                var linesBetweenComments = nextComment.SourceCodeRange.LineStart -
+                                                            comment.SourceCodeRange.LineEnd;
+
+                                Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
+                            }
+                            else
+                            {
+                                var linesBetweenCommentAndEndOfScope = snode.CloseBraceSourceCodeRange.LineEnd -
+                                                                        comment.SourceCodeRange.LineEnd;
+
+                                linesBetweenCommentAndEndOfScope = linesBetweenCommentAndEndOfScope > Settings.MaximumNewLinesAtEndOfStateScope
+                                    ? Settings.MaximumNewLinesAtEndOfStateScope
+                                    : linesBetweenCommentAndEndOfScope;
+
+                                if (linesBetweenCommentAndEndOfScope == 0)
+                                {
+                                    linesBetweenCommentAndEndOfScope = 1;
+                                }
+
+
+                                Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndEndOfScope));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var linesBetweenNodeAndEndOfScope = snode.CloseBraceSourceCodeRange.LineEnd -
+                                                            node.SourceCodeRange.LineEnd;
+
+
+                        linesBetweenNodeAndEndOfScope = linesBetweenNodeAndEndOfScope > Settings.MaximumNewLinesAtEndOfStateScope
+                            ? Settings.MaximumNewLinesAtEndOfStateScope
+                            : linesBetweenNodeAndEndOfScope;
+
+                        if (linesBetweenNodeAndEndOfScope == 0)
+                        {
+                            linesBetweenNodeAndEndOfScope = 1;
+                        }
+
+                        Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndEndOfScope));
+                    }
                 }
             }
+            
+    
 
             _indentLevel--;
 
-            Write("}");
+            Write(LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingStateBrace)+"}");
 
             return true;
         }
@@ -1496,13 +1523,17 @@ namespace LibLSLCC.Formatter.Visitor
                     Write(" ");
                 }
 
-                LastCodeWrappingContext = new CodeWrappingContext(node, this);
+                LastExpressionWrappingContext = new ExpressionWrappingContext(node, this)
+                {
+                    ColumnsBeforeExpressionWrap = Settings.ColumnsBeforeReturnExpressionWrap,
+                    MinimumExpressionsToWrap = Settings.MinimumExpressionsInReturnToWrap
+                };
 
-                _binaryExpressionWrappingEnabledStack.Push(true);
+                _expressionWrappingEnabledStack.Push(Settings.ReturnExpressionWrapping);
                 Visit(node.ReturnExpression);
-                _binaryExpressionWrappingEnabledStack.Pop();
+                _expressionWrappingEnabledStack.Pop();
 
-                LastCodeWrappingContext = null;
+                LastExpressionWrappingContext = null;
 
                 WriteCommentsBetweenRange(node.ReturnExpression.SourceCodeRange, node.SemiColonSourceCodeRange);
 
@@ -1622,9 +1653,21 @@ namespace LibLSLCC.Formatter.Visitor
 
             WriteCommentsBetweenRange(node.OpenParenthSourceCodeRange, node.ConditionExpression.SourceCodeRange);
 
-            _binaryExpressionWrappingEnabledStack.Push(false);
+
+
+            LastExpressionWrappingContext = new ExpressionWrappingContext(node, this)
+            {
+                ColumnsBeforeExpressionWrap = Settings.ColumnsBeforeIfExpressionWrap,
+                MinimumExpressionsToWrap = Settings.MinimumExpressionsInIfToWrap
+            };
+
+            _expressionWrappingEnabledStack.Push(Settings.IfExpressionWrapping);
             Visit(node.ConditionExpression);
-            _binaryExpressionWrappingEnabledStack.Pop();
+            _expressionWrappingEnabledStack.Pop();
+
+            LastExpressionWrappingContext = null;
+
+
 
             WriteCommentsBetweenRange(node.ConditionExpression.SourceCodeRange, node.CloseParenthSourceCodeRange);
 
@@ -1647,7 +1690,15 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitElseIfStatement(ILSLElseIfStatementNode node)
         {
-            Write("\n" + GenIndent() + "else");
+            if (Settings.ElseIfStatementOnNewLine)
+            {
+                Write("\n" + GenIndent() + "else");
+            }
+            else
+            {
+                Write(LSLFormatTools.CreateSpacesString(Settings.SpacesBeforeUnbrokenElseIfStatement) + "else");
+            }
+
 
             if (!WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.IfKeywordSourceCodeRange))
             {
@@ -1662,9 +1713,21 @@ namespace LibLSLCC.Formatter.Visitor
 
             WriteCommentsBetweenRange(node.OpenParenthSourceCodeRange, node.ConditionExpression.SourceCodeRange);
 
-            _binaryExpressionWrappingEnabledStack.Push(false);
+
+
+            LastExpressionWrappingContext = new ExpressionWrappingContext(node, this)
+            {
+                ColumnsBeforeExpressionWrap = Settings.ColumnsBeforeElseIfExpressionWrap,
+                MinimumExpressionsToWrap = Settings.MinimumExpressionsInElseIfToWrap
+            };
+
+            _expressionWrappingEnabledStack.Push(Settings.ElseIfExpressionWrapping);
             Visit(node.ConditionExpression);
-            _binaryExpressionWrappingEnabledStack.Pop();
+            _expressionWrappingEnabledStack.Pop();
+
+            LastExpressionWrappingContext = null;
+
+
 
             WriteCommentsBetweenRange(node.ConditionExpression.SourceCodeRange, node.CloseParenthSourceCodeRange);
 
@@ -1688,7 +1751,14 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitElseStatement(ILSLElseStatementNode node)
         {
-            Write("\n" + GenIndent() + "else");
+            if (Settings.ElseStatementOnNewLine)
+            {
+                Write("\n" + GenIndent() + "else");
+            }
+            else
+            {
+                Write(LSLFormatTools.CreateSpacesString(Settings.SpacesBeforeUnbrokenElseStatement) + "else");
+            }
 
 
             if (node.Code.IsSingleStatement)
@@ -1709,13 +1779,19 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitExpressionStatement(ILSLExpressionStatementNode node)
         {
-            LastCodeWrappingContext = new CodeWrappingContext(node, this);
+            LastExpressionWrappingContext = new ExpressionWrappingContext(node, this)
+            {
+                ColumnsBeforeExpressionWrap = Settings.ColumnsBeforeStatementExpressionWrap,
+                MinimumExpressionsToWrap = Settings.MinimumExpressionsInStatementToWrap
+            };
 
 
             Visit(node.Expression);
 
 
-            LastCodeWrappingContext = null;
+            LastExpressionWrappingContext = null;
+
+
 
             WriteCommentsBetweenRange(node.Expression.SourceCodeRange, node.SourceCodeRange);
 
@@ -1727,7 +1803,11 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitVariableDeclaration(ILSLVariableDeclarationNode node)
         {
-            LastCodeWrappingContext = new CodeWrappingContext(node, this);
+            LastExpressionWrappingContext = new ExpressionWrappingContext(node, this)
+            {
+                ColumnsBeforeExpressionWrap = Settings.ColumnsBeforeDeclarationExpressionWrap,
+                MinimumExpressionsToWrap = Settings.MinimumExpressionsInDeclarationToWrap
+            };
 
 
             Write(node.TypeString);
@@ -1753,9 +1833,9 @@ namespace LibLSLCC.Formatter.Visitor
                     Write(" ");
                 }
 
-                _binaryExpressionWrappingEnabledStack.Push(true);
+                _expressionWrappingEnabledStack.Push(Settings.DeclarationExpressionWrapping);
                 Visit(node.DeclarationExpression);
-                _binaryExpressionWrappingEnabledStack.Pop();
+                _expressionWrappingEnabledStack.Pop();
 
 
                 WriteCommentsBetweenRange(node.DeclarationExpression.SourceCodeRange,
@@ -1770,7 +1850,7 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(";");
             }
 
-            LastCodeWrappingContext = null;
+            LastExpressionWrappingContext = null;
 
             return true;
         }
@@ -1783,7 +1863,14 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (!(statement is ILSLSemiColonStatement))
             {
-                Write("\n" + GenIndent());
+                if (Settings.IndentBracelessControlStatements)
+                {
+                    Write("\n" + GenIndent());
+                }
+                else
+                {
+                    Write(" ");
+                }
             }
 
             Visit(statement);
@@ -1842,13 +1929,88 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitMultiStatementCodeScope(ILSLCodeScopeNode snode)
         {
+            string spaceBeforeClosingBrace = "";
             if (snode.Parent is ILSLCodeScopeNode)
             {
                 Write("{\n");
             }
             else
             {
-                Write("\n" + GenIndent() + "{\n");
+                bool newLine = false;
+                string spaceBeforeOpeningBrace = "";
+                if (snode.CodeScopeType == LSLCodeScopeType.If)
+                {
+                    newLine = Settings.IfStatementBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingIfBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningIfBrace);
+                }
+                else if (snode.CodeScopeType == LSLCodeScopeType.ElseIf)
+                {
+                    newLine = Settings.ElseIfStatementBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseIfBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseIfBrace);
+                }
+                else if (snode.CodeScopeType == LSLCodeScopeType.Else)
+                {
+                    newLine = Settings.ElseStatementBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseBrace);
+                }
+                else if (snode.CodeScopeType == LSLCodeScopeType.ForLoop)
+                {
+                    newLine = Settings.ForLoopBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
+                }
+                else if (snode.CodeScopeType == LSLCodeScopeType.DoLoop)
+                {
+                    newLine = Settings.DoLoopBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingDoLoopBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
+                }
+                else if (snode.CodeScopeType == LSLCodeScopeType.WhileLoop)
+                {
+                    newLine = Settings.WhileLoopBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingWhileLoopBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningWhileLoopBrace);
+                }
+                else if (snode.CodeScopeType == LSLCodeScopeType.EventHandler)
+                {
+                    newLine = Settings.EventBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingEventBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningEventBrace);
+                }
+                else if (snode.CodeScopeType == LSLCodeScopeType.Function)
+                {
+                    newLine = Settings.FunctionBracesOnNewLine;
+                    spaceBeforeClosingBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingFunctionBrace);
+                    spaceBeforeOpeningBrace =
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningFunctionBrace);
+                }
+
+                if (newLine)
+                {
+                    Write("\n" + GenIndent() + spaceBeforeOpeningBrace+ "{\n");
+                }
+                else
+                {
+                    Write(spaceBeforeOpeningBrace+"{\n");
+                }
             }
 
             _indentLevel++;
@@ -1922,7 +2084,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             _indentLevel--;
 
-            Write(GenIndent() + "}");
+            Write(GenIndent() + spaceBeforeClosingBrace+ "}");
 
             return true;
         }
@@ -1994,8 +2156,8 @@ namespace LibLSLCC.Formatter.Visitor
                 var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
                                                       snode.SourceCodeRange.LineStart;
 
-                linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment > 2
-                    ? 2
+                linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment > Settings.MaximumNewLinesAtBeginingOfCodeScope
+                    ? Settings.MaximumNewLinesAtBeginingOfCodeScope
                     : linesBetweenNodeAndFirstComment;
 
 
@@ -2038,8 +2200,8 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 var linesBetweenNodeAndEndOfScope = snode.SourceCodeRange.LineEnd - snode.SourceCodeRange.LineStart;
 
-                linesBetweenNodeAndEndOfScope = linesBetweenNodeAndEndOfScope > 2
-                    ? 2
+                linesBetweenNodeAndEndOfScope = linesBetweenNodeAndEndOfScope > Settings.MaximumNewLinesAtEndOfCodeScope
+                    ? Settings.MaximumNewLinesAtEndOfCodeScope
                     : linesBetweenNodeAndEndOfScope;
 
 
@@ -2073,19 +2235,19 @@ namespace LibLSLCC.Formatter.Visitor
                  node is ILSLLabelStatementNode ||
                  node is ILSLCodeScopeNode))
             {
-                if (linesBetweenTwoNodes < 2 && !(
+                if (linesBetweenTwoNodes < Settings.MinimumNewLinesBetweenDistinctStatements && !(
                     (nextNode is ILSLVariableDeclarationNode && node is ILSLVariableDeclarationNode) ||
                     (nextNode is ILSLExpressionStatementNode && node is ILSLExpressionStatementNode)
                     ))
                 {
-                    linesBetweenTwoNodes = 2;
+                    linesBetweenTwoNodes = Settings.MinimumNewLinesBetweenDistinctStatements;
                 }
             }
 
-            if (linesBetweenTwoNodes < 2 && LastCodeWrappingContext != null)
+            if (linesBetweenTwoNodes < Settings.MinimumNewLinesBetweenDistinctStatements && LastExpressionWrappingContext != null)
             {
-                linesBetweenTwoNodes = 2;
-                LastCodeWrappingContext = null;
+                linesBetweenTwoNodes = Settings.MinimumNewLinesBetweenDistinctStatements;
+                LastExpressionWrappingContext = null;
             }
 
 
@@ -2097,7 +2259,8 @@ namespace LibLSLCC.Formatter.Visitor
         {
             var linesBetweenTwoNodes = firstNode.SourceCodeRange.LineStart - snode.SourceCodeRange.LineStart;
 
-            linesBetweenTwoNodes = linesBetweenTwoNodes > 2 ? 2 : linesBetweenTwoNodes;
+            linesBetweenTwoNodes = linesBetweenTwoNodes > Settings.MaximumNewLinesAtBeginingOfCodeScope ? 
+                Settings.MaximumNewLinesAtBeginingOfCodeScope : linesBetweenTwoNodes;
 
             Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes - 1));
         }
@@ -2112,8 +2275,8 @@ namespace LibLSLCC.Formatter.Visitor
             var linesBetweenNodeAndFirstComment = comments[0].SourceCodeRange.LineStart -
                                                   snode.SourceCodeRange.LineStart;
 
-            linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment > 2
-                ? 2
+            linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment > Settings.MaximumNewLinesAtBeginingOfCodeScope
+                ? Settings.MaximumNewLinesAtBeginingOfCodeScope
                 : linesBetweenNodeAndFirstComment;
 
 
@@ -2190,8 +2353,8 @@ namespace LibLSLCC.Formatter.Visitor
                         var linesBetweenCommentAndEndOfScope = snode.SourceCodeRange.LineEnd -
                                                                comment.SourceCodeRange.LineEnd;
 
-                        linesBetweenCommentAndEndOfScope = linesBetweenCommentAndEndOfScope > 2
-                            ? 2
+                        linesBetweenCommentAndEndOfScope = linesBetweenCommentAndEndOfScope > Settings.MaximumNewLinesAtEndOfCodeScope
+                            ? Settings.MaximumNewLinesAtEndOfCodeScope
                             : linesBetweenCommentAndEndOfScope;
 
                         if (linesBetweenCommentAndEndOfScope == 0)
@@ -2208,8 +2371,8 @@ namespace LibLSLCC.Formatter.Visitor
                 var linesBetweenNodeAndEndOfScope = snode.SourceCodeRange.LineEnd -
                                                     node.SourceCodeRange.LineEnd;
 
-                linesBetweenNodeAndEndOfScope = linesBetweenNodeAndEndOfScope > 2
-                    ? 2
+                linesBetweenNodeAndEndOfScope = linesBetweenNodeAndEndOfScope > Settings.MaximumNewLinesAtEndOfCodeScope
+                    ? Settings.MaximumNewLinesAtEndOfCodeScope
                     : linesBetweenNodeAndEndOfScope;
 
 
@@ -2218,10 +2381,10 @@ namespace LibLSLCC.Formatter.Visitor
                     linesBetweenNodeAndEndOfScope = 1;
                 }
 
-                if (linesBetweenNodeAndEndOfScope < 2 && LastCodeWrappingContext != null)
+                if (linesBetweenNodeAndEndOfScope < 2 && LastExpressionWrappingContext != null)
                 {
                     linesBetweenNodeAndEndOfScope = 2;
-                    LastCodeWrappingContext = null;
+                    LastExpressionWrappingContext = null;
                 }
 
 
@@ -2257,18 +2420,25 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
-        private class CodeWrappingContext
+        private class ExpressionWrappingContext
         {
-            public CodeWrappingContext(ILSLReadOnlySyntaxTreeNode statement, LSLCodeFormatterVisitor parent)
+            public ExpressionWrappingContext(ILSLReadOnlySyntaxTreeNode statement, LSLCodeFormatterVisitor parent)
             {
                 Statement = statement;
                 WriteColumn = parent._writeColumn;
                 WriteLine = parent._writeLine;
+                TabsWrittenSinceLastLine = parent._tabsWrittenSinceLastLine;
+                NonTabsWrittenSinceLastLine = parent._nonTabsWrittenSinceLastLine;
             }
 
             public ILSLReadOnlySyntaxTreeNode Statement { get; private set; }
             public int WriteColumn { get; private set; }
             public int WriteLine { get; private set; }
+
+            public int TabsWrittenSinceLastLine { get; private set; }
+            public int NonTabsWrittenSinceLastLine { get; private set; }
+            public int ColumnsBeforeExpressionWrap { get; set; }
+            public int MinimumExpressionsToWrap { get; set; }
         }
     }
 }

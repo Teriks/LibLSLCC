@@ -92,5 +92,11 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
         LSLSourceCodeRange StateNameSourceCodeRange { get; }
+
+        /// <summary>
+        /// The source code range where the state keyword is located.
+        /// For the default state, this will be the location of the 'default' keyword.
+        /// </summary>
+        LSLSourceCodeRange StateKeywordSourceCodeRange { get; }
     }
 }

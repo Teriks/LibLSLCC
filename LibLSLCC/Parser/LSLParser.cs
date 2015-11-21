@@ -3050,6 +3050,7 @@ public partial class LSLParser : Parser {
 	}
 
 	public partial class DefinedStateContext : ParserRuleContext {
+		public IToken state_keyword;
 		public IToken state_name;
 		public IToken open_brace;
 		public IToken close_brace;
@@ -3092,7 +3093,7 @@ public partial class LSLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 358; Match(STATE);
+			State = 358; _localctx.state_keyword = Match(STATE);
 			State = 359;
 			_localctx.state_name = TokenStream.Lt(1);
 			_la = TokenStream.La(1);

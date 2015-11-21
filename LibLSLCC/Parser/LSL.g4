@@ -486,7 +486,7 @@ eventHandler:
 instead of a parser token type mismatch
 */
 definedState:
-	STATE state_name=(ID|DEFAULT) open_brace=O_BRACE eventHandler* close_brace=C_BRACE
+	state_keyword=STATE state_name=(ID|DEFAULT) open_brace=O_BRACE eventHandler* close_brace=C_BRACE
 	;
 
 

@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System;
 using System.IO;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Formatter.Visitor;
@@ -49,10 +50,25 @@ namespace LibLSLCC.Formatter
 {
     public class LSLCodeFormatter
     {
+        private LSLCodeFormatterSettings _settings = new LSLCodeFormatterSettings();
+
+        public LSLCodeFormatterSettings Settings
+        {
+            get { return _settings; }
+            set
+            {
+                if (_settings == null)
+                {
+                    throw new ArgumentNullException("value", typeof(LSLCodeFormatter).Name+".Settings cannot be null!.");
+                }
+                _settings = value;
+            }
+        }
+
         public void Format(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
             bool closeStream = true)
         {
-            var formatter = new LSLCodeFormatterVisitor();
+            var formatter = new LSLCodeFormatterVisitor(new LSLCodeFormatterSettings());
             formatter.WriteAndFlush(sourceReference, node, writer, closeStream);
         }
     }
