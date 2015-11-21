@@ -351,6 +351,8 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitListLiteralInitializerList(ILSLExpressionListNode node)
         {
+            _expressionWrappingEnabledStack.Push(false);
+
             var cnt = node.ExpressionNodes.Count;
             var cntr = 0;
             int start, len;
@@ -389,6 +391,8 @@ namespace LibLSLCC.Formatter.Visitor
                 len = node.Parent.SourceCodeRange.StopIndex - start;
                 Write(_sourceReference.Substring(start, len));
             }
+
+            _expressionWrappingEnabledStack.Pop();
 
             return true;
         }
@@ -523,6 +527,8 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitRotationLiteral(ILSLRotationLiteralNode node)
         {
+            _expressionWrappingEnabledStack.Push(false);
+
             Write("<");
 
             WriteCommentsBetweenRange(node.SourceCodeRange.GetFirstCharRange(), node.XExpression.SourceCodeRange);
@@ -572,6 +578,8 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(">");
 
+            _expressionWrappingEnabledStack.Pop();
+
             return true;
         }
 
@@ -606,6 +614,8 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitVectorLiteral(ILSLVectorLiteralNode node)
         {
+            _expressionWrappingEnabledStack.Push(false);
+
             Write("<");
 
             WriteCommentsBetweenRange(node.SourceCodeRange.GetFirstCharRange(), node.XExpression.SourceCodeRange);
@@ -642,6 +652,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(">");
 
+            _expressionWrappingEnabledStack.Pop();
 
             return true;
         }
@@ -2440,5 +2451,8 @@ namespace LibLSLCC.Formatter.Visitor
             public int ColumnsBeforeExpressionWrap { get; set; }
             public int MinimumExpressionsToWrap { get; set; }
         }
+
+
+
     }
 }

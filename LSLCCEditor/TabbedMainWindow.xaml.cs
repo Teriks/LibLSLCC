@@ -667,9 +667,15 @@ namespace LSLCCEditor
                 return;
             }
 
-            var formatter = new LSLCodeFormatter();
+
+            var settings =
+                AppSettings.Settings.FormatterConfigurations[AppSettings.Settings.CurrentFormatterConfiguration]
+                    .FormatterSettings;
+
+            var formatter = new LSLCodeFormatter(settings);
 
             var str = new StringWriter();
+
             formatter.Format(tab.SourceCode, validated, str);
 
             var st = str.ToString();

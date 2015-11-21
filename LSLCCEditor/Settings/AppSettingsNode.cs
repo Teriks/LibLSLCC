@@ -62,6 +62,8 @@ namespace LSLCCEditor.Settings
         private XmlDictionary<string, EditorControlSettingsNode> _editorControlConfigurations;
         private string _currentEditorControlConfiguration;
         private string _currentCompilerConfiguration;
+        private XmlDictionary<string, FormatterSettingsNode> _formatterConfigurations;
+        private string _currentFormatterConfiguration;
 
 
         private const string ClientSideScriptCompilerHeader =
@@ -124,7 +126,7 @@ namespace LSLCCEditor.Settings
 
                 foreach (var kvp in dict.ToList())
                 {
-                    if (kvp.Value != null) continue;
+                    if (kvp.Value != null && kvp.Value.EditorControlSettings != null) continue;
 
                     var initNode = new EditorControlSettingsNode();
                     dict[kvp.Key] = initNode;
@@ -217,7 +219,7 @@ namespace LSLCCEditor.Settings
 
                 foreach (var kvp in dict.ToList())
                 {
-                    if (kvp.Value != null) continue;
+                    if (kvp.Value != null && kvp.Value.OpenSimCompilerSettings != null) continue;
 
                     var initNode = new CompilerConfigurationNode();
                     dict[kvp.Key] = initNode;
@@ -330,6 +332,96 @@ namespace LSLCCEditor.Settings
             set { SetField(ref _currentCompilerConfiguration, value, "CurrentCompilerConfiguration"); }
         }
 
+
+        public class FormatterConfigurationsDefaultFactory : IDefaultSettingsValueFactory
+        {
+            public bool CheckForNecessaryResets(object objectInstance, object settingValue)
+            {
+                if (settingValue == null) return true;
+
+                var dict = (XmlDictionary<string, FormatterSettingsNode>) settingValue;
+
+                if (dict.Count == 0)
+                {
+                    return true;
+                }
+
+                foreach (var kvp in dict.ToList())
+                {
+                    if (kvp.Value != null && kvp.Value.FormatterSettings != null) continue;
+
+                    var initNode = new FormatterSettingsNode();
+                    dict[kvp.Key] = initNode;
+                    DefaultValueInitializer.Init(initNode);
+                }
+
+                return false;
+            }
+
+            public object GetDefaultValue(object objectInstance)
+            {
+                var d = new XmlDictionary<string, FormatterSettingsNode>();
+
+
+                d.Add("Default", DefaultValueInitializer.Init(new FormatterSettingsNode()));
+
+                return d;
+            }
+        }
+
+
+        [DefaultValueFactory(typeof (FormatterConfigurationsDefaultFactory), initOrder: 4)]
+        public XmlDictionary<string, FormatterSettingsNode> FormatterConfigurations
+        {
+            get { return _formatterConfigurations; }
+            set { SetField(ref _formatterConfigurations, value, "FormatterConfigurations"); }
+        }
+
+
+        private class CurrentFormatterConfigurationDefaultFactory : IDefaultSettingsValueFactory
+        {
+            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
+            {
+                if (propertyValue == null) return true;
+
+                var val = propertyValue.ToString();
+
+                var settingsNodeInstance = (AppSettingsNode) settingsNode;
+
+                if (!settingsNodeInstance.FormatterConfigurations.ContainsKey(val))
+                {
+                    return true;
+                }
+
+                if (string.IsNullOrWhiteSpace(val))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            public object GetDefaultValue(object settingsNode)
+            {
+                var settingsNodeInstance = (AppSettingsNode) settingsNode;
+
+                if (settingsNodeInstance.FormatterConfigurations.ContainsKey("Default"))
+                {
+                    return "Default";
+                }
+                return settingsNodeInstance.FormatterConfigurations.First().Key;
+            }
+        }
+
+
+        [DefaultValueFactory(typeof (CurrentFormatterConfigurationDefaultFactory), initOrder: 5)]
+        public string CurrentFormatterConfiguration
+        {
+            get { return _currentFormatterConfiguration; }
+            set { SetField(ref _currentFormatterConfiguration, value, "CurrentFormatterConfiguration"); }
+        }
+
+
         public void AddCompilerConfiguration(string configurationName)
         {
             if (string.IsNullOrWhiteSpace(configurationName))
@@ -346,7 +438,6 @@ namespace LSLCCEditor.Settings
             }
 
 
-            
             CompilerConfigurations.Add(configurationName, DefaultValueInitializer.Init(new CompilerConfigurationNode()));
         }
 

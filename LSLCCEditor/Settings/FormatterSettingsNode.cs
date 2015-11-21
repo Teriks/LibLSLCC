@@ -8,7 +8,7 @@ using LibLSLCC.Settings;
 
 namespace LSLCCEditor.Settings
 {
-    public class FormatterSettingsNode : SettingsBaseClass<EditorControlSettingsNode>
+    public class FormatterSettingsNode : SettingsBaseClass<FormatterSettingsNode>
     {
 
         private LSLCodeFormatterSettings _formatterSettings;

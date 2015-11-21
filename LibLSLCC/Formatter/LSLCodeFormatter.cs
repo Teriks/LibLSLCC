@@ -50,7 +50,17 @@ namespace LibLSLCC.Formatter
 {
     public class LSLCodeFormatter
     {
-        private LSLCodeFormatterSettings _settings = new LSLCodeFormatterSettings();
+        private LSLCodeFormatterSettings _settings;
+
+        public LSLCodeFormatter(LSLCodeFormatterSettings settings)
+        {
+            _settings = settings;
+        }
+
+        public LSLCodeFormatter()
+        {
+            _settings = new LSLCodeFormatterSettings();
+        }
 
         public LSLCodeFormatterSettings Settings
         {
