@@ -1280,17 +1280,13 @@ namespace LibLSLCC.AutoComplete
 
                 var val = base.VisitDoLoop(context);
 
-                if (context.code != null && context.code.code != null && context.close_parenth != null &&
-                    context.close_parenth.StartIndex <= _parent._toOffset)
+                if (context.code != null && context.code.code != null && context.code.code.close_brace != null &&
+                    context.code.code.close_brace.StartIndex <= _parent._toOffset)
                 {
                     _parent.InMultiStatementCodeScopeTopLevel = false;
                 }
 
-                if (context.Stop.Text != ";") return val;
-                if (context.Stop.StopIndex >= _parent._toOffset) return val;
-
-
-                if (context.Stop.StopIndex >= _parent._toOffset) return val;
+                if (context.Stop.Text != ";" || context.Stop.StopIndex >= _parent._toOffset) return val;
 
                 ControlStructureNestingDepth--;
                 if (ControlStructureNestingDepth == 0)
