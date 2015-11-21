@@ -68,7 +68,7 @@ namespace LibLSLCC.Formatter
         public void Format(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
             bool closeStream = true)
         {
-            var formatter = new LSLCodeFormatterVisitor(new LSLCodeFormatterSettings());
+            var formatter = new LSLCodeFormatterVisitor(Settings);
             formatter.WriteAndFlush(sourceReference, node, writer, closeStream);
         }
     }
