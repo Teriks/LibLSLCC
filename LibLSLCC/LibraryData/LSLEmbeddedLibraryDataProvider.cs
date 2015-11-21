@@ -68,7 +68,7 @@ namespace LibLSLCC.LibraryData
         public static Stream GetDefaultLibraryDataStream()
         {
             return typeof(LSLEmbeddedLibraryDataProvider).Assembly.GetManifestResourceStream(
-                    "LibLSLCC.LibraryData.LSLEmbeddedLibraryDataProvider.xml");
+                    "LibLSLCC.LibraryData.default.xml");
         }
 
 

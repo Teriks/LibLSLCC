@@ -285,7 +285,7 @@
     <None Include="Parser\LSL.g4" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LibraryData\LSLEmbeddedLibraryDataProvider.xml" />
+    <EmbeddedResource Include="LibraryData\default.xml" />
   </ItemGroup>
   <ItemGroup>
     <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt" />
