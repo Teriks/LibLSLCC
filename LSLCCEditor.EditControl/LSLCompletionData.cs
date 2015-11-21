@@ -192,9 +192,6 @@ namespace LSLCCEditor.EditControl
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-
-            var t = textArea.Caret.Offset;
-
             var prep = string.IsNullOrWhiteSpace(PrependOnInsert) ? "" : PrependOnInsert;
             var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
             var insertionText = string.IsNullOrWhiteSpace(CaretOffsetInsertionText) ? "" : CaretOffsetInsertionText;
