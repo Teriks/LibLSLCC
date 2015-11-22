@@ -47,6 +47,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Forms;
 using LibLSLCC.CSharp;
@@ -64,7 +65,8 @@ namespace LSLCCEditor.SettingsUI
     public partial class CompilerPane : UserControl, ISettingsPane
     {
         public static readonly DependencyProperty PropertyTypeProperty = DependencyProperty.Register(
-            "PropertyType", typeof (ObservableCollection<string>), typeof (CompilerPane), new PropertyMetadata(default(ObservableCollection<string>)));
+            "PropertyType", typeof (ObservableCollection<string>), typeof (CompilerPane),
+            new PropertyMetadata(default(ObservableCollection<string>)));
 
         public ObservableCollection<string> CompilerConfigurationNames
         {
@@ -78,7 +80,7 @@ namespace LSLCCEditor.SettingsUI
                 "SelectedCompilerConfigurationName", typeof (string), typeof (CompilerPane),
                 new PropertyMetadata(default(string), SelectedCompilerConfigurationNameChanged));
 
-        private NotifyCollectionChangedEventHandler _lastNamespaceImportsChangedHandler;
+        
 
 
         private static void SelectedCompilerConfigurationNameChanged(DependencyObject dependencyObject,
@@ -87,9 +89,18 @@ namespace LSLCCEditor.SettingsUI
             var pane = dependencyObject as CompilerPane;
 
             var newValue = dependencyPropertyChangedEventArgs.NewValue as string;
-            var oldValue = dependencyPropertyChangedEventArgs.OldValue as string;
 
-            if (oldValue != null)
+            UpdateUiToNamedConfig(pane, newValue);
+        }
+
+
+
+        private NotifyCollectionChangedEventHandler _lastNamespaceImportsChangedHandler;
+
+
+        private static void UpdateUiToNamedConfig(CompilerPane pane,  string configName)
+        {
+            if (pane.CurrentCompilerConfiguration != null)
             {
                 pane.CurrentCompilerConfiguration.UnSubscribePropertyChangedAll(pane);
 
@@ -101,32 +112,37 @@ namespace LSLCCEditor.SettingsUI
             }
 
 
-            if (pane == null || newValue == null) return;
-
-
             pane.CurrentConfigIsEdited = false;
-            pane.CurrentCompilerConfiguration = AppSettings.Settings.CompilerConfigurations[newValue].Clone();
+            pane.CurrentCompilerConfiguration = AppSettings.Settings.CompilerConfigurations[configName].Clone();
 
             var compilerConfig = pane.CurrentCompilerConfiguration.OpenSimCompilerSettings;
 
 
-            pane.GeneratedClassName = compilerConfig.GeneratedClassName != null ? compilerConfig.GeneratedClassName.FullSignature : "LSLScript";
+            pane.GeneratedClassName = compilerConfig.GeneratedClassName != null
+                ? compilerConfig.GeneratedClassName.FullSignature
+                : "";
 
-            pane.GeneratedClassNamespace = compilerConfig.GeneratedClassNamespace != null ? compilerConfig.GeneratedClassNamespace.Name : "";
+            pane.GeneratedClassNamespace = compilerConfig.GeneratedClassNamespace != null
+                ? compilerConfig.GeneratedClassNamespace.Name
+                : "";
+
+            pane.GeneratedConstructorSignature = compilerConfig.GeneratedConstructorSignature != null
+                ? compilerConfig.GeneratedConstructorSignature.FullSignature
+                : "";
 
 
             pane.CurrentCompilerConfiguration.SubscribePropertyChangedAll(pane,
                 AnyCurrentCompilerConfigSubPropertyChanged);
 
-            pane._lastNamespaceImportsChangedHandler =
-                (sender, args) =>
+            pane._lastNamespaceImportsChangedHandler = (sender, args) =>
                 {
-                    if (AppSettings.Settings.CompilerConfigurations.ContainsKey(pane.SelectedCompilerConfigurationName))
-                    {
-                        var settingsConfig = AppSettings.Settings.CompilerConfigurations[pane.SelectedCompilerConfigurationName];
+                    if (!AppSettings.Settings.CompilerConfigurations.ContainsKey(pane.SelectedCompilerConfigurationName))
+                        return;
 
-                        pane.CurrentConfigIsEdited = !pane.CurrentCompilerConfiguration.Equals(settingsConfig);
-                    }
+                    var settingsConfig =
+                        AppSettings.Settings.CompilerConfigurations[pane.SelectedCompilerConfigurationName];
+
+                    pane.CurrentConfigIsEdited = !pane.CurrentCompilerConfiguration.Equals(settingsConfig);
                 };
 
             pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports
@@ -134,8 +150,12 @@ namespace LSLCCEditor.SettingsUI
 
             var bindingExpression = pane.GetBindingExpression(GeneratedClassNameProperty);
             if (bindingExpression != null)
+            {
                 bindingExpression.UpdateSource();
+            }
         }
+
+
 
 
         private static void AnyCurrentCompilerConfigSubPropertyChanged(
@@ -144,13 +164,13 @@ namespace LSLCCEditor.SettingsUI
             var me = settingsPropertyChangedEventArgs.Subscriber as CompilerPane;
 
 
-            if (AppSettings.Settings.CompilerConfigurations.ContainsKey(me.SelectedCompilerConfigurationName))
-            {
-                var settingsConfig = AppSettings.Settings.CompilerConfigurations[me.SelectedCompilerConfigurationName];
+            if (!AppSettings.Settings.CompilerConfigurations.ContainsKey(me.SelectedCompilerConfigurationName)) return;
 
-                me.CurrentConfigIsEdited = !me.CurrentCompilerConfiguration.Equals(settingsConfig);
-            }
+            var settingsConfig = AppSettings.Settings.CompilerConfigurations[me.SelectedCompilerConfigurationName];
+
+            me.CurrentConfigIsEdited = !me.CurrentCompilerConfiguration.Equals(settingsConfig);
         }
+
 
 
         public static readonly DependencyProperty CurrentConfigIsEditedProperty = DependencyProperty.Register(
@@ -162,11 +182,15 @@ namespace LSLCCEditor.SettingsUI
             set { SetValue(CurrentConfigIsEditedProperty, value); }
         }
 
+
+
         public string SelectedCompilerConfigurationName
         {
             get { return (string) GetValue(SelectedCompilerConfigurationNameProperty); }
             set { SetValue(SelectedCompilerConfigurationNameProperty, value); }
         }
+
+
 
 
         public static readonly DependencyProperty CurrentCompilerConfigurationProperty = DependencyProperty.Register(
@@ -180,9 +204,56 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
+
+
+
+        public static readonly DependencyProperty GeneratedConstructorSignatureProperty = DependencyProperty.Register(
+            "GeneratedConstructorSignature", typeof (string), typeof (CompilerPane),
+            new PropertyMetadata(default(string), GeneratedConstructorSignatureChangedCallback));
+
+        private static void GeneratedConstructorSignatureChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var pane = dependencyObject as CompilerPane;
+
+            var newValue = dependencyPropertyChangedEventArgs.NewValue as string;
+
+            if (pane != null)
+            {
+                if (string.IsNullOrWhiteSpace(newValue))
+                {
+                    pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorSignature = null;
+                    return;
+                }
+
+                var validation = CSharpConstructorSignatureValidator.Validate(newValue);
+                if (!validation.Success)
+                {
+                    throw new Exception(string.Format("Error Index {0}:  {1}", validation.ErrorIndex,
+                        validation.ErrorDescription));
+                }
+
+                pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorSignature =
+                    new CSharpConstructorSignature(newValue);
+            }
+        }
+
+
+        public string GeneratedConstructorSignature
+        {
+            get { return (string) GetValue(GeneratedConstructorSignatureProperty); }
+            set { SetValue(GeneratedConstructorSignatureProperty, value); }
+        }
+
+
+
+
+
         public static readonly DependencyProperty GeneratedClassNamespaceProperty = DependencyProperty.Register(
             "GeneratedClassNamespace", typeof (string), typeof (CompilerPane),
             new PropertyMetadata(default(string), GeneratedClassNamespaceChanged));
+
+
 
         private static void GeneratedClassNamespaceChanged(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
@@ -191,8 +262,13 @@ namespace LSLCCEditor.SettingsUI
 
             var newValue = dependencyPropertyChangedEventArgs.NewValue as string;
 
-            if (pane != null && !string.IsNullOrWhiteSpace(newValue))
+            if (pane != null)
             {
+                if (string.IsNullOrWhiteSpace(newValue))
+                {
+                    pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassNamespace = null;
+                    return;
+                }
 
                 var validation = CSharpNamespaceNameValidator.Validate(newValue);
                 if (!validation.Success)
@@ -205,6 +281,8 @@ namespace LSLCCEditor.SettingsUI
             }
         }
 
+
+
         public string GeneratedClassNamespace
         {
             get { return (string) GetValue(GeneratedClassNamespaceProperty); }
@@ -212,9 +290,12 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
+
+
         public static readonly DependencyProperty GeneratedClassNameProperty = DependencyProperty.Register(
             "GeneratedClassName", typeof (string), typeof (CompilerPane),
             new PropertyMetadata("LSLScript", GeneratedClassNameChanged));
+
 
         private static void GeneratedClassNameChanged(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
@@ -224,13 +305,19 @@ namespace LSLCCEditor.SettingsUI
             var newValue = dependencyPropertyChangedEventArgs.NewValue as string;
 
 
-            if (pane != null && !string.IsNullOrWhiteSpace(newValue))
+            if (pane != null)
             {
+                if (string.IsNullOrWhiteSpace(newValue))
+                {
+                    pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName = null;
+                    return;
+                }
 
                 var validation = CSharpClassNameValidator.ValidateDeclaration(newValue);
                 if (!validation.Success)
                 {
-                    throw new Exception(validation.ErrorDescription);
+                    throw new Exception(string.Format("Error Index {0}:  {1}", validation.ErrorIndex,
+                        validation.ErrorDescription));
                 }
 
                 pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName =
@@ -254,16 +341,14 @@ namespace LSLCCEditor.SettingsUI
 
             InitializeComponent();
 
-            
+
             Title = "Compiler Settings";
-            
+
 
             if (CompilerConfigurationNames.Any())
             {
                 SelectedCompilerConfigurationName = CompilerConfigurationNames.First();
             }
-
-            
         }
 
         public string Title { get; private set; }
@@ -275,12 +360,11 @@ namespace LSLCCEditor.SettingsUI
 
             int newIndex = 0;
 
-            if ((CompilerConfigurationNames.Count-1) > 0)
+            if ((CompilerConfigurationNames.Count - 1) > 0)
             {
                 newIndex = CompilerConfigurationCombobox.SelectedIndex - 1;
             }
 
-            
 
             AppSettings.Settings.RemoveCompilerConfiguration(currentlySelected, CompilerConfigurationNames[newIndex]);
 
@@ -291,8 +375,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void Revert_OnClick(object sender, RoutedEventArgs e)
         {
-            CurrentCompilerConfiguration =
-                AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfigurationName];
+            UpdateUiToNamedConfig(this, SelectedCompilerConfigurationName);
         }
 
         private void Save_OnClick(object sender, RoutedEventArgs e)
@@ -300,17 +383,16 @@ namespace LSLCCEditor.SettingsUI
             if (this.IsValid())
             {
 
-
                 AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfigurationName] =
-                    CurrentCompilerConfiguration;
+                    CurrentCompilerConfiguration.Clone();
 
                 CurrentConfigIsEdited = false;
             }
             else
             {
                 MessageBox.Show(
-                    "Could not save due to invalid settings, please correct them before attempting to save.", 
-                    "Invalid Settings Detected",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    "Could not save due to invalid settings, please correct them before attempting to save.",
+                    "Invalid Settings Detected", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -324,31 +406,26 @@ namespace LSLCCEditor.SettingsUI
 
             if (name.Canceled) return;
 
-  
+
             AppSettings.Settings.AddCompilerConfiguration(name.ChosenName);
 
             CompilerConfigurationNames.Add(name.ChosenName);
 
-            CompilerConfigurationCombobox.SelectedIndex = CompilerConfigurationNames.Count-1;
-
+            CompilerConfigurationCombobox.SelectedIndex = CompilerConfigurationNames.Count - 1;
         }
 
         private void GenerateClass_OnUnchecked(object sender, RoutedEventArgs e)
         {
-
-                ClassOptionsExpander.IsExpanded = false;
-                ClassOptionsExpander.IsEnabled = false;
-                ImportsExpander.IsExpanded = false;
-                ImportsExpander.IsEnabled = false;
-            
+            ClassOptionsExpander.IsExpanded = false;
+            ClassOptionsExpander.IsEnabled = false;
+            ImportsExpander.IsExpanded = false;
+            ImportsExpander.IsEnabled = false;
         }
 
         private void GenerateClass_OnChecked(object sender, RoutedEventArgs e)
         {
-
-                ClassOptionsExpander.IsEnabled = true;
-                ImportsExpander.IsEnabled = true;
- 
+            ClassOptionsExpander.IsEnabled = true;
+            ImportsExpander.IsEnabled = true;
         }
 
         private void InsertCoOpTerminationCalls_Checked(object sender, RoutedEventArgs e)
@@ -362,20 +439,21 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
         public static readonly DependencyProperty NamespaceImportAddTextProperty = DependencyProperty.Register(
-            "NamespaceImportAddText", typeof (string), typeof (CompilerPane), new PropertyMetadata(default(string), NamespaceImportAddTextChangedCallback));
+            "NamespaceImportAddText", typeof (string), typeof (CompilerPane),
+            new PropertyMetadata(default(string), NamespaceImportAddTextChangedCallback));
 
-        private static void NamespaceImportAddTextChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private static void NamespaceImportAddTextChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var pane = (CompilerPane)dependencyObject;
+            var pane = (CompilerPane) dependencyObject;
 
 
             var val = dependencyPropertyChangedEventArgs.NewValue as string;
 
             if (val == null) return;
 
-            var validation=CSharpNamespaceNameValidator.Validate(val);
+            var validation = CSharpNamespaceNameValidator.Validate(val);
             if (!validation.Success)
             {
                 throw new Exception(validation.ErrorDescription);
@@ -390,7 +468,8 @@ namespace LSLCCEditor.SettingsUI
 
         private void AddImport_OnClick(object sender, RoutedEventArgs e)
         {
-            CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(new CSharpNamespace(NamespaceImportAddText));
+            CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Add(
+                new CSharpNamespace(NamespaceImportAddText));
         }
 
         private void importsDelete_OnClick(object sender, RoutedEventArgs e)
@@ -400,7 +479,8 @@ namespace LSLCCEditor.SettingsUI
 
             foreach (var obj in ar)
             {
-                CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Remove((CSharpNamespace)obj);
+                CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Remove(
+                    (CSharpNamespace) obj);
             }
         }
     }

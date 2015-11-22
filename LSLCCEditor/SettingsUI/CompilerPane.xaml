@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
              xmlns:cSharp="clr-namespace:LibLSLCC.CSharp;assembly=LibLSLCC"
+             xmlns:wpf="clr-namespace:LSLCCEditor.Utility.Wpf;assembly=LSLCCEditor.Utility"
              mc:Ignorable="d" Name="_this" MinWidth="500" Padding="5" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
 
     <Grid>
@@ -146,15 +147,22 @@
 
                         </Style>
                     </Grid.Resources>
-                    
-                    
-                     <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=ClassName}">Class Name (Required):</Label>
-                    <TextBox Grid.Row="0" Grid.Column="1" Name="ClassName"
+
+                   
+                    <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=ClassName}">Class Name:</Label>
+                    <Grid Grid.Row="0" Grid.Column="1">
+                    <TextBox  Name="ClassName"
                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
                              DataContext="{Binding ElementName=_this}" 
                              Text="{Binding Path=GeneratedClassName, TargetNullValue ='', ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
+                            <wpf:TextboxHint.Hint>
+                                <Border Padding="2,6,0,0">
+                                    <TextBlock>LSLScript</TextBlock>
+                                </Border>
+                            </wpf:TextboxHint.Hint>
                     </TextBox>
+                    </Grid>
                     
 
                     <Label Grid.Row="1" Grid.Column="0" Target="{Binding ElementName=NameSpaceName}">Namespace:</Label>
@@ -184,14 +192,13 @@
 
                     <Label Grid.Row="3" Grid.Column="0" Target="{Binding ElementName=ConstructorSignature}">Constructor Signature:</Label>
                     <TextBox Grid.Row="3" Grid.Column="1" Name="ConstructorSignature"
+                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
                              DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
-                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedConstructorSignature, UpdateSourceTrigger=PropertyChanged}"
+                             Text="{Binding ElementName=_this, Path=GeneratedConstructorSignature, TargetNullValue ='', ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
-                        <TextBox.ToolTip>
-                            <ToolTip>
-                                <TextBlock Text="Example: (int myParam) : base(myParam)" />
-                            </ToolTip>
-                        </TextBox.ToolTip>
+                        <wpf:TextboxHint.Hint>
+                            <TextBlock Padding="2,6,0,0">()</TextBlock>
+                        </wpf:TextboxHint.Hint>
                     </TextBox>
                     
                     

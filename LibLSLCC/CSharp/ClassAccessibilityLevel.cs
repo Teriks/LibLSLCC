@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System;
 
 namespace LibLSLCC.CSharp

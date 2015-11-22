@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System.CodeDom.Compiler;
 
 namespace LibLSLCC.CSharp

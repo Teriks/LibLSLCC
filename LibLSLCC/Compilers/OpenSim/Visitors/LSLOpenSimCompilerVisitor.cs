@@ -1025,7 +1025,7 @@ private static class UTILITIES
             //use the fall-back class name if the settings did not specify one
             var className = Settings.GeneratedClassName == null ?  FallbackClassName.BaseName : Settings.GeneratedClassName.BaseName;
 
-            var constructorSig = string.IsNullOrWhiteSpace(Settings.GeneratedConstructorSignature) ? "()" : Settings.GeneratedConstructorSignature;
+            var constructorSig = Settings.GeneratedConstructorSignature == null ? "()" : Settings.GeneratedConstructorSignature.FullSignature;
 
 
 

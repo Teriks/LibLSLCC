@@ -59,7 +59,7 @@ namespace LibLSLCC.Compilers.OpenSim
         private CSharpNamespace _generatedClassNamespace;
         private CSharpClassName _generatedClassName;
         private string _generatedClassInherit;
-        private string _generatedConstructorSignature;
+        private CSharpConstructorSignature _generatedConstructorSignature;
         private MemberAccessibilityLevel _generatedConstructorAccessibility;
         private ObservableSettingsHashSet<CSharpNamespace> _generatedNamespaceImports = new ObservableSettingsHashSet<CSharpNamespace>();
         private string _scriptHeader;
@@ -149,10 +149,13 @@ namespace LibLSLCC.Compilers.OpenSim
         /// The constructor signature to be inserted into the generated class if GenerateClass is set to true, this string is copied verbatim.
         /// example: (int parameter) : base(parameter)
         /// </summary>
-        public string GeneratedConstructorSignature
+        public CSharpConstructorSignature GeneratedConstructorSignature
         {
             get { return _generatedConstructorSignature; }
-            set { SetField(ref _generatedConstructorSignature, value, "GeneratedConstructorSignature"); }
+            set
+            {
+                SetField(ref _generatedConstructorSignature, value, "GeneratedConstructorSignature");
+            }
         }
 
 

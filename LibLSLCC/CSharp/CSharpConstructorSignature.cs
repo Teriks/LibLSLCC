@@ -1,6 +1,7 @@
 ﻿#region FileInfo
+
 // 
-// File: CSharpClassName.cs
+// File: CSharpConstructorSignature.cs
 // 
 // 
 // ============================================================
@@ -39,66 +40,33 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Xml.Serialization;
 using LibLSLCC.Collections;
 using LibLSLCC.Settings;
 
 namespace LibLSLCC.CSharp
 {
-    public class CSharpClassName : SettingsBaseClass<CSharpClassName>, IObservableHashSetItem
+    public class CSharpConstructorSignature : SettingsBaseClass<CSharpConstructorSignature>, IObservableHashSetItem
     {
-        private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>() {"FullSignature"};
+        private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
+        {
+            "FullSignature"
+        };
 
-        private CSharpClassNameValidationResult _validatedName;
+        private CSharpConstructorSignatureValidationResult _validatedSignature;
         private string _fullSignature;
 
-        /// <summary>
-        /// Parameterless constructor used by <see cref="SettingsBaseClass{CSharpNamespace}"/>
-        /// </summary>
-        private CSharpClassName()
+
+        private CSharpConstructorSignature()
         {
-            
         }
-
-        public CSharpClassName(string fullSignature)
-        {
-            if (fullSignature == null)
-            {
-                throw new ArgumentNullException("fullSignature", "Class signature string cannot be null.");
-            }
-            if (string.IsNullOrWhiteSpace(fullSignature))
-            {
-                throw new ArgumentException("Class signature string cannot be whitespace.", "fullSignature");
-            }
-
-            _validatedName = CSharpClassNameValidator.ValidateDeclaration(fullSignature);
-
-            if (!_validatedName.Success)
-            {
-                throw new ArgumentException(_validatedName.ErrorDescription, "fullSignature");
-            }
-
-            _fullSignature = fullSignature;
-        }
-
-
-        public static implicit operator CSharpClassName(string fullSignature)
-        {
-            return new CSharpClassName(fullSignature);
-        }
-
-        [XmlIgnore]
-        public string BaseName { get { return _validatedName.BaseName; } }
-
-
-        [XmlIgnore]
-        public string QualifiedName { get { return _validatedName.QualifiedName; } }
-
-
-        [XmlIgnore]
-        public CSharpClassNameValidationResult ValidatedName { get { return _validatedName; } }
 
         public string FullSignature
         {
@@ -107,28 +75,59 @@ namespace LibLSLCC.CSharp
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "Class signature string cannot be null.");
+                    throw new ArgumentNullException("value", "Constructor signature string cannot be null.");
                 }
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Class signature string cannot be whitespace.", "value");
+                    throw new ArgumentException("Constructor signature string cannot be whitespace.", "value");
                 }
 
-                var vName = CSharpClassNameValidator.ValidateDeclaration(value);
+                var vSig = CSharpConstructorSignatureValidator.Validate(value);
 
-                if (!vName.Success)
+                if (!vSig.Success)
                 {
-                    throw new ArgumentException(_validatedName.ErrorDescription, "value");
+                    throw new ArgumentException(_validatedSignature.ErrorDescription, "value");
                 }
 
-                OnPropertyChanging("QualifiedName");
-                OnPropertyChanging("BaseName");
-                SetField(ref _validatedName, vName, "ValidatedName");
-                OnPropertyChanged("QualifiedName");
-                OnPropertyChanged("BaseName");
 
+                SetField(ref _validatedSignature, vSig, "ValidatedSignature");
                 SetField(ref _fullSignature, value, "FullSignature");
             }
+        }
+
+        [XmlIgnore]
+        public CSharpConstructorSignatureValidationResult ValidatedSignature
+        {
+            get { return _validatedSignature; }
+            set { _validatedSignature = value; }
+        }
+
+
+        public static implicit operator CSharpConstructorSignature(string fullSignature)
+        {
+            return new CSharpConstructorSignature(fullSignature);
+        }
+
+
+        public CSharpConstructorSignature(string fullSignature)
+        {
+            if (fullSignature == null)
+            {
+                throw new ArgumentNullException("fullSignature", "Constructor signature string cannot be null.");
+            }
+            if (string.IsNullOrWhiteSpace(fullSignature))
+            {
+                throw new ArgumentException("Constructor signature string cannot be whitespace.", "fullSignature");
+            }
+
+            _validatedSignature = CSharpConstructorSignatureValidator.Validate(fullSignature);
+
+            if (!_validatedSignature.Success)
+            {
+                throw new ArgumentException(_validatedSignature.ErrorDescription, "fullSignature");
+            }
+
+            _fullSignature = fullSignature;
         }
 
         public override string ToString()
@@ -145,10 +144,11 @@ namespace LibLSLCC.CSharp
 
         public override bool Equals(object obj)
         {
-            var ns = obj as CSharpClassName;
+            var ns = obj as CSharpConstructorSignature;
             if (ns == null) return false;
 
-            if (ns.FullSignature != null && FullSignature != null) return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
+            if (ns.FullSignature != null && FullSignature != null)
+                return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
 
             return ns.FullSignature == FullSignature;
         }

@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -260,6 +259,25 @@ namespace LibLSLCC.CSharp
         private static CSharpClassNameValidationResult _Validate(string input, ClassSigType signatureType,
             bool allowBuiltinAliases, CSharpParsedTypeValidateTypeCallback validateTypeCallback, int index)
         {
+
+            if (input == null)
+            {
+                throw new ArgumentNullException("input", "Class name/signature string cannot be null!");
+            }
+
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return new CSharpClassNameValidationResult
+                {
+                    Success = false,
+                    ErrorDescription =
+                        "Class name/signature cannot be whitespace.",
+                     ErrorIndex = 0,
+                };
+            }
+
+
             string fullyQualifiedName = "";
             var genericArgs = new List<CSharpClassNameValidationResult>();
 
