@@ -132,7 +132,10 @@ namespace LibLSLCC.Formatter.Visitor
 
         private void Write(string str)
         {
-            if (str == string.Empty) return;
+            if (str == string.Empty)
+            {
+                return;
+            }
 
             foreach (var c in str)
             {
@@ -155,11 +158,10 @@ namespace LibLSLCC.Formatter.Visitor
                     OnNonTabWritten();
                 }
 
-                if (c != '\n')
-                {
-                    _writeColumn++;
-                    OnColumnCharacterWritten();
-                }
+                if (c == '\n') continue;
+
+                _writeColumn++;
+                OnColumnCharacterWritten();
             }
 
             Writer.Write(str);
@@ -355,9 +357,7 @@ namespace LibLSLCC.Formatter.Visitor
             _binaryExpressionsSinceNewLine++;
 
 
-            if (CurrentExpressionWrappingContext != null &&
-                ExpressionWrappingCurrentlyEnabled &&
-                !(node.Parent is ILSLParenthesizedExpressionNode) &&
+            if (ExpressionWrappingCurrentlyEnabled &&
                 ((_writeColumn - CurrentExpressionWrappingContext.WriteColumn) >
                  CurrentExpressionWrappingContext.ColumnsBeforeExpressionWrap
                  && _binaryExpressionsSinceNewLine >= CurrentExpressionWrappingContext.MinimumExpressionsToWrap))
