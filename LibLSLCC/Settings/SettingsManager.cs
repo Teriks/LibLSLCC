@@ -131,7 +131,7 @@ namespace LibLSLCC.Settings
                 {
                     HandleLoadError(SettingsErrorType.FileUnreadable);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     HandleLoadError(SettingsErrorType.SyntaxError);
                 }
