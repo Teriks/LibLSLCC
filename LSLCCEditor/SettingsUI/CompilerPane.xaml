@@ -157,9 +157,7 @@
                              Text="{Binding Path=GeneratedClassName, TargetNullValue ='', ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
                             <wpf:TextboxHint.Hint>
-                                <Border Padding="2,6,0,0">
-                                    <TextBlock>LSLScript</TextBlock>
-                                </Border>
+                                <TextBlock Padding="2,6,0,0">LSLScript</TextBlock>
                             </wpf:TextboxHint.Hint>
                     </TextBox>
                     </Grid>
