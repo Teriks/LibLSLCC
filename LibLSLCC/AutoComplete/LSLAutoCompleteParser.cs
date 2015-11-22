@@ -1420,6 +1420,8 @@ namespace LibLSLCC.AutoComplete
 
             public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
             {
+                if (context.Start.StartIndex >= _parent._toOffset) return true;
+
                 var returnTypeText = context.return_type == null ? "" : context.return_type.Text;
 
 
