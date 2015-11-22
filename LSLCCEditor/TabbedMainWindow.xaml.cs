@@ -123,6 +123,9 @@ namespace LSLCCEditor
 
         private void Initialize()
         {
+            var assembly = System.Reflection.Assembly.GetEntryAssembly().Location;
+
+            var appDirectory = Path.GetDirectoryName(assembly);
 
 
             _libraryDataProvider = new LSLXmlLibraryDataProvider(new[] { "lsl" });
@@ -130,7 +133,7 @@ namespace LSLCCEditor
 
             try
             {
-                _libraryDataProvider.FillFromXmlDirectory("library_data");
+                _libraryDataProvider.FillFromXmlDirectory(Path.Combine(appDirectory, "library_data"));
 
             }
             catch (LSLLibraryDataXmlSyntaxException err)
