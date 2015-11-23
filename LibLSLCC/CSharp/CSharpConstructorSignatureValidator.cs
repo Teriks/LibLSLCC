@@ -322,6 +322,11 @@ namespace LibLSLCC.CSharp
                 {
                     switch (state)
                     {
+                        case States.Start:
+                            result.Success = false;
+                            result.ErrorDescription = string.Format("Unexpected '{0}' character, was expecting '('.", c);
+                            result.ErrorIndex = index;
+                            return result;
                         case States.WaitingForParamType:
                             state = States.AccumulatingParamType;
                             accum = "" + c;
