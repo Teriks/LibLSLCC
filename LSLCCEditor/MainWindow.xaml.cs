@@ -1,7 +1,7 @@
 ﻿#region FileInfo
 
 // 
-// File: TabbedMainWindow.xaml.cs
+// File: MainWindow.xaml.cs
 // 
 // 
 // ============================================================
@@ -79,7 +79,7 @@ namespace LSLCCEditor
     /// <summary>
     ///     Interaction logic for Window1.xaml
     /// </summary>
-    public partial class TabbedMainWindow : Window
+    public partial class MainWindow : Window
     {
         public static readonly RoutedCommand FileNew = new RoutedCommand();
         public static readonly RoutedCommand FileOpen = new RoutedCommand();
@@ -112,7 +112,7 @@ namespace LSLCCEditor
 
 
 
-        public TabbedMainWindow()
+        public MainWindow()
         {
 
             InitializeComponent();
@@ -209,7 +209,6 @@ namespace LSLCCEditor
             FindDialogManager.CurrentEditor = initialTab.Content.Editor.Editor;
 
             _selectingStartupTabDuringWindowLoad = false;
-
         }
 
 
@@ -918,9 +917,9 @@ namespace LSLCCEditor
 
         private class WindowSyntaxWarningListener : LSLDefaultSyntaxWarningListener
         {
-            private readonly TabbedMainWindow _parent;
+            private readonly MainWindow _parent;
 
-            public WindowSyntaxWarningListener(TabbedMainWindow parent)
+            public WindowSyntaxWarningListener(MainWindow parent)
             {
                 _parent = parent;
             }
@@ -934,9 +933,9 @@ namespace LSLCCEditor
 
         private class WindowSyntaxErrorListener : LSLDefaultSyntaxErrorListener
         {
-            private readonly TabbedMainWindow _parent;
+            private readonly MainWindow _parent;
 
-            public WindowSyntaxErrorListener(TabbedMainWindow parent)
+            public WindowSyntaxErrorListener(MainWindow parent)
             {
                 _parent = parent;
             }

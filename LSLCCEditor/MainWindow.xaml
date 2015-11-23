@@ -1,4 +1,4 @@
-﻿<Window x:Class="LSLCCEditor.TabbedMainWindow"
+﻿<Window x:Class="LSLCCEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,35 +14,35 @@
 
     </Window.Resources>
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileNew}" Executed="NewFile_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileOpenNewTab}" Executed="Open_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" Executed="Save_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" Executed="SaveAs_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}"
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileNew}" Executed="NewFile_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileOpenNewTab}" Executed="Open_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileSave}" Executed="Save_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileSaveAs}" Executed="SaveAs_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.CompileOpenSim}"
                         Executed="Compile_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}"
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.ToolsClearMessages}"
                         Executed="ClearCompilerMessages_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}"
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.ToolsSyntaxCheck}"
                         Executed="CheckSyntax_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" Executed="Format_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchFind}" Executed="Find_OnClick" />
-        <CommandBinding Command="{x:Static lslccEditor:TabbedMainWindow.SearchReplace}" Executed="Replace_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.ToolsFormat}" Executed="Format_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.SearchFind}" Executed="Find_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.SearchReplace}" Executed="Replace_OnClick" />
     </Window.CommandBindings>
     <Window.InputBindings>
-        <KeyBinding Modifiers="Control" Key="O" Command="{x:Static lslccEditor:TabbedMainWindow.FileOpen}" />
-        <KeyBinding Modifiers="Control+Alt" Key="O" Command="{x:Static lslccEditor:TabbedMainWindow.FileOpenNewTab}" />
-        <KeyBinding Modifiers="Control" Key="N" Command="{x:Static lslccEditor:TabbedMainWindow.FileNew}" />
-        <KeyBinding Modifiers="Control" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.FileSave}" />
-        <KeyBinding Modifiers="Control+Alt" Key="S" Command="{x:Static lslccEditor:TabbedMainWindow.FileSaveAs}" />
+        <KeyBinding Modifiers="Control" Key="O" Command="{x:Static lslccEditor:MainWindow.FileOpen}" />
+        <KeyBinding Modifiers="Control+Alt" Key="O" Command="{x:Static lslccEditor:MainWindow.FileOpenNewTab}" />
+        <KeyBinding Modifiers="Control" Key="N" Command="{x:Static lslccEditor:MainWindow.FileNew}" />
+        <KeyBinding Modifiers="Control" Key="S" Command="{x:Static lslccEditor:MainWindow.FileSave}" />
+        <KeyBinding Modifiers="Control+Alt" Key="S" Command="{x:Static lslccEditor:MainWindow.FileSaveAs}" />
         <KeyBinding Modifiers="Control+Shift" Key="S"
-                    Command="{x:Static lslccEditor:TabbedMainWindow.ToolsSyntaxCheck}" />
-        <KeyBinding Modifiers="Control+Shift" Key="F" Command="{x:Static lslccEditor:TabbedMainWindow.ToolsFormat}" />
-        <KeyBinding Modifiers="Control+Alt" Key="C" Command="{x:Static lslccEditor:TabbedMainWindow.CompileOpenSim}" />
+                    Command="{x:Static lslccEditor:MainWindow.ToolsSyntaxCheck}" />
+        <KeyBinding Modifiers="Control+Shift" Key="F" Command="{x:Static lslccEditor:MainWindow.ToolsFormat}" />
+        <KeyBinding Modifiers="Control+Alt" Key="C" Command="{x:Static lslccEditor:MainWindow.CompileOpenSim}" />
         <KeyBinding Modifiers="Control+Shift" Key="C"
-                    Command="{x:Static lslccEditor:TabbedMainWindow.ToolsClearMessages}" />
-        <KeyBinding Modifiers="Control" Key="F" Command="{x:Static lslccEditor:TabbedMainWindow.SearchFind}" />
-        <KeyBinding Modifiers="Control" Key="H" Command="{x:Static lslccEditor:TabbedMainWindow.SearchReplace}" />
+                    Command="{x:Static lslccEditor:MainWindow.ToolsClearMessages}" />
+        <KeyBinding Modifiers="Control" Key="F" Command="{x:Static lslccEditor:MainWindow.SearchFind}" />
+        <KeyBinding Modifiers="Control" Key="H" Command="{x:Static lslccEditor:MainWindow.SearchReplace}" />
     </Window.InputBindings>
     <Grid>
         <Grid.Resources>
@@ -88,7 +88,7 @@
                 <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick" />
                 <MenuItem Header="Replace" InputGestureText="Ctrl+H" Click="Replace_OnClick" />
             </MenuItem>
-            <MenuItem Header="Compile" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick"/>
+            <MenuItem Header="Compile"  IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick"/>
 
         </Menu>
          <Border Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,10,0">

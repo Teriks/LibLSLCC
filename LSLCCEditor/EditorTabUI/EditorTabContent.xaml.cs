@@ -74,9 +74,6 @@ namespace LSLCCEditor.EditorTabUI
         {
             InitializeComponent();
             _ownerTab = owner;
-
-
-            //Editor.Settings = SettingsManager<>.Settings.EditorControlConfigurations[SettingsManager<>.Settings.CurrentEditorControlConfiguration].EditorControlSettings;
         }
 
         public ILSLLibraryDataProvider LibraryDataProvider

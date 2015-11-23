@@ -123,6 +123,7 @@ namespace LSLCCEditor.EditorTabUI
             ChangesPending = false;
             MemoryOnly = true;
             FilePath = null;
+    
         }
 
 

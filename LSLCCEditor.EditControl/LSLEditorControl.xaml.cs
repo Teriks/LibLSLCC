@@ -313,6 +313,8 @@ namespace LSLCCEditor.EditControl
 
             Settings.ConstantCompletionFirstCharIsCaseSensitive = true;
 
+            Editor.TextArea.Options.EnableRectangularSelection = true;
+
 
 #if DEBUG_FASTPARSER
             _debugObjectView.Show();

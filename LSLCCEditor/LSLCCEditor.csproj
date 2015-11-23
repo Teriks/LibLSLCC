@@ -134,8 +134,8 @@
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\AppSettingsNode.cs" />
     <Compile Include="Settings\FormatterSettingsNode.cs" />
-    <Compile Include="TabbedMainWindow.xaml.cs">
-      <DependentUpon>TabbedMainWindow.xaml</DependentUpon>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="FindReplaceUI\FindReplaceDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -177,7 +177,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TabbedMainWindow.xaml">
+    <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
