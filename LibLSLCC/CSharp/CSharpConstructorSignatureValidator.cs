@@ -111,7 +111,7 @@ namespace LibLSLCC.CSharp
                 return result;
             }
 
-            States state = 0;
+            States state = States.Start;
             string accum = "";
 
             var parameterTypes = new List<CSharpClassNameValidationResult>();
