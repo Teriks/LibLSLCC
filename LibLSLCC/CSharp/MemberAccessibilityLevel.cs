@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: MemberAccessibilityLevel.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System;
 
 namespace LibLSLCC.CSharp
@@ -64,17 +67,17 @@ namespace LibLSLCC.CSharp
             switch (value)
             {
                 case MemberAccessibilityLevel.Public:
-                    return "public"+ spacer;
+                    return "public" + spacer;
                 case MemberAccessibilityLevel.Default:
-                    return  "";
+                    return "";
                 case MemberAccessibilityLevel.Private:
-                    return "private"+ spacer;
+                    return "private" + spacer;
                 case MemberAccessibilityLevel.Internal:
-                    return "internal"+ spacer;
+                    return "internal" + spacer;
                 case MemberAccessibilityLevel.Protected:
-                    return "protected"+ spacer;
+                    return "protected" + spacer;
                 case MemberAccessibilityLevel.ProtectedInternal:
-                    return "protected internal"+ spacer;
+                    return "protected internal" + spacer;
                 default:
                     throw new ArgumentOutOfRangeException("value", value, null);
             }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ClassAccessibilityLevel.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System;
 
 namespace LibLSLCC.CSharp

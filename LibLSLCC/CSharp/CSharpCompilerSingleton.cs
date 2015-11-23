@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: CSharpCompilerSingleton.cs
 // 
@@ -39,12 +40,14 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System.CodeDom.Compiler;
 
 namespace LibLSLCC.CSharp
 {
-    static class CSharpCompilerSingleton
+    internal static class CSharpCompilerSingleton
     {
         public static readonly CodeDomProvider Compiler = CodeDomProvider.CreateProvider("CSharp");
     }

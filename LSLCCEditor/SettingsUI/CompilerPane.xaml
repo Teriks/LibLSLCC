@@ -177,14 +177,10 @@
 
                     <Label Grid.Row="2" Grid.Column="0" Target="{Binding ElementName=InheritedClasses}">Inherited Classes:</Label>
                     <TextBox Grid.Row="2" Grid.Column="1" Name="InheritedClasses"
-                             DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName}"
-                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassInherit, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
+                             DataContext="{Binding ElementName=_this}"
+                             Text="{Binding Path=GeneratedInheritanceList, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
-                        <TextBox.ToolTip>
-                            <ToolTip>
-                                <TextBlock Text="Comma separated list of inherited class names." />
-                            </ToolTip>
-                        </TextBox.ToolTip>
                     </TextBox>
 
 

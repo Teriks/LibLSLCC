@@ -1481,11 +1481,11 @@ private static class UTILITIES
                     Settings.GeneratedClassAccessibility.ToCSharpKeyword(true);
 
 
-                if (!string.IsNullOrWhiteSpace(Settings.GeneratedClassInherit))
+                if (Settings.GeneratedInheritanceList != null && !Settings.GeneratedInheritanceList.IsEmpty)
                 {
-                    Writer.WriteLine(GenIndent() + "{0}class {1} : {2}",
+                    Writer.WriteLine(GenIndent() + "{0}class {1} {2}",
                         classAccessibilityString,  className,
-                        Settings.GeneratedClassInherit);
+                        Settings.GeneratedInheritanceList.ListWithColonIfNeccessary);
                 }
                 else
                 {

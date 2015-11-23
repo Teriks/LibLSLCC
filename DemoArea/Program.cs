@@ -317,7 +317,6 @@ namespace DemoArea
             };
 
 
-
             //a provider with no live filtering enabled, only load functions with the subset "my-lsl"
             LSLLibraryDataProvider myProvider = new LSLLibraryDataProvider(new [] {"my-lsl"}, false);
 

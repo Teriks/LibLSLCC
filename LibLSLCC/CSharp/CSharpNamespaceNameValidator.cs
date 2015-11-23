@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpNamespaceNameValidator.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System.Text.RegularExpressions;
 
 namespace LibLSLCC.CSharp
@@ -82,7 +85,8 @@ namespace LibLSLCC.CSharp
 
                 if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(item))
                 {
-                    return new CSharpNamespaceValidatorResult(false, string.Format("'{0}' is invalid namespace content.", item));
+                    return new CSharpNamespaceValidatorResult(false,
+                        string.Format("'{0}' is invalid namespace content.", item));
                 }
             }
             return new CSharpNamespaceValidatorResult(true);

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpNamespace.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System;
 using LibLSLCC.Collections;
 using LibLSLCC.Settings;
@@ -56,7 +59,6 @@ namespace LibLSLCC.CSharp
         /// </summary>
         private CSharpNamespace()
         {
-
         }
 
         public CSharpNamespace(string name)
@@ -87,7 +89,7 @@ namespace LibLSLCC.CSharp
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException(GetType().Name+".Name cannot be null or whitespace.", "value");
+                    throw new ArgumentException(GetType().Name + ".Name cannot be null or whitespace.", "value");
                 }
 
                 var validate = CSharpNamespaceNameValidator.Validate(value);
@@ -96,7 +98,7 @@ namespace LibLSLCC.CSharp
                     throw new ArgumentException(validate.ErrorDescription, "value");
                 }
 
-                SetField(ref _name,value, "Name");
+                SetField(ref _name, value, "Name");
             }
         }
 

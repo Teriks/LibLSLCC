@@ -130,6 +130,10 @@ namespace LSLCCEditor.SettingsUI
                 ? compilerConfig.GeneratedConstructorSignature.FullSignature
                 : "";
 
+            pane.GeneratedInheritanceList = compilerConfig.GeneratedInheritanceList != null
+                ? compilerConfig.GeneratedInheritanceList.FullSignature
+                : "";
+
 
             pane.CurrentCompilerConfiguration.SubscribePropertyChangedAll(pane,
                 AnyCurrentCompilerConfigSubPropertyChanged);
@@ -283,12 +287,49 @@ namespace LSLCCEditor.SettingsUI
 
 
 
+
+
         public string GeneratedClassNamespace
         {
             get { return (string) GetValue(GeneratedClassNamespaceProperty); }
             set { SetValue(GeneratedClassNamespaceProperty, value); }
         }
 
+
+        public static readonly DependencyProperty GeneratedInheritanceListProperty = DependencyProperty.Register(
+            "GeneratedInheritanceList", typeof (string), typeof (CompilerPane), new PropertyMetadata(default(string), GeneratedInheritanceListPropertyChangedCallback));
+
+        private static void GeneratedInheritanceListPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var pane = dependencyObject as CompilerPane;
+
+            var newValue = dependencyPropertyChangedEventArgs.NewValue as string;
+
+            if (pane != null)
+            {
+                if (string.IsNullOrWhiteSpace(newValue))
+                {
+                    pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedInheritanceList = null;
+                    return;
+                }
+
+                var validation = CSharpInheritanceListValidator.Validate(newValue);
+                if (!validation.Success)
+                {
+                    throw new Exception(string.Format("Error Index {0}:  {1}", validation.ErrorIndex,
+                        validation.ErrorDescription));
+                }
+
+                pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedInheritanceList =
+                    new CSharpInheritanceList(newValue);
+            }
+        }
+
+        public string GeneratedInheritanceList
+        {
+            get { return (string) GetValue(GeneratedInheritanceListProperty); }
+            set { SetValue(GeneratedInheritanceListProperty, value); }
+        }
 
 
 

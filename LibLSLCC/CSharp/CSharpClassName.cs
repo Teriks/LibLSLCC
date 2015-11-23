@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpClassName.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System;
 using System.Xml.Serialization;
 using LibLSLCC.Collections;
@@ -49,7 +52,10 @@ namespace LibLSLCC.CSharp
 {
     public class CSharpClassName : SettingsBaseClass<CSharpClassName>, IObservableHashSetItem
     {
-        private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>() {"FullSignature"};
+        private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
+        {
+            "FullSignature"
+        };
 
         private CSharpClassNameValidationResult _validatedName;
         private string _fullSignature;
@@ -59,7 +65,6 @@ namespace LibLSLCC.CSharp
         /// </summary>
         private CSharpClassName()
         {
-            
         }
 
         public CSharpClassName(string fullSignature)
@@ -90,15 +95,24 @@ namespace LibLSLCC.CSharp
         }
 
         [XmlIgnore]
-        public string BaseName { get { return _validatedName.BaseName; } }
+        public string BaseName
+        {
+            get { return _validatedName.BaseName; }
+        }
 
 
         [XmlIgnore]
-        public string QualifiedName { get { return _validatedName.QualifiedName; } }
+        public string QualifiedName
+        {
+            get { return _validatedName.QualifiedName; }
+        }
 
 
         [XmlIgnore]
-        public CSharpClassNameValidationResult ValidatedName { get { return _validatedName; } }
+        public CSharpClassNameValidationResult ValidatedName
+        {
+            get { return _validatedName; }
+        }
 
         public string FullSignature
         {
@@ -148,7 +162,8 @@ namespace LibLSLCC.CSharp
             var ns = obj as CSharpClassName;
             if (ns == null) return false;
 
-            if (ns.FullSignature != null && FullSignature != null) return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
+            if (ns.FullSignature != null && FullSignature != null)
+                return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
 
             return ns.FullSignature == FullSignature;
         }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpConstructorSignatureValidator.cs
 // 
@@ -39,6 +40,7 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
 using System;
@@ -87,7 +89,8 @@ namespace LibLSLCC.CSharp
         }
 
 
-        public static CSharpConstructorSignatureValidationResult Validate(string input)
+        public static CSharpConstructorSignatureValidationResult Validate(string input,
+            CSharpParsedTypeValidateTypeCallback validateTypeCallback = null)
         {
             if (input == null)
             {
@@ -99,9 +102,7 @@ namespace LibLSLCC.CSharp
             {
                 Success = true,
                 ParameterForwarding = CSharpConstructorParameterForwarding.None
-
             };
-
 
 
             if (string.IsNullOrWhiteSpace(input))
@@ -221,7 +222,7 @@ namespace LibLSLCC.CSharp
                     switch (state)
                     {
                         case States.WaitingForParamType:
-                            if (parameterTypes.Count > 0 || (parameterTypes.Count==0 && c== ','))
+                            if (parameterTypes.Count > 0 || (parameterTypes.Count == 0 && c == ','))
                             {
                                 result.Success = false;
                                 result.ErrorDescription = "Missing parameter declaration.";
@@ -269,7 +270,8 @@ namespace LibLSLCC.CSharp
                             else
                             {
                                 result.Success = false;
-                                result.ErrorDescription = string.Format("Parameter name '{0}' used more than once.", pname);
+                                result.ErrorDescription = string.Format("Parameter name '{0}' used more than once.",
+                                    pname);
                                 result.ErrorIndex = index - accum.Length;
                                 return result;
                             }
@@ -384,11 +386,13 @@ namespace LibLSLCC.CSharp
                             continue;
                         case States.AccumulatingParamType:
                             var ptype = accum.TrimEnd();
-                            var validateParameter = CSharpClassNameValidator.ValidateInitialization(accum.TrimEnd(), true);
+                            var validateParameter = CSharpClassNameValidator.ValidateInitialization(accum.TrimEnd(),
+                                true, validateTypeCallback);
                             if (!validateParameter.Success)
                             {
                                 result.Success = false;
-                                result.ErrorDescription = string.Format("Invalid parameter type '{0}': {1}", ptype, validateParameter.ErrorDescription);
+                                result.ErrorDescription = string.Format("Invalid parameter type '{0}': {1}", ptype,
+                                    validateParameter.ErrorDescription);
                                 result.ErrorIndex = index - accum.Length;
                                 return result;
                             }

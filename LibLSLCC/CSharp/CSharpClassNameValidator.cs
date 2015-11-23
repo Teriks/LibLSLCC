@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpClassNameValidator.cs
 // 
@@ -39,11 +40,14 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace LibLSLCC.CSharp
 {
@@ -141,6 +145,15 @@ namespace LibLSLCC.CSharp
         /// The type validation result for this parsed class name.
         /// </value>
         public CSharpParsedTypeValidationResult TypeValidationResult { get; internal set; }
+
+
+        /// <summary>
+        /// Gets the full signature of the type/class, with spaces that exist in the input stripped out.
+        /// </summary>
+        /// <value>
+        /// The full signature of the parsed type/class.
+        /// </value>
+        public string FullSignature { get; internal set; }
     }
 
 
@@ -186,6 +199,16 @@ namespace LibLSLCC.CSharp
                 return t;
             }
             return null;
+        }
+
+
+        /// <summary>
+        /// Determines if a string is a built in type alias reference such as int.
+        /// </summary>
+        /// <returns><c>true</c> if the given string contains a built in type alias name; otherwise <c>false</c>.</returns>
+        public static bool IsTypeAliasKeyword(string keywordTypeName)
+        {
+            return BuiltInTypeMap.ContainsKey(keywordTypeName);
         }
 
 
@@ -259,7 +282,6 @@ namespace LibLSLCC.CSharp
         private static CSharpClassNameValidationResult _Validate(string input, ClassSigType signatureType,
             bool allowBuiltinAliases, CSharpParsedTypeValidateTypeCallback validateTypeCallback, int index)
         {
-
             if (input == null)
             {
                 throw new ArgumentNullException("input", "Class name/signature string cannot be null!");
@@ -273,7 +295,7 @@ namespace LibLSLCC.CSharp
                     Success = false,
                     ErrorDescription =
                         "Class name/signature cannot be whitespace.",
-                     ErrorIndex = 0,
+                    ErrorIndex = 0,
                 };
             }
 
@@ -489,15 +511,44 @@ namespace LibLSLCC.CSharp
             }
 
 
+            var baseNameString = baseName.Builder.ToString();
+
+
+            if (isGeneric && IsTypeAliasKeyword(fullyQualifiedName))
+            {
+                return new CSharpClassNameValidationResult
+                {
+                    Success = false,
+                    ErrorDescription =
+                        string.Format("Built in type alias '{0}' is not a generic type.",
+                            baseName.Builder),
+                    ErrorIndex = baseName.StartIndex
+                };
+            }
+
+
             //success
             var classDescription = new CSharpClassNameValidationResult()
             {
                 QualifiedName = fullyQualifiedName,
-                BaseName = baseName.Builder.ToString(),
+                BaseName = baseNameString,
                 GenericArguments = genericArgs.ToArray(),
                 IsGeneric = isGeneric,
                 Success = true
             };
+
+
+            if (isGeneric)
+            {
+                classDescription.FullSignature = fullyQualifiedName + "<" +
+                                                 string.Join(", ",
+                                                     classDescription.GenericArguments.Select(x => x.FullSignature)) +
+                                                 ">";
+            }
+            else
+            {
+                classDescription.FullSignature = fullyQualifiedName;
+            }
 
 
             if (validateTypeCallback == null || signatureType != ClassSigType.Initialization) return classDescription;
@@ -506,6 +557,7 @@ namespace LibLSLCC.CSharp
 
             if (typeCheckResult.IsValid) return classDescription;
 
+            classDescription.FullSignature = null;
             classDescription.ErrorIndex = qualifications.First().StartIndex;
             classDescription.ErrorDescription = typeCheckResult.ErrorMessage;
             classDescription.Success = false;

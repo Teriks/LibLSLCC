@@ -58,7 +58,7 @@ namespace LibLSLCC.Compilers.OpenSim
         private bool _generateClass;
         private CSharpNamespace _generatedClassNamespace;
         private CSharpClassName _generatedClassName;
-        private string _generatedClassInherit;
+        private CSharpInheritanceList _generatedInheritanceList;
         private CSharpConstructorSignature _generatedConstructorSignature;
         private MemberAccessibilityLevel _generatedConstructorAccessibility;
         private ObservableSettingsHashSet<CSharpNamespace> _generatedNamespaceImports = new ObservableSettingsHashSet<CSharpNamespace>();
@@ -138,10 +138,10 @@ namespace LibLSLCC.Compilers.OpenSim
         /// The name of the class the generated class should inherit from if GenerateClass is set to true, or null/empty if you don't want the
         /// generated class to derive from anything.
         /// </summary>
-        public string GeneratedClassInherit
+        public CSharpInheritanceList GeneratedInheritanceList
         {
-            get { return _generatedClassInherit; }
-            set { SetField(ref _generatedClassInherit, value, "GeneratedClassInherit"); }
+            get { return _generatedInheritanceList; }
+            set { SetField(ref _generatedInheritanceList, value, "GeneratedInheritanceList"); }
         }
 
 
@@ -205,7 +205,7 @@ namespace LibLSLCC.Compilers.OpenSim
                 GenerateClass = true,
                 GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "XEngineScript",
-                GeneratedClassInherit = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
+                GeneratedInheritanceList = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
                 GeneratedConstructorSignature = "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)"
             };
 
@@ -229,7 +229,7 @@ namespace LibLSLCC.Compilers.OpenSim
                 GenerateClass = true,
                 GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "LSLScript",
-                GeneratedClassInherit = "LSLScriptBase",
+                GeneratedInheritanceList = "LSLScriptBase",
                 GeneratedConstructorSignature = "() : base()"
             };
 

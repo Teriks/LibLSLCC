@@ -62,6 +62,8 @@
     <Compile Include="Compilers\OpenSim\LSLOpenSimCompilerSettings.cs" />
     <Compile Include="CSharp\CSharpConstructorSignature.cs" />
     <Compile Include="CSharp\CSharpConstructorSignatureValidator.cs" />
+    <Compile Include="CSharp\CSharpInheritanceList.cs" />
+    <Compile Include="CSharp\CSharpInheritanceListValidator.cs" />
     <Compile Include="CSharp\CSharpNamespace.cs" />
     <Compile Include="CSharp\MemberAccessibilityLevel.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
