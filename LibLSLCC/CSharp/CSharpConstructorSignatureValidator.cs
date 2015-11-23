@@ -322,9 +322,15 @@ namespace LibLSLCC.CSharp
                 {
                     switch (state)
                     {
+                        case States.EndOfBasicSignature:
+                        case States.EndOfForwardingSignature:
+                            result.Success = false;
+                            result.ErrorDescription = string.Format("Unexpected character '{0}' after signature.", c);
+                            result.ErrorIndex = index;
+                            return result;
                         case States.Start:
                             result.Success = false;
-                            result.ErrorDescription = string.Format("Unexpected '{0}' character, was expecting '('.", c);
+                            result.ErrorDescription = string.Format("Unexpected character '{0}', was expecting '('.", c);
                             result.ErrorIndex = index;
                             return result;
                         case States.WaitingForParamType:
