@@ -273,7 +273,7 @@ namespace LibLSLCC.CSharp
             {
                 get
                 {
-                    return StartIndex + Builder.Length;
+                    return StartIndex + (Builder.Length - 1);
                 }
             }
         }
