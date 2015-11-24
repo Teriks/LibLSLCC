@@ -8,7 +8,6 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers.OpenSim;
-using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
 
