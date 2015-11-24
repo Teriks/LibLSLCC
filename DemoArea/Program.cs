@@ -15,6 +15,7 @@ using LibLSLCC.LibraryData.Reflection;
 namespace DemoArea
 {
 
+
     class MyValueStringConverter : ILSLValueStringConverter
     {
 
@@ -315,6 +316,7 @@ namespace DemoArea
 
                 
             };
+
 
 
             //a provider with no live filtering enabled, only load functions with the subset "my-lsl"
