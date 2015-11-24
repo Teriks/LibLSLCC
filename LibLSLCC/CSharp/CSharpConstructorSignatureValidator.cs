@@ -393,7 +393,7 @@ namespace LibLSLCC.CSharp
                                 result.Success = false;
                                 result.ErrorDescription = string.Format("Invalid parameter type '{0}': {1}", ptype,
                                     validateParameter.ErrorDescription);
-                                result.ErrorIndex = (index - accum.Length) + result.ErrorIndex + 1;
+                                result.ErrorIndex = (index - accum.Length) + validateParameter.ErrorIndex + 1;
                                 return result;
                             }
 
