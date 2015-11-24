@@ -182,17 +182,36 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             */
 
 
-            Assembly a = Assembly.Load("Mono.Data.Sqlite");
-            Type myType = a.GetType("SqliteConnection");
+            var assembly = Assembly.Load("Mono.Data.Sqlite");
+
+            if (assembly == null)
+            {
+                throw new Exception("Could not load Mono.Data.Sqlite!");
+            }
+
+            var type = assembly.GetType("Mono.Data.Sqlite.SqliteConnection");
+
+            if (type == null)
+            {
+                throw new Exception("Could not find type Mono.Data.Sqlite.SqliteConnection!");
+            }
 
             if (createFile)
             {
-                MethodInfo createFileMethod = myType.GetMethod("CreateFile");
+                var createFileMethod = type.GetMethod("CreateFile");
+
+                if (createFileMethod == null)
+                {
+                    throw new Exception("Could not find method Mono.Data.Sqlite.SqliteConnection.CreateFile(string)!");
+                }
+
                 //static method
                 createFileMethod.Invoke(null, new object[] {file});
             }
 
-            ConstructorInfo constructor = myType.GetConstructor(new[] {typeof(string)});
+            var constructor = type.GetConstructor(new[] {typeof(string)});
+
+
             if (constructor != null)
             {
                 var con=
@@ -205,7 +224,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 return con;
             }
 
-            throw new Exception("Could not create database connection using Mono.Data.Sqlite!");
+            throw new Exception("Could not find constructor Mono.Data.Sqlite.SqliteConnection(string)!");
 
         }
 
