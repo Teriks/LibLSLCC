@@ -43,14 +43,12 @@
 
 using System;
 using System.Data;
+using System.Data.SQLite;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
-#if __MonoCS__
-using Mono.Data.Sqlite;
-#else
-using System.Data.SQLite;
-#endif
+
 
 namespace LibraryDataScrapingTools.LibraryDataScrapers
 {
@@ -84,6 +82,10 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
         {
             CacheDirectory = cacheDirectory;
             DiskCacheEnabled = true;
+        }
+        public static bool IsRunningOnMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
         }
 
 
@@ -149,26 +151,62 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         private IDbConnection CreateConnection(string file, bool createFile)
         {
+            if (IsRunningOnMono())
+            {
+                return  CreateConnectionMono(file, createFile);
+            }
+            return  CreateConnectionNet(file, createFile);
+        }
 
-            IDbConnection con;
-#if __MonoCS__
 
-			if(createFile){
-				SqliteConnection.CreateFile(file);
-			}
-
-			con = new SqliteConnection(string.Format("Data Source={0};Version=3;", file));
-
-#else
+        private IDbConnection CreateConnectionNet(string file, bool createFile)
+        {
             if (createFile)
             {
                 SQLiteConnection.CreateFile(file);
             }
 
-            con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", file));
+            return new SQLiteConnection(string.Format("Data Source={0};Version=3;", file));
+        }
 
-#endif
-            return con;
+
+        private IDbConnection CreateConnectionMono(string file, bool createFile)
+        {
+            /*
+            	if(createFile){
+				    SqliteConnection.CreateFile(file);
+			    }
+
+			    con = new SqliteConnection(string.Format("Data Source={0};Version=3;", file));
+
+            */
+
+
+            Assembly a = Assembly.Load("Mono.Data.Sqlite");
+            Type myType = a.GetType("SqliteConnection");
+
+            if (createFile)
+            {
+                MethodInfo createFileMethod = myType.GetMethod("CreateFile");
+                //static method
+                createFileMethod.Invoke(null, new object[] {file});
+            }
+
+            ConstructorInfo constructor = myType.GetConstructor(new[] {typeof(string)});
+            if (constructor != null)
+            {
+                var con=
+                    constructor.Invoke(new object[] {string.Format("Data Source={0};Version=3;", file)}) as
+                        IDbConnection;
+                if (con == null)
+                {
+                    throw new Exception("Could not create database connection using Mono.Data.Sqlite!");
+                }
+                return con;
+            }
+
+            throw new Exception("Could not create database connection using Mono.Data.Sqlite!");
+
         }
 
         private void WriteToCache<T>(string url, T writeData, Action<string, T> writeAction)
