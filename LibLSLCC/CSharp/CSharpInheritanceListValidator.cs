@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using LibLSLCC.Parser;
 
 namespace LibLSLCC.CSharp
 {
@@ -120,7 +121,7 @@ namespace LibLSLCC.CSharp
             {
                 init = null;
                 err = "Missing type constraint specifier.";
-                return true;
+                return false;
             }
 
             init = new CSharpTypeConstraintValidationResult();
@@ -174,7 +175,7 @@ namespace LibLSLCC.CSharp
             {
                 init = null;
                 err = "Missing inherited class specifier.";
-                return true;
+                return false;
             }
 
 
@@ -182,7 +183,6 @@ namespace LibLSLCC.CSharp
             if (!init.Success)
             {
                 err = init.ErrorDescription;
-                init = null;
                 return false;
             }
 
@@ -259,7 +259,7 @@ namespace LibLSLCC.CSharp
                         if (!IsValidInheritedType(word, out err, out init))
                         {
                             result.ErrorDescription = err;
-                            result.ErrorIndex = index;
+                            result.ErrorIndex = (index - (accum.Length - 1)) + (init == null ? 0 : init.ErrorIndex);
                             result.Success = false;
                             return result;
                         }
@@ -268,7 +268,7 @@ namespace LibLSLCC.CSharp
                         {
                             result.ErrorDescription = string.Format("Type '{0}' cannot be inherited more than once.",
                                 init.FullSignature);
-                            result.ErrorIndex = index;
+                            result.ErrorIndex = (index - (accum.Length - 1)) + (init.ErrorIndex);
                             result.Success = false;
                             return result;
                         }
@@ -276,7 +276,8 @@ namespace LibLSLCC.CSharp
                         state = States.EndOfListWithoutWhereClauses;
                         continue;
                     }
-                    if (state == States.AccumulatingTypeConstraint || state == States.AfterConstraintColon ||
+                    if (state == States.AccumulatingTypeConstraint ||
+                        state == States.AfterConstraintColon ||
                         (state == States.AccumulatingGenericPart &&
                          (stateBeforeGenericPart == States.AccumulatingTypeConstraint)))
                     {
@@ -287,28 +288,23 @@ namespace LibLSLCC.CSharp
                         if (!IsValidTypeConstraint(word, out err, out init))
                         {
                             result.ErrorDescription = err;
-                            result.ErrorIndex = index;
+                            result.ErrorIndex = (index - (accum.Length - 1));
                             result.Success = false;
                             return result;
                         }
 
-                        if (typeConstraints.Count == 0)
+
+                        if (!typeConstraints.Last().Add(init))
                         {
-                            typeConstraints.Add(new HashSet<CSharpTypeConstraintValidationResult> {init});
+                            result.ErrorDescription =
+                                string.Format(
+                                    "Type constraint '{0}' cannot be used more than once for generic parameter '{1}'.",
+                                    init.ConstraintString, constrainedTypeParameters.Last());
+                            result.ErrorIndex = (index - (accum.Length - 1));
+                            result.Success = false;
+                            return result;
                         }
-                        else
-                        {
-                            if (!typeConstraints.Last().Add(init))
-                            {
-                                result.ErrorDescription =
-                                    string.Format(
-                                        "Type constraint '{0}' cannot be used more than once for generic parameter '{1}'.",
-                                        init.ConstraintString, constrainedTypeParameters.Last());
-                                result.ErrorIndex = index;
-                                result.Success = false;
-                                return result;
-                            }
-                        }
+
 
                         state = States.EndOfListWithWhereClauses;
 
@@ -327,7 +323,13 @@ namespace LibLSLCC.CSharp
                         continue;
                     }
 
-                    result.ErrorDescription = string.Format("Unexpected character {0}.", c);
+                    if (state == States.AccumulatingGenericPart)
+                    {
+                        unmatchedGenericBraces++;
+                        continue;
+                    }
+
+                    result.ErrorDescription = string.Format("Unexpected character '{0}'.", c);
                     result.ErrorIndex = index;
                     result.Success = false;
                     return result;
@@ -346,7 +348,7 @@ namespace LibLSLCC.CSharp
                         continue;
                     }
 
-                    result.ErrorDescription = string.Format("Unexpected character {0}.", c);
+                    result.ErrorDescription = string.Format("Unexpected character '{0}'.", c);
                     result.ErrorIndex = index;
                     result.Success = false;
                     return result;
@@ -355,254 +357,272 @@ namespace LibLSLCC.CSharp
 
                 if (c == ',')
                 {
-                    if (state == States.AfterWhereKeyword)
+                    if ((state == States.AfterWhereKeyword && inheritedTypes.Count > 0) ||
+                        state == States.AccumulatingConstraintParam)
                     {
-                        result.ErrorDescription = string.Format("Unexpected character {0}.", c);
+                        result.ErrorDescription = string.Format("Unexpected character '{0}'.", c);
                         result.ErrorIndex = index;
                         result.Success = false;
                         return result;
                     }
-                }
-
-                if (!char.IsWhiteSpace(c))
-                {
-                    if (state == States.AfterWhereKeyword)
-                    {
-                        accum = "" + c;
-                        state = States.AccumulatingConstraintParam;
-                        continue;
-                    }
-                    if (state == States.WaitingForFirstWord)
-                    {
-                        accum = "" + c;
-                        state = States.AccumulatingFirstWord;
-
-                        if (c == 'w')
-                        {
-                            if (index + 4 > validate.Length) continue;
-                            var lookAheadAsertion = validate.Substring(index, 5);
-                            if (lookAheadAsertion == "where")
-                            {
-                                accum = "";
-                                index += 4;
-                                state = States.AfterWhereKeyword;
-                            }
-                        }
-
-                        continue;
-                    }
-                    if (state == States.AccumulatingFirstWord)
-                    {
-                        if (c == ',')
-                        {
-                            var type = accum.TrimEnd(',').Trim();
-                            CSharpClassNameValidationResult init;
-                            string err;
-                            if (!IsValidInheritedType(type, out err, out init))
-                            {
-                                result.ErrorDescription = err;
-                                result.ErrorIndex = index;
-                                result.Success = false;
-                                return result;
-                            }
-
-                            if (!inheritedTypes.Add(init))
-                            {
-                                result.ErrorDescription = string.Format(
-                                    "Type '{0}' cannot be inherited more than once.", init.FullSignature);
-                                result.ErrorIndex = index;
-                                result.Success = false;
-                                return result;
-                            }
-
-                            accum = "";
-                            state = States.AfterFirstInheritedType;
-                        }
-                        if (c == 'w')
-                        {
-                            var lookAheadAsertion = validate.Substring(index, 5);
-                            if (lookAheadAsertion == "where")
-                            {
-                                var word = accum.TrimEnd('w').Trim();
-
-                                CSharpClassNameValidationResult init;
-                                string err;
-                                if (!IsValidInheritedType(word, out err, out init))
-                                {
-                                    result.ErrorDescription = err;
-                                    result.ErrorIndex = index;
-                                    result.Success = false;
-                                    return result;
-                                }
-
-                                if (!inheritedTypes.Add(init))
-                                {
-                                    result.ErrorDescription =
-                                        string.Format("Type '{0}' cannot be inherited more than once.",
-                                            init.FullSignature);
-                                    result.ErrorIndex = index;
-                                    result.Success = false;
-                                    return result;
-                                }
-
-                                state = States.AfterWhereKeyword;
-                                accum = "";
-                                index += 4;
-                            }
-                        }
-                        continue;
-                    }
-                    if (state == States.AfterFirstInheritedType)
-                    {
-                        accum = "" + c;
-                        state = States.AccumulatingInheritedType;
-                        continue;
-                    }
-                    if (state == States.AccumulatingInheritedType)
-                    {
-                        if (c == ',')
-                        {
-                            var word = accum.TrimEnd(',').Trim();
-
-                            CSharpClassNameValidationResult init;
-                            string err;
-                            if (!IsValidInheritedType(word, out err, out init))
-                            {
-                                result.ErrorDescription = err;
-                                result.ErrorIndex = index;
-                                result.Success = false;
-                                return result;
-                            }
-
-                            if (!inheritedTypes.Add(init))
-                            {
-                                result.ErrorDescription = string.Format(
-                                    "Type '{0}' cannot be inherited more than once.", init.FullSignature);
-                                result.ErrorIndex = index;
-                                result.Success = false;
-                                return result;
-                            }
-                        }
-                        if (c == 'w')
-                        {
-                            if (index + 4 > validate.Length) continue;
-                            var lookAheadAsertion = validate.Substring(index, 5);
-                            if (lookAheadAsertion == "where")
-                            {
-                                var word = accum.TrimEnd('w').Trim();
-
-                                CSharpClassNameValidationResult init;
-                                string err;
-                                if (!IsValidInheritedType(word, out err, out init))
-                                {
-                                    result.ErrorDescription = err;
-                                    result.ErrorIndex = index;
-                                    result.Success = false;
-                                    return result;
-                                }
-
-                                if (!inheritedTypes.Add(init))
-                                {
-                                    result.ErrorDescription =
-                                        string.Format("Type '{0}' cannot be inherited more than once.",
-                                            init.FullSignature);
-                                    result.ErrorIndex = index;
-                                    result.Success = false;
-                                    return result;
-                                }
-
-                                state = States.AfterWhereKeyword;
-                                accum = "";
-                                index += 4;
-                            }
-                        }
-                        continue;
-                    }
-                    if (state == States.AccumulatingConstraintParam)
-                    {
-                        if (c == ':')
-                        {
-                            var constrainedType = accum.TrimEnd(':').Trim();
-
-                            if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(constrainedType))
-                            {
-                                result.ErrorDescription = string.Format("Invalid generic type constraint name {0}.",
-                                    constrainedType);
-                                result.ErrorIndex = index;
-                                result.Success = false;
-                                return result;
-                            }
-
-                            if (!constrainedTypeParameters.Add(constrainedType))
-                            {
-                                result.ErrorDescription =
-                                    string.Format(
-                                        "Generic parameter '{0}' cannot have more than one type constraint list.",
-                                        constrainedType);
-                                result.ErrorIndex = index;
-                                result.Success = false;
-                                return result;
-                            }
-
-                            accum = "";
-                            state = States.AfterConstraintColon;
-                            continue;
-                        }
-                    }
-                    if (state == States.AfterConstraintColon)
-                    {
-                        accum = "" + c;
-                        state = States.AccumulatingTypeConstraint;
-                        continue;
-                    }
                     if (state == States.AccumulatingTypeConstraint)
                     {
-                        if (c == ',')
-                        {
-                            var word = accum.TrimEnd(',').Trim();
+                        var word = accum.TrimEnd(',').Trim();
 
+                        string err;
+                        CSharpTypeConstraintValidationResult init;
+                        if (!IsValidTypeConstraint(word, out err, out init))
+                        {
+                            result.ErrorDescription = err;
+                            result.ErrorIndex = (index - (accum.Length - 1));
+                            result.Success = false;
+                            return result;
+                        }
+
+                        if (!typeConstraints.Last().Add(init))
+                        {
+                            result.ErrorDescription =
+                                string.Format(
+                                    "Type constraint '{0}' cannot be used more than once for generic parameter '{1}'.",
+                                    init.ConstraintString, constrainedTypeParameters.Last());
+                            result.ErrorIndex = (index - (accum.Length - 1));
+                            result.Success = false;
+                            return result;
+                        }
+
+                        accum = "";
+                        continue;
+                    }
+                    if (state == States.AccumulatingInheritedType ||
+                        state == States.AccumulatingFirstWord ||
+                        (state == States.AfterWhereKeyword && inheritedTypes.Count == 0))
+                    {
+                        var type = accum.TrimEnd(',').Trim();
+                        CSharpClassNameValidationResult init;
+                        string err;
+                        if (!IsValidInheritedType(type, out err, out init))
+                        {
+                            result.ErrorDescription = err;
+                            result.ErrorIndex = (index - (accum.Length - 1));
+                            result.Success = false;
+                            return result;
+                        }
+
+                        if (!inheritedTypes.Add(init))
+                        {
+                            result.ErrorDescription = string.Format(
+                                "Type '{0}' cannot be inherited more than once.", init.FullSignature);
+                            result.ErrorIndex = (index - (accum.Length - 1));
+                            result.Success = false;
+                            return result;
+                        }
+
+                        accum = "";
+                        state = States.AfterFirstInheritedType;
+                        continue;
+                    }
+                }
+
+                if (c == 'w')
+                {
+                    var ahead = index + 5;
+
+                    if (ahead > validate.Length) goto pastWhereCheck;
+
+                    var lookAheadAsertion = validate.Substring(index, 5) == "where";
+                    var lookBehindsertion = index == 0 || char.IsWhiteSpace(validate[index - 1]);
+
+                    if (lookAheadAsertion && lookBehindsertion)
+                    {
+                        if (ahead < validate.Length && !char.IsWhiteSpace(validate[ahead]) && validate[ahead] != ',')
+                            goto pastWhereCheck;
+
+                        if (state == States.WaitingForFirstWord)
+                        {
+                            accum = "";
+                            index += 4;
+                            state = States.AfterWhereKeyword;
+
+                            //there is an ambiguous case here because you can inherit a class named where, before a where clause occurs
+
+                            if (index + 1 == validate.Length)
+                            {
+                                inheritedTypes.Add(CSharpClassNameValidator.ValidateInitialization("where", false));
+                                state = States.EndOfListWithoutWhereClauses;
+                                continue;
+                            }
+                            bool haveWhitespace = false;
+
+                            for (int i = index + 1; i < validate.Length; i++)
+                            {
+                                var cr = validate[i];
+                                if (char.IsWhiteSpace(cr))
+                                {
+                                    haveWhitespace = true;
+                                    if (i == validate.Length - 1)
+                                    {
+                                        inheritedTypes.Add(CSharpClassNameValidator.ValidateInitialization("where",
+                                            false));
+                                        state = States.EndOfListWithoutWhereClauses;
+                                        break;
+                                    }
+                                    continue;
+                                }
+
+                                if (cr == 'w' && haveWhitespace)
+                                {
+                                    ahead = i + 5;
+                                    if (ahead > validate.Length) continue;
+                                    lookAheadAsertion = validate.Substring(i, 5) == "where";
+                                    if (lookAheadAsertion)
+                                    {
+                                        if (ahead < validate.Length && !char.IsWhiteSpace(validate[ahead]) &&
+                                            validate[ahead] != ',') continue;
+
+                                        inheritedTypes.Add(CSharpClassNameValidator.ValidateInitialization("where",
+                                            false));
+                                        index = i + 4;
+                                        state = States.AfterWhereKeyword;
+                                        break;
+                                    }
+                                }
+
+                                if (cr == ',')
+                                {
+                                    inheritedTypes.Add(CSharpClassNameValidator.ValidateInitialization("where", false));
+                                    index = i;
+                                    state = States.AccumulatingInheritedType;
+                                }
+                                break;
+                            }
+                            continue;
+                        }
+                        if (state == States.AccumulatingTypeConstraint)
+                        {
+                            var word = accum.TrimEnd('w').Trim();
 
                             string err;
                             CSharpTypeConstraintValidationResult init;
                             if (!IsValidTypeConstraint(word, out err, out init))
                             {
                                 result.ErrorDescription = err;
-                                result.ErrorIndex = index;
+                                result.ErrorIndex = (index - (accum.Length - 1));
                                 result.Success = false;
                                 return result;
                             }
 
-                            if (typeConstraints.Count == 0)
+                            if (!typeConstraints.Last().Add(init))
                             {
-                                typeConstraints.Add(new HashSet<CSharpTypeConstraintValidationResult>() {init});
+                                result.ErrorDescription =
+                                    string.Format(
+                                        "Type constraint '{0}' cannot be used more than once for generic parameter '{1}'.",
+                                        init.ConstraintString, constrainedTypeParameters.Last());
+                                result.ErrorIndex = (index - (accum.Length - 1));
+                                result.Success = false;
+                                return result;
                             }
-                            else
-                            {
-                                if (!typeConstraints.Last().Add(init))
-                                {
-                                    result.ErrorDescription =
-                                        string.Format(
-                                            "Type constraint '{0}' cannot be used more than once for generic parameter '{1}'.",
-                                            init.ConstraintString, constrainedTypeParameters.Last());
-                                    result.ErrorIndex = index;
-                                    result.Success = false;
-                                    return result;
-                                }
-                            }
+
                             accum = "";
+                            index += 4;
+                            state = States.AfterWhereKeyword;
+                            continue;
                         }
-                        if (c == 'w')
+                        if (state == States.AccumulatingInheritedType || state == States.AccumulatingFirstWord)
                         {
-                            if (index + 4 > validate.Length) continue;
-                            var lookAheadAsertion = validate.Substring(index, 5);
-                            if (lookAheadAsertion == "where")
+                            var word = accum.TrimEnd('w').Trim();
+
+                            CSharpClassNameValidationResult init;
+                            string err;
+                            if (!IsValidInheritedType(word, out err, out init))
                             {
-                                state = States.AfterWhereKeyword;
-                                index += 4;
-                                accum = "";
+                                result.ErrorDescription = err;
+                                result.ErrorIndex = (index - (accum.Length - 1)) + (init == null ? 0 : init.ErrorIndex);
+                                result.Success = false;
+                                return result;
                             }
+
+                            if (!inheritedTypes.Add(init))
+                            {
+                                result.ErrorDescription =
+                                    string.Format("Type '{0}' cannot be inherited more than once.",
+                                        init.FullSignature);
+                                result.ErrorIndex = (index - (accum.Length - 1)) + (init.ErrorIndex);
+                                result.Success = false;
+                                return result;
+                            }
+
+                            state = States.AfterWhereKeyword;
+                            accum = "";
+                            index += 4;
+                            continue;
                         }
+                    }
+                }
+
+                pastWhereCheck:
+
+
+                if (c == ':')
+                {
+                    if (state == States.AfterWhereKeyword)
+                    {
+                        result.ErrorDescription = string.Format("Unexpected character '{0}'.", c);
+                        result.ErrorIndex = index;
+                        result.Success = false;
+                        return result;
+                    }
+                    if (state == States.AccumulatingConstraintParam)
+                    {
+                        var constrainedType = accum.TrimEnd(':').Trim();
+
+                        if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(constrainedType))
+                        {
+                            result.ErrorDescription = string.Format("Invalid generic type constraint name '{0}'.",
+                                constrainedType);
+                            result.ErrorIndex = (index - (accum.Length - 1));
+                            result.Success = false;
+                            return result;
+                        }
+
+                        if (!constrainedTypeParameters.Add(constrainedType))
+                        {
+                            result.ErrorDescription =
+                                string.Format(
+                                    "Generic parameter '{0}' cannot have more than one type constraint list.",
+                                    constrainedType);
+                            result.ErrorIndex = (index - (accum.Length - 1));
+                            result.Success = false;
+                            return result;
+                        }
+
+                        typeConstraints.Add(new HashSet<CSharpTypeConstraintValidationResult>());
+
+                        accum = "";
+                        state = States.AfterConstraintColon;
                         continue;
+                    }
+                }
+
+                if (!char.IsWhiteSpace(c))
+                {
+                    switch (state)
+                    {
+                        case States.AfterWhereKeyword:
+                            accum = "" + c;
+                            state = States.AccumulatingConstraintParam;
+                            continue;
+                        case States.WaitingForFirstWord:
+                            accum = "" + c;
+                            state = States.AccumulatingFirstWord;
+                            continue;
+                        case States.AfterFirstInheritedType:
+                            accum = "" + c;
+                            state = States.AccumulatingInheritedType;
+                            continue;
+                        case States.AfterConstraintColon:
+                            accum = "" + c;
+                            state = States.AccumulatingTypeConstraint;
+                            continue;
                     }
                 }
 
@@ -631,7 +651,7 @@ namespace LibLSLCC.CSharp
             {
                 result.Success = false;
                 result.ErrorDescription = "Class inheritance list is incomplete.";
-                result.ErrorIndex = validate.Length - 1;
+                result.ErrorIndex = validate.Length;
                 return result;
             }
 

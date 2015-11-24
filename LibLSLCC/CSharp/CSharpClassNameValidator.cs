@@ -260,21 +260,20 @@ namespace LibLSLCC.CSharp
 
         private class Qualification
         {
-            public Qualification(StringBuilder builder, int stopIndex)
+            public Qualification(StringBuilder builder, int startIndex)
             {
                 Builder = builder;
-                StopIndex = stopIndex;
+                StartIndex = startIndex;
             }
 
             public StringBuilder Builder { get; private set; }
-            public int StopIndex { get; private set; }
+            public int StartIndex { get; private set; }
 
-            public int StartIndex
+            public int StopIndex
             {
                 get
                 {
-                    if (StopIndex == 0) return 0;
-                    return StopIndex - Builder.Length;
+                    return StartIndex + Builder.Length;
                 }
             }
         }
@@ -295,7 +294,7 @@ namespace LibLSLCC.CSharp
                     Success = false,
                     ErrorDescription =
                         "Class name/signature cannot be whitespace.",
-                    ErrorIndex = 0,
+                    ErrorIndex = index,
                 };
             }
 
@@ -358,7 +357,7 @@ namespace LibLSLCC.CSharp
                             };
                         }
 
-                        qualifications.Add(new Qualification(new StringBuilder(), index));
+                        qualifications.Add(new Qualification(new StringBuilder(), index+1));
                     }
                     else
                     {
@@ -392,7 +391,7 @@ namespace LibLSLCC.CSharp
                         //we have accumulated a type argument suitable for recursive decent
                         //validate it recursively
                         var validateGenericArgument = _Validate(genericPart.Trim(), signatureType, allowBuiltinAliases,
-                            validateTypeCallback, index);
+                            validateTypeCallback, index- genericPart.Length);
 
                         //return immediately on failure
                         if (!validateGenericArgument.Success) return validateGenericArgument;
