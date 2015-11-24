@@ -53,6 +53,10 @@ using LibLSLCC.Settings;
 
 namespace LibLSLCC.CSharp
 {
+    /// <summary>
+    /// Abstracts a CSharp constructor signature in the form: () | (Type param, ..) | (...) : base(...) | (...) : this(...)
+    /// If an invalid CSharp constructor signature string is used to construct this object, an <see cref="ArgumentException"/> will be thrown.
+    /// </summary>
     public class CSharpConstructorSignature : SettingsBaseClass<CSharpConstructorSignature>, IObservableHashSetItem
     {
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
@@ -63,11 +67,26 @@ namespace LibLSLCC.CSharp
         private CSharpConstructorSignatureValidationResult _validatedSignature;
         private string _fullSignature;
 
-
+        /// <summary>
+        /// Parameterless constructor used by <see cref="SettingsBaseClass{CSharpNamespace}"/>
+        /// </summary>
         private CSharpConstructorSignature()
         {
         }
 
+
+        /// <summary>
+        /// Gets or sets the full constructor signature.  Parsing and validation takes place when this property is set.
+        /// </summary>
+        /// <value>
+        /// The full constructor signature.
+        /// </value>
+        /// <exception cref="System.ArgumentNullException">Thrown if the value is set to <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if you set a value that is whitespace.
+        /// or
+        /// If <see cref="CSharpConstructorSignatureValidator.Validate"/> returns an unsuccessful parse result when setting a value.
+        /// </exception>
         public string FullSignature
         {
             get { return _fullSignature; }
@@ -95,11 +114,16 @@ namespace LibLSLCC.CSharp
             }
         }
 
+        /// <summary>
+        /// Gets the parsing/validation results of the constructor signature string.
+        /// </summary>
+        /// <value>
+        /// The parsing/validation results of the constructor signature string.
+        /// </value>
         [XmlIgnore]
         public CSharpConstructorSignatureValidationResult ValidatedSignature
         {
             get { return _validatedSignature; }
-            set { _validatedSignature = value; }
         }
 
 
@@ -109,6 +133,17 @@ namespace LibLSLCC.CSharp
         }
 
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CSharpConstructorSignature"/> class.
+        /// </summary>
+        /// <param name="fullSignature">The full signature.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="fullSignature"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="fullSignature"/> is whitespace.
+        /// or
+        /// If <see cref="CSharpConstructorSignatureValidator.Validate"/> returns an unsuccessful parse result.
+        /// </exception>
         public CSharpConstructorSignature(string fullSignature)
         {
             if (fullSignature == null)
@@ -130,18 +165,36 @@ namespace LibLSLCC.CSharp
             _fullSignature = fullSignature;
         }
 
+        /// <summary>
+        /// Returns <see cref="FullSignature"/>.
+        /// </summary>
+        /// <returns>
+        /// <see cref="FullSignature"/>.
+        /// </returns>
         public override string ToString()
         {
             return FullSignature;
         }
 
-
+        /// <summary>
+        /// Returns the hash code of <see cref="FullSignature"/>.
+        /// </summary>
+        /// <returns>
+        /// Returns the hash code of <see cref="FullSignature"/>. 
+        /// </returns>
         public override int GetHashCode()
         {
             if (FullSignature == null) return -1;
             return FullSignature.GetHashCode();
         }
 
+        /// <summary>
+        /// Compares using <see cref="FullSignature"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is a <see cref="CSharpConstructorSignature"/> with an equal <see cref="FullSignature"/> value; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             var ns = obj as CSharpConstructorSignature;
@@ -153,7 +206,7 @@ namespace LibLSLCC.CSharp
             return ns.FullSignature == FullSignature;
         }
 
-        public IReadOnlyHashedSet<string> HashEqualityPropertyNames
+        IReadOnlyHashedSet<string> IObservableHashSetItem.HashEqualityPropertyNames
         {
             get { return _hashEqualityPropertyNames; }
         }

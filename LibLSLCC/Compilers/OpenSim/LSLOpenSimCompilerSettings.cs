@@ -57,7 +57,7 @@ namespace LibLSLCC.Compilers.OpenSim
         private bool _insertCoOpTerminationCalls;
         private bool _generateClass;
         private CSharpNamespace _generatedClassNamespace;
-        private CSharpClassName _generatedClassName;
+        private CSharpClassDeclarationName _generatedClassName;
         private CSharpInheritanceList _generatedInheritanceList;
         private CSharpConstructorSignature _generatedConstructorSignature;
         private MemberAccessibilityLevel _generatedConstructorAccessibility;
@@ -128,7 +128,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <summary>
         /// The name of the class around the generated code if GeneratedClass is set to true.
         /// </summary>
-        public CSharpClassName GeneratedClassName
+        public CSharpClassDeclarationName GeneratedClassName
         {
             get { return _generatedClassName; }
             set { SetField(ref _generatedClassName, value, "GeneratedClassName"); }

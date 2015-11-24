@@ -49,9 +49,13 @@ using LibLSLCC.Settings;
 
 namespace LibLSLCC.CSharp
 {
+
+    /// <summary>
+    /// Abstraction that provides parsing and validation for CSharp namespace strings.
+    /// </summary>
     public class CSharpNamespace : SettingsBaseClass<CSharpNamespace>, IObservableHashSetItem
     {
-        private string _name;
+        private string _fullSignature;
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string> {"Name"};
 
         /// <summary>
@@ -61,6 +65,15 @@ namespace LibLSLCC.CSharp
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CSharpNamespace"/> class by parsing a namespace string.
+        /// </summary>
+        /// <param name="name">The namespace string to parse.</param>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="name"/> is <c>null</c>.
+        /// or
+        /// If <paramref name="name"/> does not pass validation by <see cref="CSharpNamespaceNameValidator.Validate"/>.
+        /// </exception>
         public CSharpNamespace(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -74,7 +87,7 @@ namespace LibLSLCC.CSharp
                 throw new ArgumentException(validate.ErrorDescription, "name");
             }
 
-            _name = name;
+            _fullSignature = name;
         }
 
         public static implicit operator CSharpNamespace(string name)
@@ -82,14 +95,25 @@ namespace LibLSLCC.CSharp
             return new CSharpNamespace(name);
         }
 
-        public string Name
+        /// <summary>
+        /// Gets or sets the full signature of the namespace.
+        /// </summary>
+        /// <value>
+        /// The full namespace signature.
+        /// </value>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if the value is set to <c>null</c>.
+        /// or
+        /// If the set value does not pass validation by <see cref="CSharpNamespaceNameValidator.Validate"/>.
+        /// </exception>
+        public string FullSignature
         {
-            get { return _name; }
+            get { return _fullSignature; }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException(GetType().Name + ".Name cannot be null or whitespace.", "value");
+                    throw new ArgumentException(GetType().Name + ".FullSignature cannot be null or whitespace.", "value");
                 }
 
                 var validate = CSharpNamespaceNameValidator.Validate(value);
@@ -98,32 +122,55 @@ namespace LibLSLCC.CSharp
                     throw new ArgumentException(validate.ErrorDescription, "value");
                 }
 
-                SetField(ref _name, value, "Name");
+                SetField(ref _fullSignature, value, "FullSignature");
             }
         }
 
+
+        /// <summary>
+        /// Returns the hash code of <see cref="FullSignature"/>.
+        /// </summary>
+        /// <returns>
+        /// Returns the hash code of <see cref="FullSignature"/>. 
+        /// </returns>
         public override int GetHashCode()
         {
-            if (Name == null) return -1;
-            return Name.GetHashCode();
+            if (FullSignature == null) return -1;
+            return FullSignature.GetHashCode();
         }
 
+
+
+        /// <summary>
+        /// Compares using <see cref="FullSignature"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is a <see cref="CSharpNamespace"/> with an equal <see cref="FullSignature"/> value; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object obj)
         {
             var ns = obj as CSharpNamespace;
             if (ns == null) return false;
 
-            if (ns.Name != null && Name != null) return Name.Equals(ns.Name, StringComparison.Ordinal);
+            if (ns.FullSignature != null && FullSignature != null) return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
 
-            return ns.Name == Name;
+            return ns.FullSignature == FullSignature;
         }
 
+
+        /// <summary>
+        /// Returns <see cref="FullSignature"/>.
+        /// </summary>
+        /// <returns>
+        /// <see cref="FullSignature"/>.
+        /// </returns>
         public override string ToString()
         {
-            return Name;
+            return FullSignature;
         }
 
-        public IReadOnlyHashedSet<string> HashEqualityPropertyNames
+        IReadOnlyHashedSet<string> IObservableHashSetItem.HashEqualityPropertyNames
         {
             get { return _hashEqualityPropertyNames; }
         }

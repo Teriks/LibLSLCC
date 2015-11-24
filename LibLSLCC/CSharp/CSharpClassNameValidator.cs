@@ -51,24 +51,66 @@ using System.Windows.Forms;
 
 namespace LibLSLCC.CSharp
 {
+    /// <summary>
+    /// Returned by <see cref="CSharpParsedTypeValidateTypeCallback"/>, a delegate which
+    /// allows the user to preform additional validation on a parsed class name.
+    /// </summary>
     public class CSharpParsedTypeValidationResult
     {
+        /// <summary>
+        /// Gets a value indicating whether additional user validation was successful.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the additional user validation succeeded; otherwise, <c>false</c>.
+        /// </value>
         public bool IsValid { get; private set; }
+
+        /// <summary>
+        /// Gets the error message provided by the user if their extra validation failed.
+        /// </summary>
+        /// <value>
+        /// The user provided error message.
+        /// </value>
         public string ErrorMessage { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the tag, this can be anything the user wants it to be.
+        /// </summary>
+        /// <value>
+        /// The object tag.
+        /// </value>
         public object Tag { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CSharpParsedTypeValidationResult"/> class with <see cref="IsValid"/> set to <c>true</c>.
+        /// </summary>
         public CSharpParsedTypeValidationResult()
         {
             IsValid = true;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CSharpParsedTypeValidationResult"/> class with <see cref="IsValid"/> set to <c>false</c>.
+        /// </summary>
+        /// <param name="errorMessage">The user provided error message to set <see cref="ErrorMessage"/> with.</param>
         public CSharpParsedTypeValidationResult(string errorMessage)
         {
             IsValid = false;
             ErrorMessage = errorMessage;
         }
     }
+
+
+    /// <summary>
+    /// A delegate for injecting additional user validation into the class name parser.
+    /// </summary>
+    /// <param name="parsedTypeDescription">
+    /// The <see cref="CSharpParsedTypeValidationResult"/> which represents the results of the user validation callback for the parsed type.
+    /// </param>
+    /// <returns></returns>
+    public delegate CSharpParsedTypeValidationResult CSharpParsedTypeValidateTypeCallback(
+    CSharpClassNameValidationResult parsedTypeDescription);
+
 
 
     /// <summary>
@@ -157,8 +199,7 @@ namespace LibLSLCC.CSharp
     }
 
 
-    public delegate CSharpParsedTypeValidationResult CSharpParsedTypeValidateTypeCallback(
-        CSharpClassNameValidationResult parsedTypeDescription);
+
 
 
     /// <summary>

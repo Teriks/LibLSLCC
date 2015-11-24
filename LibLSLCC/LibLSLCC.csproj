@@ -58,7 +58,7 @@
     <Compile Include="Collections\ObservableDictionary.cs" />
     <Compile Include="Collections\ObservableHashSet.cs" />
     <Compile Include="CSharp\ClassAccessibilityLevel.cs" />
-    <Compile Include="CSharp\CSharpClassName.cs" />
+    <Compile Include="CSharp\CSharpClassDeclarationName.cs" />
     <Compile Include="Compilers\OpenSim\LSLOpenSimCompilerSettings.cs" />
     <Compile Include="CSharp\CSharpConstructorSignature.cs" />
     <Compile Include="CSharp\CSharpConstructorSignatureValidator.cs" />

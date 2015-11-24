@@ -107,7 +107,7 @@ private static class UTILITIES
 ";
 
 
-        private static readonly CSharpClassName FallbackClassName = "LSLScript";
+        private static readonly CSharpClassDeclarationName FallbackClassName = "LSLScript";
 
         /// <summary>
         /// Name of the class that will contain global variables
@@ -1460,7 +1460,7 @@ private static class UTILITIES
                 {
                     foreach (var ns in Settings.GeneratedNamespaceImports)
                     {
-                        Writer.WriteLine("using " + ns.Name + ";");
+                        Writer.WriteLine("using " + ns.FullSignature + ";");
                     }
                 }
 
@@ -1485,7 +1485,7 @@ private static class UTILITIES
                 {
                     Writer.WriteLine(GenIndent() + "{0}class {1} {2}",
                         classAccessibilityString,  className,
-                        Settings.GeneratedInheritanceList.ListWithColonIfNeccessary);
+                        Settings.GeneratedInheritanceList.ListWithColonIfNecessary);
                 }
                 else
                 {

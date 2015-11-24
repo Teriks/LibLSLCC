@@ -123,7 +123,7 @@ namespace LSLCCEditor.SettingsUI
                 : "";
 
             pane.GeneratedClassNamespace = compilerConfig.GeneratedClassNamespace != null
-                ? compilerConfig.GeneratedClassNamespace.Name
+                ? compilerConfig.GeneratedClassNamespace.FullSignature
                 : "";
 
             pane.GeneratedConstructorSignature = compilerConfig.GeneratedConstructorSignature != null
@@ -362,7 +362,7 @@ namespace LSLCCEditor.SettingsUI
                 }
 
                 pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedClassName =
-                    new CSharpClassName(newValue);
+                    new CSharpClassDeclarationName(newValue);
             }
         }
 

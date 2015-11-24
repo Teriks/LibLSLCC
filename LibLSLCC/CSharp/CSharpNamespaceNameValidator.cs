@@ -52,7 +52,20 @@ namespace LibLSLCC.CSharp
     /// </summary>
     public class CSharpNamespaceValidatorResult
     {
+        /// <summary>
+        /// Gets a value indicating whether the namespace was successfully parsed.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if success; otherwise, <c>false</c>.
+        /// </value>
         public bool Success { get; private set; }
+
+        /// <summary>
+        /// Gets a user friendly parsing error description when <see cref="Success"/> is false, otherwise <c>null</c>.
+        /// </summary>
+        /// <value>
+        /// The parsing error description, if <see cref="Success"/> is <c>false</c>; otherwise, <c>null</c>.
+        /// </value>
         public string ErrorDescription { get; private set; }
 
         internal CSharpNamespaceValidatorResult(bool success, string errorDescription = null)
@@ -69,6 +82,12 @@ namespace LibLSLCC.CSharp
     {
         private static readonly Regex DoubleDot = new Regex("\\.\\.");
 
+
+        /// <summary>
+        /// Parses and validates a given CSharp namespace string.
+        /// </summary>
+        /// <param name="namespaceName">A string representing the namespace.</param>
+        /// <returns></returns>
         public static CSharpNamespaceValidatorResult Validate(string namespaceName)
         {
             if (DoubleDot.IsMatch(namespaceName))
