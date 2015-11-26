@@ -102,7 +102,7 @@ namespace LibLSLCC.CSharp
                     return new CSharpNamespaceValidatorResult(false, "The namespace name is incomplete.");
                 }
 
-                if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(item))
+                if (!CSharpIDValidator.IsValidIdentifier(item))
                 {
                     return new CSharpNamespaceValidatorResult(false,
                         string.Format("'{0}' is invalid namespace content.", item));

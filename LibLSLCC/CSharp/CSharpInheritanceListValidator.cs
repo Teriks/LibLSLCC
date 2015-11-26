@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using LibLSLCC.Parser;
 
 namespace LibLSLCC.CSharp
 {
@@ -257,7 +254,7 @@ namespace LibLSLCC.CSharp
                 return false;
             }
 
-            if (CSharpClassNameValidator.IsTypeAliasKeyword(init.TypeSignature.BaseName))
+            if (CSharpKeywords.IsTypeAliasKeyword(init.TypeSignature.BaseName))
             {
                 err = string.Format("Cannot use the built in type alias '{0}' as a type constraint.",
                     init.TypeSignature.BaseName);
@@ -288,7 +285,7 @@ namespace LibLSLCC.CSharp
             }
 
 
-            if (CSharpClassNameValidator.IsTypeAliasKeyword(init.BaseName))
+            if (CSharpKeywords.IsTypeAliasKeyword(init.BaseName))
             {
                 err = string.Format("Cannot inherit from the built in type alias '{0}'.", init.BaseName);
                 init = null;
@@ -682,7 +679,7 @@ namespace LibLSLCC.CSharp
                     {
                         var constrainedType = accum.TrimEnd(':').Trim();
 
-                        if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(constrainedType))
+                        if (!CSharpIDValidator.IsValidIdentifier(constrainedType))
                         {
                             result.ErrorDescription = string.Format("Invalid generic type constraint name '{0}'.",
                                 constrainedType);

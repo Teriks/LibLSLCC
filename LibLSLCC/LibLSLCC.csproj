@@ -58,12 +58,16 @@
     <Compile Include="Collections\ObservableDictionary.cs" />
     <Compile Include="Collections\ObservableHashSet.cs" />
     <Compile Include="CSharp\ClassAccessibilityLevel.cs" />
+    <Compile Include="CSharp\CSharpFunctionCallValidator.cs" />
     <Compile Include="CSharp\CSharpClassDeclarationName.cs" />
     <Compile Include="Compilers\OpenSim\LSLOpenSimCompilerSettings.cs" />
     <Compile Include="CSharp\CSharpConstructorSignature.cs" />
     <Compile Include="CSharp\CSharpConstructorSignatureValidator.cs" />
+    <Compile Include="CSharp\CSharpFunctionCall.cs" />
+    <Compile Include="CSharp\CSharpIDValidator.cs" />
     <Compile Include="CSharp\CSharpInheritanceList.cs" />
     <Compile Include="CSharp\CSharpInheritanceListValidator.cs" />
+    <Compile Include="CSharp\CSharpKeywords.cs" />
     <Compile Include="CSharp\CSharpNamespace.cs" />
     <Compile Include="CSharp\MemberAccessibilityLevel.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
@@ -107,7 +111,6 @@
     <Compile Include="Settings\SettingsPropertyChangedEventArgs.cs" />
     <Compile Include="Settings\SettingsPropertyChangingEventArgs.cs" />
     <Compile Include="CSharp\CSharpClassNameValidator.cs" />
-    <Compile Include="CSharp\CSharpCompilerSingleton.cs" />
     <Compile Include="Utility\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />

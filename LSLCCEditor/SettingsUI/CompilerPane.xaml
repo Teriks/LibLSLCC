@@ -65,7 +65,7 @@
             </CheckBox>
 
 
-            <Expander Header="Co-Op Termination Options" Name="CoOpTerminationOptionsExpander">
+            <Expander Header="Co-Op Termination Options" Name="CoOpTerminationOptionsExpander" IsEnabled="False">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -95,14 +95,14 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Target="{Binding ElementName=CoOpTerminationFunctionName}">Function Call:</Label>
                     <TextBox Grid.Row="0" Grid.Column="1" Name="CoOpTerminationFunctionName"
-                             DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
-                             Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall, UpdateSourceTrigger=PropertyChanged}"
+                             
+                             DataContext="{Binding ElementName=_this}"
+                             Text="{Binding Path=CoOpTerminationFunctionCall, TargetNullValue ='', ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
                              Width="Auto">
-                        <TextBox.ToolTip>
-                            <ToolTip>
-                                <TextBlock Text="Function signature to use for co-op script stop termination calls." />
-                            </ToolTip>
-                        </TextBox.ToolTip>
+                          <wpf:TextboxHint.Hint>
+                                <TextBlock Padding="2,6,0,0">opensim_reserved_CheckForCoopTermination()</TextBlock>
+                          </wpf:TextboxHint.Hint>
                     </TextBox>
                 </Grid>
             </Expander>

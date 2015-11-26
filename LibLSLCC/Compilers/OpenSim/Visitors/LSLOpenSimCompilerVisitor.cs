@@ -162,6 +162,11 @@ private static class UTILITIES
 
 
 
+        private string GetCoOpTerminationCallString()
+        {
+            return Settings.CoOpTerminationFunctionCall == null ? "opensim_reserved_CheckForCoopTermination()" : Settings.CoOpTerminationFunctionCall.FullSignature;
+        }
+
 
         /// <summary>
         /// Tracks what state body that LSL code generation is taking place in
@@ -1328,7 +1333,9 @@ private static class UTILITIES
                     case LSLCodeScopeType.WhileLoop:
                     case LSLCodeScopeType.ForLoop:
 
-                        Writer.WriteLine(GenIndent() + Settings.CoOpTerminationFunctionCall + ";");
+
+
+                        Writer.WriteLine(GenIndent() + GetCoOpTerminationCallString() + ";");
                         break;
                 }
             }
@@ -1788,7 +1795,7 @@ private static class UTILITIES
 
             if (Settings.InsertCoOpTerminationCalls)
             {
-                Writer.WriteLine(GenIndent() + "LSLLabel_" + node.LabelName + ":" + Settings.CoOpTerminationFunctionCall + ";");
+                Writer.WriteLine(GenIndent() + "LSLLabel_" + node.LabelName + ":" + GetCoOpTerminationCallString() + ";");
             }
             else
             {

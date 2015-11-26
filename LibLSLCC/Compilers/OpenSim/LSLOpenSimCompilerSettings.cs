@@ -53,7 +53,7 @@ namespace LibLSLCC.Compilers.OpenSim
     public class LSLOpenSimCompilerSettings : SettingsBaseClass<LSLOpenSimCompilerSettings>
         // ReSharper restore InconsistentNaming
     {
-        private string _coOpTerminationFunctionCall = "opensim_reserved_CheckForCoopTermination()";
+        private CSharpFunctionCall _coOpTerminationFunctionCall = "opensim_reserved_CheckForCoopTermination()";
         private bool _insertCoOpTerminationCalls;
         private bool _generateClass;
         private CSharpNamespace _generatedClassNamespace;
@@ -81,7 +81,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// 
         /// Note that you should not add a semi-colon to the end of the signature string.
         /// </summary>
-        public string CoOpTerminationFunctionCall
+        public CSharpFunctionCall CoOpTerminationFunctionCall
         {
             get { return _coOpTerminationFunctionCall; }
             set { SetField(ref _coOpTerminationFunctionCall,value, "CoOpTerminationFunctionCall"); }

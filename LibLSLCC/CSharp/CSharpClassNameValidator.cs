@@ -47,7 +47,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
@@ -207,51 +207,6 @@ namespace LibLSLCC.CSharp
     /// </summary>
     public static class CSharpClassNameValidator
     {
-        private static readonly Dictionary<string, Type> BuiltInTypeMap = new Dictionary<string, Type>()
-        {
-            {"bool", typeof (bool)},
-            {"byte", typeof (byte)},
-            {"sbyte", typeof (sbyte)},
-            {"char", typeof (char)},
-            {"decimal", typeof (decimal)},
-            {"double", typeof (double)},
-            {"float", typeof (float)},
-            {"int", typeof (int)},
-            {"uint", typeof (uint)},
-            {"long", typeof (long)},
-            {"ulong", typeof (ulong)},
-            {"object", typeof (object)},
-            {"short", typeof (short)},
-            {"ushort", typeof (ushort)},
-            {"string", typeof (string)}
-        };
-
-
-        /// <summary>
-        /// Converts a CSharp type alias such as 'int', 'float' or object (etc..) to its corresponding <see cref="Type"/>.
-        /// </summary>
-        /// <param name="keywordTypeName">The keyword type alias to convert to an actual <see cref="Type"/>.</param>
-        /// <returns>The type if there is a corresponding <see cref="Type"/>, otherwise <c>null</c>.</returns>
-        public static Type KeywordTypetoType(string keywordTypeName)
-        {
-            Type t;
-            if (BuiltInTypeMap.TryGetValue(keywordTypeName, out t))
-            {
-                return t;
-            }
-            return null;
-        }
-
-
-        /// <summary>
-        /// Determines if a string is a built in type alias reference such as int.
-        /// </summary>
-        /// <returns><c>true</c> if the given string contains a built in type alias name; otherwise <c>false</c>.</returns>
-        public static bool IsTypeAliasKeyword(string keywordTypeName)
-        {
-            return BuiltInTypeMap.ContainsKey(keywordTypeName);
-        }
-
 
         /// <summary>
         /// Context of a class name signature
@@ -501,7 +456,7 @@ namespace LibLSLCC.CSharp
                 {
                     //check for syntax errors in the qualified name pieces, they need to be valid ID's and not keywords
                     //IsValidIdentifier takes care of both these criteria
-                    if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(name.Builder.ToString()))
+                    if (!CSharpIDValidator.IsValidIdentifier(name.Builder.ToString()))
                     {
                         //sound something funky
                         return new CSharpClassNameValidationResult
@@ -533,11 +488,11 @@ namespace LibLSLCC.CSharp
                 }
 
 
-                bool aliasInitialization = allowBuiltinAliases && BuiltInTypeMap.ContainsKey(shortName) &&
+                bool aliasInitialization = allowBuiltinAliases && CSharpKeywords.BuiltInTypeMap.ContainsKey(shortName) &&
                                            signatureType == ClassSigType.Initialization;
 
                 if (!aliasInitialization &&
-                    !CSharpCompilerSingleton.Compiler.IsValidIdentifier(baseName.Builder.ToString()))
+                    !CSharpIDValidator.IsValidIdentifier(baseName.Builder.ToString()))
                 {
                     return new CSharpClassNameValidationResult
                     {
@@ -554,7 +509,7 @@ namespace LibLSLCC.CSharp
             var baseNameString = baseName.Builder.ToString();
 
 
-            if (isGeneric && IsTypeAliasKeyword(fullyQualifiedName))
+            if (isGeneric && CSharpKeywords.IsTypeAliasKeyword(fullyQualifiedName))
             {
                 return new CSharpClassNameValidationResult
                 {

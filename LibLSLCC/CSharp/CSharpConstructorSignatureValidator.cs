@@ -155,6 +155,8 @@ namespace LibLSLCC.CSharp
             WaitingForForwardedParam
         }
 
+        
+
         /// <summary>
         /// Validates the specified constructor signature string.
         /// It expects a constructor signature string which starts at the first parenthesis after the constructor's name identifier.
@@ -249,7 +251,7 @@ namespace LibLSLCC.CSharp
                     }
 
                     result.Success = false;
-                    result.ErrorDescription = "Unexpected ':' character.";
+                    result.ErrorDescription = "CSharpIDValidator.IsValidIdentifier:' character.";
                     result.ErrorIndex = index;
                     return result;
                 }
@@ -269,7 +271,7 @@ namespace LibLSLCC.CSharp
                         continue;
                     }
                     result.Success = false;
-                    result.ErrorDescription = "Unexpected '<' character.";
+                    result.ErrorDescription = "CSharpIDValidator.IsValidIdentifier<' character.";
                     result.ErrorIndex = index;
                     return result;
                 }
@@ -286,7 +288,7 @@ namespace LibLSLCC.CSharp
                         continue;
                     }
                     result.Success = false;
-                    result.ErrorDescription = "Unexpected '>' character.";
+                    result.ErrorDescription = "CSharpIDValidator.IsValidIdentifier>' character.";
                     result.ErrorIndex = index;
                     return result;
                 }
@@ -330,7 +332,7 @@ namespace LibLSLCC.CSharp
                         case States.AccumulatingParamName:
                         {
                             var pname = accum.TrimEnd(',', ')').Trim();
-                            if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(pname))
+                            if (!CSharpIDValidator.IsValidIdentifier(pname))
                             {
                                 result.Success = false;
                                 result.ErrorDescription = string.Format("Invalid parameter name '{0}'.", pname);
@@ -357,7 +359,7 @@ namespace LibLSLCC.CSharp
                         {
                             var pname = accum.TrimEnd(',', ')').Trim();
 
-                            if (!CSharpCompilerSingleton.Compiler.IsValidIdentifier(pname))
+                            if (!CSharpIDValidator.IsValidIdentifier(pname))
                             {
                                 result.Success = false;
                                 result.ErrorDescription =
@@ -388,7 +390,7 @@ namespace LibLSLCC.CSharp
                             if (c == ',' && state == States.AccumulatingGenericType) continue;
 
                             result.Success = false;
-                            result.ErrorDescription = string.Format("Unexpected '{0}' character.", c);
+                            result.ErrorDescription = string.Format("CSharpIDValidator.IsValidIdentifier{0}' character.", c);
                             result.ErrorIndex = index;
                             return result;
                     }

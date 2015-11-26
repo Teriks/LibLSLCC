@@ -134,6 +134,10 @@ namespace LSLCCEditor.SettingsUI
                 ? compilerConfig.GeneratedInheritanceList.FullSignature
                 : "";
 
+            pane.CoOpTerminationFunctionCall = compilerConfig.CoOpTerminationFunctionCall != null
+                ? compilerConfig.CoOpTerminationFunctionCall.FullSignature
+                : "";
+
 
             pane.CurrentCompilerConfiguration.SubscribePropertyChangedAll(pane,
                 AnyCurrentCompilerConfigSubPropertyChanged);
@@ -329,6 +333,42 @@ namespace LSLCCEditor.SettingsUI
         {
             get { return (string) GetValue(GeneratedInheritanceListProperty); }
             set { SetValue(GeneratedInheritanceListProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty CoOpTerminationFunctionCallProperty = DependencyProperty.Register(
+            "CoOpTerminationFunctionCall", typeof (string), typeof (CompilerPane), new PropertyMetadata(default(string), OnCoOpTerminationFunctionCallPropertyChangedCallback));
+
+        private static void OnCoOpTerminationFunctionCallPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var pane = dependencyObject as CompilerPane;
+
+            var newValue = dependencyPropertyChangedEventArgs.NewValue as string;
+
+            if (pane != null)
+            {
+                if (string.IsNullOrWhiteSpace(newValue))
+                {
+                    pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall = null;
+                    return;
+                }
+
+                var validation = CSharpFunctionCallValidator.Validate(newValue);
+                if (!validation.Success)
+                {
+                    throw new Exception(string.Format("Error Index {0}:  {1}", validation.ErrorIndex,
+                        validation.ErrorDescription));
+                }
+
+                pane.CurrentCompilerConfiguration.OpenSimCompilerSettings.CoOpTerminationFunctionCall =
+                    new CSharpFunctionCall(newValue);
+            }
+        }
+
+        public string CoOpTerminationFunctionCall
+        {
+            get { return (string) GetValue(CoOpTerminationFunctionCallProperty); }
+            set { SetValue(CoOpTerminationFunctionCallProperty, value); }
         }
 
 
