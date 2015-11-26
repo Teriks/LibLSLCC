@@ -1,17 +1,13 @@
 ﻿using System;
-using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers.OpenSim;
-using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
 
