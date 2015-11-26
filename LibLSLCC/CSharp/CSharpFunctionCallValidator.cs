@@ -81,7 +81,7 @@ namespace LibLSLCC.CSharp
             errIndex = paramStartIndex;
 
 
-            //check a string's syntax, or some other literal's syntax
+            //the syntax of a plain parameter expression with no new keyword by abusing the codedomcompiler..
 
             //Not using Roslyn.Compilers since its not a namespace included with mono by default yet.
             //Could use NRefactory, but.. it's an added assembly on windows and not on mono, it comes with mono by default and may be some other version. 
@@ -163,7 +163,6 @@ namespace LibLSLCC.CSharp
             }
 
 
-            //validate a new type inferred array, anonymous object or class initialization
 
             string testp = string.Format("class P{{void F(object a){{}}P(){{F(new {0});}}}}", paramText);
             const int pstartIndex = 36;
