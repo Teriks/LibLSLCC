@@ -318,4 +318,4 @@ This is not a problem as "Mono.Data.Sqlite" it is only used when running on Mono
 On mono you may get alot of warnings about missing comments.
 
 They are suppressed in the windows build but not yet in the mono build as the warning numbers are different.
-You will also get warnings about unknown warning numbers being suppressed, but this is harmless.
+You will also get warnings about unknown warning numbers being suppressed (XML comment warnings), but this is harmless.
