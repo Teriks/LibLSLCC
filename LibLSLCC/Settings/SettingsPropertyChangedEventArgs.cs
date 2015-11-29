@@ -47,11 +47,13 @@ namespace LibLSLCC.Settings
 {
     public class SettingsPropertyChangedEventArgs<TSetting>
     {
-        public SettingsPropertyChangedEventArgs(TSetting propertyOwner, object subscriber, string propertyName)
+        public SettingsPropertyChangedEventArgs(TSetting propertyOwner, object subscriber, string propertyName, object oldValue, object newValue)
         {
             PropertyOwner = propertyOwner;
             Subscriber = subscriber;
             PropertyName = propertyName;
+            OldValue = oldValue;
+            NewValue = newValue;
         }
 
         public TSetting PropertyOwner { get; private set; }
@@ -59,5 +61,9 @@ namespace LibLSLCC.Settings
         public object Subscriber { get; private set; }
 
         public string PropertyName { get; private set; }
+
+        public object OldValue { get; private set; }
+
+        public object NewValue { get; private set; }
     }
 }

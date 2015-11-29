@@ -18,7 +18,7 @@
             <editControl:LSLEditorControl x:FieldModifier="public" x:Name="Editor" 
                                         Text="{Binding SourceCode}"
                                         LibraryDataProvider="{Binding LibraryDataProvider}"
-                                        TextChanged="Editor_OnTextChanged" />
+                                        TextChanged="Editor_OnTextChanged" Loaded="Editor_OnLoaded"  Unloaded="Editor_OnUnloaded"/>
         </Border>
 
         <GridSplitter Grid.Row="1"

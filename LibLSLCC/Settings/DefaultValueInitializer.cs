@@ -76,6 +76,85 @@ namespace LibLSLCC.Settings
             }
         }
 
+        public static T SetToDefault<T>(T instance, string memberName)
+        {
+            var settingsProperty =
+                instance.GetType()
+                    .GetProperty(memberName, BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
+            var settingsField =
+                instance.GetType()
+                    .GetField(memberName, BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
+
+            const BindingFlags constructorBindingFlags = 
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+
+            var member = settingsField == null ? settingsProperty : (MemberInfo)settingsField;
+            if (member == null) return instance;
+
+            var asField = member as FieldInfo;
+            var asProp = member as PropertyInfo;
+
+            var isField = asField != null;
+
+
+            var fieldValue = isField ? asField.GetValue(instance) : asProp.GetValue(instance, null);
+
+            var fieldType = isField ? asField.FieldType : asProp.PropertyType;
+
+
+            var factoryAttribute = member.GetCustomAttributes(typeof(DefaultValueFactoryAttribute), true).ToList();
+
+            var defaultAttribute = member.GetCustomAttributes(typeof(DefaultValueAttribute), true).ToList();
+
+            if (defaultAttribute.Any() && factoryAttribute.Any())
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        "Property: '{0} {1}.{2}' uses both a [DefaultValueFactoryAttribute] and a [DefaultValueAttribute].",
+                        fieldType.FullName,
+                        member.DeclaringType.FullName,
+                        member.Name));
+            }
+
+            if (factoryAttribute.Any())
+            {
+                var factory = ((DefaultValueFactoryAttribute)factoryAttribute.First());
+
+                SetValue(member, instance, factory.Factory.GetDefaultValue(member, instance));
+            }
+            else if (defaultAttribute.Any())
+            {
+                var defaultValue = ((DefaultValueAttribute)defaultAttribute.First());
+
+                SetValue(member, instance, defaultValue.Value);
+            }
+            else if (fieldValue == null)
+            {
+                var constructors =
+                    fieldType.GetConstructors(constructorBindingFlags).Where(x => !x.GetParameters().Any()).ToList();
+                if (!constructors.Any())
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            "{0}.Init(object instance):  Property '{1} {2}.{3};' is defined with a type that has no parameterless constructor,"
+                            + " use the [DefaultValueFactory] attribute on the property.",
+                            typeof(DefaultValueInitializer).FullName,
+                            fieldType.FullName,
+                            member.DeclaringType.FullName,
+                            member.Name));
+                }
+
+                var constructor = constructors.First();
+
+                object newInstance = constructor.Invoke(null);
+                Init(newInstance);
+                SetValue(member, instance, constructor.Invoke(null));
+            }
+
+            return instance;
+        }
+
+
         public static T Init<T>(T instance)
         {
             var settingsProperties =
@@ -92,7 +171,7 @@ namespace LibLSLCC.Settings
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 
-            PriorityQueue<uint, Action> valueFactoryInitQueue = new PriorityQueue<uint, Action>();
+            var valueFactoryInitQueue = new PriorityQueue<int, Action>();
 
 
             foreach (var member in settingsProperties.Concat<MemberInfo>(settingsFields))
@@ -100,7 +179,6 @@ namespace LibLSLCC.Settings
                 var asField = member as FieldInfo;
                 var asProp = member as PropertyInfo;
 
-                var isProp = asProp != null;
                 var isField = asField != null;
 
 
@@ -132,9 +210,9 @@ namespace LibLSLCC.Settings
                     var localMember = member;
                     valueFactoryInitQueue.Enqueue(factory.InitOrder, () =>
                     {
-                        if (factory.Factory.CheckForNecessaryResets(instance, fieldValue))
+                        if (factory.Factory.CheckForNecessaryResets(localMember,instance, fieldValue))
                         {
-                            SetValue(localMember, instance, factory.Factory.GetDefaultValue(instance));
+                            SetValue(localMember, instance, factory.Factory.GetDefaultValue(localMember, instance));
                         }
                     });
                 }

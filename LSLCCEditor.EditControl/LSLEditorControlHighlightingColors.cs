@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System.Reflection;
 using System.Windows.Media;
 using LibLSLCC.Settings;
 using LSLCCEditor.Utility.Xml;
@@ -59,54 +60,93 @@ namespace LSLCCEditor.EditControl
         private XmlColor _stringColor = Color.FromRgb(25, 76, 25);
         private XmlColor _constantColor = Color.FromRgb(50, 52, 138);
 
+
+        private class  DefaultColorFactory : IDefaultSettingsValueFactory
+        {
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+            {
+                if (settingValue == null)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
+            {
+                switch (member.Name)
+                {
+                    case "StateKeywordColor": return new XmlColor(Color.FromRgb(127, 0, 38));
+                    case "LibraryFunctionColor": return new XmlColor(Color.FromRgb(127, 0, 38));
+                    case "LibraryFunctionDeprecatedColor": return new XmlColor(Color.FromRgb(232, 19, 174));
+                    case "EventColor": return new XmlColor(Color.FromRgb(0, 76, 127));
+                    case "TypeColor": return new XmlColor(Color.FromRgb(25, 76, 25));
+                    case "CommentColor": return new XmlColor(Color.FromRgb(255, 127, 80));
+                    case "ControlFlowColor": return new XmlColor(Color.FromRgb(0, 0, 204));
+                    case "StringColor": return new XmlColor(Color.FromRgb(25, 76, 25));
+                    case "ConstantColor": return new XmlColor(Color.FromRgb(50, 52, 138));
+                }
+                return null;
+            }
+        }
+
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor ConstantColor
         {
             get { return _constantColor; }
             set { SetField(ref _constantColor, value, "ConstantColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor StringColor
         {
             get { return _stringColor; }
             set { SetField(ref _stringColor, value, "StringColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor ControlFlowColor
         {
             get { return _controlFlowColor; }
             set { SetField(ref _controlFlowColor, value, "ControlFlowColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor CommentColor
         {
             get { return _commentColor; }
             set { SetField(ref _commentColor, value, "CommentColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor TypeColor
         {
             get { return _typeColor; }
             set { SetField(ref _typeColor, value, "TypeColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor EventColor
         {
             get { return _eventColor; }
             set { SetField(ref _eventColor, value, "EventColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor LibraryFunctionDeprecatedColor
         {
             get { return _libraryFunctionDeprecatedColor; }
             set { SetField(ref _libraryFunctionDeprecatedColor, value, "LibraryFunctionDeprecatedColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor LibraryFunctionColor
         {
             get { return _libraryFunctionColor; }
             set { SetField(ref _libraryFunctionColor, value, "LibraryFunctionColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
         public XmlColor StateKeywordColor
         {
             get { return _stateKeywordColor; }

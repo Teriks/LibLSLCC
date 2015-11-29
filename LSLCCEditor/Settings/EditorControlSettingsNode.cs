@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System.Reflection;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
 
@@ -53,7 +54,7 @@ namespace LSLCCEditor.Settings
 
         private class EditorControlSettingsValueFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object objectInstance, object settingValue)
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
             {
                 if (settingValue == null)
                 {
@@ -62,7 +63,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object objectInstance)
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
             {
                 return new LSLEditorControlSettings();
             }

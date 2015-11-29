@@ -18,11 +18,16 @@ namespace LSLCCEditor.SettingsUI
             InitializeComponent();
 
             var myType = typeof(SettingsWindow);
-            var panes = myType.Assembly.GetTypes().Where(t => string.Equals(t.Namespace, myType.Namespace, StringComparison.Ordinal) && t.GetInterfaces().Any(i => i == typeof(ISettingsPane)));
+            //var panes = myType.Assembly.GetTypes().Where(t => string.Equals(t.Namespace, myType.Namespace, StringComparison.Ordinal) && t.GetInterfaces().Any(i => i == typeof(ISettingsPane)));
 
             var compilerPane = new CompilerPane() {OwnerSettingsWindow = this};
             _settingPanes.Add(compilerPane);
-            
+
+           
+            var editorPane = new EditorPane() { OwnerSettingsWindow = this };
+            _settingPanes.Add(editorPane);
+
+           
 
             SettingsPagesList.SelectedItem = compilerPane; 
         }

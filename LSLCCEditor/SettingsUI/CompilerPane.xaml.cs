@@ -441,7 +441,7 @@ namespace LSLCCEditor.SettingsUI
 
             int newIndex = 0;
 
-            if ((CompilerConfigurationNames.Count - 1) > 0)
+            if ((CompilerConfigurationNames.Count - 1) > 0 && CompilerConfigurationCombobox.SelectedIndex > 0)
             {
                 newIndex = CompilerConfigurationCombobox.SelectedIndex - 1;
             }

@@ -9,6 +9,9 @@
              mc:Ignorable="d" Name="_this" MinWidth="500" Padding="5" DataContext="{Binding RelativeSource={RelativeSource Self}}" >
 
     <Grid>
+        <Grid.Resources>
+            <ResourceDictionary Source="SettingsUiResources.xaml"/>
+        </Grid.Resources>
 
 
         <Grid.ColumnDefinitions>
@@ -19,15 +22,17 @@
             <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
+                        <Setter Property="Width" Value="Auto"/>
+                        <Setter Property="Height" Value="27"/>
                         <Setter Property="Margin" Value="10,0,10,7" />
                         <Setter Property="Padding" Value="15,0,15,0" />
                     </Style>
-                    <converters:IntegerGreaterThanToBoolConverter GreaterThan="1" x:Key="IntegerGreaterThanOne" ></converters:IntegerGreaterThanToBoolConverter>
+                    <converters:IntegerGreaterThanToBoolConverter GreaterThan="1" x:Key="IntegerGreaterThanOne" />
                 </StackPanel.Resources>
-                <Button Width="Auto" Height="27" Click="New_OnClick">New</Button>
-                <Button Width="Auto" Height="27" Click="Save_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Save</Button>
-                <Button Width="Auto" Height="27" Click="Revert_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Revert</Button>
-                <Button Width="Auto" Height="27" Click="Delete_OnClick" IsEnabled="{Binding ElementName=_this, Path=CompilerConfigurationNames.Count, 
+                <Button Click="New_OnClick">New</Button>
+                <Button Click="Save_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Save</Button>
+                <Button Click="Revert_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Revert</Button>
+                <Button Click="Delete_OnClick" IsEnabled="{Binding ElementName=_this, Path=CompilerConfigurationNames.Count, 
                     Converter={StaticResource IntegerGreaterThanOne}}">Delete</Button>
             </StackPanel>
         </Grid>
@@ -40,14 +45,7 @@
                 <Style TargetType="{x:Type Grid}">
                     <Setter Property="Margin" Value="2" />
                 </Style>
-                <Style TargetType="{x:Type Expander}">
-                    <Setter Property="Margin" Value="2" />
-                    <Setter Property="Padding" Value="2" />
-                    <Setter Property="BorderThickness" Value="2" />
-                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                    
-                </Style>
+                <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource ExpanderStyle}"/>
             </StackPanel.Resources>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">

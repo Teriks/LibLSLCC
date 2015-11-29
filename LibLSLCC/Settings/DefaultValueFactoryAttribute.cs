@@ -50,11 +50,11 @@ namespace LibLSLCC.Settings
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     public sealed class DefaultValueFactoryAttribute : Attribute
     {
-        public uint InitOrder { get; private set; }
+        public int InitOrder { get; private set; }
 
         public IDefaultSettingsValueFactory Factory { get; private set; }
 
-        public DefaultValueFactoryAttribute(Type factoryType, uint initOrder)
+        public DefaultValueFactoryAttribute(Type factoryType, int initOrder=0)
         {
             InitOrder = initOrder;
             Factory = Activator.CreateInstance(factoryType) as IDefaultSettingsValueFactory;

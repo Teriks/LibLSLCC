@@ -43,12 +43,14 @@
 
 #endregion
 
+using System.Reflection;
+
 namespace LibLSLCC.Settings
 {
     public interface IDefaultSettingsValueFactory
     {
-        bool CheckForNecessaryResets(object objectInstance, object settingValue);
+        bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue);
 
-        object GetDefaultValue(object objectInstance);
+        object GetDefaultValue(MemberInfo member, object objectInstance);
     }
 }

@@ -96,6 +96,8 @@ namespace LSLCCEditor.EditorTabUI
 
             ActiveLibraryDataSubsetsCache = new HashSet<string>(dataProvider.ActiveSubsets);
 
+            
+
 
             Content = new EditorTabContent(this)
             {
@@ -124,6 +126,8 @@ namespace LSLCCEditor.EditorTabUI
             MemoryOnly = true;
             FilePath = null;
     
+
+           
         }
 
 

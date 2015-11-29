@@ -53,7 +53,7 @@ namespace LSLCCEditor.Settings
 
     public static class AppSettings
     {
-        private const string CurrentSettingsVersion = "{B084DB08-804A-4065-9ACA-D9DDC05B331C}";
+        private const string CurrentSettingsVersion = "{63F94CFB-18A7-453A-9EBD-092D459AFE8B}";
 
         private static readonly SettingsManager<AppSettingsNode> SettingsManager =
             new SettingsManager<AppSettingsNode>();

@@ -50,6 +50,7 @@
         <File Id="LSLCCEditor.EditControl" Source="$(var.SourceDir)LSLCCEditor.EditControl.dll" />
         <File Id="LSLCCEditor.Utility" Source="$(var.SourceDir)LSLCCEditor.Utility.dll" />
         <File Id="LSLCCEditor.exe.config" Source="$(var.SourceDir)LSLCCEditor.exe.config" />
+        <File Id="Xceed.Wpf.Toolkit" Source="$(var.SourceDir)Xceed.Wpf.Toolkit.dll" />
         <File Id="Icon" Source="$(var.SourceDir)..\..\..\lsl_script_icon.ico" />
       </Component>
 

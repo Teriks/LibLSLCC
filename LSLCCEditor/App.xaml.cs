@@ -42,9 +42,13 @@
 #endregion
 #region Imports
 
+using System;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
+using LibLSLCC.Settings;
 using LSLCCEditor.Settings;
+using LSLCCEditor.Utility.Xml;
 
 #endregion
 
@@ -86,6 +90,14 @@ namespace LSLCCEditor
 #endif
 
             AppSettings.Load();
+
+
+
+
+        }
+
+        private void Handler(SettingsPropertyChangedEventArgs<object> settingsPropertyChangedEventArgs)
+        {
         }
 
         private void App_OnExit(object sender, ExitEventArgs e)

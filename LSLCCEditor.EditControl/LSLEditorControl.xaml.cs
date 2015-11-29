@@ -71,6 +71,7 @@ using LibLSLCC.Settings;
 using LibLSLCC.Utility;
 using LSLCCEditor.Utility;
 using LSLCCEditor.Utility.Binding;
+using LSLCCEditor.Utility.Xml;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
 
 #endregion
@@ -103,11 +104,17 @@ namespace LSLCCEditor.EditControl
 
         private static void SettingsPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
+            LSLEditorControl self = (LSLEditorControl) dependencyObject;
+
             if (dependencyPropertyChangedEventArgs.OldValue != null)
             {
                 var old = (LSLEditorControlSettings)dependencyPropertyChangedEventArgs.OldValue;
 
-                old.HighlightingColors.UnSubscribePropertyChanged(dependencyObject);
+                old.HighlightingColors.UnSubscribePropertyChangedAll(dependencyObject);
+
+                old.BackgroundColor.UnSubscribePropertyChanged(dependencyObject);
+
+                old.BasicTextColor.UnSubscribePropertyChanged(dependencyObject);
 
             }
 
@@ -116,21 +123,65 @@ namespace LSLCCEditor.EditControl
 
             var n = (LSLEditorControlSettings)dependencyPropertyChangedEventArgs.NewValue;
 
-            n.HighlightingColors.SubscribePropertyChanged(dependencyObject, SettingsPropertyChanged);
+            n.HighlightingColors.SubscribePropertyChangedAll(dependencyObject, HighlightingSettingsPropertyChanged);
+
+            self.Editor.Foreground = new SolidColorBrush(n.BasicTextColor.Content);
+            self.Editor.Background = new SolidColorBrush(n.BackgroundColor.Content);
+
+            n.BackgroundColor.SubscribePropertyChanged(dependencyObject, BackgroundColorSettingPropertyChanged);
+
+            n.BasicTextColor.SubscribePropertyChanged(dependencyObject, BasicTextColorSettingChanged);
+
+            n.SubscribePropertyChanged(dependencyObject, EditorSettingsPropertyChanged);
+
         }
 
 
-        private static void SettingsPropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlHighlightingColors> settingsPropertyChangedEventArgs)
+        private static void EditorSettingsPropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlSettings> settingsPropertyChangedEventArgs)
         {
 
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
+
+            if (settingsPropertyChangedEventArgs.PropertyName == "BackgroundColor")
+            {
+                suber.Editor.Background = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+            }
+            if (settingsPropertyChangedEventArgs.PropertyName == "BasicTextColor")
+            {
+                suber.Editor.Foreground = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+            }
+        }
+
+
+        private static void BasicTextColorSettingChanged(SettingsPropertyChangedEventArgs<XmlSerializableXaml<Color>> settingsPropertyChangedEventArgs)
+        {
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
+
+            suber.Editor.Foreground = new SolidColorBrush(settingsPropertyChangedEventArgs.PropertyOwner.Content);
+        }
+
+
+
+        private static void BackgroundColorSettingPropertyChanged(SettingsPropertyChangedEventArgs<XmlSerializableXaml<Color>> settingsPropertyChangedEventArgs)
+        {
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
+
+            suber.Editor.Background = new SolidColorBrush(settingsPropertyChangedEventArgs.PropertyOwner.Content);
+        }
+
+
+
+        private static void HighlightingSettingsPropertyChanged(SettingsPropertyChangedEventArgs<object> settingsPropertyChangedEventArgs)
+        {
             var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
 
             if (suber.LibraryDataProvider != null)
             {
                 suber.UpdateHighlightingColorsFromSettings();
             }
-
         }
+
+
 
 
         public LSLEditorControlSettings Settings
@@ -316,6 +367,7 @@ namespace LSLCCEditor.EditControl
             Editor.TextArea.Options.EnableRectangularSelection = true;
 
 
+
 #if DEBUG_FASTPARSER
             _debugObjectView.Show();
 #endif
@@ -451,7 +503,8 @@ namespace LSLCCEditor.EditControl
         {
             if (dependencyPropertyChangedEventArgs.NewValue != null)
             {
-                ((LSLEditorControl) dependencyObject).UpdateHighlightingFromDataProvider(
+                var control = (LSLEditorControl) dependencyObject;
+                control.UpdateHighlightingFromDataProvider(
                     (ILSLLibraryDataProvider) dependencyPropertyChangedEventArgs.NewValue);
             }
         }
@@ -2968,14 +3021,19 @@ namespace LSLCCEditor.EditControl
             {
                 switch (color.Name)
                 {
-
+                    case "String":
+                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.StringColor);
+                        break;
+                    case "Comment":
+                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.CommentColor);
+                        break;
                     case "Type":
                         color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.TypeColor);
                     break;
                     case "Constant":
                         color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.ConstantColor);
                         break;
-                    case "ConstrolFlow":
+                    case "ControlFlow":
                         color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.ControlFlowColor);
                         break;
                     case "State":
@@ -2997,71 +3055,75 @@ namespace LSLCCEditor.EditControl
             
         }
 
+        private IHighlightingDefinition LoadXSHD()
+        {
+            using (var strm = GetType().Assembly.GetManifestResourceStream(GetType().Namespace + ".LSL.xshd"))
+            {
+                var reader=new XmlTextReader(strm);
+                return HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            }
+
+        }
 
 
         public void UpdateHighlightingFromDataProvider(ILSLLibraryDataProvider provider)
         {
-            using (var resourceStream = GetType().Assembly.GetManifestResourceStream(GetType().Namespace+".LSL.xshd"))
+
+
+            Editor.SyntaxHighlighting = LoadXSHD();
+            UpdateHighlightingColorsFromSettings();
+
+            foreach (
+                var funcs in
+                    (from s in provider.LibraryFunctions.Where(x => x.Count > 0)
+                        orderby s.First().Name.Length descending
+                        select s))
             {
-                if (resourceStream != null)
+                var name = funcs.First().Name;
+
+                var colorName = "Function";
+
+                if (funcs.All(f => f.Deprecated))
                 {
-                    var reader = new XmlTextReader(resourceStream);
-
-                    Editor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-
-                    foreach (
-                        var funcs in
-                            (from s in provider.LibraryFunctions.Where(x => x.Count > 0)
-                                orderby s.First().Name.Length descending
-                                select s))
-                    {
-                        var name = funcs.First().Name;
-
-                        var colorName = "Function";
-
-                        if (funcs.All(f => f.Deprecated))
-                        {
-                            colorName = "DeprecatedFunction";
-                        }
-
-                        var rule = new HighlightingRule
-                        {
-                            Regex = new Regex("\\b" + name + "\\b"),
-                            Color = Editor.SyntaxHighlighting.GetNamedColor(colorName)
-                        };
-
-                        Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
-                    }
-
-                    foreach (var cnst in (from s in provider.LibraryConstants orderby s.Name.Length descending select s)
-                        )
-                    {
-                        var rule = new HighlightingRule
-                        {
-                            Regex = new Regex("\\b" + cnst.Name + "\\b"),
-                            Color = Editor.SyntaxHighlighting.GetNamedColor("Constant")
-                        };
-                        Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
-                    }
-
-                    foreach (
-                        var evnt in
-                            (from s in provider.LibraryEvents orderby s.Name.Length descending select s))
-                    {
-                        var rule = new HighlightingRule
-                        {
-                            Regex = new Regex("\\b" + evnt.Name + "\\b"),
-                            Color = Editor.SyntaxHighlighting.GetNamedColor("Event")
-                        };
-                        Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
-                    }
+                    colorName = "DeprecatedFunction";
                 }
-                else
+
+                var rule = new HighlightingRule
                 {
-                    throw new InvalidOperationException("Could not open manifest resource stream LSLCCEditor.LSL.xshd");
-                }
+                    Regex = new Regex("\\b" + name + "\\b"),
+                    Color = Editor.SyntaxHighlighting.GetNamedColor(colorName)
+                };
+
+
+                Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
             }
+
+            foreach (var cnst in (from s in provider.LibraryConstants orderby s.Name.Length descending select s)
+                )
+            {
+                var rule = new HighlightingRule
+                {
+                    Regex = new Regex("\\b" + cnst.Name + "\\b"),
+                    Color = Editor.SyntaxHighlighting.GetNamedColor("Constant")
+                };
+                Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
+            }
+
+            foreach (
+                var evnt in
+                    (from s in provider.LibraryEvents orderby s.Name.Length descending select s))
+            {
+                var rule = new HighlightingRule
+                {
+                    Regex = new Regex("\\b" + evnt.Name + "\\b"),
+                    Color = Editor.SyntaxHighlighting.GetNamedColor("Event")
+                };
+                Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
+            }
+
+            AvalonEditor.UpdateDefaultStyle();
         }
+
 
 
         private void TextEditor_OnContextMenuOpening(object sender, ContextMenuEventArgs e)

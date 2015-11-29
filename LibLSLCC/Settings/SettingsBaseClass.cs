@@ -48,33 +48,35 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using LibLSLCC.Collections;
 
 namespace LibLSLCC.Settings
 {
     public abstract class SettingsBaseClass<TSetting> : ICloneable, INotifyPropertyChanged, INotifyPropertyChanging
         where TSetting : class
     {
-        private readonly Dictionary<object, Action<SettingsPropertyChangedEventArgs<TSetting>>> _subscribedChanged =
-            new Dictionary<object, Action<SettingsPropertyChangedEventArgs<TSetting>>>();
+        private readonly HashMap<object, Action<SettingsPropertyChangedEventArgs<TSetting>>> _subscribedChanged =
+            new HashMap<object, Action<SettingsPropertyChangedEventArgs<TSetting>>>();
 
-        private readonly Dictionary<object, Action<SettingsPropertyChangingEventArgs<TSetting>>> _subscribedChanging =
-            new Dictionary<object, Action<SettingsPropertyChangingEventArgs<TSetting>>>();
+        private readonly HashMap<object, Action<SettingsPropertyChangingEventArgs<TSetting>>> _subscribedChanging =
+            new HashMap<object, Action<SettingsPropertyChangingEventArgs<TSetting>>>();
+
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-
         public event PropertyChangingEventHandler PropertyChanging;
 
-        protected virtual void OnPropertyChanging(string propertyName)
+
+        protected virtual void OnPropertyChanging(string propertyName, object oldValue, object newValue)
         {
             var handler = PropertyChanging;
             if (handler != null) handler(this, new PropertyChangingEventArgs(propertyName));
             foreach (var subscriber in _subscribedChanging)
             {
                 subscriber.Value(new SettingsPropertyChangingEventArgs<TSetting>(this as TSetting, subscriber.Key,
-                    propertyName));
+                    propertyName, oldValue, newValue));
             }
         }
+
 
         private IEnumerable<object> GetAllNonNullSettingsBaseChildren()
         {
@@ -82,33 +84,13 @@ namespace LibLSLCC.Settings
 
             var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-
             foreach (var prop in props)
             {
                 var value = prop.GetValue(this, null);
 
                 if (value == null) continue;
 
-                var baseSearch = prop.PropertyType.BaseType;
-
-                bool isSettingsBase = false;
-
-                while (baseSearch != null)
-                {
-                    var genericTickIndex = baseSearch.Name.IndexOf("`", StringComparison.Ordinal);
-                    if (genericTickIndex == -1) break;
-                    var nonGenericName = baseSearch.Name.Substring(0, genericTickIndex);
-                    if (nonGenericName != "SettingsBaseClass")
-                    {
-                        baseSearch = baseSearch.BaseType;
-                        continue;
-                    }
-
-                    isSettingsBase = true;
-                    break;
-                }
-
-                if (!isSettingsBase) continue;
+                if (!SettingsBaseClassTools.HasSettingsBase(prop.PropertyType)) continue;
 
                 yield return value;
             }
@@ -118,7 +100,9 @@ namespace LibLSLCC.Settings
         public void SubscribePropertyChangedAll(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
         {
             _subscribedChanged.Add(owner,
-                args => handler(new SettingsPropertyChangedEventArgs<object>(this, owner, args.PropertyName)));
+                args =>
+                    handler(new SettingsPropertyChangedEventArgs<object>(this, owner, args.PropertyName, args.OldValue,
+                        args.NewValue)));
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
@@ -153,10 +137,12 @@ namespace LibLSLCC.Settings
         }
 
 
-        public void SubscribePropertyChangingAll(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
+        public void SubscribePropertyChangingAll(object owner, Action<SettingsPropertyChangingEventArgs<object>> handler)
         {
             _subscribedChanging.Add(owner,
-                args => handler(new SettingsPropertyChangedEventArgs<object>(this, owner, args.PropertyName)));
+                args =>
+                    handler(new SettingsPropertyChangingEventArgs<object>(this, owner, args.PropertyName, args.OldValue,
+                        args.NewValue)));
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
@@ -192,7 +178,7 @@ namespace LibLSLCC.Settings
         }
 
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
 
@@ -202,7 +188,7 @@ namespace LibLSLCC.Settings
             foreach (var subscriber in _subscribedChanged)
             {
                 subscriber.Value(new SettingsPropertyChangedEventArgs<TSetting>(this as TSetting, subscriber.Key,
-                    propertyName));
+                    propertyName, oldValue, newValue));
             }
         }
 
@@ -211,12 +197,40 @@ namespace LibLSLCC.Settings
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
 
-            OnPropertyChanging(propertyName);
+            var curValue = field;
+
+            Type baseType;
+            if (field != null && SettingsBaseClassTools.HasSettingsBase(field.GetType(), out baseType))
+            {
+                TransferObservers(baseType, field, value);
+            }
+
+            OnPropertyChanging(propertyName, curValue, value);
             field = value;
-            OnPropertyChanged(propertyName);
+            OnPropertyChanged(propertyName, curValue, value);
 
             return true;
         }
+
+
+        private void TransferObservers<T>(Type baseType, T oldVal, T newVal)
+        {
+            const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                                           | BindingFlags.Static;
+
+
+            var subscribedChanging = baseType.GetField("_subscribedChanging", bindFlags);
+            var subscribedChanged = baseType.GetField("_subscribedChanged", bindFlags);
+
+
+            var changing = subscribedChanging.GetValue(oldVal) as ICloneable;
+            var changed = subscribedChanged.GetValue(oldVal) as ICloneable;
+
+
+            subscribedChanging.SetValue(newVal, changing.Clone());
+            subscribedChanged.SetValue(newVal, changed.Clone());
+        }
+
 
         public override int GetHashCode()
         {

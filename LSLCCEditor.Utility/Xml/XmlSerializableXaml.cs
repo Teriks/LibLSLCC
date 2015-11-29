@@ -46,15 +46,21 @@ using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using LibLSLCC.Settings;
 
 namespace LSLCCEditor.Utility.Xml
 {
     [Serializable]
-    public class XmlSerializableXaml<T> : IXmlSerializable
+    public class XmlSerializableXaml<T> : SettingsBaseClass<XmlSerializableXaml<T>>, IXmlSerializable
     {
+        private T _content;
 
         [XmlIgnore]
-        public T Content { get; private set; }
+        public T Content
+        {
+            get { return _content; }
+            set { SetField(ref _content,value, "Content"); }
+        }
 
         public XmlSchema GetSchema()
         {

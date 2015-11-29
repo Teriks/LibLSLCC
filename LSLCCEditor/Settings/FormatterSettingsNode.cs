@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using LibLSLCC.Formatter;
@@ -16,7 +17,7 @@ namespace LSLCCEditor.Settings
 
         private class FormatterSettingsValueFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object objectInstance, object settingValue)
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
             {
                 if (settingValue == null)
                 {
@@ -25,7 +26,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object objectInstance)
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
             {
                 return new LSLCodeFormatterSettings();
             }

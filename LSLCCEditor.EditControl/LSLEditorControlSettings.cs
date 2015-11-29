@@ -41,7 +41,10 @@
 // 
 #endregion
 
+using System.Reflection;
+using System.Windows.Media;
 using LibLSLCC.Settings;
+using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl
 {
@@ -58,6 +61,46 @@ namespace LSLCCEditor.EditControl
         private bool _camelCaseAutoCompleteMatching;
         private bool _substringSearchAutoCompleteMatching;
         private bool _constantCompletionFirstCharIsCaseSensitive = true;
+        private XmlColor _backgroundColor = new XmlColor(Colors.White);
+        private XmlColor _basicTextColor = new XmlColor(Colors.Black);
+
+
+        private class DefaultColorFactory : IDefaultSettingsValueFactory
+        {
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+            {
+                if (settingValue == null)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
+            {
+                switch (member.Name)
+                {
+                    case "BackgroundColor": return new XmlColor(Colors.White);
+                    case "BasicTextColor": return new XmlColor(Colors.Black);
+                }
+                return null;
+            }
+        }
+
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
+        public XmlColor BasicTextColor
+        {
+            get { return _basicTextColor; }
+            set { SetField(ref _basicTextColor, value, "BasicTextColor"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultColorFactory))]
+        public XmlColor BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { SetField(ref _backgroundColor, value, "BackgroundColor"); }
+        }
+
 
 
         public bool CaseInsensitiveAutoCompleteMatching
@@ -65,6 +108,7 @@ namespace LSLCCEditor.EditControl
             get { return _caseInsensitiveAutoCompleteMatching; }
             set {SetField(ref _caseInsensitiveAutoCompleteMatching,value, "CaseInsensitiveAutoCompleteMatching"); }
         }
+
 
         public bool CamelCaseAutoCompleteMatching
         {

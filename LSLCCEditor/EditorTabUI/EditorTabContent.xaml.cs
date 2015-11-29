@@ -48,6 +48,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using LibLSLCC.LibraryData;
+using LibLSLCC.Settings;
+using LSLCCEditor.Settings;
 
 #endregion
 
@@ -59,8 +61,8 @@ namespace LSLCCEditor.EditorTabUI
     public partial class EditorTabContent : UserControl
     {
         public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
-            "LibraryDataProvider", typeof (ILSLLibraryDataProvider), typeof (EditorTabContent),
-            new FrameworkPropertyMetadata(null));
+            "LibraryDataProvider", typeof (ILSLLibraryDataProvider), typeof (EditorTabContent));
+
 
         public static readonly DependencyProperty SourceCodeProperty = DependencyProperty.Register("SourceCode",
             typeof (string), typeof (EditorTabContent),
@@ -74,6 +76,32 @@ namespace LSLCCEditor.EditorTabUI
         {
             InitializeComponent();
             _ownerTab = owner;
+
+            Editor.Settings =
+                AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration]
+                .EditorControlSettings;
+
+            
+        }
+
+
+        private void Handler(SettingsPropertyChangedEventArgs<AppSettingsNode> settingsPropertyChangedEventArgs)
+        {
+            if (settingsPropertyChangedEventArgs.PropertyName == "CurrentEditorControlConfiguration")
+            {
+                Editor.Settings =
+                    AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration].EditorControlSettings;
+            }
+        }
+
+        private void Editor_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            AppSettings.Settings.SubscribePropertyChanged(this, Handler);
+        }
+
+        private void Editor_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            AppSettings.Settings.UnSubscribePropertyChanged(this);
         }
 
         public ILSLLibraryDataProvider LibraryDataProvider
@@ -139,5 +167,8 @@ namespace LSLCCEditor.EditorTabUI
         {
             _ownerTab.ChangesPending = true;
         }
+
+
+
     }
 }

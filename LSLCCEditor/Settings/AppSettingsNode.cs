@@ -45,6 +45,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
@@ -112,7 +113,7 @@ namespace LSLCCEditor.Settings
 
         private class EditorControlConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object settingsNode, object propertyValues)
+            public bool CheckForNecessaryResets(MemberInfo member, object settingsNode, object propertyValues)
             {
                 if (settingsNode == null) return true;
 
@@ -136,7 +137,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object settingsNode)
+            public object GetDefaultValue(MemberInfo member, object settingsNode)
             {
                 var d = new XmlDictionary<string, EditorControlSettingsNode>
                 {
@@ -161,7 +162,7 @@ namespace LSLCCEditor.Settings
 
         private class CurrentEditorConfigurationDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
+            public bool CheckForNecessaryResets(MemberInfo member, object settingsNode, object propertyValue)
             {
                 if (propertyValue == null) return true;
 
@@ -183,7 +184,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object settingsNode)
+            public object GetDefaultValue(MemberInfo member, object settingsNode)
             {
                 var settingsNodeInstance = (AppSettingsNode) settingsNode;
 
@@ -206,7 +207,7 @@ namespace LSLCCEditor.Settings
 
         private class CompilerConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
+            public bool CheckForNecessaryResets(MemberInfo member, object settingsNode, object propertyValue)
             {
                 if (propertyValue == null) return true;
 
@@ -229,7 +230,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object settingsNode)
+            public object GetDefaultValue(MemberInfo member, object settingsNode)
             {
                 var d = new XmlDictionary<string, CompilerConfigurationNode>();
 
@@ -291,7 +292,7 @@ namespace LSLCCEditor.Settings
 
         private class CurrentCompilerConfigurationDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
+            public bool CheckForNecessaryResets(MemberInfo member, object settingsNode, object propertyValue)
             {
                 if (propertyValue == null) return true;
 
@@ -312,7 +313,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object settingsNode)
+            public object GetDefaultValue(MemberInfo member, object settingsNode)
             {
                 var settingsNodeInstance = (AppSettingsNode) settingsNode;
 
@@ -335,7 +336,7 @@ namespace LSLCCEditor.Settings
 
         public class FormatterConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object objectInstance, object settingValue)
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
             {
                 if (settingValue == null) return true;
 
@@ -358,7 +359,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object objectInstance)
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
             {
                 var d = new XmlDictionary<string, FormatterSettingsNode>();
 
@@ -380,7 +381,7 @@ namespace LSLCCEditor.Settings
 
         private class CurrentFormatterConfigurationDefaultFactory : IDefaultSettingsValueFactory
         {
-            public bool CheckForNecessaryResets(object settingsNode, object propertyValue)
+            public bool CheckForNecessaryResets(MemberInfo member, object settingsNode, object propertyValue)
             {
                 if (propertyValue == null) return true;
 
@@ -401,7 +402,7 @@ namespace LSLCCEditor.Settings
                 return false;
             }
 
-            public object GetDefaultValue(object settingsNode)
+            public object GetDefaultValue(MemberInfo member, object settingsNode)
             {
                 var settingsNodeInstance = (AppSettingsNode) settingsNode;
 
@@ -440,6 +441,29 @@ namespace LSLCCEditor.Settings
 
             CompilerConfigurations.Add(configurationName, DefaultValueInitializer.Init(new CompilerConfigurationNode()));
         }
+
+
+
+        public void AddEditorConfiguration(string configurationName)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Editor configuration name cannot be null or whitespace.",
+                    "configurationName");
+            }
+
+            if (EditorControlConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor configuration named {0} already exist.", configurationName),
+                    "configurationName");
+            }
+
+
+            EditorControlConfigurations.Add(configurationName,
+                DefaultValueInitializer.Init(new EditorControlSettingsNode()));
+        }
+
 
 
         public void RemoveCompilerConfiguration(string configurationName, string newCurrentConfiguration)
@@ -482,6 +506,50 @@ namespace LSLCCEditor.Settings
             CompilerConfigurations.Remove(configurationName);
 
             CurrentCompilerConfiguration = newCurrentConfiguration;
+        }
+
+
+
+        public void RemoveEditorConfiguration(string configurationName, string newCurrentConfiguration)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Editor configuration name cannot be null or whitespace.",
+                    "configurationName");
+            }
+
+            if (string.IsNullOrWhiteSpace(newCurrentConfiguration))
+            {
+                throw new ArgumentException("Editor configuration name cannot be null or whitespace.",
+                    "newCurrentConfiguration");
+            }
+
+
+            if (!EditorControlConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor configuration named {0} does not exist.", configurationName),
+                    "configurationName");
+            }
+
+            if (!EditorControlConfigurations.ContainsKey(newCurrentConfiguration))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor configuration named {0} does not exist.", newCurrentConfiguration),
+                    "newCurrentConfiguration");
+            }
+
+            if (EditorControlConfigurations.Count == 1)
+            {
+                throw new InvalidOperationException(
+                    "There must be at least one editor configuration present in the " +
+                    "application settings, cannot remove the configuration as it is the only one present.");
+            }
+
+
+            EditorControlConfigurations.Remove(configurationName);
+
+            CurrentEditorControlConfiguration = newCurrentConfiguration;
         }
     }
 }

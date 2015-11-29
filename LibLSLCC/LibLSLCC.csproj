@@ -107,6 +107,7 @@
     <Compile Include="Settings\IDefaultSettingsValueFactory.cs" />
     <Compile Include="Settings\ObservableSettingsCollection.cs" />
     <Compile Include="Settings\ObservableSettingsHashSet.cs" />
+    <Compile Include="Settings\SettingsBaseClassTools.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\SettingsPropertyChangedEventArgs.cs" />
     <Compile Include="Settings\SettingsPropertyChangingEventArgs.cs" />

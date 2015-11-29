@@ -179,11 +179,22 @@ namespace LibLSLCC.CSharp
                     throw new ArgumentException(_validatedSignature.ErrorDescription, "value");
                 }
 
-                OnPropertyChanging("QualifiedName");
-                OnPropertyChanging("BaseName");
+                string oldQualifiedName = null;
+                string oldBaseName = null;
+
+                if (_validatedSignature != null)
+                {
+                    oldQualifiedName = _validatedSignature.QualifiedName;
+                    oldBaseName = _validatedSignature.BaseName;
+                }
+
+                OnPropertyChanging("QualifiedName", oldQualifiedName, vName.QualifiedName);
+                OnPropertyChanging("BaseName", oldBaseName, vName.BaseName);
+
                 SetField(ref _validatedSignature, vName, "ValidatedSignature");
-                OnPropertyChanged("QualifiedName");
-                OnPropertyChanged("BaseName");
+
+                OnPropertyChanged("QualifiedName", oldQualifiedName, QualifiedName);
+                OnPropertyChanged("BaseName",oldBaseName, BaseName);
 
                 SetField(ref _fullSignature, value, "FullSignature");
             }
