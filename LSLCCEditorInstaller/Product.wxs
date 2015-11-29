@@ -64,6 +64,7 @@
     <Component Id="ThirdPartyLicensesFolder" Directory="THIRDPARTYLICENSES" Guid="E6CB3511-BC30-49A3-89E8-168360E2518B">
       <File Id="AvalonEdit.txt" Source="$(var.SourceDir)\ThirdPartyLicenses\AvalonEdit.txt"/>
       <File Id="Antlr_4.txt" Source="$(var.SourceDir)\ThirdPartyLicenses\Antlr 4.txt"/>
+      <File Id="Xceed.Wpf.Toolkit.txt" Source="$(var.SourceDir)\ThirdPartyLicenses\Xceed.Wpf.Toolkit.txt"/>
     </Component>
 
     <DirectoryRef Id="ApplicationProgramsFolder">

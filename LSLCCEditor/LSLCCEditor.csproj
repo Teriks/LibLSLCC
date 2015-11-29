@@ -240,6 +240,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LibraryData\folder-readme.txt" />
+    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Xceed.Wpf.Toolkit.txt">
+      <Link>ThirdPartyLicences\Xceed.Wpf.Toolkit.txt</Link>
+    </ThirdPartyLicenses>
     <Content Include="lsl_script_icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -277,8 +280,12 @@
     <LibLSLCCLibraryData Include="..\LibLSLCC\LibraryData\default.xml">
       <Link>LibraryData\default.xml</Link>
     </LibLSLCCLibraryData>
-    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt" />
-    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\AvalonEdit.txt" />
+    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Antlr 4.txt">
+      <Link>ThirdPartyLicences\Antlr 4.txt</Link>
+    </ThirdPartyLicenses>
+    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\AvalonEdit.txt">
+      <Link>ThirdPartyLicences\AvalonEdit.txt</Link>
+    </ThirdPartyLicenses>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
