@@ -131,7 +131,7 @@ namespace LibLSLCC.Settings
         }
 
 
-        public void SubscribePropertyChangedAll(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
+        public void SubscribePropertyChangedRecursive(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
         {
             if (!_subscribedChanged.ContainsKey(owner))
             {
@@ -156,11 +156,12 @@ namespace LibLSLCC.Settings
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
-                var subscribeMethod = child.GetType().GetMethod("SubscribePropertyChangedAll");
+                var subscribeMethod = child.GetType().GetMethod("SubscribePropertyChangedRecursive");
 
                 subscribeMethod.Invoke(child, new[] {owner, handler});
             }
         }
+
 
 
         public void SubscribePropertyChanged(object owner, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
@@ -181,14 +182,32 @@ namespace LibLSLCC.Settings
             }
         }
 
+        public void SubscribePropertyChanged(object owner, string propertyName, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
+        {
+            if (!_subscribedChanged.ContainsKey(owner))
+            {
+                _subscribedChanged.Add(owner, new HashMap<string, Action<SettingsPropertyChangedEventArgs<TSetting>>>
+                {
+                    {
+                        propertyName,
+                        handler
+                    }
+                });
+            }
+            else
+            {
+                _subscribedChanged[owner].Add(propertyName, handler);
+            }
+        }
 
-        public void UnSubscribePropertyChangedAll(object owner)
+
+        public void UnSubscribePropertyChangedRecursive(object owner)
         {
             _subscribedChanged.Remove(owner);
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
-                var subscribeMethod = child.GetType().GetMethod("UnSubscribePropertyChangedAll");
+                var subscribeMethod = child.GetType().GetMethod("UnSubscribePropertyChangedRecursive");
 
                 subscribeMethod.Invoke(child, new[] {owner});
             }
@@ -199,8 +218,13 @@ namespace LibLSLCC.Settings
             _subscribedChanged.Remove(owner);
         }
 
+        public void UnSubscribePropertyChanged(object owner, string propertyName)
+        {
+            _subscribedChanged[owner].Remove(propertyName);
+        }
 
-        public void SubscribePropertyChangingAll(object owner, Action<SettingsPropertyChangingEventArgs<object>> handler)
+
+        public void SubscribePropertyChangingRecursive(object owner, Action<SettingsPropertyChangingEventArgs<object>> handler)
         {
             if (!_subscribedChanging.ContainsKey(owner))
             {
@@ -226,7 +250,7 @@ namespace LibLSLCC.Settings
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
-                var subscribeMethod = child.GetType().GetMethod("SubscribePropertyChangingAll");
+                var subscribeMethod = child.GetType().GetMethod("SubscribePropertyChangingRecursive");
 
                 subscribeMethod.Invoke(child, new[] {owner, handler});
             }
@@ -252,13 +276,32 @@ namespace LibLSLCC.Settings
         }
 
 
-        public void UnSubscribePropertyChangingAll(object owner)
+        public void SubscribePropertyChanging(object owner, string propertyName, Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
+        {
+            if (!_subscribedChanging.ContainsKey(owner))
+            {
+                _subscribedChanging.Add(owner, new HashMap<string, Action<SettingsPropertyChangingEventArgs<TSetting>>>
+                {
+                    {
+                        propertyName,
+                        handler
+                    }
+                });
+            }
+            else
+            {
+                _subscribedChanging[owner].Add(propertyName, handler);
+            }
+        }
+
+
+        public void UnSubscribePropertyChangingRecursive(object owner)
         {
             _subscribedChanging.Remove(owner);
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
-                var subscribeMethod = child.GetType().GetMethod("UnSubscribePropertyChangingAll");
+                var subscribeMethod = child.GetType().GetMethod("UnSubscribePropertyChangingRecursive");
 
                 subscribeMethod.Invoke(child, new[] {owner});
             }
@@ -268,6 +311,11 @@ namespace LibLSLCC.Settings
         public void UnSubscribePropertyChanging(object owner)
         {
             _subscribedChanging.Remove(owner);
+        }
+
+        public void UnSubscribePropertyChanging(object owner, string propertyName)
+        {
+            _subscribedChanging[owner].Remove(propertyName);
         }
 
 

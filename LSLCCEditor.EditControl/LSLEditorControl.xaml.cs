@@ -104,13 +104,13 @@ namespace LSLCCEditor.EditControl
 
         private static void SettingsPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            LSLEditorControl self = (LSLEditorControl) dependencyObject;
+            var self = (LSLEditorControl) dependencyObject;
 
             if (dependencyPropertyChangedEventArgs.OldValue != null)
             {
                 var old = (LSLEditorControlSettings)dependencyPropertyChangedEventArgs.OldValue;
 
-                old.HighlightingColors.UnSubscribePropertyChangedAll(dependencyObject);
+                old.HighlightingColors.UnSubscribePropertyChangedRecursive(dependencyObject);
 
                 old.BackgroundColor.UnSubscribePropertyChanged(dependencyObject);
 
@@ -124,7 +124,7 @@ namespace LSLCCEditor.EditControl
 
             var n = (LSLEditorControlSettings)dependencyPropertyChangedEventArgs.NewValue;
 
-            n.HighlightingColors.SubscribePropertyChangedAll(dependencyObject, HighlightingSettingsPropertyChanged);
+            n.HighlightingColors.SubscribePropertyChangedRecursive(dependencyObject, HighlightingSettingsPropertyChanged);
 
             self.Editor.Foreground = new SolidColorBrush(n.BasicTextColor.Content);
             self.Editor.Background = new SolidColorBrush(n.BackgroundColor.Content);

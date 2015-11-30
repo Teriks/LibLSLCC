@@ -102,7 +102,7 @@ namespace LSLCCEditor.SettingsUI
         {
             if (pane.CurrentCompilerConfiguration != null)
             {
-                pane.CurrentCompilerConfiguration.UnSubscribePropertyChangedAll(pane);
+                pane.CurrentCompilerConfiguration.UnSubscribePropertyChangedRecursive(pane);
 
                 if (pane._lastNamespaceImportsChangedHandler != null)
                 {
@@ -139,7 +139,7 @@ namespace LSLCCEditor.SettingsUI
                 : "";
 
 
-            pane.CurrentCompilerConfiguration.SubscribePropertyChangedAll(pane,
+            pane.CurrentCompilerConfiguration.SubscribePropertyChangedRecursive(pane,
                 AnyCurrentCompilerConfigSubPropertyChanged);
 
             pane._lastNamespaceImportsChangedHandler = (sender, args) =>

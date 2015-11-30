@@ -87,21 +87,18 @@ namespace LSLCCEditor.EditorTabUI
 
         private void EditorSettingsPropertyChangedHandler(SettingsPropertyChangedEventArgs<AppSettingsNode> settingsPropertyChangedEventArgs)
         {
-            if (settingsPropertyChangedEventArgs.PropertyName == "CurrentEditorControlConfiguration")
-            {
-                Editor.Settings =
-                    AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration].EditorControlSettings;
-            }
+            Editor.Settings =
+                AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration].EditorControlSettings;
         }
 
         private void Editor_OnLoaded(object sender, RoutedEventArgs e)
         {
-            AppSettings.Settings.SubscribePropertyChanged(this, EditorSettingsPropertyChangedHandler);
+            AppSettings.Settings.SubscribePropertyChanged(this, "CurrentEditorControlConfiguration", EditorSettingsPropertyChangedHandler);
         }
 
         private void Editor_OnUnloaded(object sender, RoutedEventArgs e)
         {
-            AppSettings.Settings.UnSubscribePropertyChanged(this);
+            AppSettings.Settings.UnSubscribePropertyChanged(this, "CurrentEditorControlConfiguration");
         }
 
         public ILSLLibraryDataProvider LibraryDataProvider
