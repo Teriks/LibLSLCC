@@ -180,10 +180,21 @@
 
 
                     </ListView>
-                    <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                            Click="ImportHighlightingColors_OnClick">
+                            Import
+                        </Button>
+                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                            Click="ExportHighlightingColors_OnClick">
+                            Export
+                        </Button>
+                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
                             Click="ResetAllHighlightingColors_OnClick">
                         All Default
-                    </Button>
+                        </Button>
+                    </StackPanel>
+
                 </StackPanel>
             </Expander>
         </StackPanel>

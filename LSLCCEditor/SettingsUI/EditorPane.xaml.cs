@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Xml;
+using System.Xml.Serialization;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
 using LSLCCEditor.Settings;
+using Microsoft.Win32;
 using Xceed.Wpf.Toolkit;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace LSLCCEditor.SettingsUI
 {
@@ -148,6 +154,79 @@ namespace LSLCCEditor.SettingsUI
             EditorConfigurationNames.Remove(CurrentEditorConfigurationName);
 
             EditorConfigurationCombobox.SelectedIndex = newIndex;
+        }
+
+        private void ImportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            var openDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Filter = "Highlighting Colors (*.xml)|*.xml;",
+                AddExtension = true,
+                DefaultExt = ".xml"
+ 
+            };
+
+
+
+            if (!openDialog.ShowDialog(OwnerSettingsWindow).Value)
+            {
+                return;
+            }
+
+            try
+            {
+                using (var file = new XmlTextReader(openDialog.OpenFile()))
+                {
+                    var x = new XmlSerializer(typeof (LSLEditorControlHighlightingColors));
+
+                    EditorControlSettings.HighlightingColors = (LSLEditorControlHighlightingColors) x.Deserialize(file);
+                }
+            }
+            catch (XmlSyntaxException ex)
+            {
+                MessageBox.Show("An XML syntax error was encountered while loading the file, settings could not be applied: "
+                    + Environment.NewLine + Environment.NewLine + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("There was an unknown error while loading the settings file, settings could not be applied: "
+                    + Environment.NewLine+Environment.NewLine+ex.Message);
+            }
+        }
+
+
+
+        private void ExportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            var saveDialog = new SaveFileDialog
+            {
+                Filter = "Highlighting Colors (*.xml)|*.xml;",
+                FileName = "LSLCCEditor_HighlightingColors.xml"
+            };
+
+
+            if (!saveDialog.ShowDialog(OwnerSettingsWindow).Value)
+            {
+                return;
+            }
+
+            try
+            {
+                using (var file = new XmlTextWriter(saveDialog.OpenFile(), Encoding.Unicode))
+                {
+                    file.Formatting = Formatting.Indented;
+
+                    var x = new XmlSerializer(typeof (LSLEditorControlHighlightingColors));
+
+                    x.Serialize(file, EditorControlSettings.HighlightingColors);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected problem occurred while trying to save the file: " 
+                    + Environment.NewLine + Environment.NewLine + ex.Message);
+            }
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace LSLCCEditor.SettingsUI
@@ -20,11 +18,11 @@ namespace LSLCCEditor.SettingsUI
             var myType = typeof(SettingsWindow);
             //var panes = myType.Assembly.GetTypes().Where(t => string.Equals(t.Namespace, myType.Namespace, StringComparison.Ordinal) && t.GetInterfaces().Any(i => i == typeof(ISettingsPane)));
 
-            var compilerPane = new CompilerPane() {OwnerSettingsWindow = this};
+            var compilerPane = new CompilerPane {OwnerSettingsWindow = this};
             _settingPanes.Add(compilerPane);
 
            
-            var editorPane = new EditorPane() { OwnerSettingsWindow = this };
+            var editorPane = new EditorPane { OwnerSettingsWindow = this };
             _settingPanes.Add(editorPane);
 
            
