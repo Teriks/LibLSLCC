@@ -220,7 +220,12 @@ namespace LibLSLCC.Settings
 
         public void UnSubscribePropertyChanged(object owner, string propertyName)
         {
-            _subscribedChanged[owner].Remove(propertyName);
+            var dictRef = _subscribedChanged[owner];
+            dictRef.Remove(propertyName);
+            if (dictRef.Count == 0)
+            {
+                _subscribedChanged.Remove(owner);
+            }
         }
 
 
@@ -315,7 +320,12 @@ namespace LibLSLCC.Settings
 
         public void UnSubscribePropertyChanging(object owner, string propertyName)
         {
-            _subscribedChanging[owner].Remove(propertyName);
+            var dictRef = _subscribedChanging[owner];
+            dictRef.Remove(propertyName);
+            if (dictRef.Count == 0)
+            {
+                _subscribedChanging.Remove(owner);
+            }
         }
 
 
