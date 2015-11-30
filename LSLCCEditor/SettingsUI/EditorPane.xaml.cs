@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
 using LSLCCEditor.Settings;
+using LSLCCEditor.Utility.Xml;
 using Microsoft.Win32;
 using Xceed.Wpf.Toolkit;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -156,6 +157,16 @@ namespace LSLCCEditor.SettingsUI
             EditorConfigurationCombobox.SelectedIndex = newIndex;
         }
 
+
+
+        public class HighlightingSettings
+        {
+            public XmlColor BasicTextColor { get; set; }
+            public XmlColor BackgroundColor { get; set; }
+            public LSLEditorControlHighlightingColors HighlightingColors { get; set; }
+        }
+
+
         private void ImportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
             var openDialog = new OpenFileDialog
@@ -166,9 +177,7 @@ namespace LSLCCEditor.SettingsUI
                 DefaultExt = ".xml"
  
             };
-
-
-
+  
             if (!openDialog.ShowDialog(OwnerSettingsWindow).Value)
             {
                 return;
@@ -178,9 +187,13 @@ namespace LSLCCEditor.SettingsUI
             {
                 using (var file = new XmlTextReader(openDialog.OpenFile()))
                 {
-                    var x = new XmlSerializer(typeof (LSLEditorControlHighlightingColors));
+                    var x = new XmlSerializer(typeof (HighlightingSettings));
 
-                    EditorControlSettings.HighlightingColors = (LSLEditorControlHighlightingColors) x.Deserialize(file);
+                    var settings = (HighlightingSettings) x.Deserialize(file);
+
+                    EditorControlSettings.BasicTextColor = settings.BasicTextColor;
+                    EditorControlSettings.BackgroundColor = settings.BackgroundColor;
+                    EditorControlSettings.HighlightingColors = settings.HighlightingColors;
                 }
             }
             catch (XmlSyntaxException ex)
@@ -217,9 +230,16 @@ namespace LSLCCEditor.SettingsUI
                 {
                     file.Formatting = Formatting.Indented;
 
-                    var x = new XmlSerializer(typeof (LSLEditorControlHighlightingColors));
+                    var x = new XmlSerializer(typeof(HighlightingSettings));
 
-                    x.Serialize(file, EditorControlSettings.HighlightingColors);
+                    var settings = new HighlightingSettings()
+                    {
+                        BackgroundColor = EditorControlSettings.BackgroundColor,
+                        BasicTextColor = EditorControlSettings.BasicTextColor,
+                        HighlightingColors = EditorControlSettings.HighlightingColors
+                    };
+
+                    x.Serialize(file, settings);
                 }
             }
             catch (Exception ex)
