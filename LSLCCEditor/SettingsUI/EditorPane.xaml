@@ -54,6 +54,7 @@
                     <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
                         <Setter Property="Width" Value="150" />
                         <Setter Property="UsingAlphaChannel" Value="False" />
+                        <Setter Property="ShowStandardColors" Value="False"/>
                         <Setter Property="ColorMode" Value="ColorCanvas" />
                     </Style>
                     <Style x:Key="StackPanels" TargetType="StackPanel">
