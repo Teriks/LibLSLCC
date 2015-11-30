@@ -313,7 +313,7 @@ namespace LibLSLCC.Collections
         }
 
 
-        public object Clone()
+        public virtual object Clone()
         {
             return new HashSet<T>(this.AsEnumerable());
         }

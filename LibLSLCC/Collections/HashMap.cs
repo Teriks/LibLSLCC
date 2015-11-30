@@ -340,7 +340,7 @@ namespace LibLSLCC.Collections
         /// true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
         /// </returns>
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        public bool Contains(KeyValuePair<TKey, TValue> item)
+        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
         {
             return _items.Contains(item);
         }
@@ -356,7 +356,7 @@ namespace LibLSLCC.Collections
         }
 
 
-        public object Clone()
+        public virtual object Clone()
         {
             var copy = new HashMap<TKey, TValue>();
 

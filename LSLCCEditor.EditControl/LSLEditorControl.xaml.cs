@@ -116,6 +116,7 @@ namespace LSLCCEditor.EditControl
 
                 old.BasicTextColor.UnSubscribePropertyChanged(dependencyObject);
 
+                old.UnSubscribePropertyChanged(dependencyObject);
             }
 
 

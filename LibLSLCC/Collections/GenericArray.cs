@@ -253,7 +253,7 @@ namespace LibLSLCC.Collections
         }
 
 
-        public object Clone()
+        public virtual object Clone()
         {
             return new GenericArray<T>(this.AsEnumerable());
         }

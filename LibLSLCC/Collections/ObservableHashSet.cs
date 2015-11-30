@@ -161,12 +161,6 @@ namespace LibLSLCC.Collections
         
         public virtual object Clone()
         {
-
-            if (typeof (T).GetInterfaces().Any(x => x == typeof (ICloneable)))
-            {
-                return new ObservableHashSet<T>(_hashSet.Select(x=>(T)((ICloneable)x).Clone()));
-            }
-
             return new ObservableHashSet<T>(_hashSet);
         }
     }

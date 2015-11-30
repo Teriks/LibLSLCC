@@ -85,7 +85,7 @@ namespace LSLCCEditor.EditorTabUI
         }
 
 
-        private void Handler(SettingsPropertyChangedEventArgs<AppSettingsNode> settingsPropertyChangedEventArgs)
+        private void EditorSettingsPropertyChangedHandler(SettingsPropertyChangedEventArgs<AppSettingsNode> settingsPropertyChangedEventArgs)
         {
             if (settingsPropertyChangedEventArgs.PropertyName == "CurrentEditorControlConfiguration")
             {
@@ -96,7 +96,7 @@ namespace LSLCCEditor.EditorTabUI
 
         private void Editor_OnLoaded(object sender, RoutedEventArgs e)
         {
-            AppSettings.Settings.SubscribePropertyChanged(this, Handler);
+            AppSettings.Settings.SubscribePropertyChanged(this, EditorSettingsPropertyChangedHandler);
         }
 
         private void Editor_OnUnloaded(object sender, RoutedEventArgs e)

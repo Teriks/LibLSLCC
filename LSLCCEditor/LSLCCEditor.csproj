@@ -239,6 +239,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="ThirdPartyLicences\folder-readme.txt" />
     <None Include="LibraryData\folder-readme.txt" />
     <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Xceed.Wpf.Toolkit.txt">
       <Link>ThirdPartyLicences\Xceed.Wpf.Toolkit.txt</Link>

@@ -486,7 +486,7 @@ namespace LibLSLCC.Collections
 
         #endregion
 
-        public object Clone()
+        public virtual object Clone()
         {
             var instance = new PriorityQueue<TPriority, TValue>(_comparer);
             foreach (var item in _baseHeap)

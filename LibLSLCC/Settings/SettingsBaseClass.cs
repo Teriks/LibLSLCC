@@ -55,11 +55,34 @@ namespace LibLSLCC.Settings
     public abstract class SettingsBaseClass<TSetting> : ICloneable, INotifyPropertyChanged, INotifyPropertyChanging
         where TSetting : class
     {
-        private readonly HashMap<object, Action<SettingsPropertyChangedEventArgs<TSetting>>> _subscribedChanged =
-            new HashMap<object, Action<SettingsPropertyChangedEventArgs<TSetting>>>();
+        private class DeepClonableValueHashMap<TKey, TValue> : HashMap<TKey, TValue>
+        {
+            public override object Clone()
+            {
+                var map = new DeepClonableValueHashMap<TKey, TValue>();
 
-        private readonly HashMap<object, Action<SettingsPropertyChangingEventArgs<TSetting>>> _subscribedChanging =
-            new HashMap<object, Action<SettingsPropertyChangingEventArgs<TSetting>>>();
+                foreach (var kvp in this)
+                {
+                    var clonableValue = (ICloneable) kvp.Value;
+                    map.Add(kvp.Key, (TValue) clonableValue.Clone());
+                }
+
+                return map;
+            }
+        }
+
+
+        private readonly
+            DeepClonableValueHashMap<object, HashMap<string, Action<SettingsPropertyChangedEventArgs<TSetting>>>>
+            _subscribedChanged =
+                new DeepClonableValueHashMap
+                    <object, HashMap<string, Action<SettingsPropertyChangedEventArgs<TSetting>>>>();
+
+        private readonly
+            DeepClonableValueHashMap<object, HashMap<string, Action<SettingsPropertyChangingEventArgs<TSetting>>>>
+            _subscribedChanging =
+                new DeepClonableValueHashMap
+                    <object, HashMap<string, Action<SettingsPropertyChangingEventArgs<TSetting>>>>();
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -72,8 +95,19 @@ namespace LibLSLCC.Settings
             if (handler != null) handler(this, new PropertyChangingEventArgs(propertyName));
             foreach (var subscriber in _subscribedChanging)
             {
-                subscriber.Value(new SettingsPropertyChangingEventArgs<TSetting>(this as TSetting, subscriber.Key,
-                    propertyName, oldValue, newValue));
+                Action<SettingsPropertyChangingEventArgs<TSetting>> action;
+
+                if (subscriber.Value.TryGetValue("", out action))
+                {
+                    action(new SettingsPropertyChangingEventArgs<TSetting>(this as TSetting, subscriber.Key,
+                        propertyName, oldValue, newValue));
+                }
+
+                if (subscriber.Value.TryGetValue(propertyName, out action))
+                {
+                    action(new SettingsPropertyChangingEventArgs<TSetting>(this as TSetting, subscriber.Key,
+                        propertyName, oldValue, newValue));
+                }
             }
         }
 
@@ -99,10 +133,26 @@ namespace LibLSLCC.Settings
 
         public void SubscribePropertyChangedAll(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
         {
-            _subscribedChanged.Add(owner,
-                args =>
-                    handler(new SettingsPropertyChangedEventArgs<object>(this, owner, args.PropertyName, args.OldValue,
+            if (!_subscribedChanged.ContainsKey(owner))
+            {
+                _subscribedChanged.Add(owner, new HashMap<string, Action<SettingsPropertyChangedEventArgs<TSetting>>>()
+                {
+                    {
+                        "",
+                        args =>
+                            handler(new SettingsPropertyChangedEventArgs<object>(this, owner, args.PropertyName,
+                                args.OldValue,
+                                args.NewValue))
+                    }
+                });
+            }
+            else
+            {
+                _subscribedChanged[owner].Add("", args =>
+                    handler(new SettingsPropertyChangedEventArgs<object>(this, owner, args.PropertyName,
+                        args.OldValue,
                         args.NewValue)));
+            }
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
@@ -115,7 +165,20 @@ namespace LibLSLCC.Settings
 
         public void SubscribePropertyChanged(object owner, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
         {
-            _subscribedChanged.Add(owner, handler);
+            if (!_subscribedChanged.ContainsKey(owner))
+            {
+                _subscribedChanged.Add(owner, new HashMap<string, Action<SettingsPropertyChangedEventArgs<TSetting>>>
+                {
+                    {
+                        "",
+                        handler
+                    }
+                });
+            }
+            else
+            {
+                _subscribedChanged[owner].Add("", handler);
+            }
         }
 
 
@@ -139,10 +202,27 @@ namespace LibLSLCC.Settings
 
         public void SubscribePropertyChangingAll(object owner, Action<SettingsPropertyChangingEventArgs<object>> handler)
         {
-            _subscribedChanging.Add(owner,
-                args =>
-                    handler(new SettingsPropertyChangingEventArgs<object>(this, owner, args.PropertyName, args.OldValue,
+            if (!_subscribedChanging.ContainsKey(owner))
+            {
+                _subscribedChanging.Add(owner,
+                    new HashMap<string, Action<SettingsPropertyChangingEventArgs<TSetting>>>()
+                    {
+                        {
+                            "",
+                            args =>
+                                handler(new SettingsPropertyChangingEventArgs<object>(this, owner, args.PropertyName,
+                                    args.OldValue,
+                                    args.NewValue))
+                        }
+                    });
+            }
+            else
+            {
+                _subscribedChanging[owner].Add("", args =>
+                    handler(new SettingsPropertyChangingEventArgs<object>(this, owner, args.PropertyName,
+                        args.OldValue,
                         args.NewValue)));
+            }
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
@@ -155,7 +235,20 @@ namespace LibLSLCC.Settings
 
         public void SubscribePropertyChanging(object owner, Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
         {
-            _subscribedChanging.Add(owner, handler);
+            if (!_subscribedChanging.ContainsKey(owner))
+            {
+                _subscribedChanging.Add(owner, new HashMap<string, Action<SettingsPropertyChangingEventArgs<TSetting>>>
+                {
+                    {
+                        "",
+                        handler
+                    }
+                });
+            }
+            else
+            {
+                _subscribedChanging[owner].Add("", handler);
+            }
         }
 
 
@@ -187,8 +280,19 @@ namespace LibLSLCC.Settings
 
             foreach (var subscriber in _subscribedChanged)
             {
-                subscriber.Value(new SettingsPropertyChangedEventArgs<TSetting>(this as TSetting, subscriber.Key,
-                    propertyName, oldValue, newValue));
+                Action<SettingsPropertyChangedEventArgs<TSetting>> action;
+
+                if (subscriber.Value.TryGetValue("", out action))
+                {
+                    action(new SettingsPropertyChangedEventArgs<TSetting>(this as TSetting, subscriber.Key,
+                        propertyName, oldValue, newValue));
+                }
+
+                if (subscriber.Value.TryGetValue(propertyName, out action))
+                {
+                    action(new SettingsPropertyChangedEventArgs<TSetting>(this as TSetting, subscriber.Key,
+                        propertyName, oldValue, newValue));
+                }
             }
         }
 
