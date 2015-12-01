@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Xml;
 using System.Xml.Serialization;
 using LibLSLCC.Settings;
@@ -29,12 +30,14 @@ namespace LSLCCEditor.SettingsUI
 
             Title = "Editor Settings";
             CurrentEditorConfigurationName = AppSettings.Settings.CurrentEditorControlConfiguration;
-            EditorConfigurationNames = new ObservableCollection<string>(AppSettings.Settings.EditorControlConfigurations.Keys);
+            EditorConfigurationNames =
+                new ObservableCollection<string>(AppSettings.Settings.EditorControlConfigurations.Keys);
         }
 
 
         public static readonly DependencyProperty EditorConfigurationNamesProperty = DependencyProperty.Register(
-            "EditorConfigurationNames", typeof (ObservableCollection<string>), typeof (EditorPane), new PropertyMetadata(default(ObservableCollection<string>)));
+            "EditorConfigurationNames", typeof (ObservableCollection<string>), typeof (EditorPane),
+            new PropertyMetadata(default(ObservableCollection<string>)));
 
         public ObservableCollection<string> EditorConfigurationNames
         {
@@ -47,9 +50,11 @@ namespace LSLCCEditor.SettingsUI
 
 
         public static readonly DependencyProperty CurrentEditorConfigurationNameProperty = DependencyProperty.Register(
-            "CurrentEditorConfigurationName", typeof (string), typeof (EditorPane), new PropertyMetadata(default(string), CurrentEditorConfigurationChangedCallback));
+            "CurrentEditorConfigurationName", typeof (string), typeof (EditorPane),
+            new PropertyMetadata(default(string), CurrentEditorConfigurationChangedCallback));
 
-        private static void CurrentEditorConfigurationChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private static void CurrentEditorConfigurationChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var editorPane = (EditorPane) dependencyObject;
 
@@ -59,11 +64,11 @@ namespace LSLCCEditor.SettingsUI
 
             editorPane.EditorControlSettings =
                 AppSettings.Settings.EditorControlConfigurations[newValue].EditorControlSettings;
-
         }
 
         public static readonly DependencyProperty EditorControlSettingsNodeProperty = DependencyProperty.Register(
-            "EditorControlSettings", typeof (LSLEditorControlSettings), typeof (EditorPane), new PropertyMetadata(default(LSLEditorControlSettings)));
+            "EditorControlSettings", typeof (LSLEditorControlSettings), typeof (EditorPane),
+            new PropertyMetadata(default(LSLEditorControlSettings)));
 
         public LSLEditorControlSettings EditorControlSettings
         {
@@ -82,7 +87,13 @@ namespace LSLCCEditor.SettingsUI
         {
             var colorBox = ((Border) ((StackPanel) ((FrameworkElement) sender).Parent).Children[1]).Child;
 
-            var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement)colorBox, ColorPicker.SelectedColorProperty);
+            ResetHighlightingColorBox(colorBox);
+        }
+
+        private void ResetHighlightingColorBox(UIElement colorBox)
+        {
+            var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement) colorBox,
+                ColorPicker.SelectedColorProperty);
             var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
 
             var propName = propNames[propNames.Length - 2];
@@ -97,28 +108,69 @@ namespace LSLCCEditor.SettingsUI
             }
         }
 
+
+        private void ResetCompletionWindowColor_OnClick(object sender, RoutedEventArgs e)
+        {
+            var colorBox = ((Border) ((StackPanel) ((FrameworkElement) sender).Parent).Children[1]).Child;
+
+            ResetCompletionBrushColorBox(colorBox);
+        }
+
+
+        private void ResetCompletionBrushColorBox(UIElement colorBox)
+        {
+            var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement) colorBox,
+                ColorPicker.SelectedColorProperty);
+            var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
+
+
+            var context = propNames[1];
+            if (context == "CompletionWindowItemBrushes")
+            {
+                var propName = propNames[propNames.Length - 3];
+
+                var deflt =
+                    (XmlSolidBrush)
+                        DefaultValueInitializer.GetDefaultValue(EditorControlSettings.CompletionWindowItemBrushes,
+                            propName);
+
+                var property = EditorControlSettings.CompletionWindowItemBrushes.GetType()
+                    .GetProperty(propName);
+
+                var propertyValue = (XmlSolidBrush) property.GetValue(EditorControlSettings.CompletionWindowItemBrushes);
+
+                var con = typeof (XmlSolidBrush).GetProperty("Content");
+
+                var contentValue = (SolidColorBrush) con.GetValue(propertyValue);
+
+                contentValue.Color = deflt.Content.Color;
+            }
+            else
+            {
+                var propName = propNames[propNames.Length - 2];
+                DefaultValueInitializer.SetToDefault(EditorControlSettings, propName);
+            }
+        }
+
+
+        private void ResetAllCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var color in CompletionWindowColorsListView.Items.Cast<StackPanel>())
+            {
+                var colorBox = ((Border) color.Children[1]).Child;
+                ResetCompletionBrushColorBox(colorBox);
+            }
+        }
+
         private void ResetAllHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
             foreach (var color in HighlightingColorsListView.Items.Cast<StackPanel>())
             {
-                var colorBox=((Border) color.Children[1]).Child;
-                var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement)colorBox, ColorPicker.SelectedColorProperty);
-                var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
-
-                var propName = propNames[propNames.Length - 2];
-
-                var context = propNames[1];
-
-                if (context == "HighlightingColors")
-                {
-                    DefaultValueInitializer.SetToDefault(EditorControlSettings.HighlightingColors, propName);
-                }
-                else
-                {
-                    DefaultValueInitializer.SetToDefault(EditorControlSettings, propName);
-                }
+                var colorBox = ((Border) color.Children[1]).Child;
+                ResetHighlightingColorBox(colorBox);
             }
         }
+
 
         private void NewConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
@@ -158,7 +210,6 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
         public class HighlightingSettings
         {
             public XmlColor BasicTextColor { get; set; }
@@ -175,9 +226,8 @@ namespace LSLCCEditor.SettingsUI
                 Filter = "Highlighting Colors (*.xml)|*.xml;",
                 AddExtension = true,
                 DefaultExt = ".xml"
- 
             };
-  
+
             if (!openDialog.ShowDialog(OwnerSettingsWindow).Value)
             {
                 return;
@@ -199,15 +249,14 @@ namespace LSLCCEditor.SettingsUI
             catch (XmlSyntaxException ex)
             {
                 MessageBox.Show("An XML syntax error was encountered while loading the file, settings could not be applied: "
-                    + Environment.NewLine + Environment.NewLine + ex.Message);
+                                + Environment.NewLine + Environment.NewLine + ex.Message);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("There was an unknown error while loading the settings file, settings could not be applied: "
-                    + Environment.NewLine+Environment.NewLine+ex.Message);
+                                + Environment.NewLine + Environment.NewLine + ex.Message);
             }
         }
-
 
 
         private void ExportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
@@ -230,7 +279,7 @@ namespace LSLCCEditor.SettingsUI
                 {
                     file.Formatting = Formatting.Indented;
 
-                    var x = new XmlSerializer(typeof(HighlightingSettings));
+                    var x = new XmlSerializer(typeof (HighlightingSettings));
 
                     var settings = new HighlightingSettings()
                     {
@@ -244,8 +293,112 @@ namespace LSLCCEditor.SettingsUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An unexpected problem occurred while trying to save the file: " 
-                    + Environment.NewLine + Environment.NewLine + ex.Message);
+                MessageBox.Show("An unexpected problem occurred while trying to save the file: "
+                                + Environment.NewLine + Environment.NewLine + ex.Message);
+            }
+        }
+
+
+        public class CompletionWindowColorSettings
+        {
+            public XmlColor CompletionWindowBackgroundColor { get; set; }
+            public XmlColor CompletionWindowSelectionBackgroundColor { get; set; }
+
+            public XmlColor CompletionWindowSelectionBorderColor { get; set; }
+
+            public LSLEditorCompletionWindowItemBrushes CompletionWindowItemBrushes { get; set; }
+        }
+
+
+
+        private void ImportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            var openDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Filter = "Completion Window Colors (*.xml)|*.xml;",
+                AddExtension = true,
+                DefaultExt = ".xml"
+            };
+            if (!openDialog.ShowDialog(OwnerSettingsWindow).Value)
+            {
+                return;
+            }
+
+            try
+            {
+                using (var file = new XmlTextReader(openDialog.OpenFile()))
+                {
+                    var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
+
+                    var settings = (CompletionWindowColorSettings) x.Deserialize(file);
+
+                    EditorControlSettings.CompletionWindowItemBrushes = settings.CompletionWindowItemBrushes;
+                    EditorControlSettings.CompletionWindowBackgroundColor = settings.CompletionWindowBackgroundColor;
+
+                    EditorControlSettings.CompletionWindowSelectionBackgroundColor =
+                        settings.CompletionWindowSelectionBackgroundColor;
+
+                    EditorControlSettings.CompletionWindowSelectionBorderColor =
+                        settings.CompletionWindowSelectionBorderColor;
+                }
+            }
+            catch (XmlSyntaxException ex)
+            {
+                MessageBox.Show("An XML syntax error was encountered while loading the file, settings could not be applied: "
+                                + Environment.NewLine + Environment.NewLine + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("There was an unknown error while loading the settings file, settings could not be applied: "
+                                + Environment.NewLine + Environment.NewLine + ex.Message);
+            }
+        }
+
+
+
+        private void ExportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            var saveDialog = new SaveFileDialog
+            {
+                Filter = "Completion Window Colors (*.xml)|*.xml;",
+                FileName = "LSLCCEditor_CompletionWindowColors.xml"
+            };
+
+
+            if (!saveDialog.ShowDialog(OwnerSettingsWindow).Value)
+            {
+                return;
+            }
+
+            try
+            {
+                using (var file = new XmlTextWriter(saveDialog.OpenFile(), Encoding.Unicode))
+                {
+                    file.Formatting = Formatting.Indented;
+
+                    var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
+
+                    var settings = new CompletionWindowColorSettings()
+                    {
+                        CompletionWindowItemBrushes = EditorControlSettings.CompletionWindowItemBrushes,
+
+                        CompletionWindowSelectionBorderColor =
+                            EditorControlSettings.CompletionWindowSelectionBorderColor,
+
+                        CompletionWindowBackgroundColor = EditorControlSettings.CompletionWindowBackgroundColor,
+
+                        CompletionWindowSelectionBackgroundColor =
+                            EditorControlSettings.CompletionWindowSelectionBackgroundColor
+                    };
+
+                    x.Serialize(file, settings);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected problem occurred while trying to save the file: "
+                                + Environment.NewLine + Environment.NewLine + ex.Message);
             }
         }
     }

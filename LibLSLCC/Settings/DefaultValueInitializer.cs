@@ -76,7 +76,7 @@ namespace LibLSLCC.Settings
             }
         }
 
-        public static T SetToDefault<T>(T instance, string memberName)
+        public static object GetDefaultValue<T>(T instance, string memberName)
         {
             var settingsProperty =
                 instance.GetType()
@@ -85,7 +85,7 @@ namespace LibLSLCC.Settings
                 instance.GetType()
                     .GetField(memberName, BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
 
-            const BindingFlags constructorBindingFlags = 
+            const BindingFlags constructorBindingFlags =
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
             var member = settingsField == null ? settingsProperty : (MemberInfo)settingsField;
@@ -120,15 +120,15 @@ namespace LibLSLCC.Settings
             {
                 var factory = ((DefaultValueFactoryAttribute)factoryAttribute.First());
 
-                SetValue(member, instance, factory.Factory.GetDefaultValue(member, instance));
+                return factory.Factory.GetDefaultValue(member, instance);
             }
-            else if (defaultAttribute.Any())
+            if (defaultAttribute.Any())
             {
                 var defaultValue = ((DefaultValueAttribute)defaultAttribute.First());
 
-                SetValue(member, instance, defaultValue.Value);
+                return defaultValue.Value;
             }
-            else if (fieldValue == null)
+            if (fieldValue == null)
             {
                 var constructors =
                     fieldType.GetConstructors(constructorBindingFlags).Where(x => !x.GetParameters().Any()).ToList();
@@ -148,7 +148,22 @@ namespace LibLSLCC.Settings
 
                 object newInstance = constructor.Invoke(null);
                 Init(newInstance);
-                SetValue(member, instance, constructor.Invoke(null));
+                return constructor.Invoke(null);
+            }
+
+            return null;
+        }
+
+
+
+        public static T SetToDefault<T>(T instance, string memberName)
+        {
+            var d = GetDefaultValue(instance, memberName);
+            var member = typeof (T).GetProperty(memberName) ?? (MemberInfo) typeof(T).GetField(memberName);
+
+            if (member != null && d != null)
+            {
+                SetValue(member, instance, d);
             }
 
             return instance;
@@ -254,5 +269,7 @@ namespace LibLSLCC.Settings
 
             return instance;
         }
+
+
     }
 }

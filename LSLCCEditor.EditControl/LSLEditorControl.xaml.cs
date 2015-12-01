@@ -731,6 +731,8 @@ namespace LSLCCEditor.EditControl
         }
 
 
+
+
         private CompletionWindow CreateNewCompletionWindow()
         {
             var c = new CompletionWindow(Editor.TextArea);
@@ -747,6 +749,18 @@ namespace LSLCCEditor.EditControl
             c.CompletionList.CamelCaseMatching = Settings.CamelCaseAutoCompleteMatching;
 
             c.CompletionList.CaseInsensitiveMatching = Settings.CaseInsensitiveAutoCompleteMatching;
+
+            c.CompletionList.ListBox.Background = new SolidColorBrush(Settings.CompletionWindowBackgroundColor);
+
+            c.SelectedItemBackground = new SolidColorBrush(Settings.CompletionWindowSelectionBackgroundColor);
+
+            
+            var borderBrush = (DrawingBrush)Resources["CompletionWindowSelectionBorderBrush"];
+
+            ((GeometryDrawing) ((DrawingGroup) borderBrush.Drawing).Children[0]).Brush =
+                    new SolidColorBrush(Settings.CompletionWindowSelectionBorderColor);
+
+            c.SelectedItemBorderBrush = borderBrush;
 
             return c;
         }
@@ -1573,7 +1587,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("default", "default", 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionBrushes.StateNameBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.StateNameBrush,
                 DescriptionFactory = CreateDescriptionTextBlock_DefaultState
             };
 
@@ -1627,7 +1641,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(state.Name, state.Name, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionBrushes.StateNameBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.StateNameBrush,
                 DescriptionFactory = ()=>CreateDescriptionTextBlock_DefinedState(state)
             };
 
@@ -1666,7 +1680,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(label.Target, label.Target, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionBrushes.LabelNameDefinitionBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.LabelNameDefinitionBrush,
                 DescriptionFactory = ()=> CreateDescriptionTextBlock_LabelDefinition()
             };
 
@@ -1708,7 +1722,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(label.Name, label.Name, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionBrushes.LabelNameJumpTargetBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.LabelNameJumpTargetBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_LabelJumpTarget()
             };
 
@@ -1749,7 +1763,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(v.Name, v.Name, 1)
             {
-                ColorBrush = Settings.CompletionBrushes.GlobalVariableBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.GlobalVariableBrush,
                 DescriptionFactory = () => CreateGlobalVariableDescriptionTextBlock(v)
             };
 
@@ -1788,7 +1802,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(sig.Name, sig.Name, 5)
             {
-                ColorBrush = Settings.CompletionBrushes.LibraryConstantBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.LibraryConstantBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_LibraryConstant(sig)
             };
 
@@ -1826,7 +1840,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(v.Name, v.Name, 4)
             {
-                ColorBrush = Settings.CompletionBrushes.LocalVariableBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.LocalVariableBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_LocalVariable(v)
             };
 
@@ -1864,7 +1878,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(v.Name, v.Name, 3)
             {
-                ColorBrush = Settings.CompletionBrushes.LocalParameterBrush
+                ColorBrush = Settings.CompletionWindowItemBrushes.LocalParameterBrush
             };
 
 
@@ -1910,7 +1924,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(func.Name, func.Name, 2)
             {
                 AppendOnInsert = "()" + additiveEnding,
-                ColorBrush = Settings.CompletionBrushes.GlobalFunctionBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.GlobalFunctionBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_GlobalUserFunction(func)
             };
 
@@ -1941,7 +1955,7 @@ namespace LSLCCEditor.EditControl
             var nameRun = new Run(func.Name)
             {
                 FontWeight = FontWeights.Bold,
-                Foreground = Settings.CompletionBrushes.GlobalFunctionBrush
+                Foreground = Settings.CompletionWindowItemBrushes.GlobalFunctionBrush
             };
 
             description.Inlines.Add(new Run("Global Function:" + LSLFormatTools.CreateNewLinesString(2))
@@ -1981,11 +1995,11 @@ namespace LSLCCEditor.EditControl
 
             var allOverloadsDeprecated = sigs.All(x => x.Deprecated);
 
-            var colorBrush = Settings.CompletionBrushes.LibraryFunctionBrush;
+            var colorBrush = Settings.CompletionWindowItemBrushes.LibraryFunctionBrush;
 
             if (allOverloadsDeprecated)
             {
-                colorBrush = Settings.CompletionBrushes.LibraryFunctionDeprecatedBrush;
+                colorBrush = Settings.CompletionWindowItemBrushes.LibraryFunctionDeprecatedBrush;
             }
 
             var additiveEnding = autoCompleteParser.InExpressionStatementArea ||
@@ -2048,11 +2062,11 @@ namespace LSLCCEditor.EditControl
                         FontWeight = FontWeights.Bold
                     });
 
-                    nameRun.Foreground = Settings.CompletionBrushes.LibraryFunctionDeprecatedBrush;
+                    nameRun.Foreground = Settings.CompletionWindowItemBrushes.LibraryFunctionDeprecatedBrush;
                 }
                 else
                 {
-                    nameRun.Foreground = Settings.CompletionBrushes.LibraryFunctionBrush;
+                    nameRun.Foreground = Settings.CompletionWindowItemBrushes.LibraryFunctionBrush;
                 }
 
                 if (func.ReturnType != LSLType.Void)
@@ -2124,7 +2138,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("for", "for(;;)", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2157,7 +2171,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("while", "while()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2191,7 +2205,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("do", "do", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}\nwhile();"),
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretAfterInsert = true,
@@ -2223,7 +2237,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("if", "if()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2256,7 +2270,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("else if", "else if()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2292,7 +2306,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("else", "else", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n\t\n}"),
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2329,7 +2343,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("return", "return", 0)
             {
                 AppendOnInsert = inReturningFunction ? " ;" : ";",
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 7,
@@ -2366,7 +2380,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("jump", "jump", 0)
             {
                 AppendOnInsert = " ;",
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 5,
@@ -2403,7 +2417,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("state", "state", 0)
             {
                 AppendOnInsert = " ;",
-                ColorBrush = Settings.CompletionBrushes.ControlStatementBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
                 OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 6,
@@ -2456,7 +2470,7 @@ namespace LSLCCEditor.EditControl
 
             return new LSLCompletionData(typeString, typeString, 0)
             {
-                ColorBrush = Settings.CompletionBrushes.TypeBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.TypeBrush,
                 DescriptionFactory = () => desc
             };
         }
@@ -2495,7 +2509,7 @@ namespace LSLCCEditor.EditControl
                 eventHandler.Name, 0)
             {
                 AppendOnInsert = parameters + "\n{\n\t\n}",
-                ColorBrush = Settings.CompletionBrushes.EventHandlerBrush,
+                ColorBrush = Settings.CompletionWindowItemBrushes.EventHandlerBrush,
                 ForceIndent = true,
                 IndentLevel = 1,
                 OffsetCaretFromBegining = true,
@@ -2526,7 +2540,7 @@ namespace LSLCCEditor.EditControl
             var nameRun = new Run(eventHandler.Name)
             {
                 FontWeight = FontWeights.Bold,
-                Foreground = Settings.CompletionBrushes.EventHandlerBrush
+                Foreground = Settings.CompletionWindowItemBrushes.EventHandlerBrush
             };
 
             description.Inlines.Add(nameRun);

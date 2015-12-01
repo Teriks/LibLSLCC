@@ -137,6 +137,7 @@
     <Compile Include="Settings\EditorControlSettingsNode.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\AppSettingsNode.cs" />
+    <Compile Include="Settings\EditorControlSettingsDictionaryConverter.cs" />
     <Compile Include="Settings\FormatterSettingsNode.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -221,13 +222,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LSLCCEditor.CompletionUI\LSLCCEditor.CompletionUI.csproj">
+      <Project>{e7bb39ff-5301-44bd-ac00-4dc773da68a7}</Project>
+      <Name>LSLCCEditor.CompletionUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LibLSLCC\LibLSLCC.csproj">
       <Project>{19f2caf5-7c57-4a11-8aa3-dfd58f7ae289}</Project>
       <Name>LibLSLCC</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LSLCCEditor.CompletionUI\LSLCCEditor.CompletionUI.csproj">
-      <Project>{4a763c47-5d8a-4f56-8fb3-7aa63b1ba09f}</Project>
-      <Name>LSLCCEditor.CompletionUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\LSLCCEditor.EditControl\LSLCCEditor.EditControl.csproj">
       <Project>{d19a381e-dbd0-4eed-9493-1d5725fe3dd4}</Project>

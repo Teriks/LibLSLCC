@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LSLCompletionData.cs" />
-    <Compile Include="LSLEditorCompletionBrushes.cs" />
+    <Compile Include="LSLEditorCompletionWindowItemBrushes.cs" />
     <Compile Include="LSLEditorControl.xaml.cs">
       <DependentUpon>LSLEditorControl.xaml</DependentUpon>
     </Compile>
@@ -95,13 +95,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LSLCCEditor.CompletionUI\LSLCCEditor.CompletionUI.csproj">
+      <Project>{e7bb39ff-5301-44bd-ac00-4dc773da68a7}</Project>
+      <Name>LSLCCEditor.CompletionUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LibLSLCC\LibLSLCC.csproj">
       <Project>{19f2caf5-7c57-4a11-8aa3-dfd58f7ae289}</Project>
       <Name>LibLSLCC</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LSLCCEditor.CompletionUI\LSLCCEditor.CompletionUI.csproj">
-      <Project>{4a763c47-5d8a-4f56-8fb3-7aa63b1ba09f}</Project>
-      <Name>LSLCCEditor.CompletionUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\LSLCCEditor.Utility\LSLCCEditor.Utility.csproj">
       <Project>{5f5e22b6-4800-41c6-a5a3-2895bd4bce66}</Project>

@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System;
 using System.Reflection;
 using System.Windows.Media;
 using LibLSLCC.Settings;
@@ -63,6 +64,8 @@ namespace LSLCCEditor.EditControl
 
         private class  DefaultColorFactory : IDefaultSettingsValueFactory
         {
+            private static readonly LSLEditorControlHighlightingColors Default = new LSLEditorControlHighlightingColors();
+
             public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
             {
                 if (settingValue == null)
@@ -74,18 +77,13 @@ namespace LSLCCEditor.EditControl
 
             public object GetDefaultValue(MemberInfo member, object objectInstance)
             {
-                switch (member.Name)
+                var prop = member as PropertyInfo;
+
+                if (prop != null)
                 {
-                    case "StateKeywordColor": return new XmlColor(Color.FromRgb(127, 0, 38));
-                    case "LibraryFunctionColor": return new XmlColor(Color.FromRgb(127, 0, 38));
-                    case "LibraryFunctionDeprecatedColor": return new XmlColor(Color.FromRgb(232, 19, 174));
-                    case "EventColor": return new XmlColor(Color.FromRgb(0, 76, 127));
-                    case "TypeColor": return new XmlColor(Color.FromRgb(25, 76, 25));
-                    case "CommentColor": return new XmlColor(Color.FromRgb(255, 127, 80));
-                    case "ControlFlowColor": return new XmlColor(Color.FromRgb(0, 0, 204));
-                    case "StringColor": return new XmlColor(Color.FromRgb(25, 76, 25));
-                    case "ConstantColor": return new XmlColor(Color.FromRgb(50, 52, 138));
+                    return ((ICloneable)prop.GetValue(Default)).Clone();
                 }
+
                 return null;
             }
         }

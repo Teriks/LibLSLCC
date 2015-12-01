@@ -21,6 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
@@ -31,6 +32,39 @@ namespace LSLCCEditor.CompletionUI
     /// </summary>
     public class CompletionWindow : CompletionWindowBase
     {
+
+        public static readonly DependencyProperty SelectedItemBackgroundProperty = DependencyProperty.Register(
+            "SelectedItemBackground", typeof (Brush), typeof (CompletionWindow), new PropertyMetadata(default(Brush)));
+
+        public Brush SelectedItemBackground
+        {
+            get { return (Brush) GetValue(SelectedItemBackgroundProperty); }
+            set { SetValue(SelectedItemBackgroundProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty SelectedItemForegroundProperty = DependencyProperty.Register(
+            "SelectedItemForeground", typeof(Brush), typeof(CompletionWindow), new PropertyMetadata(default(Brush)));
+
+        public Brush SelectedItemForeground
+        {
+            get { return (Brush)GetValue(SelectedItemForegroundProperty); }
+            set { SetValue(SelectedItemForegroundProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty SelectedItemBorderBrushProperty = DependencyProperty.Register(
+    "SelectedItemBorderBrush", typeof(Brush), typeof(CompletionWindow), new PropertyMetadata(default(Brush)));
+
+        public Brush SelectedItemBorderBrush
+        {
+            get { return (Brush)GetValue(SelectedItemBorderBrushProperty); }
+            set { SetValue(SelectedItemBorderBrushProperty, value); }
+        }
+
+
+
+
         readonly CompletionList completionList = new CompletionList();
         ToolTip toolTip = new ToolTip();
 

@@ -27,6 +27,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 
+
 namespace LSLCCEditor.CompletionUI
 {
     public class CompletionList : Control
@@ -114,7 +115,6 @@ namespace LSLCCEditor.CompletionUI
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-
             listBox = GetTemplateChild("PART_ListBox") as CompletionListBox;
             if (listBox != null)
             {

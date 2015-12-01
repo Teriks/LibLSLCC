@@ -248,21 +248,31 @@ namespace LSLCCEditor.EditControl
 
             if (OffsetCaretFromBegining)
             {
-                textArea.Caret.Offset = completionOffset + offsetFromBegining;
+                textArea.Caret.Offset = Clamp(completionOffset + offsetFromBegining, 0, textArea.Document.TextLength);
             }
             else if (OffsetCaretRelativeToDocument)
             {
-                textArea.Caret.Offset = CaretOffsetAfterInsert;
+                textArea.Caret.Offset = Clamp(CaretOffsetAfterInsert,0,textArea.Document.TextLength);
             }
             else
             {
-                textArea.Caret.Offset = textArea.Caret.Offset + CaretOffsetAfterInsert;
+                textArea.Caret.Offset = Clamp(textArea.Caret.Offset + CaretOffsetAfterInsert, 0, textArea.Document.TextLength);
             }
 
             if (InsertTextAtCaretAfterOffset)
             {
                 textArea.Document.Insert(textArea.Caret.Offset, insertionText);
             }
+        }
+
+
+
+
+        private static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
+        {
+            if (val.CompareTo(min) < 0) return min;
+            if (val.CompareTo(max) > 0) return max;
+            return val;
         }
 
 

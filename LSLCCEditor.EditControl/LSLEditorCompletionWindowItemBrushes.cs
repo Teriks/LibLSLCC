@@ -1,6 +1,6 @@
 #region FileInfo
 // 
-// File: LSLEditorCompletionBrushes.cs
+// File: LSLEditorCompletionWindowItemBrushes.cs
 // 
 // 
 // ============================================================
@@ -41,13 +41,15 @@
 // 
 #endregion
 
+using System;
+using System.Reflection;
 using System.Windows.Media;
 using LibLSLCC.Settings;
 using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl
 {
-    public class LSLEditorCompletionBrushes :  SettingsBaseClass<LSLEditorCompletionBrushes>
+    public class LSLEditorCompletionWindowItemBrushes :  SettingsBaseClass<LSLEditorCompletionWindowItemBrushes>
     {
         private XmlSolidBrush _typeBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));
         private XmlSolidBrush _eventHandlerBrush = new SolidColorBrush(Color.FromRgb(0, 76, 127));
@@ -64,80 +66,114 @@ namespace LSLCCEditor.EditControl
         private XmlSolidBrush _controlStatementBrush = new SolidColorBrush(Colors.Black);
 
 
+        private class DefaultBrushFactory : IDefaultSettingsValueFactory
+        {
+            private static readonly LSLEditorCompletionWindowItemBrushes Default = new LSLEditorCompletionWindowItemBrushes();
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+            {
+                if (settingValue == null)
+                {
+                    return true;
+                }
+                return false;
+            }
 
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
+            {
+                var prop = member as PropertyInfo;
+                if (prop != null)
+                {
+                    return ((ICloneable)prop.GetValue(Default)).Clone();
+                }
+                return null;
+            }
+        }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush TypeBrush
         {
             get { return _typeBrush; }
             set { SetField(ref _typeBrush, value, "TypeBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush EventHandlerBrush
         {
             get { return _eventHandlerBrush; }
             set { SetField(ref _eventHandlerBrush, value, "EventHandlerBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush GlobalFunctionBrush
         {
             get { return _globalFunctionBrush; }
             set { SetField(ref _globalFunctionBrush, value, "GlobalFunctionBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush GlobalVariableBrush
         {
             get { return _globalVariableBrush; }
             set { SetField(ref _globalVariableBrush, value, "GlobalVariableBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush LibraryConstantBrush
         {
             get { return _libraryConstantBrush; }
             set { SetField(ref _libraryConstantBrush, value, "LibraryConstantBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush LibraryFunctionBrush
         {
             get { return _libraryFunctionBrush; }
             set { SetField(ref _libraryFunctionBrush, value, "LibraryFunctionBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush LibraryFunctionDeprecatedBrush
         {
             get { return _libraryFunctionDeprecatedBrush; }
             set { SetField(ref _libraryFunctionDeprecatedBrush, value, "LibraryFunctionDeprecatedBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush LocalParameterBrush
         {
             get { return _localParameterBrush; }
             set { SetField(ref _localParameterBrush, value, "LocalParameterBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush LocalVariableBrush
         {
             get { return _localVariableBrush; }
             set { SetField(ref _localVariableBrush, value, "LocalVariableBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush LabelNameDefinitionBrush
         {
             get { return _labelNameDefinitionBrush; }
             set { SetField(ref _labelNameDefinitionBrush, value, "LabelNameDefinitionBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush StateNameBrush
         {
             get { return _stateNameBrush; }
             set { SetField(ref _stateNameBrush, value, "StateNameBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush LabelNameJumpTargetBrush
         {
             get { return _labelNameJumpTargetBrush; }
             set { SetField(ref _labelNameJumpTargetBrush, value, "LabelNameJumpTargetBrush"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultBrushFactory))]
         public XmlSolidBrush ControlStatementBrush
         {
             get { return _controlStatementBrush; }

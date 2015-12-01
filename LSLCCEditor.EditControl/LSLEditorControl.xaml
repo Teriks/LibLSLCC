@@ -8,19 +8,30 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-
-
+        <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile"
+                      x:Key="CompletionWindowSelectionBorderBrush">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="RoyalBlue">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="0,0,50,50" />
+                                <RectangleGeometry Rect="50,50,50,50" />
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
     </UserControl.Resources>
     <Grid>
-
-
         <avalonedit:TextEditor
             Name="AvalonEditor"
-            
-            FontFamily="Courier New"
-            FontSize="10pt" 
 
-            ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening" 
+            FontFamily="Courier New"
+            FontSize="10pt"
+
+            ShowLineNumbers="True" ContextMenuOpening="TextEditor_OnContextMenuOpening"
             MouseLeave="TextEditor_OnMouseLeave" TextChanged="TextEditor_OnTextChanged">
             <avalonedit:TextEditor.InputBindings>
                 <KeyBinding Key="Space" Modifiers="Control"
@@ -41,7 +52,8 @@
                     <Separator />
                     <MenuItem Command="Undo" Header="Undo" />
                     <MenuItem Command="Redo" Header="Redo" />
-                    <MenuItem Header="Go To Definition" Click="TextArea_ContextMenu_GotoDefinitionClick" Name="GotoDefinitionContextMenuButton" Visibility="Collapsed"/>
+                    <MenuItem Header="Go To Definition" Click="TextArea_ContextMenu_GotoDefinitionClick"
+                              Name="GotoDefinitionContextMenuButton" Visibility="Collapsed" />
                     <MenuItem Header="Auto Complete">
                         <MenuItem Click="EditorContext_ClickSuggestLibraryConstants" Header="Suggest Library Constants"
                                   InputGestureText="Ctrl+Q" />
