@@ -539,7 +539,7 @@ namespace LibLSLCC.Settings
                 }
             }
 
-            foreach (var propInfo in props.Where(p => p.CanWrite && p.CanWrite))
+            foreach (var propInfo in props.Where(p => p.CanWrite && p.CanRead))
             {
                 var clonerAttribute = propInfo.GetCustomAttributes(typeof(MemberClonerAttribute), true);
                
