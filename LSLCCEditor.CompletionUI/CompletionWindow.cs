@@ -94,6 +94,7 @@ namespace LSLCCEditor.CompletionUI
             toolTip.PlacementTarget = this;
             toolTip.Placement = PlacementMode.Right;
             toolTip.Closed += toolTip_Closed;
+            
 
             AttachEvents();
         }
@@ -129,6 +130,9 @@ namespace LSLCCEditor.CompletionUI
                 {
                     toolTip.Content = description;
                 }
+
+                InitToolTipSettings();
+
                 toolTip.IsOpen = true;
             }
             else
@@ -136,6 +140,35 @@ namespace LSLCCEditor.CompletionUI
                 toolTip.IsOpen = false;
             }
         }
+
+        private void InitToolTipSettings()
+        {
+            if (ToolTipForground != null)
+            {
+                toolTip.Foreground = ToolTipForground;
+            }
+
+            if (ToolTipBackground != null)
+            {
+                toolTip.Background = ToolTipBackground;
+            }
+
+            if (ToolTipBorderBrush != null)
+            {
+                toolTip.BorderBrush = ToolTipBorderBrush;
+            }
+
+        }
+
+
+
+
+        public Brush ToolTipBorderBrush { get; set; }
+
+        public Brush ToolTipBackground { get; set; }
+
+        public Brush ToolTipForground { get; set; }
+
         #endregion
 
         void completionList_InsertionRequested(object sender, EventArgs e)

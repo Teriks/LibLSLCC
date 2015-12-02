@@ -763,6 +763,10 @@ namespace LSLCCEditor.EditControl
 
             c.SelectedItemBorderBrush = borderBrush;
 
+            c.ToolTipBackground = new SolidColorBrush(Settings.ToolTipBackground);
+            c.ToolTipBorderBrush = new SolidColorBrush(Settings.ToolTipBorderColor);
+            c.ToolTipForground = new SolidColorBrush(Settings.ToolTipForeground);
+
             return c;
         }
 
