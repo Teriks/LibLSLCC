@@ -143,9 +143,9 @@ namespace LSLCCEditor.CompletionUI
 
         private void InitToolTipSettings()
         {
-            if (ToolTipForground != null)
+            if (ToolTipForeground != null)
             {
-                toolTip.Foreground = ToolTipForground;
+                toolTip.Foreground = ToolTipForeground;
             }
 
             if (ToolTipBackground != null)
@@ -160,14 +160,35 @@ namespace LSLCCEditor.CompletionUI
 
         }
 
+        public static readonly DependencyProperty ToolTipBorderBrushProperty = DependencyProperty.Register(
+            "ToolTipBorderBrush", typeof (Brush), typeof (CompletionWindow), new PropertyMetadata(default(Brush)));
+
+        public Brush ToolTipBorderBrush
+        {
+            get { return (Brush) GetValue(ToolTipBorderBrushProperty); }
+            set { SetValue(ToolTipBorderBrushProperty, value); }
+        }
 
 
+        public static readonly DependencyProperty ToolTipBackgroundProperty = DependencyProperty.Register(
+            "ToolTipBackground", typeof (Brush), typeof (CompletionWindow), new PropertyMetadata(default(Brush)));
 
-        public Brush ToolTipBorderBrush { get; set; }
+        public Brush ToolTipBackground
+        {
+            get { return (Brush) GetValue(ToolTipBackgroundProperty); }
+            set { SetValue(ToolTipBackgroundProperty, value); }
+        }
 
-        public Brush ToolTipBackground { get; set; }
 
-        public Brush ToolTipForground { get; set; }
+        public static readonly DependencyProperty ToolTipForegroundProperty = DependencyProperty.Register(
+            "ToolTipForeground", typeof (Brush), typeof (CompletionWindow), new PropertyMetadata(default(Brush)));
+
+        public Brush ToolTipForeground
+        {
+            get { return (Brush) GetValue(ToolTipForegroundProperty); }
+            set { SetValue(ToolTipForegroundProperty, value); }
+        }
+
 
         #endregion
 
