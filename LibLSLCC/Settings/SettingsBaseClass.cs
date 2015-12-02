@@ -509,38 +509,60 @@ namespace LibLSLCC.Settings
 
             object instance = constructor.Invoke(null);
 
+            ICloner cloner = new DefaultCloner();
 
             foreach (var fieldInfo in fields)
             {
-                if (fieldInfo.FieldType.GetInterfaces().Any(i => i == typeof (ICloneable)))
+                var clonerAttribute = fieldInfo.GetCustomAttributes(typeof(MemberClonerAttribute), true);
+
+                var child = fieldInfo.GetValue(this);
+                if (child == null) continue;
+
+                if (clonerAttribute.Any())
                 {
-                    var child = fieldInfo.GetValue(this);
-                    if (child == null) continue;
+                    var clonerAttr = (MemberClonerAttribute)clonerAttribute.First();
+                    cloner = Activator.CreateInstance(clonerAttr.ClonerType) as ICloner;
 
-                    var clone = ((ICloneable) child).Clone();
+                    if (cloner == null)
+                    {
+                        throw new InvalidOperationException(string.Format("Field '{0}' has a [MemberClonerAttribute] with a cloner type that does not implement ICloner.", 
+                            fieldInfo.Name));
+                    }
 
-                    fieldInfo.SetValue(instance, clone);
+                    fieldInfo.SetValue(instance, cloner.Clone(child));
                 }
                 else
                 {
-                    fieldInfo.SetValue(instance, fieldInfo.GetValue(this));
+                    
+                    var clone = cloner.Clone(child);
+                    fieldInfo.SetValue(instance, clone ?? fieldInfo.GetValue(this));
                 }
             }
 
             foreach (var propInfo in props.Where(p => p.CanWrite && p.CanWrite))
             {
-                if (propInfo.PropertyType.GetInterfaces().Any(i => i == typeof (ICloneable)))
+                var clonerAttribute = propInfo.GetCustomAttributes(typeof(MemberClonerAttribute), true);
+               
+                var child = propInfo.GetValue(this, null);
+                if (child == null) continue;
+
+                if (clonerAttribute.Any())
                 {
-                    var child = propInfo.GetValue(this, null);
-                    if (child == null) continue;
+                    var clonerAttr = (MemberClonerAttribute)clonerAttribute.First();
+                    cloner = Activator.CreateInstance(clonerAttr.ClonerType) as ICloner;
 
-                    var clone = ((ICloneable) child).Clone();
+                    if (cloner == null)
+                    {
+                        throw new InvalidOperationException(string.Format("Property '{0}' has a [MemberClonerAttribute] with a cloner type that does not implement ICloner.",
+                            propInfo.Name));
+                    }
 
-                    propInfo.SetValue(instance, clone, null);
+                    propInfo.SetValue(instance, cloner.Clone(child), null);
                 }
                 else
                 {
-                    propInfo.SetValue(instance, propInfo.GetValue(this, null), null);
+                    var clone = cloner.Clone(child);
+                    propInfo.SetValue(instance, clone ?? propInfo.GetValue(this, null), null);
                 }
             }
 

@@ -252,7 +252,7 @@
                             <Label>Basic Text:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.BasicTextColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ForegroundColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />

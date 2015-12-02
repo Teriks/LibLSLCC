@@ -41,7 +41,6 @@
 // 
 #endregion
 
-using System.Reflection;
 using System.Windows.Media;
 using LibLSLCC.Settings;
 using LSLCCEditor.Utility.Xml;
@@ -52,55 +51,39 @@ namespace LSLCCEditor.EditControl
     {
 
 
-        private LSLEditorControlHighlightingColors _highlightingColors = new LSLEditorControlHighlightingColors();
+        private LSLHighlightingColors _highlightingColors = new LSLHighlightingColors();
 
 
-        private LSLEditorCompletionWindowItemBrushes _completionWindowItemBrushes = new LSLEditorCompletionWindowItemBrushes();
+        private LSLCompletionWindowItemBrushes _completionWindowItemBrushes = new LSLCompletionWindowItemBrushes();
 
         private bool _caseInsensitiveAutoCompleteMatching = true;
         private bool _camelCaseAutoCompleteMatching;
         private bool _substringSearchAutoCompleteMatching;
         private bool _constantCompletionFirstCharIsCaseSensitive = true;
         private XmlColor _backgroundColor = new XmlColor(Colors.White);
-        private XmlColor _basicTextColor = new XmlColor(Colors.Black);
+        private XmlColor _foregroundColor = new XmlColor(Colors.Black);
         private XmlColor _completionWindowSelectionBackgroundColor = new XmlColor(Colors.AliceBlue);
         private XmlColor _completionWindowSelectionBorderColor = new XmlColor(Colors.RoyalBlue);
         private XmlColor _completionWindowBackgroundColor = new XmlColor(Colors.White);
 
 
-        private class DefaultColorFactory : IDefaultSettingsValueFactory
+        private class DefaultsFactory : CloningDefaultValueFactory<LSLEditorControlSettings>
         {
-            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+            public DefaultsFactory()
             {
-                if (settingValue == null)
-                {
-                    return true;
-                }
-                return false;
-            }
 
-            public object GetDefaultValue(MemberInfo member, object objectInstance)
-            {
-                switch (member.Name)
-                {
-                    case "BackgroundColor": return new XmlColor(Colors.White);
-                    case "BasicTextColor": return new XmlColor(Colors.Black);
-                    case "CompletionWindowSelectionBackgroundColor": return new XmlColor(Colors.AliceBlue);
-                    case "CompletionWindowSelectionBorderColor": return new XmlColor(Colors.RoyalBlue);
-                    case "CompletionWindowBackgroundColor": return new XmlColor(Colors.White);
-                }
-                return null;
             }
         }
 
-        [DefaultValueFactory(typeof(DefaultColorFactory))]
-        public XmlColor BasicTextColor
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor ForegroundColor
         {
-            get { return _basicTextColor; }
-            set { SetField(ref _basicTextColor, value, "BasicTextColor"); }
+            get { return _foregroundColor; }
+            set { SetField(ref _foregroundColor, value, "ForegroundColor"); }
         }
 
-        [DefaultValueFactory(typeof(DefaultColorFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public XmlColor BackgroundColor
         {
             get { return _backgroundColor; }
@@ -108,7 +91,7 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        [DefaultValueFactory(typeof(DefaultColorFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public XmlColor CompletionWindowSelectionBackgroundColor
         {
             get { return _completionWindowSelectionBackgroundColor; }
@@ -116,57 +99,60 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        [DefaultValueFactory(typeof(DefaultColorFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public XmlColor CompletionWindowSelectionBorderColor
         {
             get { return _completionWindowSelectionBorderColor; }
             set { SetField(ref _completionWindowSelectionBorderColor, value, "CompletionWindowSelectionBorderColor"); }
         }
 
-        [DefaultValueFactory(typeof (DefaultColorFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public XmlColor CompletionWindowBackgroundColor
         {
             get { return _completionWindowBackgroundColor; }
             set { SetField(ref _completionWindowBackgroundColor, value, "CompletionWindowBackgroundColor"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool CaseInsensitiveAutoCompleteMatching
         {
             get { return _caseInsensitiveAutoCompleteMatching; }
             set {SetField(ref _caseInsensitiveAutoCompleteMatching,value, "CaseInsensitiveAutoCompleteMatching"); }
         }
 
-
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool CamelCaseAutoCompleteMatching
         {
             get { return _camelCaseAutoCompleteMatching; }
             set {SetField(ref _camelCaseAutoCompleteMatching,value, "CamelCaseAutoCompleteMatching"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool SubstringSearchAutoCompleteMatching
         {
             get { return _substringSearchAutoCompleteMatching; }
             set {SetField(ref _substringSearchAutoCompleteMatching,value, "SubstringSearchAutoCompleteMatching"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool ConstantCompletionFirstCharIsCaseSensitive
         {
             get { return _constantCompletionFirstCharIsCaseSensitive; }
             set {SetField(ref _constantCompletionFirstCharIsCaseSensitive,value, "ConstantCompletionFirstCharIsCaseSensitive"); }
         }
 
-        public LSLEditorControlHighlightingColors HighlightingColors
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public LSLHighlightingColors HighlightingColors
         {
             get { return _highlightingColors; }
             set { SetField(ref _highlightingColors, value, "HighlightingColors"); }
         }
 
-        public LSLEditorCompletionWindowItemBrushes CompletionWindowItemBrushes
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public LSLCompletionWindowItemBrushes CompletionWindowItemBrushes
         {
             get { return _completionWindowItemBrushes; }
             set { SetField(ref _completionWindowItemBrushes, value, "CompletionWindowItemBrushes"); }
         }
-
-
     }
 }

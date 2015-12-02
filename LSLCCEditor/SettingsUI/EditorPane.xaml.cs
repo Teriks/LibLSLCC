@@ -137,13 +137,11 @@ namespace LSLCCEditor.SettingsUI
                 var property = EditorControlSettings.CompletionWindowItemBrushes.GetType()
                     .GetProperty(propName);
 
-                var propertyValue = (XmlSolidBrush) property.GetValue(EditorControlSettings.CompletionWindowItemBrushes);
+                property.SetValue(EditorControlSettings.CompletionWindowItemBrushes, deflt);
 
-                var con = typeof (XmlSolidBrush).GetProperty("Content");
+                //var propertyValue = (XmlSolidBrush) property.GetValue(EditorControlSettings.CompletionWindowItemBrushes);
 
-                var contentValue = (SolidColorBrush) con.GetValue(propertyValue);
-
-                contentValue.Color = deflt.Content.Color;
+                //propertyValue.Content.Color = deflt.Content.Color;
             }
             else
             {
@@ -214,7 +212,7 @@ namespace LSLCCEditor.SettingsUI
         {
             public XmlColor BasicTextColor { get; set; }
             public XmlColor BackgroundColor { get; set; }
-            public LSLEditorControlHighlightingColors HighlightingColors { get; set; }
+            public LSLHighlightingColors HighlightingColors { get; set; }
         }
 
 
@@ -241,7 +239,7 @@ namespace LSLCCEditor.SettingsUI
 
                     var settings = (HighlightingSettings) x.Deserialize(file);
 
-                    EditorControlSettings.BasicTextColor = settings.BasicTextColor;
+                    EditorControlSettings.ForegroundColor = settings.BasicTextColor;
                     EditorControlSettings.BackgroundColor = settings.BackgroundColor;
                     EditorControlSettings.HighlightingColors = settings.HighlightingColors;
                 }
@@ -284,7 +282,7 @@ namespace LSLCCEditor.SettingsUI
                     var settings = new HighlightingSettings()
                     {
                         BackgroundColor = EditorControlSettings.BackgroundColor,
-                        BasicTextColor = EditorControlSettings.BasicTextColor,
+                        BasicTextColor = EditorControlSettings.ForegroundColor,
                         HighlightingColors = EditorControlSettings.HighlightingColors
                     };
 
@@ -306,7 +304,7 @@ namespace LSLCCEditor.SettingsUI
 
             public XmlColor CompletionWindowSelectionBorderColor { get; set; }
 
-            public LSLEditorCompletionWindowItemBrushes CompletionWindowItemBrushes { get; set; }
+            public LSLCompletionWindowItemBrushes CompletionWindowItemBrushes { get; set; }
         }
 
 

@@ -102,6 +102,10 @@
     <Compile Include="LibraryData\Reflection\LSLReflectionTypeMappingException.cs" />
     <Compile Include="LibraryData\Reflection\LSLMultiMethodFilter.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Settings\CloningDefaultValueFactory.cs" />
+    <Compile Include="Settings\DefaultCloner.cs" />
+    <Compile Include="Settings\ICloner.cs" />
+    <Compile Include="Settings\MemberClonerAttribute.cs" />
     <Compile Include="Settings\DefaultValueFactoryAttribute.cs" />
     <Compile Include="Settings\DefaultValueInitializer.cs" />
     <Compile Include="Settings\IDefaultSettingsValueFactory.cs" />

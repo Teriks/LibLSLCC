@@ -69,7 +69,6 @@ using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Settings;
 using LibLSLCC.Utility;
-using LSLCCEditor.Utility;
 using LSLCCEditor.Utility.Binding;
 using LSLCCEditor.Utility.Xml;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
@@ -114,7 +113,7 @@ namespace LSLCCEditor.EditControl
 
                 old.BackgroundColor.UnSubscribePropertyChanged(dependencyObject);
 
-                old.BasicTextColor.UnSubscribePropertyChanged(dependencyObject);
+                old.ForegroundColor.UnSubscribePropertyChanged(dependencyObject);
 
                 old.UnSubscribePropertyChanged(dependencyObject);
             }
@@ -126,12 +125,12 @@ namespace LSLCCEditor.EditControl
 
             n.HighlightingColors.SubscribePropertyChangedRecursive(dependencyObject, HighlightingSettingsPropertyChanged);
 
-            self.Editor.Foreground = new SolidColorBrush(n.BasicTextColor.Content);
+            self.Editor.Foreground = new SolidColorBrush(n.ForegroundColor.Content);
             self.Editor.Background = new SolidColorBrush(n.BackgroundColor.Content);
 
             n.BackgroundColor.SubscribePropertyChanged(dependencyObject, BackgroundColorSettingPropertyChanged);
 
-            n.BasicTextColor.SubscribePropertyChanged(dependencyObject, BasicTextColorSettingChanged);
+            n.ForegroundColor.SubscribePropertyChanged(dependencyObject, BasicTextColorSettingChanged);
 
             n.SubscribePropertyChanged(dependencyObject, EditorSettingsPropertyChanged);
 
@@ -162,7 +161,7 @@ namespace LSLCCEditor.EditControl
             {
                 suber.Editor.Background = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
             }
-            if (settingsPropertyChangedEventArgs.PropertyName == "BasicTextColor")
+            if (settingsPropertyChangedEventArgs.PropertyName == "ForegroundColor")
             {
                 suber.Editor.Foreground = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
             }
@@ -717,7 +716,6 @@ namespace LSLCCEditor.EditControl
                 _symbolHoverToolTip.Content = hoverText;
                 _symbolHoverToolTip.Placement = PlacementMode.Mouse;
                 _symbolHoverToolTip.IsOpen = true;
-
 
                 e.Handled = true;
             }
