@@ -49,6 +49,68 @@
                           ItemsSource="{Binding Path=EditorConfigurationNames, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding Path=CurrentEditorConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
+            <Expander Header="Tool Tip Colors" Padding="2" IsExpanded="False" MinWidth="400">
+                                <Expander.Resources>
+                    <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
+                        <Setter Property="Width" Value="150" />
+                        <Setter Property="UsingAlphaChannel" Value="False" />
+                        <Setter Property="ShowStandardColors" Value="False"/>
+                        <Setter Property="ColorMode" Value="ColorCanvas" />
+                    </Style>
+                    <Style x:Key="StackPanels" TargetType="StackPanel">
+                        <Setter Property="Orientation" Value="Horizontal" />
+                    </Style>
+                    <Style x:Key="ResetButtons" TargetType="Button">
+                        <Setter Property="Padding" Value="5,0,5,0"></Setter>
+                        <Setter Property="Content" Value="Default" />
+                    </Style>
+                </Expander.Resources>
+                <StackPanel>
+                    <ListView HorizontalContentAlignment="Right" Name="ToolTipColorsListView">
+                    <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                        <Label>Tool Tip Background:</Label>
+                        <Border VerticalAlignment="Center">
+                            <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
+                                                SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ToolTipBackground.Content}" />
+                        </Border>
+                        <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
+                                Style="{Binding Source={StaticResource ResetButtons}}" />
+                    </StackPanel>
+                    <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                        <Label>Tool Tip Plain Text:</Label>
+                        <Border VerticalAlignment="Center">
+                            <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
+                                                SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ToolTipForeground.Content}" />
+                        </Border>
+                        <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
+                                Style="{Binding Source={StaticResource ResetButtons}}" />
+                    </StackPanel>
+                    <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                        <Label>Tool Tip Border:</Label>
+                        <Border VerticalAlignment="Center">
+                            <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
+                                                SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ToolTipBorderColor.Content}" />
+                        </Border>
+                        <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
+                                Style="{Binding Source={StaticResource ResetButtons}}" />
+                    </StackPanel>
+                </ListView>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                            Click="ImportToolTipColors_OnClick">
+                            Import
+                        </Button>
+                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                            Click="ExportToolTipColors_OnClick">
+                            Export
+                        </Button>
+                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                            Click="ResetAllToolTipColors_OnClick">
+                        All Default
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
             <Expander Header="Completion Window Colors" Padding="2" IsExpanded="False" MinWidth="400">
                 <Expander.Resources>
                     <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">

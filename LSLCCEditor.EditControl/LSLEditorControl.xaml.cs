@@ -716,6 +716,9 @@ namespace LSLCCEditor.EditControl
                 _symbolHoverToolTip.Content = hoverText;
                 _symbolHoverToolTip.Placement = PlacementMode.Mouse;
                 _symbolHoverToolTip.IsOpen = true;
+                _symbolHoverToolTip.Foreground = new SolidColorBrush(Settings.ToolTipForeground);
+                _symbolHoverToolTip.Background = new SolidColorBrush(Settings.ToolTipBackground);
+                _symbolHoverToolTip.BorderBrush = new SolidColorBrush(Settings.ToolTipBorderColor);
 
                 e.Handled = true;
             }
@@ -2060,11 +2063,11 @@ namespace LSLCCEditor.EditControl
                         FontWeight = FontWeights.Bold
                     });
 
-                    nameRun.Foreground = Settings.CompletionWindowItemBrushes.LibraryFunctionDeprecatedBrush;
+                    nameRun.Foreground = new SolidColorBrush(Settings.HighlightingColors.LibraryFunctionDeprecatedColor);
                 }
                 else
                 {
-                    nameRun.Foreground = Settings.CompletionWindowItemBrushes.LibraryFunctionBrush;
+                    nameRun.Foreground = new SolidColorBrush(Settings.HighlightingColors.LibraryFunctionColor);
                 }
 
                 if (func.ReturnType != LSLType.Void)

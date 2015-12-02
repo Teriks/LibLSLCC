@@ -67,6 +67,10 @@ namespace LSLCCEditor.EditControl
         private XmlColor _completionWindowBackgroundColor = new XmlColor(Colors.White);
 
 
+        private XmlColor _toolTipBackground = new XmlColor((Color)ColorConverter.ConvertFromString("#F1F2F7"));
+        private XmlColor _toolTipForeground = new XmlColor((Color)ColorConverter.ConvertFromString("#FF575757"));
+        private XmlColor _toolTipBorderColor = new XmlColor((Color)ColorConverter.ConvertFromString("#FF767676"));
+
         private class DefaultsFactory : CloningDefaultValueFactory<LSLEditorControlSettings>
         {
             public DefaultsFactory()
@@ -153,6 +157,27 @@ namespace LSLCCEditor.EditControl
         {
             get { return _completionWindowItemBrushes; }
             set { SetField(ref _completionWindowItemBrushes, value, "CompletionWindowItemBrushes"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor ToolTipBackground
+        {
+            get { return _toolTipBackground; }
+            set { SetField(ref _toolTipBackground,value, "ToolTipBackground"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor ToolTipForeground
+        {
+            get { return _toolTipForeground; }
+            set { SetField(ref _toolTipForeground,value, "ToolTipForeground"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor ToolTipBorderColor
+        {
+            get { return _toolTipBorderColor; }
+            set { SetField(ref _toolTipBorderColor,value, "ToolTipBorderColor"); }
         }
     }
 }

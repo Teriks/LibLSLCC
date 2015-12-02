@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Security;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Xml;
-using System.Xml.Serialization;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
 using LSLCCEditor.Settings;
@@ -138,10 +137,6 @@ namespace LSLCCEditor.SettingsUI
                     .GetProperty(propName);
 
                 property.SetValue(EditorControlSettings.CompletionWindowItemBrushes, deflt);
-
-                //var propertyValue = (XmlSolidBrush) property.GetValue(EditorControlSettings.CompletionWindowItemBrushes);
-
-                //propertyValue.Content.Color = deflt.Content.Color;
             }
             else
             {
@@ -172,7 +167,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void NewConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
-            var name = new UniqueNamerWindow(AppSettings.Settings.CompilerConfigurations.Keys, "My Configuration")
+            var name = new UniqueNamerWindow(AppSettings.Settings.EditorControlConfigurations.Keys, "My Configuration")
             {
                 Owner = OwnerSettingsWindow
             };
@@ -187,6 +182,7 @@ namespace LSLCCEditor.SettingsUI
 
             EditorConfigurationCombobox.SelectedIndex = EditorConfigurationNames.Count - 1;
         }
+
 
         private void DeleteConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
@@ -207,116 +203,78 @@ namespace LSLCCEditor.SettingsUI
             EditorConfigurationCombobox.SelectedIndex = newIndex;
         }
 
-
-        public class HighlightingSettings
+        [DataContract]
+        private class HighlightingSettings
         {
+            [DataMember]
             public XmlColor BasicTextColor { get; set; }
+
+            [DataMember]
             public XmlColor BackgroundColor { get; set; }
+
+            [DataMember]
             public LSLHighlightingColors HighlightingColors { get; set; }
         }
 
 
         private void ImportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
-            var openDialog = new OpenFileDialog
+            DoImportSettingsWindow("Highlighting Colors (*.xml)|*.xml;", ".xml", reader =>
             {
-                Multiselect = false,
-                Filter = "Highlighting Colors (*.xml)|*.xml;",
-                AddExtension = true,
-                DefaultExt = ".xml"
-            };
+                var x = new DataContractSerializer(typeof (HighlightingSettings));
 
-            if (!openDialog.ShowDialog(OwnerSettingsWindow).Value)
-            {
-                return;
-            }
+                var settings = (HighlightingSettings) x.ReadObject(reader);
 
-            try
-            {
-                using (var file = new XmlTextReader(openDialog.OpenFile()))
-                {
-                    var x = new XmlSerializer(typeof (HighlightingSettings));
-
-                    var settings = (HighlightingSettings) x.Deserialize(file);
-
-                    EditorControlSettings.ForegroundColor = settings.BasicTextColor;
-                    EditorControlSettings.BackgroundColor = settings.BackgroundColor;
-                    EditorControlSettings.HighlightingColors = settings.HighlightingColors;
-                }
-            }
-            catch (XmlSyntaxException ex)
-            {
-                MessageBox.Show("An XML syntax error was encountered while loading the file, settings could not be applied: "
-                                + Environment.NewLine + Environment.NewLine + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("There was an unknown error while loading the settings file, settings could not be applied: "
-                                + Environment.NewLine + Environment.NewLine + ex.Message);
-            }
+                EditorControlSettings.ForegroundColor = settings.BasicTextColor;
+                EditorControlSettings.BackgroundColor = settings.BackgroundColor;
+                EditorControlSettings.HighlightingColors = settings.HighlightingColors;
+            });
         }
 
 
         private void ExportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
-            var saveDialog = new SaveFileDialog
-            {
-                Filter = "Highlighting Colors (*.xml)|*.xml;",
-                FileName = "LSLCCEditor_HighlightingColors.xml"
-            };
-
-
-            if (!saveDialog.ShowDialog(OwnerSettingsWindow).Value)
-            {
-                return;
-            }
-
-            try
-            {
-                using (var file = new XmlTextWriter(saveDialog.OpenFile(), Encoding.Unicode))
+            DoExportSettingsWindow("Highlighting Colors (*.xml)|*.xml;", "LSLCCEditor_HighlightingColors.xml",
+                writer =>
                 {
-                    file.Formatting = Formatting.Indented;
+                    var x = new DataContractSerializer(typeof (HighlightingSettings));
 
-                    var x = new XmlSerializer(typeof (HighlightingSettings));
-
-                    var settings = new HighlightingSettings()
+                    var settings = new HighlightingSettings
                     {
                         BackgroundColor = EditorControlSettings.BackgroundColor,
                         BasicTextColor = EditorControlSettings.ForegroundColor,
                         HighlightingColors = EditorControlSettings.HighlightingColors
                     };
 
-                    x.Serialize(file, settings);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An unexpected problem occurred while trying to save the file: "
-                                + Environment.NewLine + Environment.NewLine + ex.Message);
-            }
+                    x.WriteObject(writer, settings);
+                });
         }
 
 
-        public class CompletionWindowColorSettings
+        [DataContract]
+        private class CompletionWindowColorSettings
         {
+            [DataMember]
             public XmlColor CompletionWindowBackgroundColor { get; set; }
+
+            [DataMember]
             public XmlColor CompletionWindowSelectionBackgroundColor { get; set; }
 
+            [DataMember]
             public XmlColor CompletionWindowSelectionBorderColor { get; set; }
 
+            [DataMember]
             public LSLCompletionWindowItemBrushes CompletionWindowItemBrushes { get; set; }
         }
 
-
-
-        private void ImportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
+        private void DoImportSettingsWindow(string fileFilter, string fileExt, Action<XmlTextReader> serialize)
         {
             var openDialog = new OpenFileDialog
             {
                 Multiselect = false,
-                Filter = "Completion Window Colors (*.xml)|*.xml;",
+                Filter = fileFilter,
                 AddExtension = true,
-                DefaultExt = ".xml"
+                DefaultExt = fileExt
             };
             if (!openDialog.ShowDialog(OwnerSettingsWindow).Value)
             {
@@ -327,18 +285,7 @@ namespace LSLCCEditor.SettingsUI
             {
                 using (var file = new XmlTextReader(openDialog.OpenFile()))
                 {
-                    var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
-
-                    var settings = (CompletionWindowColorSettings) x.Deserialize(file);
-
-                    EditorControlSettings.CompletionWindowItemBrushes = settings.CompletionWindowItemBrushes;
-                    EditorControlSettings.CompletionWindowBackgroundColor = settings.CompletionWindowBackgroundColor;
-
-                    EditorControlSettings.CompletionWindowSelectionBackgroundColor =
-                        settings.CompletionWindowSelectionBackgroundColor;
-
-                    EditorControlSettings.CompletionWindowSelectionBorderColor =
-                        settings.CompletionWindowSelectionBorderColor;
+                    serialize(file);
                 }
             }
             catch (XmlSyntaxException ex)
@@ -354,13 +301,12 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
-        private void ExportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
+        private void DoExportSettingsWindow(string fileFilter, string fileName, Action<XmlTextWriter> serialize)
         {
             var saveDialog = new SaveFileDialog
             {
-                Filter = "Completion Window Colors (*.xml)|*.xml;",
-                FileName = "LSLCCEditor_CompletionWindowColors.xml"
+                Filter = fileFilter,
+                FileName = fileName
             };
 
 
@@ -374,23 +320,7 @@ namespace LSLCCEditor.SettingsUI
                 using (var file = new XmlTextWriter(saveDialog.OpenFile(), Encoding.Unicode))
                 {
                     file.Formatting = Formatting.Indented;
-
-                    var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
-
-                    var settings = new CompletionWindowColorSettings()
-                    {
-                        CompletionWindowItemBrushes = EditorControlSettings.CompletionWindowItemBrushes,
-
-                        CompletionWindowSelectionBorderColor =
-                            EditorControlSettings.CompletionWindowSelectionBorderColor,
-
-                        CompletionWindowBackgroundColor = EditorControlSettings.CompletionWindowBackgroundColor,
-
-                        CompletionWindowSelectionBackgroundColor =
-                            EditorControlSettings.CompletionWindowSelectionBackgroundColor
-                    };
-
-                    x.Serialize(file, settings);
+                    serialize(file);
                 }
             }
             catch (Exception ex)
@@ -398,6 +328,126 @@ namespace LSLCCEditor.SettingsUI
                 MessageBox.Show("An unexpected problem occurred while trying to save the file: "
                                 + Environment.NewLine + Environment.NewLine + ex.Message);
             }
+        }
+
+
+        private void ImportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            DoImportSettingsWindow("Completion Window Colors (*.xml)|*.xml;", ".xml", reader =>
+            {
+                var x = new DataContractSerializer(typeof (CompletionWindowColorSettings));
+
+                var settings = (CompletionWindowColorSettings) x.ReadObject(reader);
+
+                EditorControlSettings.CompletionWindowItemBrushes = settings.CompletionWindowItemBrushes;
+                EditorControlSettings.CompletionWindowBackgroundColor = settings.CompletionWindowBackgroundColor;
+
+                EditorControlSettings.CompletionWindowSelectionBackgroundColor =
+                    settings.CompletionWindowSelectionBackgroundColor;
+
+                EditorControlSettings.CompletionWindowSelectionBorderColor =
+                    settings.CompletionWindowSelectionBorderColor;
+            });
+        }
+
+
+        private void ExportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            DoExportSettingsWindow("Completion Window Colors (*.xml)|*.xml;", "LSLCCEditor_CompletionWindowColors.xml",
+                writer =>
+                {
+                    var x = new DataContractSerializer(typeof (CompletionWindowColorSettings));
+
+                    var settings = new CompletionWindowColorSettings
+                    {
+                        CompletionWindowItemBrushes = EditorControlSettings.CompletionWindowItemBrushes,
+                        CompletionWindowSelectionBorderColor =
+                            EditorControlSettings.CompletionWindowSelectionBorderColor,
+                        CompletionWindowBackgroundColor = EditorControlSettings.CompletionWindowBackgroundColor,
+                        CompletionWindowSelectionBackgroundColor =
+                            EditorControlSettings.CompletionWindowSelectionBackgroundColor
+                    };
+
+                    x.WriteObject(writer, settings);
+                });
+        }
+
+
+        private void ResetAllToolTipColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var color in ToolTipColorsListView.Items.Cast<StackPanel>())
+            {
+                var colorBox = ((Border) color.Children[1]).Child;
+                ResetCompletionBrushColorBox(colorBox);
+            }
+        }
+
+
+        [DataContract]
+        private class ToolTipColorSettings
+        {
+            [DataMember]
+            public XmlColor BackgroundColor { get; set; }
+
+            [DataMember]
+            public XmlColor ForegroundColor { get; set; }
+
+            [DataMember]
+            public XmlColor BorderColor { get; set; }
+        }
+
+
+        private void ExportToolTipColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            DoExportSettingsWindow("Tool Tip Colors (*.xml)|*.xml;", "LSLCCEditor_ToolTipColors.xml",
+                writer =>
+                {
+                    var x = new DataContractSerializer(typeof (ToolTipColorSettings));
+
+                    var settings = new ToolTipColorSettings
+                    {
+                        BackgroundColor = EditorControlSettings.ToolTipBackground,
+                        ForegroundColor = EditorControlSettings.ForegroundColor,
+                        BorderColor = EditorControlSettings.BackgroundColor
+                    };
+
+                    x.WriteObject(writer, settings);
+                });
+        }
+
+
+        private void ImportToolTipColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            DoImportSettingsWindow("Tool Tip Colors (*.xml)|*.xml;", ".xml", reader =>
+            {
+                var x = new DataContractSerializer(typeof (ToolTipColorSettings));
+
+                var settings = (ToolTipColorSettings) x.ReadObject(reader);
+
+                EditorControlSettings.ToolTipBackground = settings.BackgroundColor;
+                EditorControlSettings.ToolTipForeground = settings.ForegroundColor;
+                EditorControlSettings.ToolTipBorderColor = settings.BorderColor;
+            });
+        }
+
+
+        private void ToolTipColorReset_OnClick(object sender, RoutedEventArgs e)
+        {
+            var colorBox = ((Border) ((StackPanel) ((FrameworkElement) sender).Parent).Children[1]).Child;
+
+            ResetToolTipColorBox(colorBox);
+        }
+
+
+        private void ResetToolTipColorBox(UIElement colorBox)
+        {
+            var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement) colorBox,
+                ColorPicker.SelectedColorProperty);
+            var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
+
+            var propName = propNames[propNames.Length - 2];
+
+            DefaultValueInitializer.SetToDefault(EditorControlSettings, propName);
         }
     }
 }
