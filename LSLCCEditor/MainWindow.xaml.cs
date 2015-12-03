@@ -947,10 +947,24 @@ namespace LSLCCEditor
             }
         }
 
+
+        private SettingsWindow _settingsWindow;
         private void SettingsMenu_Click(object sender, RoutedEventArgs e)
         {
-            var menu = new SettingsWindow {Owner = this};
-            menu.ShowDialog();
+            if (_settingsWindow != null)
+            {
+                if (_settingsWindow.WindowState == WindowState.Minimized)
+                {
+                    _settingsWindow.WindowState = WindowState.Normal;
+                    _settingsWindow.SizeToContent = SizeToContent.WidthAndHeight;
+                    
+                }
+                _settingsWindow.Activate();
+                return;
+            }
+            _settingsWindow = new SettingsWindow {Owner = this};
+            _settingsWindow.Closed += (o, args) => _settingsWindow = null;
+            _settingsWindow.Show();
         }
     }
 }

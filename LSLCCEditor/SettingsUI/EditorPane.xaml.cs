@@ -28,7 +28,7 @@ namespace LSLCCEditor.SettingsUI
             InitializeComponent();
 
             Title = "Editor Settings";
-            CurrentEditorConfigurationName = AppSettings.Settings.CurrentEditorControlConfiguration;
+            SelectedEditorConfigurationName = AppSettings.Settings.CurrentEditorControlConfiguration;
             EditorConfigurationNames =
                 new ObservableCollection<string>(AppSettings.Settings.EditorControlConfigurations.Keys);
         }
@@ -48,8 +48,8 @@ namespace LSLCCEditor.SettingsUI
         public SettingsWindow OwnerSettingsWindow { get; set; }
 
 
-        public static readonly DependencyProperty CurrentEditorConfigurationNameProperty = DependencyProperty.Register(
-            "CurrentEditorConfigurationName", typeof (string), typeof (EditorPane),
+        public static readonly DependencyProperty SelectedEditorConfigurationNameProperty = DependencyProperty.Register(
+            "SelectedEditorConfigurationName", typeof (string), typeof (EditorPane),
             new PropertyMetadata(default(string), CurrentEditorConfigurationChangedCallback));
 
         private static void CurrentEditorConfigurationChangedCallback(DependencyObject dependencyObject,
@@ -76,10 +76,10 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-        public string CurrentEditorConfigurationName
+        public string SelectedEditorConfigurationName
         {
-            get { return (string) GetValue(CurrentEditorConfigurationNameProperty); }
-            set { SetValue(CurrentEditorConfigurationNameProperty, value); }
+            get { return (string) GetValue(SelectedEditorConfigurationNameProperty); }
+            set { SetValue(SelectedEditorConfigurationNameProperty, value); }
         }
 
         private void ResetHighlightingColor_OnClick(object sender, RoutedEventArgs e)
@@ -186,7 +186,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void DeleteConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
-            var currentlySelected = CurrentEditorConfigurationName;
+            var currentlySelected = SelectedEditorConfigurationName;
 
             int newIndex = 0;
 
@@ -198,7 +198,7 @@ namespace LSLCCEditor.SettingsUI
 
             AppSettings.Settings.RemoveEditorConfiguration(currentlySelected, EditorConfigurationNames[newIndex]);
 
-            EditorConfigurationNames.Remove(CurrentEditorConfigurationName);
+            EditorConfigurationNames.Remove(SelectedEditorConfigurationName);
 
             EditorConfigurationCombobox.SelectedIndex = newIndex;
         }
@@ -448,6 +448,30 @@ namespace LSLCCEditor.SettingsUI
             var propName = propNames[propNames.Length - 2];
 
             DefaultValueInitializer.SetToDefault(EditorControlSettings, propName);
+        }
+
+
+
+        private void RenameConfiguration_OnClick(object sender, RoutedEventArgs e)
+        {
+            var x = new UniqueNamerWindow(AppSettings.Settings.EditorControlConfigurations.Keys, SelectedEditorConfigurationName, false);
+
+            x.ShowDialog();
+
+            if (x.Canceled) return;
+
+            AppSettings.Settings.RenameEditorConfiguration(SelectedEditorConfigurationName, x.ChosenName);
+
+
+
+            EditorConfigurationNames.Clear();
+
+            foreach (var v in AppSettings.Settings.EditorControlConfigurations.Keys)
+            {
+                EditorConfigurationNames.Add(v);
+            }
+
+            SelectedEditorConfigurationName = x.ChosenName;
         }
     }
 }

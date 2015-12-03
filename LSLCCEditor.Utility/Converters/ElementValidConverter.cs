@@ -57,7 +57,8 @@ namespace LSLCCEditor.Utility.Converters
             DependencyObject obj = (DependencyObject)parameter;
             if (obj != null)
             {
-                return obj.IsValid();
+                var valid = obj.IsValid();
+                return valid;
             }
             return true;
         }

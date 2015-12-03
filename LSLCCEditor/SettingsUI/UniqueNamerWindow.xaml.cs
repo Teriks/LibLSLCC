@@ -9,6 +9,8 @@ namespace LSLCCEditor.SettingsUI
     /// </summary>
     public partial class UniqueNamerWindow : Window
     {
+        private readonly string _startingName;
+        private readonly bool _generateNumericSuffix;
         private readonly HashSet<string> _takenNames;
 
 
@@ -19,14 +21,16 @@ namespace LSLCCEditor.SettingsUI
         {
             UniqueNamerWindow window = (UniqueNamerWindow) dependencyObject;
             string val = (string)dependencyPropertyChangedEventArgs.NewValue;
-
+            window.OkButton.IsEnabled = true;
             if (string.IsNullOrWhiteSpace(val))
             {
+                window.OkButton.IsEnabled = false;
                 throw new Exception("Must provide a name.");
             }
 
-            if (val != null && window._takenNames.Contains(val))
+            if (window._takenNames.Contains(val) && !(window._generateNumericSuffix==false && window._startingName == val))
             {
+                window.OkButton.IsEnabled = false;
                 throw new Exception("That name is taken already.");
             }
         }
@@ -36,22 +40,32 @@ namespace LSLCCEditor.SettingsUI
             get { return (string) GetValue(ChosenNameProperty); }
             set { SetValue(ChosenNameProperty, value); }
         }
-        public UniqueNamerWindow(IEnumerable<string> takenNames, string startingName)
+        public UniqueNamerWindow(IEnumerable<string> takenNames, string startingName, bool generateNumericSuffix = true)
         {
+            _startingName = startingName;
+            _generateNumericSuffix = generateNumericSuffix;
             _takenNames = new HashSet<string>(takenNames);
             InitializeComponent();
+            Canceled = true;
 
-
-            var name = startingName;
-            int num = 1;
-
-            while (_takenNames.Contains(name))
+            if (_generateNumericSuffix)
             {
-                name = startingName + " " + num;
-                num++;
-            }
 
-            ChosenName = name;
+                var name = _startingName;
+                int num = 1;
+
+                while (_takenNames.Contains(name))
+                {
+                    name = _startingName + " " + num;
+                    num++;
+                }
+
+                ChosenName = name;
+            }
+            else
+            {
+                ChosenName = _startingName;
+            }
         }
 
         private void Ok_OnClick(object sender, RoutedEventArgs e)

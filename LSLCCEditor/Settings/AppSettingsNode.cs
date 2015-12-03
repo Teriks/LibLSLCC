@@ -463,6 +463,42 @@ namespace LSLCCEditor.Settings
             EditorControlConfigurations.Add(configurationName,
                 DefaultValueInitializer.Init(new EditorControlSettingsNode()));
         }
+        
+
+
+        public void RenameCompilerConfiguration(string configurationName, string newName)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.",
+                    "configurationName");
+            }
+
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Compiler configuration name cannot be null or whitespace.",
+                    "newName");
+            }
+
+
+            if (!CompilerConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(
+                    string.Format("Compiler configuration named {0} does not exist.", configurationName),
+                    "configurationName");
+            }
+
+            bool resetCurrentlySelected = AppSettings.Settings.CurrentCompilerConfiguration == configurationName;
+
+            var old = CompilerConfigurations[configurationName];
+            CompilerConfigurations.Remove(configurationName);
+            CompilerConfigurations.Add(newName, old);
+
+            if (resetCurrentlySelected)
+            {
+                AppSettings.Settings.CurrentCompilerConfiguration = newName;
+            }
+        }
 
 
 
@@ -508,7 +544,39 @@ namespace LSLCCEditor.Settings
             CurrentCompilerConfiguration = newCurrentConfiguration;
         }
 
+        public void RenameEditorConfiguration(string configurationName, string newName)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Editor configuration name cannot be null or whitespace.",
+                    "configurationName");
+            }
 
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Editor configuration name cannot be null or whitespace.",
+                    "newName");
+            }
+
+
+            if (!EditorControlConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor configuration named {0} does not exist.", configurationName),
+                    "configurationName");
+            }
+
+            bool resetCurrentlySelected = AppSettings.Settings.CurrentCompilerConfiguration == configurationName;
+
+            var old = EditorControlConfigurations[configurationName];
+            EditorControlConfigurations.Remove(configurationName);
+            EditorControlConfigurations.Add(newName, old);
+
+            if (resetCurrentlySelected)
+            {
+                AppSettings.Settings.CurrentEditorControlConfiguration = newName;
+            }
+        }
 
         public void RemoveEditorConfiguration(string configurationName, string newCurrentConfiguration)
         {

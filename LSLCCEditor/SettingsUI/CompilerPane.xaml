@@ -30,6 +30,7 @@
                     <converters:IntegerGreaterThanToBoolConverter GreaterThan="1" x:Key="IntegerGreaterThanOne" />
                 </StackPanel.Resources>
                 <Button Click="New_OnClick">New</Button>
+                <Button Click="Rename_OnClick">Rename</Button>
                 <Button Click="Save_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Save</Button>
                 <Button Click="Revert_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Revert</Button>
                 <Button Click="Delete_OnClick" IsEnabled="{Binding ElementName=_this, Path=CompilerConfigurationNames.Count, 

@@ -7,9 +7,10 @@
         xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
         xmlns:settings="clr-namespace:LSLCCEditor.Settings"
         mc:Ignorable="d"
-        Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing" DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip">
-    
+
     <Window.Resources>
 
     </Window.Resources>
@@ -61,7 +62,7 @@
         </Grid.RowDefinitions>
 
 
-        <Menu Grid.Row="0" Name="ToolbarMenu"  VerticalContentAlignment="Center">
+        <Menu Grid.Row="0" Name="ToolbarMenu" VerticalContentAlignment="Center">
             <MenuItem Header="File">
                 <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewFile_OnClick" />
                 <MenuItem Header="Save" InputGestureText="Ctrl+S" Click="Save_OnClick"
@@ -72,8 +73,8 @@
                           Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}" />
                 <MenuItem Header="Open New Tab" InputGestureText="Ctrl+Alt+O" Click="Open_OnClick" />
             </MenuItem>
-            <MenuItem Header="Settings" Click="SettingsMenu_Click"/>
-            
+            <MenuItem Header="Settings" Click="SettingsMenu_Click" />
+
 
             <MenuItem Header="Tools"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
@@ -82,27 +83,63 @@
                 <MenuItem Header="Format" InputGestureText="Ctrl+Shift+F" Click="Format_OnClick" />
 
             </MenuItem>
-            <MenuItem Name="TabLibraryDataMenu" Header="Tab Library Data" IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"></MenuItem>
+            <MenuItem Name="TabLibraryDataMenu" Header="Tab Library Data"
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" />
             <MenuItem Header="Search"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
                 <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick" />
                 <MenuItem Header="Replace" InputGestureText="Ctrl+H" Click="Replace_OnClick" />
             </MenuItem>
-            <MenuItem Header="Compile"  IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick"/>
+            <MenuItem Header="Compile"
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"
+                      InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick" />
 
         </Menu>
-         <Border Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,10,0">
-             <StackPanel Orientation="Horizontal">
-            <Label Content="Compiler Configuration:" Target="{Binding ElementName=CompilerConfiguration}" />
-            <ComboBox Name="CompilerConfiguration" ItemsSource="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CompilerConfigurations.Keys}"
-                      SelectedItem="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CurrentCompilerConfiguration, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+        <Border Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,10,0">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Compiler Configuration:" Target="{Binding ElementName=CompilerConfiguration}" />
+                <ComboBox Name="CompilerConfiguration"
+                          ItemsSource="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CompilerConfigurations.Keys}"
+                          SelectedItem="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CurrentCompilerConfiguration, UpdateSourceTrigger=PropertyChanged}"
+                          Width="Auto" />
 
             </StackPanel>
         </Border>
         <Grid Grid.Row="2">
-            <TabControl ItemsSource="{Binding EditorTabs}" x:Name="TabControl"
-                        SelectionChanged="TabControl_OnSelectionChanged" Margin="0,10,0,0">
+            <TabControl ItemsSource="{Binding EditorTabs}" x:Name="TabControl" Margin="0,15,0,0"
+                        SelectionChanged="TabControl_OnSelectionChanged" BorderThickness="0">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="Border" BorderThickness="0">
+                                        <ContentPresenter x:Name="ContentSite"
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment="Center"
+                                                          ContentSource="Header"
+                                                          Margin="10,2" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
 
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="Gainsboro" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"/>
+                                            <Setter TargetName="Border" Property="Background" Value="#FFF29D" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                    </Style>
+                </TabControl.Resources>
                 <TabControl.Template>
                     <ControlTemplate TargetType="TabControl">
                         <Grid>
@@ -127,8 +164,8 @@
                         </Grid>
                     </ControlTemplate>
                 </TabControl.Template>
-
                 <TabControl.ItemTemplate>
+
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" PreviewMouseDown="TabStackPanelPreviewMouseDown"
                                     MouseUp="TabStackPanelOnPreviewMouseUp" Drop="TabOnDrop" AllowDrop="True">
@@ -167,11 +204,10 @@
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        <ContentControl Content="{Binding Content}" />
+                        <ContentPresenter Content="{Binding Content}" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
             </TabControl>
-            
         </Grid>
         <StatusBar Grid.Row="3" Height="20" />
     </Grid>

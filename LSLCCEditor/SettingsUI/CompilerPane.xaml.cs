@@ -89,6 +89,8 @@ namespace LSLCCEditor.SettingsUI
 
             var newValue = dependencyPropertyChangedEventArgs.NewValue as string;
 
+            if (newValue == null) return;
+
             UpdateUiToNamedConfig(pane, newValue);
         }
 
@@ -562,6 +564,28 @@ namespace LSLCCEditor.SettingsUI
                 CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Remove(
                     (CSharpNamespace) obj);
             }
+        }
+
+        private void Rename_OnClick(object sender, RoutedEventArgs e)
+        {
+            var x = new UniqueNamerWindow(AppSettings.Settings.CompilerConfigurations.Keys, SelectedCompilerConfigurationName, false);
+
+            x.ShowDialog();
+
+            if (x.Canceled) return;
+
+            AppSettings.Settings.RenameCompilerConfiguration(SelectedCompilerConfigurationName, x.ChosenName);
+
+
+
+            CompilerConfigurationNames.Clear();
+
+            foreach (var v in AppSettings.Settings.CompilerConfigurations.Keys)
+            {
+                CompilerConfigurationNames.Add(v);
+            }
+
+            SelectedCompilerConfigurationName = x.ChosenName;
         }
     }
 }

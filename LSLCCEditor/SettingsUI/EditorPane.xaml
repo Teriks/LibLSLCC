@@ -31,6 +31,7 @@
                     </Style>
                 </StackPanel.Resources>
                 <Button Click="NewConfiguration_OnClick">New</Button>
+                 <Button Click="RenameConfiguration_OnClick">Rename</Button>
                 <Button Click="DeleteConfiguration_OnClick"
                         IsEnabled="{Binding ElementName=_this, Path=EditorConfigurationNames.Count, 
                     Converter={StaticResource IntegerGreaterThanOne}}">
@@ -47,7 +48,7 @@
                 <ComboBox Name="EditorConfigurationCombobox"
                           DataContext="{Binding ElementName=_this}"
                           ItemsSource="{Binding Path=EditorConfigurationNames, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedItem="{Binding Path=CurrentEditorConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
+                          SelectedItem="{Binding Path=SelectedEditorConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Expander Header="Tool Tip Colors" Padding="2" IsExpanded="False" MinWidth="400">
                                 <Expander.Resources>

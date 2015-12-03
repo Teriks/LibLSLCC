@@ -60,6 +60,7 @@ namespace LSLCCEditor
     public partial class App : Application
     {
 
+
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;

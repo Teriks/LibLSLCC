@@ -36,7 +36,7 @@
                 </Style>
             </StackPanel.Resources>
             <Button Click="Cancel_OnClick">Cancel</Button>
-            <Button IsEnabled="{Binding Path=ChosenName, Converter={StaticResource ElementValidConverter}, ConverterParameter={x:Reference NameEntryTextbox}}" Click="Ok_OnClick">Okay</Button>
+            <Button Name="OkButton" Click="Ok_OnClick">Okay</Button>
         </StackPanel>
        </Border>
     </Grid>
