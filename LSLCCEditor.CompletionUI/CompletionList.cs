@@ -513,12 +513,12 @@ namespace LSLCCEditor.CompletionUI
 
         protected virtual void OnCompletionDataAdded(ICompletionData obj)
         {
-            CompletionDataAdded?.Invoke(obj);
+            if (CompletionDataAdded != null) CompletionDataAdded(obj);
         }
 
         protected virtual void OnCompletionDataRemoved(ICompletionData obj)
         {
-            CompletionDataRemoved?.Invoke(obj);
+            if (CompletionDataRemoved != null) CompletionDataRemoved(obj);
         }
     }
 }
