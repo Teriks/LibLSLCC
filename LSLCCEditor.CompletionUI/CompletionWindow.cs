@@ -17,11 +17,13 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
@@ -75,6 +77,39 @@ namespace LSLCCEditor.CompletionUI
         {
             get { return completionList; }
         }
+
+
+        public static readonly DependencyProperty ToolTipHorizontalOffsetProperty = DependencyProperty.Register(
+            "ToolTipHorizontalOffset", typeof (int), typeof (CompletionWindow), new PropertyMetadata(default(int), ToolTipHorizontalOffsetChanged));
+
+        private static void ToolTipHorizontalOffsetChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var self = (CompletionWindow)dependencyObject;
+            self.toolTip.HorizontalOffset = (int)dependencyPropertyChangedEventArgs.NewValue;
+        }
+
+        public int ToolTipHorizontalOffset
+        {
+            get { return (int) GetValue(ToolTipHorizontalOffsetProperty); }
+            set { SetValue(ToolTipHorizontalOffsetProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty ToolTipVerticalOffsetProperty = DependencyProperty.Register(
+            "ToolTipVerticalOffset", typeof (int), typeof (CompletionWindow), new PropertyMetadata(default(int), ToolTipVerticalOffsetChanged));
+
+        private static void ToolTipVerticalOffsetChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var self = (CompletionWindow) dependencyObject;
+            self.toolTip.VerticalOffset = (int)dependencyPropertyChangedEventArgs.NewValue;
+        }
+
+        public int ToolTipVerticalOffset
+        {
+            get { return (int) GetValue(ToolTipVerticalOffsetProperty); }
+            set { SetValue(ToolTipVerticalOffsetProperty, value); }
+        }
+
 
         /// <summary>
         /// Creates a new code completion window.
@@ -206,9 +241,42 @@ namespace LSLCCEditor.CompletionUI
         {
             completionList.InsertionRequested += completionList_InsertionRequested;
             completionList.SelectionChanged += completionList_SelectionChanged;
+            completionList.CompletionDataAdded += CompletionListOnCompletionDataAdded;
             TextArea.Caret.PositionChanged += CaretPositionChanged;
             TextArea.MouseWheel += textArea_MouseWheel;
             TextArea.PreviewTextInput += textArea_PreviewTextInput;
+        }
+
+
+        public static readonly DependencyProperty SizeToCompletionTextBlockContentProperty = DependencyProperty.Register(
+            "SizeToCompletionTextBlockContent", typeof (bool), typeof (CompletionWindow), new PropertyMetadata(default(bool)));
+
+        public bool SizeToCompletionTextBlockContent
+        {
+            get { return (bool) GetValue(SizeToCompletionTextBlockContentProperty); }
+            set { SetValue(SizeToCompletionTextBlockContentProperty, value); }
+        }
+
+        private void CompletionListOnCompletionDataAdded(ICompletionData completionData)
+        {
+            if (!SizeToCompletionTextBlockContent) return;
+
+            var tBox = completionData.Content as TextBlock;
+            if (tBox == null) return;
+
+
+            var formattedText = new FormattedText(
+                tBox.Text,
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(tBox.FontFamily, tBox.FontStyle, tBox.FontWeight, tBox.FontStretch),
+                tBox.FontSize,
+                Brushes.Black);
+
+            if (double.IsNaN(Width) || Width < formattedText.Width)
+            {
+                Width = formattedText.Width + 80;
+            }
         }
 
         /// <inheritdoc/>
@@ -216,6 +284,7 @@ namespace LSLCCEditor.CompletionUI
         {
             completionList.InsertionRequested -= completionList_InsertionRequested;
             completionList.SelectionChanged -= completionList_SelectionChanged;
+            completionList.CompletionDataAdded -= CompletionListOnCompletionDataAdded;
             TextArea.Caret.PositionChanged -= CaretPositionChanged;
             TextArea.MouseWheel -= textArea_MouseWheel;
             TextArea.PreviewTextInput -= textArea_PreviewTextInput;

@@ -963,7 +963,11 @@ namespace LSLCCEditor
                 return;
             }
             _settingsWindow = new SettingsWindow {Owner = this};
-            _settingsWindow.Closed += (o, args) => _settingsWindow = null;
+            _settingsWindow.Closing += (o, args) =>
+            {
+                _settingsWindow.Owner = null;
+                _settingsWindow = null;
+            };
             _settingsWindow.Show();
         }
     }

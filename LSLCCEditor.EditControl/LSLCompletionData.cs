@@ -301,14 +301,11 @@ namespace LSLCCEditor.EditControl
                     Foreground = ColorBrush,
                     FontWeight = FontWeights.Bold
                 };
+               
                 return x;
             }
         }
 
-
-        public string SignatureString { get; set; }
-
-        public string DocumentationString { get; set; }
 
 
         public Func<object> DescriptionFactory { get; set; } 
@@ -317,6 +314,7 @@ namespace LSLCCEditor.EditControl
         {
             get
             {
+                if (DescriptionFactory == null) return null;
                 return DescriptionFactory();
             }
         }

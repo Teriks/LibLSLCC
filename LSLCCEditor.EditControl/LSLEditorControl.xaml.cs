@@ -738,8 +738,10 @@ namespace LSLCCEditor.EditControl
         {
             var c = new CompletionWindow(Editor.TextArea);
 
-            c.Width = c.Width + 160;
+            c.ToolTipHorizontalOffset = 5;
 
+            c.SizeToCompletionTextBlockContent = true;
+            c.ResizeMode = ResizeMode.NoResize;
 
             c.Closed += (sender, args) => { CloseCurrentCompletionWindow(); };
 
@@ -766,6 +768,12 @@ namespace LSLCCEditor.EditControl
             c.ToolTipBackground = new SolidColorBrush(Settings.ToolTipBackground);
             c.ToolTipBorderBrush = new SolidColorBrush(Settings.ToolTipBorderColor);
             c.ToolTipForeground = new SolidColorBrush(Settings.ToolTipForeground);
+
+            c.Background = c.CompletionList.ListBox.Background;
+            c.BorderBrush = new SolidColorBrush(Settings.CompletionWindowBorderColor);
+            c.BorderThickness = new Thickness(1);
+
+            c.CompletionList.ListBox.BorderThickness= new Thickness(0);
 
             return c;
         }

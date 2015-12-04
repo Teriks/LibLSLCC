@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -38,6 +39,33 @@ namespace LSLCCEditor.CompletionUI
                                                      new FrameworkPropertyMetadata(typeof(CompletionList)));
 
             
+        }
+
+
+        public event Action<ICompletionData> CompletionDataAdded;
+        public event Action<ICompletionData> CompletionDataRemoved;
+
+        public CompletionList()
+        {
+            _completionData.CollectionChanged += CompletionDataOnCollectionChanged;
+        }
+
+        private void CompletionDataOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var i in notifyCollectionChangedEventArgs.NewItems)
+                {
+                    OnCompletionDataAdded((ICompletionData)i);
+                }
+            }
+            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var i in notifyCollectionChangedEventArgs.OldItems)
+                {
+                    OnCompletionDataRemoved((ICompletionData)i);
+                }
+            }
         }
 
         bool isFiltering = true;
@@ -118,7 +146,7 @@ namespace LSLCCEditor.CompletionUI
             listBox = GetTemplateChild("PART_ListBox") as CompletionListBox;
             if (listBox != null)
             {
-                listBox.ItemsSource = completionData;
+                listBox.ItemsSource = _completionData;
             }
         }
 
@@ -143,14 +171,14 @@ namespace LSLCCEditor.CompletionUI
             get { return listBox != null ? listBox.scrollViewer : null; }
         }
 
-        readonly ObservableCollection<ICompletionData> completionData = new ObservableCollection<ICompletionData>();
+        readonly ObservableCollection<ICompletionData> _completionData = new ObservableCollection<ICompletionData>();
 
         /// <summary>
         /// Gets the list to which completion data can be added.
         /// </summary>
         public IList<ICompletionData> CompletionData
         {
-            get { return completionData; }
+            get { return _completionData; }
         }
 
         /// <inheritdoc/>
@@ -300,7 +328,7 @@ namespace LSLCCEditor.CompletionUI
             // if the user just typed one more character, don't filter all data but just filter what we are already displaying
             var listToFilter = (currentList != null && (!string.IsNullOrEmpty(currentText)) && (!string.IsNullOrEmpty(query)) &&
                                 query.StartsWith(currentText, StringComparison.Ordinal)) ?
-                currentList : completionData;
+                currentList : _completionData;
 
             var matchingItems =
                 from item in listToFilter
@@ -347,13 +375,13 @@ namespace LSLCCEditor.CompletionUI
             int bestIndex = -1;
             int bestQuality = -1;
             double bestPriority = 0;
-            for (int i = 0; i < completionData.Count; ++i)
+            for (int i = 0; i < _completionData.Count; ++i)
             {
-                int quality = GetMatchQuality(completionData[i].Text, query);
+                int quality = GetMatchQuality(_completionData[i].Text, query);
                 if (quality < 0)
                     continue;
 
-                double priority = completionData[i].Priority;
+                double priority = _completionData[i].Priority;
                 bool useThisItem;
                 if (bestQuality < quality)
                 {
@@ -481,6 +509,16 @@ namespace LSLCCEditor.CompletionUI
             if (i >= query.Length)
                 return true;
             return false;
+        }
+
+        protected virtual void OnCompletionDataAdded(ICompletionData obj)
+        {
+            CompletionDataAdded?.Invoke(obj);
+        }
+
+        protected virtual void OnCompletionDataRemoved(ICompletionData obj)
+        {
+            CompletionDataRemoved?.Invoke(obj);
         }
     }
 }

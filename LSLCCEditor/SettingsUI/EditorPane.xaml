@@ -140,6 +140,15 @@
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
                         </StackPanel>
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                            <Label>Completion Window Border:</Label>
+                            <Border VerticalAlignment="Center">
+                                <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowBorderColor.Content}" />
+                            </Border>
+                            <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
+                                    Style="{Binding Source={StaticResource ResetButtons}}" />
+                        </StackPanel>
+                        <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Completion Selection Background:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
