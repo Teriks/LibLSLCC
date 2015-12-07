@@ -124,8 +124,8 @@
     <Compile Include="SettingsUI\CompletionPane.xaml.cs">
       <DependentUpon>CompletionPane.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsUI\EditorPane.xaml.cs">
-      <DependentUpon>EditorPane.xaml</DependentUpon>
+    <Compile Include="SettingsUI\EditorThemePane.xaml.cs">
+      <DependentUpon>EditorThemePane.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsUI\ISettingsPane.cs" />
     <Compile Include="SettingsUI\SettingsWindow.xaml.cs">
@@ -139,6 +139,7 @@
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\AppSettingsNode.cs" />
     <Compile Include="Settings\EditorControlSettingsDictionaryConverter.cs" />
+    <Compile Include="Settings\EditorControlThemeNode.cs" />
     <Compile Include="Settings\FormatterSettingsNode.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -171,7 +172,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsUI\EditorPane.xaml">
+    <Page Include="SettingsUI\EditorThemePane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

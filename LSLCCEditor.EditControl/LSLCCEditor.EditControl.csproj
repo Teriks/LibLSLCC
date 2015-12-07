@@ -59,6 +59,7 @@
     <Compile Include="LSLEditorControl.xaml.cs">
       <DependentUpon>LSLEditorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LSLEditorControlTheme.cs" />
     <Compile Include="LSLHighlightingColors.cs" />
     <Compile Include="LSLEditorControlSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

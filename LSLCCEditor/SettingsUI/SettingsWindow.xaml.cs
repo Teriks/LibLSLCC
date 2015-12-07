@@ -22,7 +22,7 @@ namespace LSLCCEditor.SettingsUI
             _settingPanes.Add(compilerPane);
 
            
-            var editorPane = new EditorPane { OwnerSettingsWindow = this };
+            var editorPane = new EditorThemePane { OwnerSettingsWindow = this };
             _settingPanes.Add(editorPane);
 
            

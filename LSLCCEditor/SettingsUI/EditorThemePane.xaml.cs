@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Xml;
+using System.Xml.Serialization;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
 using LSLCCEditor.Settings;
@@ -19,68 +20,78 @@ using MessageBox = System.Windows.Forms.MessageBox;
 namespace LSLCCEditor.SettingsUI
 {
     /// <summary>
-    /// Interaction logic for EditorPane.xaml
+    /// Interaction logic for EditorThemePane.xaml
     /// </summary>
-    public partial class EditorPane : UserControl, ISettingsPane
+    public partial class EditorThemePane : UserControl, ISettingsPane
     {
-        public EditorPane()
+        public EditorThemePane()
         {
             InitializeComponent();
 
-            Title = "Editor Settings";
-            SelectedEditorConfigurationName = AppSettings.Settings.CurrentEditorControlConfiguration;
-            EditorConfigurationNames =
-                new ObservableCollection<string>(AppSettings.Settings.EditorControlConfigurations.Keys);
+            Title = "Editor Theme";
+            SelectedEditorThemeName = AppSettings.Settings.CurrentEditorControlTheme;
+            EditorThemeNames =
+                new ObservableCollection<string>(AppSettings.Settings.EditorControlThemes.Keys);
         }
 
 
-        public static readonly DependencyProperty EditorConfigurationNamesProperty = DependencyProperty.Register(
-            "EditorConfigurationNames", typeof (ObservableCollection<string>), typeof (EditorPane),
+        public static readonly DependencyProperty EditorThemeNamesProperty = DependencyProperty.Register(
+            "EditorThemeNames", typeof (ObservableCollection<string>), typeof (EditorThemePane),
             new PropertyMetadata(default(ObservableCollection<string>)));
 
-        public ObservableCollection<string> EditorConfigurationNames
+        public ObservableCollection<string> EditorThemeNames
         {
-            get { return (ObservableCollection<string>) GetValue(EditorConfigurationNamesProperty); }
-            set { SetValue(EditorConfigurationNamesProperty, value); }
+            get { return (ObservableCollection<string>) GetValue(EditorThemeNamesProperty); }
+            set { SetValue(EditorThemeNamesProperty, value); }
         }
+
+
 
         public string Title { get; private set; }
         public SettingsWindow OwnerSettingsWindow { get; set; }
 
 
-        public static readonly DependencyProperty SelectedEditorConfigurationNameProperty = DependencyProperty.Register(
-            "SelectedEditorConfigurationName", typeof (string), typeof (EditorPane),
-            new PropertyMetadata(default(string), CurrentEditorConfigurationChangedCallback));
 
-        private static void CurrentEditorConfigurationChangedCallback(DependencyObject dependencyObject,
+        public static readonly DependencyProperty SelectedEditorThemeNameProperty = DependencyProperty.Register(
+            "SelectedEditorThemeName", typeof (string), typeof (EditorThemePane),
+            new PropertyMetadata(default(string), SelectedEditorThemeChangedCallback));
+
+
+
+        private static void SelectedEditorThemeChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var editorPane = (EditorPane) dependencyObject;
+            var editorPane = (EditorThemePane) dependencyObject;
 
             var newValue = dependencyPropertyChangedEventArgs.NewValue.ToString();
 
-            AppSettings.Settings.CurrentEditorControlConfiguration = newValue;
+            AppSettings.Settings.CurrentEditorControlTheme = newValue;
 
-            editorPane.EditorControlSettings =
-                AppSettings.Settings.EditorControlConfigurations[newValue].EditorControlSettings;
+            editorPane.EditorControlTheme =
+                AppSettings.Settings.EditorControlThemes[newValue].Theme;
         }
 
-        public static readonly DependencyProperty EditorControlSettingsNodeProperty = DependencyProperty.Register(
-            "EditorControlSettings", typeof (LSLEditorControlSettings), typeof (EditorPane),
-            new PropertyMetadata(default(LSLEditorControlSettings)));
 
-        public LSLEditorControlSettings EditorControlSettings
+        public static readonly DependencyProperty EditorControlThemeProperty = DependencyProperty.Register(
+            "EditorControlTheme", typeof (LSLEditorControlTheme), typeof (EditorThemePane),
+            new PropertyMetadata(default(LSLEditorControlTheme)));
+
+
+
+        public LSLEditorControlTheme EditorControlTheme
         {
-            get { return (LSLEditorControlSettings) GetValue(EditorControlSettingsNodeProperty); }
-            set { SetValue(EditorControlSettingsNodeProperty, value); }
+            get { return (LSLEditorControlTheme) GetValue(EditorControlThemeProperty); }
+            set { SetValue(EditorControlThemeProperty, value); }
         }
 
 
-        public string SelectedEditorConfigurationName
+        public string SelectedEditorThemeName
         {
-            get { return (string) GetValue(SelectedEditorConfigurationNameProperty); }
-            set { SetValue(SelectedEditorConfigurationNameProperty, value); }
+            get { return (string) GetValue(SelectedEditorThemeNameProperty); }
+            set { SetValue(SelectedEditorThemeNameProperty, value); }
         }
+
+
 
         private void ResetHighlightingColor_OnClick(object sender, RoutedEventArgs e)
         {
@@ -88,6 +99,8 @@ namespace LSLCCEditor.SettingsUI
 
             ResetHighlightingColorBox(colorBox);
         }
+
+
 
         private void ResetHighlightingColorBox(UIElement colorBox)
         {
@@ -99,11 +112,11 @@ namespace LSLCCEditor.SettingsUI
             var context = propNames[1];
             if (context == "HighlightingColors")
             {
-                DefaultValueInitializer.SetToDefault(EditorControlSettings.HighlightingColors, propName);
+                DefaultValueInitializer.SetToDefault(EditorControlTheme.HighlightingColors, propName);
             }
             else
             {
-                DefaultValueInitializer.SetToDefault(EditorControlSettings, propName);
+                DefaultValueInitializer.SetToDefault(EditorControlTheme, propName);
             }
         }
 
@@ -130,18 +143,18 @@ namespace LSLCCEditor.SettingsUI
 
                 var deflt =
                     (XmlSolidBrush)
-                        DefaultValueInitializer.GetDefaultValue(EditorControlSettings.CompletionWindowItemBrushes,
+                        DefaultValueInitializer.GetDefaultValue(EditorControlTheme.CompletionWindowItemBrushes,
                             propName);
 
-                var property = EditorControlSettings.CompletionWindowItemBrushes.GetType()
+                var property = EditorControlTheme.CompletionWindowItemBrushes.GetType()
                     .GetProperty(propName);
 
-                property.SetValue(EditorControlSettings.CompletionWindowItemBrushes, deflt);
+                property.SetValue(EditorControlTheme.CompletionWindowItemBrushes, deflt);
             }
             else
             {
                 var propName = propNames[propNames.Length - 2];
-                DefaultValueInitializer.SetToDefault(EditorControlSettings, propName);
+                DefaultValueInitializer.SetToDefault(EditorControlTheme, propName);
             }
         }
 
@@ -167,7 +180,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void NewConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
-            var name = new UniqueNamerWindow(AppSettings.Settings.EditorControlConfigurations.Keys, "My Configuration")
+            var name = new UniqueNamerWindow(AppSettings.Settings.EditorControlThemes.Keys, "My Theme")
             {
                 Owner = OwnerSettingsWindow
             };
@@ -176,58 +189,60 @@ namespace LSLCCEditor.SettingsUI
             if (name.Canceled) return;
 
 
-            AppSettings.Settings.AddEditorConfiguration(name.ChosenName);
+            AppSettings.Settings.AddEditorControlTheme(name.ChosenName);
 
-            EditorConfigurationNames.Add(name.ChosenName);
+            EditorThemeNames.Add(name.ChosenName);
 
-            EditorConfigurationCombobox.SelectedIndex = EditorConfigurationNames.Count - 1;
+            EditorThemeCombobox.SelectedIndex = EditorThemeNames.Count - 1;
         }
 
 
         private void DeleteConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
-            var currentlySelected = SelectedEditorConfigurationName;
+            var currentlySelected = SelectedEditorThemeName;
 
             int newIndex = 0;
 
-            if ((EditorConfigurationNames.Count - 1) > 0 && EditorConfigurationCombobox.SelectedIndex > 0)
+            if ((EditorThemeNames.Count - 1) > 0 && EditorThemeCombobox.SelectedIndex > 0)
             {
-                newIndex = EditorConfigurationCombobox.SelectedIndex - 1;
+                newIndex = EditorThemeCombobox.SelectedIndex - 1;
             }
 
 
-            AppSettings.Settings.RemoveEditorConfiguration(currentlySelected, EditorConfigurationNames[newIndex]);
+            AppSettings.Settings.RemoveEditorControlTheme(currentlySelected, EditorThemeNames[newIndex]);
 
-            EditorConfigurationNames.Remove(SelectedEditorConfigurationName);
+            EditorThemeNames.Remove(SelectedEditorThemeName);
 
-            EditorConfigurationCombobox.SelectedIndex = newIndex;
+            EditorThemeCombobox.SelectedIndex = newIndex;
         }
 
-        [DataContract]
-        private class HighlightingSettings
+
+        
+        public class HighlightingSettings
         {
-            [DataMember]
+            
             public XmlColor BasicTextColor { get; set; }
 
-            [DataMember]
+            
             public XmlColor BackgroundColor { get; set; }
 
-            [DataMember]
+            
             public LSLHighlightingColors HighlightingColors { get; set; }
         }
+
 
 
         private void ImportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
             DoImportSettingsWindow("Highlighting Colors (*.xml)|*.xml;", ".xml", reader =>
             {
-                var x = new DataContractSerializer(typeof (HighlightingSettings));
+                var x = new XmlSerializer(typeof (HighlightingSettings));
 
-                var settings = (HighlightingSettings) x.ReadObject(reader);
+                var settings = (HighlightingSettings) x.Deserialize(reader);
 
-                EditorControlSettings.ForegroundColor = settings.BasicTextColor;
-                EditorControlSettings.BackgroundColor = settings.BackgroundColor;
-                EditorControlSettings.HighlightingColors = settings.HighlightingColors;
+                EditorControlTheme.ForegroundColor = settings.BasicTextColor;
+                EditorControlTheme.BackgroundColor = settings.BackgroundColor;
+                EditorControlTheme.HighlightingColors = settings.HighlightingColors;
             });
         }
 
@@ -237,33 +252,32 @@ namespace LSLCCEditor.SettingsUI
             DoExportSettingsWindow("Highlighting Colors (*.xml)|*.xml;", "LSLCCEditor_HighlightingColors.xml",
                 writer =>
                 {
-                    var x = new DataContractSerializer(typeof (HighlightingSettings));
+                    var x = new XmlSerializer(typeof (HighlightingSettings));
 
                     var settings = new HighlightingSettings
                     {
-                        BackgroundColor = EditorControlSettings.BackgroundColor,
-                        BasicTextColor = EditorControlSettings.ForegroundColor,
-                        HighlightingColors = EditorControlSettings.HighlightingColors
+                        BackgroundColor = EditorControlTheme.BackgroundColor,
+                        BasicTextColor = EditorControlTheme.ForegroundColor,
+                        HighlightingColors = EditorControlTheme.HighlightingColors
                     };
 
-                    x.WriteObject(writer, settings);
+                    x.Serialize(writer, settings);
                 });
         }
 
 
-        [DataContract]
-        private class CompletionWindowColorSettings
+        public class CompletionWindowColorSettings
         {
-            [DataMember]
+            
             public XmlColor CompletionWindowBackgroundColor { get; set; }
 
-            [DataMember]
+            
             public XmlColor CompletionWindowSelectionBackgroundColor { get; set; }
 
-            [DataMember]
+            
             public XmlColor CompletionWindowSelectionBorderColor { get; set; }
 
-            [DataMember]
+            
             public LSLCompletionWindowItemBrushes CompletionWindowItemBrushes { get; set; }
         }
 
@@ -331,21 +345,23 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
+
+
         private void ImportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
         {
             DoImportSettingsWindow("Completion Window Colors (*.xml)|*.xml;", ".xml", reader =>
             {
-                var x = new DataContractSerializer(typeof (CompletionWindowColorSettings));
+                var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
 
-                var settings = (CompletionWindowColorSettings) x.ReadObject(reader);
+                var settings = (CompletionWindowColorSettings) x.Deserialize(reader);
 
-                EditorControlSettings.CompletionWindowItemBrushes = settings.CompletionWindowItemBrushes;
-                EditorControlSettings.CompletionWindowBackgroundColor = settings.CompletionWindowBackgroundColor;
+                EditorControlTheme.CompletionWindowItemBrushes = settings.CompletionWindowItemBrushes;
+                EditorControlTheme.CompletionWindowBackgroundColor = settings.CompletionWindowBackgroundColor;
 
-                EditorControlSettings.CompletionWindowSelectionBackgroundColor =
+                EditorControlTheme.CompletionWindowSelectionBackgroundColor =
                     settings.CompletionWindowSelectionBackgroundColor;
 
-                EditorControlSettings.CompletionWindowSelectionBorderColor =
+                EditorControlTheme.CompletionWindowSelectionBorderColor =
                     settings.CompletionWindowSelectionBorderColor;
             });
         }
@@ -356,21 +372,22 @@ namespace LSLCCEditor.SettingsUI
             DoExportSettingsWindow("Completion Window Colors (*.xml)|*.xml;", "LSLCCEditor_CompletionWindowColors.xml",
                 writer =>
                 {
-                    var x = new DataContractSerializer(typeof (CompletionWindowColorSettings));
+                    var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
 
                     var settings = new CompletionWindowColorSettings
                     {
-                        CompletionWindowItemBrushes = EditorControlSettings.CompletionWindowItemBrushes,
+                        CompletionWindowItemBrushes = EditorControlTheme.CompletionWindowItemBrushes,
                         CompletionWindowSelectionBorderColor =
-                            EditorControlSettings.CompletionWindowSelectionBorderColor,
-                        CompletionWindowBackgroundColor = EditorControlSettings.CompletionWindowBackgroundColor,
+                            EditorControlTheme.CompletionWindowSelectionBorderColor,
+                        CompletionWindowBackgroundColor = EditorControlTheme.CompletionWindowBackgroundColor,
                         CompletionWindowSelectionBackgroundColor =
-                            EditorControlSettings.CompletionWindowSelectionBackgroundColor
+                            EditorControlTheme.CompletionWindowSelectionBackgroundColor
                     };
 
-                    x.WriteObject(writer, settings);
+                    x.Serialize(writer, settings);
                 });
         }
+
 
 
         private void ResetAllToolTipColors_OnClick(object sender, RoutedEventArgs e)
@@ -383,16 +400,17 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-        [DataContract]
-        private class ToolTipColorSettings
+
+        
+        public class ToolTipColorSettings
         {
-            [DataMember]
+            
             public XmlColor BackgroundColor { get; set; }
 
-            [DataMember]
+            
             public XmlColor ForegroundColor { get; set; }
 
-            [DataMember]
+            
             public XmlColor BorderColor { get; set; }
         }
 
@@ -402,16 +420,16 @@ namespace LSLCCEditor.SettingsUI
             DoExportSettingsWindow("Tool Tip Colors (*.xml)|*.xml;", "LSLCCEditor_ToolTipColors.xml",
                 writer =>
                 {
-                    var x = new DataContractSerializer(typeof (ToolTipColorSettings));
+                    var x = new XmlSerializer(typeof (ToolTipColorSettings));
 
                     var settings = new ToolTipColorSettings
                     {
-                        BackgroundColor = EditorControlSettings.ToolTipBackground,
-                        ForegroundColor = EditorControlSettings.ForegroundColor,
-                        BorderColor = EditorControlSettings.BackgroundColor
+                        BackgroundColor = EditorControlTheme.ToolTipBackground,
+                        ForegroundColor = EditorControlTheme.ForegroundColor,
+                        BorderColor = EditorControlTheme.BackgroundColor
                     };
 
-                    x.WriteObject(writer, settings);
+                    x.Serialize(writer, settings);
                 });
         }
 
@@ -420,13 +438,13 @@ namespace LSLCCEditor.SettingsUI
         {
             DoImportSettingsWindow("Tool Tip Colors (*.xml)|*.xml;", ".xml", reader =>
             {
-                var x = new DataContractSerializer(typeof (ToolTipColorSettings));
+                var x = new XmlSerializer(typeof (ToolTipColorSettings));
 
-                var settings = (ToolTipColorSettings) x.ReadObject(reader);
+                var settings = (ToolTipColorSettings) x.Deserialize(reader);
 
-                EditorControlSettings.ToolTipBackground = settings.BackgroundColor;
-                EditorControlSettings.ToolTipForeground = settings.ForegroundColor;
-                EditorControlSettings.ToolTipBorderColor = settings.BorderColor;
+                EditorControlTheme.ToolTipBackground = settings.BackgroundColor;
+                EditorControlTheme.ToolTipForeground = settings.ForegroundColor;
+                EditorControlTheme.ToolTipBorderColor = settings.BorderColor;
             });
         }
 
@@ -447,31 +465,76 @@ namespace LSLCCEditor.SettingsUI
 
             var propName = propNames[propNames.Length - 2];
 
-            DefaultValueInitializer.SetToDefault(EditorControlSettings, propName);
+            DefaultValueInitializer.SetToDefault(EditorControlTheme, propName);
         }
-
 
 
         private void RenameConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
-            var x = new UniqueNamerWindow(AppSettings.Settings.EditorControlConfigurations.Keys, SelectedEditorConfigurationName, false);
+            var x = new UniqueNamerWindow(AppSettings.Settings.EditorControlThemes.Keys, SelectedEditorThemeName,
+                false);
 
             x.ShowDialog();
 
             if (x.Canceled) return;
 
-            AppSettings.Settings.RenameEditorConfiguration(SelectedEditorConfigurationName, x.ChosenName);
+            AppSettings.Settings.RenameEditorControlTheme(SelectedEditorThemeName, x.ChosenName);
 
 
+            EditorThemeNames.Clear();
 
-            EditorConfigurationNames.Clear();
-
-            foreach (var v in AppSettings.Settings.EditorControlConfigurations.Keys)
+            foreach (var v in AppSettings.Settings.EditorControlThemes.Keys)
             {
-                EditorConfigurationNames.Add(v);
+                EditorThemeNames.Add(v);
             }
 
-            SelectedEditorConfigurationName = x.ChosenName;
+            SelectedEditorThemeName = x.ChosenName;
+        }
+
+
+        private void Import_OnClick(object sender, RoutedEventArgs e)
+        {
+            DoImportSettingsWindow("Editor Theme (*.xml)|*.xml;", ".xml", reader =>
+            {
+                var x = new XmlSerializer(typeof(LSLEditorControlTheme));
+
+                var settings = (LSLEditorControlTheme)x.Deserialize(reader);
+
+                EditorControlTheme.MemberwiseAssign(settings);
+                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlTheme].Theme.MemberwiseAssign(settings);
+            });
+        }
+
+        private void ResetAll_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var color in ToolTipColorsListView.Items.Cast<StackPanel>())
+            {
+                var colorBox = ((Border)color.Children[1]).Child;
+                ResetCompletionBrushColorBox(colorBox);
+            }
+
+            foreach (var color in CompletionWindowColorsListView.Items.Cast<StackPanel>())
+            {
+                var colorBox = ((Border)color.Children[1]).Child;
+                ResetCompletionBrushColorBox(colorBox);
+            }
+
+            foreach (var color in HighlightingColorsListView.Items.Cast<StackPanel>())
+            {
+                var colorBox = ((Border)color.Children[1]).Child;
+                ResetHighlightingColorBox(colorBox);
+            }
+        }
+
+        private void Export_OnClick(object sender, RoutedEventArgs e)
+        {
+            DoExportSettingsWindow("Editor Theme (*.xml)|*.xml;", "LSLCCEditor_EditorTheme.xml",
+            writer =>
+            {
+                var x = new XmlSerializer(typeof(LSLEditorControlTheme));
+
+                x.Serialize(writer, EditorControlTheme);
+            });
         }
     }
 }

@@ -97,17 +97,18 @@ namespace LSLCCEditor.EditControl
 
 
 
-        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
-            "Settings", typeof (LSLEditorControlSettings), typeof (LSLEditorControl), new PropertyMetadata(default(LSLEditorControlSettings), SettingsPropertyChangedCallback));
+        public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(
+            "Theme", typeof (LSLEditorControlTheme), typeof (LSLEditorControl),
+            new PropertyMetadata(default(LSLEditorControlTheme), ThemePropertyChangedCallback));
 
 
-        private static void SettingsPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private static void ThemePropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var self = (LSLEditorControl) dependencyObject;
+            var self = (LSLEditorControl)dependencyObject;
 
             if (dependencyPropertyChangedEventArgs.OldValue != null)
             {
-                var old = (LSLEditorControlSettings)dependencyPropertyChangedEventArgs.OldValue;
+                var old = (LSLEditorControlTheme)dependencyPropertyChangedEventArgs.OldValue;
 
                 old.HighlightingColors.UnSubscribePropertyChangedRecursive(dependencyObject);
 
@@ -121,7 +122,7 @@ namespace LSLCCEditor.EditControl
 
             if (dependencyPropertyChangedEventArgs.NewValue == null) return;
 
-            var n = (LSLEditorControlSettings)dependencyPropertyChangedEventArgs.NewValue;
+            var n = (LSLEditorControlTheme)dependencyPropertyChangedEventArgs.NewValue;
 
             n.HighlightingColors.SubscribePropertyChangedRecursive(dependencyObject, HighlightingSettingsPropertyChanged);
 
@@ -136,20 +137,10 @@ namespace LSLCCEditor.EditControl
 
 
             self.UpdateHighlightingColorsFromSettings();
-
         }
 
 
-
-        private static void HighlightingSettingsPropertyChanged(SettingsPropertyChangedEventArgs<object> settingsPropertyChangedEventArgs)
-        {
-            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
-
-            suber.UpdateHighlightingColorsFromSettings();
-        }
-
-
-        private static void EditorSettingsPropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlSettings> settingsPropertyChangedEventArgs)
+        private static void EditorSettingsPropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlTheme> settingsPropertyChangedEventArgs)
         {
             var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
 
@@ -167,6 +158,13 @@ namespace LSLCCEditor.EditControl
             }
         }
 
+        private static void HighlightingSettingsPropertyChanged(SettingsPropertyChangedEventArgs<object> settingsPropertyChangedEventArgs)
+        {
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
+
+            suber.UpdateHighlightingColorsFromSettings();
+        }
+
 
         private static void BasicTextColorSettingChanged(SettingsPropertyChangedEventArgs<XmlSerializableXaml<Color>> settingsPropertyChangedEventArgs)
         {
@@ -176,13 +174,23 @@ namespace LSLCCEditor.EditControl
         }
 
 
-
         private static void BackgroundColorSettingPropertyChanged(SettingsPropertyChangedEventArgs<XmlSerializableXaml<Color>> settingsPropertyChangedEventArgs)
         {
             var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
 
             suber.Editor.Background = new SolidColorBrush(settingsPropertyChangedEventArgs.PropertyOwner.Content);
         }
+
+
+
+        public LSLEditorControlTheme Theme
+        {
+            get { return (LSLEditorControlTheme) GetValue(ThemeProperty); }
+            set { SetValue(ThemeProperty, value); }
+        }
+
+        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
+            "Settings", typeof (LSLEditorControlSettings), typeof (LSLEditorControl), new PropertyMetadata(default(LSLEditorControlSettings)));
 
 
 
@@ -362,6 +370,8 @@ namespace LSLCCEditor.EditControl
 
 
             Settings = new LSLEditorControlSettings();
+
+            Theme = new LSLEditorControlTheme();
 
             Settings.CaseInsensitiveAutoCompleteMatching = true;
 
@@ -716,9 +726,9 @@ namespace LSLCCEditor.EditControl
                 _symbolHoverToolTip.Content = hoverText;
                 _symbolHoverToolTip.Placement = PlacementMode.Mouse;
                 _symbolHoverToolTip.IsOpen = true;
-                _symbolHoverToolTip.Foreground = new SolidColorBrush(Settings.ToolTipForeground);
-                _symbolHoverToolTip.Background = new SolidColorBrush(Settings.ToolTipBackground);
-                _symbolHoverToolTip.BorderBrush = new SolidColorBrush(Settings.ToolTipBorderColor);
+                _symbolHoverToolTip.Foreground = new SolidColorBrush(Theme.ToolTipForeground);
+                _symbolHoverToolTip.Background = new SolidColorBrush(Theme.ToolTipBackground);
+                _symbolHoverToolTip.BorderBrush = new SolidColorBrush(Theme.ToolTipBorderColor);
 
                 e.Handled = true;
             }
@@ -753,24 +763,24 @@ namespace LSLCCEditor.EditControl
 
             c.CompletionList.CaseInsensitiveMatching = Settings.CaseInsensitiveAutoCompleteMatching;
 
-            c.CompletionList.ListBox.Background = new SolidColorBrush(Settings.CompletionWindowBackgroundColor);
+            c.CompletionList.ListBox.Background = new SolidColorBrush(Theme.CompletionWindowBackgroundColor);
 
-            c.SelectedItemBackground = new SolidColorBrush(Settings.CompletionWindowSelectionBackgroundColor);
+            c.SelectedItemBackground = new SolidColorBrush(Theme.CompletionWindowSelectionBackgroundColor);
 
             
             var borderBrush = (DrawingBrush)Resources["CompletionWindowSelectionBorderBrush"];
 
             ((GeometryDrawing) ((DrawingGroup) borderBrush.Drawing).Children[0]).Brush =
-                    new SolidColorBrush(Settings.CompletionWindowSelectionBorderColor);
+                    new SolidColorBrush(Theme.CompletionWindowSelectionBorderColor);
 
             c.SelectedItemBorderBrush = borderBrush;
 
-            c.ToolTipBackground = new SolidColorBrush(Settings.ToolTipBackground);
-            c.ToolTipBorderBrush = new SolidColorBrush(Settings.ToolTipBorderColor);
-            c.ToolTipForeground = new SolidColorBrush(Settings.ToolTipForeground);
+            c.ToolTipBackground = new SolidColorBrush(Theme.ToolTipBackground);
+            c.ToolTipBorderBrush = new SolidColorBrush(Theme.ToolTipBorderColor);
+            c.ToolTipForeground = new SolidColorBrush(Theme.ToolTipForeground);
 
             c.Background = c.CompletionList.ListBox.Background;
-            c.BorderBrush = new SolidColorBrush(Settings.CompletionWindowBorderColor);
+            c.BorderBrush = new SolidColorBrush(Theme.CompletionWindowBorderColor);
             c.BorderThickness = new Thickness(1);
 
             c.CompletionList.ListBox.BorderThickness= new Thickness(0);
@@ -1600,7 +1610,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("default", "default", 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionWindowItemBrushes.StateNameBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.StateNameBrush,
                 DescriptionFactory = CreateDescriptionTextBlock_DefaultState
             };
 
@@ -1654,7 +1664,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(state.Name, state.Name, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionWindowItemBrushes.StateNameBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.StateNameBrush,
                 DescriptionFactory = ()=>CreateDescriptionTextBlock_DefinedState(state)
             };
 
@@ -1693,7 +1703,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(label.Target, label.Target, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionWindowItemBrushes.LabelNameDefinitionBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.LabelNameDefinitionBrush,
                 DescriptionFactory = ()=> CreateDescriptionTextBlock_LabelDefinition()
             };
 
@@ -1735,7 +1745,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(label.Name, label.Name, 0)
             {
                 AppendOnInsert = ";",
-                ColorBrush = Settings.CompletionWindowItemBrushes.LabelNameJumpTargetBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.LabelNameJumpTargetBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_LabelJumpTarget()
             };
 
@@ -1776,7 +1786,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(v.Name, v.Name, 1)
             {
-                ColorBrush = Settings.CompletionWindowItemBrushes.GlobalVariableBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.GlobalVariableBrush,
                 DescriptionFactory = () => CreateGlobalVariableDescriptionTextBlock(v)
             };
 
@@ -1815,7 +1825,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(sig.Name, sig.Name, 5)
             {
-                ColorBrush = Settings.CompletionWindowItemBrushes.LibraryConstantBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.LibraryConstantBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_LibraryConstant(sig)
             };
 
@@ -1853,7 +1863,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(v.Name, v.Name, 4)
             {
-                ColorBrush = Settings.CompletionWindowItemBrushes.LocalVariableBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.LocalVariableBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_LocalVariable(v)
             };
 
@@ -1891,7 +1901,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData(v.Name, v.Name, 3)
             {
-                ColorBrush = Settings.CompletionWindowItemBrushes.LocalParameterBrush
+                ColorBrush = Theme.CompletionWindowItemBrushes.LocalParameterBrush
             };
 
 
@@ -1937,7 +1947,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData(func.Name, func.Name, 2)
             {
                 AppendOnInsert = "()" + additiveEnding,
-                ColorBrush = Settings.CompletionWindowItemBrushes.GlobalFunctionBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.GlobalFunctionBrush,
                 DescriptionFactory = () => CreateDescriptionTextBlock_GlobalUserFunction(func)
             };
 
@@ -1968,7 +1978,7 @@ namespace LSLCCEditor.EditControl
             var nameRun = new Run(func.Name)
             {
                 FontWeight = FontWeights.Bold,
-                Foreground = Settings.CompletionWindowItemBrushes.GlobalFunctionBrush
+                Foreground = Theme.CompletionWindowItemBrushes.GlobalFunctionBrush
             };
 
             description.Inlines.Add(new Run("Global Function:" + LSLFormatTools.CreateNewLinesString(2))
@@ -2008,11 +2018,11 @@ namespace LSLCCEditor.EditControl
 
             var allOverloadsDeprecated = sigs.All(x => x.Deprecated);
 
-            var colorBrush = Settings.CompletionWindowItemBrushes.LibraryFunctionBrush;
+            var colorBrush = Theme.CompletionWindowItemBrushes.LibraryFunctionBrush;
 
             if (allOverloadsDeprecated)
             {
-                colorBrush = Settings.CompletionWindowItemBrushes.LibraryFunctionDeprecatedBrush;
+                colorBrush = Theme.CompletionWindowItemBrushes.LibraryFunctionDeprecatedBrush;
             }
 
             var additiveEnding = autoCompleteParser.InExpressionStatementArea ||
@@ -2075,11 +2085,11 @@ namespace LSLCCEditor.EditControl
                         FontWeight = FontWeights.Bold
                     });
 
-                    nameRun.Foreground = new SolidColorBrush(Settings.HighlightingColors.LibraryFunctionDeprecatedColor);
+                    nameRun.Foreground = new SolidColorBrush(Theme.HighlightingColors.LibraryFunctionDeprecatedColor);
                 }
                 else
                 {
-                    nameRun.Foreground = new SolidColorBrush(Settings.HighlightingColors.LibraryFunctionColor);
+                    nameRun.Foreground = new SolidColorBrush(Theme.HighlightingColors.LibraryFunctionColor);
                 }
 
                 if (func.ReturnType != LSLType.Void)
@@ -2151,7 +2161,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("for", "for(;;)", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2184,7 +2194,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("while", "while()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2218,7 +2228,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("do", "do", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}\nwhile();"),
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretAfterInsert = true,
@@ -2250,7 +2260,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("if", "if()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2283,7 +2293,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("else if", "else if()", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2319,7 +2329,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("else", "else", 0)
             {
                 AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n\t\n}"),
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretFromBegining = true,
@@ -2356,7 +2366,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("return", "return", 0)
             {
                 AppendOnInsert = inReturningFunction ? " ;" : ";",
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 7,
@@ -2393,7 +2403,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("jump", "jump", 0)
             {
                 AppendOnInsert = " ;",
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 5,
@@ -2430,7 +2440,7 @@ namespace LSLCCEditor.EditControl
             var data = new LSLCompletionData("state", "state", 0)
             {
                 AppendOnInsert = " ;",
-                ColorBrush = Settings.CompletionWindowItemBrushes.ControlStatementBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 OffsetCaretFromBegining = true,
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = 6,
@@ -2483,7 +2493,7 @@ namespace LSLCCEditor.EditControl
 
             return new LSLCompletionData(typeString, typeString, 0)
             {
-                ColorBrush = Settings.CompletionWindowItemBrushes.TypeBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.TypeBrush,
                 DescriptionFactory = () => desc
             };
         }
@@ -2522,7 +2532,7 @@ namespace LSLCCEditor.EditControl
                 eventHandler.Name, 0)
             {
                 AppendOnInsert = parameters + "\n{\n\t\n}",
-                ColorBrush = Settings.CompletionWindowItemBrushes.EventHandlerBrush,
+                ColorBrush = Theme.CompletionWindowItemBrushes.EventHandlerBrush,
                 ForceIndent = true,
                 IndentLevel = 1,
                 OffsetCaretFromBegining = true,
@@ -2553,7 +2563,7 @@ namespace LSLCCEditor.EditControl
             var nameRun = new Run(eventHandler.Name)
             {
                 FontWeight = FontWeights.Bold,
-                Foreground = Settings.CompletionWindowItemBrushes.EventHandlerBrush
+                Foreground = Theme.CompletionWindowItemBrushes.EventHandlerBrush
             };
 
             description.Inlines.Add(nameRun);
@@ -3054,31 +3064,31 @@ namespace LSLCCEditor.EditControl
                 switch (color.Name)
                 {
                     case "String":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.StringColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.StringColor);
                         break;
                     case "Comment":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.CommentColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.CommentColor);
                         break;
                     case "Type":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.TypeColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.TypeColor);
                     break;
                     case "Constant":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.ConstantColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.ConstantColor);
                         break;
                     case "ControlFlow":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.ControlFlowColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.ControlFlowColor);
                         break;
                     case "State":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.StateKeywordColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.StateKeywordColor);
                         break;
                     case "Function":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.LibraryFunctionColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.LibraryFunctionColor);
                         break;
                     case "Event":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.EventColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.EventColor);
                         break;
                     case "DeprecatedFunction":
-                        color.Foreground = new SimpleHighlightingBrush(Settings.HighlightingColors.LibraryFunctionDeprecatedColor);
+                        color.Foreground = new SimpleHighlightingBrush(Theme.HighlightingColors.LibraryFunctionDeprecatedColor);
                         break;
                 }
             }

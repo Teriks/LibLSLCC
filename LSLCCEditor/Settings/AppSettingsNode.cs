@@ -65,6 +65,8 @@ namespace LSLCCEditor.Settings
         private string _currentCompilerConfiguration;
         private XmlDictionary<string, FormatterSettingsNode> _formatterConfigurations;
         private string _currentFormatterConfiguration;
+        private XmlDictionary<string, EditorControlThemeNode> _editorControlThemes;
+        private string _currentEditorControlTheme;
 
 
         private const string ClientSideScriptCompilerHeader =
@@ -334,7 +336,7 @@ namespace LSLCCEditor.Settings
         }
 
 
-        public class FormatterConfigurationsDefaultFactory : IDefaultSettingsValueFactory
+        private class FormatterConfigurationsDefaultFactory : IDefaultSettingsValueFactory
         {
             public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
             {
@@ -423,6 +425,95 @@ namespace LSLCCEditor.Settings
         }
 
 
+        private class EditorThemesDefaultFactory : IDefaultSettingsValueFactory
+        {
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+            {
+                if (settingValue == null) return true;
+
+                var dict = (XmlDictionary<string, EditorControlThemeNode>) settingValue;
+
+                if (dict.Count == 0)
+                {
+                    return true;
+                }
+
+                foreach (var kvp in dict.ToList())
+                {
+                    if (kvp.Value != null && kvp.Value.Theme != null) continue;
+
+                    var initNode = new EditorControlThemeNode();
+                    dict[kvp.Key] = initNode;
+                    DefaultValueInitializer.Init(initNode);
+                }
+
+                return false;
+            }
+
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
+            {
+                var d = new XmlDictionary<string, EditorControlThemeNode>();
+
+
+                d.Add("Default", DefaultValueInitializer.Init(new EditorControlThemeNode()));
+
+                return d;
+            }
+        }
+
+        [DefaultValueFactory(typeof (EditorThemesDefaultFactory), initOrder: 6)]
+        public XmlDictionary<string, EditorControlThemeNode> EditorControlThemes
+        {
+            get { return _editorControlThemes; }
+            set { SetField(ref _editorControlThemes ,value, "EditorControlThemes"); }
+        }
+
+
+        private class CurrentEditorControlThemeDefaultFactory : IDefaultSettingsValueFactory
+        {
+            public bool CheckForNecessaryResets(MemberInfo member, object settingsNode, object propertyValue)
+            {
+                if (propertyValue == null) return true;
+
+                var val = propertyValue.ToString();
+
+
+                var settingsNodeInstance = (AppSettingsNode)settingsNode;
+
+                if (!settingsNodeInstance.EditorControlThemes.ContainsKey(val))
+                {
+                    return true;
+                }
+
+                if (string.IsNullOrWhiteSpace(val))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            public object GetDefaultValue(MemberInfo member, object settingsNode)
+            {
+                var settingsNodeInstance = (AppSettingsNode)settingsNode;
+
+                if (settingsNodeInstance.EditorControlThemes.ContainsKey("Default"))
+                {
+                    return "Default";
+                }
+                return settingsNodeInstance.EditorControlThemes.First().Key;
+            }
+        }
+
+
+        [DefaultValueFactory(typeof (CurrentEditorControlThemeDefaultFactory), initOrder: 7)]
+        public string CurrentEditorControlTheme
+        {
+            get { return _currentEditorControlTheme; }
+            set { SetField(ref _currentEditorControlTheme, value, "CurrentEditorControlTheme"); }
+        }
+
+
         public void AddCompilerConfiguration(string configurationName)
         {
             if (string.IsNullOrWhiteSpace(configurationName))
@@ -444,7 +535,29 @@ namespace LSLCCEditor.Settings
 
 
 
-        public void AddEditorConfiguration(string configurationName)
+        public void AddEditorControlTheme(string themeName)
+        {
+            if (string.IsNullOrWhiteSpace(themeName))
+            {
+                throw new ArgumentException("Editor theme name cannot be null or whitespace.",
+                    "themeName");
+            }
+
+            if (EditorControlThemes.ContainsKey(themeName))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor theme named {0} already exist.", themeName),
+                    "themeName");
+            }
+
+
+            EditorControlThemes.Add(themeName,
+                DefaultValueInitializer.Init(new EditorControlThemeNode()));
+        }
+
+
+
+        public void AddEditorControlConfiguration(string configurationName)
         {
             if (string.IsNullOrWhiteSpace(configurationName))
             {
@@ -463,7 +576,43 @@ namespace LSLCCEditor.Settings
             EditorControlConfigurations.Add(configurationName,
                 DefaultValueInitializer.Init(new EditorControlSettingsNode()));
         }
-        
+
+
+
+        public void RenameEditorControlTheme(string themeName, string newName)
+        {
+            if (string.IsNullOrWhiteSpace(themeName))
+            {
+                throw new ArgumentException("Editor theme name cannot be null or whitespace.",
+                    "themeName");
+            }
+
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Editor theme name cannot be null or whitespace.",
+                    "newName");
+            }
+
+
+            if (!EditorControlThemes.ContainsKey(themeName))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor theme named {0} does not exist.", themeName),
+                    "themeName");
+            }
+
+            bool resetCurrentlySelected = AppSettings.Settings.CurrentEditorControlTheme == themeName;
+
+            var old = EditorControlThemes[themeName];
+            EditorControlThemes.Remove(themeName);
+            EditorControlThemes.Add(newName, old);
+
+            if (resetCurrentlySelected)
+            {
+                AppSettings.Settings.CurrentEditorControlTheme = newName;
+            }
+        }
+
 
 
         public void RenameCompilerConfiguration(string configurationName, string newName)
@@ -544,7 +693,9 @@ namespace LSLCCEditor.Settings
             CurrentCompilerConfiguration = newCurrentConfiguration;
         }
 
-        public void RenameEditorConfiguration(string configurationName, string newName)
+
+
+        public void RenameEditorControlConfiguration(string configurationName, string newName)
         {
             if (string.IsNullOrWhiteSpace(configurationName))
             {
@@ -578,7 +729,9 @@ namespace LSLCCEditor.Settings
             }
         }
 
-        public void RemoveEditorConfiguration(string configurationName, string newCurrentConfiguration)
+
+
+        public void RemoveEditorControlConfiguration(string configurationName, string newCurrentConfiguration)
         {
             if (string.IsNullOrWhiteSpace(configurationName))
             {
@@ -618,6 +771,51 @@ namespace LSLCCEditor.Settings
             EditorControlConfigurations.Remove(configurationName);
 
             CurrentEditorControlConfiguration = newCurrentConfiguration;
+        }
+
+
+
+
+        public void RemoveEditorControlTheme(string themeName, string newCurrentThemeName)
+        {
+            if (string.IsNullOrWhiteSpace(themeName))
+            {
+                throw new ArgumentException("Editor theme name cannot be null or whitespace.",
+                    "themeName");
+            }
+
+            if (string.IsNullOrWhiteSpace(newCurrentThemeName))
+            {
+                throw new ArgumentException("Editor theme name cannot be null or whitespace.",
+                    "newCurrentThemeName");
+            }
+
+
+            if (!EditorControlThemes.ContainsKey(themeName))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor configuration named {0} does not exist.", themeName),
+                    "themeName");
+            }
+
+            if (!EditorControlThemes.ContainsKey(newCurrentThemeName))
+            {
+                throw new ArgumentException(
+                    string.Format("Editor theme named {0} does not exist.", newCurrentThemeName),
+                    "newCurrentThemeName");
+            }
+
+            if (EditorControlThemes.Count == 1)
+            {
+                throw new InvalidOperationException(
+                    "There must be at least one editor theme present in the " +
+                    "application settings, cannot remove the theme as it is the only one present.");
+            }
+
+
+            EditorControlThemes.Remove(themeName);
+
+            CurrentEditorControlTheme = newCurrentThemeName;
         }
     }
 }

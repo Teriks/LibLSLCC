@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -81,7 +82,9 @@ namespace LSLCCEditor.EditorTabUI
                 AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration]
                 .EditorControlSettings;
 
-            
+            Editor.Theme =
+                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlTheme].Theme;
+
         }
 
 
@@ -94,11 +97,19 @@ namespace LSLCCEditor.EditorTabUI
         private void Editor_OnLoaded(object sender, RoutedEventArgs e)
         {
             AppSettings.Settings.SubscribePropertyChanged(this, "CurrentEditorControlConfiguration", EditorSettingsPropertyChangedHandler);
+            AppSettings.Settings.SubscribePropertyChanged(this, "CurrentEditorControlTheme", EditorThemePropertyChangedHandler);
+        }
+
+        private void EditorThemePropertyChangedHandler(SettingsPropertyChangedEventArgs<AppSettingsNode> obj)
+        {
+            Editor.Theme =
+                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlTheme].Theme;
         }
 
         private void Editor_OnUnloaded(object sender, RoutedEventArgs e)
         {
             AppSettings.Settings.UnSubscribePropertyChanged(this, "CurrentEditorControlConfiguration");
+            AppSettings.Settings.UnSubscribePropertyChanged(this, "CurrentEditorControlTheme");
         }
 
         public ILSLLibraryDataProvider LibraryDataProvider

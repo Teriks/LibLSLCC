@@ -484,6 +484,26 @@ namespace LibLSLCC.Settings
         }
 
 
+        public void MemberwiseAssign(TSetting other)
+        {
+            var myType = GetType();
+
+            var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
+            var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+
+            foreach (var field in fields)
+            {
+                field.SetValue(this,field.GetValue(other));
+            }
+
+            foreach (var prop in props)
+            {
+                prop.SetValue(this, prop.GetValue(other,null),null);
+            }
+        }
+
+
         object ICloneable.Clone()
         {
             var myType = GetType();

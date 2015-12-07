@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="LSLCCEditor.SettingsUI.EditorPane"
+﻿<UserControl x:Class="LSLCCEditor.SettingsUI.EditorThemePane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -31,11 +31,23 @@
                     </Style>
                 </StackPanel.Resources>
                 <Button Click="NewConfiguration_OnClick">New</Button>
-                 <Button Click="RenameConfiguration_OnClick">Rename</Button>
+                <Button Click="RenameConfiguration_OnClick">Rename</Button>
                 <Button Click="DeleteConfiguration_OnClick"
-                        IsEnabled="{Binding ElementName=_this, Path=EditorConfigurationNames.Count, 
+                        IsEnabled="{Binding ElementName=_this, Path=EditorThemeNames.Count, 
                     Converter={StaticResource IntegerGreaterThanOne}}">
                     Delete
+                </Button>
+                <Button
+                    Click="Import_OnClick">
+                    Import
+                </Button>
+                <Button
+                    Click="Export_OnClick">
+                    Export
+                </Button>
+                <Button
+                    Click="ResetAll_OnClick">
+                    All Default
                 </Button>
             </StackPanel>
         </Grid>
@@ -44,70 +56,70 @@
                 <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource ExpanderStyle}" />
             </StackPanel.Resources>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                <Label Target="{Binding ElementName=EditorConfigurationCombobox}">Current Configuration:</Label>
-                <ComboBox Name="EditorConfigurationCombobox"
+                <Label Target="{Binding ElementName=EditorThemeCombobox}">Current Configuration:</Label>
+                <ComboBox Name="EditorThemeCombobox"
                           DataContext="{Binding ElementName=_this}"
-                          ItemsSource="{Binding Path=EditorConfigurationNames, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedItem="{Binding Path=SelectedEditorConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
+                          ItemsSource="{Binding Path=EditorThemeNames, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding Path=SelectedEditorThemeName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Expander Header="Tool Tip Colors" Padding="2" IsExpanded="False" MinWidth="400">
-                                <Expander.Resources>
+                <Expander.Resources>
                     <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
                         <Setter Property="Width" Value="150" />
                         <Setter Property="UsingAlphaChannel" Value="False" />
-                        <Setter Property="ShowStandardColors" Value="False"/>
+                        <Setter Property="ShowStandardColors" Value="False" />
                         <Setter Property="ColorMode" Value="ColorCanvas" />
                     </Style>
                     <Style x:Key="StackPanels" TargetType="StackPanel">
                         <Setter Property="Orientation" Value="Horizontal" />
                     </Style>
                     <Style x:Key="ResetButtons" TargetType="Button">
-                        <Setter Property="Padding" Value="5,0,5,0"></Setter>
+                        <Setter Property="Padding" Value="5,0,5,0" />
                         <Setter Property="Content" Value="Default" />
                     </Style>
                 </Expander.Resources>
                 <StackPanel>
                     <ListView HorizontalContentAlignment="Right" Name="ToolTipColorsListView">
-                    <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
-                        <Label>Tool Tip Background:</Label>
-                        <Border VerticalAlignment="Center">
-                            <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ToolTipBackground.Content}" />
-                        </Border>
-                        <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
-                                Style="{Binding Source={StaticResource ResetButtons}}" />
-                    </StackPanel>
-                    <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
-                        <Label>Tool Tip Plain Text:</Label>
-                        <Border VerticalAlignment="Center">
-                            <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ToolTipForeground.Content}" />
-                        </Border>
-                        <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
-                                Style="{Binding Source={StaticResource ResetButtons}}" />
-                    </StackPanel>
-                    <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
-                        <Label>Tool Tip Border:</Label>
-                        <Border VerticalAlignment="Center">
-                            <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ToolTipBorderColor.Content}" />
-                        </Border>
-                        <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
-                                Style="{Binding Source={StaticResource ResetButtons}}" />
-                    </StackPanel>
-                </ListView>
+                        <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                            <Label>Tool Tip Background:</Label>
+                            <Border VerticalAlignment="Center">
+                                <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ToolTipBackground.Content}" />
+                            </Border>
+                            <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
+                                    Style="{Binding Source={StaticResource ResetButtons}}" />
+                        </StackPanel>
+                        <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                            <Label>Tool Tip Plain Text:</Label>
+                            <Border VerticalAlignment="Center">
+                                <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ToolTipForeground.Content}" />
+                            </Border>
+                            <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
+                                    Style="{Binding Source={StaticResource ResetButtons}}" />
+                        </StackPanel>
+                        <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                            <Label>Tool Tip Border:</Label>
+                            <Border VerticalAlignment="Center">
+                                <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ToolTipBorderColor.Content}" />
+                            </Border>
+                            <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
+                                    Style="{Binding Source={StaticResource ResetButtons}}" />
+                        </StackPanel>
+                    </ListView>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ImportToolTipColors_OnClick">
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ImportToolTipColors_OnClick">
                             Import
                         </Button>
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ExportToolTipColors_OnClick">
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ExportToolTipColors_OnClick">
                             Export
                         </Button>
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ResetAllToolTipColors_OnClick">
-                        All Default
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ResetAllToolTipColors_OnClick">
+                            All Default
                         </Button>
                     </StackPanel>
                 </StackPanel>
@@ -117,24 +129,24 @@
                     <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
                         <Setter Property="Width" Value="150" />
                         <Setter Property="UsingAlphaChannel" Value="False" />
-                        <Setter Property="ShowStandardColors" Value="False"/>
+                        <Setter Property="ShowStandardColors" Value="False" />
                         <Setter Property="ColorMode" Value="ColorCanvas" />
                     </Style>
                     <Style x:Key="StackPanels" TargetType="StackPanel">
                         <Setter Property="Orientation" Value="Horizontal" />
                     </Style>
                     <Style x:Key="ResetButtons" TargetType="Button">
-                        <Setter Property="Padding" Value="5,0,5,0"></Setter>
+                        <Setter Property="Padding" Value="5,0,5,0" />
                         <Setter Property="Content" Value="Default" />
                     </Style>
                 </Expander.Resources>
                 <StackPanel>
                     <ListView HorizontalContentAlignment="Right" Name="CompletionWindowColorsListView">
-                       <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                        <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Completion Window Background:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowBackgroundColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowBackgroundColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -143,7 +155,7 @@
                             <Label>Completion Window Border:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowBorderColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowBorderColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -152,7 +164,7 @@
                             <Label>Completion Selection Background:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowSelectionBackgroundColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowSelectionBackgroundColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -161,7 +173,7 @@
                             <Label>Completion Selection Border:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowSelectionBorderColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowSelectionBorderColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -170,7 +182,7 @@
                             <Label>Deprecated Library Functions:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.LibraryFunctionDeprecatedBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.LibraryFunctionDeprecatedBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -179,7 +191,7 @@
                             <Label>Library Functions:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.LibraryFunctionBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.LibraryFunctionBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -188,7 +200,7 @@
                             <Label>Library Constants:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.LibraryConstantBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.LibraryConstantBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -198,7 +210,7 @@
                             <Label>Global Functions:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.GlobalFunctionBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.GlobalFunctionBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -207,7 +219,7 @@
                             <Label>Global Variables:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.GlobalVariableBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.GlobalVariableBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -216,7 +228,7 @@
                             <Label>Local Variables:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.LocalVariableBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.LocalVariableBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -225,7 +237,7 @@
                             <Label>Parameter Variables:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.LocalParameterBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.LocalParameterBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -234,7 +246,7 @@
                             <Label>Defined State Names:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.StateNameBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.StateNameBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -243,7 +255,7 @@
                             <Label>Defined Labels:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.LabelNameJumpTargetBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.LabelNameJumpTargetBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -252,7 +264,7 @@
                             <Label>Control Statement Snippets:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.ControlStatementBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.ControlStatementBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -261,7 +273,7 @@
                             <Label>Event Handler Snippets:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.EventHandlerBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.EventHandlerBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -270,24 +282,24 @@
                             <Label>Type Snippets:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.CompletionWindowItemBrushes.TypeBrush.Content.Color}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.CompletionWindowItemBrushes.TypeBrush.Content.Color}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
                         </StackPanel>
                     </ListView>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ImportCompletionWindowColors_OnClick">
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ImportCompletionWindowColors_OnClick">
                             Import
                         </Button>
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ExportCompletionWindowColors_OnClick">
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ExportCompletionWindowColors_OnClick">
                             Export
                         </Button>
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ResetAllCompletionWindowColors_OnClick">
-                        All Default
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ResetAllCompletionWindowColors_OnClick">
+                            All Default
                         </Button>
                     </StackPanel>
                 </StackPanel>
@@ -297,14 +309,14 @@
                     <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
                         <Setter Property="Width" Value="150" />
                         <Setter Property="UsingAlphaChannel" Value="False" />
-                        <Setter Property="ShowStandardColors" Value="False"/>
+                        <Setter Property="ShowStandardColors" Value="False" />
                         <Setter Property="ColorMode" Value="ColorCanvas" />
                     </Style>
                     <Style x:Key="StackPanels" TargetType="StackPanel">
                         <Setter Property="Orientation" Value="Horizontal" />
                     </Style>
                     <Style x:Key="ResetButtons" TargetType="Button">
-                        <Setter Property="Padding" Value="5,0,5,0"></Setter>
+                        <Setter Property="Padding" Value="5,0,5,0" />
                         <Setter Property="Content" Value="Default" />
                     </Style>
                 </Expander.Resources>
@@ -315,7 +327,7 @@
                             <Label>Background:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.BackgroundColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.BackgroundColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -324,7 +336,7 @@
                             <Label>Basic Text:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.ForegroundColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ForegroundColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -333,7 +345,7 @@
                             <Label>Functions:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.LibraryFunctionColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.LibraryFunctionColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -343,7 +355,7 @@
                             <Label>Deprecated Functions:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.LibraryFunctionDeprecatedColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.LibraryFunctionDeprecatedColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -353,7 +365,7 @@
                             <Label>Types:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.TypeColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.TypeColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -363,7 +375,7 @@
                             <Label>Comments:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.CommentColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.CommentColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -373,7 +385,7 @@
                             <Label>Constants:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.ConstantColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.ConstantColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -384,7 +396,7 @@
                             <Label>Events:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.EventColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.EventColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -395,7 +407,7 @@
                             <Label>Control Flow Keywords:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.ControlFlowColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.ControlFlowColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -405,7 +417,7 @@
                             <Label>State Keywords:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.StateKeywordColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.StateKeywordColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -415,7 +427,7 @@
                             <Label>Strings:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}"
-                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlSettings.HighlightingColors.StringColor.Content}" />
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.HighlightingColors.StringColor.Content}" />
                             </Border>
                             <Button Height="23" Margin="10,0,0,0" Click="ResetHighlightingColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
@@ -424,17 +436,17 @@
 
                     </ListView>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ImportHighlightingColors_OnClick">
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ImportHighlightingColors_OnClick">
                             Import
                         </Button>
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ExportHighlightingColors_OnClick">
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ExportHighlightingColors_OnClick">
                             Export
                         </Button>
-                        <Button Height="23"  HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
-                            Click="ResetAllHighlightingColors_OnClick">
-                        All Default
+                        <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
+                                Click="ResetAllHighlightingColors_OnClick">
+                            All Default
                         </Button>
                     </StackPanel>
 

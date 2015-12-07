@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip">
+        Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip" >
 
     <Window.Resources>
 
@@ -107,7 +107,7 @@
         </Border>
         <Grid Grid.Row="2">
             <TabControl ItemsSource="{Binding EditorTabs}" x:Name="TabControl" Margin="0,15,0,0"
-                        SelectionChanged="TabControl_OnSelectionChanged" BorderThickness="0">
+                        SelectionChanged="TabControl_OnSelectionChanged" BorderThickness="0" Background="AliceBlue">
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
@@ -154,12 +154,12 @@
                                           Margin="0,2,0,0"
                                           IsItemsHost="true" />
                             </ScrollViewer>
-                            <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="#8C8E94" Background="#F9F9F9">
+                            <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="DarkGray" Background="Transparent">
 
                                 <ContentPresenter x:Name="PART_SelectedContentHost"
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                                   Margin="{TemplateBinding Padding}"
-                                                  ContentSource="SelectedContent" />
+                                                  ContentSource="SelectedContent"  />
                             </Border>
                         </Grid>
                     </ControlTemplate>

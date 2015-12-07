@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:editControl="clr-namespace:LSLCCEditor.EditControl;assembly=LSLCCEditor.EditControl"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding RelativeSource={RelativeSource Self}}" Padding="0" Margin="0" BorderThickness="0" BorderBrush="Transparent">
+             d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding RelativeSource={RelativeSource Self}}" Padding="0" Margin="0" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">
 
     <Grid>
         <Grid.RowDefinitions>
