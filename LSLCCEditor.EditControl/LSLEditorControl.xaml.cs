@@ -133,14 +133,14 @@ namespace LSLCCEditor.EditControl
 
             n.ForegroundColor.SubscribePropertyChanged(dependencyObject, BasicTextColorSettingChanged);
 
-            n.SubscribePropertyChanged(dependencyObject, EditorSettingsPropertyChanged);
+            n.SubscribePropertyChanged(dependencyObject, EditorThemePropertyChanged);
 
 
             self.UpdateHighlightingColorsFromSettings();
         }
 
 
-        private static void EditorSettingsPropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlTheme> settingsPropertyChangedEventArgs)
+        private static void EditorThemePropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlTheme> settingsPropertyChangedEventArgs)
         {
             var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
 
