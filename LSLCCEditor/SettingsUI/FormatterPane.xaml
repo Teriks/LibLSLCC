@@ -48,11 +48,15 @@
                     <Setter Property="Maximum" Value="1000" />
                     <Setter Property="ClipValueToMinMax" Value="True" />
                     <Setter Property="Margin" Value="0,0,10,0"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
                 </Style>
                 <Style TargetType="StackPanel" x:Key="StackPanelStyle">
                     <Setter Property="Orientation" Value="Horizontal" />
+                    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                    <Setter Property="Margin" Value="0,0,0,10"/>
                 </Style>
-                <ResourceDictionary x:Key="ListViewStyles">
+                <ResourceDictionary x:Key="ItemsControlStyles">
                     <Style TargetType="StackPanel" BasedOn="{StaticResource StackPanelStyle}"/>
                     <Style TargetType="xctk:IntegerUpDown" BasedOn="{StaticResource IntegerUpDownStyle}"/>
                     <Style TargetType="CheckBox">
@@ -60,6 +64,12 @@
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                     </Style>
                 </ResourceDictionary>
+                <Style TargetType="ItemsControl">
+                    <Setter Property="BorderBrush" Value="DarkGray"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Style>
+
             </StackPanel.Resources>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                 <Label Target="{Binding ElementName=FormatterConfigurationCombobox}">Current Configuration:</Label>
@@ -73,15 +83,16 @@
                     :Indent Braceless Control Statements</CheckBox>
             </Expander>
             <Expander Header="Spaces Before Opening Braces"  MinWidth="400" >
-                <ListView HorizontalContentAlignment="Right" Padding="0,10,10,10">
-                    <ListView.Resources>
+                <ItemsControl Padding="0,10,10,0">
+
+                    <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ListViewStyles"/>
+                                <StaticResource ResourceKey="ItemsControlStyles"/>
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
-                    </ListView.Resources>
-                    
+                    </ItemsControl.Resources>
+
                     <StackPanel>
                         <Label>Functions:</Label>
                         <xctk:IntegerUpDown
@@ -136,18 +147,18 @@
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseBrace}" />
                         <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
-                </ListView>
+                </ItemsControl>
             </Expander>
             <Expander Header="Spaces Before Closing Braces"  DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ListView HorizontalContentAlignment="Right" Padding="0,10,0,10">
-                    <ListView.Resources>
+                <ItemsControl Padding="0,10,0,0">
+                    <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ListViewStyles"/>
-                                
+                                <StaticResource ResourceKey="ItemsControlStyles"/>
+
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
-                    </ListView.Resources>
+                    </ItemsControl.Resources>
                     <StackPanel>
                         <Label>Functions:</Label>
                         <xctk:IntegerUpDown
@@ -193,43 +204,17 @@
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeClosingElseBrace}" />
                     </StackPanel>
-                </ListView>
-            </Expander>
-            <Expander Header="Minimum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ListView HorizontalContentAlignment="Right" Padding="0,10,0,10">
-                    <ListView.Resources>
-                        <ResourceDictionary>
-                            <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ListViewStyles"/>
-                            </ResourceDictionary.MergedDictionaries>
-                        </ResourceDictionary>
-                    </ListView.Resources>
-                    <StackPanel>
-                        <Label>Min Newlines Between Distinct Statements:</Label>
-                        <xctk:IntegerUpDown
-                            Value="{Binding  Path=CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label>Min Newlines Between Event And Following Comment:</Label>
-                        <xctk:IntegerUpDown
-                            Value="{Binding  Path=CurrentFormatterSettings.MinimumNewLinesBetweenEventAndFollowingComment}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label>Min Newlines Between Event Handlers:</Label>
-                        <xctk:IntegerUpDown
-                            Value="{Binding  Path=CurrentFormatterSettings.MinimumNewLinesBetweenEventHandlers}" />
-                    </StackPanel>
-                </ListView>
+                </ItemsControl>
             </Expander>
             <Expander Header="Maximum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ListView HorizontalContentAlignment="Right" Padding="0,10,0,10">
-                    <ListView.Resources>
+                <ItemsControl Padding="0,10,0,0">
+                    <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ListViewStyles"/>
+                                <StaticResource ResourceKey="ItemsControlStyles"/>
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
-                    </ListView.Resources>
+                    </ItemsControl.Resources>
                     <StackPanel>
                         <Label>Max Newlines At Beginning Of State Scope:</Label>
                         <xctk:IntegerUpDown
@@ -250,24 +235,24 @@
                         <xctk:IntegerUpDown
                             Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesAtEndOfCodeScope}" />
                     </StackPanel>
-                </ListView>
+                </ItemsControl>
             </Expander>
             <Expander Header="Expression Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400" >
-                <ListView HorizontalContentAlignment="Right" Padding="0,10,10,10">
-                    <ListView.Resources>
+                <ItemsControl Padding="0,10,10,0">
+                    <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ListViewStyles"/>
+                                <StaticResource ResourceKey="ItemsControlStyles"/>
                                 <ResourceDictionary>
                                     <Style TargetType="xctk:IntegerUpDown" BasedOn="{StaticResource IntegerUpDownStyle}">
                                         <Setter Property="IsEnabled" 
                                                 Value="{Binding RelativeSource={RelativeSource AncestorType=StackPanel, Mode=FindAncestor}, Path=Children[4].IsChecked}"></Setter>
-  
+
                                     </Style>
                                 </ResourceDictionary>
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
-                    </ListView.Resources>
+                    </ItemsControl.Resources>
                     <StackPanel>
                         <Label>Declaration Expression - Min Expressions:</Label>
                         <xctk:IntegerUpDown 
@@ -329,9 +314,35 @@
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
                             Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeReturnExpressionWrap}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.ReturnExpressionWrapping}">:Wrap</CheckBox>
+                        <CheckBox   IsChecked="{Binding Path=CurrentFormatterSettings.ReturnExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
-                </ListView>
+                </ItemsControl>
+            </Expander>
+            <Expander Header="Minimum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
+                <ItemsControl Padding="0,10,0,0">
+                    <ItemsControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <StaticResource ResourceKey="ItemsControlStyles"/>
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ItemsControl.Resources>
+                    <StackPanel>
+                        <Label Content="Min Newlines Between Distinct Statements:"/>
+                        <xctk:IntegerUpDown
+            				Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Min Newlines Between Event And Following Comment:"/>
+                        <xctk:IntegerUpDown
+            				Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventAndFollowingComment}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Min Newlines Between Event Handlers:"/>
+                        <xctk:IntegerUpDown
+            				Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventHandlers}" />
+                    </StackPanel>
+                </ItemsControl>
             </Expander>
         </StackPanel>
     </Grid>

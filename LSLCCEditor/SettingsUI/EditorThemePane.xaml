@@ -54,6 +54,27 @@
         <StackPanel Grid.Column="1">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource ExpanderStyle}" />
+
+                <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
+                    <Setter Property="Width" Value="150" />
+                    <Setter Property="UsingAlphaChannel" Value="False" />
+                    <Setter Property="ShowStandardColors" Value="False" />
+                    <Setter Property="ColorMode" Value="ColorCanvas" />
+                </Style>
+                <Style x:Key="StackPanels" TargetType="StackPanel">
+                    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                    <Setter Property="Orientation" Value="Horizontal" />
+                    <Setter Property="Margin" Value="0,0,0,10"/>
+                </Style>
+                <Style x:Key="ResetButtons" TargetType="Button">
+                    <Setter Property="Padding" Value="5,0,5,0" />
+                    <Setter Property="Content" Value="Default" />
+                </Style>
+                <Style TargetType="ItemsControl">
+                    <Setter Property="BorderBrush" Value="DarkGray"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Style>
             </StackPanel.Resources>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                 <Label Target="{Binding ElementName=EditorThemeCombobox}">Current Configuration:</Label>
@@ -64,22 +85,9 @@
             </StackPanel>
             <Expander Header="Tool Tip Colors" Padding="2" IsExpanded="False" MinWidth="400">
                 <Expander.Resources>
-                    <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
-                        <Setter Property="Width" Value="150" />
-                        <Setter Property="UsingAlphaChannel" Value="False" />
-                        <Setter Property="ShowStandardColors" Value="False" />
-                        <Setter Property="ColorMode" Value="ColorCanvas" />
-                    </Style>
-                    <Style x:Key="StackPanels" TargetType="StackPanel">
-                        <Setter Property="Orientation" Value="Horizontal" />
-                    </Style>
-                    <Style x:Key="ResetButtons" TargetType="Button">
-                        <Setter Property="Padding" Value="5,0,5,0" />
-                        <Setter Property="Content" Value="Default" />
-                    </Style>
                 </Expander.Resources>
                 <StackPanel>
-                    <ListView HorizontalContentAlignment="Right" Name="ToolTipColorsListView" Padding="0,10,10,10">
+                    <ItemsControl  Name="ToolTipColorsListView" Padding="0,10,10,0">
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Tool Tip Background:</Label>
                             <Border VerticalAlignment="Center">
@@ -107,7 +115,7 @@
                             <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
                         </StackPanel>
-                    </ListView>
+                    </ItemsControl>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
                                 Click="ImportToolTipColors_OnClick">
@@ -126,22 +134,9 @@
             </Expander>
             <Expander Header="Completion Window Colors" Padding="2" IsExpanded="False" MinWidth="400">
                 <Expander.Resources>
-                    <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
-                        <Setter Property="Width" Value="150" />
-                        <Setter Property="UsingAlphaChannel" Value="False" />
-                        <Setter Property="ShowStandardColors" Value="False" />
-                        <Setter Property="ColorMode" Value="ColorCanvas" />
-                    </Style>
-                    <Style x:Key="StackPanels" TargetType="StackPanel">
-                        <Setter Property="Orientation" Value="Horizontal" />
-                    </Style>
-                    <Style x:Key="ResetButtons" TargetType="Button">
-                        <Setter Property="Padding" Value="5,0,5,0" />
-                        <Setter Property="Content" Value="Default" />
-                    </Style>
                 </Expander.Resources>
                 <StackPanel>
-                    <ListView HorizontalContentAlignment="Right" Name="CompletionWindowColorsListView" Padding="0,10,10,10">
+                    <ItemsControl HorizontalContentAlignment="Right" Name="CompletionWindowColorsListView" Padding="0,10,10,0">
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Completion Window Background:</Label>
                             <Border VerticalAlignment="Center">
@@ -287,7 +282,7 @@
                             <Button Height="23" Margin="10,0,0,0" Click="ResetCompletionWindowColor_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
                         </StackPanel>
-                    </ListView>
+                    </ItemsControl>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
                                 Click="ImportCompletionWindowColors_OnClick">
@@ -306,22 +301,9 @@
             </Expander>
             <Expander Header="Syntax Highlighting / Editor Color" Padding="2" IsExpanded="False" MinWidth="400">
                 <Expander.Resources>
-                    <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
-                        <Setter Property="Width" Value="150" />
-                        <Setter Property="UsingAlphaChannel" Value="False" />
-                        <Setter Property="ShowStandardColors" Value="False" />
-                        <Setter Property="ColorMode" Value="ColorCanvas" />
-                    </Style>
-                    <Style x:Key="StackPanels" TargetType="StackPanel">
-                        <Setter Property="Orientation" Value="Horizontal" />
-                    </Style>
-                    <Style x:Key="ResetButtons" TargetType="Button">
-                        <Setter Property="Padding" Value="5,0,5,0" />
-                        <Setter Property="Content" Value="Default" />
-                    </Style>
                 </Expander.Resources>
                 <StackPanel>
-                    <ListView HorizontalContentAlignment="Right" Name="HighlightingColorsListView" Padding="0,10,10,10">
+                    <ItemsControl Name="HighlightingColorsListView" Padding="0,10,10,0">
 
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Background:</Label>
@@ -434,7 +416,7 @@
                         </StackPanel>
 
 
-                    </ListView>
+                    </ItemsControl>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"
                                 Click="ImportHighlightingColors_OnClick">
