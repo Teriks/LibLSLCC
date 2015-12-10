@@ -79,7 +79,7 @@
                     </Style>
                 </Expander.Resources>
                 <StackPanel>
-                    <ListView HorizontalContentAlignment="Right" Name="ToolTipColorsListView">
+                    <ListView HorizontalContentAlignment="Right" Name="ToolTipColorsListView" Padding="0,10,10,10">
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Tool Tip Background:</Label>
                             <Border VerticalAlignment="Center">
@@ -141,7 +141,7 @@
                     </Style>
                 </Expander.Resources>
                 <StackPanel>
-                    <ListView HorizontalContentAlignment="Right" Name="CompletionWindowColorsListView">
+                    <ListView HorizontalContentAlignment="Right" Name="CompletionWindowColorsListView" Padding="0,10,10,10">
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Completion Window Background:</Label>
                             <Border VerticalAlignment="Center">
@@ -321,7 +321,7 @@
                     </Style>
                 </Expander.Resources>
                 <StackPanel>
-                    <ListView HorizontalContentAlignment="Right" Name="HighlightingColorsListView">
+                    <ListView HorizontalContentAlignment="Right" Name="HighlightingColorsListView" Padding="0,10,10,10">
 
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Background:</Label>

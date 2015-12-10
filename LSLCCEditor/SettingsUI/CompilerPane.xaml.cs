@@ -203,7 +203,7 @@ namespace LSLCCEditor.SettingsUI
 
 
         public static readonly DependencyProperty CurrentCompilerConfigurationProperty = DependencyProperty.Register(
-            "CurrentCompilerConfigurationName", typeof (CompilerConfigurationNode), typeof (CompilerPane),
+            "CurrentCompilerConfiguration", typeof (CompilerConfigurationNode), typeof (CompilerPane),
             new PropertyMetadata(default(CompilerConfigurationNode)));
 
         public CompilerConfigurationNode CurrentCompilerConfiguration

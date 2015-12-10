@@ -73,7 +73,7 @@
                     :Indent Braceless Control Statements</CheckBox>
             </Expander>
             <Expander Header="Spaces Before Opening Braces"  MinWidth="400" >
-                <ListView HorizontalContentAlignment="Right" Padding="0,0,10,0">
+                <ListView HorizontalContentAlignment="Right" Padding="0,10,10,10">
                     <ListView.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -139,11 +139,12 @@
                 </ListView>
             </Expander>
             <Expander Header="Spaces Before Closing Braces"  DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ListView HorizontalContentAlignment="Right">
+                <ListView HorizontalContentAlignment="Right" Padding="0,10,0,10">
                     <ListView.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
                                 <StaticResource ResourceKey="ListViewStyles"/>
+                                
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
                     </ListView.Resources>
@@ -195,7 +196,7 @@
                 </ListView>
             </Expander>
             <Expander Header="Minimum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ListView HorizontalContentAlignment="Right">
+                <ListView HorizontalContentAlignment="Right" Padding="0,10,0,10">
                     <ListView.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -221,7 +222,7 @@
                 </ListView>
             </Expander>
             <Expander Header="Maximum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ListView HorizontalContentAlignment="Right">
+                <ListView HorizontalContentAlignment="Right" Padding="0,10,0,10">
                     <ListView.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -252,7 +253,7 @@
                 </ListView>
             </Expander>
             <Expander Header="Expression Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400" >
-                <ListView HorizontalContentAlignment="Right" Padding="0,0,10,0">
+                <ListView HorizontalContentAlignment="Right" Padding="0,10,10,10">
                     <ListView.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
