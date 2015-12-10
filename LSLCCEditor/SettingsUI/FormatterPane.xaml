@@ -47,27 +47,27 @@
                     <Setter Property="Minimum" Value="0" />
                     <Setter Property="Maximum" Value="1000" />
                     <Setter Property="ClipValueToMinMax" Value="True" />
-                    <Setter Property="Margin" Value="0,0,10,0"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="0,0,10,0" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
                 </Style>
                 <Style TargetType="StackPanel" x:Key="StackPanelStyle">
                     <Setter Property="Orientation" Value="Horizontal" />
-                    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-                    <Setter Property="Margin" Value="0,0,0,10"/>
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="Margin" Value="0,0,0,10" />
                 </Style>
                 <ResourceDictionary x:Key="ItemsControlStyles">
-                    <Style TargetType="StackPanel" BasedOn="{StaticResource StackPanelStyle}"/>
-                    <Style TargetType="xctk:IntegerUpDown" BasedOn="{StaticResource IntegerUpDownStyle}"/>
+                    <Style TargetType="StackPanel" BasedOn="{StaticResource StackPanelStyle}" />
+                    <Style TargetType="xctk:IntegerUpDown" BasedOn="{StaticResource IntegerUpDownStyle}" />
                     <Style TargetType="CheckBox">
-                        <Setter Property="FlowDirection" Value="RightToLeft"></Setter>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="FlowDirection" Value="RightToLeft" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
                     </Style>
                 </ResourceDictionary>
                 <Style TargetType="ItemsControl">
-                    <Setter Property="BorderBrush" Value="DarkGray"/>
-                    <Setter Property="Background" Value="White"/>
-                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="DarkGray" />
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="BorderThickness" Value="1" />
                 </Style>
 
             </StackPanel.Resources>
@@ -78,17 +78,19 @@
                           ItemsSource="{Binding Path=FormatterConfigurationNames, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding Path=SelectedFormatterConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
-            <Expander Header="Braceless Control Statements" MinWidth="400" >
-                <CheckBox IsChecked="{Binding CurrentFormatterSettings.IndentBracelessControlStatements}" Margin="10" FlowDirection="RightToLeft">
-                    :Indent Braceless Control Statements</CheckBox>
+            <Expander Header="Braceless Control Statements" MinWidth="400">
+                <CheckBox IsChecked="{Binding CurrentFormatterSettings.IndentBracelessControlStatements}" Margin="10"
+                          FlowDirection="RightToLeft">
+                    :Indent Braceless Control Statements
+                </CheckBox>
             </Expander>
-            <Expander Header="Spaces Before Opening Braces"  MinWidth="400" >
+            <Expander Header="Spaces Before Opening Braces" MinWidth="400">
                 <ItemsControl Padding="0,10,10,0">
 
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ItemsControlStyles"/>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
                     </ItemsControl.Resources>
@@ -97,64 +99,64 @@
                         <Label>Functions:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningFunctionBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>States:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningStateBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.StateBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.StateBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Events:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningEventBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.EventBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.EventBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>For Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningForBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.ForLoopBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ForLoopBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>While Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningWhileLoopBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.WhileLoopBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.WhileLoopBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Do Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningDoLoopBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.DoLoopBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.DoLoopBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>If Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningIfBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.IfStatementBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.IfStatementBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Else If Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseIfBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfStatementBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfStatementBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Else Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseBrace}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                 </ItemsControl>
             </Expander>
-            <Expander Header="Spaces Before Closing Braces"  DataContext="{Binding ElementName=_this}" MinWidth="400">
+            <Expander Header="Spaces Before Closing Braces" DataContext="{Binding ElementName=_this}" MinWidth="400">
                 <ItemsControl Padding="0,10,0,0">
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ItemsControlStyles"/>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
 
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
@@ -206,12 +208,38 @@
                     </StackPanel>
                 </ItemsControl>
             </Expander>
+            <Expander Header="Minimum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
+                <ItemsControl Padding="0,10,0,0">
+                    <ItemsControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ItemsControl.Resources>
+                    <StackPanel>
+                        <Label Content="Min Newlines Between Distinct Statements:" />
+                        <xctk:IntegerUpDown
+                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Min Newlines Between Event And Following Comment:" />
+                        <xctk:IntegerUpDown
+                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventAndFollowingComment}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Min Newlines Between Event Handlers:" />
+                        <xctk:IntegerUpDown
+                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventHandlers}" />
+                    </StackPanel>
+                </ItemsControl>
+            </Expander>
             <Expander Header="Maximum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
                 <ItemsControl Padding="0,10,0,0">
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ItemsControlStyles"/>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
                     </ItemsControl.Resources>
@@ -237,16 +265,17 @@
                     </StackPanel>
                 </ItemsControl>
             </Expander>
-            <Expander Header="Expression Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400" >
+            <Expander Header="Expression Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400">
                 <ItemsControl Padding="0,10,10,0">
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ItemsControlStyles"/>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
                                 <ResourceDictionary>
-                                    <Style TargetType="xctk:IntegerUpDown" BasedOn="{StaticResource IntegerUpDownStyle}">
-                                        <Setter Property="IsEnabled" 
-                                                Value="{Binding RelativeSource={RelativeSource AncestorType=StackPanel, Mode=FindAncestor}, Path=Children[4].IsChecked}"></Setter>
+                                    <Style TargetType="xctk:IntegerUpDown"
+                                           BasedOn="{StaticResource IntegerUpDownStyle}">
+                                        <Setter Property="IsEnabled"
+                                                Value="{Binding RelativeSource={RelativeSource AncestorType=StackPanel, Mode=FindAncestor}, Path=Children[4].IsChecked}" />
 
                                     </Style>
                                 </ResourceDictionary>
@@ -255,12 +284,12 @@
                     </ItemsControl.Resources>
                     <StackPanel>
                         <Label>Declaration Expression - Min Expressions:</Label>
-                        <xctk:IntegerUpDown 
+                        <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInDeclarationToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
-                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeDeclarationExpressionWrap}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.DeclarationExpressionWrapping}">:Wrap</CheckBox>
+                                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeDeclarationExpressionWrap}" />
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.DeclarationExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Expression Statement - Min Expressions:</Label>
@@ -268,8 +297,8 @@
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInStatementToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
-                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeStatementExpressionWrap}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.StatementExpressionWrapping}">:Wrap</CheckBox>
+                                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeStatementExpressionWrap}" />
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.StatementExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>If Condition - Min Expressions:</Label>
@@ -277,8 +306,8 @@
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInIfToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
-                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeIfExpressionWrap}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.IfExpressionWrapping}">:Wrap</CheckBox>
+                                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeIfExpressionWrap}" />
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.IfExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Else If Condition - Min Expressions:</Label>
@@ -286,17 +315,17 @@
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInElseIfToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
-                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeElseIfExpressionWrap}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfExpressionWrapping}">:Wrap</CheckBox>
+                                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeElseIfExpressionWrap}" />
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>While Condition - Min Expressions:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInWhileToWrap}" />
                         <Label>Max Columns:</Label>
-                        <xctk:IntegerUpDown  Maximum="10000"
-                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeWhileExpressionWrap}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.WhileExpressionWrapping}">:Wrap</CheckBox>
+                        <xctk:IntegerUpDown Maximum="10000"
+                                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeWhileExpressionWrap}" />
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.WhileExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Do While Condition - Min Expressions:</Label>
@@ -304,8 +333,8 @@
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInDoWhileToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
-                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeDoWhileExpressionWrap}" />
-                        <CheckBox  IsChecked="{Binding Path=CurrentFormatterSettings.DoWhileExpressionWrapping}">:Wrap</CheckBox>
+                                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeDoWhileExpressionWrap}" />
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.DoWhileExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Return Expression - Min Expressions:</Label>
@@ -313,34 +342,8 @@
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInReturnToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
-                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeReturnExpressionWrap}" />
-                        <CheckBox   IsChecked="{Binding Path=CurrentFormatterSettings.ReturnExpressionWrapping}">:Wrap</CheckBox>
-                    </StackPanel>
-                </ItemsControl>
-            </Expander>
-            <Expander Header="Minimum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ItemsControl Padding="0,10,0,0">
-                    <ItemsControl.Resources>
-                        <ResourceDictionary>
-                            <ResourceDictionary.MergedDictionaries>
-                                <StaticResource ResourceKey="ItemsControlStyles"/>
-                            </ResourceDictionary.MergedDictionaries>
-                        </ResourceDictionary>
-                    </ItemsControl.Resources>
-                    <StackPanel>
-                        <Label Content="Min Newlines Between Distinct Statements:"/>
-                        <xctk:IntegerUpDown
-            				Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="Min Newlines Between Event And Following Comment:"/>
-                        <xctk:IntegerUpDown
-            				Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventAndFollowingComment}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="Min Newlines Between Event Handlers:"/>
-                        <xctk:IntegerUpDown
-            				Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventHandlers}" />
+                                            Value="{Binding  Path=CurrentFormatterSettings.ColumnsBeforeReturnExpressionWrap}" />
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ReturnExpressionWrapping}">:Wrap</CheckBox>
                     </StackPanel>
                 </ItemsControl>
             </Expander>

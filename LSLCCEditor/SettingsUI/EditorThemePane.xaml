@@ -62,18 +62,18 @@
                     <Setter Property="ColorMode" Value="ColorCanvas" />
                 </Style>
                 <Style x:Key="StackPanels" TargetType="StackPanel">
-                    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                    <Setter Property="HorizontalAlignment" Value="Right" />
                     <Setter Property="Orientation" Value="Horizontal" />
-                    <Setter Property="Margin" Value="0,0,0,10"/>
+                    <Setter Property="Margin" Value="0,0,0,10" />
                 </Style>
                 <Style x:Key="ResetButtons" TargetType="Button">
                     <Setter Property="Padding" Value="5,0,5,0" />
                     <Setter Property="Content" Value="Default" />
                 </Style>
                 <Style TargetType="ItemsControl">
-                    <Setter Property="BorderBrush" Value="DarkGray"/>
-                    <Setter Property="Background" Value="White"/>
-                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="DarkGray" />
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="BorderThickness" Value="1" />
                 </Style>
             </StackPanel.Resources>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
@@ -87,7 +87,7 @@
                 <Expander.Resources>
                 </Expander.Resources>
                 <StackPanel>
-                    <ItemsControl  Name="ToolTipColorsListView" Padding="0,10,10,0">
+                    <ItemsControl Name="ToolTipColorsListView" Padding="0,10,10,0">
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Tool Tip Background:</Label>
                             <Border VerticalAlignment="Center">
@@ -136,7 +136,8 @@
                 <Expander.Resources>
                 </Expander.Resources>
                 <StackPanel>
-                    <ItemsControl HorizontalContentAlignment="Right" Name="CompletionWindowColorsListView" Padding="0,10,10,0">
+                    <ItemsControl HorizontalContentAlignment="Right" Name="CompletionWindowColorsListView"
+                                  Padding="0,10,10,0">
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
                             <Label>Completion Window Background:</Label>
                             <Border VerticalAlignment="Center">
