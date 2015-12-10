@@ -1303,9 +1303,10 @@ namespace LibLSLCC.Formatter.Visitor
 
             var spaceBeforeOpeningBrace =
                 LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningStateBrace);
+
             if (Settings.StateBracesOnNewLine)
             {
-                Write(spaceBeforeOpeningBrace + "\n{\n");
+                Write("\n" + spaceBeforeOpeningBrace + "{\n");
             }
             else
             {
@@ -1728,7 +1729,7 @@ namespace LibLSLCC.Formatter.Visitor
             }
             else
             {
-                Write(LSLFormatTools.CreateSpacesString(Settings.SpacesBeforeUnbrokenElseIfStatement) + "else");
+                Write(LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeUnbrokenElseIfStatement) + "else");
             }
 
 
@@ -1786,7 +1787,7 @@ namespace LibLSLCC.Formatter.Visitor
             }
             else
             {
-                Write(LSLFormatTools.CreateSpacesString(Settings.SpacesBeforeUnbrokenElseStatement) + "else");
+                Write(LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeUnbrokenElseStatement) + "else");
             }
 
 

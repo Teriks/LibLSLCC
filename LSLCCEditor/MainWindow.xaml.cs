@@ -474,7 +474,7 @@ namespace LSLCCEditor
         private void Compile_OnClick(object sender, RoutedEventArgs e)
         {
             _openSimCompilerSettings = 
-                AppSettings.Settings.CompilerConfigurations[AppSettings.Settings.CurrentCompilerConfiguration].OpenSimCompilerSettings;
+                AppSettings.Settings.CurrentCompilerConfiguration.OpenSimCompilerSettings;
 
             CompileForOpenSimClickStub();
         }
@@ -671,8 +671,7 @@ namespace LSLCCEditor
 
 
             var settings =
-                AppSettings.Settings.FormatterConfigurations[AppSettings.Settings.CurrentFormatterConfiguration]
-                    .FormatterSettings;
+                AppSettings.Settings.CurrentFormatterConfiguration.FormatterSettings;
 
             var formatter = new LSLCodeFormatter(settings);
 

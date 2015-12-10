@@ -47,6 +47,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using LibLSLCC.Collections;
 
 namespace LibLSLCC.Settings
@@ -96,6 +97,7 @@ namespace LibLSLCC.Settings
 
             var isField = asField != null;
 
+            if (!isField && !(asProp.CanRead && asProp.CanWrite)) return null;
 
             var fieldValue = isField ? asField.GetValue(instance) : asProp.GetValue(instance, null);
 
@@ -161,7 +163,20 @@ namespace LibLSLCC.Settings
             var d = GetDefaultValue(instance, memberName);
             var member = typeof (T).GetProperty(memberName) ?? (MemberInfo) typeof(T).GetField(memberName);
 
-            if (member != null && d != null)
+            if (member == null) return instance;
+
+            var asField = member as FieldInfo;
+            var asProp = member as PropertyInfo;
+
+            var isField = asField != null;
+
+            if (asField == null && asProp == null) return instance;
+
+
+            if (!isField && !(asProp.CanRead && asProp.CanWrite)) return instance;
+
+
+            if (d != null)
             {
                 SetValue(member, instance, d);
             }
@@ -196,6 +211,7 @@ namespace LibLSLCC.Settings
 
                 var isField = asField != null;
 
+                if(!isField && !(asProp.CanRead && asProp.CanWrite)) continue;
 
                 var fieldValue = isField ? asField.GetValue(instance) : asProp.GetValue(instance, null);
 

@@ -79,11 +79,10 @@ namespace LSLCCEditor.EditorTabUI
             _ownerTab = owner;
 
             Editor.Settings =
-                AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration]
-                .EditorControlSettings;
+                AppSettings.Settings.CurrentEditorControlConfiguration.EditorControlSettings;
 
             Editor.Theme =
-                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlTheme].Theme;
+                AppSettings.Settings.CurrentEditorControlTheme.Theme;
 
         }
 
@@ -91,25 +90,25 @@ namespace LSLCCEditor.EditorTabUI
         private void EditorSettingsPropertyChangedHandler(SettingsPropertyChangedEventArgs<AppSettingsNode> settingsPropertyChangedEventArgs)
         {
             Editor.Settings =
-                AppSettings.Settings.EditorControlConfigurations[AppSettings.Settings.CurrentEditorControlConfiguration].EditorControlSettings;
+                AppSettings.Settings.CurrentEditorControlConfiguration.EditorControlSettings;
         }
 
         private void Editor_OnLoaded(object sender, RoutedEventArgs e)
         {
-            AppSettings.Settings.SubscribePropertyChanged(this, "CurrentEditorControlConfiguration", EditorSettingsPropertyChangedHandler);
-            AppSettings.Settings.SubscribePropertyChanged(this, "CurrentEditorControlTheme", EditorThemePropertyChangedHandler);
+            AppSettings.Settings.SubscribePropertyChanged(this, "CurrentEditorControlConfigurationName", EditorSettingsPropertyChangedHandler);
+            AppSettings.Settings.SubscribePropertyChanged(this, "CurrentEditorControlThemeName", EditorThemePropertyChangedHandler);
         }
 
         private void EditorThemePropertyChangedHandler(SettingsPropertyChangedEventArgs<AppSettingsNode> obj)
         {
             Editor.Theme =
-                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlTheme].Theme;
+                AppSettings.Settings.CurrentEditorControlTheme.Theme;
         }
 
         private void Editor_OnUnloaded(object sender, RoutedEventArgs e)
         {
-            AppSettings.Settings.UnSubscribePropertyChanged(this, "CurrentEditorControlConfiguration");
-            AppSettings.Settings.UnSubscribePropertyChanged(this, "CurrentEditorControlTheme");
+            AppSettings.Settings.UnSubscribePropertyChanged(this, "CurrentEditorControlConfigurationName");
+            AppSettings.Settings.UnSubscribePropertyChanged(this, "CurrentEditorControlThemeName");
         }
 
         public ILSLLibraryDataProvider LibraryDataProvider

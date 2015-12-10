@@ -121,11 +121,11 @@
     <Compile Include="SettingsUI\CompilerPane.xaml.cs">
       <DependentUpon>CompilerPane.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsUI\CompletionPane.xaml.cs">
-      <DependentUpon>CompletionPane.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SettingsUI\EditorThemePane.xaml.cs">
       <DependentUpon>EditorThemePane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsUI\FormatterPane.xaml.cs">
+      <DependentUpon>FormatterPane.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsUI\ISettingsPane.cs" />
     <Compile Include="SettingsUI\SettingsWindow.xaml.cs">
@@ -138,7 +138,6 @@
     <Compile Include="Settings\EditorControlSettingsNode.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\AppSettingsNode.cs" />
-    <Compile Include="Settings\EditorControlSettingsDictionaryConverter.cs" />
     <Compile Include="Settings\EditorControlThemeNode.cs" />
     <Compile Include="Settings\FormatterSettingsNode.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -168,11 +167,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsUI\CompletionPane.xaml">
+    <Page Include="SettingsUI\EditorThemePane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsUI\EditorThemePane.xaml">
+    <Page Include="SettingsUI\FormatterPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

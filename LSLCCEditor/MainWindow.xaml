@@ -100,7 +100,7 @@
                 <Label Content="Compiler Configuration:" Target="{Binding ElementName=CompilerConfiguration}" />
                 <ComboBox Name="CompilerConfiguration"
                           ItemsSource="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CompilerConfigurations.Keys}"
-                          SelectedItem="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CurrentCompilerConfiguration, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding Source={x:Static settings:AppSettings.Settings}, Path=CurrentCompilerConfigurationName, UpdateSourceTrigger=PropertyChanged}"
                           Width="Auto" />
 
             </StackPanel>

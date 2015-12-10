@@ -32,7 +32,7 @@ namespace LSLCCEditor.SettingsUI
             InitializeComponent();
 
             Title = "Editor Theme";
-            SelectedEditorThemeName = AppSettings.Settings.CurrentEditorControlTheme;
+            SelectedEditorThemeName = AppSettings.Settings.CurrentEditorControlThemeName;
             EditorThemeNames =
                 new ObservableCollection<string>(AppSettings.Settings.EditorControlThemes.Keys);
         }
@@ -68,7 +68,7 @@ namespace LSLCCEditor.SettingsUI
 
             var newValue = dependencyPropertyChangedEventArgs.NewValue.ToString();
 
-            AppSettings.Settings.CurrentEditorControlTheme = newValue;
+            AppSettings.Settings.CurrentEditorControlThemeName = newValue;
 
             editorPane.EditorControlTheme =
                 AppSettings.Settings.EditorControlThemes[newValue].Theme;
@@ -511,7 +511,7 @@ namespace LSLCCEditor.SettingsUI
                 var settings = (LSLEditorControlTheme)x.Deserialize(reader);
 
                 EditorControlTheme.MemberwiseAssign(settings);
-                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlTheme].Theme.MemberwiseAssign(settings);
+                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlThemeName].Theme.MemberwiseAssign(settings);
             });
         }
 

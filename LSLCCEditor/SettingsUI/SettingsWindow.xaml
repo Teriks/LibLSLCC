@@ -14,24 +14,20 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="20"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".28*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
+        <DockPanel LastChildFill="True" Grid.Row="0">
 
-            <Border Grid.Column="0">
-                <ListBox Name="SettingsPagesList" BorderBrush="Gainsboro" BorderThickness="1,1,0.5,1"  ItemsSource="{Binding Path=SettingPanes}" HorizontalContentAlignment="Center">
+
+            <Border DockPanel.Dock="Left"   >
+                <ListBox   Name="SettingsPagesList"   ItemsSource="{Binding Path=SettingPanes}" HorizontalContentAlignment="Center" MinWidth="130">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Title}"></TextBlock>
+                            <TextBlock Text="{Binding Path=Title}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Border>
 
-            <Border Grid.Column="1" BorderBrush="Gainsboro" BorderThickness="0.5,1,1,1"  >
+            <Border DockPanel.Dock="Right"  BorderBrush="Gainsboro" BorderThickness="0,2,0,0"  >
                 <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
                     <ContentPresenter 
                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}" Margin="5" >
@@ -39,7 +35,7 @@
                     </ContentPresenter>
                 </ScrollViewer>
             </Border>
-        </Grid>
+        </DockPanel>
         <StatusBar Grid.Row="1" />
     </Grid>
 </Window>

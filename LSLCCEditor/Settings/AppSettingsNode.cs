@@ -61,12 +61,12 @@ namespace LSLCCEditor.Settings
     {
         private XmlDictionary<string, CompilerConfigurationNode> _compilerConfigurations;
         private XmlDictionary<string, EditorControlSettingsNode> _editorControlConfigurations;
-        private string _currentEditorControlConfiguration;
-        private string _currentCompilerConfiguration;
+        private string _currentEditorControlConfigurationName;
+        private string _currentCompilerConfigurationName;
         private XmlDictionary<string, FormatterSettingsNode> _formatterConfigurations;
-        private string _currentFormatterConfiguration;
+        private string _currentFormatterConfigurationName;
         private XmlDictionary<string, EditorControlThemeNode> _editorControlThemes;
-        private string _currentEditorControlTheme;
+        private string _currentEditorControlThemeName;
 
 
         private const string ClientSideScriptCompilerHeader =
@@ -200,10 +200,16 @@ namespace LSLCCEditor.Settings
 
 
         [DefaultValueFactory(typeof (CurrentEditorConfigurationDefaultFactory), initOrder: 1)]
-        public string CurrentEditorControlConfiguration
+        public string CurrentEditorControlConfigurationName
         {
-            get { return _currentEditorControlConfiguration; }
-            set { SetField(ref _currentEditorControlConfiguration, value, "CurrentEditorControlConfiguration"); }
+            get { return _currentEditorControlConfigurationName; }
+            set { SetField(ref _currentEditorControlConfigurationName, value, "CurrentEditorControlConfigurationName"); }
+        }
+
+
+        public EditorControlSettingsNode CurrentEditorControlConfiguration
+        {
+            get { return EditorControlConfigurations[CurrentEditorControlConfigurationName]; }
         }
 
 
@@ -329,10 +335,15 @@ namespace LSLCCEditor.Settings
 
 
         [DefaultValueFactory(typeof (CurrentCompilerConfigurationDefaultFactory), initOrder: 3)]
-        public string CurrentCompilerConfiguration
+        public string CurrentCompilerConfigurationName
         {
-            get { return _currentCompilerConfiguration; }
-            set { SetField(ref _currentCompilerConfiguration, value, "CurrentCompilerConfiguration"); }
+            get { return _currentCompilerConfigurationName; }
+            set { SetField(ref _currentCompilerConfigurationName, value, "CurrentCompilerConfigurationName"); }
+        }
+
+        public CompilerConfigurationNode CurrentCompilerConfiguration
+        {
+            get { return CompilerConfigurations[CurrentCompilerConfigurationName]; }
         }
 
 
@@ -418,10 +429,16 @@ namespace LSLCCEditor.Settings
 
 
         [DefaultValueFactory(typeof (CurrentFormatterConfigurationDefaultFactory), initOrder: 5)]
-        public string CurrentFormatterConfiguration
+        public string CurrentFormatterConfigurationName
         {
-            get { return _currentFormatterConfiguration; }
-            set { SetField(ref _currentFormatterConfiguration, value, "CurrentFormatterConfiguration"); }
+            get { return _currentFormatterConfigurationName; }
+            set { SetField(ref _currentFormatterConfigurationName, value, "CurrentFormatterConfigurationName"); }
+        }
+
+
+        public FormatterSettingsNode CurrentFormatterConfiguration
+        {
+            get { return FormatterConfigurations[CurrentFormatterConfigurationName]; }
         }
 
 
@@ -507,12 +524,17 @@ namespace LSLCCEditor.Settings
 
 
         [DefaultValueFactory(typeof (CurrentEditorControlThemeDefaultFactory), initOrder: 7)]
-        public string CurrentEditorControlTheme
+        public string CurrentEditorControlThemeName
         {
-            get { return _currentEditorControlTheme; }
-            set { SetField(ref _currentEditorControlTheme, value, "CurrentEditorControlTheme"); }
+            get { return _currentEditorControlThemeName; }
+            set { SetField(ref _currentEditorControlThemeName, value, "CurrentEditorControlThemeName"); }
         }
 
+
+        public EditorControlThemeNode CurrentEditorControlTheme
+        {
+            get { return EditorControlThemes[CurrentEditorControlThemeName]; }
+        }
 
         public void AddCompilerConfiguration(string configurationName)
         {
@@ -577,6 +599,26 @@ namespace LSLCCEditor.Settings
                 DefaultValueInitializer.Init(new EditorControlSettingsNode()));
         }
 
+        public void AddFormatterConfiguration(string configurationName)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Formatter configuration name cannot be null or whitespace.",
+                    "configurationName");
+            }
+
+            if (FormatterConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(
+                    string.Format("Formatter configuration named {0} already exist.", configurationName),
+                    "configurationName");
+            }
+
+
+            FormatterConfigurations.Add(configurationName,
+                DefaultValueInitializer.Init(new FormatterSettingsNode()));
+        }
+
 
 
         public void RenameEditorControlTheme(string themeName, string newName)
@@ -601,7 +643,7 @@ namespace LSLCCEditor.Settings
                     "themeName");
             }
 
-            bool resetCurrentlySelected = AppSettings.Settings.CurrentEditorControlTheme == themeName;
+            bool resetCurrentlySelected = AppSettings.Settings.CurrentEditorControlThemeName == themeName;
 
             var old = EditorControlThemes[themeName];
             EditorControlThemes.Remove(themeName);
@@ -609,7 +651,7 @@ namespace LSLCCEditor.Settings
 
             if (resetCurrentlySelected)
             {
-                AppSettings.Settings.CurrentEditorControlTheme = newName;
+                AppSettings.Settings.CurrentEditorControlThemeName = newName;
             }
         }
 
@@ -637,7 +679,7 @@ namespace LSLCCEditor.Settings
                     "configurationName");
             }
 
-            bool resetCurrentlySelected = AppSettings.Settings.CurrentCompilerConfiguration == configurationName;
+            bool resetCurrentlySelected = AppSettings.Settings.CurrentCompilerConfigurationName == configurationName;
 
             var old = CompilerConfigurations[configurationName];
             CompilerConfigurations.Remove(configurationName);
@@ -645,7 +687,7 @@ namespace LSLCCEditor.Settings
 
             if (resetCurrentlySelected)
             {
-                AppSettings.Settings.CurrentCompilerConfiguration = newName;
+                AppSettings.Settings.CurrentCompilerConfigurationName = newName;
             }
         }
 
@@ -690,7 +732,87 @@ namespace LSLCCEditor.Settings
 
             CompilerConfigurations.Remove(configurationName);
 
-            CurrentCompilerConfiguration = newCurrentConfiguration;
+            CurrentCompilerConfigurationName = newCurrentConfiguration;
+        }
+
+
+
+
+        public void RemoveFormatterConfiguration(string configurationName, string newCurrentConfiguration)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Formatter configuration name cannot be null or whitespace.",
+                    "configurationName");
+            }
+
+            if (string.IsNullOrWhiteSpace(newCurrentConfiguration))
+            {
+                throw new ArgumentException("Formatter configuration name cannot be null or whitespace.",
+                    "newCurrentConfiguration");
+            }
+
+
+            if (!FormatterConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(
+                    string.Format("Formatter configuration named {0} does not exist.", configurationName),
+                    "configurationName");
+            }
+
+            if (!FormatterConfigurations.ContainsKey(newCurrentConfiguration))
+            {
+                throw new ArgumentException(
+                    string.Format("Formatter configuration named {0} does not exist.", newCurrentConfiguration),
+                    "newCurrentConfiguration");
+            }
+
+            if (FormatterConfigurations.Count == 1)
+            {
+                throw new InvalidOperationException(
+                    "There must be at least one formatter configuration present in the " +
+                    "application settings, cannot remove the configuration as it is the only one present.");
+            }
+
+
+            FormatterConfigurations.Remove(configurationName);
+
+            CurrentFormatterConfigurationName = newCurrentConfiguration;
+        }
+
+
+        public void RenameFormatterConfiguration(string configurationName, string newName)
+        {
+            if (string.IsNullOrWhiteSpace(configurationName))
+            {
+                throw new ArgumentException("Formatter configuration name cannot be null or whitespace.",
+                    "configurationName");
+            }
+
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Formatter configuration name cannot be null or whitespace.",
+                    "newName");
+            }
+
+
+            if (!FormatterConfigurations.ContainsKey(configurationName))
+            {
+                throw new ArgumentException(
+                    string.Format("Formatter configuration named {0} does not exist.", configurationName),
+                    "configurationName");
+            }
+
+            bool resetCurrentlySelected = AppSettings.Settings.CurrentFormatterConfigurationName == configurationName;
+
+            var old = FormatterConfigurations[configurationName];
+            FormatterConfigurations.Remove(configurationName);
+            FormatterConfigurations.Add(newName, old);
+
+            if (resetCurrentlySelected)
+            {
+                AppSettings.Settings.CurrentFormatterConfigurationName = newName;
+            }
         }
 
 
@@ -717,7 +839,7 @@ namespace LSLCCEditor.Settings
                     "configurationName");
             }
 
-            bool resetCurrentlySelected = AppSettings.Settings.CurrentCompilerConfiguration == configurationName;
+            bool resetCurrentlySelected = AppSettings.Settings.CurrentCompilerConfigurationName == configurationName;
 
             var old = EditorControlConfigurations[configurationName];
             EditorControlConfigurations.Remove(configurationName);
@@ -725,7 +847,7 @@ namespace LSLCCEditor.Settings
 
             if (resetCurrentlySelected)
             {
-                AppSettings.Settings.CurrentEditorControlConfiguration = newName;
+                AppSettings.Settings.CurrentEditorControlConfigurationName = newName;
             }
         }
 
@@ -770,7 +892,7 @@ namespace LSLCCEditor.Settings
 
             EditorControlConfigurations.Remove(configurationName);
 
-            CurrentEditorControlConfiguration = newCurrentConfiguration;
+            CurrentEditorControlConfigurationName = newCurrentConfiguration;
         }
 
 
@@ -815,7 +937,7 @@ namespace LSLCCEditor.Settings
 
             EditorControlThemes.Remove(themeName);
 
-            CurrentEditorControlTheme = newCurrentThemeName;
+            CurrentEditorControlThemeName = newCurrentThemeName;
         }
     }
 }
