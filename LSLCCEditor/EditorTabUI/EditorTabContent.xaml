@@ -15,10 +15,10 @@
         </Grid.RowDefinitions>
 
         <Border BorderThickness="1" Grid.Row="0" BorderBrush="Black" Margin="5">
-            <editControl:LSLEditorControl x:FieldModifier="public" x:Name="Editor" 
+            <editControl:LSLEditorControl x:FieldModifier="public" x:Name="Editor"
                                         Text="{Binding SourceCode}"
                                         LibraryDataProvider="{Binding LibraryDataProvider}"
-                                        TextChanged="Editor_OnTextChanged" Loaded="Editor_OnLoaded"  Unloaded="Editor_OnUnloaded"/>
+                                         Loaded="Editor_OnLoaded" Unloaded="Editor_OnUnloaded"/>
         </Border>
 
         <GridSplitter Grid.Row="1"

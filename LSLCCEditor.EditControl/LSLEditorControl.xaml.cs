@@ -3093,9 +3093,6 @@ namespace LSLCCEditor.EditControl
                         break;
                 }
             }
-
-            AvalonEditor.UpdateDefaultStyle();
-            
         }
 
         private IHighlightingDefinition LoadXSHD()
@@ -3162,8 +3159,6 @@ namespace LSLCCEditor.EditControl
                 };
                 Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
             }
-
-            AvalonEditor.UpdateDefaultStyle();
         }
 
 
