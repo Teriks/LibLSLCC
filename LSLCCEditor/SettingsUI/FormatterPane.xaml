@@ -62,6 +62,7 @@
                     <Style TargetType="CheckBox">
                         <Setter Property="FlowDirection" Value="RightToLeft" />
                         <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalAlignment" Value="Center"/>
                     </Style>
                 </ResourceDictionary>
                 <Style TargetType="ItemsControl">
@@ -99,7 +100,7 @@
                         <Label>Functions:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningFunctionBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}" >:Newline</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>States:</Label>
