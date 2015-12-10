@@ -748,6 +748,7 @@ namespace LSLCCEditor.EditControl
         {
             var c = new CompletionWindow(Editor.TextArea);
 
+
             c.ToolTipHorizontalOffset = 5;
 
             c.SizeToCompletionTextBlockContent = true;

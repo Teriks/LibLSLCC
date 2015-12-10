@@ -8,24 +8,29 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile"
+
+
+        <ResourceDictionary>
+            <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile"
                       x:Key="CompletionWindowSelectionBorderBrush">
-            <DrawingBrush.Drawing>
-                <DrawingGroup>
-                    <GeometryDrawing Brush="RoyalBlue">
-                        <GeometryDrawing.Geometry>
-                            <GeometryGroup>
-                                <RectangleGeometry Rect="0,0,50,50" />
-                                <RectangleGeometry Rect="50,50,50,50" />
-                            </GeometryGroup>
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                </DrawingGroup>
-            </DrawingBrush.Drawing>
-        </DrawingBrush>
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="RoyalBlue">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,50,50" />
+                                    <RectangleGeometry Rect="50,50,50,50" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+        </ResourceDictionary>
+
     </UserControl.Resources>
     <Grid>
-        <avalonedit:TextEditor
+        <avalonedit:TextEditor HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
             Name="AvalonEditor"
 
             FontFamily="Courier New"

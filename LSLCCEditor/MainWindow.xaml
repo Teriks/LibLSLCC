@@ -13,6 +13,7 @@
 
     <Window.Resources>
 
+        
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileNew}" Executed="NewFile_OnClick" />
