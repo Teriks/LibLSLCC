@@ -497,7 +497,7 @@ namespace LibLSLCC.Settings
                 field.SetValue(this,field.GetValue(other));
             }
 
-            foreach (var prop in props)
+            foreach (var prop in props.Where(x=>x.CanRead && x.CanWrite))
             {
                 prop.SetValue(this, prop.GetValue(other,null),null);
             }

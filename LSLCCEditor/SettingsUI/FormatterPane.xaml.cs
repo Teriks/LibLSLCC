@@ -5,16 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using LibLSLCC.Formatter;
 using LSLCCEditor.Settings;
+using MessageBox = System.Windows.Forms.MessageBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace LSLCCEditor.SettingsUI
 {
@@ -140,6 +143,33 @@ namespace LSLCCEditor.SettingsUI
             FormatterConfigurationNames.Remove(SelectedFormatterConfigurationName);
 
             FormatterConfigurationNameCombobox.SelectedIndex = newIndex;
+        }
+
+        private void Import_OnClick(object sender, RoutedEventArgs e)
+        {
+
+            var dialogResult = MessageBox.Show(
+            "Are you sure you want to overwrite the currently selected configuration by importing one over it?", "Overwrite Selected Configuration?",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dialogResult != DialogResult.Yes) return;
+
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Formatter Configuration (*.xml)|*.xml", ".xml",
+            reader =>
+            {
+                var x = new XmlSerializer(typeof(LSLCodeFormatterSettings));
+                CurrentFormatterSettings.MemberwiseAssign((LSLCodeFormatterSettings)x.Deserialize(reader));
+            });
+        }
+
+        private void Export_OnClick(object sender, RoutedEventArgs e)
+        {
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Formatter Configuration (*.xml)|*.xml", "Formatter_Configuration.xml",
+            writer =>
+            {
+                var x = new XmlSerializer(typeof(LSLCodeFormatterSettings));
+                x.Serialize(writer,CurrentFormatterSettings);
+            });
         }
     }
 }

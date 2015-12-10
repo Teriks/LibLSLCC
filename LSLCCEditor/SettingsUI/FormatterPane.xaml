@@ -33,6 +33,8 @@
                     Converter={StaticResource IntegerGreaterThanOne}}">
                     Delete
                 </Button>
+                <Button Click="Import_OnClick">Import</Button>
+                <Button Click="Export_OnClick">Export</Button>
             </StackPanel>
         </Grid>
 

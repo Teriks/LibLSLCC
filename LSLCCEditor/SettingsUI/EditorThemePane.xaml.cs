@@ -237,7 +237,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void ImportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
-            DoImportSettingsWindow("Highlighting Colors (*.xml)|*.xml;", ".xml", reader =>
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Highlighting Colors (*.xml)|*.xml;", ".xml", reader =>
             {
                 var x = new XmlSerializer(typeof (HighlightingSettings));
 
@@ -252,7 +252,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void ExportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
-            DoExportSettingsWindow("Highlighting Colors (*.xml)|*.xml;", "LSLCCEditor_HighlightingColors.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Highlighting Colors (*.xml)|*.xml;", "LSLCCEditor_HighlightingColors.xml",
                 writer =>
                 {
                     var x = new XmlSerializer(typeof (HighlightingSettings));
@@ -284,75 +284,14 @@ namespace LSLCCEditor.SettingsUI
             public LSLCompletionWindowItemBrushes CompletionWindowItemBrushes { get; set; }
         }
 
-        private void DoImportSettingsWindow(string fileFilter, string fileExt, Action<XmlTextReader> serialize)
-        {
-            var openDialog = new OpenFileDialog
-            {
-                Multiselect = false,
-                Filter = fileFilter,
-                AddExtension = true,
-                DefaultExt = fileExt
-            };
-            if (!openDialog.ShowDialog(OwnerSettingsWindow).Value)
-            {
-                return;
-            }
-
-            try
-            {
-                using (var file = new XmlTextReader(openDialog.OpenFile()))
-                {
-                    serialize(file);
-                }
-            }
-            catch (XmlSyntaxException ex)
-            {
-                MessageBox.Show("An XML syntax error was encountered while loading the file, settings could not be applied: "
-                                + Environment.NewLine + Environment.NewLine + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("There was an unknown error while loading the settings file, settings could not be applied: "
-                                + Environment.NewLine + Environment.NewLine + ex.Message);
-            }
-        }
-
-
-        private void DoExportSettingsWindow(string fileFilter, string fileName, Action<XmlTextWriter> serialize)
-        {
-            var saveDialog = new SaveFileDialog
-            {
-                Filter = fileFilter,
-                FileName = fileName
-            };
-
-
-            if (!saveDialog.ShowDialog(OwnerSettingsWindow).Value)
-            {
-                return;
-            }
-
-            try
-            {
-                using (var file = new XmlTextWriter(saveDialog.OpenFile(), Encoding.Unicode))
-                {
-                    file.Formatting = Formatting.Indented;
-                    serialize(file);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An unexpected problem occurred while trying to save the file: "
-                                + Environment.NewLine + Environment.NewLine + ex.Message);
-            }
-        }
+        
 
 
 
 
         private void ImportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
         {
-            DoImportSettingsWindow("Completion Window Colors (*.xml)|*.xml;", ".xml", reader =>
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Completion Window Colors (*.xml)|*.xml;", ".xml", reader =>
             {
                 var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
 
@@ -372,7 +311,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void ExportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
         {
-            DoExportSettingsWindow("Completion Window Colors (*.xml)|*.xml;", "LSLCCEditor_CompletionWindowColors.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Completion Window Colors (*.xml)|*.xml;", "LSLCCEditor_CompletionWindowColors.xml",
                 writer =>
                 {
                     var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
@@ -420,7 +359,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void ExportToolTipColors_OnClick(object sender, RoutedEventArgs e)
         {
-            DoExportSettingsWindow("Tool Tip Colors (*.xml)|*.xml;", "LSLCCEditor_ToolTipColors.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Tool Tip Colors (*.xml)|*.xml;", "LSLCCEditor_ToolTipColors.xml",
                 writer =>
                 {
                     var x = new XmlSerializer(typeof (ToolTipColorSettings));
@@ -439,7 +378,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void ImportToolTipColors_OnClick(object sender, RoutedEventArgs e)
         {
-            DoImportSettingsWindow("Tool Tip Colors (*.xml)|*.xml;", ".xml", reader =>
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Tool Tip Colors (*.xml)|*.xml;", ".xml", reader =>
             {
                 var x = new XmlSerializer(typeof (ToolTipColorSettings));
 
@@ -504,14 +443,13 @@ namespace LSLCCEditor.SettingsUI
             if (dialogResult != DialogResult.Yes) return;
 
 
-            DoImportSettingsWindow("Editor Theme (*.xml)|*.xml;", ".xml", reader =>
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Editor Theme (*.xml)|*.xml;", ".xml", reader =>
             {
                 var x = new XmlSerializer(typeof(LSLEditorControlTheme));
 
                 var settings = (LSLEditorControlTheme)x.Deserialize(reader);
 
                 EditorControlTheme.MemberwiseAssign(settings);
-                AppSettings.Settings.EditorControlThemes[AppSettings.Settings.CurrentEditorControlThemeName].Theme.MemberwiseAssign(settings);
             });
         }
 
@@ -539,7 +477,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void Export_OnClick(object sender, RoutedEventArgs e)
         {
-            DoExportSettingsWindow("Editor Theme (*.xml)|*.xml;", "LSLCCEditor_EditorTheme.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Editor Theme (*.xml)|*.xml;", "LSLCCEditor_EditorTheme.xml",
             writer =>
             {
                 var x = new XmlSerializer(typeof(LSLEditorControlTheme));

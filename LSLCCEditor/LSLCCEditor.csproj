@@ -127,6 +127,7 @@
     <Compile Include="SettingsUI\FormatterPane.xaml.cs">
       <DependentUpon>FormatterPane.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsUI\ImportExportTools.cs" />
     <Compile Include="SettingsUI\ISettingsPane.cs" />
     <Compile Include="SettingsUI\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
