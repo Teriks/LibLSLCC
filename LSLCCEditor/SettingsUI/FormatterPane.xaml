@@ -220,17 +220,17 @@
                     </ItemsControl.Resources>
                     <StackPanel>
                         <Label Content="Min Newlines Between Distinct Statements:" />
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Min Newlines Between Event And Following Comment:" />
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventAndFollowingComment}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Min Newlines Between Event Handlers:" />
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventHandlers}" />
                     </StackPanel>
                 </ItemsControl>
@@ -246,22 +246,22 @@
                     </ItemsControl.Resources>
                     <StackPanel>
                         <Label>Max Newlines At Beginning Of State Scope:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MaximumNewLinesAtBeginingOfStateScope}" />
                     </StackPanel>
                     <StackPanel>
                         <Label>Max Newlines At Beginning Of Code Scope:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MaximumNewLinesAtBeginingOfCodeScope}" />
                     </StackPanel>
                     <StackPanel>
                         <Label>Max Newlines At End Of State Scope:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MaximumNewLinesAtEndOfStateScope}" />
                     </StackPanel>
                     <StackPanel>
                         <Label>Max Newlines At End Of Code Scope:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesAtEndOfCodeScope}" />
                     </StackPanel>
                 </ItemsControl>
@@ -285,7 +285,7 @@
                     </ItemsControl.Resources>
                     <StackPanel>
                         <Label>Declaration Expression - Min Expressions:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInDeclarationToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
@@ -294,7 +294,7 @@
                     </StackPanel>
                     <StackPanel>
                         <Label>Expression Statement - Min Expressions:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInStatementToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
@@ -303,7 +303,7 @@
                     </StackPanel>
                     <StackPanel>
                         <Label>If Condition - Min Expressions:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInIfToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
@@ -312,7 +312,7 @@
                     </StackPanel>
                     <StackPanel>
                         <Label>Else If Condition - Min Expressions:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInElseIfToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
@@ -321,7 +321,7 @@
                     </StackPanel>
                     <StackPanel>
                         <Label>While Condition - Min Expressions:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInWhileToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
@@ -330,7 +330,7 @@
                     </StackPanel>
                     <StackPanel>
                         <Label>Do While Condition - Min Expressions:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInDoWhileToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
@@ -339,7 +339,7 @@
                     </StackPanel>
                     <StackPanel>
                         <Label>Return Expression - Min Expressions:</Label>
-                        <xctk:IntegerUpDown
+                        <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MinimumExpressionsInReturnToWrap}" />
                         <Label>Max Columns:</Label>
                         <xctk:IntegerUpDown Maximum="10000"
