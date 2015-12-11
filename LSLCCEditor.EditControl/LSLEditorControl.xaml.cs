@@ -579,62 +579,64 @@ namespace LSLCCEditor.EditControl
             var line = position.Line;
             var column = position.Column;
 
-            var offset = document.GetOffset(line, column);
+            var mouseOffset = document.GetOffset(line, column);
+
 
 
             var parser = new LSLCommentStringSkipper();
-            parser.ParseUpTo(Editor.Text, offset);
+            parser.ParseUpTo(Editor.Text, mouseOffset);
             if (parser.InComment || parser.InString)
             {
                 return null;
             }
 
-            if (offset >= document.TextLength)
-                offset--;
+            if (mouseOffset >= document.TextLength)
+                mouseOffset--;
 
-            var textAtOffset = document.GetText(offset, 1);
+            var textAtOffset = document.GetText(mouseOffset, 1);
 
-            var startOffset = 0;
-            var endOffset = 0;
+            if (string.IsNullOrWhiteSpace(textAtOffset)) return null;
+
+            var startOffset = mouseOffset;
+            var endOffset = mouseOffset;
 
             // Get text backward of the mouse position, until the first space
             while (!(string.IsNullOrWhiteSpace(textAtOffset) || !LSLTokenTools.IDAnyCharRegex.Match(textAtOffset).Success))
             {
                 //wordHovered = textAtOffset + wordHovered;
 
-                offset--;
+                startOffset--;
 
-                startOffset = offset;
-                if (offset < 0)
+                if (startOffset < 0)
                     break;
 
 
-                textAtOffset = document.GetText(offset, 1);
+                textAtOffset = document.GetText(startOffset, 1);
             }
 
             // Get text forward the mouse position, until the first space
-            offset = document.GetOffset(line, column);
-            if (offset < document.TextLength - 1)
+            if (endOffset < document.TextLength - 1)
             {
-                offset++;
+                endOffset++;
 
-                textAtOffset = document.GetText(offset, 1);
+                textAtOffset = document.GetText(endOffset, 1);
+
 
                 while (!(string.IsNullOrWhiteSpace(textAtOffset) || !LSLTokenTools.IDAnyCharRegex.Match(textAtOffset).Success))
                 {
                     //wordHovered = wordHovered + textAtOffset;
 
-                    offset++;
-                    endOffset = offset;
-                    if (offset >= document.TextLength)
+                    endOffset++;
+                    if (endOffset >= document.TextLength)
                         break;
 
 
-                    textAtOffset = document.GetText(offset, 1);
+                    textAtOffset = document.GetText(endOffset, 1);
                 }
             }
 
             if (startOffset == endOffset) return null;
+
             var wordHovered = "";
             var length = 0;
 
