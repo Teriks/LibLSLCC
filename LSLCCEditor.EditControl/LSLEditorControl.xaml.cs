@@ -102,6 +102,7 @@ namespace LSLCCEditor.EditControl
             new PropertyMetadata(default(LSLEditorControlTheme), ThemePropertyChangedCallback));
 
 
+
         private static void ThemePropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var self = (LSLEditorControl)dependencyObject;
@@ -116,6 +117,12 @@ namespace LSLCCEditor.EditControl
 
                 old.ForegroundColor.UnSubscribePropertyChanged(dependencyObject);
 
+                old.SelectionForegroundColor.UnSubscribePropertyChanged(dependencyObject);
+
+                old.SelectionColor.UnSubscribePropertyChanged(dependencyObject);
+
+                old.SelectionBorderColor.UnSubscribePropertyChanged(dependencyObject);
+
                 old.UnSubscribePropertyChanged(dependencyObject);
             }
 
@@ -129,9 +136,19 @@ namespace LSLCCEditor.EditControl
             self.Editor.Foreground = new SolidColorBrush(n.ForegroundColor.Content);
             self.Editor.Background = new SolidColorBrush(n.BackgroundColor.Content);
 
+            self.Editor.TextArea.SelectionBorder = new Pen(new SolidColorBrush(n.SelectionBorderColor), 1);
+            self.Editor.TextArea.SelectionBrush = new SolidColorBrush(n.SelectionColor);
+            self.Editor.TextArea.SelectionForeground = new SolidColorBrush(n.SelectionForegroundColor);
+
             n.BackgroundColor.SubscribePropertyChanged(dependencyObject, BackgroundColorSettingPropertyChanged);
 
             n.ForegroundColor.SubscribePropertyChanged(dependencyObject, BasicTextColorSettingChanged);
+
+            n.SelectionColor.SubscribePropertyChanged(dependencyObject, SelectionColorThemeSettingChanged);
+
+            n.SelectionBorderColor.SubscribePropertyChanged(dependencyObject, SelectionBorderColorThemeSettingChanged);
+
+            n.SelectionForegroundColor.SubscribePropertyChanged(dependencyObject, SelectionForegroundColorThemeSettingChanged);
 
             n.SubscribePropertyChanged(dependencyObject, EditorThemePropertyChanged);
 
@@ -140,21 +157,54 @@ namespace LSLCCEditor.EditControl
         }
 
 
+        private static void SelectionBorderColorThemeSettingChanged(SettingsPropertyChangedEventArgs<XmlSerializableXaml<Color>> settingsPropertyChangedEventArgs)
+        {
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
+
+            suber.AvalonEditor.TextArea.SelectionBorder.Brush = new SolidColorBrush(settingsPropertyChangedEventArgs.PropertyOwner.Content);
+        }
+
+
+        private static void SelectionForegroundColorThemeSettingChanged(SettingsPropertyChangedEventArgs<XmlSerializableXaml<Color>> settingsPropertyChangedEventArgs)
+        {
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
+
+            suber.AvalonEditor.TextArea.SelectionForeground = new SolidColorBrush(settingsPropertyChangedEventArgs.PropertyOwner.Content);
+        }
+
+
+        private static void SelectionColorThemeSettingChanged(SettingsPropertyChangedEventArgs<XmlSerializableXaml<Color>> settingsPropertyChangedEventArgs)
+        {
+            var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
+
+            suber.AvalonEditor.TextArea.SelectionBrush = new SolidColorBrush(settingsPropertyChangedEventArgs.PropertyOwner.Content);
+        }
+
+
         private static void EditorThemePropertyChanged(SettingsPropertyChangedEventArgs<LSLEditorControlTheme> settingsPropertyChangedEventArgs)
         {
             var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
 
-            if (settingsPropertyChangedEventArgs.PropertyName == "HighlightingColors")
+            switch (settingsPropertyChangedEventArgs.PropertyName)
             {
-                suber.UpdateHighlightingColorsFromSettings();
-            }
-            if (settingsPropertyChangedEventArgs.PropertyName == "BackgroundColor")
-            {
-                suber.Editor.Background = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
-            }
-            if (settingsPropertyChangedEventArgs.PropertyName == "ForegroundColor")
-            {
-                suber.Editor.Foreground = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+                case "HighlightingColors":
+                    suber.UpdateHighlightingColorsFromSettings();
+                    break;
+                case "BackgroundColor":
+                    suber.Editor.Background = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+                    break;
+                case "ForegroundColor":
+                    suber.Editor.Foreground = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+                    break;
+                case "SelectionBorderColor":
+                    suber.Editor.TextArea.SelectionBorder.Brush = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+                    break;
+                case "SelectionForegroundColor":
+                    suber.Editor.TextArea.SelectionForeground = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+                    break;
+                case "SelectionColor":
+                    suber.Editor.TextArea.SelectionBrush = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
+                    break; 
             }
         }
 
@@ -3242,10 +3292,9 @@ namespace LSLCCEditor.EditControl
                 }
             }
 
-
-            Editor.TextArea.SelectionBorder = new Pen(SystemColors.HighlightBrush, 1);
-            Editor.TextArea.SelectionBrush = new SolidColorBrush(SystemColors.HighlightColor) {Opacity = 0.7};
-            Editor.TextArea.SelectionForeground = SystemColors.HighlightTextBrush;
+            Editor.TextArea.SelectionBorder = new Pen(new SolidColorBrush(Theme.SelectionBorderColor), 1);
+            Editor.TextArea.SelectionBrush = new SolidColorBrush(Theme.SelectionColor);
+            Editor.TextArea.SelectionForeground = new SolidColorBrush(Theme.SelectionForegroundColor);
 
             _contextMenuFunction = null;
             _contextMenuVar = null;
@@ -3310,13 +3359,13 @@ namespace LSLCCEditor.EditControl
             {
                 Editor.Select(segment.StartOffset, segment.Length);
 
-                Editor.TextArea.SelectionBorder = new Pen(Brushes.Black, 1)
+                Editor.TextArea.SelectionBorder = new Pen(new SolidColorBrush(Theme.SymbolSelectionBorderColor), 1)
                 {
                     DashStyle = new DashStyle(new double[] {2, 2}, 2.0)
                 };
 
-                Editor.TextArea.SelectionBrush = Brushes.Transparent;
-                Editor.TextArea.SelectionForeground = Brushes.Red;
+                Editor.TextArea.SelectionBrush = new SolidColorBrush(Theme.SymbolSelectionColor);
+                Editor.TextArea.SelectionForeground = new SolidColorBrush(Theme.SymbolSelectionForegroundColor);
             }
 
             GotoDefinitionContextMenuButton.Visibility =
@@ -3332,9 +3381,9 @@ namespace LSLCCEditor.EditControl
             GotoDefinitionContextMenuButton.Visibility = Visibility.Collapsed;
 
 
-            Editor.TextArea.SelectionBorder = new Pen(SystemColors.HighlightBrush, 1);
-            Editor.TextArea.SelectionBrush = new SolidColorBrush(SystemColors.HighlightColor) {Opacity = 0.7};
-            Editor.TextArea.SelectionForeground = SystemColors.HighlightTextBrush;
+            Editor.TextArea.SelectionBorder = new Pen(new SolidColorBrush(Theme.SelectionBorderColor), 1);
+            Editor.TextArea.SelectionBrush = new SolidColorBrush(Theme.SelectionColor);
+            Editor.TextArea.SelectionForeground = new SolidColorBrush(Theme.SelectionForegroundColor);
 
             _contextMenuFunction = null;
             _contextMenuVar = null;

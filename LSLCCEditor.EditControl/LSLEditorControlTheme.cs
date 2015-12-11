@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Media;
 using LibLSLCC.Settings;
 using LSLCCEditor.Utility.Xml;
@@ -16,6 +17,9 @@ namespace LSLCCEditor.EditControl
 
         public LSLEditorControlTheme()
         {
+            var selection = SystemColors.HighlightColor;
+            _selectionColor = new XmlColor(Color.FromArgb(178,selection.R,selection.G,selection.B));
+            _selectionBorderColor = new XmlColor(_selectionColor.Clone());
         }
 
 
@@ -30,6 +34,12 @@ namespace LSLCCEditor.EditControl
         private XmlColor _toolTipForeground = new XmlColor((Color) ColorConverter.ConvertFromString("#FF575757"));
         private XmlColor _toolTipBorderColor = new XmlColor((Color) ColorConverter.ConvertFromString("#FF767676"));
         private XmlColor _completionWindowBorderColor = new XmlColor(Colors.DimGray);
+        private XmlColor _symbolSelectionBorderColor = Colors.Black;
+        private XmlColor _symbolSelectionColor = Colors.Transparent;
+        private XmlColor _symbolSelectionForegroundColor = Colors.Red;
+        private XmlColor _selectionForegroundColor = new XmlColor(Colors.White);
+        private XmlColor _selectionColor;
+        private XmlColor _selectionBorderColor;
 
 
         [DefaultValueFactory(typeof (DefaultsFactory))]
@@ -111,6 +121,51 @@ namespace LSLCCEditor.EditControl
         {
             get { return _completionWindowBorderColor; }
             set { SetField(ref _completionWindowBorderColor, value, "CompletionWindowBorderColor"); }
+        }
+
+        [DefaultValueFactory(typeof (DefaultsFactory))]
+        public XmlColor SymbolSelectionBorderColor
+        {
+            get { return _symbolSelectionBorderColor; }
+            set { SetField(ref _symbolSelectionBorderColor, value, "SymbolSelectionBorderColor"); }
+        }
+
+        [DefaultValueFactory(typeof (DefaultsFactory))]
+        public XmlColor SymbolSelectionColor
+        {
+            get { return _symbolSelectionColor; }
+            set { SetField(ref _symbolSelectionColor, value, "SymbolSelectionColor"); }
+        }
+
+        [DefaultValueFactory(typeof (DefaultsFactory))]
+        public XmlColor SymbolSelectionForegroundColor
+        {
+            get { return _symbolSelectionForegroundColor; }
+            set { SetField(ref _symbolSelectionForegroundColor, value, "SymbolSelectionForegroundColor"); }
+        }
+
+
+
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor SelectionColor
+        {
+            get { return _selectionColor; }
+            set { SetField(ref _selectionColor, value, "SelectionColor"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor SelectionBorderColor
+        {
+            get { return _selectionBorderColor; }
+            set { SetField(ref _selectionBorderColor, value, "SelectionBorderColor"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor SelectionForegroundColor
+        {
+            get { return _selectionForegroundColor; }
+            set { SetField(ref _selectionForegroundColor, value, "SelectionForegroundColor"); }
         }
     }
 }

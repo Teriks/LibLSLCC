@@ -411,6 +411,18 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
+        private void ResetSelectionColorBox(UIElement colorBox)
+        {
+            var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement)colorBox,
+    ColorPicker.SelectedColorProperty);
+            var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
+
+            var propName = propNames[propNames.Length - 2];
+
+            DefaultValueInitializer.SetToDefault(EditorControlTheme, propName);
+        }
+
+
         private void RenameConfiguration_OnClick(object sender, RoutedEventArgs e)
         {
             var x = new UniqueNamerWindow(AppSettings.Settings.EditorControlThemes.Keys, SelectedEditorThemeName,
@@ -473,7 +485,15 @@ namespace LSLCCEditor.SettingsUI
                 var colorBox = ((Border)color.Children[1]).Child;
                 ResetHighlightingColorBox(colorBox);
             }
+
+            foreach (var color in SelectionColorsListView.Items.Cast<StackPanel>())
+            {
+                var colorBox = ((Border)color.Children[1]).Child;
+                ResetSelectionColorBox(colorBox);
+            }
         }
+
+
 
         private void Export_OnClick(object sender, RoutedEventArgs e)
         {
@@ -483,6 +503,91 @@ namespace LSLCCEditor.SettingsUI
                 var x = new XmlSerializer(typeof(LSLEditorControlTheme));
 
                 x.Serialize(writer, EditorControlTheme);
+            });
+        }
+
+
+        private void SelectionColorReset_OnClick(object sender, RoutedEventArgs e)
+        {
+            var colorBox = ((Border)((StackPanel)((FrameworkElement)sender).Parent).Children[1]).Child;
+
+            ResetSelectionColorBox(colorBox);
+        }
+
+
+
+        private void ResetAllSelectionColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var color in SelectionColorsListView.Items.Cast<StackPanel>())
+            {
+                var colorBox = ((Border)color.Children[1]).Child;
+                ResetSelectionColorBox(colorBox);
+            }
+        }
+
+
+        public class SelectionColorSettings
+        {
+
+            public XmlColor SelectionColor { get; set; }
+
+
+            public XmlColor SelectionForegroundColor { get; set; }
+
+
+            public XmlColor SelectionBorderColor { get; set; }
+
+
+            public XmlColor SymbolSelectionColor { get; set; }
+
+
+            public XmlColor SymbolSelectionForegroundColor { get; set; }
+
+
+            public XmlColor SymbolSelectionBorderColor { get; set; }
+
+        }
+
+
+
+        private void ExportSelectionColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Selection Colors (*.xml)|*.xml;", "LSLCCEditor_ToolTipColors.xml",
+                writer =>
+                {
+                    var x = new XmlSerializer(typeof(SelectionColorSettings));
+
+                    var settings = new SelectionColorSettings
+                    {
+                        SymbolSelectionForegroundColor = EditorControlTheme.SymbolSelectionForegroundColor,
+                        SymbolSelectionColor = EditorControlTheme.SymbolSelectionColor,
+                        SymbolSelectionBorderColor = EditorControlTheme.SymbolSelectionBorderColor,
+
+                        SelectionColor = EditorControlTheme.SelectionColor,
+                        SelectionBorderColor = EditorControlTheme.SelectionBorderColor,
+                        SelectionForegroundColor = EditorControlTheme.SelectionForegroundColor
+                    };
+
+                    x.Serialize(writer, settings);
+                });
+        }
+
+
+        private void ImportSelectionColors_OnClick(object sender, RoutedEventArgs e)
+        {
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Selection Colors (*.xml)|*.xml;", ".xml", reader =>
+            {
+                var x = new XmlSerializer(typeof(SelectionColorSettings));
+
+                var settings = (SelectionColorSettings)x.Deserialize(reader);
+
+                EditorControlTheme.SymbolSelectionForegroundColor = settings.SymbolSelectionForegroundColor;
+                EditorControlTheme.SymbolSelectionColor = settings.SymbolSelectionColor;
+                EditorControlTheme.SymbolSelectionBorderColor = settings.SymbolSelectionBorderColor;
+
+                EditorControlTheme.SelectionColor = settings.SelectionColor;
+                EditorControlTheme.SelectionBorderColor = settings.SymbolSelectionBorderColor;
+                EditorControlTheme.SelectionForegroundColor = settings.SelectionForegroundColor;
             });
         }
     }
