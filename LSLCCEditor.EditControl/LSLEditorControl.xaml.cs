@@ -153,7 +153,7 @@ namespace LSLCCEditor.EditControl
             n.SubscribePropertyChanged(dependencyObject, EditorThemePropertyChanged);
 
 
-            self.UpdateHighlightingColorsFromSettings();
+            self.UpdateHighlightingColorsFromSettings(true);
         }
 
 
@@ -188,7 +188,7 @@ namespace LSLCCEditor.EditControl
             switch (settingsPropertyChangedEventArgs.PropertyName)
             {
                 case "HighlightingColors":
-                    suber.UpdateHighlightingColorsFromSettings();
+                    suber.UpdateHighlightingColorsFromSettings(true);
                     break;
                 case "BackgroundColor":
                     suber.Editor.Background = new SolidColorBrush((XmlColor)settingsPropertyChangedEventArgs.NewValue);
@@ -212,7 +212,9 @@ namespace LSLCCEditor.EditControl
         {
             var suber = (LSLEditorControl)settingsPropertyChangedEventArgs.Subscriber;
 
-            suber.UpdateHighlightingColorsFromSettings();
+            suber.UpdateHighlightingColorsFromSettings(true);
+
+
         }
 
 
@@ -568,7 +570,7 @@ namespace LSLCCEditor.EditControl
             {
                 var control = (LSLEditorControl) dependencyObject;
                 control.UpdateHighlightingFromDataProvider(
-                    (ILSLLibraryDataProvider) dependencyPropertyChangedEventArgs.NewValue);
+                    (ILSLLibraryDataProvider) dependencyPropertyChangedEventArgs.NewValue, true);
             }
         }
 
@@ -3100,16 +3102,17 @@ namespace LSLCCEditor.EditControl
         }
 
 
+
         public void UpdateHighlightingFromDataProvider()
         {
-            UpdateHighlightingFromDataProvider(LibraryDataProvider);
+            UpdateHighlightingFromDataProvider(LibraryDataProvider, true);
         }
 
 
 
 
 
-        private void UpdateHighlightingColorsFromSettings()
+        private void UpdateHighlightingColorsFromSettings(bool forceVisualUpdate)
         {
             if (Editor.SyntaxHighlighting == null) return;
             foreach (var color in Editor.SyntaxHighlighting.NamedHighlightingColors)
@@ -3145,7 +3148,14 @@ namespace LSLCCEditor.EditControl
                         break;
                 }
             }
+
+            if (!forceVisualUpdate) return;
+
+            var oldHighlighting = Editor.SyntaxHighlighting;
+            Editor.SyntaxHighlighting = null;
+            Editor.SyntaxHighlighting = oldHighlighting;
         }
+
 
         private IHighlightingDefinition LoadXSHD()
         {
@@ -3158,11 +3168,11 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private void UpdateHighlightingFromDataProvider(ILSLLibraryDataProvider provider)
+        private void UpdateHighlightingFromDataProvider(ILSLLibraryDataProvider provider, bool forceVisualUpdate)
         {
 
             Editor.SyntaxHighlighting = LoadXSHD();
-            UpdateHighlightingColorsFromSettings();
+            UpdateHighlightingColorsFromSettings(false);
 
             foreach (
                 var funcs in
@@ -3211,6 +3221,12 @@ namespace LSLCCEditor.EditControl
                 };
                 Editor.SyntaxHighlighting.MainRuleSet.Rules.Add(rule);
             }
+
+            if (!forceVisualUpdate) return;
+
+            var oldHighlighting = Editor.SyntaxHighlighting;
+            Editor.SyntaxHighlighting = null;
+            Editor.SyntaxHighlighting = oldHighlighting;
         }
 
 
