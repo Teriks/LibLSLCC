@@ -3021,11 +3021,6 @@ namespace LSLCCEditor.EditControl
             var textArea = Editor.TextArea;
             var caretOffset = textArea.Caret.Offset;
 
-#if DEBUG_FASTPARSER
-            var P = new LSLAutoCompleteParser();
-            P.Parse(new StringReader(Editor.Text), caretOffset);
-            _debugObjectView.ViewObject("", P);
-#endif
 
             lock (_completionLock)
             {

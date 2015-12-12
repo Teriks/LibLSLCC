@@ -865,7 +865,6 @@ namespace LibLSLCC.AutoComplete
 
                 _parent._nestableExpressionElementStack.Pop();
 
-
                 return val;
             }
 
@@ -1340,6 +1339,12 @@ namespace LibLSLCC.AutoComplete
                 if (context.open_parenth != null && context.close_parenth != null
                     && context.close_parenth.Text == ")" && _parent._toOffset >= context.close_parenth.StartIndex)
                 {
+
+                    if (context.expression_list != null && context.expression_list.Stop.Text == ",")
+                    {
+                        return true;
+                    }
+
                     if (context.open_parenth.StartIndex != context.close_parenth.StartIndex)
                     {
                         _parent._nestableExpressionElementStack.Pop();
@@ -1349,6 +1354,7 @@ namespace LibLSLCC.AutoComplete
 
                 return v;
             }
+
 
             readonly Stack<List<GlobalVariable>> _globalVariablesHidden = new Stack<List<GlobalVariable>>(); 
 
