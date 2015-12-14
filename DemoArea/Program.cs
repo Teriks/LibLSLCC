@@ -150,8 +150,8 @@ namespace DemoArea
 
         }
 
-
-
+        //instance constant
+        public int CONSTANT_INSTANCE = 10;
 
 
         //The explicitly specified value string will be used to define
