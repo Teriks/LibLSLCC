@@ -468,6 +468,43 @@ namespace LibLSLCC.CodeValidator.Components
                     "The library event handler \"{0}\" is deprecated, it is recommended you use an alternative or remove it.", eventSignature.Name));
         }
 
+        /// <summary>
+        /// A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect...
+        /// This is not an error, but bad practice. This function handles the warning case inside function declarations.
+        /// </summary>
+        /// <param name="location">The source code range of the new variable declaration.</param>
+        /// <param name="currentFunctionBodySignature">The signature of the function the new variable was declared in.</param>
+        /// <param name="newDeclarationNode">The tree node of the new declaration that has not been added to the tree yet.</param>
+        /// <param name="previousDeclarationNode">The previous variable declaration node which already exist in the syntax tree, in an outer scope.</param>
+        public virtual void VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLFunctionSignature currentFunctionBodySignature,
+            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+        {
+            OnWarning(location,
+                string.Format(
+                    "Local variable \"{0}\" in function \"{1}\" hides a previous declaration in an outer scope (on line {2}).",
+                    newDeclarationNode.Name, currentFunctionBodySignature.Name, 
+                    MapLineNumber(previousDeclarationNode.SourceCodeRange.LineStart)));
+        }
+
+
+        /// <summary>
+        /// A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect...
+        /// This is not an error, but bad practice.  This function handles the warning case inside event handlers.
+        /// </summary>
+        /// <param name="location">The source code range of the new variable declaration.</param>
+        /// <param name="currentEventBodySignature">The signature of the event handler the new variable was declared in.</param>
+        /// <param name="newDeclarationNode">The tree node of the new declaration that has not been added to the tree yet.</param>
+        /// <param name="previousDeclarationNode">The previous variable declaration node which already exist in the syntax tree, in an outer scope.</param>
+        public virtual void VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLEventSignature currentEventBodySignature,
+            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+        {
+            OnWarning(location,
+                string.Format(
+                    "Local variable \"{0}\" in event handler \"{1}\" hides a previous declaration in an outer scope (on line {2}).",
+                    newDeclarationNode.Name, currentEventBodySignature.Name,
+                    MapLineNumber(previousDeclarationNode.SourceCodeRange.LineStart)));
+        }
+
 
         /// <summary>
         /// A constant value was used for the conditional expression in a control or loop statement.

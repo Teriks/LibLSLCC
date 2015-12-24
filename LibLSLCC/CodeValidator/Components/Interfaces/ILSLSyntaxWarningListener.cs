@@ -302,5 +302,34 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="location">The location in source code where the deprecated event handler was referenced.</param>
         /// <param name="eventSignature">The library event signature of the deprecated event handler that was referenced.</param>
         void UseOfDeprecatedLibraryEventHandler(LSLSourceCodeRange location, LSLLibraryEventSignature eventSignature);
+
+
+
+        /// <summary>
+        /// A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect...
+        /// This is not an error, but bad practice. This function handles the warning case inside function declarations.
+        /// </summary>
+        /// <param name="location">The source code range of the new variable declaration.</param>
+        /// <param name="currentFunctionBodySignature">The signature of the function the new variable was declared in.</param>
+        /// <param name="newDeclarationNode">The tree node of the new declaration that has not been added to the tree yet.</param>
+        /// <param name="previousDeclarationNode">The previous variable declaration node which already exist in the syntax tree, in an outer scope.</param>
+        void VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
+            LSLFunctionSignature currentFunctionBodySignature,
+            LSLVariableDeclarationNode newDeclarationNode, 
+            LSLVariableDeclarationNode previousDeclarationNode);
+
+
+        /// <summary>
+        /// A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect...
+        /// This is not an error, but bad practice.  This function handles the warning case inside event handlers.
+        /// </summary>
+        /// <param name="location">The source code range of the new variable declaration.</param>
+        /// <param name="currentEventBodySignature">The signature of the event handler the new variable was declared in.</param>
+        /// <param name="newDeclarationNode">The tree node of the new declaration that has not been added to the tree yet.</param>
+        /// <param name="previousDeclarationNode">The previous variable declaration node which already exist in the syntax tree, in an outer scope.</param>
+        void VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
+            LSLEventSignature currentEventBodySignature,
+            LSLVariableDeclarationNode newDeclarationNode,
+            LSLVariableDeclarationNode previousDeclarationNode);
     }
 }

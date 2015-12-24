@@ -1070,6 +1070,27 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(location, eventSignature));
         }
 
+        public void VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLFunctionSignature currentFunctionBodySignature,
+            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.VariableRedeclaredInInnerScope(location, currentFunctionBodySignature,
+                    newDeclarationNode, previousDeclarationNode));
+        }
+
+
+        public void VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLEventSignature currentEventBodySignature,
+            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.VariableRedeclaredInInnerScope(location, currentEventBodySignature,
+                    newDeclarationNode, previousDeclarationNode));
+        }
+
+
+
         void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
             LSLConditionalStatementType conditionalStatementType)
         {

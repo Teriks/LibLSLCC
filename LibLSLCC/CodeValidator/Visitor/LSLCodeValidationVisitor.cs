@@ -718,6 +718,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
+
+
+
             LSLVariableDeclarationNode variable;
 
 
@@ -772,17 +775,41 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
             }
 
-
-            ScopingManager.DefineVariable(variable, declarationScope);
-
-
             if (declarationScope == LSLVariableScope.Local)
             {
+                WarnIfLocalVariableHidesDeclarationInOuterScope(variable);
+
+                ScopingManager.DefineVariable(variable, declarationScope);
+
                 WarnIfLocalVariableHidesParameterOrGlobal(variable);
+            }
+            else
+            {
+                ScopingManager.DefineVariable(variable, declarationScope);
             }
 
 
             return variable;
+        }
+
+
+        private void WarnIfLocalVariableHidesDeclarationInOuterScope(LSLVariableDeclarationNode variable)
+        {
+            if (ScopingManager.LocalVariableDefined(variable.Name))
+            {
+                if (ScopingManager.InsideFunctionBody)
+                {
+                    GenSyntaxWarning().VariableRedeclaredInInnerScope(variable.SourceCodeRange,
+                        ScopingManager.CurrentFunctionBodySignature, variable,
+                        ScopingManager.ResolveVariable(variable.Name));
+                }
+                else
+                {
+                    GenSyntaxWarning().VariableRedeclaredInInnerScope(variable.SourceCodeRange,
+                        ScopingManager.CurrentEventHandlerSignature, variable,
+                        ScopingManager.ResolveVariable(variable.Name));
+                }
+            }
         }
 
 

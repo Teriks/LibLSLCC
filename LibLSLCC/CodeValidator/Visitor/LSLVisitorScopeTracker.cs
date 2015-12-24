@@ -363,7 +363,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             if (scope == LSLVariableScope.Local)
             {
-                return !_scopeVariables.Any(s => s.ContainsKey(name));
+                return !_scopeVariables.Peek().ContainsKey(name);
             }
             return true;
         }
@@ -385,6 +385,12 @@ namespace LibLSLCC.CodeValidator.Visitor
         public bool GlobalVariableDefined(string name)
         {
             return GlobalVariables.ContainsKey(name);
+        }
+
+
+        public bool LocalVariableDefined(string text)
+        {
+            return _scopeVariables.Any(x=>x.ContainsKey(text));
         }
 
         public bool ParameterDefined(string name)
@@ -546,5 +552,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         {
             CurrentScopeId = 0;
         }
+
+
     }
 }
