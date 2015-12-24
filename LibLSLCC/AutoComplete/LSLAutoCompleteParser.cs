@@ -1355,8 +1355,9 @@ namespace LibLSLCC.AutoComplete
                 return v;
             }
 
-
+            readonly Stack<List<LocalVariable>> _localVariablesHidden = new Stack<List<LocalVariable>>();
             readonly Stack<List<GlobalVariable>> _globalVariablesHidden = new Stack<List<GlobalVariable>>(); 
+
 
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
             {
@@ -1388,6 +1389,21 @@ namespace LibLSLCC.AutoComplete
                     _globalVariablesHidden.Peek().Add(hiddenGlobalVariable);
                     _parent._globalVariables.Remove(context.variable_name.Text);
                 }
+
+
+                LocalVariable hiddenLocalVariable = null;
+
+                var dict =
+                    _parent._localVariables.FirstOrDefault(
+                        x => x.TryGetValue(context.variable_name.Text, out hiddenLocalVariable));
+
+                if (dict != null)
+                {
+                    _localVariablesHidden.Peek().Add(hiddenLocalVariable);
+                    dict.Remove(context.variable_name.Text);
+                }
+
+
 
                 if (_parent._parameters.ContainsKey(context.variable_name.Text))
                 {
@@ -1800,6 +1816,7 @@ namespace LibLSLCC.AutoComplete
                 _parent.InMultiStatementCodeScopeTopLevel = true;
 
                 _globalVariablesHidden.Push(new List<GlobalVariable>());
+                _localVariablesHidden.Push(new List<LocalVariable>());
 
 
                 if (context.Parent is LSLParser.FunctionDeclarationContext ||
@@ -1833,15 +1850,28 @@ namespace LibLSLCC.AutoComplete
                 if (context.Stop.StartIndex > _parent._toOffset) return true;
 
 
-                foreach (var var in _globalVariablesHidden.Peek())
+                foreach (var variable in _globalVariablesHidden.Peek())
                 {
-                    _parent._globalVariables.Add(var.Name, var);
+                    _parent._globalVariables.Add(variable.Name, variable);
                 }
+
 
                 _globalVariablesHidden.Pop();
 
                 _parent._lastControlChainElementStack.Pop();
+
                 _parent._localVariables.Pop();
+
+
+                if (_parent._localVariables.Count != 0)
+                {
+                    foreach (var variable in _localVariablesHidden.Peek())
+                    {
+                        _parent._localVariables.Peek().Add(variable.Name, variable);
+                    }
+                }
+
+                _localVariablesHidden.Pop();
 
 
                 CodeScopeLevel--;
