@@ -1070,7 +1070,7 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(location, eventSignature));
         }
 
-        public void VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLFunctionSignature currentFunctionBodySignature,
+        void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLFunctionSignature currentFunctionBodySignature,
             LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -1080,7 +1080,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        public void VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLEventSignature currentEventBodySignature,
+        void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLEventSignature currentEventBodySignature,
             LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
