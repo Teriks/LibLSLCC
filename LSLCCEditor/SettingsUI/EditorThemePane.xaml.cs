@@ -346,7 +346,8 @@ namespace LSLCCEditor.SettingsUI
         
         public class ToolTipColorSettings
         {
-            
+            public XmlColor DeprecationMarkerColor { get; set; }
+
             public XmlColor BackgroundColor { get; set; }
 
             
@@ -366,6 +367,7 @@ namespace LSLCCEditor.SettingsUI
 
                     var settings = new ToolTipColorSettings
                     {
+                        DeprecationMarkerColor = EditorControlTheme.ToolTipDeprecationMarkerColor,
                         BackgroundColor = EditorControlTheme.ToolTipBackground,
                         ForegroundColor = EditorControlTheme.ForegroundColor,
                         BorderColor = EditorControlTheme.BackgroundColor
@@ -384,6 +386,7 @@ namespace LSLCCEditor.SettingsUI
 
                 var settings = (ToolTipColorSettings) x.Deserialize(reader);
 
+                EditorControlTheme.ToolTipDeprecationMarkerColor = settings.DeprecationMarkerColor;
                 EditorControlTheme.ToolTipBackground = settings.BackgroundColor;
                 EditorControlTheme.ToolTipForeground = settings.ForegroundColor;
                 EditorControlTheme.ToolTipBorderColor = settings.BorderColor;

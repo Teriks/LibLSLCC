@@ -40,6 +40,7 @@ namespace LSLCCEditor.EditControl
         private XmlColor _selectionForegroundColor = new XmlColor(Colors.White);
         private XmlColor _selectionColor;
         private XmlColor _selectionBorderColor;
+        private XmlColor _toolTipDeprecationMarkerColor = Colors.Red;
 
 
         [DefaultValueFactory(typeof (DefaultsFactory))]
@@ -166,6 +167,13 @@ namespace LSLCCEditor.EditControl
         {
             get { return _selectionForegroundColor; }
             set { SetField(ref _selectionForegroundColor, value, "SelectionForegroundColor"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor ToolTipDeprecationMarkerColor
+        {
+            get { return _toolTipDeprecationMarkerColor; }
+            set { SetField(ref _toolTipDeprecationMarkerColor, value, "ToolTipDeprecationMarkerColor"); }
         }
     }
 }

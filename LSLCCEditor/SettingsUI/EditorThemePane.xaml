@@ -165,7 +165,16 @@
                 <StackPanel>
                     <ItemsControl Name="ToolTipColorsListView" Padding="0,10,10,0">
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
-                            <Label>Tool Tip Background:</Label>
+                            <Label>Deprecation Marker:</Label>
+                            <Border VerticalAlignment="Center">
+                                <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}" UsingAlphaChannel="True"
+                                                  SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ToolTipDeprecationMarkerColor.Content}" />
+                            </Border>
+                            <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
+                                    Style="{Binding Source={StaticResource ResetButtons}}" />
+                        </StackPanel>
+                        <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
+                            <Label>Background:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}" UsingAlphaChannel="True"
                                                   SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ToolTipBackground.Content}" />
@@ -174,7 +183,7 @@
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
                         </StackPanel>
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
-                            <Label>Tool Tip Plain Text:</Label>
+                            <Label>Basic Text:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}" UsingAlphaChannel="True"
                                                   SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ToolTipForeground.Content}" />
@@ -183,7 +192,7 @@
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
                         </StackPanel>
                         <StackPanel Style="{Binding Source={StaticResource StackPanels}}">
-                            <Label>Tool Tip Border:</Label>
+                            <Label>Border:</Label>
                             <Border VerticalAlignment="Center">
                                 <xctk:ColorPicker Style="{Binding Source={StaticResource ColorPickers}}" UsingAlphaChannel="True"
                                                   SelectedColor="{Binding ElementName=_this, Path=EditorControlTheme.ToolTipBorderColor.Content}" />
@@ -191,6 +200,7 @@
                             <Button Height="23" Margin="10,0,0,0" Click="ToolTipColorReset_OnClick"
                                     Style="{Binding Source={StaticResource ResetButtons}}" />
                         </StackPanel>
+       
                     </ItemsControl>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Height="23" HorizontalAlignment="Right" Margin="0,5,7,5" Padding="5,0,5,0"

@@ -2136,7 +2136,7 @@ namespace LSLCCEditor.EditControl
                 {
                     description.Inlines.Add(new Run("(DEPRECATED) ")
                     {
-                        Foreground = Brushes.Red,
+                        Foreground = new SolidColorBrush(Theme.ToolTipDeprecationMarkerColor),
                         FontWeight = FontWeights.Bold
                     });
 
