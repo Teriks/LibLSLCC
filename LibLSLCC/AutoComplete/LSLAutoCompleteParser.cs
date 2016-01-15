@@ -279,8 +279,8 @@ namespace LibLSLCC.AutoComplete
                        !InWhileConditionExpression &&
                        !InForLoopClausesArea &&
                        !InDoWhileConditionExpression &&
-                       !(InLocalVariableDeclarationExpression || InIfConditionExpression ||
-                       InElseIfConditionExpression || InFunctionCallParameterList || InFunctionReturnExpression ||
+                       !(InLocalVariableDeclarationExpression || InVariableAssignmentExpression || InComponentAssignmentExpression ||
+                       InIfConditionExpression || InElseIfConditionExpression || InFunctionCallParameterList || InFunctionReturnExpression ||
                        InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression ||
                        InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent);
             }
@@ -1004,6 +1004,7 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitExpr_ModifyingAssignment(context);
             }
 
+
             public override bool VisitReturnStatement(LSLParser.ReturnStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1018,13 +1019,14 @@ namespace LibLSLCC.AutoComplete
                 }
                 else if (
                     (context.return_keyword == null || context.return_keyword.StopIndex < _parent._toOffset)
-                    && context.return_expression == null)
+                    && context.return_expression == null && _parent._toOffset < context.Stop.StartIndex)
                 {
-                    _parent.InFunctionReturnExpression = true;
+                    _parent.InFunctionReturnExpression = _parent.InFunctionCodeBody;
                 }
 
                 return base.VisitReturnStatement(context);
             }
+
 
             public override bool VisitIfStatement(LSLParser.IfStatementContext context)
             {
