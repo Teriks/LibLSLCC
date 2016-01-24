@@ -1012,7 +1012,7 @@ namespace LibLSLCC.AutoComplete
                 if (_parent.InFunctionCodeBody && context.return_expression != null && context.return_keyword != null)
                 {
                     if (_parent._toOffset > context.return_keyword.StopIndex &&
-                        _parent._toOffset <= context.return_expression.Stop.StartIndex)
+                        (context.return_expression.Stop.Text != ";"))
                     {
                         _parent.InFunctionReturnExpression = true;
                     }
