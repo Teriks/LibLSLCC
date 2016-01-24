@@ -1012,16 +1012,16 @@ namespace LibLSLCC.AutoComplete
                 if (_parent.InFunctionCodeBody && context.return_expression != null && context.return_keyword != null)
                 {
                     if (_parent._toOffset > context.return_keyword.StopIndex &&
-                        (context.return_expression.Stop.Text != ";"))
+                        ((_parent._toOffset <= context.Stop.StopIndex) || context.Stop.Text == "return"))
                     {
                         _parent.InFunctionReturnExpression = true;
                     }
                 }
                 else if (
                     (context.return_keyword == null || context.return_keyword.StopIndex < _parent._toOffset)
-                    && context.return_expression == null && _parent._toOffset < context.Stop.StartIndex)
+                    && context.return_expression == null && (_parent._toOffset < context.Stop.StartIndex || context.Stop.Text != ";"))
                 {
-                    _parent.InFunctionReturnExpression = _parent.InFunctionCodeBody;
+                    _parent.InFunctionReturnExpression = _parent.InFunctionCodeBody && _parent.CurrentFunctionReturnType != LSLType.Void;
                 }
 
                 return base.VisitReturnStatement(context);

@@ -1273,6 +1273,7 @@ namespace LSLCCEditor.EditControl
             return possibleUserDefinedItem;
         }
 
+
         private bool TryCompletionForUserDefinedFunction(string insertedText, LSLAutoCompleteParser fastVarParser,
             ref IList<ICompletionData> data)
         {
@@ -1303,6 +1304,8 @@ namespace LSLCCEditor.EditControl
             }
             return possibleUserDefinedItem;
         }
+
+
 
         private bool TryCompletionForUserGlobalVariable(string insertedText, LSLAutoCompleteParser fastVarParser,
             ref IList<ICompletionData> data)
