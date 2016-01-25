@@ -3073,98 +3073,98 @@
     <DocumentationString />
   </LibraryFunction>
   <EventHandler Name="at_rot_target" Subsets="lsl,os-lsl">
-    <Parameter Name="TargetNumber" Type="Integer" />
-    <Parameter Name="TargetRotation" Type="Rotation" />
-    <Parameter Name="CurrentRotation" Type="Rotation" />
+    <Parameter Name="target_number" Type="Integer" />
+    <Parameter Name="target_position" Type="Rotation" />
+    <Parameter Name="current_position" Type="Rotation" />
     <DocumentationString>This event is triggered when a script comes within a defined angle of a target rotation. The range and rotation, are set by a call to llRotTarget.</DocumentationString>
   </EventHandler>
   <EventHandler Name="at_target" Subsets="lsl,os-lsl">
-    <Parameter Name="TargetNumber" Type="Integer" />
-    <Parameter Name="TargetPosition" Type="Vector" />
-    <Parameter Name="CurrentPosition" Type="Vector" />
+    <Parameter Name="target_number" Type="Integer" />
+    <Parameter Name="target_position" Type="Vector" />
+    <Parameter Name="current_position" Type="Vector" />
     <DocumentationString>This event is triggered when the scripted object comes within a defined range of the target position, defined by the llTarget function call.</DocumentationString>
   </EventHandler>
   <EventHandler Name="attach" Subsets="lsl,os-lsl">
-    <Parameter Name="AvatarID" Type="Key" />
+    <Parameter Name="avatar" Type="Key" />
     <DocumentationString>This event is triggered whenever an object is attached or detached from an avatar. If it is attached, the key of the avatar it is attached to is passed in, otherwise NULL_KEY is.</DocumentationString>
   </EventHandler>
   <EventHandler Name="changed" Subsets="lsl,os-lsl">
-    <Parameter Name="Changed" Type="Integer" />
+    <Parameter Name="changed_flags" Type="Integer" />
     <DocumentationString>Triggered when various events change the object. The change argument will be a bit-field of CHANGED_* constants.</DocumentationString>
   </EventHandler>
   <EventHandler Name="collision" Subsets="lsl,os-lsl">
-    <Parameter Name="NumberOfCollisions" Type="Integer" />
+    <Parameter Name="number_of_collisions" Type="Integer" />
     <DocumentationString>This event is raised while another object, or avatar, is colliding with the object the script is attached to.  The number of detected objects is passed to the script. Information on those objects may be gathered via the llDetected* functions.</DocumentationString>
   </EventHandler>
   <EventHandler Name="collision_end" Subsets="lsl,os-lsl">
-    <Parameter Name="NumberOfCollisions" Type="Integer" />
+    <Parameter Name="number_of_collisions" Type="Integer" />
     <DocumentationString>This event is raised when another object, or avatar, stops colliding with the object the script is attached to.  The number of detected objects is passed to the script. Information on those objects may be gathered via the llDetected* library functions.</DocumentationString>
   </EventHandler>
   <EventHandler Name="collision_start" Subsets="lsl,os-lsl">
-    <Parameter Name="NumberOfCollisions" Type="Integer" />
+    <Parameter Name="number_of_collisions" Type="Integer" />
     <DocumentationString>This event is raised when another object, or avatar, starts colliding with the object the script is attached to.  The number of detected objects is passed to the script. Information on those objects may be gathered via the llDetected* library functions.</DocumentationString>
   </EventHandler>
   <EventHandler Name="control" Subsets="lsl,os-lsl">
-    <Parameter Name="AvatarID" Type="Key" />
-    <Parameter Name="Levels" Type="Integer" />
-    <Parameter Name="Edges" Type="Integer" />
+    <Parameter Name="avatar" Type="Key" />
+    <Parameter Name="levels" Type="Integer" />
+    <Parameter Name="edges" Type="Integer" />
     <DocumentationString>Once a script has the ability to grab control inputs from the avatar, this event will be used to pass the commands into the script.  The levels and edges are bit-fields of control constants.</DocumentationString>
   </EventHandler>
   <EventHandler Name="dataserver" Subsets="lsl,os-lsl">
-    <Parameter Name="RequestID" Type="Key" />
-    <Parameter Name="Data" Type="String" />
+    <Parameter Name="request" Type="Key" />
+    <Parameter Name="data" Type="String" />
     <DocumentationString>This event is triggered when the requested data is returned to the script.  Data may be requested by the llRequestAgentData, llRequestInventoryData, and llGetNotecardLine function calls, for example.</DocumentationString>
   </EventHandler>
   <EventHandler Name="email" Subsets="lsl,os-lsl">
-    <Parameter Name="Time" Type="String" />
-    <Parameter Name="Address" Type="String" />
-    <Parameter Name="Subject" Type="String" />
-    <Parameter Name="Body" Type="String" />
-    <Parameter Name="NumberRemaining" Type="Integer" />
+    <Parameter Name="time" Type="String" />
+    <Parameter Name="address" Type="String" />
+    <Parameter Name="subject" Type="String" />
+    <Parameter Name="body" Type="String" />
+    <Parameter Name="number_remaining" Type="Integer" />
     <DocumentationString>This event is triggered when an email sent to this script arrives.  The number remaining tells how many more emails are known to be still pending.</DocumentationString>
   </EventHandler>
   <EventHandler Name="http_request" Subsets="lsl,os-lsl">
-    <Parameter Name="HTTPRequestID" Type="Key" />
-    <Parameter Name="HTTPMethod" Type="String" />
-    <Parameter Name="Body" Type="String" />
+    <Parameter Name="request" Type="Key" />
+    <Parameter Name="method" Type="String" />
+    <Parameter Name="body" Type="String" />
     <DocumentationString>Triggered when task receives an HTTP request.</DocumentationString>
   </EventHandler>
   <EventHandler Name="http_response" Subsets="lsl,os-lsl">
-    <Parameter Name="HTTPRequestID" Type="Key" />
-    <Parameter Name="Status" Type="Integer" />
-    <Parameter Name="Metadata" Type="List" />
-    <Parameter Name="Body" Type="String" />
+    <Parameter Name="request" Type="Key" />
+    <Parameter Name="status" Type="Integer" />
+    <Parameter Name="metadata" Type="List" />
+    <Parameter Name="body" Type="String" />
     <DocumentationString>This event handler is invoked when an HTTP response is received for a pending llHTTPRequest request or if a pending request fails or times out.</DocumentationString>
   </EventHandler>
   <EventHandler Name="land_collision" Subsets="lsl,os-lsl">
-    <Parameter Name="Position" Type="Vector" />
+    <Parameter Name="position" Type="Vector" />
     <DocumentationString>This event is raised when the object the script is attached to is colliding with the ground.</DocumentationString>
   </EventHandler>
   <EventHandler Name="land_collision_end" Subsets="lsl,os-lsl">
-    <Parameter Name="Position" Type="Vector" />
+    <Parameter Name="position" Type="Vector" />
     <DocumentationString>This event is raised when the object the script is attached to stops colliding with the ground.</DocumentationString>
   </EventHandler>
   <EventHandler Name="land_collision_start" Subsets="lsl,os-lsl">
-    <Parameter Name="Position" Type="Vector" />
+    <Parameter Name="position" Type="Vector" />
     <DocumentationString>This event is raised when the object the script is attached to begins to collide with the ground.</DocumentationString>
   </EventHandler>
   <EventHandler Name="link_message" Subsets="lsl,os-lsl">
-    <Parameter Name="SendersLink" Type="Integer" />
-    <Parameter Name="Value" Type="Integer" />
-    <Parameter Name="Text" Type="String" />
-    <Parameter Name="ID" Type="Key" />
+    <Parameter Name="sendersLink" Type="Integer" />
+    <Parameter Name="value" Type="Integer" />
+    <Parameter Name="message" Type="String" />
+    <Parameter Name="id" Type="Key" />
     <DocumentationString>Triggered when object receives a link message via llMessageLinked function call.</DocumentationString>
   </EventHandler>
   <EventHandler Name="listen" Subsets="lsl,os-lsl">
-    <Parameter Name="Channel" Type="Integer" />
-    <Parameter Name="Name" Type="String" />
-    <Parameter Name="ID" Type="Key" />
-    <Parameter Name="Text" Type="String" />
+    <Parameter Name="channel" Type="Integer" />
+    <Parameter Name="name" Type="String" />
+    <Parameter Name="id" Type="Key" />
+    <Parameter Name="message" Type="String" />
     <DocumentationString>This event is raised whenever a chat message matching the constraints set in the llListen command is received. The name and ID of the speaker, as well as the message, are passed in as parameters.  Channel 0 is the public chat channel that all avatars see as chat text. Channels 1 through 2,147,483,648 are private channels that are not sent to avatars but other scripts can listen on those channels.</DocumentationString>
   </EventHandler>
   <EventHandler Name="money" Subsets="lsl,os-lsl">
-    <Parameter Name="Payer" Type="Key" />
-    <Parameter Name="Amount" Type="Integer" />
+    <Parameter Name="payer" Type="Key" />
+    <Parameter Name="amount" Type="Integer" />
     <DocumentationString>This event is triggered when a resident has given an amount of Linden dollars to the object.</DocumentationString>
   </EventHandler>
   <EventHandler Name="moving_end" Subsets="lsl,os-lsl">
@@ -3183,33 +3183,33 @@
     <DocumentationString>When a target is set via the llTarget library call, but the script is outside the specified range this event is raised.</DocumentationString>
   </EventHandler>
   <EventHandler Name="object_rez" Subsets="lsl,os-lsl">
-    <Parameter Name="RezzedObjectsID" Type="Key" />
+    <Parameter Name="object_id" Type="Key" />
     <DocumentationString>Triggered when an object rezzes another object from its inventory via the llRezObject, or similar, functions. The id is the globally unique key for the object rezzed.</DocumentationString>
   </EventHandler>
   <EventHandler Name="on_rez" Subsets="lsl,os-lsl">
-    <Parameter Name="StartParameter" Type="Integer" />
+    <Parameter Name="start_parameter" Type="Integer" />
     <DocumentationString>Triggered whenever an object is rezzed from inventory or by another object. The start parameter is passed in from the llRezObject call, or zero if from inventory.</DocumentationString>
   </EventHandler>
   <EventHandler Name="path_update" Subsets="lsl">
-    <Parameter Name="Type" Type="Integer" />
-    <Parameter Name="Reserved" Type="List" />
+    <Parameter Name="type" Type="Integer" />
+    <Parameter Name="reserved" Type="List" />
     <DocumentationString>This event is called to inform the script of changes within the object's path-finding status.</DocumentationString>
   </EventHandler>
   <EventHandler Name="remote_data" Subsets="lsl,os-lsl">
-    <Parameter Name="EventType" Type="Integer" />
-    <Parameter Name="ChannelID" Type="Key" />
-    <Parameter Name="MessageID" Type="Key" />
-    <Parameter Name="Sender" Type="String" />
-    <Parameter Name="Data" Type="Integer" />
-    <Parameter Name="Data_1" Type="String" />
+    <Parameter Name="event_type" Type="Integer" />
+    <Parameter Name="channel_id" Type="Key" />
+    <Parameter Name="message_id" Type="Key" />
+    <Parameter Name="sender" Type="String" />
+    <Parameter Name="data_one" Type="Integer" />
+    <Parameter Name="data_two" Type="String" />
     <DocumentationString>Triggered by various XML-RPC calls with event_type specifying the type of data.</DocumentationString>
   </EventHandler>
   <EventHandler Name="run_time_permissions" Subsets="lsl,os-lsl">
-    <Parameter Name="PermissionFlags" Type="Integer" />
+    <Parameter Name="permission_flags" Type="Integer" />
     <DocumentationString>Scripts need permission from either the owner or the avatar they wish to act on before they may perform certain functions, such as debiting money from their owners account, triggering an animation on an avatar, or capturing control inputs. The llRequestPermissions library function is used to request these permissions and the various permissions integer constants can be supplied.  The integer returned to this event handler contains the current set of permissions flags, so if permissions equal 0 then no permissions are set.</DocumentationString>
   </EventHandler>
   <EventHandler Name="sensor" Subsets="lsl,os-lsl">
-    <Parameter Name="NumberDetected" Type="Integer" />
+    <Parameter Name="number_detected" Type="Integer" />
     <DocumentationString>This event is raised whenever objects matching the constraints of the llSensor command are detected.  The number of detected objects is passed to the script in the parameter. Information on those objects may be gathered via the llDetected* functions.</DocumentationString>
   </EventHandler>
   <EventHandler Name="state_entry" Subsets="lsl,os-lsl">
@@ -3222,21 +3222,21 @@
     <DocumentationString>This event is raised at regular intervals set by the llSetTimerEvent library function.</DocumentationString>
   </EventHandler>
   <EventHandler Name="touch" Subsets="lsl,os-lsl">
-    <Parameter Name="NumberOfTouches" Type="Integer" />
+    <Parameter Name="number_of_touches" Type="Integer" />
     <DocumentationString>This event is raised while a user is touching the object the script is attached to.  The number of touching objects is passed to the script in the parameter.  Information on those objects may be gathered via the llDetected* library functions.</DocumentationString>
   </EventHandler>
   <EventHandler Name="touch_end" Subsets="lsl,os-lsl">
-    <Parameter Name="NumberOfTouches" Type="Integer" />
+    <Parameter Name="number_of_touches" Type="Integer" />
     <DocumentationString>This event is raised when a user stops touching the object the script is attached to. The number of touches is passed to the script in the parameter.  Information on those objects may be gathered via the llDetected* library functions.</DocumentationString>
   </EventHandler>
   <EventHandler Name="touch_start" Subsets="lsl,os-lsl">
-    <Parameter Name="NumberOfTouches" Type="Integer" />
+    <Parameter Name="number_of_touches" Type="Integer" />
     <DocumentationString>This event is raised when a user first touches the object the script is attached to. The number of touches is passed to the script in the parameter.  Information on those objects may be gathered via the llDetected() library functions.</DocumentationString>
   </EventHandler>
   <EventHandler Name="transaction_result" Subsets="lsl,os-lsl">
-    <Parameter Name="RequestID" Type="Key" />
-    <Parameter Name="Success" Type="Integer" />
-    <Parameter Name="Message" Type="String" />
+    <Parameter Name="request_id" Type="Key" />
+    <Parameter Name="success" Type="Integer" />
+    <Parameter Name="message" Type="String" />
     <DocumentationString>Triggered by llTransferMoney() function.</DocumentationString>
   </EventHandler>
   <EventHandler Name="experience_permissions" Subsets="lsl">
