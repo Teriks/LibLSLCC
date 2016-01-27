@@ -3113,6 +3113,11 @@ namespace LSLCCEditor.EditControl
         private void UpdateHighlightingColorsFromSettings(bool forceVisualUpdate)
         {
             if (Editor.SyntaxHighlighting == null) return;
+
+            
+            Editor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Theme.HighlightingColors.UrlColor);
+
+
             foreach (var color in Editor.SyntaxHighlighting.NamedHighlightingColors)
             {
                 switch (color.Name)

@@ -49,16 +49,13 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
         public string Title { get; private set; }
         public SettingsWindow OwnerSettingsWindow { get; set; }
-
 
 
         public static readonly DependencyProperty SelectedEditorThemeNameProperty = DependencyProperty.Register(
             "SelectedEditorThemeName", typeof (string), typeof (EditorThemePane),
             new PropertyMetadata(default(string), SelectedEditorThemeChangedCallback));
-
 
 
         private static void SelectedEditorThemeChangedCallback(DependencyObject dependencyObject,
@@ -80,7 +77,6 @@ namespace LSLCCEditor.SettingsUI
             new PropertyMetadata(default(LSLEditorControlTheme)));
 
 
-
         public LSLEditorControlTheme EditorControlTheme
         {
             get { return (LSLEditorControlTheme) GetValue(EditorControlThemeProperty); }
@@ -95,7 +91,6 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
         private void ResetHighlightingColor_OnClick(object sender, RoutedEventArgs e)
         {
             var colorBox = ((Border) ((StackPanel) ((FrameworkElement) sender).Parent).Children[1]).Child;
@@ -104,15 +99,18 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
         private void ResetHighlightingColorBox(UIElement colorBox)
         {
             var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement) colorBox,
                 ColorPicker.SelectedColorProperty);
+
+            if (bindingExpression == null) return;
+
             var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
 
             var propName = propNames[propNames.Length - 2];
             var context = propNames[1];
+
             if (context == "HighlightingColors")
             {
                 DefaultValueInitializer.SetToDefault(EditorControlTheme.HighlightingColors, propName);
@@ -136,6 +134,9 @@ namespace LSLCCEditor.SettingsUI
         {
             var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement) colorBox,
                 ColorPicker.SelectedColorProperty);
+
+            if (bindingExpression == null) return;
+
             var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
 
 
@@ -220,39 +221,38 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-        
         public class HighlightingSettings
         {
-            
             public XmlColor BasicTextColor { get; set; }
 
-            
+
             public XmlColor BackgroundColor { get; set; }
 
-            
+
             public LSLHighlightingColors HighlightingColors { get; set; }
         }
 
 
-
         private void ImportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Highlighting Colors (*.xml)|*.xml;", ".xml", reader =>
-            {
-                var x = new XmlSerializer(typeof (HighlightingSettings));
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Highlighting Colors (*.xml)|*.xml;", ".xml",
+                reader =>
+                {
+                    var x = new XmlSerializer(typeof (HighlightingSettings));
 
-                var settings = (HighlightingSettings) x.Deserialize(reader);
+                    var settings = (HighlightingSettings) x.Deserialize(reader);
 
-                EditorControlTheme.ForegroundColor = settings.BasicTextColor;
-                EditorControlTheme.BackgroundColor = settings.BackgroundColor;
-                EditorControlTheme.HighlightingColors = settings.HighlightingColors;
-            });
+                    EditorControlTheme.ForegroundColor = settings.BasicTextColor;
+                    EditorControlTheme.BackgroundColor = settings.BackgroundColor;
+                    EditorControlTheme.HighlightingColors = settings.HighlightingColors;
+                });
         }
 
 
         private void ExportHighlightingColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Highlighting Colors (*.xml)|*.xml;", "LSLCCEditor_HighlightingColors.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Highlighting Colors (*.xml)|*.xml;",
+                "LSLCCEditor_HighlightingColors.xml",
                 writer =>
                 {
                     var x = new XmlSerializer(typeof (HighlightingSettings));
@@ -271,47 +271,44 @@ namespace LSLCCEditor.SettingsUI
 
         public class CompletionWindowColorSettings
         {
-            
             public XmlColor CompletionWindowBackgroundColor { get; set; }
 
-            
+
             public XmlColor CompletionWindowSelectionBackgroundColor { get; set; }
 
-            
+
             public XmlColor CompletionWindowSelectionBorderColor { get; set; }
 
-            
+
             public LSLCompletionWindowItemBrushes CompletionWindowItemBrushes { get; set; }
         }
-
-        
-
-
 
 
         private void ImportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Completion Window Colors (*.xml)|*.xml;", ".xml", reader =>
-            {
-                var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Completion Window Colors (*.xml)|*.xml;",
+                ".xml", reader =>
+                {
+                    var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
 
-                var settings = (CompletionWindowColorSettings) x.Deserialize(reader);
+                    var settings = (CompletionWindowColorSettings) x.Deserialize(reader);
 
-                EditorControlTheme.CompletionWindowItemBrushes = settings.CompletionWindowItemBrushes;
-                EditorControlTheme.CompletionWindowBackgroundColor = settings.CompletionWindowBackgroundColor;
+                    EditorControlTheme.CompletionWindowItemBrushes = settings.CompletionWindowItemBrushes;
+                    EditorControlTheme.CompletionWindowBackgroundColor = settings.CompletionWindowBackgroundColor;
 
-                EditorControlTheme.CompletionWindowSelectionBackgroundColor =
-                    settings.CompletionWindowSelectionBackgroundColor;
+                    EditorControlTheme.CompletionWindowSelectionBackgroundColor =
+                        settings.CompletionWindowSelectionBackgroundColor;
 
-                EditorControlTheme.CompletionWindowSelectionBorderColor =
-                    settings.CompletionWindowSelectionBorderColor;
-            });
+                    EditorControlTheme.CompletionWindowSelectionBorderColor =
+                        settings.CompletionWindowSelectionBorderColor;
+                });
         }
 
 
         private void ExportCompletionWindowColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Completion Window Colors (*.xml)|*.xml;", "LSLCCEditor_CompletionWindowColors.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Completion Window Colors (*.xml)|*.xml;",
+                "LSLCCEditor_CompletionWindowColors.xml",
                 writer =>
                 {
                     var x = new XmlSerializer(typeof (CompletionWindowColorSettings));
@@ -331,7 +328,6 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
         private void ResetAllToolTipColors_OnClick(object sender, RoutedEventArgs e)
         {
             foreach (var color in ToolTipColorsListView.Items.Cast<StackPanel>())
@@ -342,25 +338,24 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-
-        
         public class ToolTipColorSettings
         {
             public XmlColor DeprecationMarkerColor { get; set; }
 
             public XmlColor BackgroundColor { get; set; }
 
-            
+
             public XmlColor ForegroundColor { get; set; }
 
-            
+
             public XmlColor BorderColor { get; set; }
         }
 
 
         private void ExportToolTipColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Tool Tip Colors (*.xml)|*.xml;", "LSLCCEditor_ToolTipColors.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Tool Tip Colors (*.xml)|*.xml;",
+                "LSLCCEditor_ToolTipColors.xml",
                 writer =>
                 {
                     var x = new XmlSerializer(typeof (ToolTipColorSettings));
@@ -380,17 +375,18 @@ namespace LSLCCEditor.SettingsUI
 
         private void ImportToolTipColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Tool Tip Colors (*.xml)|*.xml;", ".xml", reader =>
-            {
-                var x = new XmlSerializer(typeof (ToolTipColorSettings));
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Tool Tip Colors (*.xml)|*.xml;", ".xml",
+                reader =>
+                {
+                    var x = new XmlSerializer(typeof (ToolTipColorSettings));
 
-                var settings = (ToolTipColorSettings) x.Deserialize(reader);
+                    var settings = (ToolTipColorSettings) x.Deserialize(reader);
 
-                EditorControlTheme.ToolTipDeprecationMarkerColor = settings.DeprecationMarkerColor;
-                EditorControlTheme.ToolTipBackground = settings.BackgroundColor;
-                EditorControlTheme.ToolTipForeground = settings.ForegroundColor;
-                EditorControlTheme.ToolTipBorderColor = settings.BorderColor;
-            });
+                    EditorControlTheme.ToolTipDeprecationMarkerColor = settings.DeprecationMarkerColor;
+                    EditorControlTheme.ToolTipBackground = settings.BackgroundColor;
+                    EditorControlTheme.ToolTipForeground = settings.ForegroundColor;
+                    EditorControlTheme.ToolTipBorderColor = settings.BorderColor;
+                });
         }
 
 
@@ -416,8 +412,8 @@ namespace LSLCCEditor.SettingsUI
 
         private void ResetSelectionColorBox(UIElement colorBox)
         {
-            var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement)colorBox,
-    ColorPicker.SelectedColorProperty);
+            var bindingExpression = BindingOperations.GetBindingExpression((FrameworkElement) colorBox,
+                ColorPicker.SelectedColorProperty);
             var propNames = bindingExpression.ParentBinding.Path.Path.Split('.');
 
             var propName = propNames[propNames.Length - 2];
@@ -452,20 +448,22 @@ namespace LSLCCEditor.SettingsUI
         private void Import_OnClick(object sender, RoutedEventArgs e)
         {
             var dialogResult = MessageBox.Show(
-                "Are you sure you want to overwrite the currently selected theme by importing one over it?","Overwrite Selected Theme?",
+                "Are you sure you want to overwrite the currently selected theme by importing one over it?",
+                "Overwrite Selected Theme?",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (dialogResult != DialogResult.Yes) return;
 
 
-            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Editor Theme (*.xml)|*.xml;", ".xml", reader =>
-            {
-                var x = new XmlSerializer(typeof(LSLEditorControlTheme));
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Editor Theme (*.xml)|*.xml;", ".xml",
+                reader =>
+                {
+                    var x = new XmlSerializer(typeof (LSLEditorControlTheme));
 
-                var settings = (LSLEditorControlTheme)x.Deserialize(reader);
+                    var settings = (LSLEditorControlTheme) x.Deserialize(reader);
 
-                EditorControlTheme.MemberwiseAssign(settings);
-            });
+                    EditorControlTheme.MemberwiseAssign(settings);
+                });
         }
 
 
@@ -473,57 +471,56 @@ namespace LSLCCEditor.SettingsUI
         {
             foreach (var color in ToolTipColorsListView.Items.Cast<StackPanel>())
             {
-                var colorBox = ((Border)color.Children[1]).Child;
+                var colorBox = ((Border) color.Children[1]).Child;
                 ResetCompletionBrushColorBox(colorBox);
             }
 
             foreach (var color in CompletionWindowColorsListView.Items.Cast<StackPanel>())
             {
-                var colorBox = ((Border)color.Children[1]).Child;
+                var colorBox = ((Border) color.Children[1]).Child;
                 ResetCompletionBrushColorBox(colorBox);
             }
 
             foreach (var color in HighlightingColorsListView.Items.Cast<StackPanel>())
             {
-                var colorBox = ((Border)color.Children[1]).Child;
+                var colorBox = ((Border) color.Children[1]).Child;
                 ResetHighlightingColorBox(colorBox);
             }
 
             foreach (var color in SelectionColorsListView.Items.Cast<StackPanel>())
             {
-                var colorBox = ((Border)color.Children[1]).Child;
+                var colorBox = ((Border) color.Children[1]).Child;
                 ResetSelectionColorBox(colorBox);
             }
         }
 
 
-
         private void Export_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Editor Theme (*.xml)|*.xml;", "LSLCCEditor_EditorTheme.xml",
-            writer =>
-            {
-                var x = new XmlSerializer(typeof(LSLEditorControlTheme));
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Editor Theme (*.xml)|*.xml;",
+                "LSLCCEditor_EditorTheme.xml",
+                writer =>
+                {
+                    var x = new XmlSerializer(typeof (LSLEditorControlTheme));
 
-                x.Serialize(writer, EditorControlTheme);
-            });
+                    x.Serialize(writer, EditorControlTheme);
+                });
         }
 
 
         private void SelectionColorReset_OnClick(object sender, RoutedEventArgs e)
         {
-            var colorBox = ((Border)((StackPanel)((FrameworkElement)sender).Parent).Children[1]).Child;
+            var colorBox = ((Border) ((StackPanel) ((FrameworkElement) sender).Parent).Children[1]).Child;
 
             ResetSelectionColorBox(colorBox);
         }
-
 
 
         private void ResetAllSelectionColors_OnClick(object sender, RoutedEventArgs e)
         {
             foreach (var color in SelectionColorsListView.Items.Cast<StackPanel>())
             {
-                var colorBox = ((Border)color.Children[1]).Child;
+                var colorBox = ((Border) color.Children[1]).Child;
                 ResetSelectionColorBox(colorBox);
             }
         }
@@ -531,7 +528,6 @@ namespace LSLCCEditor.SettingsUI
 
         public class SelectionColorSettings
         {
-
             public XmlColor SelectionColor { get; set; }
 
 
@@ -548,24 +544,22 @@ namespace LSLCCEditor.SettingsUI
 
 
             public XmlColor SymbolSelectionBorderColor { get; set; }
-
         }
-
 
 
         private void ExportSelectionColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Selection Colors (*.xml)|*.xml;", "LSLCCEditor_ToolTipColors.xml",
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Selection Colors (*.xml)|*.xml;",
+                "LSLCCEditor_ToolTipColors.xml",
                 writer =>
                 {
-                    var x = new XmlSerializer(typeof(SelectionColorSettings));
+                    var x = new XmlSerializer(typeof (SelectionColorSettings));
 
                     var settings = new SelectionColorSettings
                     {
                         SymbolSelectionForegroundColor = EditorControlTheme.SymbolSelectionForegroundColor,
                         SymbolSelectionColor = EditorControlTheme.SymbolSelectionColor,
                         SymbolSelectionBorderColor = EditorControlTheme.SymbolSelectionBorderColor,
-
                         SelectionColor = EditorControlTheme.SelectionColor,
                         SelectionBorderColor = EditorControlTheme.SelectionBorderColor,
                         SelectionForegroundColor = EditorControlTheme.SelectionForegroundColor
@@ -578,20 +572,21 @@ namespace LSLCCEditor.SettingsUI
 
         private void ImportSelectionColors_OnClick(object sender, RoutedEventArgs e)
         {
-            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Selection Colors (*.xml)|*.xml;", ".xml", reader =>
-            {
-                var x = new XmlSerializer(typeof(SelectionColorSettings));
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Selection Colors (*.xml)|*.xml;", ".xml",
+                reader =>
+                {
+                    var x = new XmlSerializer(typeof (SelectionColorSettings));
 
-                var settings = (SelectionColorSettings)x.Deserialize(reader);
+                    var settings = (SelectionColorSettings) x.Deserialize(reader);
 
-                EditorControlTheme.SymbolSelectionForegroundColor = settings.SymbolSelectionForegroundColor;
-                EditorControlTheme.SymbolSelectionColor = settings.SymbolSelectionColor;
-                EditorControlTheme.SymbolSelectionBorderColor = settings.SymbolSelectionBorderColor;
+                    EditorControlTheme.SymbolSelectionForegroundColor = settings.SymbolSelectionForegroundColor;
+                    EditorControlTheme.SymbolSelectionColor = settings.SymbolSelectionColor;
+                    EditorControlTheme.SymbolSelectionBorderColor = settings.SymbolSelectionBorderColor;
 
-                EditorControlTheme.SelectionColor = settings.SelectionColor;
-                EditorControlTheme.SelectionBorderColor = settings.SymbolSelectionBorderColor;
-                EditorControlTheme.SelectionForegroundColor = settings.SelectionForegroundColor;
-            });
+                    EditorControlTheme.SelectionColor = settings.SelectionColor;
+                    EditorControlTheme.SelectionBorderColor = settings.SymbolSelectionBorderColor;
+                    EditorControlTheme.SelectionForegroundColor = settings.SelectionForegroundColor;
+                });
         }
     }
 }

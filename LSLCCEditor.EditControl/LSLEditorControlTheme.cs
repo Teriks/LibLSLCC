@@ -50,6 +50,9 @@ namespace LSLCCEditor.EditControl
             set { SetField(ref _foregroundColor, value, "ForegroundColor"); }
         }
 
+
+        
+
         [DefaultValueFactory(typeof (DefaultsFactory))]
         public XmlColor BackgroundColor
         {

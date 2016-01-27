@@ -58,7 +58,7 @@ namespace LSLCCEditor.EditControl
         private XmlColor _controlFlowColor = Color.FromRgb(0, 0, 204);
         private XmlColor _stringColor = Color.FromRgb(25, 76, 25);
         private XmlColor _constantColor = Color.FromRgb(50, 52, 138);
-
+        private XmlColor _urlColor = Colors.Blue;
 
 
         private class DefaultsFactory : CloningDefaultValueFactory<LSLHighlightingColors>
@@ -123,6 +123,13 @@ namespace LSLCCEditor.EditControl
         {
             get { return _libraryFunctionColor; }
             set { SetField(ref _libraryFunctionColor, value, "LibraryFunctionColor"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public XmlColor UrlColor
+        {
+            get { return _urlColor; }
+            set { SetField(ref _urlColor, value, "UrlColor"); }
         }
 
         [DefaultValueFactory(typeof(DefaultsFactory))]
