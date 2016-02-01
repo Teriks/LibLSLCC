@@ -67,7 +67,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         internal LSLForLoopNode(LSLParser.ForLoopContext context, ILSLExpressionListNode initExpressions,
             ILSLExprNode conditionExpression,
-            LSLExpressionListNode afterthoughExpressions, LSLCodeScopeNode code, bool isSingleBlockStatement)
+            LSLExpressionListNode afterthoughExpressions, LSLCodeScopeNode code, bool inSingleBlockStatementScope)
         {
             if (afterthoughExpressions == null)
             {
@@ -79,7 +79,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("initExpressions");
             }
 
-            IsSingleBlockStatement = isSingleBlockStatement;
+            IsSingleBlockStatement = inSingleBlockStatementScope;
             ParserContext = context;
             InitExpressionsList = initExpressions;
             ConditionExpression = conditionExpression;

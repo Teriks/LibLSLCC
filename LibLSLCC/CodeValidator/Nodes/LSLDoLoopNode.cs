@@ -66,7 +66,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         internal LSLDoLoopNode(LSLParser.DoLoopContext context, LSLCodeScopeNode code, ILSLExprNode conditionExpression,
-            bool isSingleBlockStatement)
+            bool inSingleBlockStatementScope)
         {
             if (code == null)
             {
@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("conditionExpression");
             }
 
-            IsSingleBlockStatement = isSingleBlockStatement;
+            IsSingleBlockStatement = inSingleBlockStatementScope;
             ParserContext = context;
             Code = code;
             ConditionExpression = conditionExpression;

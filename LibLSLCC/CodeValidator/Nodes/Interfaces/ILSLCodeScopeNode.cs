@@ -63,15 +63,10 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// </summary>
         IEnumerable<LSLConstantJumpDescription> ConstantJumps { get; }
 
-        /// <summary>
-        ///     Is this scope a single statement scope, like a brace-less 'if' branch.
-        ///     true if IsCodeScope is false
-        /// </summary>
-        bool IsSingleStatement { get; }
 
         /// <summary>
         ///     Is this a normal braced code scope.
-        ///     true if IsSingleStatement is false
+        ///     true if IsSingleBlockStatement is false
         /// </summary>
         bool IsCodeScope { get; }
 

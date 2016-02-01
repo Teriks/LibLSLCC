@@ -1823,8 +1823,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var result = new LSLDoLoopNode(
                 context,
                 code,
-                loopCondition,
-                InSingleStatementBlock)
+                loopCondition, InSingleStatementBlock)
             {
                 HasErrors = (isError || code.HasErrors)
             };
@@ -1908,8 +1907,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var result = new LSLWhileLoopNode(
                 context,
                 loopCondition,
-                code,
-                InSingleStatementBlock)
+                code, InSingleStatementBlock)
             {
                 HasErrors = (code.HasErrors || isError)
             };
@@ -2014,8 +2012,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 loopInit,
                 loopCondition,
                 expressionList,
-                code,
-                InSingleStatementBlock)
+                code, InSingleStatementBlock)
             {
                 HasErrors = (isError || code.HasErrors)
             };

@@ -66,7 +66,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         internal LSLWhileLoopNode(LSLParser.WhileLoopContext context, ILSLExprNode conditionExpression,
-            LSLCodeScopeNode code, bool isSingleBlockStatement)
+            LSLCodeScopeNode code, bool inSingleBlockStatementScope)
         {
             if (code == null)
             {
@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("conditionExpression");
             }
 
-            IsSingleBlockStatement = isSingleBlockStatement;
+            IsSingleBlockStatement = inSingleBlockStatementScope;
             ParserContext = context;
             ConditionExpression = conditionExpression;
             Code = code;

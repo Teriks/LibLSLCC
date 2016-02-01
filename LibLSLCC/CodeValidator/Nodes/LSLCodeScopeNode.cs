@@ -94,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             SingleStatementContext = context;
             ScopeId = scopeId;
-            IsSingleStatement = true;
+            IsSingleBlockStatement = true;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
 
@@ -125,14 +125,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         internal LSLParser.CodeStatementContext FirstDeadStatementNodeContext { get; private set; }
 
-        /// <summary>
-        ///     Is this a single block statement, for <see cref="LSLCodeScopeNode"/> it is always false
-        /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        public bool IsSingleBlockStatement
-        {
-            get { return false; }
-        }
+
 
         /// <summary>
         /// The type of code scope this node represents.
@@ -167,11 +160,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     Is this scope a single statement scope, like a brace-less 'if' branch.
         ///     true if IsCodeScope is false
         /// </summary>
-        public bool IsSingleStatement { get; private set; }
+        public bool IsSingleBlockStatement { get; private set; }
 
         /// <summary>
         ///     Is this a normal braced code scope.
-        ///     true if IsSingleStatement is false
+        ///     true if IsSingleBlockStatement is false
         /// </summary>
         public bool IsCodeScope { get; private set; }
 
@@ -427,7 +420,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
 
-            if (!_inDeadJumpedOverCode && !IsSingleStatement)
+            if (!_inDeadJumpedOverCode && !IsSingleBlockStatement)
             {
                 if (!HasReturnPath && statement.HasReturnPath)
                 {
@@ -595,7 +588,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
-            if (IsSingleStatement)
+            if (IsSingleBlockStatement)
             {
                 return visitor.VisitSingleStatementCodeScope(this);
             }

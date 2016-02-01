@@ -79,6 +79,7 @@ namespace LibLSLCC.Formatter.Visitor
         private int _tabsWrittenSinceLastLine;
         private int _nonTabsWrittenSinceLastLine;
         private int _binaryExpressionsSinceNewLine;
+        private bool _wroteCommentBeforeSingleBlockStatement;
 
 
         /// <summary>
@@ -694,7 +695,11 @@ namespace LibLSLCC.Formatter.Visitor
         {
             Write("do");
 
-            WriteCommentsBetweenRange(node.DoKeywordSourceCodeRange, node.Code.SourceCodeRange, 1);
+
+            if (WriteCommentsBetweenRange(node.DoKeywordSourceCodeRange, node.Code.SourceCodeRange, 1))
+            {
+                _wroteCommentBeforeSingleBlockStatement = node.Code.IsSingleBlockStatement;
+            }
 
             Visit(node.Code);
 
@@ -814,7 +819,10 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(")");
 
-            WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
+            if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
+            {
+                _wroteCommentBeforeSingleBlockStatement = node.Code.IsSingleBlockStatement;
+            }
 
             Visit(node.Code);
 
@@ -845,7 +853,10 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(")");
 
-            WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
+            if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
+            {
+                _wroteCommentBeforeSingleBlockStatement = node.Code.IsSingleBlockStatement;
+            }
 
             Visit(node.Code);
 
@@ -1706,10 +1717,15 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(")");
 
-            if (node.Code.IsSingleStatement)
+            if (node.Code.IsSingleBlockStatement)
             {
                 _indentLevel++;
-                WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
+
+                if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
+                {
+                    _wroteCommentBeforeSingleBlockStatement = true;
+                }
+
                 _indentLevel--;
             }
             else
@@ -1764,10 +1780,15 @@ namespace LibLSLCC.Formatter.Visitor
             Write(")");
 
 
-            if (node.Code.IsSingleStatement)
+            if (node.Code.IsSingleBlockStatement)
             {
                 _indentLevel++;
-                WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
+
+                if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
+                {
+                    _wroteCommentBeforeSingleBlockStatement = true;
+                }
+
                 _indentLevel--;
             }
             else
@@ -1791,10 +1812,15 @@ namespace LibLSLCC.Formatter.Visitor
             }
 
 
-            if (node.Code.IsSingleStatement)
+            if (node.Code.IsSingleBlockStatement)
             {
                 _indentLevel++;
-                WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.Code.SourceCodeRange, 1);
+
+                if (WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.Code.SourceCodeRange, 1))
+                {
+                    _wroteCommentBeforeSingleBlockStatement = true;
+                }
+
                 _indentLevel--;
             }
             else
@@ -1879,13 +1905,15 @@ namespace LibLSLCC.Formatter.Visitor
         {
             _indentLevel++;
 
+
             var statement = node.CodeStatements.First();
 
             if (!(statement is ILSLSemiColonStatement))
             {
-                if (Settings.IndentBracelessControlStatements)
+                if (Settings.IndentBracelessControlStatements || _wroteCommentBeforeSingleBlockStatement)
                 {
                     Write("\n" + GenIndent());
+                    _wroteCommentBeforeSingleBlockStatement = false;
                 }
                 else
                 {
