@@ -65,6 +65,7 @@ namespace LibLSLCC.Compilers.OpenSim.Visitors
         // ReSharper restore InconsistentNaming
     {
 
+
         private const string UtilityLibrary =
             @"
 //============================
@@ -72,22 +73,6 @@ namespace LibLSLCC.Compilers.OpenSim.Visitors
 //============================
 private static class UTILITIES
 {
-    public static bool ToBool(LSL_Types.Vector3 vector)
-    {
-        return vector.x!=0.0&&vector.y!=0.0&&vector.z!=0.0;
-    }
-    public static bool ToBool(LSL_Types.Quaternion rotation)
-    {
-        return rotation.x!=0.0&&rotation.y!=0.0&&rotation.z!=0.0&&rotation.s!=0.0;
-    }
-    public static bool ToBool(LSL_Types.list list)
-    {
-        return list.Length!=0;
-    }
-    public static bool ToBool(LSL_Types.LSLString str)
-    {
-        return str.Length!=0;
-    }
     public static LSL_Types.Quaternion Negate(LSL_Types.Quaternion rotation)
     {
         rotation.x=(-rotation.x);
@@ -1163,50 +1148,35 @@ private static class UTILITIES
 
         private void WriteBooleanConditionContent(LSLType expressionType, ILSLReadOnlyExprNode conditionExpression)
         {
-            switch (expressionType)
+            if (expressionType == LSLType.Key)
             {
-                case LSLType.Key:
+                Writer.Write("new LSL_Types.key(");
 
-                    Writer.Write("new LSL_Types.key(");
+                var isTypeCast = conditionExpression as ILSLTypecastExprNode;
+                if (isTypeCast != null)
+                {
+                    var isStringLiteral = isTypeCast.CastedExpression as ILSLStringLiteralNode;
 
-                    var isTypeCast = conditionExpression as ILSLTypecastExprNode;
-                    if (isTypeCast != null)
+                    //slight optimization
+                    if (isStringLiteral != null)
                     {
-                        var isStringLiteral = isTypeCast.CastedExpression as ILSLStringLiteralNode;
-
-                        //slight optimization
-                        if (isStringLiteral != null)
-                        {
-                            Writer.Write(isStringLiteral.PreProccessedText);
-                        }
-                        else
-                        {
-                            Visit(conditionExpression);
-                        }
+                        Writer.Write(isStringLiteral.PreProccessedText);
                     }
                     else
                     {
                         Visit(conditionExpression);
                     }
-
-                    Writer.Write(")");
-                    break;
-
-                case LSLType.Vector:
-                case LSLType.Rotation:
-                case LSLType.List:
-                case LSLType.String:
-
-                    //have to use our small utility class to convert these to bool
-                    //as they would be in Linden Labs LSL
-                    Writer.Write("UTILITIES.ToBool(");
+                }
+                else
+                {
                     Visit(conditionExpression);
-                    Writer.Write(")");
-                    break;
+                }
 
-                default:
-                    Visit(conditionExpression);
-                    break;
+                Writer.Write(")");
+            }
+            else
+            {
+                Visit(conditionExpression);
             }
         }
 
@@ -1453,7 +1423,7 @@ private static class UTILITIES
 
             if (!string.IsNullOrWhiteSpace(Settings.ScriptHeader))
             {
-                Writer.WriteLine(Settings.ScriptHeader);
+                Writer.WriteLine(Settings.ScriptHeader.Replace("\n", Environment.NewLine));
                 Writer.Write(Environment.NewLine);
             }
 
