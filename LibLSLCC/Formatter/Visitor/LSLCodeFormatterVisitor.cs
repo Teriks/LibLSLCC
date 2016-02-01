@@ -298,9 +298,15 @@ namespace LibLSLCC.Formatter.Visitor
                         }
                         else
                         {
-                            Write(
-                                LSLFormatTools.CreateNewLinesString(
-                                    linesBetweenCommentAndNextNode - existingNewLinesBetweenNextNode) + GenIndent());
+                            var newLinesCnt = linesBetweenCommentAndNextNode - existingNewLinesBetweenNextNode;
+
+                            var newLines = LSLFormatTools.CreateNewLinesString(newLinesCnt);
+
+                            if (newLinesCnt > 0){
+                                newLines += GenIndent();
+                            }
+
+                            Write(newLines);
                         }
                     }
                 }
