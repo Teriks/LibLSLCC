@@ -94,7 +94,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// The root element name used for LSL Library Data XML
         /// </summary>
-        public static readonly string RootElementName = "LSLLibraryData";
+        public const string RootElementName = "LSLLibraryData";
 
 
         /// <summary>

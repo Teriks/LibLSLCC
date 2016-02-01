@@ -468,29 +468,29 @@ namespace LibLSLCC.Utility
         private static ILSLListExpr ListExpressionFromVector(LSLListParsingFlags parsingFlags, LSLParser.Expr_AtomContext atomToken)
         {
 
-            object[] xe =
+            object[] vecComponents =
             {
                 atomToken.vector_literal.vector_x,
                 atomToken.vector_literal.vector_y,
                 atomToken.vector_literal.vector_z,
             };
 
-            for (int i = 0; i < xe.Length; i++)
+            for (var i = 0; i < vecComponents.Length; i++)
             {
-                var atom = xe[i] as LSLParser.Expr_AtomContext;
-                var prefix = xe[i] as LSLParser.Expr_PrefixOperationContext;
+                var atom = vecComponents[i] as LSLParser.Expr_AtomContext;
+                var prefix = vecComponents[i] as LSLParser.Expr_PrefixOperationContext;
 
                 if (atom != null)
                 {
                     if (atom.float_literal != null || atom.integer_literal != null || atom.hex_literal != null)
                     {
-                        xe[i] = BasicAtomToExpr(atom);
+                        vecComponents[i] = BasicAtomToExpr(atom);
                     }
                     else if (atom.variable != null)
                     {
                         if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInVectors) ==LSLListParsingFlags.AllowVariableReferencesInVectors)
                         {
-                            xe[i] = new LSLVariable(atomToken.GetText());
+                            vecComponents[i] = new LSLVariable(atomToken.GetText());
                         }
                         throw new LSLListParserOptionsConstraintViolationException("Variable references are not allowed in Vector literals.");
                     }
@@ -509,7 +509,7 @@ namespace LibLSLCC.Utility
 
                     if (validType && (operation == "-" || operation == "+"))
                     {
-                        xe[i] = BasicAtomToExpr(floatOrInt, operation);
+                        vecComponents[i] = BasicAtomToExpr(floatOrInt, operation);
                     }
                     else
                     {
@@ -529,7 +529,7 @@ namespace LibLSLCC.Utility
                               "Vectors must contain only Float and Integer literal values.");
             }
 
-            return new LSLVector((ILSLListExpr)xe[0], (ILSLListExpr)xe[1], (ILSLListExpr)xe[2]);
+            return new LSLVector((ILSLListExpr)vecComponents[0], (ILSLListExpr)vecComponents[1], (ILSLListExpr)vecComponents[2]);
         }
 
 
@@ -537,7 +537,7 @@ namespace LibLSLCC.Utility
         private static ILSLListExpr ListExpressionFromRotation(LSLListParsingFlags parsingFlags, LSLParser.Expr_AtomContext atomToken)
         {
 
-            object[] xe =
+            object[] rotComponents =
             {
                 atomToken.rotation_literal.rotation_x,
                 atomToken.rotation_literal.rotation_y,
@@ -545,22 +545,22 @@ namespace LibLSLCC.Utility
                 atomToken.rotation_literal.rotation_s
             };
 
-            for (int i = 0; i < xe.Length; i++)
+            for (int i = 0; i < rotComponents.Length; i++)
             {
-                var atom = xe[i] as LSLParser.Expr_AtomContext;
-                var prefix = xe[i] as LSLParser.Expr_PrefixOperationContext;
+                var atom = rotComponents[i] as LSLParser.Expr_AtomContext;
+                var prefix = rotComponents[i] as LSLParser.Expr_PrefixOperationContext;
 
                 if (atom != null)
                 {
                     if (atom.float_literal != null || atom.integer_literal != null || atom.hex_literal != null)
                     {
-                        xe[i] = BasicAtomToExpr(atom);
+                        rotComponents[i] = BasicAtomToExpr(atom);
                     }
                     else if (atom.variable != null)
                     {
                         if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInRotations) == LSLListParsingFlags.AllowVariableReferencesInRotations)
                         {
-                            xe[i] = new LSLVariable(atomToken.GetText());
+                            rotComponents[i] = new LSLVariable(atomToken.GetText());
                         }
                         throw new LSLListParserOptionsConstraintViolationException("Variable references are not allowed in Rotation literals.");
                     }
@@ -579,7 +579,7 @@ namespace LibLSLCC.Utility
 
                     if (validType && (operation == "-" || operation == "+"))
                     {
-                        xe[i] = BasicAtomToExpr(floatOrInt, operation);
+                        rotComponents[i] = BasicAtomToExpr(floatOrInt, operation);
                     }
                     else
                     {
@@ -599,7 +599,7 @@ namespace LibLSLCC.Utility
                             "Rotations must contain only Float and Integer literal values.");
             }
 
-            return new LSLRotation((ILSLListExpr)xe[0], (ILSLListExpr)xe[1], (ILSLListExpr)xe[2], (ILSLListExpr)xe[3]);
+            return new LSLRotation((ILSLListExpr)rotComponents[0], (ILSLListExpr)rotComponents[1], (ILSLListExpr)rotComponents[2], (ILSLListExpr)rotComponents[3]);
         }
 
 

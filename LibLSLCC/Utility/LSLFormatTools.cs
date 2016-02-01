@@ -68,15 +68,15 @@ namespace LibLSLCC.Utility
         {
             var columns = 0;
 
-            foreach (var t in str)
+            foreach (var character in str)
             {
-                if (char.IsWhiteSpace(t))
+                if (char.IsWhiteSpace(character))
                 {
-                    if (t == '\t')
+                    if (character == '\t')
                     {
                         columns += 4;
                     }
-                    else if (t == ' ')
+                    else if (character == ' ')
                     {
                         columns++;
                     }
@@ -103,28 +103,29 @@ namespace LibLSLCC.Utility
 
             for (var index = 0; index < str.Length; index++)
             {
-                var t = str[index];
-                if (char.IsWhiteSpace(t))
+                var character = str[index];
+
+                if (char.IsWhiteSpace(character))
                 {
-                    if (t == '\t')
+                    if (character == '\t')
                     {
                         columns += tabSize;
                     }
-                    else if (t == ' ')
+                    else if (character == ' ')
                     {
                         columns++;
                     }
                 }
-                else if (char.IsDigit(t) || char.IsLetter(t) || char.IsSymbol(t) || char.IsPunctuation(t))
+                else if (char.IsDigit(character) || char.IsLetter(character) || char.IsSymbol(character) || char.IsPunctuation(character))
                 {
                     columns += 1;
                 }
-                else if (index + 1 < str.Length && char.IsHighSurrogate(t) && char.IsLowSurrogate(str[index + 1]))
+                else if (index + 1 < str.Length && char.IsHighSurrogate(character) && char.IsLowSurrogate(str[index + 1]))
                 {
                     columns += 1;
                     index++;
                 }
-                else if (t == '\n')
+                else if (character == '\n')
                 {
                     break;
                 }
@@ -146,6 +147,7 @@ namespace LibLSLCC.Utility
         {
             var space = "";
             var actual = 0;
+
             for (var i = 0; i < (spaces/tabSize); i++)
             {
                 space += '\t';
@@ -194,9 +196,9 @@ namespace LibLSLCC.Utility
         /// <returns></returns>
         public static string CreateRepeatingString(int repeats, string content)
         {
-            var r = "";
-            for (var i = 0; i < repeats; i++) r += content;
-            return r;
+            var result = "";
+            for (var i = 0; i < repeats; i++) result += content;
+            return result;
         }
 
         /// <summary>

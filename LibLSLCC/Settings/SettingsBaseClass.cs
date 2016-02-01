@@ -401,26 +401,26 @@ namespace LibLSLCC.Settings
             var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
             var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-            int hc = 0;
+            int hash = 0;
 
 
             foreach (var field in fields)
             {
                 var val = field.GetValue(this) ?? 0;
 
-                hc ^= val.GetHashCode();
-                hc = (hc << 7) | (hc >> (32 - 7));
+                hash ^= val.GetHashCode();
+                hash = (hash << 7) | (hash >> (32 - 7));
             }
 
             foreach (var prop in props)
             {
                 var val = prop.GetValue(this, null) ?? 0;
 
-                hc ^= val.GetHashCode();
-                hc = (hc << 7) | (hc >> (32 - 7));
+                hash ^= val.GetHashCode();
+                hash = (hash << 7) | (hash >> (32 - 7));
             }
 
-            return hc;
+            return hash;
         }
 
 

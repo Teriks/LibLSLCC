@@ -160,7 +160,8 @@ namespace LibLSLCC.Settings
 
         public static T SetToDefault<T>(T instance, string memberName)
         {
-            var d = GetDefaultValue(instance, memberName);
+            var defaultValue = GetDefaultValue(instance, memberName);
+
             var member = typeof (T).GetProperty(memberName) ?? (MemberInfo) typeof(T).GetField(memberName);
 
             if (member == null) return instance;
@@ -176,9 +177,9 @@ namespace LibLSLCC.Settings
             if (!isField && !(asProp.CanRead && asProp.CanWrite)) return instance;
 
 
-            if (d != null)
+            if (defaultValue != null)
             {
-                SetValue(member, instance, d);
+                SetValue(member, instance, defaultValue);
             }
 
             return instance;

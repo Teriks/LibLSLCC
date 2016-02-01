@@ -13,8 +13,11 @@ namespace LibLSLCC.Settings
             while (baseSearch != null)
             {
                 var genericTickIndex = baseSearch.FullName.IndexOf("`", StringComparison.Ordinal);
+
                 if (genericTickIndex == -1) break;
+
                 var nonGenericName = baseSearch.FullName.Substring(0, genericTickIndex);
+
                 if (nonGenericName != "LibLSLCC.Settings.SettingsBaseClass")
                 {
                     baseSearch = baseSearch.BaseType;

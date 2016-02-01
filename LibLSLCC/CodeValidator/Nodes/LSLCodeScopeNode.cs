@@ -264,27 +264,28 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLCodeScopeNode(sourceRange, Err.Err);
         }
 
-        private bool IsJumpDead(LSLJumpStatementNode jump)
+        private static bool IsJumpDead(LSLJumpStatementNode jump)
         {
             if (jump.IsDeadCode) return true;
 
 
-            var tn = jump.Parent;
+            var jumpParent = jump.Parent;
 
 
-            var n = tn as ILSLCodeStatement;
-            while (n == null || !n.IsDeadCode)
+            var parentAsStatement = jumpParent as ILSLCodeStatement;
+
+            while (parentAsStatement == null || !parentAsStatement.IsDeadCode)
             {
-                tn = tn.Parent;
+                jumpParent = jumpParent.Parent;
 
-                if (tn == null || tn is ILSLEventHandlerNode || tn is ILSLFunctionDeclarationNode)
+                if (jumpParent == null || jumpParent is ILSLEventHandlerNode || jumpParent is ILSLFunctionDeclarationNode)
                 {
                     break;
                 }
 
-                n = tn as ILSLCodeStatement;
+                parentAsStatement = jumpParent as ILSLCodeStatement;
 
-                if (n != null && n.IsDeadCode)
+                if (parentAsStatement != null && parentAsStatement.IsDeadCode)
                 {
                     return true;
                 }
@@ -480,56 +481,54 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
 
-            if (_insideDeadCode)
+            if (!_insideDeadCode) return;
+            if (_insideDeadCodeAfterReturnPath)
             {
-                if (_insideDeadCodeAfterReturnPath)
+                var label = statement as LSLLabelStatementNode;
+
+                var dead = true;
+
+                if (label != null)
                 {
-                    var label = statement as LSLLabelStatementNode;
-
-                    var dead = true;
-
-                    if (label != null)
+                    if (
+                        label.JumpsToHere.Any(
+                            x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
                     {
-                        if (
-                            label.JumpsToHere.Any(
-                                x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
-                        {
-                            dead = false;
-                            _afterLabelJumpDownOverReturn = true;
-                            HasReturnPath = false;
-                        }
-                    }
-
-                    if (dead)
-                    {
-                        statement.IsDeadCode = true;
-                        statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
-                        _deadCodeSegmentsStack.Peek().AddStatement(statement);
-                    }
-                    else
-                    {
-                        _insideDeadCode = false;
-                        _insideDeadCodeAfterReturnPath = false;
+                        dead = false;
+                        _afterLabelJumpDownOverReturn = true;
+                        HasReturnPath = false;
                     }
                 }
-                else if (_inDeadJumpedOverCode && statement.StatementIndex < _deadCodeJumpOverEnding)
+
+                if (dead)
                 {
                     statement.IsDeadCode = true;
                     statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
                     _deadCodeSegmentsStack.Peek().AddStatement(statement);
                 }
-                else if (_inDeadJumpedOverCode && statement.StatementIndex == _deadCodeJumpOverEnding)
+                else
                 {
-                    _deadCodeSegments.Add(_deadCodeSegmentsStack.Pop());
                     _insideDeadCode = false;
-                    _inDeadJumpedOverCode = false;
+                    _insideDeadCodeAfterReturnPath = false;
                 }
-                else if (!_inDeadJumpedOverCode)
-                {
-                    statement.IsDeadCode = true;
-                    statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
-                    _deadCodeSegmentsStack.Peek().AddStatement(statement);
-                }
+            }
+            else if (_inDeadJumpedOverCode && statement.StatementIndex < _deadCodeJumpOverEnding)
+            {
+                statement.IsDeadCode = true;
+                statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
+                _deadCodeSegmentsStack.Peek().AddStatement(statement);
+            }
+            else if (_inDeadJumpedOverCode && statement.StatementIndex == _deadCodeJumpOverEnding)
+            {
+                _deadCodeSegments.Add(_deadCodeSegmentsStack.Pop());
+                _insideDeadCode = false;
+                _inDeadJumpedOverCode = false;
+            }
+            else if (!_inDeadJumpedOverCode)
+            {
+                statement.IsDeadCode = true;
+                statement.DeadCodeType = _deadCodeSegmentsStack.Peek().DeadCodeType;
+                _deadCodeSegmentsStack.Peek().AddStatement(statement);
             }
         }
 

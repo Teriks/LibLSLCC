@@ -281,6 +281,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             var parameterIndex = 0;
+
             foreach (var parameter in parameterList.parameterDefinition())
             {
                 var addition = new LSLParameterNode(parameter)
