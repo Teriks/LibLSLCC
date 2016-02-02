@@ -8,62 +8,151 @@ import platform
 import subprocess
 import BuildScripts.MSBuild
 from argparse import ArgumentParser
+from argparse import RawTextHelpFormatter
 
 scriptPath = os.path.dirname(os.path.realpath(__file__))
 
 
-args_parser = ArgumentParser()
+args_parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
+
+
+args_parser.add_argument(
+    '--release-only', 
+    action='store_true', 
+    dest='release_only',
+    help='Only build Release binaries.\n\n'
+    )
+
+args_parser.add_argument(
+    '--debug-only', 
+    action='store_true', 
+    dest='debug_only',
+    help='Only build Debug binaries.\n\n'
+    )
+
+args_parser.add_argument(
+    '--no-scraping-tool', 
+    action='store_false', 
+    dest='build_scraper',
+    help='Prevent the LibraryDataScrapingTool project from being built.\n\n'
+    )
+
+args_parser.add_argument(
+    '--no-lslcc-cmd', 
+    action='store_false', 
+    dest='build_lslcc_cmd',
+    help='Prevent the lslcc_cmd project from being built.\n\n'
+    )
+
+args_parser.add_argument(
+    '--no-demo-area', 
+    action='store_false', 
+    dest='build_demo_area',
+    help='Prevent the DemoArea project from being built.\n\n'
+    )
 
 args_parser.add_argument(
     '--no-installer', 
     action='store_false', 
     dest='build_installer',
-    help='Prevent the installer from being built if you do not have WiX;  On Mono it does not build regardless.'
+    help='Prevent the installer from being built if you do not have WiX.\nOn Mono it does not build regardless.\n\n'
     )
 
 args_parser.add_argument(
-    '--dir',
+    '--binary-release', 
+    action='store_true',
+    dest='make_binary_release_zip',
+    help='Create a timestamped binary release zip and move it, plus the\ninstallers to the specified binary release directory.\n\n'
+    )
+
+args_parser.add_argument(
+    '--binary-release-dir',
     metavar='PATH',
     default=os.path.join(scriptPath, 'BinaryRelease'), 
-    dest='output_dir',
+    dest='binary_release_zip_dir',
     help='The folder to create and place the binary release files in.'
     )
+
+
 
 args = args_parser.parse_args();
 
 
-
 msbuild = BuildScripts.MSBuild.Tool();
+
 
 no_editor_solution = os.path.join(scriptPath, 'LibLSLCC-NoEditor.sln');
 editor_solution = os.path.join(scriptPath, 'LibLSLCC-WithEditor-WithInstaller.sln');
 
 
-# build an Any CPU lslcc binary for distribution
-msbuild.run(no_editor_solution, '/t:lslcc_cmd', '/p:Configuration=Release', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0')
-                 
-                 
-#build debug LibLSLCC         
-msbuild.run(no_editor_solution, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0')
+libLSLCCtargetFramework = "/p:TargetFrameworkVersion=v4.0"
+
+if msbuild.is_mono() and msbuild.mono_ver()[0] > 3:
+    libLSLCCtargetFramework = "/p:TargetFrameworkVersion=v4.5"
 
 
-# this won't get built in the next step if we are not on windows.
-# when building the editor installer its a dependency
-# but not on mono
-if not msbuild.is_windows() or not args.build_installer:
+
+if not args.release_only:
+    msbuild.run(no_editor_solution, '/t:LibLSLCC', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                libLSLCCtargetFramework)
+
+if not args.debug_only:
     msbuild.run(no_editor_solution, '/t:LibLSLCC', '/p:Configuration=Release', '/p:Platform=Any CPU',
-                 '/p:TargetFrameworkVersion=v4.0')
+                libLSLCCtargetFramework)
 
+
+if args.build_lslcc_cmd:
+    if not args.release_only:
+        msbuild.run(no_editor_solution, '/t:lslcc_cmd', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                    libLSLCCtargetFramework)
+
+    if not args.debug_only:
+        msbuild.run(no_editor_solution, '/t:lslcc_cmd', '/p:Configuration=Release', '/p:Platform=Any CPU',
+                    libLSLCCtargetFramework)
+
+
+if args.build_scraper:
+    if not args.release_only:
+        msbuild.run(no_editor_solution, '/t:LibraryDataScrapingTool', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                    libLSLCCtargetFramework)
+
+    if not args.debug_only:
+        msbuild.run(no_editor_solution, '/t:LibraryDataScrapingTool', '/p:Configuration=Release', '/p:Platform=Any CPU',
+                    libLSLCCtargetFramework)
+
+
+if args.build_demo_area:
+    if not args.release_only:
+        msbuild.run(no_editor_solution, '/t:DemoArea', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                    libLSLCCtargetFramework)
+
+    if not args.debug_only:
+        msbuild.run(no_editor_solution, '/t:DemoArea', '/p:Configuration=Release', '/p:Platform=Any CPU',
+                    libLSLCCtargetFramework)
 
 
 # build the installers on windows
 if msbuild.is_windows() and args.build_installer:
     msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86',
-                     '/p:TargetFrameworkVersion=v4.5')
+                '/p:TargetFrameworkVersion="v4.5"')
     msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
-                     '/p:TargetFrameworkVersion=v4.5')
+                '/p:TargetFrameworkVersion="v4.5"')
+
+
+# build the editor if we are not building the installer, but are on windows
+if msbuild.is_windows() and not args.build_installer:
+    if not args.release_only:
+        msbuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=x86',
+                    '/p:TargetFrameworkVersion="v4.5"')
+    if not args.debug_only:
+        msbuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Release', '/p:Platform=x86',
+                    '/p:TargetFrameworkVersion="v4.5"')
+
+
+
+if not args.make_binary_release_zip:
+    exit(0)
+
 
 
 curTime = datetime.datetime.now()
@@ -76,7 +165,7 @@ print('===========================================')
 print('\n')
 
 
-outputDir = args.output_dir
+outputDir = args.binary_release_zip_dir
 
 binariesZip = os.path.join(outputDir, 'LibLSLCC_Binaries_' + release_stamp + '.zip')
 
@@ -136,15 +225,19 @@ def remove_second_folder_down(path):
 # make the timestamped binary release zip file
 with zipfile.ZipFile(binariesZip, 'w') as zip_file:
 
-    zip_dir_relative(lib_anyCpu, zip_file, archDirTransform=remove_second_folder_down)
+    if not args.debug_only:
+        zip_dir_relative(os.path.join(lib_anyCpu, "Release"), zip_file, archDirTransform=remove_second_folder_down)
+
+    if not args.release_only:
+        zip_dir_relative(os.path.join(lib_anyCpu, "Debug"), zip_file, archDirTransform=remove_second_folder_down)
 
     zip_dir_relative(lib_thirdparty_licenses, zip_file, archDirTransform=remove_second_folder_down)
 
     lslccArchDir = os.path.basename(lslccPath)
 
     #only the release build of lslcc_cmd gets put in the zip
-
-    zip_dir_relative(os.path.join(lslcc_anyCpu, "Release"), zip_file, archDirTransform=remove_second_folder_down)
+    if args.build_lslcc_cmd and not args.debug_only:
+        zip_dir_relative(os.path.join(lslcc_anyCpu, "Release"), zip_file, archDirTransform=remove_second_folder_down)
 
     zip_file.write(lib_licence, os.path.basename('LICENSE'))
 
