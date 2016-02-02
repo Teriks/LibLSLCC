@@ -134,19 +134,20 @@ if args.build_demo_area:
 # build the installers on windows
 if msbuild.is_windows() and args.build_installer:
     msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86',
-                '/p:TargetFrameworkVersion="v4.5"')
+                     '/p:TargetFrameworkVersion=v4.5')
     msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
-                '/p:TargetFrameworkVersion="v4.5"')
+                     '/p:TargetFrameworkVersion=v4.5')
 
 
-# build the editor if we are not building the installer, but are on windows
+
 if msbuild.is_windows() and not args.build_installer:
     if not args.release_only:
-        msbuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=x86',
-                    '/p:TargetFrameworkVersion="v4.5"')
+        msbuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                    '/p:TargetFrameworkVersion=v4.5')
+
     if not args.debug_only:
-        msbuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Release', '/p:Platform=x86',
-                    '/p:TargetFrameworkVersion="v4.5"')
+        msbuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Release', '/p:Platform=Any CPU',
+                    '/p:TargetFrameworkVersion=v4.5')
 
 
 
