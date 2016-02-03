@@ -93,12 +93,16 @@ args = args_parser.parse_args();
 
 
 if args.only_build_liblslcc:
-    
     args.build_scraper = False
     args.build_lslcc_cmd = False
     args.build_demo_area = False
     args.build_installer = False
     args.build_editor = False
+
+
+if args.make_binary_release_zip:
+   args.build_scraper = False
+   args.build_demo_area = False
 
 
 msbuild = BuildScripts.MSBuild.Tool();
