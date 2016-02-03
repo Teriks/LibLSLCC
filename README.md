@@ -12,9 +12,8 @@ file generated for the library by Visual Studio/MSBuild.
 
 Releases also include platform specific installers for LSLCCEditor.
 
-The only difference between each installer at this point is the program
-install directory that they default too.  The installers for both x64 and x86
-platforms have been changed to use platform independent AnyCPU binaries.
+However, the only difference between each installer is the install directory that they default too.
+The installers for both x64 and x86 platforms use platform independent AnyCPU binaries.
 
 
 # About LibLSLCC 
