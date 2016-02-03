@@ -306,7 +306,7 @@ files inside the file explorer will run them as well.
 
 **build.py** can be used to build the library and optionally create a timestamped binary release zip file.
 
-Simply running `python build.py' will build Release and Debug versions of all projects that are buildable on your platform.
+Simply running `python build.py` will build Release and Debug versions of all projects that are buildable on your platform.
 
 Use this to display additional build options:
  
