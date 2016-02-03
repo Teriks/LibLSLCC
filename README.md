@@ -107,7 +107,7 @@ A few notable code validator/OpenSim code generator features:
 
  * Correct order of operations via the use of operator function stubs
    that are generated on demand.  Old mono list optimizations will now
-   port over without breaking, as well as other funky scripts that rely
+   port over without breaking, as well as other odd scripts that rely
    on Right to Left evaluation being the norm.
 
 
