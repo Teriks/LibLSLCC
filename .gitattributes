@@ -1,0 +1,16 @@
+*.sh text eol=lf
+*.bat text eol=crlf
+
+*.cs text
+*.xml text
+*.md text
+*.txt text
+*.sln text
+*.g4 text
+*.tokens text
+
+*.dll binary
+*.jar binary
+
+Doxyfile text
+LICENSE text
