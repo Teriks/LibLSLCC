@@ -283,7 +283,7 @@ enter the command:
 LibLSLCC should start building.
 
 
-# Note about xbuild when using Mono 4.* on *Nix
+**Note about xbuild when using Mono 4.* on *Nix:**
 
 
 It seems that the latest versions of mono starting with major version 4 have trouble building 
