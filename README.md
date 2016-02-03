@@ -286,8 +286,8 @@ LibLSLCC should start building.
 # Note about xbuild when using Mono 4.* on *Nix
 
 
-It seems that the latest versions of mono starting with major version 4 have trouble
-building project files that target the v4.0 framework.
+It seems that the latest versions of mono starting with major version 4 have trouble building 
+project files that target the v4.0 framework.
 
 If your building using 4.* version of mono you can work around this by forcing all projects to 
 target the v4.5 framework, with:
