@@ -20,7 +20,7 @@ platforms have been changed to use platform independent AnyCPU binaries.
 # About LibLSLCC 
 
 
-The LibLSLCC library is a framework for writing LSL compilers.
+LibLSLCC is a framework for writing LSL compilers.
 
 The LibLSLCC code validator/syntax tree builder provides **full front end syntax checking of LSL**.
 It even includes extended warnings that you would find in most compilers for other languages,
