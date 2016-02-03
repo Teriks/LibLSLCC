@@ -17,17 +17,24 @@ args_parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
 
 
 args_parser.add_argument(
-    '--release-only', 
+    '--only-release', 
     action='store_true', 
     dest='release_only',
     help='Only build Release binaries.\n\n'
     )
 
 args_parser.add_argument(
-    '--debug-only', 
+    '--only-debug', 
     action='store_true', 
     dest='debug_only',
     help='Only build Debug binaries.\n\n'
+    )
+
+args_parser.add_argument(
+    '--only-liblslcc', 
+    action='store_true', 
+    dest='only_build_liblslcc',
+    help='Only build the LibLSLCC library and nothing else.\n\n'
     )
 
 args_parser.add_argument(
@@ -49,6 +56,13 @@ args_parser.add_argument(
     action='store_false', 
     dest='build_demo_area',
     help='Prevent the DemoArea project from being built.\n\n'
+    )
+
+args_parser.add_argument(
+    '--no-editor', 
+    action='store_false', 
+    dest='build_editor',
+    help='Prevent both the editor and installer from being built.\nOn Mono these do not build regardless.\n\n'
     )
 
 args_parser.add_argument(
@@ -76,6 +90,15 @@ args_parser.add_argument(
 
 
 args = args_parser.parse_args();
+
+
+if args.only_build_liblslcc:
+    
+    args.build_scraper = False
+    args.build_lslcc_cmd = False
+    args.build_demo_area = False
+    args.build_installer = False
+    args.build_editor = False
 
 
 msbuild = BuildScripts.MSBuild.Tool();
@@ -132,7 +155,7 @@ if args.build_demo_area:
 
 
 # build the installers on windows
-if msbuild.is_windows() and args.build_installer:
+if msbuild.is_windows() and args.build_installer and args.build_editor:
     msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86',
                      '/p:TargetFrameworkVersion=v4.5')
     msbuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
@@ -140,7 +163,7 @@ if msbuild.is_windows() and args.build_installer:
 
 
 
-if msbuild.is_windows() and not args.build_installer:
+if msbuild.is_windows() and not args.build_installer and args.build_editor:
     if not args.release_only:
         msbuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
                     '/p:TargetFrameworkVersion=v4.5')
