@@ -198,7 +198,7 @@ http://avalonedit.net/
  
 # Building LibLSLCC and LSLCCEditor On Windows
 
-First off:
+Important thing to note:
 
  * Building **LibLSLCC-WithEditor-WithInstaller.sln** is only tested in **VS2015**.
 
