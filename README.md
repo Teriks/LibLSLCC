@@ -310,11 +310,11 @@ Simply running `python build.py' will build Release and Debug versions of all pr
 
 Use this to display additional build options:
  
-	`python build.py --help` 
+	python build.py --help
 	
 The quickest way to build all the Release mode binaries for each project is:
 
-	`python build.py --release-only'
+	python build.py --release-only
 
 
 **clean.py** simply cleans all configurations/platforms of the build when you run it.
