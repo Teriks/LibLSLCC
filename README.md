@@ -94,7 +94,7 @@ A few notable code validator/OpenSim code generator features:
    of causing a CSharp syntax error by using a keyword/Class name as a variable or function name.
 
 
- * Correct Code generation for jumps over variable declarations.  Jumping over a variable declaration
+ * Correct Code generation for jumps over variable declarations;  jumping over a variable declaration
    will leave said variable with a default value, instead of null.  Leaving these variables null is 
    something both the Linden compiler and current OpenSim compiler do, which is a step out of the LSL
    SandBox as null variables are not supported elsewhere in LSL and generally not expected as a function parameter.
