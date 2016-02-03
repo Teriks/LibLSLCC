@@ -322,6 +322,10 @@ And to build just LibLSLCC:
 
 	python build.py --only-liblslcc
 
+To build and package up a timestamped release in the BinaryRelease folder:
+
+	python build.py --binary-release-zip
+
 
 **clean.py** simply cleans all configurations/platforms of the build when you run it.
 
