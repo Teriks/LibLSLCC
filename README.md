@@ -132,7 +132,9 @@ VS2015 is your best bet, its what I use personally.  However if your version of 
 support's .NET 4.5, you will probably be able to build the Editor project files with it.
 
 
-LSLCCEditor Features:
+LSLCCEditor features:
+
+ * Tabbed multi script editing.
 
  * Syntax Highlighting.
 
