@@ -136,7 +136,7 @@ LSLCCEditor features:
 
  * Tabbed multi script editing.
 
- * Syntax Highlighting.
+ * Syntax highlighting.
 
  * Documentation tooltips.
 
