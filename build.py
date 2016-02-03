@@ -73,14 +73,14 @@ args_parser.add_argument(
     )
 
 args_parser.add_argument(
-    '--binary-release', 
+    '--binary-release-zip', 
     action='store_true',
     dest='make_binary_release_zip',
     help='Create a timestamped binary release zip and move it, plus the\ninstallers to the specified binary release directory.\n\n'
     )
 
 args_parser.add_argument(
-    '--binary-release-dir',
+    '--binary-release-zip-dir',
     metavar='PATH',
     default=os.path.join(scriptPath, 'BinaryRelease'), 
     dest='binary_release_zip_dir',
