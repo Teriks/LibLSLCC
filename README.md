@@ -283,26 +283,38 @@ enter the command:
 LibLSLCC should start building.
 
 
+# Note about xbuild when using Mono 4.* on *Nix
+
+
+It seems that the latest versions of mono starting with major version 4 have trouble
+building project files that target the v4.0 framework.
+
+If your building using 4.* version of mono you can work around this by forcing all projects to 
+target the v4.5 framework, with:
+
+	xbuild /p:Configuration=Release /p:TargetFrameworkVersion="v4.5" LibLSLCC-NoEditor.sln
+
+
+
 # Python Build Scripts
 
-Python 3 is required to run the python build scripts.
+The Python build scripts require python 2.7.* or 3.* to be installed.
 
-**create-binary-release.py** can be used to create a timestamped binary release zip of the library.
+If your using Windows, you must install python and add it to your path if you want to call this script from the command line.
+When installing python on Windows there is an option to associate .py files with the python executable, so that clicking on .py
+files inside the file explorer will run them as well.
 
-The installer files and created library zip will be placed in the folder specified by **--dir**, 
-or the 'BinaryRelease' folder in the project's top level directory if **--dir** is not specified.
+**build.py** can be used to build the library and optionally create a timestamped binary release zip file.
 
-You should call it with the python3 executable on *nix.  
+Simply running `python build.py' will build Release and Debug versions of all projects that are buildable on your platform.
 
-On windows you can install python3 and click it.
+Use this to display additional build options:
+ 
+	`python build.py --help` 
+	
+The quickest way to build all the Release mode binaries for each project is:
 
-You can also put the python install directory in your Windows PATH and use the python 
-command from cmd if you want to specify any options.
-
-The option: **--no-installer** 
-
-Will prevent the editor and editor installer from being built, this has no effect on *nix since 
-the editor and it's installer are not built on *nix regardless;  They are Windows only.
+	`python build.py --release-only'
 
 
 **clean.py** simply cleans all configurations/platforms of the build when you run it.
@@ -310,11 +322,7 @@ the editor and it's installer are not built on *nix regardless;  They are Window
 
 # About Build Warnings
 
-Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  
-
-This is not a problem as "Mono.Data.Sqlite" it is only used when running on Mono.
-
 On mono you may get alot of warnings about missing comments.
 
-They are suppressed in the windows build but not yet in the mono build as the warning numbers are different.
+They are suppressed in the Windows build but not yet in the mono build as the warning numbers are different.
 You will also get warnings about unknown warning numbers being suppressed (XML comment warnings), but this is harmless.
