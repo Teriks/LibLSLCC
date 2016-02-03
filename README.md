@@ -22,7 +22,7 @@ platforms have been changed to use platform independent AnyCPU binaries.
 
 LibLSLCC is a framework for writing LSL compilers.
 
-The LibLSLCC code validator/syntax tree builder provides **full front end syntax checking of LSL**.
+The LibLSLCC code validator/syntax tree builder provides full front end syntax checking of LSL.
 It even includes extended warnings that you would find in most compilers for other languages,
 but that are not implemented in either the Linden compiler or current OpenSim compiler.
 
