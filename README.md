@@ -257,7 +257,7 @@ build with every version of Visual Studio starting with VS2010.
 
 Use **LibLSLCC-NoEditor.sln** when building for Mono.
 
-Only the LibLSLCC, LibraryDataScrapingTools, lslcc_cmd and DemoArea projects are buildable on Mono 
+Only the **LibLSLCC**, **LibraryDataScrapingTools**, **lslcc_cmd** and **DemoArea** projects are buildable on Mono 
 and the **LibLSLCC-NoEditor.sln** includes only these projects for convenience.
 
 Java is also required when building on *Nix platforms so that the ANTRL 4 tool can run.  
