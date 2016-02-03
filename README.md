@@ -113,7 +113,7 @@ A few notable code validator/OpenSim code generator features:
 
  * Negatable vectors and rotations.
 
- * Support for certain unicode characters in script symbols, (Same characters the linden Compiler allows)
+ * Support for certain unicode characters in script symbols. (Same characters the linden Compiler allows)
 
 
 # About LibLSLCCEditor
