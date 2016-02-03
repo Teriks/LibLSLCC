@@ -125,7 +125,7 @@ if not args.debug_only:
 
 
 if args.build_lslcc_cmd:
-    if not args.release_only:
+    if not args.release_only and not args.make_binary_release_zip:
         msbuild.run(no_editor_solution, '/t:lslcc_cmd', '/p:Configuration=Debug', '/p:Platform=Any CPU',
                     libLSLCCtargetFramework)
 
