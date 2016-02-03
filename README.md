@@ -44,7 +44,8 @@ LibLSLCC can tell you about your code.
 
 
 LibLSLCC can also be used for general purpose LSL parsing tasks, it provides
-its own rich syntax tree that has been completely abstracted from ANTLR.  
+its own rich syntax tree that has been completely abstracted from ANTLR.
+
 The syntax tree is tailored specifically for dealing with LSL, and there is an interface for every node 
 so that you can implement your own code DOM to feed to compilers/formatters if you want to.
 
