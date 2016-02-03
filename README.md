@@ -97,7 +97,7 @@ A few notable code validator/OpenSim code generator features:
  * Correct Code generation for jumps over variable declarations;  jumping over a variable declaration
    will leave said variable with a default value, instead of null.  Leaving these variables null is 
    something both the Linden compiler and current OpenSim compiler do, which is a step out of the LSL
-   SandBox as null variables are not supported elsewhere in LSL and generally not expected as a function parameter.
+   SandBox, as null variables are not supported elsewhere in LSL and generally not expected as a function parameter.
 
  * Labels no longer require a "NoOp()" after every label, the OpenSim code generator 
    in LibLSLCC simply detects when they are the last statement in a scope, then adds a semi-colon
