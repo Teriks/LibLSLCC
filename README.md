@@ -38,16 +38,15 @@ Warnings for things such as:
  * Deprecated function usage.
 
 
-That's not everything just some common ones.. this list is pretty long.
+That's not everything just some common ones, the list is pretty long.
 I suggest you mess around with the editor releases to discover what all 
 LibLSLCC can tell you about your code.
 
 
 LibLSLCC can also be used for general purpose LSL parsing tasks, it provides
-its own rich syntax tree (Created as LSL code is validated) that has been completely
-abstracted from ANTLR.  The syntax tree is tailored specifically for dealing with LSL,
-and there is an interface for every node so that you can implement your own code DOM 
-if want to.
+its own rich syntax tree that has been completely abstracted from ANTLR.  
+The syntax tree is tailored specifically for dealing with LSL, and there is an interface for every node 
+so that you can implement your own code DOM to feed to compilers/formatters if you want to.
 
 
 ====
@@ -55,15 +54,15 @@ if want to.
 
 LibLSLCC includes a CSharp code generator that targets the OpenSim runtime.
 
-The Code Validator and OpenSim code generator in LibLSLCC have both been designed
+The code validator (parser/tree builder) and OpenSim code generator in LibLSLCC have both been designed
 with the intent of implementing Linden LSL with near 100 percent cross compatibility.
 
 The project is basically a complete reverse engineering of the Linden compiler's
-Grammar/Rules and generated code behavior.
+grammar, non grammar level syntax rules, and generated code behavior.
 
 
 
-I have integrated LibLSLCC into OpenSim, See Here:
+I have integrated LibLSLCC into OpenSim, see here:
 
 https://github.com/Teriks/OpenSim_With_LibLSLCC 
 
@@ -74,26 +73,30 @@ https://gitlab.com/erihoss/OpenSim_With_LibLSLCC
 
 ====
 
-The Code Validator/OpenSim Code Generator Features:
+A few notable code validator/OpenSim code generator features:
 
  * Full front end Syntax Checking, including dead code detection.  
-   No more esoteric CSharp compiler errors or line mapping funkyness.
+   Esoteric CSharp compiler errors and line mapping have been eliminated.
 
  * Dead code elimination from generated code where applicable.
    This includes un-used functions and global variables, as well
    as any dead code in a function/event body that does not cause a compile 
    error and is safe to remove given its context.
 
- * Correct code generation for global variables that reference each other.
+ * Correct code generation for global variables that reference each other
+   while still maintaining full support for script resets in server generated code.
 
  * Symbol name mangling specific to globals/parameters/local variables/labels and 
    user defined functions.  This completely abstracts variable scoping rules from the CSharp 
-   compiler underneath.  All variable scoping rules are handled by the front end LibLSLCC Code Validator.
-   The scoping rules implemented are %100 true to LSL.  Symbol mangling also removes the possibility 
+   compiler underneath.  All variable scoping rules are handled by the front end LibLSLCC code validator
+   and are implemented in a fashion that is true to Linden LSL.  Symbol mangling also removes the possibility 
    of causing a CSharp syntax error by using a keyword/Class name as a variable or function name.
 
 
- * Correct Code generation for jumps over variable declarations.
+ * Correct Code generation for jumps over variable declarations.  Jumping over a variable declaration
+   will leave said variable with a default value, instead of null.  Leaving these variables null is 
+   something both the Linden compiler and current OpenSim compiler do, which is a step out of the LSL
+   SandBox as null variables are not supported elsewhere in LSL and generally not expected as a function parameter.
 
  * Labels no longer require a "NoOp()" after every label, the OpenSim code generator 
    in LibLSLCC simply detects when they are the last statement in a scope, then adds a semi-colon
@@ -110,9 +113,6 @@ The Code Validator/OpenSim Code Generator Features:
  * Negatable vectors and rotations.
 
  * Support for certain unicode characters in script symbols, (Same characters the linden Compiler allows)
-
- * At this point I am scratching my head because I cannot remember what else...
-   I put a lot of time into this.
 
 
 # About LibLSLCCEditor
