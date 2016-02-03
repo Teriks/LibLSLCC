@@ -222,7 +222,7 @@ install the WiX Installer Toolset from http://wixtoolset.org/.  WiX will integra
 and allow you to load the WiX Project type, so you can build the **LSLCCEditorInstaller** project that
 is part of this particular solution file.
 
-Please make note that WiX will only integrate with Visual Studio if it is installed **After**
+Please make note that WiX will only integrate with Visual Studio if it is installed **after**
 you install the version of Visual Studio your going to use.  See http://wixtoolset.org/ for 
 all versions of Visual Studio that WiX it is compatible with.
 
