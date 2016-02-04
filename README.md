@@ -149,7 +149,7 @@ I have not found a way to replicate this sort of precedence with ANTLR and not h
 in my expression parser grammar.
 
 In order for LibLSLCC to not label expressions like this as a syntax error you need to
-manually clarify that the assignment comes first and not the unary expression.
+manually clarify that the assignment comes first and not the unary expression or other expression to the left.
 
 For example like this:
 
