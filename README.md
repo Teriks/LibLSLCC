@@ -300,7 +300,8 @@ target the v4.5 framework, with:
 
 # Python Build Scripts
 
-The Python build scripts require python 2.7.* or 3.* to be installed.
+The Python build scripts require python 2.7.* or 3.* to be installed.  You must also have an appropriate version of 
+Visual Studios installed on Windows, or the Mono development package if your on *nix.
 
 If your using Windows, you must install python and add it to your path if you want to call this script from the command line.
 When installing python on Windows there is an option to associate .py files with the python executable, so that clicking on .py
