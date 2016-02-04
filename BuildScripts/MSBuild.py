@@ -41,7 +41,9 @@ class Tool:
         return not self._ON_WINDOWS
 
     def mono_ver(self):
-        output = subprocess.check_output(["mono","--version"]).decode("utf-8")
-        output = str(str(output).split(" ")[4]).split(".")
+
+        output = subprocess.check_output(["mono", "--version"]).decode("utf-8")
+        output = output[26:]
+        output = output[:output.find(' ')].split(".")
         return [int(i) for i in output]
 
