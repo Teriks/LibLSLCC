@@ -34,14 +34,14 @@ args_parser.add_argument(
     '--only-liblslcc',
     action='store_true',
     dest='only_build_liblslcc',
-    help='Only build the LibLSLCC library and nothing else.\n\n'
+    help='Only build the LibLSLCC library project and nothing else.\n\n'
     )
 
 args_parser.add_argument(
     '--liblslcc-net-v45',
     action='store_true',
     dest='liblslcc_net_45',
-    help='Force the LibLSLCC library to target .NET 4.5 instead of .NET 4.0.\n\n'
+    help='Force the LibLSLCC library project to target .NET 4.5 instead of .NET 4.0.\n\n'
     )
 
 args_parser.add_argument(
