@@ -38,7 +38,7 @@ args_parser.add_argument(
     )
 
 args_parser.add_argument(
-    '--liblslcc-net-v4.5',
+    '--liblslcc-net-v45',
     action='store_true',
     dest='liblslcc_net_45',
     help='Force the LibLSLCC solution project to target .NET 4.5 instead of .NET 4.0.\n\n'
