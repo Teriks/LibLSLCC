@@ -116,7 +116,7 @@ A few notable code validator/OpenSim code generator features:
 
 
  
-# Currently Known syntax incompatibilities
+# Currently known syntax incompatibilities
 
 
 Linden LSL allows for expressions such as:
