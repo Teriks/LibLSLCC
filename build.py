@@ -17,63 +17,70 @@ args_parser = ArgumentParser(formatter_class=RawTextHelpFormatter)
 
 
 args_parser.add_argument(
-    '--only-release', 
-    action='store_true', 
+    '--only-release',
+    action='store_true',
     dest='release_only',
     help='Only build Release binaries.\n\n'
     )
 
 args_parser.add_argument(
-    '--only-debug', 
-    action='store_true', 
+    '--only-debug',
+    action='store_true',
     dest='debug_only',
     help='Only build Debug binaries.\n\n'
     )
 
 args_parser.add_argument(
-    '--only-liblslcc', 
-    action='store_true', 
+    '--only-liblslcc',
+    action='store_true',
     dest='only_build_liblslcc',
     help='Only build the LibLSLCC library and nothing else.\n\n'
     )
 
 args_parser.add_argument(
-    '--no-scraping-tool', 
-    action='store_false', 
+    '--liblslcc-net-v4.5',
+    action='store_true',
+    dest='liblslcc_net_45',
+    help='Force the LibLSLCC solution project to target .NET 4.5 instead of .NET 4.0.\n\n'
+    )
+
+args_parser.add_argument(
+    '--no-scraping-tool',
+    action='store_false',
     dest='build_scraper',
     help='Prevent the LibraryDataScrapingTool project from being built.\n\n'
     )
 
 args_parser.add_argument(
-    '--no-lslcc-cmd', 
-    action='store_false', 
+    '--no-lslcc-cmd',
+    action='store_false',
     dest='build_lslcc_cmd',
     help='Prevent the lslcc_cmd project from being built.\n\n'
     )
 
 args_parser.add_argument(
-    '--no-demo-area', 
-    action='store_false', 
+    '--no-demo-area',
+    action='store_false',
     dest='build_demo_area',
     help='Prevent the DemoArea project from being built.\n\n'
     )
 
 args_parser.add_argument(
-    '--no-editor', 
-    action='store_false', 
+    '--no-editor',
+    action='store_false',
     dest='build_editor',
     help='Prevent both the editor and installer from being built.\nOn Mono these do not build regardless.\n\n'
     )
 
 args_parser.add_argument(
-    '--no-installer', 
-    action='store_false', 
+    '--no-installer',
+    action='store_false',
     dest='build_installer',
     help='Prevent the installer from being built if you do not have WiX.\nOn Mono it does not build regardless.\n\n'
     )
 
 args_parser.add_argument(
-    '--binary-release-zip', 
+    '--binary-release-zip',
     action='store_true',
     dest='make_binary_release_zip',
     help='Create a timestamped binary release zip and move it, plus the\ninstallers to the specified binary release directory.\n\n'
@@ -82,7 +89,7 @@ args_parser.add_argument(
 args_parser.add_argument(
     '--binary-release-zip-dir',
     metavar='PATH',
-    default=os.path.join(scriptPath, 'BinaryRelease'), 
+    default=os.path.join(scriptPath, 'BinaryRelease'),
     dest='binary_release_zip_dir',
     help='The folder to create and place the binary release files in.'
     )
@@ -114,7 +121,8 @@ editor_solution = os.path.join(scriptPath, 'LibLSLCC-WithEditor-WithInstaller.sl
 
 libLSLCCtargetFramework = "/p:TargetFrameworkVersion=v4.0"
 
-if msbuild.is_mono() and msbuild.mono_ver()[0] > 3:
+# mono 4.x / xbuild seems to have issues with project files targeting .NET 4.0
+if args.liblslcc_net_45 or msbuild.is_mono() and msbuild.mono_ver()[0] > 3:
     libLSLCCtargetFramework = "/p:TargetFrameworkVersion=v4.5"
 
 
@@ -263,7 +271,7 @@ with zipfile.ZipFile(binariesZip, 'w') as zip_file:
 
     lslccArchDir = os.path.basename(lslccPath)
 
-    #only the release build of lslcc_cmd gets put in the zip
+    # only the release build of lslcc_cmd gets put in the zip
     if args.build_lslcc_cmd and not args.debug_only:
         zip_dir_relative(os.path.join(lslcc_anyCpu, "Release"), zip_file, archDirTransform=remove_second_folder_down)
 
@@ -283,14 +291,14 @@ if msbuild.is_windows():
         print('\n')
         print('===========================================')
         print('\n')
-        
+
         print('Copy x64 Installer:\n\t' + x64_installer + ' -> ' + x64_installerDest)
         shutil.copy2(x64_installer, x64_installerDest)
-        
+
         print('\n')
-        
+
         print('Copy x64 Installer:\n\t' + x86_installer + ' -> ' + x86_installerDest)
         shutil.copy2(x86_installer, x86_installerDest)
-        
+
         print('\n')
 
