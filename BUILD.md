@@ -1,17 +1,17 @@
 # Building LibLSLCC and LSLCCEditor On Windows
 
-First off:
+Important thing to note:
 
  * Building **LibLSLCC-WithEditor-WithInstaller.sln** is only tested in **VS2015**.
 
  * Building **LibLSLCC-WithEditor-NoInstaller.sln** should work with **VS2012 and up**.
- 
+
  * Building **LibLSLCC-NoEditor.sln** should work with **VS2010 and up**.
- 
- 
+
+
 ===
- 
- 
+
+
 LibLSLCC requires Java to be installed so that the ANTLR 4 parser generator tool 
 can be run as part of the pre-build step for the LibLSLCC Library.  
 
@@ -24,7 +24,7 @@ install the WiX Installer Toolset from http://wixtoolset.org/.  WiX will integra
 and allow you to load the WiX Project type, so you can build the **LSLCCEditorInstaller** project that
 is part of this particular solution file.
 
-Please make note that WiX will only integrate with Visual Studio if it is installed **After**
+Please make note that WiX will only integrate with Visual Studio if it is installed **after**
 you install the version of Visual Studio your going to use.  See http://wixtoolset.org/ for 
 all versions of Visual Studio that WiX it is compatible with.
 
@@ -58,17 +58,17 @@ build with every version of Visual Studio starting with VS2010.
 
 
 Use **LibLSLCC-NoEditor.sln** when building for Mono.
- 
-Only the LibLSLCC, LibraryDataScrapingTools, lslcc_cmd and DemoArea projects are buildable on Mono 
+
+Only the **LibLSLCC**, **LibraryDataScrapingTools**, **lslcc_cmd** and **DemoArea** projects are buildable on Mono 
 and the **LibLSLCC-NoEditor.sln** includes only these projects for convenience.
 
 Java is also required when building on *Nix platforms so that the ANTRL 4 tool can run.  
 Make sure you have the latest version of Java available for your distribution installed and
 that it is runnable from the command line.
- 
+
 You can open the provided **LibLSLCC-NoEditor.sln** solution on Linux using the latest version of MonoDevelop,
 Or you can build it from the command line using the xbuild command (See the next section).
- 
+
 Other than some of the projects in the solution being un-buildable under Mono, the build on *Nix platforms behaves
 the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
 
@@ -82,31 +82,52 @@ for your distribution then CD into the LibLSLCC source tree where **LibLSLCC-NoE
 enter the command:
 
 	xbuild /p:Configuration=Release LibLSLCC-NoEditor.sln
-	
+
 
 LibLSLCC should start building.
 
 
+**Note about xbuild when using Mono 4.* on *Nix:**
+
+
+It seems that the latest versions of mono starting with major version 4 have trouble building 
+project files that target the v4.0 framework.
+
+If your building using 4.* version of mono you can work around this by forcing all projects to 
+target the v4.5 framework, with:
+
+	xbuild /p:Configuration=Release /p:TargetFrameworkVersion="v4.5" LibLSLCC-NoEditor.sln
+
+
+
 # Python Build Scripts
 
-Python 3 is required to run the python build scripts.
-   
-**create-binary-release.py** can be used to create a timestamped binary release zip of the library.
+The Python build scripts require python 2.7.* or 3.* to be installed.  You must also have an appropriate version of 
+Visual Studios installed on Windows, or the Mono development package if your on *nix.
 
-The installer files and created library zip will be placed in the folder specified by **--dir**, 
-or the 'BinaryRelease' folder in the project's top level directory if **--dir** is not specified.
-   
-You should call it with the python3 executable on *nix.  
+If your using Windows, you must install python and add it to your path if you want to call this script from the command line.
+When installing python on Windows there is an option to associate .py files with the python executable, so that clicking on .py
+files inside the file explorer will run them as well.
 
-On windows you can install python3 and click it.
+**build.py** can be used to build the library and optionally create a timestamped binary release zip file.
 
-You can also put the python install directory in your Windows PATH and use the python 
-command from cmd if you want to specify any options.
-   
-The option: **--no-installer** 
+Simply running `python build.py` will build Release and Debug versions of all projects that are buildable on your platform.
 
-Will prevent the editor and editor installer from being built, this has no effect on *nix since 
-the editor and it's installer are not built on *nix regardless;  They are Windows only.
+Use this to display additional build options:
+ 
+	python build.py --help
+
+The quickest way to build all the Release mode binaries for each project that will build on your platform is:
+
+	python build.py --only-release
+
+And to build just LibLSLCC:
+
+	python build.py --only-liblslcc
+
+To build and package up a timestamped release in the BinaryRelease folder:
+
+	python build.py --binary-release-zip
 
 
 **clean.py** simply cleans all configurations/platforms of the build when you run it.
@@ -114,11 +135,7 @@ the editor and it's installer are not built on *nix regardless;  They are Window
 
 # About Build Warnings
 
-Expect LibraryScrapingTools to warn you about a missing "Mono.Data.Sqlite" reference when building on Windows.  
-
-This is not a problem as "Mono.Data.Sqlite" it is only used when running on Mono.
-
 On mono you may get alot of warnings about missing comments.
 
-They are suppressed in the windows build but not yet in the mono build as the warning numbers are different.
-You will also get warnings about unknown warning numbers being suppressed, but this is harmless.
+They are suppressed in the Windows build but not yet in the mono build as the warning numbers are different.
+You will also get warnings about unknown warning numbers being suppressed (XML comment warnings), but this is harmless.
