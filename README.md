@@ -115,6 +115,48 @@ A few notable code validator/OpenSim code generator features:
  * Support for certain unicode characters in script symbols. (Same characters the linden Compiler allows)
 
 
+ 
+# Currently Known syntax incompatibilities
+
+
+Linden LSL allows for expressions such as:
+
+```
+
+!x = 0
+~x = 0
+-x = 0
+
+```
+
+And even:
+
+```
+
+x+x = 3
+
+x-x *= 3
+
+```
+
+
+Etc..
+
+I have seen this exact form of expression used before in some optimized scripts, the assignment
+takes precedence in this instance which is somewhat odd.
+
+I have not found a way to replicate this sort of precedence with ANTLR and not have issues elsewhere 
+in my expression parser grammar.
+
+In order for LibLSLCC to not label expressions like this as a syntax error you need to
+manually clarify that the assignment comes first and not the unary expression.
+
+For example like this:
+
+`~(x = 0)`
+
+
+
 # About LibLSLCCEditor
 
 

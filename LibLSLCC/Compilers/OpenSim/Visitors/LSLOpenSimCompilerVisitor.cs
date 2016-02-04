@@ -73,6 +73,8 @@ namespace LibLSLCC.Compilers.OpenSim.Visitors
 //============================
 private static class UTILITIES
 {
+    public static void ForceStatement<T>(T value) {}
+
     public static LSL_Types.Quaternion Negate(LSL_Types.Quaternion rotation)
     {
         rotation.x=(-rotation.x);
@@ -359,16 +361,32 @@ private static class UTILITIES
             }
             else
             {
-                var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
+                var isExprStatement = node.Parent is ILSLExpressionStatementNode;
+
+                var cantStandAlone = isExprStatement && (
+                    node.Operation != LSLPrefixOperationType.Decrement &&
+                    node.Operation != LSLPrefixOperationType.Increment
+                    );
+
+                var parenths = !(isExprStatement || node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
+
 
                 if (parenths)
                 {
                     Writer.Write("(");
                 }
 
-                Writer.Write(node.OperationString);
-                Visit(node.RightExpression);
-
+                if (!cantStandAlone)
+                {
+                    Writer.Write(node.OperationString);
+                    Visit(node.RightExpression);
+                }
+                else
+                {
+                    Writer.Write("UTILITIES.ForceStatement(");
+                    Visit(node.RightExpression);
+                    Writer.Write(")");
+                }
 
                 if (parenths)
                 {
@@ -393,13 +411,25 @@ private static class UTILITIES
 
         public override bool VisitParenthesizedExpression(ILSLParenthesizedExpressionNode node)
         {
-            var parenths = !(node.Parent is ILSLExpressionListNode);
+            var isExprStatement = node.Parent is ILSLExpressionStatementNode;
+
+            var parenths = !(isExprStatement || node.Parent is ILSLExpressionListNode);
 
             if (parenths)
             {
                 Writer.Write("(");
             }
-            Visit(node.InnerExpression);
+
+            if (!isExprStatement)
+            {
+                Visit(node.InnerExpression);
+            }
+            else
+            {
+                Writer.Write("UTILITIES.ForceStatement(");
+                Visit(node.InnerExpression);
+                Writer.Write(")");
+            }
 
             if (parenths)
             {
