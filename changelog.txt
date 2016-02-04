@@ -83,7 +83,7 @@ parenthesized expression be a standalone statement.
 
 Therefore these valid LSL expressions must be sanitized when compiling.
 
-This fixed simply by forcing them to become an argument to a generic
+This was fixed simply by forcing them to become an argument to a generic
 function that does nothing.
 
 public static void ForceStatement<T>(T value){}
