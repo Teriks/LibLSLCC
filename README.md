@@ -156,6 +156,9 @@ For example like this:
 `~(x = 0)`
 
 
+LibLSLCC will otherwise complain that your attempting to assign a value to a compound expression (a non lvalue).
+
+
 
 # About LibLSLCCEditor
 
