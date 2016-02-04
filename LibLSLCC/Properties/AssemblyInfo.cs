@@ -54,12 +54,12 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("LibLSLCC")]
-[assembly: AssemblyDescription("LSL CodeDom & Compiler Library")]
+[assembly: AssemblyDescription("LSL parser and compiler framework.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LibLSLCC")]
-[assembly: AssemblyCopyright("Teriks, 2014")]
-[assembly: AssemblyTrademark("Neigh")]
+[assembly: AssemblyCopyright("Teriks ©  2014")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

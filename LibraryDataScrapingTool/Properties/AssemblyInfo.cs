@@ -51,12 +51,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("FirestormLibraryDataDOM")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("LibraryDataScrapingTool")]
+[assembly: AssemblyDescription("Tool for scraping LSL library data from various sources.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FirestormLibraryDataDOM")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyProduct("LibraryDataScrapingTool")]
+[assembly: AssemblyCopyright("Teriks ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
