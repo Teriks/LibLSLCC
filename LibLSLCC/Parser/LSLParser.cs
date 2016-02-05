@@ -50,7 +50,7 @@ public partial class LSLParser : Parser {
 		RULE_expressionStatement = 14, RULE_returnStatement = 15, RULE_labelStatement = 16, 
 		RULE_jumpStatement = 17, RULE_stateChangeStatement = 18, RULE_localVariableDeclaration = 19, 
 		RULE_globalVariableDeclaration = 20, RULE_expressionListTail = 21, RULE_expressionList = 22, 
-		RULE_dotAccessor = 23, RULE_modifiableLeftValue = 24, RULE_expression = 25, 
+		RULE_dotAccessorExpr = 23, RULE_modifiableLeftValue = 24, RULE_expression = 25, 
 		RULE_optionalExpressionList = 26, RULE_optionalParameterList = 27, RULE_listLiteral = 28, 
 		RULE_compilationUnit = 29, RULE_parameterDefinition = 30, RULE_parameterList = 31, 
 		RULE_eventHandler = 32, RULE_definedState = 33, RULE_defaultState = 34;
@@ -60,7 +60,7 @@ public partial class LSLParser : Parser {
 		"codeScope", "doLoop", "whileLoop", "forLoop", "loopStructure", "codeStatement", 
 		"expressionStatement", "returnStatement", "labelStatement", "jumpStatement", 
 		"stateChangeStatement", "localVariableDeclaration", "globalVariableDeclaration", 
-		"expressionListTail", "expressionList", "dotAccessor", "modifiableLeftValue", 
+		"expressionListTail", "expressionList", "dotAccessorExpr", "modifiableLeftValue", 
 		"expression", "optionalExpressionList", "optionalParameterList", "listLiteral", 
 		"compilationUnit", "parameterDefinition", "parameterList", "eventHandler", 
 		"definedState", "defaultState"
@@ -1713,7 +1713,7 @@ public partial class LSLParser : Parser {
 		return _localctx;
 	}
 
-	public partial class DotAccessorContext : ParserRuleContext {
+	public partial class DotAccessorExprContext : ParserRuleContext {
 		public IToken expr_lvalue;
 		public IToken operation;
 		public IToken member;
@@ -1722,30 +1722,30 @@ public partial class LSLParser : Parser {
 			return GetToken(LSLParser.ID, i);
 		}
 		public ITerminalNode DOT() { return GetToken(LSLParser.DOT, 0); }
-		public DotAccessorContext(ParserRuleContext parent, int invokingState)
+		public DotAccessorExprContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_dotAccessor; } }
+		public override int RuleIndex { get { return RULE_dotAccessorExpr; } }
 		public override void EnterRule(IParseTreeListener listener) {
 			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.EnterDotAccessor(this);
+			if (typedListener != null) typedListener.EnterDotAccessorExpr(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.ExitDotAccessor(this);
+			if (typedListener != null) typedListener.ExitDotAccessorExpr(this);
 		}
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILSLVisitor<TResult> typedVisitor = visitor as ILSLVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDotAccessor(this);
+			if (typedVisitor != null) return typedVisitor.VisitDotAccessorExpr(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public DotAccessorContext dotAccessor() {
-		DotAccessorContext _localctx = new DotAccessorContext(Context, State);
-		EnterRule(_localctx, 46, RULE_dotAccessor);
+	public DotAccessorExprContext dotAccessorExpr() {
+		DotAccessorExprContext _localctx = new DotAccessorExprContext(Context, State);
+		EnterRule(_localctx, 46, RULE_dotAccessorExpr);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
@@ -1767,8 +1767,8 @@ public partial class LSLParser : Parser {
 
 	public partial class ModifiableLeftValueContext : ParserRuleContext {
 		public IToken variable;
-		public DotAccessorContext dotAccessor() {
-			return GetRuleContext<DotAccessorContext>(0);
+		public DotAccessorExprContext dotAccessorExpr() {
+			return GetRuleContext<DotAccessorExprContext>(0);
 		}
 		public ITerminalNode ID() { return GetToken(LSLParser.ID, 0); }
 		public ModifiableLeftValueContext(ParserRuleContext parent, int invokingState)
@@ -1801,7 +1801,7 @@ public partial class LSLParser : Parser {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 248; dotAccessor();
+				State = 248; dotAccessorExpr();
 				}
 				break;
 			case 2:
@@ -1947,6 +1947,25 @@ public partial class LSLParser : Parser {
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ILSLVisitor<TResult> typedVisitor = visitor as ILSLVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitExpr_TypeCast(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class Expr_DotAccessorExprContext : ExpressionContext {
+		public DotAccessorExprContext dotAccessorExpr() {
+			return GetRuleContext<DotAccessorExprContext>(0);
+		}
+		public Expr_DotAccessorExprContext(ExpressionContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ILSLListener typedListener = listener as ILSLListener;
+			if (typedListener != null) typedListener.EnterExpr_DotAccessorExpr(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ILSLListener typedListener = listener as ILSLListener;
+			if (typedListener != null) typedListener.ExitExpr_DotAccessorExpr(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ILSLVisitor<TResult> typedVisitor = visitor as ILSLVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitExpr_DotAccessorExpr(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -2298,25 +2317,6 @@ public partial class LSLParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class Expr_DotAccessorGroupContext : ExpressionContext {
-		public DotAccessorContext dotAccessor() {
-			return GetRuleContext<DotAccessorContext>(0);
-		}
-		public Expr_DotAccessorGroupContext(ExpressionContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.EnterExpr_DotAccessorGroup(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.ExitExpr_DotAccessorGroup(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ILSLVisitor<TResult> typedVisitor = visitor as ILSLVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitExpr_DotAccessorGroup(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
 
 	[RuleVersion(0)]
 	public ExpressionContext expression() {
@@ -2421,10 +2421,10 @@ public partial class LSLParser : Parser {
 				break;
 			case 7:
 				{
-				_localctx = new Expr_DotAccessorGroupContext(_localctx);
+				_localctx = new Expr_DotAccessorExprContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 277; dotAccessor();
+				State = 277; dotAccessorExpr();
 				}
 				break;
 			case 8:

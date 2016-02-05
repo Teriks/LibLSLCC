@@ -393,12 +393,12 @@ expressionList:
 	;
 
 
-dotAccessor:
+dotAccessorExpr:
     expr_lvalue=ID operation=DOT member=ID
     ;
 
 modifiableLeftValue:
-    dotAccessor | variable=ID
+    dotAccessorExpr | variable=ID
     ;
 
 expression:
@@ -408,7 +408,7 @@ expression:
 
 |   function_name=ID (open_parenth=O_PAREN  expression_list=optionalExpressionList close_parenth=C_PAREN) #Expr_FunctionCall
 
-|   dotAccessor #Expr_DotAccessorGroup
+|   dotAccessorExpr #Expr_DotAccessorExpr
 
 |   expr_lvalue=expression operation=(INCREMENT | DECREMENT )                                #Expr_PostfixOperation
 

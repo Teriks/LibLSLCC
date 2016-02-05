@@ -260,15 +260,15 @@ public interface ILSLListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitExpressionList([NotNull] LSLParser.ExpressionListContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.dotAccessor"/>.
+	/// Enter a parse tree produced by <see cref="LSLParser.dotAccessorExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterDotAccessor([NotNull] LSLParser.DotAccessorContext context);
+	void EnterDotAccessorExpr([NotNull] LSLParser.DotAccessorExprContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.dotAccessor"/>.
+	/// Exit a parse tree produced by <see cref="LSLParser.dotAccessorExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitDotAccessor([NotNull] LSLParser.DotAccessorContext context);
+	void ExitDotAccessorExpr([NotNull] LSLParser.DotAccessorExprContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.modifiableLeftValue"/>.
 	/// </summary>
@@ -327,6 +327,18 @@ public interface ILSLListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitExpr_TypeCast([NotNull] LSLParser.Expr_TypeCastContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Expr_DotAccessorExpr</c>
+	/// labeled alternative in <see cref="LSLParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpr_DotAccessorExpr([NotNull] LSLParser.Expr_DotAccessorExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Expr_DotAccessorExpr</c>
+	/// labeled alternative in <see cref="LSLParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpr_DotAccessorExpr([NotNull] LSLParser.Expr_DotAccessorExprContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>Expr_BitwiseShift</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
@@ -483,18 +495,6 @@ public interface ILSLListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitExpr_AddSub([NotNull] LSLParser.Expr_AddSubContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>Expr_DotAccessorGroup</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterExpr_DotAccessorGroup([NotNull] LSLParser.Expr_DotAccessorGroupContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>Expr_DotAccessorGroup</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitExpr_DotAccessorGroup([NotNull] LSLParser.Expr_DotAccessorGroupContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.optionalExpressionList"/>.
 	/// </summary>

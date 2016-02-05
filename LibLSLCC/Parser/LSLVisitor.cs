@@ -169,11 +169,11 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpressionList([NotNull] LSLParser.ExpressionListContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LSLParser.dotAccessor"/>.
+	/// Visit a parse tree produced by <see cref="LSLParser.dotAccessorExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitDotAccessor([NotNull] LSLParser.DotAccessorContext context);
+	Result VisitDotAccessorExpr([NotNull] LSLParser.DotAccessorExprContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.modifiableLeftValue"/>.
 	/// </summary>
@@ -208,6 +208,13 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitExpr_TypeCast([NotNull] LSLParser.Expr_TypeCastContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Expr_DotAccessorExpr</c>
+	/// labeled alternative in <see cref="LSLParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpr_DotAccessorExpr([NotNull] LSLParser.Expr_DotAccessorExprContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Expr_BitwiseShift</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
@@ -299,13 +306,6 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitExpr_AddSub([NotNull] LSLParser.Expr_AddSubContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Expr_DotAccessorGroup</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpr_DotAccessorGroup([NotNull] LSLParser.Expr_DotAccessorGroupContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.optionalExpressionList"/>.
 	/// </summary>

@@ -263,7 +263,7 @@ public partial class LSLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitExpressionList([NotNull] LSLParser.ExpressionListContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LSLParser.dotAccessor"/>.
+	/// Visit a parse tree produced by <see cref="LSLParser.dotAccessorExpr"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -271,7 +271,7 @@ public partial class LSLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDotAccessor([NotNull] LSLParser.DotAccessorContext context) { return VisitChildren(context); }
+	public virtual Result VisitDotAccessorExpr([NotNull] LSLParser.DotAccessorExprContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.modifiableLeftValue"/>.
 	/// <para>
@@ -322,6 +322,16 @@ public partial class LSLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitExpr_TypeCast([NotNull] LSLParser.Expr_TypeCastContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LSLParser.Expr_DotAccessorExpr"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitExpr_DotAccessorExpr([NotNull] LSLParser.Expr_DotAccessorExprContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.Expr_BitwiseShift"/>.
 	/// <para>
@@ -452,16 +462,6 @@ public partial class LSLBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitExpr_AddSub([NotNull] LSLParser.Expr_AddSubContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="LSLParser.Expr_DotAccessorGroup"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitExpr_DotAccessorGroup([NotNull] LSLParser.Expr_DotAccessorGroupContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.optionalExpressionList"/>.
 	/// <para>

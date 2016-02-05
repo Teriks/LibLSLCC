@@ -922,7 +922,7 @@ namespace LibLSLCC.AutoComplete
                     if (context.expr_lvalue == null) return true;
 
                     var variable = context.expr_lvalue.variable;
-                    var accessor = context.expr_lvalue.dotAccessor();
+                    var accessor = context.expr_lvalue.dotAccessorExpr();
 
                     if (variable != null)
                     {
@@ -962,7 +962,7 @@ namespace LibLSLCC.AutoComplete
                     if (context.expr_lvalue == null) return true;
 
                     var atom = context.expr_lvalue.variable;
-                    var accessor = context.expr_lvalue.dotAccessor();
+                    var accessor = context.expr_lvalue.dotAccessorExpr();
 
                     if (atom != null)
                     {
@@ -2015,7 +2015,7 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-            public override bool VisitDotAccessor(LSLParser.DotAccessorContext context)
+            public override bool VisitDotAccessorExpr(LSLParser.DotAccessorExprContext context)
             {
                 if (context.operation.StopIndex <= _parent._toOffset &&
                     (context.member == null || _parent._toOffset <= context.member.StartIndex))
@@ -2023,7 +2023,7 @@ namespace LibLSLCC.AutoComplete
                     _parent.RightOfDotAccessor = true;
                 }
 
-                return base.VisitDotAccessor(context);
+                return base.VisitDotAccessorExpr(context);
             }
         };
     }

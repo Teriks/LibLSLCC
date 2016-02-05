@@ -2352,7 +2352,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     context.variable.Text);
             }
 
-            return Visit(context.dotAccessor());
+            return Visit(context.dotAccessorExpr());
 
         }
 
@@ -2587,7 +2587,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
 
-        public override ILSLSyntaxTreeNode VisitDotAccessor(LSLParser.DotAccessorContext context)
+        public override ILSLSyntaxTreeNode VisitDotAccessorExpr(LSLParser.DotAccessorExprContext context)
         {
 
             if (context == null || Utility.AnyNull(context.expr_lvalue, context.operation, context.member))
@@ -2598,16 +2598,16 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             var operatorLocation = new LSLSourceCodeRange(context.operation);
 
+            var variableAccessedLocation = new LSLSourceCodeRange(context.expr_lvalue);
+
             var accessedMember = context.member.Text;
 
-            var variableReferenceOnLeft = GetClonedReferenceToVariableNode(
-                new LSLSourceCodeRange(context.expr_lvalue),
-                context.expr_lvalue.Text);
+            var variableReferenceOnLeft = GetClonedReferenceToVariableNode(variableAccessedLocation, context.expr_lvalue.Text);
 
 
             if (variableReferenceOnLeft.HasErrors)
             {
-                return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(variableReferenceOnLeft.SourceCodeRange));
+                return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(variableAccessedLocation));
             }
 
 
@@ -2662,9 +2662,9 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
 
-        public override ILSLSyntaxTreeNode VisitExpr_DotAccessorGroup(LSLParser.Expr_DotAccessorGroupContext context)
+        public override ILSLSyntaxTreeNode VisitExpr_DotAccessorExpr(LSLParser.Expr_DotAccessorExprContext context)
         {
-            return ReturnFromVisit(context, Visit(context.dotAccessor()));
+            return ReturnFromVisit(context, Visit(context.dotAccessorExpr()));
         }
 
 
