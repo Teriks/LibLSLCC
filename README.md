@@ -115,15 +115,6 @@ A few notable code validator/OpenSim code generator features:
  * Support for certain unicode characters in script symbols. (Same characters the linden Compiler allows)
 
 
- 
-# Known syntax incompatibilities
-
-
-See here, for difficult syntax problems I have not and may not be able to fix:
-
-https://github.com/Teriks/LibLSLCC/wiki/Syntax-Incompatibilities
-
-
 
 # About LibLSLCCEditor
 
