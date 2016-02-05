@@ -74,27 +74,27 @@ namespace LibLSLCC.Compilers.OpenSim.Visitors
 //============================
 private static class UTILITIES
 {
-    public static void ForceStatement<T>(T value) {}
+    public static void ForceStatement<T>(T val) {}
 
     public static bool ToBool(LSL_Types.LSLString str)		
     {		
         return str.Length != 0;		
     }
 
-    public static LSL_Types.Quaternion Negate(LSL_Types.Quaternion rotation)
+    public static LSL_Types.Quaternion Negate(LSL_Types.Quaternion rot)
     {
-        rotation.x=(-rotation.x);
-        rotation.y=(-rotation.y);
-        rotation.z=(-rotation.z);
-        rotation.s=(-rotation.s);
-        return rotation;
+        rot.x=(-rot.x);
+        rot.y=(-rot.y);
+        rot.z=(-rot.z);
+        rot.s=(-rot.s);
+        return rot;
     }
-    public static LSL_Types.Vector3 Negate(LSL_Types.Vector3 vector)
+    public static LSL_Types.Vector3 Negate(LSL_Types.Vector3 vec)
     {
-        vector.x=(-vector.x);
-        vector.y=(-vector.y);
-        vector.z=(-vector.z);
-        return vector;
+        vec.x=(-vec.x);
+        vec.y=(-vec.y);
+        vec.z=(-vec.z);
+        return vec;
     }
 }
 ";
@@ -117,30 +117,30 @@ private static class UTILITIES
         ///     The name prefix used when defining global variables inside of the
         ///     global variable container class.
         /// </summary>
-        private const string GlobalContainerFieldsNamePrefix = "Var_";
+        private const string GlobalContainerFieldsNamePrefix = "V_";
 
         /// <summary>
         ///     The name prefix used when defining global variables inside of the
         ///     script class itself when a class and class constructor is
         ///     generated for the script.
         /// </summary>
-        private const string GlobalFieldsNamePrefix = "GlobalVar_";
+        private const string GlobalFieldsNamePrefix = "GV_";
 
         /// <summary>
         ///     The local variable prefix to mangle local variables with,
         ///     the compiler appends an integral scope ID after this prefix, followed by an underscore.
         /// </summary>
-        private const string LocalVariableNamePrefix = "LocalVar";
+        private const string LocalVariableNamePrefix = "LV";
 
         /// <summary>
         ///     The name prefix to mangle parameters names in event handlers and function declarations with.
         /// </summary>
-        private const string LocalParameterNamePrefix = "Param_";
+        private const string LocalParameterNamePrefix = "PM_";
 
         /// <summary>
         ///     The name prefix to mangle user defined function names with.
         /// </summary>
-        private const string FunctionNamePrefix = "Func_";
+        private const string FunctionNamePrefix = "FN_";
 
         private static readonly CSharpClassDeclarationName FallbackClassName = "LSLScript";
 
@@ -150,6 +150,13 @@ private static class UTILITIES
         ///     The stubs reverse the order of evaluation for binary operators.
         /// </summary>
         private readonly HashSet<LSLBinaryOperationSignature> _binOpsUsed = new HashSet<LSLBinaryOperationSignature>();
+
+
+        private static string GenBinaryOperationStubName(LSLBinaryOperationSignature binOp)
+        {
+            return "_o" + ((int)binOp.Left) + "" + ((int)binOp.Operation) + "" + ((int)binOp.Right);
+        }
+
 
         /// <summary>
         ///     Tracks what state body that LSL code generation is taking place in
@@ -291,7 +298,6 @@ private static class UTILITIES
             if (node.OperationString.EqualsOneOf("*=", "+=", "/=", "%=", "-="))
             {
                 string operation = node.OperationString.Substring(0, 1);
-                var operationType = LSLBinaryOperationTypeTools.ParseFromOperator(operation);
 
                 operationSignature = new LSLBinaryOperationSignature(operation, node.Type,
                     node.LeftExpression.Type,
@@ -306,7 +312,7 @@ private static class UTILITIES
 
                 Writer.Write("=");
 
-                Writer.Write(node.LeftExpression.Type + "_" + operationType + "_" + node.RightExpression.Type);
+                Writer.Write(GenBinaryOperationStubName(operationSignature));
                 Writer.Write("(");
                 Visit(node.RightExpression);
                 Writer.Write(",");
@@ -329,7 +335,7 @@ private static class UTILITIES
             }
 
 
-            Writer.Write(node.LeftExpression.Type + "_" + node.Operation + "_" + node.RightExpression.Type);
+            Writer.Write(GenBinaryOperationStubName(operationSignature));
             Writer.Write("(");
             Visit(node.RightExpression);
             Writer.Write(",");
@@ -1430,9 +1436,10 @@ private static class UTILITIES
 
             foreach (var binOp in _binOpsUsed)
             {
-                Writer.WriteLine(GenIndent() + "private " +
-                                 LSLAtomType_To_CSharpType(binOp.Returns) + " " + binOp.Left + "_" + binOp.Operation +
-                                 "_" + binOp.Right + "(" +
+
+
+                Writer.WriteLine(GenIndent() + "private " + 
+                                 LSLAtomType_To_CSharpType(binOp.Returns) + " " + GenBinaryOperationStubName(binOp) + "(" +
                                  LSLAtomType_To_CSharpType(binOp.Right) + " right, " +
                                  LSLAtomType_To_CSharpType(binOp.Left) + " left)");
 
@@ -1454,6 +1461,9 @@ private static class UTILITIES
 
             _binOpsUsed.Clear();
         }
+
+
+
 
 
         public override bool VisitCompilationUnit(ILSLCompilationUnitNode unode)
