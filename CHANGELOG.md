@@ -160,4 +160,10 @@ The variable name mangling scheme has been changed so that symbol names are shor
 Binary operator stub's also have a new naming scheme.
 
 
+# Fix issue with incorrectly detecting invalid escape codes in strings
+
+Behavior has been changed to simply replace the invalid escape code with the code 
+character that comes after the slash, as in Linden LSL.
+
+
 =======
