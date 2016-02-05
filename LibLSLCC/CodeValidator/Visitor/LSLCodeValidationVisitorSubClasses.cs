@@ -43,6 +43,7 @@
 #region Imports
 
 using Antlr4.Runtime;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Parser;
 
 #endregion
@@ -75,6 +76,36 @@ namespace LibLSLCC.CodeValidator.Visitor
                 bool modifiesLValue = false)
             {
                 LeftContext = exprLvalue;
+                OperationToken = operationToken;
+                RightContext = exprRvalue;
+                OriginalContext = originalContext;
+                ModifiesLValue = modifiesLValue;
+            }
+        }
+
+
+        /// <summary>
+        ///     Represents a generic assignment expression operation.
+        ///     I made alternative grammar label names for each different type of expression operation so that I could
+        ///     differentiate between postfix, casts etc.. unfortunately each type of binary operation must be named
+        ///     uniquely or antlr will complain, so the different binary expression visitor functions build this object
+        ///     and pass it it to VisitBinaryExpression.  All binary expression contexts have the same properties,
+        ///     but they cannot be made to derive from one type as antlr generates them and it does not have a feature to
+        ///     allow it
+        /// </summary>
+        private struct AssignmentExpressionContext
+        {
+            public readonly ILSLExprNode LeftExpr;
+            public readonly bool ModifiesLValue;
+            public readonly IToken OperationToken;
+            public readonly LSLParser.ExpressionContext OriginalContext;
+            public readonly LSLParser.ExpressionContext RightContext;
+
+            public AssignmentExpressionContext(ILSLExprNode exprLvalue, IToken operationToken,
+                LSLParser.ExpressionContext exprRvalue, LSLParser.ExpressionContext originalContext,
+                bool modifiesLValue = false)
+            {
+                LeftExpr = exprLvalue;
                 OperationToken = operationToken;
                 RightContext = exprRvalue;
                 OriginalContext = originalContext;

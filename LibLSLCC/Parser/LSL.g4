@@ -393,7 +393,14 @@ expressionList:
 	;
 
 
-//probably not correct, gets the tree I need though
+dotAccessor:
+    expr_lvalue=ID operation=DOT member=ID
+    ;
+
+modifiableLeftValue:
+    dotAccessor | variable=ID
+    ;
+
 expression:
 
 
@@ -401,7 +408,7 @@ expression:
 
 |   function_name=ID (open_parenth=O_PAREN  expression_list=optionalExpressionList close_parenth=C_PAREN) #Expr_FunctionCall
 
-|   expr_lvalue=expression operation=DOT member=ID											 #Expr_DotAccessor
+|   dotAccessor #Expr_DotAccessorGroup
 
 |   expr_lvalue=expression operation=(INCREMENT | DECREMENT )                                #Expr_PostfixOperation
 
@@ -422,10 +429,9 @@ expression:
 |   expr_lvalue=expression (operation=BITWISE_OR) expr_rvalue=expression       #Expr_BitwiseOr
 |   expr_lvalue=expression operation=(LOGICAL_AND|LOGICAL_OR) expr_rvalue=expression      #Expr_Logical_And_Or
 
-|   expr_lvalue=expression operation=EQUAL expr_rvalue=expression                                    #Expr_Assignment
+|   expr_lvalue=modifiableLeftValue operation=(PLUS_EQUAL|MINUS_EQUAL|MUL_EQUAL|DIV_EQUAL|MOD_EQUAL) expr_rvalue=expression #Expr_ModifyingAssignment
 
-|   expr_lvalue=expression operation=(PLUS_EQUAL|MINUS_EQUAL|MUL_EQUAL|DIV_EQUAL|MOD_EQUAL) expr_rvalue=expression #Expr_ModifyingAssignment
-
+|   expr_lvalue=modifiableLeftValue operation=EQUAL expr_rvalue=expression                #Expr_Assignment
 
 |
     (
@@ -438,7 +444,7 @@ expression:
 	|rotation_literal=rotationLiteral
 	|list_literal=listLiteral
 	)  #Expr_Atom
-; 
+;
 
 
 

@@ -921,29 +921,22 @@ namespace LibLSLCC.AutoComplete
                 {
                     if (context.expr_lvalue == null) return true;
 
-                    var atom = context.expr_lvalue as LSLParser.Expr_AtomContext;
-                    var accessor = context.expr_lvalue as LSLParser.Expr_DotAccessorContext;
+                    var variable = context.expr_lvalue.variable;
+                    var accessor = context.expr_lvalue.dotAccessor();
 
-                    if (atom != null)
+                    if (variable != null)
                     {
-                        if (atom.variable != null)
+                        if (_parent._parameters.ContainsKey(variable.Text) ||
+                            _parent._localVariables.Any(x => x.ContainsKey(variable.Text)) ||
+                            _parent._globalVariables.ContainsKey(variable.Text))
                         {
-                            if (_parent._parameters.ContainsKey(atom.variable.Text) ||
-                                _parent._localVariables.Any(x => x.ContainsKey(atom.variable.Text)) ||
-                                _parent._globalVariables.ContainsKey(atom.variable.Text))
-                            {
-                                _parent.InPlainVariableAssignmentExpression = true;
-                                _parent.InBasicExpressionTree = true;
-                            }
-                        }
-                        else
-                        {
-                            return base.VisitExpr_Assignment(context);
+                            _parent.InPlainVariableAssignmentExpression = true;
+                            _parent.InBasicExpressionTree = true;
                         }
                     }
                     else if (accessor != null)
                     {
-                        var maybeVar = accessor.expr_lvalue.GetText();
+                        var maybeVar = accessor.expr_lvalue.Text;
 
                         if (_parent._parameters.ContainsKey(maybeVar) ||
                                  _parent._localVariables.Any(x => x.ContainsKey(maybeVar)) ||
@@ -968,25 +961,22 @@ namespace LibLSLCC.AutoComplete
                 {
                     if (context.expr_lvalue == null) return true;
 
-                    var atom = context.expr_lvalue as LSLParser.Expr_AtomContext;
-                    var accessor = context.expr_lvalue as LSLParser.Expr_DotAccessorContext;
+                    var atom = context.expr_lvalue.variable;
+                    var accessor = context.expr_lvalue.dotAccessor();
 
                     if (atom != null)
                     {
-                        if (atom.variable != null)
+                        if (_parent._parameters.ContainsKey(atom.Text) ||
+                            _parent._localVariables.Any(x => x.ContainsKey(atom.Text)) ||
+                            _parent._globalVariables.ContainsKey(atom.Text))
                         {
-                            if (_parent._parameters.ContainsKey(atom.variable.Text) ||
-                                _parent._localVariables.Any(x => x.ContainsKey(atom.variable.Text)) ||
-                                _parent._globalVariables.ContainsKey(atom.variable.Text))
-                            {
-                                _parent.InModifyingVariableAssignmentExpression = true;
-                                _parent.InBasicExpressionTree = true;
-                            }
+                            _parent.InModifyingVariableAssignmentExpression = true;
+                            _parent.InBasicExpressionTree = true;
                         }
                     }
                     else if (accessor != null)
                     {
-                        var maybeVar = accessor.expr_lvalue.GetText();
+                        var maybeVar = accessor.expr_lvalue.Text;
 
                         if (_parent._parameters.ContainsKey(maybeVar) ||
                                  _parent._localVariables.Any(x => x.ContainsKey(maybeVar)) ||
@@ -2025,7 +2015,7 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-            public override bool VisitExpr_DotAccessor(LSLParser.Expr_DotAccessorContext context)
+            public override bool VisitDotAccessor(LSLParser.DotAccessorContext context)
             {
                 if (context.operation.StopIndex <= _parent._toOffset &&
                     (context.member == null || _parent._toOffset <= context.member.StartIndex))
@@ -2033,7 +2023,7 @@ namespace LibLSLCC.AutoComplete
                     _parent.RightOfDotAccessor = true;
                 }
 
-                return base.VisitExpr_DotAccessor(context);
+                return base.VisitDotAccessor(context);
             }
         };
     }

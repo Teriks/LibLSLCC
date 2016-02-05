@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLTupleAccessorNode(LSLParser.Expr_DotAccessorContext context, ILSLExprNode accessedExpression,
+        internal LSLTupleAccessorNode(LSLParser.DotAccessorContext context, ILSLExprNode accessedExpression,
             LSLType accessedType,
             LSLTupleComponent accessedComponent)
         {
@@ -94,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.Expr_DotAccessorContext ParserContext { get; private set; }
+        internal LSLParser.DotAccessorContext ParserContext { get; private set; }
 
 
         /// <summary>

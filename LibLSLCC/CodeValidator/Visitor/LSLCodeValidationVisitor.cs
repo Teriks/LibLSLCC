@@ -2310,8 +2310,11 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var result = VisitBinaryExpression(
-                new BinaryExpressionContext(context.expr_lvalue, context.operation, context.expr_rvalue, context, true));
+            ILSLExprNode leftVariable = (ILSLExprNode)Visit(context.expr_lvalue);
+
+
+            var result = VisitAssignment(
+                new AssignmentExpressionContext(leftVariable, context.operation, context.expr_rvalue, context, true));
 
             if (result.HasErrors)
             {
@@ -2334,29 +2337,24 @@ namespace LibLSLCC.CodeValidator.Visitor
                 result.HasErrors = true;
             }
 
-            else if (result.LeftExpression.IsCompoundExpression())
-            {
-                //allow chaining assignment, and modifying assignment operations when the left operand is a binary expression involving assignment, but nothing else
-                var checkAssign = result.LeftExpression as LSLBinaryExpressionNode;
-                if ((checkAssign != null && !checkAssign.Operation.IsAssignOrModifyAssign()) || checkAssign == null)
-                {
-                    GenSyntaxError().AssignmentToCompoundExpression(location);
-
-                    result.HasErrors = true;
-                }
-            }
-
-            else if (result.LeftExpression.IsLiteral())
-            {
-                GenSyntaxError().AssignmentToLiteral(location);
-
-                result.HasErrors = true;
-            }
-
 
             return ReturnFromVisit(context, result);
         }
 
+
+
+        public override ILSLSyntaxTreeNode VisitModifiableLeftValue(LSLParser.ModifiableLeftValueContext context)
+        {
+            if (context.variable != null)
+            {
+                return GetClonedReferenceToVariableNode(
+                    new LSLSourceCodeRange(context.variable),
+                    context.variable.Text);
+            }
+
+            return Visit(context.dotAccessor());
+
+        }
 
         public override ILSLSyntaxTreeNode VisitExpr_ModifyingAssignment(
             LSLParser.Expr_ModifyingAssignmentContext context)
@@ -2368,8 +2366,11 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var result = VisitBinaryExpression(
-                new BinaryExpressionContext(context.expr_lvalue, context.operation, context.expr_rvalue, context,
+            ILSLExprNode leftVariable = (ILSLExprNode)Visit(context.expr_lvalue);
+
+
+            var result = VisitAssignment(
+                new AssignmentExpressionContext(leftVariable, context.operation, context.expr_rvalue, context,
                     true));
 
 
@@ -2388,30 +2389,6 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 result.HasErrors = true;
             }
-
-            else if (result.LeftExpression.IsCompoundExpression())
-            {
-                //allow chaining assignment, and modifying assignment operations when the left operand is a binary expression involving assignment, but nothing else
-                var checkAssign = result.LeftExpression as LSLBinaryExpressionNode;
-                if ((checkAssign != null && !checkAssign.Operation.IsAssignOrModifyAssign()) || checkAssign == null)
-                {
-                    GenSyntaxError().ModifyingAssignmentToCompoundExpression(
-                            location,
-                            context.operation.Text);
-
-                    result.HasErrors = true;
-                }
-            }
-
-            else if (result.LeftExpression.IsLiteral())
-            {
-                GenSyntaxError().ModifyingAssignmentToLiteral(
-                        location,
-                        context.operation.Text);
-
-                result.HasErrors = true;
-            }
-
 
             return ReturnFromVisit(context, result);
         }
@@ -2497,6 +2474,41 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
+        private LSLVariableNode GetClonedReferenceToVariableNode(LSLSourceCodeRange variableCodeRange, string idText)
+        {
+            LSLVariableDeclarationNode declaration;
+            if (LibraryDataProvider.LibraryConstantExist(idText))
+            {
+
+                var librarySignature = LibraryDataProvider.GetLibraryConstantSignature(idText);
+
+                declaration =
+                    LSLVariableDeclarationNode.CreateLibraryConstant(librarySignature.Type, idText);
+
+                if (librarySignature.Deprecated)
+                {
+                    GenSyntaxWarning().UseOfDeprecatedLibraryConstant(
+                        variableCodeRange, librarySignature);
+                }
+
+            }
+            else
+            {
+                declaration = ScopingManager.ResolveVariable(idText);
+                if (declaration == null)
+                {
+                    GenSyntaxError().UndefinedVariableReference(variableCodeRange.Clone(),
+                        idText);
+
+                    return LSLVariableNode.GetError(variableCodeRange);
+                }
+            }
+
+            return declaration.CreateReference(variableCodeRange);
+
+        }
+
+
         public override ILSLSyntaxTreeNode VisitExpr_Atom(LSLParser.Expr_AtomContext context)
         {
             if (context == null ||
@@ -2512,42 +2524,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             if (context.variable != null)
             {
-                var idText = context.variable.Text;
-
-                LSLVariableDeclarationNode declaration;
-                if (LibraryDataProvider.LibraryConstantExist(idText))
-                {
-
-                    var librarySignature = LibraryDataProvider.GetLibraryConstantSignature(idText);
-
-                    declaration =
-                        LSLVariableDeclarationNode.CreateLibraryConstant(librarySignature.Type, idText);
-
-                    if (librarySignature.Deprecated)
-                    {
-                        GenSyntaxWarning().UseOfDeprecatedLibraryConstant(
-                            new LSLSourceCodeRange(context.variable), librarySignature);
-                    }
-
-                }
-                else
-                {
-                    declaration = ScopingManager.ResolveVariable(idText);
-                    if (declaration == null)
-                    {
-                        GenSyntaxError().UndefinedVariableReference(location,
-                            idText);
-
-                        return ReturnFromVisit(context,
-                            LSLVariableNode.GetError(new LSLSourceCodeRange(context.variable)));
-                    }
-                }
-
-                var v = declaration.CreateReference(context.variable);
-
-                //return a clone of the node into the tree, so its independent
-                //from the definition if modified
-                return ReturnFromVisit(context, v);
+                return ReturnFromVisit(context, GetClonedReferenceToVariableNode(new LSLSourceCodeRange(context.variable),  context.variable.Text));
             }
             if (context.integer_literal != null)
             {
@@ -2610,80 +2587,51 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        public override ILSLSyntaxTreeNode VisitExpr_DotAccessor(LSLParser.Expr_DotAccessorContext context)
+
+
+        public override ILSLSyntaxTreeNode VisitDotAccessor(LSLParser.DotAccessorContext context)
         {
+
             if (context == null || Utility.AnyNull(context.expr_lvalue, context.operation, context.member))
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitContextInvalidState("VisitExpr_DotAccessor");
+                    .VisitContextInvalidState("VisitExpr_DotAccessorGroup");
             }
 
-
-            var exprLvalue = VisitExpressionContent(context.expr_lvalue);
-
-
-            if (exprLvalue.HasErrors)
-            {
-                return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(
-                    new LSLSourceCodeRange(context)));
-            }
-
-
-            var location = new LSLSourceCodeRange(context.operation);
+            var operatorLocation = new LSLSourceCodeRange(context.operation);
 
             var accessedMember = context.member.Text;
 
-            
+            var variableReferenceOnLeft = GetClonedReferenceToVariableNode(
+                new LSLSourceCodeRange(context.expr_lvalue),
+                context.expr_lvalue.Text);
 
 
-            var variableReferenceOnLeft = exprLvalue as ILSLVariableNode;
-
-
-            if (variableReferenceOnLeft != null)
+            if (variableReferenceOnLeft.HasErrors)
             {
-                if (variableReferenceOnLeft.IsLibraryConstant)
-                {
-                    var libraryConstantReferenced = LibraryDataProvider.GetLibraryConstantSignature(variableReferenceOnLeft.Name);
+                return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(variableReferenceOnLeft.SourceCodeRange));
+            }
 
-                    GenSyntaxError().TupleAccessorOnLibraryConstant(location, variableReferenceOnLeft, libraryConstantReferenced, accessedMember);
 
-                    return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(new LSLSourceCodeRange(context)));
-                }
+            if (variableReferenceOnLeft.IsLibraryConstant)
+            {
+                var libraryConstantReferenced =
+                    LibraryDataProvider.GetLibraryConstantSignature(variableReferenceOnLeft.Name);
+
+                GenSyntaxError()
+                    .TupleAccessorOnLibraryConstant(operatorLocation, variableReferenceOnLeft, libraryConstantReferenced,
+                        accessedMember);
+
+                return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(new LSLSourceCodeRange(context)));
             }
 
 
             var isTupleAccess = accessedMember.EqualsOneOf("x", "y", "z", "s");
 
 
-            if (isTupleAccess && (exprLvalue.Type == LSLType.Vector || exprLvalue.Type == LSLType.Rotation))
+            if (!(isTupleAccess && (variableReferenceOnLeft.Type == LSLType.Vector || variableReferenceOnLeft.Type == LSLType.Rotation)))
             {
-                //only give these errors if we are dealing with a vector or rotation type
-                //accesses to non vectors and rotations are handled near the bottom of this function
-
-                if (exprLvalue.IsLiteral())
-                {
-                    GenSyntaxError().TupleAccessorOnLiteral(
-                        location,
-                        exprLvalue, accessedMember);
-
-                    return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(
-                        new LSLSourceCodeRange(context)));
-                }
-
-
-                if (exprLvalue.IsCompoundExpression())
-                {
-                    GenSyntaxError().TupleAccessorOnCompoundExpression(
-                        location,
-                        exprLvalue, accessedMember);
-
-                    return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(
-                        new LSLSourceCodeRange(context)));
-                }
-            }
-            else
-            {
-                GenSyntaxError().InvalidTupleComponentAccessorOperation(location, exprLvalue, accessedMember);
+                GenSyntaxError().InvalidTupleComponentAccessorOperation(operatorLocation, variableReferenceOnLeft, accessedMember);
 
 
                 return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(
@@ -2694,12 +2642,12 @@ namespace LibLSLCC.CodeValidator.Visitor
             var accessedComponent = LSLTupleComponentTools.ParseComponentName(accessedMember);
 
 
-            if (exprLvalue.Type == LSLType.Vector)
+            if (variableReferenceOnLeft.Type == LSLType.Vector)
             {
                 if (accessedMember == "s")
                 {
                     GenSyntaxError().InvalidTupleComponentAccessorOperation(
-                        location, exprLvalue, accessedMember);
+                        operatorLocation, variableReferenceOnLeft, accessedMember);
 
                     return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(
                         new LSLSourceCodeRange(context)));
@@ -2707,12 +2655,22 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var result = new LSLTupleAccessorNode(context, exprLvalue,
-                exprLvalue.Type, accessedComponent);
+            var result = new LSLTupleAccessorNode(context, variableReferenceOnLeft,
+                variableReferenceOnLeft.Type, accessedComponent);
 
 
             return ReturnFromVisit(context, result);
         }
+
+
+
+        public override ILSLSyntaxTreeNode VisitExpr_DotAccessorGroup(LSLParser.Expr_DotAccessorGroupContext context)
+        {
+            return Visit(context.dotAccessor());
+        }
+
+
+
 
 
         public override ILSLSyntaxTreeNode VisitParenthesizedExpression(LSLParser.ParenthesizedExpressionContext context)
@@ -2743,6 +2701,45 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             return ReturnFromVisit(context, new LSLParenthesizedExpressionNode(context, result));
+        }
+
+
+        private LSLBinaryExpressionNode VisitAssignment(AssignmentExpressionContext context)
+        {
+            bool usedInStaticContext = ScopingManager.InGlobalScope;
+
+            if (usedInStaticContext)
+            {
+                var sourceRange = new LSLSourceCodeRange(context.OperationToken);
+
+                GenSyntaxError().BinaryOperatorUsedInStaticContext(sourceRange);
+
+                return LSLBinaryExpressionNode.GetError(sourceRange);
+            }
+
+
+            var exprLvalue = context.LeftExpr;
+            var exprRvalue = VisitExpressionContent(context.RightContext);
+
+            var operationString = context.OperationToken.Text;
+
+            var validate = ValidateBinaryOperation(exprLvalue, context.OperationToken.Text, exprRvalue,
+                new LSLSourceCodeRange(context.OperationToken));
+
+
+            var result = new LSLBinaryExpressionNode(
+                context.OriginalContext,
+                context.OperationToken,
+                exprLvalue,
+                exprRvalue,
+                validate.ResultType,
+                operationString)
+            {
+                HasErrors = !validate.IsValid
+            };
+
+
+            return result;
         }
 
 

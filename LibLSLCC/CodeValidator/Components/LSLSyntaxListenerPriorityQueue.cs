@@ -387,34 +387,6 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        /// A vector or rotation component accessor was used on a vector or rotation literal. (This is not allowed)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="lvalueLiteral">The literal on the left of the dot operator.</param>
-        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void ILSLSyntaxErrorListener.TupleAccessorOnLiteral(LSLSourceCodeRange location, ILSLExprNode lvalueLiteral,
-            string memberAccessed)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.TupleAccessorOnLiteral(location, lvalueLiteral, memberAccessed));
-        }
-
-        /// <summary>
-        /// A vector or rotation component accessor was used on a non simple expression.  
-        /// Doing something like: (float x = llGetPos().x;) is not valid, neither is (float x = (vector_var+vector_var).x;) component access is only valid directly on a variable names.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="lvalueCompound">The compound expression on the left side of the dot operator.</param>
-        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void ILSLSyntaxErrorListener.TupleAccessorOnCompoundExpression(LSLSourceCodeRange location,
-            ILSLExprNode lvalueCompound,
-            string memberAccessed)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.TupleAccessorOnCompoundExpression(location, lvalueCompound, memberAccessed));
-        }
-
-        /// <summary>
         /// A '.' member access was attempted on an invalid variable type, or the variable type did not contain the given component.
         /// Valid component names for vectors are:  x,y and z
         /// Valid component names for rotations are:  x,y,z and s
@@ -714,53 +686,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        /// A modifying assignment was attempted on a non variable expression.  Something like: ((a+b) += 3;) occurred, or even (llAbs(2.3) *= 3;)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="operation">The modifying assignment expression used.</param>
-        void ILSLSyntaxErrorListener.ModifyingAssignmentToCompoundExpression(LSLSourceCodeRange location,
-            string operation)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.ModifyingAssignmentToCompoundExpression(location, operation));
-        }
-
-        /// <summary>
-        /// A plain assignment was attempted on a non variable expression.  Something like: ((a+b) = 3;) occurred, or even (llAbs(2.3) = 3;)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        void ILSLSyntaxErrorListener.AssignmentToCompoundExpression(LSLSourceCodeRange location)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.AssignmentToCompoundExpression(location));
-        }
-
-        /// <summary>
-        /// An assignment expression was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; = llGetPos()) or even ([1,2,...] = list_var;) occurred.
-        /// </summary>
-        /// <param name="location"></param>
-        void ILSLSyntaxErrorListener.AssignmentToLiteral(LSLSourceCodeRange location)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex, () => SyntaxErrorListener.AssignmentToLiteral(location));
-        }
-
-        /// <summary>
-        /// A modifying assignment was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; *= llGetPos()) or even ([1,2,...] += list_var;) occurred.  
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="operation">The modifying assignment expression used.</param>
-        void ILSLSyntaxErrorListener.ModifyingAssignmentToLiteral(LSLSourceCodeRange location, string operation)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.ModifyingAssignmentToLiteral(location, operation));
-        }
-
-        /// <summary>
         /// A library defined event handler was used more than once in the same state.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="eventHandlerName">The name of the event handler which was used more than once.</param>
-        /// <param name="stateName">The name of the code state in which the error occured.</param>
+        /// <param name="stateName">The name of the code state in which the error occurred.</param>
         void ILSLSyntaxErrorListener.RedefinedEventHandler(LSLSourceCodeRange location, string eventHandlerName,
             string stateName)
         {

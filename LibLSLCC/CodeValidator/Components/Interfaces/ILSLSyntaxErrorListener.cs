@@ -238,25 +238,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         void RedefinedLabel(LSLSourceCodeRange location, string labelName);
 
 
-        /// <summary>
-        /// A vector or rotation component accessor was used on a vector or rotation literal. (This is not allowed)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="lvalueLiteral">The literal on the left of the dot operator.</param>
-        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void TupleAccessorOnLiteral(LSLSourceCodeRange location, ILSLExprNode lvalueLiteral, string memberAccessed);
-
-
-        /// <summary>
-        /// A vector or rotation component accessor was used on a non simple expression.  
-        /// Doing something like: (float x = llGetPos().x;) is not valid, neither is (float x = (vector_var+vector_var).x;) component access is only valid directly on a variable names.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="lvalueCompound">The compound expression on the left side of the dot operator.</param>
-        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void TupleAccessorOnCompoundExpression(LSLSourceCodeRange location, ILSLExprNode lvalueCompound,
-            string memberAccessed);
-
 
         /// <summary>
         /// A '.' member access was attempted on an invalid variable type, or the variable type did not contain the given component.
@@ -454,33 +435,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="location">Location in source code.</param>
         void CallToFunctionInStaticContext(LSLSourceCodeRange location);
-
-
-        /// <summary>
-        /// A modifying assignment was attempted on a non variable expression.  Something like: ((a+b) += 3;) occurred, or even (llAbs(2.3) *= 3;)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="operation">The modifying assignment expression used.</param>
-        void ModifyingAssignmentToCompoundExpression(LSLSourceCodeRange location, string operation);
-
-        /// <summary>
-        /// A plain assignment was attempted on a non variable expression.  Something like: ((a+b) = 3;) occurred, or even (llAbs(2.3) = 3;)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        void AssignmentToCompoundExpression(LSLSourceCodeRange location);
-
-        /// <summary>
-        /// An assignment expression was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; = llGetPos()) or even ([1,2,...] = list_var;) occurred.
-        /// </summary>
-        /// <param name="location"></param>
-        void AssignmentToLiteral(LSLSourceCodeRange location);
-
-        /// <summary>
-        /// A modifying assignment was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; *= llGetPos()) or even ([1,2,...] += list_var;) occurred.  
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="operation">The modifying assignment expression used.</param>
-        void ModifyingAssignmentToLiteral(LSLSourceCodeRange location, string operation);
 
 
         /// <summary>

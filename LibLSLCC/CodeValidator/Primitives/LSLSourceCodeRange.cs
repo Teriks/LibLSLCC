@@ -333,5 +333,19 @@ namespace LibLSLCC.CodeValidator.Primitives
             ColumnEnd = statement.SourceCodeRange.ColumnEnd;
             StopIndex = statement.SourceCodeRange.StopIndex;
         }
+
+        public LSLSourceCodeRange Clone()
+        {
+            return new LSLSourceCodeRange()
+            {
+                ColumnEnd = this.ColumnEnd,
+                ColumnStart = this.ColumnStart,
+                HasIndexInfo = this.HasIndexInfo,
+                LineEnd = this.LineEnd,
+                LineStart = this.LineStart,
+                StartIndex = this.StartIndex,
+                StopIndex = this.StopIndex
+            };
+        }
     }
 }

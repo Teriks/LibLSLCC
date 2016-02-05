@@ -169,6 +169,18 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpressionList([NotNull] LSLParser.ExpressionListContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LSLParser.dotAccessor"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDotAccessor([NotNull] LSLParser.DotAccessorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LSLParser.modifiableLeftValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitModifiableLeftValue([NotNull] LSLParser.ModifiableLeftValueContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>Expr_PrefixOperation</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
 	/// </summary>
@@ -267,13 +279,6 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpr_PostfixOperation([NotNull] LSLParser.Expr_PostfixOperationContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Expr_FunctionCall</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpr_FunctionCall([NotNull] LSLParser.Expr_FunctionCallContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>Expr_ModifyingAssignment</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
 	/// </summary>
@@ -281,12 +286,12 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpr_ModifyingAssignment([NotNull] LSLParser.Expr_ModifyingAssignmentContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Expr_DotAccessor</c>
+	/// Visit a parse tree produced by the <c>Expr_FunctionCall</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_DotAccessor([NotNull] LSLParser.Expr_DotAccessorContext context);
+	Result VisitExpr_FunctionCall([NotNull] LSLParser.Expr_FunctionCallContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Expr_AddSub</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
@@ -294,6 +299,13 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitExpr_AddSub([NotNull] LSLParser.Expr_AddSubContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Expr_DotAccessorGroup</c>
+	/// labeled alternative in <see cref="LSLParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpr_DotAccessorGroup([NotNull] LSLParser.Expr_DotAccessorGroupContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.optionalExpressionList"/>.
 	/// </summary>

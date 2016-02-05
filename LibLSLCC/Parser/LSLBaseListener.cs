@@ -310,6 +310,30 @@ public partial class LSLBaseListener : ILSLListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpressionList([NotNull] LSLParser.ExpressionListContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LSLParser.dotAccessor"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDotAccessor([NotNull] LSLParser.DotAccessorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LSLParser.dotAccessor"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDotAccessor([NotNull] LSLParser.DotAccessorContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LSLParser.modifiableLeftValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterModifiableLeftValue([NotNull] LSLParser.ModifiableLeftValueContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LSLParser.modifiableLeftValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitModifiableLeftValue([NotNull] LSLParser.ModifiableLeftValueContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.Expr_PrefixOperation"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -478,18 +502,6 @@ public partial class LSLBaseListener : ILSLListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpr_PostfixOperation([NotNull] LSLParser.Expr_PostfixOperationContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.Expr_FunctionCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpr_FunctionCall([NotNull] LSLParser.Expr_FunctionCallContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.Expr_FunctionCall"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpr_FunctionCall([NotNull] LSLParser.Expr_FunctionCallContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.Expr_ModifyingAssignment"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -502,17 +514,17 @@ public partial class LSLBaseListener : ILSLListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpr_ModifyingAssignment([NotNull] LSLParser.Expr_ModifyingAssignmentContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.Expr_DotAccessor"/>.
+	/// Enter a parse tree produced by <see cref="LSLParser.Expr_FunctionCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpr_DotAccessor([NotNull] LSLParser.Expr_DotAccessorContext context) { }
+	public virtual void EnterExpr_FunctionCall([NotNull] LSLParser.Expr_FunctionCallContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.Expr_DotAccessor"/>.
+	/// Exit a parse tree produced by <see cref="LSLParser.Expr_FunctionCall"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpr_DotAccessor([NotNull] LSLParser.Expr_DotAccessorContext context) { }
+	public virtual void ExitExpr_FunctionCall([NotNull] LSLParser.Expr_FunctionCallContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.Expr_AddSub"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -525,6 +537,18 @@ public partial class LSLBaseListener : ILSLListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpr_AddSub([NotNull] LSLParser.Expr_AddSubContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LSLParser.Expr_DotAccessorGroup"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExpr_DotAccessorGroup([NotNull] LSLParser.Expr_DotAccessorGroupContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LSLParser.Expr_DotAccessorGroup"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExpr_DotAccessorGroup([NotNull] LSLParser.Expr_DotAccessorGroupContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.optionalExpressionList"/>.
 	/// <para>The default implementation does nothing.</para>

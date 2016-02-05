@@ -299,18 +299,49 @@ private static class UTILITIES
             }
 
 
-            if (node.OperationString.EqualsOneOf("=", "*=", "+=", "/=", "%=", "-="))
+            if (node.OperationString == "=")
             {
                 Visit(node.LeftExpression);
                 Writer.Write(node.OperationString);
                 Visit(node.RightExpression);
+
+                return false;
+            }
+
+            LSLBinaryOperationSignature operationSignature;
+
+            if (node.OperationString.EqualsOneOf("*=", "+=", "/=", "%=", "-="))
+            {
+
+                string operation = node.OperationString.Substring(0, 1);
+                var operationType = LSLBinaryOperationTypeTools.ParseFromOperator(operation);
+
+                operationSignature = new LSLBinaryOperationSignature(operation, node.Type,
+                node.LeftExpression.Type,
+                node.RightExpression.Type);
+
+                if (!_binOpsUsed.Contains(operationSignature))
+                {
+                    _binOpsUsed.Add(operationSignature);
+                }
+
+                Visit(node.LeftExpression);
+
+                Writer.Write("=");
+
+                Writer.Write(node.LeftExpression.Type + "_" + operationType + "_" + node.RightExpression.Type);
+                Writer.Write("(");
+                Visit(node.RightExpression);
+                Writer.Write(",");
+                Visit(node.LeftExpression);
+                Writer.Write(")");
 
 
                 return false;
             }
 
 
-            var operationSignature = new LSLBinaryOperationSignature(node.OperationString, node.Type,
+            operationSignature = new LSLBinaryOperationSignature(node.OperationString, node.Type,
                 node.LeftExpression.Type,
                 node.RightExpression.Type);
 
