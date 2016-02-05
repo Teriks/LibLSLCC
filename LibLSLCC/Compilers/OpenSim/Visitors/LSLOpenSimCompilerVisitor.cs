@@ -237,7 +237,7 @@ private static class UTILITIES
 
         public override bool VisitBinaryExpression(ILSLBinaryExpressionNode node)
         {
-            var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
+            var parenths = !(node.Parent is ILSLExpressionStatementNode || node.Parent is ILSLExpressionListNode);
 
             if (node.Operation == LSLBinaryOperationType.LogicalAnd)
             {
@@ -366,7 +366,7 @@ private static class UTILITIES
 
         public override bool VisitPostfixOperation(ILSLPostfixOperationNode node)
         {
-            var parenths = !(node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
+            var parenths = !(node.Parent is ILSLExpressionStatementNode || node.Parent is ILSLExpressionListNode);
 
             if (parenths)
             {
@@ -399,12 +399,12 @@ private static class UTILITIES
             {
                 var isExprStatement = node.Parent is ILSLExpressionStatementNode;
 
-                var cantStandAlone = isExprStatement && (
-                    node.Operation != LSLPrefixOperationType.Decrement &&
-                    node.Operation != LSLPrefixOperationType.Increment
-                    );
+                var isUnary = node.Operation != LSLPrefixOperationType.Decrement &&
+                              node.Operation != LSLPrefixOperationType.Increment;
 
-                var parenths = !(isExprStatement || node.Parent is ILSLCodeStatement || node.Parent is ILSLExpressionListNode);
+                var cantStandAlone = isExprStatement && isUnary;
+
+                var parenths = !(isExprStatement || node.Parent is ILSLExpressionListNode);
 
 
                 if (parenths)
@@ -415,7 +415,18 @@ private static class UTILITIES
                 if (!cantStandAlone)
                 {
                     Writer.Write(node.OperationString);
-                    Visit(node.RightExpression);
+
+                    if (isUnary)
+                    {
+                        Writer.Write("(");
+                        Visit(node.RightExpression);
+                        Writer.Write(")");
+                    }
+                    else
+                    {
+                        Visit(node.RightExpression);
+                    }
+
                 }
                 else
                 {

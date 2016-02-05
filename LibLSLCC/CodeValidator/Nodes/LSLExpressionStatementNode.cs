@@ -54,7 +54,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public class LSLExpressionStatementNode : ILSLExpressionStatementNode, ILSLCodeStatement
+    public class LSLExpressionStatementNode : ILSLExpressionStatementNode
     {
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
