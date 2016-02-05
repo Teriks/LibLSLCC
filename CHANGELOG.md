@@ -142,11 +142,15 @@ expression: ... expression stuff ...
 Helps monumentally...
 
 
-this also happens to fix the precedence problem with expressions such as `-x = y`.
+This also happens to fix the precedence problem with expressions such as `-x = y`.
 
 
 The downside to this is that assignments to non lvalues will
 now result in a non-pretty grammar level syntax error.
+
+
+The upside is that it fixes several operator precedence issues that
+cause incompatibilities with SecondLife,  I currently do not know of any more (yet).
 
 
 # Reduced the size of generated OpenSim code
