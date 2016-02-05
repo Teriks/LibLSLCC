@@ -2495,17 +2495,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             else
             {
                 declaration = ScopingManager.ResolveVariable(idText);
-                if (declaration == null)
-                {
-                    GenSyntaxError().UndefinedVariableReference(variableCodeRange.Clone(),
-                        idText);
 
-                    return LSLVariableNode.GetError(variableCodeRange);
-                }
+                if (declaration != null) return declaration.CreateReference(variableCodeRange);
+
+                GenSyntaxError().UndefinedVariableReference(variableCodeRange.Clone(), idText);
+
+                return LSLVariableNode.GetError(variableCodeRange);
             }
 
             return declaration.CreateReference(variableCodeRange);
-
         }
 
 
@@ -2666,7 +2664,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public override ILSLSyntaxTreeNode VisitExpr_DotAccessorGroup(LSLParser.Expr_DotAccessorGroupContext context)
         {
-            return Visit(context.dotAccessor());
+            return ReturnFromVisit(context, Visit(context.dotAccessor()));
         }
 
 
@@ -2702,6 +2700,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             return ReturnFromVisit(context, new LSLParenthesizedExpressionNode(context, result));
         }
+
+
 
 
         private LSLBinaryExpressionNode VisitAssignment(AssignmentExpressionContext context)

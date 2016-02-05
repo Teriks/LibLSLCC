@@ -58,9 +58,9 @@ namespace LibLSLCC.CodeValidator.Visitor
         ///     Represents a generic binary expression operation.
         ///     I made alternative grammar label names for each different type of expression operation so that I could
         ///     differentiate between postfix, casts etc.. unfortunately each type of binary operation must be named
-        ///     uniquely or antlr will complain, so the different binary expression visitor functions build this object
-        ///     and pass it it to VisitBinaryExpression.  All binary expression contexts have the same properties,
-        ///     but they cannot be made to derive from one type as antlr generates them and it does not have a feature to
+        ///     uniquely or ANTLR will complain, so the different binary expression visitor functions build this object
+        ///     and pass it to VisitBinaryExpression.  All binary expression contexts have the same properties,
+        ///     but they cannot be made to derive from one type as ANTLR generates them and it does not have a feature to
         ///     allow it
         /// </summary>
         private struct BinaryExpressionContext
@@ -86,12 +86,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         /// <summary>
         ///     Represents a generic assignment expression operation.
-        ///     I made alternative grammar label names for each different type of expression operation so that I could
-        ///     differentiate between postfix, casts etc.. unfortunately each type of binary operation must be named
-        ///     uniquely or antlr will complain, so the different binary expression visitor functions build this object
-        ///     and pass it it to VisitBinaryExpression.  All binary expression contexts have the same properties,
-        ///     but they cannot be made to derive from one type as antlr generates them and it does not have a feature to
-        ///     allow it
+        ///     Similar use to the struct above, except for assignment and modifying assignment operators.
         /// </summary>
         private struct AssignmentExpressionContext
         {

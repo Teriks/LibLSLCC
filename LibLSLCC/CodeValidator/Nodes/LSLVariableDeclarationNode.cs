@@ -195,9 +195,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLVariableDeclarationNode(sourceRange, Err.Err);
         }
 
+
         /// <summary>
         /// Creates a reference to VariableNode by cloning and setting its SourceCodeRange
-        /// to that of referenceToken
+        /// to that of <paramref name="referenceToken"/>
         /// </summary>
         /// <param name="referenceToken">The variable reference token from the parser</param>
         /// <returns>VariableNode cloned, with its SourceCodeRange set</returns>
@@ -215,15 +216,15 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         /// <summary>
         /// Creates a reference to VariableNode by cloning and setting its SourceCodeRange
-        /// to that of referenceToken
+        /// to that of <paramref name="range"/>
         /// </summary>
-        /// <param name="referenceToken">The variable sourcecode range of the variable token from the parser</param>
+        /// <param name="range">The source-code range of the variable token from the parser</param>
         /// <returns>VariableNode cloned, with its SourceCodeRange set</returns>
-        internal LSLVariableNode CreateReference(LSLSourceCodeRange referenceToken)
+        internal LSLVariableNode CreateReference(LSLSourceCodeRange range)
         {
             var v = (LSLVariableNode)VariableNode.Clone();
 
-            v.SourceCodeRange = referenceToken.Clone();
+            v.SourceCodeRange = range.Clone();
             SourceCodeRangesAvailable = true;
             _references.Add(v);
 
