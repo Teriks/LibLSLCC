@@ -3071,7 +3071,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (context == null || Utility.AnyNull(context.expr_lvalue, context.expr_rvalue, context.operation))
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitContextInvalidState("VisitExpr_LogicalAnd");
+                    .VisitContextInvalidState("VisitExpr_Logical_And_Or");
             }
 
 
