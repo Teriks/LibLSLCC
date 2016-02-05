@@ -204,20 +204,8 @@ namespace LibLSLCC.CodeValidator.Components
                 return "\\" + code;
             }
 
-            if (code == 'r')
-            {
-                //don't even ask, I have no fucking idea why
-                //the Linden LSL compiler turns "\r" into "r"
-                //try it with llOwnerSay("\r");
-                //or llOwnerSay((string)("\r"=="r"));
-                return "r"; 
-            }
-
-            HasErrors = true;
-
-            _invalidEscapeCodes.Add(new LSLStringCharacterError(code, index));
-
-            return "";
+            
+            return code.ToString();
         }
     }
 }
