@@ -121,7 +121,7 @@ Etc..
 
 In the expression grammar is causing strange parse trees.
 
-==
+
 
 Factoring it down to:
 
@@ -144,9 +144,16 @@ Helps monumentally...
 
 this also happens to fix the precedence problem with expressions such as `-x = y`.
 
-==
 
 The downside to this is that assignments to non lvalues will
 now result in a non-pretty grammar level syntax error.
+
+
+# Reduced the size of generated OpenSim code
+
+The variable name mangling scheme has been changed so that symbol names are shorter.
+
+Binary operator stub's also have a new naming scheme.
+
 
 =======
