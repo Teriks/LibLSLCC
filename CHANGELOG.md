@@ -91,16 +91,18 @@ public static void ForceStatement<T>(T value){}
 
 =======
 
-# (2/4/2016 11:44PM) Give logical AND and OR Equal precedence
+# (2/4/2016 11:44PM) Give logical AND and OR equal precedence
 
 In Linden LSL `(0 && 0 || 1) == TRUE`, and `(1 || 0 && 0) == FALSE`
 
-This seems to imply that which ever operator appears first has precedence.
+This seems to imply that whichever operator appears first has precedence.
 
 && and || have been given equal precedence to achieve this behavior.
 
 
-Added back UTILITES.ToBool generated code for strings, since some constants
-may be defined as a CSharp built in string, which cannot implicitly convert to bool.
+# Adjust code generation for boolean conversion of strings in condition statements
+
+Added back `UTILITES.ToBool` to generated code for string expressions in conditional statements.
+Because some string constants may be defined as a CSharp built in string instead of an OpenSim runtime string, which cannot implicitly convert to bool.
 
 =======
