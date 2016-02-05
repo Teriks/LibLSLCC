@@ -55,7 +55,7 @@ so that you can implement your own code DOM to feed to compilers/formatters if y
 LibLSLCC includes a CSharp code generator that targets the OpenSim runtime.
 
 The code validator (parser/tree builder) and OpenSim code generator in LibLSLCC have both been designed
-with the intent of implementing Linden LSL with near 100 percent cross compatibility.
+with the intent of implementing Linden LSL with near perfect cross compatibility.
 
 The project is basically a complete reverse engineering of the Linden compiler's
 grammar, non grammar level syntax rules, and generated code behavior.
