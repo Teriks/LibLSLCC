@@ -106,3 +106,47 @@ Added back `UTILITES.ToBool` to generated code for string expressions in conditi
 Because some string constants may be defined as a CSharp built in string instead of an OpenSim runtime string, which cannot implicitly convert to bool.
 
 =======
+
+# (2/5/2016 11:58AM) Make modifiable LValues part of grammar
+
+Having:
+
+`expression '=' expression`
+
+And:
+
+`expression '*=' expression`
+
+Etc..
+
+In the expression grammar is causing strange parse trees.
+
+==
+
+Factoring it down to:
+
+```
+
+lvalue:  memberAccess | ID;
+
+expression: ... expression stuff ...
+
+    ...
+    
+    | lvalue ALL_MOD_ASSIGN_OPS expression
+    | lvalue '=' expression
+    
+	
+```
+
+Helps monumentally...
+
+
+this also happens to fix the precedence problem with expressions such as `-x = y`.
+
+==
+
+The downside to this is that assignments to non lvalues will
+now result in a non-pretty grammar level syntax error.
+
+=======
