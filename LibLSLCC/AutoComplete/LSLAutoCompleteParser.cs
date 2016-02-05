@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLAutoCompleteParser.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
@@ -58,48 +61,43 @@ using LibLSLCC.Utility;
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// An LSL parser that can help with implementing context aware auto-complete inside of code editors.
-    /// It is not advisable that you consume this class at this point in time.
+    ///     An LSL parser that can help with implementing context aware auto-complete inside of code editors.
+    ///     It is not advisable that you consume this class at this point in time.
     /// </summary>
     public class LSLAutoCompleteParser
     {
-        private readonly HashMap<string, GlobalFunction> _globalFunctions = new HashMap<string, GlobalFunction>();
-        private readonly HashMap<string, GlobalVariable> _globalVariables = new HashMap<string, GlobalVariable>();
-
         private static readonly Regex JumpRegex = new Regex("jump\\s*(" + LSLTokenTools.IDRegexString + ")");
         private static readonly Regex LabelRegex = new Regex("@\\s*(" + LSLTokenTools.IDRegexString + ")");
-
-        private readonly Stack<Dictionary<string, LocalVariable>> _localVariables =
-            new Stack<Dictionary<string, LocalVariable>>();
-
-        private readonly HashMap<string, LocalParameter> _parameters = new HashMap<string, LocalParameter>();
-        private readonly GenericArray<StateBlock> _stateBlocks = new GenericArray<StateBlock>();
-
-        private readonly Stack<NestableExpressionElementType> _nestableExpressionElementStack =
-            new Stack<NestableExpressionElementType>();
-
-
-
-        private class LastControlChainStatusContainer
-        {
-            public bool IsIfOrElseIf;
-        }
+        private readonly HashMap<string, GlobalFunction> _globalFunctions = new HashMap<string, GlobalFunction>();
+        private readonly HashMap<string, GlobalVariable> _globalVariables = new HashMap<string, GlobalVariable>();
 
         private readonly Stack<LastControlChainStatusContainer> _lastControlChainElementStack =
             new Stack<LastControlChainStatusContainer>();
 
+        private readonly Stack<Dictionary<string, LocalVariable>> _localVariables =
+            new Stack<Dictionary<string, LocalVariable>>();
 
+        private readonly Stack<NestableExpressionElementType> _nestableExpressionElementStack =
+            new Stack<NestableExpressionElementType>();
+
+        private readonly HashMap<string, LocalParameter> _parameters = new HashMap<string, LocalParameter>();
+        private readonly GenericArray<StateBlock> _stateBlocks = new GenericArray<StateBlock>();
         private bool _inEventCodeBody;
         private bool _inFunctionCodeBody;
         private bool _inGlobalScope;
         private bool _inState;
         private int _toOffset;
 
-        public int ParseToOffset { get { return _toOffset; } }
 
         public LSLAutoCompleteParser()
         {
             InGlobalScope = true;
+        }
+
+
+        public int ParseToOffset
+        {
+            get { return _toOffset; }
         }
 
         public string CurrentState { get; private set; }
@@ -231,11 +229,8 @@ namespace LibLSLCC.AutoComplete
             get { return _parameters.Values; }
         }
 
-
         public bool InBasicExpressionTree { get; private set; }
-
         public bool RightOfDotAccessor { get; private set; }
-
         public bool InLocalVariableDeclarationExpression { get; private set; }
         public bool InGlobalVariableDeclarationExpression { get; private set; }
         public bool InFunctionDeclarationParameterList { get; private set; }
@@ -262,7 +257,6 @@ namespace LibLSLCC.AutoComplete
             }
         }
 
-
         public bool InTopLevelCodeScope
         {
             get { return (InMultiStatementCodeScopeTopLevel | InSingleStatementCodeScopeTopLevel); }
@@ -279,25 +273,25 @@ namespace LibLSLCC.AutoComplete
                        !InWhileConditionExpression &&
                        !InForLoopClausesArea &&
                        !InDoWhileConditionExpression &&
-                       !(InLocalVariableDeclarationExpression || InVariableAssignmentExpression || InComponentAssignmentExpression ||
-                       InIfConditionExpression || InElseIfConditionExpression || InFunctionCallParameterList || InFunctionReturnExpression ||
-                       InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression ||
-                       InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent);
+                       !(InLocalVariableDeclarationExpression || InVariableAssignmentExpression ||
+                         InComponentAssignmentExpression ||
+                         InIfConditionExpression || InElseIfConditionExpression || InFunctionCallParameterList ||
+                         InFunctionReturnExpression ||
+                         InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression ||
+                         InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent);
             }
         }
-
-
-       
 
         public bool InLocalExpressionArea
         {
             get
             {
                 return (InLocalVariableDeclarationExpression || InIfConditionExpression ||
-                       InElseIfConditionExpression || InFunctionCallParameterList || InFunctionReturnExpression ||
-                       InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression ||
-                       InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent || InVariableAssignmentExpression || 
-                       InComponentAssignmentExpression || InBasicExpressionTree ) &&
+                        InElseIfConditionExpression || InFunctionCallParameterList || InFunctionReturnExpression ||
+                        InForLoopClausesArea || InDoWhileConditionExpression || InWhileConditionExpression ||
+                        InListLiteralContent || InVectorLiteralContent || InRotationLiteralContent ||
+                        InVariableAssignmentExpression ||
+                        InComponentAssignmentExpression || InBasicExpressionTree) &&
                        !BetweenControlStatementKeywords;
             }
         }
@@ -322,20 +316,15 @@ namespace LibLSLCC.AutoComplete
         }
 
         public bool InFunctionReturnExpression { get; private set; }
-
         public bool InModifyingVariableAssignmentExpression { get; private set; }
-
         public bool InModifyingComponentAssignmentExpression { get; private set; }
-
         public bool InPlainVariableAssignmentExpression { get; private set; }
-
         public bool InPlainComponentAssignmentExpression { get; private set; }
 
         public bool InVariableAssignmentExpression
         {
-            get { return InPlainVariableAssignmentExpression || InModifyingVariableAssignmentExpression ; }
+            get { return InPlainVariableAssignmentExpression || InModifyingVariableAssignmentExpression; }
         }
-
 
         public bool InComponentAssignmentExpression
         {
@@ -351,7 +340,6 @@ namespace LibLSLCC.AutoComplete
         public bool InControlStatementSourceRange { get; private set; }
         public bool InMultiStatementCodeScopeTopLevel { get; private set; }
         public bool InSingleStatementCodeScopeTopLevel { get; private set; }
-
 
         public bool InFunctionCallParameterList
         {
@@ -391,7 +379,7 @@ namespace LibLSLCC.AutoComplete
 
         public bool CanSuggestLibraryConstant
         {
-            get { return InExpressionArea;  }
+            get { return InExpressionArea; }
         }
 
         public bool CanSuggestFunction
@@ -401,7 +389,6 @@ namespace LibLSLCC.AutoComplete
 
         public bool CanSuggestLocalVariableOrParameter
         {
-
             get { return InLocalExpressionArea || InExpressionStatementArea; }
         }
 
@@ -447,9 +434,12 @@ namespace LibLSLCC.AutoComplete
 
         public bool AfterIfOrElseIfStatement
         {
-            get { return !InSingleStatementCodeScopeTopLevel && _lastControlChainElementStack.Count > 0 && _lastControlChainElementStack.Peek().IsIfOrElseIf; }
+            get
+            {
+                return !InSingleStatementCodeScopeTopLevel && _lastControlChainElementStack.Count > 0 &&
+                       _lastControlChainElementStack.Peek().IsIfOrElseIf;
+            }
         }
-
 
         public bool CanSuggestControlStatement
         {
@@ -472,6 +462,7 @@ namespace LibLSLCC.AutoComplete
         }
 
         public LSLType CurrentFunctionReturnType { get; set; }
+
 
         public IEnumerable<LocalLabel> GetLocalLabels(string sourceCode)
         {
@@ -497,6 +488,7 @@ namespace LibLSLCC.AutoComplete
             }
         }
 
+
         public IEnumerable<LocalJump> GetLocalJumps(string sourceCode)
         {
             var len = CurrentCodeAreaRange.StopIndex - CurrentCodeAreaRange.StartIndex;
@@ -520,6 +512,7 @@ namespace LibLSLCC.AutoComplete
                 yield return new LocalJump(name);
             }
         }
+
 
         public void Parse(TextReader stream, int toOffset)
         {
@@ -553,6 +546,12 @@ namespace LibLSLCC.AutoComplete
             ScopeAddressAtOffset = new ScopeAddress(x.CodeAreaId, x.ScopeId, x.ScopeLevel);
         }
 
+
+        private class LastControlChainStatusContainer
+        {
+            public bool IsIfOrElseIf;
+        }
+
         protected enum NestableExpressionElementType
         {
             Vector,
@@ -575,6 +574,7 @@ namespace LibLSLCC.AutoComplete
                 TypeSourceCodeRange = typeRange;
             }
 
+
             public string Name { get; private set; }
             public string Type { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
@@ -590,13 +590,15 @@ namespace LibLSLCC.AutoComplete
                 SourceCodeRange = range;
             }
 
+
             public string Name { get; private set; }
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
         public class GlobalFunction
         {
-            public GlobalFunction(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange, LSLSourceCodeRange nameRange, List<LocalParameter> parameters)
+            public GlobalFunction(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
+                LSLSourceCodeRange nameRange, List<LocalParameter> parameters)
             {
                 Parameters = parameters.WrapWithGenericArray();
                 Name = name;
@@ -609,6 +611,7 @@ namespace LibLSLCC.AutoComplete
 
                 HasReturnType = true;
             }
+
 
             public GlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
                 List<LocalParameter> parameters)
@@ -624,6 +627,7 @@ namespace LibLSLCC.AutoComplete
 
                 HasReturnType = false;
             }
+
 
             public bool HasReturnType { get; private set; }
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
@@ -652,7 +656,7 @@ namespace LibLSLCC.AutoComplete
                 get
                 {
                     var sig = "()";
-                    
+
 
                     if (Parameters.Count > 0)
                     {
@@ -676,6 +680,7 @@ namespace LibLSLCC.AutoComplete
                 ScopeLevel = scopeLevel;
             }
 
+
             public int CodeAreaId { get; private set; }
             public int ScopeLevel { get; private set; }
             public int ScopeId { get; private set; }
@@ -683,7 +688,7 @@ namespace LibLSLCC.AutoComplete
 
             public override string ToString()
             {
-                return string.Format("(CodeAreaID: {0}, ScopeId: {1}, ScopeLevel: {2})", CodeAreaId,ScopeId,ScopeLevel);
+                return string.Format("(CodeAreaID: {0}, ScopeId: {1}, ScopeLevel: {2})", CodeAreaId, ScopeId, ScopeLevel);
             }
         }
 
@@ -701,6 +706,7 @@ namespace LibLSLCC.AutoComplete
                 TypeSourceCodeRange = typeRange;
             }
 
+
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
             public ScopeAddress ScopeAddress { get; private set; }
@@ -716,6 +722,7 @@ namespace LibLSLCC.AutoComplete
                 Name = name;
             }
 
+
             public string Name { get; private set; }
         }
 
@@ -725,6 +732,7 @@ namespace LibLSLCC.AutoComplete
             {
                 Target = target;
             }
+
 
             public string Target { get; private set; }
         }
@@ -743,6 +751,7 @@ namespace LibLSLCC.AutoComplete
                 NameSourceCodeRange = nameRange;
             }
 
+
             public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
             public ScopeAddress ScopeAddress { get; private set; }
@@ -753,12 +762,16 @@ namespace LibLSLCC.AutoComplete
 
         private class Visitor : LSLBaseVisitor<bool>
         {
+            private readonly Stack<List<GlobalVariable>> _globalVariablesHidden = new Stack<List<GlobalVariable>>();
+            private readonly Stack<List<LocalVariable>> _localVariablesHidden = new Stack<List<LocalVariable>>();
             private readonly LSLAutoCompleteParser _parent;
+
 
             public Visitor(LSLAutoCompleteParser parent)
             {
                 _parent = parent;
             }
+
 
             public int CodeAreaId { get; private set; }
             public int ScopeId { get; private set; }
@@ -767,15 +780,14 @@ namespace LibLSLCC.AutoComplete
             private int ControlStructureNestingDepth { get; set; }
 
 
-
-
             public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
                 if (context.label_prefix == null) return true;
 
                 if ((_parent._toOffset > context.label_prefix.StartIndex &&
-                    _parent._toOffset <= context.Stop.StopIndex) || (context.label_prefix.StopIndex == context.Stop.StopIndex))
+                     _parent._toOffset <= context.Stop.StopIndex) ||
+                    (context.label_prefix.StopIndex == context.Stop.StopIndex))
                 {
                     _parent.InLabelDefinitionNameArea = true;
                 }
@@ -783,19 +795,22 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitLabelStatement(context);
             }
 
+
             public override bool VisitJumpStatement(LSLParser.JumpStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
                 if (context.jump_keyword == null) return true;
 
                 if ((_parent._toOffset > context.jump_keyword.StopIndex &&
-                    _parent._toOffset <= context.Stop.StopIndex) || (context.jump_keyword.StopIndex==context.Stop.StopIndex))
+                     _parent._toOffset <= context.Stop.StopIndex) ||
+                    (context.jump_keyword.StopIndex == context.Stop.StopIndex))
                 {
                     _parent.InJumpStatementLabelNameArea = true;
                 }
 
                 return base.VisitJumpStatement(context);
             }
+
 
             public override bool VisitStateChangeStatement(LSLParser.StateChangeStatementContext context)
             {
@@ -804,13 +819,15 @@ namespace LibLSLCC.AutoComplete
 
 
                 if ((_parent._toOffset > context.state_keyword.StopIndex &&
-                    _parent._toOffset <= context.Stop.StopIndex) || (context.state_keyword.StopIndex == context.Stop.StopIndex))
+                     _parent._toOffset <= context.Stop.StopIndex) ||
+                    (context.state_keyword.StopIndex == context.Stop.StopIndex))
                 {
                     _parent.InStateChangeStatementStateNameArea = true;
                 }
 
                 return base.VisitStateChangeStatement(context);
             }
+
 
             public override bool VisitListLiteral(LSLParser.ListLiteralContext context)
             {
@@ -829,6 +846,7 @@ namespace LibLSLCC.AutoComplete
 
                 return val;
             }
+
 
             public override bool VisitVectorLiteral(LSLParser.VectorLiteralContext context)
             {
@@ -850,6 +868,7 @@ namespace LibLSLCC.AutoComplete
                 return val;
             }
 
+
             public override bool VisitRotationLiteral(LSLParser.RotationLiteralContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -867,6 +886,7 @@ namespace LibLSLCC.AutoComplete
 
                 return val;
             }
+
 
             public override bool VisitGlobalVariableDeclaration(LSLParser.GlobalVariableDeclarationContext context)
             {
@@ -914,10 +934,12 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitGlobalVariableDeclaration(context);
             }
 
+
             public override bool VisitExpr_Assignment(LSLParser.Expr_AssignmentContext context)
             {
                 if (context.operation != null && _parent._toOffset >= context.operation.StopIndex &&
-                    ((_parent._toOffset <= context.Stop.StopIndex) || (context.operation.StopIndex == context.Stop.StopIndex)))
+                    ((_parent._toOffset <= context.Stop.StopIndex) ||
+                     (context.operation.StopIndex == context.Stop.StopIndex)))
                 {
                     if (context.expr_lvalue == null) return true;
 
@@ -939,8 +961,8 @@ namespace LibLSLCC.AutoComplete
                         var maybeVar = accessor.expr_lvalue.Text;
 
                         if (_parent._parameters.ContainsKey(maybeVar) ||
-                                 _parent._localVariables.Any(x => x.ContainsKey(maybeVar)) ||
-                                 _parent._globalVariables.ContainsKey(maybeVar))
+                            _parent._localVariables.Any(x => x.ContainsKey(maybeVar)) ||
+                            _parent._globalVariables.ContainsKey(maybeVar))
                         {
                             _parent.InPlainComponentAssignmentExpression = true;
                             _parent.InBasicExpressionTree = true;
@@ -954,10 +976,12 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitExpr_Assignment(context);
             }
 
+
             public override bool VisitExpr_ModifyingAssignment(LSLParser.Expr_ModifyingAssignmentContext context)
             {
                 if (context.operation != null && _parent._toOffset >= context.operation.StopIndex &&
-                    ((_parent._toOffset <= context.Stop.StopIndex) || (context.operation.StopIndex == context.Stop.StopIndex)))
+                    ((_parent._toOffset <= context.Stop.StopIndex) ||
+                     (context.operation.StopIndex == context.Stop.StopIndex)))
                 {
                     if (context.expr_lvalue == null) return true;
 
@@ -979,8 +1003,8 @@ namespace LibLSLCC.AutoComplete
                         var maybeVar = accessor.expr_lvalue.Text;
 
                         if (_parent._parameters.ContainsKey(maybeVar) ||
-                                 _parent._localVariables.Any(x => x.ContainsKey(maybeVar)) ||
-                                 _parent._globalVariables.ContainsKey(maybeVar))
+                            _parent._localVariables.Any(x => x.ContainsKey(maybeVar)) ||
+                            _parent._globalVariables.ContainsKey(maybeVar))
                         {
                             _parent.InModifyingComponentAssignmentExpression = true;
                             _parent.InBasicExpressionTree = true;
@@ -1009,9 +1033,11 @@ namespace LibLSLCC.AutoComplete
                 }
                 else if (
                     (context.return_keyword == null || context.return_keyword.StopIndex < _parent._toOffset)
-                    && context.return_expression == null && (_parent._toOffset < context.Stop.StartIndex || context.Stop.Text != ";"))
+                    && context.return_expression == null &&
+                    (_parent._toOffset < context.Stop.StartIndex || context.Stop.Text != ";"))
                 {
-                    _parent.InFunctionReturnExpression = _parent.InFunctionCodeBody && _parent.CurrentFunctionReturnType != LSLType.Void;
+                    _parent.InFunctionReturnExpression = _parent.InFunctionCodeBody &&
+                                                         _parent.CurrentFunctionReturnType != LSLType.Void;
                 }
 
                 return base.VisitReturnStatement(context);
@@ -1022,7 +1048,6 @@ namespace LibLSLCC.AutoComplete
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
-                
 
                 if (context.open_parenth != null)
                 {
@@ -1032,14 +1057,14 @@ namespace LibLSLCC.AutoComplete
                     }
                 }
 
-                if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" && 
+                if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
                     _parent._toOffset >= context.close_parenth.StartIndex)
                 {
                     if (context.close_parenth.StartIndex != context.open_parenth.StartIndex)
                     {
                         _parent._nestableExpressionElementStack.Clear();
                         _parent.InIfConditionExpression = false;
-                        
+
 
                         if (context.code != null && context.code.code != null &&
                             context.code.code.open_brace.Text == "{")
@@ -1050,9 +1075,7 @@ namespace LibLSLCC.AutoComplete
                         {
                             EnterSingleStatementCodeScope();
                         }
-
                     }
-
                 }
 
 
@@ -1060,6 +1083,7 @@ namespace LibLSLCC.AutoComplete
 
                 return base.VisitIfStatement(context);
             }
+
 
             public override bool VisitElseIfStatement(LSLParser.ElseIfStatementContext context)
             {
@@ -1072,14 +1096,14 @@ namespace LibLSLCC.AutoComplete
                     _parent.InElseIfConditionExpression = true;
                 }
 
-                if (context.open_parenth != null &&  context.close_parenth != null && context.close_parenth.Text == ")" &&
-                      _parent._toOffset >= context.close_parenth.StartIndex)
+                if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
+                    _parent._toOffset >= context.close_parenth.StartIndex)
                 {
                     if (context.open_parenth.StartIndex != context.close_parenth.StartIndex)
                     {
                         _parent._nestableExpressionElementStack.Clear();
                         _parent.InElseIfConditionExpression = false;
-                        
+
 
                         if (context.code != null && context.code.code != null &&
                             context.code.code.open_brace.Text == "{")
@@ -1104,8 +1128,6 @@ namespace LibLSLCC.AutoComplete
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
 
-
-
                 if (context.code != null && context.code.code != null &&
                     context.code.code.open_brace.Text == "{")
                 {
@@ -1122,6 +1144,7 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitElseStatement(context);
             }
 
+
             public override bool VisitWhileLoop(LSLParser.WhileLoopContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1129,7 +1152,7 @@ namespace LibLSLCC.AutoComplete
 
                 ControlStructureNestingDepth++;
                 _parent.InControlStatementSourceRange = true;
-                
+
 
                 if (context.open_parenth != null)
                 {
@@ -1146,7 +1169,7 @@ namespace LibLSLCC.AutoComplete
                     {
                         _parent._nestableExpressionElementStack.Clear();
                         _parent.InWhileConditionExpression = false;
-                        
+
 
                         if (context.code != null && context.code.code != null
                             && context.code.code.open_brace.Text == "{")
@@ -1200,7 +1223,7 @@ namespace LibLSLCC.AutoComplete
                     {
                         _parent._nestableExpressionElementStack.Clear();
                         _parent.InForLoopClausesArea = false;
-                        
+
                         if (context.code != null && context.code.code != null &&
                             context.code.code.open_brace.Text == "{")
                         {
@@ -1229,6 +1252,7 @@ namespace LibLSLCC.AutoComplete
                 return val;
             }
 
+
             public override bool VisitDoLoop(LSLParser.DoLoopContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
@@ -1246,7 +1270,6 @@ namespace LibLSLCC.AutoComplete
                 {
                     EnterSingleStatementCodeScope();
                 }
-
 
 
                 if (context.open_parenth != null)
@@ -1267,7 +1290,6 @@ namespace LibLSLCC.AutoComplete
                     }
                 }
 
-                
 
                 var val = base.VisitDoLoop(context);
 
@@ -1286,7 +1308,6 @@ namespace LibLSLCC.AutoComplete
                 }
                 return val;
             }
-
 
 
             public override bool VisitControlStructure(LSLParser.ControlStructureContext context)
@@ -1331,7 +1352,6 @@ namespace LibLSLCC.AutoComplete
                 if (context.open_parenth != null && context.close_parenth != null
                     && context.close_parenth.Text == ")" && _parent._toOffset >= context.close_parenth.StartIndex)
                 {
-
                     if (context.expression_list != null && context.expression_list.Stop.Text == ",")
                     {
                         return true;
@@ -1346,9 +1366,6 @@ namespace LibLSLCC.AutoComplete
 
                 return v;
             }
-
-            readonly Stack<List<LocalVariable>> _localVariablesHidden = new Stack<List<LocalVariable>>();
-            readonly Stack<List<GlobalVariable>> _globalVariablesHidden = new Stack<List<GlobalVariable>>(); 
 
 
             public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
@@ -1396,7 +1413,6 @@ namespace LibLSLCC.AutoComplete
                 }
 
 
-
                 if (_parent._parameters.ContainsKey(context.variable_name.Text))
                 {
                     _parent._parameters.Remove(context.variable_name.Text);
@@ -1429,7 +1445,6 @@ namespace LibLSLCC.AutoComplete
 
                 return base.VisitLocalVariableDeclaration(context);
             }
-
 
 
             public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
@@ -1536,9 +1551,6 @@ namespace LibLSLCC.AutoComplete
                 if (context.Stop.StartIndex > _parent._toOffset) return true;
 
 
-
-
-
                 _parent.CurrentFunction = null;
                 _parent.CurrentFunctionReturnType = LSLType.Void;
 
@@ -1550,6 +1562,7 @@ namespace LibLSLCC.AutoComplete
 
                 return true;
             }
+
 
             public override bool VisitEventHandler(LSLParser.EventHandlerContext context)
             {
@@ -1622,7 +1635,6 @@ namespace LibLSLCC.AutoComplete
                 if (context.Stop.StartIndex > _parent._toOffset) return true;
 
 
-
                 _parent.CurrentEvent = null;
 
                 _parent._nestableExpressionElementStack.Clear();
@@ -1632,6 +1644,7 @@ namespace LibLSLCC.AutoComplete
 
                 return true;
             }
+
 
             public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
             {
@@ -1649,7 +1662,7 @@ namespace LibLSLCC.AutoComplete
                 }
 
                 if (context.open_brace != null && (_parent._toOffset < context.open_brace.StartIndex &&
-                      _parent._toOffset >= context.Start.StartIndex))
+                                                   _parent._toOffset >= context.Start.StartIndex))
                 {
                     return true;
                 }
@@ -1679,6 +1692,7 @@ namespace LibLSLCC.AutoComplete
                 return true;
             }
 
+
             public override bool VisitDefinedState(LSLParser.DefinedStateContext context)
             {
                 if (context.state_name == null || context.state_name.Type == -1) return true;
@@ -1696,7 +1710,7 @@ namespace LibLSLCC.AutoComplete
                 }
 
                 if (context.open_brace != null && (_parent._toOffset < context.open_brace.StartIndex &&
-                      _parent._toOffset >= context.Start.StartIndex))
+                                                   _parent._toOffset >= context.Start.StartIndex))
                 {
                     return true;
                 }
@@ -1724,7 +1738,6 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-
             private void EnterSingleStatementCodeScope()
             {
                 CodeScopeLevel++;
@@ -1733,12 +1746,10 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-
             public override bool VisitCodeStatement(LSLParser.CodeStatementContext context)
             {
                 if (context.Parent is LSLParser.CodeScopeOrSingleBlockStatementContext)
                 {
-
                     if (_parent._toOffset >= context.Start.StartIndex)
                     {
                         if (_parent._toOffset >= context.Start.StartIndex && context.Stop.Text == ";")
@@ -1771,8 +1782,6 @@ namespace LibLSLCC.AutoComplete
                     _parent.InSingleStatementCodeScopeTopLevel = false;
 
 
-                    
-
                     base.VisitCodeStatement(context);
 
                     if (context.Stop.StopIndex > _parent._toOffset || context.Stop.Text != ";") return true;
@@ -1788,13 +1797,10 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-
-
             public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
             {
                 if (context.Start.StartIndex > _parent._toOffset) return true;
 
-                
 
                 if (!_parent.InSingleStatementCodeScopeTopLevel)
                 {
@@ -1880,7 +1886,6 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-
             public override bool VisitExpr_AddSub(LSLParser.Expr_AddSubContext context)
             {
                 if (context.operation.StopIndex <= _parent._toOffset &&
@@ -1892,9 +1897,10 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitExpr_AddSub(context);
             }
 
+
             public override bool VisitExpr_BitwiseAnd(LSLParser.Expr_BitwiseAndContext context)
             {
-                if (context.operation.StopIndex <= _parent._toOffset && 
+                if (context.operation.StopIndex <= _parent._toOffset &&
                     (context.expr_rvalue == null || _parent._toOffset <= context.expr_rvalue.Start.StartIndex))
                 {
                     _parent.InBasicExpressionTree = true;
@@ -1902,6 +1908,7 @@ namespace LibLSLCC.AutoComplete
 
                 return base.VisitExpr_BitwiseAnd(context);
             }
+
 
             public override bool VisitExpr_BitwiseOr(LSLParser.Expr_BitwiseOrContext context)
             {
@@ -1914,6 +1921,7 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitExpr_BitwiseOr(context);
             }
 
+
             public override bool VisitExpr_BitwiseShift(LSLParser.Expr_BitwiseShiftContext context)
             {
                 if (context.operation.StopIndex <= _parent._toOffset &&
@@ -1924,6 +1932,7 @@ namespace LibLSLCC.AutoComplete
 
                 return base.VisitExpr_BitwiseShift(context);
             }
+
 
             public override bool VisitExpr_BitwiseXor(LSLParser.Expr_BitwiseXorContext context)
             {
@@ -1939,7 +1948,7 @@ namespace LibLSLCC.AutoComplete
 
             public override bool VisitExpr_Logical_And_Or(LSLParser.Expr_Logical_And_OrContext context)
             {
-                if (context.operation.StopIndex <= _parent._toOffset && 
+                if (context.operation.StopIndex <= _parent._toOffset &&
                     (context.expr_rvalue == null || _parent._toOffset <= context.expr_rvalue.Start.StartIndex))
                 {
                     _parent.InBasicExpressionTree = true;
@@ -1948,15 +1957,17 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitExpr_Logical_And_Or(context);
             }
 
+
             public override bool VisitExpr_LogicalCompare(LSLParser.Expr_LogicalCompareContext context)
             {
-                if (context.operation.StopIndex <= _parent._toOffset && 
+                if (context.operation.StopIndex <= _parent._toOffset &&
                     (context.expr_rvalue == null || _parent._toOffset <= context.expr_rvalue.Start.StartIndex))
                 {
                     _parent.InBasicExpressionTree = true;
                 }
                 return base.VisitExpr_LogicalCompare(context);
             }
+
 
             public override bool VisitExpr_LogicalEquality(LSLParser.Expr_LogicalEqualityContext context)
             {
@@ -1979,9 +1990,10 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitExpr_MultDivMod(context);
             }
 
+
             public override bool VisitExpr_PrefixOperation(LSLParser.Expr_PrefixOperationContext context)
             {
-                if (context.operation.StopIndex <= _parent._toOffset && 
+                if (context.operation.StopIndex <= _parent._toOffset &&
                     (context.expr_rvalue == null || _parent._toOffset <= context.expr_rvalue.Start.StartIndex))
                 {
                     _parent.InBasicExpressionTree = true;
@@ -2000,6 +2012,7 @@ namespace LibLSLCC.AutoComplete
 
                 return base.VisitExpr_TypeCast(context);
             }
+
 
             public override bool VisitParenthesizedExpression(LSLParser.ParenthesizedExpressionContext context)
             {

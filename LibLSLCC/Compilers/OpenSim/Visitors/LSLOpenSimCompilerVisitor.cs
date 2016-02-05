@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLOpenSimCompilerVisitor.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -64,8 +67,6 @@ namespace LibLSLCC.Compilers.OpenSim.Visitors
     internal class LSLOpenSimCompilerVisitor : LSLValidatorNodeVisitor<bool>
         // ReSharper restore InconsistentNaming
     {
-
-
         private const string UtilityLibrary =
             @"
 //============================
@@ -98,117 +99,95 @@ private static class UTILITIES
 }
 ";
 
+        /// <summary>
+        ///     Name of the class that will contain global variables
+        ///     if the user specifies not to generate a script class.
+        ///     Global variables are initialized inside of a container if
+        ///     the library user does not specify that a class should be generated.
+        /// </summary>
+        private const string GlobalsContainerClassName = "GLOBALS";
+
+        /// <summary>
+        ///     The global container field name that the globals container class
+        ///     gets assigned to in the generated script, when not generating a class.
+        /// </summary>
+        private const string GlobalContainerFieldName = "Globals";
+
+        /// <summary>
+        ///     The name prefix used when defining global variables inside of the
+        ///     global variable container class.
+        /// </summary>
+        private const string GlobalContainerFieldsNamePrefix = "Var_";
+
+        /// <summary>
+        ///     The name prefix used when defining global variables inside of the
+        ///     script class itself when a class and class constructor is
+        ///     generated for the script.
+        /// </summary>
+        private const string GlobalFieldsNamePrefix = "GlobalVar_";
+
+        /// <summary>
+        ///     The local variable prefix to mangle local variables with,
+        ///     the compiler appends an integral scope ID after this prefix, followed by an underscore.
+        /// </summary>
+        private const string LocalVariableNamePrefix = "LocalVar";
+
+        /// <summary>
+        ///     The name prefix to mangle parameters names in event handlers and function declarations with.
+        /// </summary>
+        private const string LocalParameterNamePrefix = "Param_";
+
+        /// <summary>
+        ///     The name prefix to mangle user defined function names with.
+        /// </summary>
+        private const string FunctionNamePrefix = "Func_";
 
         private static readonly CSharpClassDeclarationName FallbackClassName = "LSLScript";
 
         /// <summary>
-        /// Name of the class that will contain global variables
-        /// if the user specifies not to generate a script class.
-        /// 
-        /// Global variables are initialized inside of a container if
-        /// the library user does not specify that a class should be generated.
+        ///     Keeps track of what binary operations have been used in the script, stubs are dynamically generated for them
+        ///     at the end of the class.
+        ///     The stubs reverse the order of evaluation for binary operators.
         /// </summary>
-        private const string GlobalsContainerClassName = "GLOBALS";
-
+        private readonly HashSet<LSLBinaryOperationSignature> _binOpsUsed = new HashSet<LSLBinaryOperationSignature>();
 
         /// <summary>
-        /// The global container field name that the globals container class
-        /// gets assigned to in the generated script, when not generating a class.
+        ///     Tracks what state body that LSL code generation is taking place in
+        ///     use to determine the names of generated event handler functions.
         /// </summary>
-        private const string GlobalContainerFieldName = "Globals";
-
+        private string _currentLslStateBody;
 
         /// <summary>
-        /// The name prefix used when defining global variables inside of the
-        /// global variable container class.
+        ///     The indent level, used to create pretty output
         /// </summary>
-        private const string GlobalContainerFieldsNamePrefix = "Var_";
-
+        private int _indentLevel;
 
         /// <summary>
-        /// The name prefix used when defining global variables inside of the
-        /// script class itself when a class and class constructor is 
-        /// generated for the script.
+        ///     Gets or sets the code generation settings.
+        ///     this must not be null, when <see cref="WriteAndFlush" /> is called.
         /// </summary>
-        private const string GlobalFieldsNamePrefix = "GlobalVar_";
+        /// <value>
+        ///     The code generation settings.
+        /// </value>
+        public LSLOpenSimCompilerSettings Settings { get; set; }
 
-
-        /// <summary>
-        /// The local variable prefix to mangle local variables with, 
-        /// the compiler appends an integral scope ID after this prefix, followed by an underscore.
-        /// </summary>
-        private const string LocalVariableNamePrefix = "LocalVar";
-
-
-        /// <summary>
-        /// The name prefix to mangle parameters names in event handlers and function declarations with.
-        /// </summary>
-        private const string LocalParameterNamePrefix = "Param_";
-
-
-        /// <summary>
-        /// The name prefix to mangle user defined function names with.
-        /// </summary>
-        private const string FunctionNamePrefix = "Func_";
-
-
+        public ILSLLibraryDataProvider LibraryDataProvider { get; set; }
+        public TextWriter Writer { get; private set; }
 
 
         private string GetCoOpTerminationCallString()
         {
-            return Settings.CoOpTerminationFunctionCall == null ? "opensim_reserved_CheckForCoopTermination()" : Settings.CoOpTerminationFunctionCall.FullSignature;
+            return Settings.CoOpTerminationFunctionCall == null
+                ? "opensim_reserved_CheckForCoopTermination()"
+                : Settings.CoOpTerminationFunctionCall.FullSignature;
         }
-
-
-        /// <summary>
-        /// Tracks what state body that LSL code generation is taking place in
-        /// use to determine the names of generated event handler functions.
-        /// </summary>
-        private string _currentLslStateBody;
-
-
-
-        /// <summary>
-        /// The indent level, used to create pretty output
-        /// </summary>
-        private int _indentLevel;
-
-
-        /// <summary>
-        /// Keeps track of what binary operations have been used in the script, stubs are dynamically generated for them
-        /// at the end of the class.
-        /// 
-        /// The stubs reverse the order of evaluation for binary operators.
-        /// </summary>
-        private readonly HashSet<LSLBinaryOperationSignature> _binOpsUsed = new HashSet<LSLBinaryOperationSignature>();
-
-
-        /// <summary>
-        /// Gets or sets the code generation settings.
-        /// this must not be null, when <see cref="WriteAndFlush"/> is called.
-        /// </summary>
-        /// <value>
-        /// The code generation settings.
-        /// </value>
-        public LSLOpenSimCompilerSettings Settings { get; set; }
-
-
-
-        public ILSLLibraryDataProvider LibraryDataProvider { get; set; }
-
-
-
-        public TextWriter Writer { get; private set; }
-
-
 
 
         public void WriteAndFlush(ILSLCompilationUnitNode node, TextWriter writer, bool closeStream = true)
         {
-
             if (Settings == null)
             {
-                throw new InvalidOperationException(GetType().Name+".Settings property cannot be null!");
+                throw new InvalidOperationException(GetType().Name + ".Settings property cannot be null!");
             }
 
             Writer = writer;
@@ -233,7 +212,6 @@ private static class UTILITIES
         #region Expressions
 
         #region BasicExpressions
-
 
         public override bool VisitBinaryExpression(ILSLBinaryExpressionNode node)
         {
@@ -312,13 +290,12 @@ private static class UTILITIES
 
             if (node.OperationString.EqualsOneOf("*=", "+=", "/=", "%=", "-="))
             {
-
                 string operation = node.OperationString.Substring(0, 1);
                 var operationType = LSLBinaryOperationTypeTools.ParseFromOperator(operation);
 
                 operationSignature = new LSLBinaryOperationSignature(operation, node.Type,
-                node.LeftExpression.Type,
-                node.RightExpression.Type);
+                    node.LeftExpression.Type,
+                    node.RightExpression.Type);
 
                 if (!_binOpsUsed.Contains(operationSignature))
                 {
@@ -426,7 +403,6 @@ private static class UTILITIES
                     {
                         Visit(node.RightExpression);
                     }
-
                 }
                 else
                 {
@@ -538,8 +514,6 @@ private static class UTILITIES
         }
 
 
-
-
         private readonly Dictionary<LSLType, string> _modInvokeFunctionMap
             = new Dictionary<LSLType, string>
             {
@@ -553,13 +527,10 @@ private static class UTILITIES
                 {LSLType.Rotation, "modInvokeR"}
             };
 
-        
-
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
         {
             var libDataNode = LibraryDataProvider.GetLibraryFunctionSignature(node.Signature);
-
 
 
             if (libDataNode.ModInvoke)
@@ -595,15 +566,12 @@ private static class UTILITIES
             return false;
         }
 
-
-
         #endregion
 
         #region VariableReferences
 
         public override bool VisitGlobalVariableReference(ILSLVariableNode node)
         {
-
             if (Settings.GenerateClass)
             {
                 //we are referencing a class field defined in the generated script class.
@@ -643,39 +611,40 @@ private static class UTILITIES
         }
 
 
-
         private string GenerateExpandedListConstant(string constantValueString)
         {
-            return "new LSL_Types.list("+string.Join(", ",LSLListParser.ParseListAsEnumerable("["+constantValueString+"]").Select(e =>
-            {
+            return "new LSL_Types.list(" +
+                   string.Join(", ", LSLListParser.ParseListAsEnumerable("[" + constantValueString + "]").Select(e =>
+                   {
+                       switch (e.Type)
+                       {
+                           case LSLType.String:
+                               return ("new LSL_Types.LSLString(\"" +
+                                       LSLFormatTools.ShowControlCodeEscapes(e.ValueString) + "\")");
 
-                switch (e.Type)
-                {
-                    case LSLType.String:
-                        return ("new LSL_Types.LSLString(\"" + LSLFormatTools.ShowControlCodeEscapes(e.ValueString) +"\")");
+                           case LSLType.Key:
+                               return ("new LSL_Types.key(\"" + LSLFormatTools.ShowControlCodeEscapes(e.ValueString) +
+                                       "\")");
 
-                    case LSLType.Key:
-                        return ("new LSL_Types.key(\"" + LSLFormatTools.ShowControlCodeEscapes(e.ValueString) + "\")");
+                           case LSLType.Vector:
+                               return ("new LSL_Types.Vector3(" + e.ValueString + ")");
 
-                    case LSLType.Vector:
-                        return ("new LSL_Types.Vector3(" + e.ValueString + ")");
+                           case LSLType.Rotation:
+                               return ("new LSL_Types.Quaternion(" + e.ValueString + ")");
 
-                    case LSLType.Rotation:
-                        return ("new LSL_Types.Quaternion(" + e.ValueString + ")");
+                           case LSLType.Integer:
+                               return ("new LSL_Types.LSLInteger(" + e.ValueString + ")");
 
-                    case LSLType.Integer:
-                        return ("new LSL_Types.LSLInteger(" + e.ValueString + ")");
+                           case LSLType.Float:
+                               return ("new LSL_Types.LSLFloat(" + e.ValueString + ")");
 
-                    case LSLType.Float:
-                        return ("new LSL_Types.LSLFloat(" + e.ValueString + ")");
-
-                    case LSLType.List:
-                        return ("new LSL_Types.list(" + e.ValueString + ")");
-                    default:
-                        throw new InvalidOperationException("LSLOpenSimCompilerVisitor.GenerateExpandedListConstant encountered a Void list element type.");
-                }
-
-            })) + ")";
+                           case LSLType.List:
+                               return ("new LSL_Types.list(" + e.ValueString + ")");
+                           default:
+                               throw new InvalidOperationException(
+                                   "LSLOpenSimCompilerVisitor.GenerateExpandedListConstant encountered a Void list element type.");
+                       }
+                   })) + ")";
         }
 
 
@@ -690,7 +659,7 @@ private static class UTILITIES
                         Writer.Write("new LSL_Types.LSLString(" + x.ValueStringAsCodeLiteral + ")");
                         break;
                     case LSLType.Key:
-                        Writer.Write("new LSL_Types.key("+ x.ValueStringAsCodeLiteral + ")");
+                        Writer.Write("new LSL_Types.key(" + x.ValueStringAsCodeLiteral + ")");
                         break;
                     case LSLType.Vector:
                         Writer.Write("new LSL_Types.Vector3(" + x.ValueString + ")");
@@ -710,7 +679,7 @@ private static class UTILITIES
                     default:
                         throw new InvalidOperationException(
                             "LSLOpenSimCompilerVisitor.VisitLibraryConstantVariableReference retrieved a library  "
-                            +"constant from the library data provider using 'LSLType.Void' as its Type.");
+                            + "constant from the library data provider using 'LSLType.Void' as its Type.");
                 }
             }
             else
@@ -758,9 +727,6 @@ private static class UTILITIES
         }
 
 
-
-
-
         public override bool VisitLibraryFunctionCallParameters(ILSLExpressionListNode node)
         {
             /* leaving this skeleton function here and using it to visit all library function call parameters.
@@ -770,7 +736,6 @@ private static class UTILITIES
             VisitExpressionList(node);
             return false;
         }
-
 
 
         public override bool VisitUserFunctionCallParameters(ILSLExpressionListNode node)
@@ -784,8 +749,6 @@ private static class UTILITIES
             VisitExpressionList(node);
             return false;
         }
-
-
 
         #endregion
 
@@ -1004,8 +967,6 @@ private static class UTILITIES
 
         #region Utilitys
 
-
-
         private static string LSLType_To_CSharpDefaultInitializer(string name)
         {
             var type = LSLTypeTools.FromLSLTypeString(name);
@@ -1061,7 +1022,6 @@ private static class UTILITIES
         }
 
 
-
         private void CreateGlobalVariablesConstructor(ILSLCompilationUnitNode node)
         {
             //only generate code for global variables that are referenced from somewhere.
@@ -1090,13 +1050,17 @@ private static class UTILITIES
             }
 
             //use the fall-back class name if the settings did not specify one
-            var className = Settings.GeneratedClassName == null ?  FallbackClassName.BaseName : Settings.GeneratedClassName.BaseName;
+            var className = Settings.GeneratedClassName == null
+                ? FallbackClassName.BaseName
+                : Settings.GeneratedClassName.BaseName;
 
-            var constructorSig = Settings.GeneratedConstructorSignature == null ? "()" : Settings.GeneratedConstructorSignature.FullSignature;
+            var constructorSig = Settings.GeneratedConstructorSignature == null
+                ? "()"
+                : Settings.GeneratedConstructorSignature.FullSignature;
 
 
-
-            Writer.WriteLine(GenIndent() + Settings.GeneratedConstructorAccessibility.ToCSharpKeyword(true) + className + constructorSig);
+            Writer.WriteLine(GenIndent() + Settings.GeneratedConstructorAccessibility.ToCSharpKeyword(true) + className +
+                             constructorSig);
             Writer.WriteLine(GenIndent() + "{");
 
             _indentLevel++;
@@ -1128,8 +1092,6 @@ private static class UTILITIES
 
             Writer.Write(Environment.NewLine + Environment.NewLine);
         }
-
-
 
 
         private void CreateGlobalVariablesClass(ILSLCompilationUnitNode node)
@@ -1208,7 +1170,6 @@ private static class UTILITIES
             Writer.WriteLine(GenIndent() + "GLOBALS Globals = new GLOBALS();");
 
             Writer.Write(Environment.NewLine + Environment.NewLine);
-
         }
 
 
@@ -1387,7 +1348,6 @@ private static class UTILITIES
                     case LSLCodeScopeType.ForLoop:
 
 
-
                         Writer.WriteLine(GenIndent() + GetCoOpTerminationCallString() + ";");
                         break;
                 }
@@ -1408,14 +1368,15 @@ private static class UTILITIES
                 needed to be defined to produce valid generated code it was already defined here at the top of the scope with a default value.
             */
             var deadVariableDeclarationNodes =
-                node.CodeStatements.Where(x => x.IsDeadCode && x.DeadCodeType == LSLDeadCodeType.JumpOverCode && x is ILSLVariableDeclarationNode)
+                node.CodeStatements.Where(
+                    x =>
+                        x.IsDeadCode && x.DeadCodeType == LSLDeadCodeType.JumpOverCode &&
+                        x is ILSLVariableDeclarationNode)
                     .Cast<ILSLVariableDeclarationNode>();
-
 
 
             foreach (var deadVariableDeclarationNode in deadVariableDeclarationNodes)
             {
-
                 //we also want to filter out variables that were never referenced, and who's declarations have no side effect on program state.
                 if (SafeToPruneLocalVariableDeclaration(deadVariableDeclarationNode)) continue;
 
@@ -1429,10 +1390,9 @@ private static class UTILITIES
                 Writer.Write(" = ");
                 Writer.Write(LSLType_To_CSharpDefaultInitializer(deadVariableDeclarationNode.TypeString));
                 Writer.WriteLine(";");
-           }
+            }
 
 
-          
             foreach (var statement in node.CodeStatements)
             {
                 Visit(statement);
@@ -1445,9 +1405,6 @@ private static class UTILITIES
 
             return false;
         }
-
-
-
 
 
         private void WriteBinaryOperatorOverloadStubs()
@@ -1510,7 +1467,7 @@ private static class UTILITIES
                 Writer.Write(Environment.NewLine);
             }
 
-            
+
             Writer.WriteLine(GenIndent() + "//Compiled by LibLSLCC, Date: {0}", DateTime.Now);
             Writer.Write(Environment.NewLine);
 
@@ -1537,19 +1494,19 @@ private static class UTILITIES
                     ? FallbackClassName.FullSignature
                     : Settings.GeneratedClassName.FullSignature;
 
-                var classAccessibilityString = 
+                var classAccessibilityString =
                     Settings.GeneratedClassAccessibility.ToCSharpKeyword(true);
 
 
                 if (Settings.GeneratedInheritanceList != null && !Settings.GeneratedInheritanceList.IsEmpty)
                 {
                     Writer.WriteLine(GenIndent() + "{0}class {1} {2}",
-                        classAccessibilityString,  className,
+                        classAccessibilityString, className,
                         Settings.GeneratedInheritanceList.ListWithColonIfNecessary);
                 }
                 else
                 {
-                    Writer.WriteLine(GenIndent() + "{0}class {1}",  
+                    Writer.WriteLine(GenIndent() + "{0}class {1}",
                         classAccessibilityString, className);
                 }
 
@@ -1558,10 +1515,8 @@ private static class UTILITIES
                 Writer.Write(Environment.NewLine);
 
                 _indentLevel++;
-
-            
             }
-            
+
 
             WriteUtilityLibrary();
 
@@ -1640,9 +1595,7 @@ private static class UTILITIES
             WriteBinaryOperatorOverloadStubs();
 
 
-
             if (!Settings.GenerateClass) return false;
-
 
 
             if (hasGeneratedClassNameSpaceName)
@@ -1692,7 +1645,6 @@ private static class UTILITIES
         /// <returns>default(T)</returns>
         public override bool VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
-
             Writer.Write(GenIndent() + "public ");
 
             if (node.ReturnType != LSLType.Void)
@@ -1874,11 +1826,9 @@ private static class UTILITIES
         }
 
 
-
-
         /// <summary>
-        /// Returns true if a given variable declaration node has no references to it later in the source code, and
-        /// its declaration contains no expressions that could modify program state.
+        ///     Returns true if a given variable declaration node has no references to it later in the source code, and
+        ///     its declaration contains no expressions that could modify program state.
         /// </summary>
         /// <param name="declarationNode">The declaration node to test.</param>
         /// <returns></returns>
@@ -1890,7 +1840,8 @@ private static class UTILITIES
                 //simply defining it can have no effect on the program.
                 if (!declarationNode.HasDeclarationExpression) return true;
 
-                if (declarationNode.HasDeclarationExpression && !declarationNode.DeclarationExpression.HasPossibleSideEffects)
+                if (declarationNode.HasDeclarationExpression &&
+                    !declarationNode.DeclarationExpression.HasPossibleSideEffects)
                 {
                     //prune the variable if its declaration cannot possibly have any side effects on the program state.
                     //this meaning its declaration contains no function calls or operations that modify variables.
@@ -1899,7 +1850,6 @@ private static class UTILITIES
             }
             return false;
         }
-
 
 
         public override bool VisitLocalVariableDeclaration(ILSLVariableDeclarationNode node)
@@ -1919,7 +1869,6 @@ private static class UTILITIES
             */
 
             if (node.IsDeadCode || SafeToPruneLocalVariableDeclaration(node)) return false;
-
 
 
             Writer.Write(GenIndent());
