@@ -326,7 +326,7 @@
   </PropertyGroup>
   <Target Name="BeforeBuild" Inputs="$(AntlrInput)" Outputs="$(AntlrOutput)">
     <Message Importance="High" Text="Running ANTLR: $(AntlrInput)" />
-    <Exec Command="java -classpath antlr-4.5.1-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.Parser $(AntlrInput)" />
+    <Exec Command="java -classpath antlr-4.5.2-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.Parser $(AntlrInput)" />
   </Target>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(ThirdPartyLicenses)" DestinationFolder="bin\ThirdPartyLicenses" SkipUnchangedFiles="true" />
