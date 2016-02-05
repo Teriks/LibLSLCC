@@ -116,47 +116,12 @@ A few notable code validator/OpenSim code generator features:
 
 
  
-# Currently known syntax incompatibilities
+# Known syntax incompatibilities
 
 
-Linden LSL allows for expressions such as:
+See here, for difficult syntax problems I have not and may not be able to fix:
 
-```
-
-!x = 0
-~x = 0
--x = 0
-
-```
-
-And even:
-
-```
-
-x+x = 3
-
-x-x *= 3
-
-```
-
-
-Etc..
-
-I have seen this exact form of expression used before in some optimized scripts, the assignment
-takes precedence in this instance which is somewhat odd.
-
-I have not found a way to replicate this sort of precedence with ANTLR and not have issues elsewhere 
-in my expression parser grammar.
-
-In order for LibLSLCC to not treat expressions like this as a syntax error, you need to
-manually clarify that the assignment comes first and not the unary expression or other expression to the left.
-
-For example like this:
-
-`~(x = 0)`
-
-
-LibLSLCC will otherwise complain that your attempting to assign a value to a compound expression (a non lvalue).
+https://github.com/Teriks/LibLSLCC/wiki/Syntax-Incompatibilities
 
 
 
