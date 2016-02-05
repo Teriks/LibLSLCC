@@ -218,19 +218,19 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpr_LogicalEquality([NotNull] LSLParser.Expr_LogicalEqualityContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Expr_LogicalOr</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpr_LogicalOr([NotNull] LSLParser.Expr_LogicalOrContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>Expr_BitwiseOr</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitExpr_BitwiseOr([NotNull] LSLParser.Expr_BitwiseOrContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Expr_Logical_And_Or</c>
+	/// labeled alternative in <see cref="LSLParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpr_Logical_And_Or([NotNull] LSLParser.Expr_Logical_And_OrContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Expr_BitwiseXor</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
@@ -280,13 +280,6 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitExpr_ModifyingAssignment([NotNull] LSLParser.Expr_ModifyingAssignmentContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>Expr_LogicalAnd</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpr_LogicalAnd([NotNull] LSLParser.Expr_LogicalAndContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Expr_DotAccessor</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.

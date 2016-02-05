@@ -394,18 +394,6 @@ public partial class LSLBaseListener : ILSLListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpr_LogicalEquality([NotNull] LSLParser.Expr_LogicalEqualityContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.Expr_LogicalOr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpr_LogicalOr([NotNull] LSLParser.Expr_LogicalOrContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.Expr_LogicalOr"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpr_LogicalOr([NotNull] LSLParser.Expr_LogicalOrContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.Expr_BitwiseOr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -417,6 +405,18 @@ public partial class LSLBaseListener : ILSLListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpr_BitwiseOr([NotNull] LSLParser.Expr_BitwiseOrContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LSLParser.Expr_Logical_And_Or"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExpr_Logical_And_Or([NotNull] LSLParser.Expr_Logical_And_OrContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LSLParser.Expr_Logical_And_Or"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExpr_Logical_And_Or([NotNull] LSLParser.Expr_Logical_And_OrContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.Expr_BitwiseXor"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -501,18 +501,6 @@ public partial class LSLBaseListener : ILSLListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpr_ModifyingAssignment([NotNull] LSLParser.Expr_ModifyingAssignmentContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.Expr_LogicalAnd"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpr_LogicalAnd([NotNull] LSLParser.Expr_LogicalAndContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.Expr_LogicalAnd"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpr_LogicalAnd([NotNull] LSLParser.Expr_LogicalAndContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.Expr_DotAccessor"/>.
 	/// <para>The default implementation does nothing.</para>

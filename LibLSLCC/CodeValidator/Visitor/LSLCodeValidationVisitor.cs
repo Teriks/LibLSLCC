@@ -3066,13 +3066,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
 
-
-
-
-
-
-
-        public override ILSLSyntaxTreeNode VisitExpr_LogicalAnd(LSLParser.Expr_LogicalAndContext context)
+        public override ILSLSyntaxTreeNode VisitExpr_Logical_And_Or(LSLParser.Expr_Logical_And_OrContext context)
         {
             if (context == null || Utility.AnyNull(context.expr_lvalue, context.expr_rvalue, context.operation))
             {
@@ -3215,21 +3209,6 @@ namespace LibLSLCC.CodeValidator.Visitor
                 return ReturnFromVisit(context, result);
             }
 
-
-            return ReturnFromVisit(context, result);
-        }
-
-
-        public override ILSLSyntaxTreeNode VisitExpr_LogicalOr(LSLParser.Expr_LogicalOrContext context)
-        {
-            if (context == null || Utility.AnyNull(context.expr_lvalue, context.expr_rvalue, context.operation))
-            {
-                throw LSLCodeValidatorInternalException
-                    .VisitContextInvalidState("VisitExpr_LogicalOr");
-            }
-
-            var result = VisitBinaryExpression(
-                new BinaryExpressionContext(context.expr_lvalue, context.operation, context.expr_rvalue, context));
 
             return ReturnFromVisit(context, result);
         }

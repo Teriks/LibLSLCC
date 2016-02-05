@@ -75,6 +75,11 @@ private static class UTILITIES
 {
     public static void ForceStatement<T>(T value) {}
 
+    public static bool ToBool(LSL_Types.LSLString str)		
+    {		
+        return str.Length != 0;		
+    }
+
     public static LSL_Types.Quaternion Negate(LSL_Types.Quaternion rotation)
     {
         rotation.x=(-rotation.x);
@@ -1202,6 +1207,12 @@ private static class UTILITIES
                     Visit(conditionExpression);
                 }
 
+                Writer.Write(")");
+            }
+            else if (expressionType == LSLType.String)
+            {
+                Writer.Write("UTILITIES.ToBool(");
+                Visit(conditionExpression);
                 Writer.Write(")");
             }
             else

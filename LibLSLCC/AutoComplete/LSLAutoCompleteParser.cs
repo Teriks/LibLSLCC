@@ -1947,8 +1947,7 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-
-            public override bool VisitExpr_LogicalAnd(LSLParser.Expr_LogicalAndContext context)
+            public override bool VisitExpr_Logical_And_Or(LSLParser.Expr_Logical_And_OrContext context)
             {
                 if (context.operation.StopIndex <= _parent._toOffset && 
                     (context.expr_rvalue == null || _parent._toOffset <= context.expr_rvalue.Start.StartIndex))
@@ -1956,7 +1955,7 @@ namespace LibLSLCC.AutoComplete
                     _parent.InBasicExpressionTree = true;
                 }
 
-                return base.VisitExpr_LogicalAnd(context);
+                return base.VisitExpr_Logical_And_Or(context);
             }
 
             public override bool VisitExpr_LogicalCompare(LSLParser.Expr_LogicalCompareContext context)
@@ -1979,15 +1978,6 @@ namespace LibLSLCC.AutoComplete
                 return base.VisitExpr_LogicalEquality(context);
             }
 
-            public override bool VisitExpr_LogicalOr(LSLParser.Expr_LogicalOrContext context)
-            {
-                if (context.operation.StopIndex <= _parent._toOffset && 
-                    (context.expr_rvalue == null || _parent._toOffset <= context.expr_rvalue.Start.StartIndex))
-                {
-                    _parent.InBasicExpressionTree = true;
-                }
-                return base.VisitExpr_LogicalOr(context);
-            }
 
             public override bool VisitExpr_MultDivMod(LSLParser.Expr_MultDivModContext context)
             {

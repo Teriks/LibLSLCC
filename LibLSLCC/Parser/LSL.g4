@@ -420,8 +420,7 @@ expression:
 |   expr_lvalue=expression (operation=BITWISE_AND) expr_rvalue=expression      #Expr_BitwiseAnd
 |   expr_lvalue=expression (operation=BITWISE_XOR) expr_rvalue=expression      #Expr_BitwiseXor
 |   expr_lvalue=expression (operation=BITWISE_OR) expr_rvalue=expression       #Expr_BitwiseOr
-|   expr_lvalue=expression (operation=LOGICAL_AND) expr_rvalue=expression      #Expr_LogicalAnd
-|   expr_lvalue=expression (operation=LOGICAL_OR) expr_rvalue=expression       #Expr_LogicalOr
+|   expr_lvalue=expression operation=(LOGICAL_AND|LOGICAL_OR) expr_rvalue=expression      #Expr_Logical_And_Or
 
 |   expr_lvalue=expression operation=EQUAL expr_rvalue=expression                                    #Expr_Assignment
 

@@ -344,18 +344,6 @@ public interface ILSLListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitExpr_LogicalEquality([NotNull] LSLParser.Expr_LogicalEqualityContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>Expr_LogicalOr</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterExpr_LogicalOr([NotNull] LSLParser.Expr_LogicalOrContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>Expr_LogicalOr</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitExpr_LogicalOr([NotNull] LSLParser.Expr_LogicalOrContext context);
-	/// <summary>
 	/// Enter a parse tree produced by the <c>Expr_BitwiseOr</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
 	/// </summary>
@@ -367,6 +355,18 @@ public interface ILSLListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitExpr_BitwiseOr([NotNull] LSLParser.Expr_BitwiseOrContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Expr_Logical_And_Or</c>
+	/// labeled alternative in <see cref="LSLParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpr_Logical_And_Or([NotNull] LSLParser.Expr_Logical_And_OrContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Expr_Logical_And_Or</c>
+	/// labeled alternative in <see cref="LSLParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpr_Logical_And_Or([NotNull] LSLParser.Expr_Logical_And_OrContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>Expr_BitwiseXor</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
@@ -451,18 +451,6 @@ public interface ILSLListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitExpr_ModifyingAssignment([NotNull] LSLParser.Expr_ModifyingAssignmentContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>Expr_LogicalAnd</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterExpr_LogicalAnd([NotNull] LSLParser.Expr_LogicalAndContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>Expr_LogicalAnd</c>
-	/// labeled alternative in <see cref="LSLParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitExpr_LogicalAnd([NotNull] LSLParser.Expr_LogicalAndContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>Expr_DotAccessor</c>
 	/// labeled alternative in <see cref="LSLParser.expression"/>.
