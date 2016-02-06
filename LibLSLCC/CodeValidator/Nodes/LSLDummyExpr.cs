@@ -83,7 +83,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLExprNode Members
 
-        public bool HasErrors { get; set; }
+        /// <summary>
+        /// True if this syntax tree node contains syntax errors.
+        /// </summary>
+        public bool HasErrors { get; internal set; }
 
         public LSLSourceCodeRange SourceCodeRange
         {

@@ -208,7 +208,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if this syntax tree node contains syntax errors.
         /// </summary>
-        public bool HasErrors { get; set; }
+        public bool HasErrors { get; internal set; }
 
 
         /// <summary>

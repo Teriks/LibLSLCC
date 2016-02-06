@@ -561,9 +561,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLTreeNode Members
 
         /// <summary>
-        ///     Does this node or its children have errors
+        /// True if this syntax tree node contains syntax errors.
         /// </summary>
-        public bool HasErrors { get; set; }
+        public bool HasErrors { get; internal set; }
 
 
         /// <summary>
