@@ -56,42 +56,10 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
         {
             if (context.Parent is LSLParser.ControlStructureContext)
             {
-                return LSLCodeScopeType.If;
-            }
-            if (context.Parent is LSLParser.ElseStatementContext)
-            {
-                return context.control_structure != null ? LSLCodeScopeType.ElseIf : LSLCodeScopeType.Else;
-            }
-            if (context.Parent is LSLParser.DoLoopContext)
-            {
-                return LSLCodeScopeType.DoLoop;
-            }
-            if (context.Parent is LSLParser.WhileLoopContext)
-            {
-                return LSLCodeScopeType.WhileLoop;
-            }
-            if (context.Parent is LSLParser.ForLoopContext)
-            {
-                return LSLCodeScopeType.ForLoop;
-            }
-            
-            var parent = context.Parent as LSLParser.CodeScopeContext;
-            if (parent != null)
-            {
-                return ResolveCodeScopeNodeType(parent);
-            }
-
-            throw new InvalidOperationException(
-                "Could not resolve code scope type from statement in LSLAntlrTreeUtilitys.ResolveCodeScopeNodeType");
-        }
-
-
-
-        public static LSLCodeScopeType ResolveCodeScopeNodeType(LSLParser.CodeScopeContext context)
-        {
-
-            if (context.Parent is LSLParser.ControlStructureContext)
-            {
+                if (context.Parent.Parent.Parent is LSLParser.ElseStatementContext)
+                {
+                    return LSLCodeScopeType.ElseIf;
+                }
                 return LSLCodeScopeType.If;
             }
             if (context.Parent is LSLParser.ElseStatementContext)
@@ -110,6 +78,21 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
             {
                 return LSLCodeScopeType.ForLoop;
             }
+
+            var parent = context.Parent as LSLParser.CodeScopeContext;
+            if (parent != null)
+            {
+                return ResolveCodeScopeNodeType(parent);
+            }
+
+            throw new InvalidOperationException(
+                "Could not resolve code scope type from statement in LSLAntlrTreeUtilitys.ResolveCodeScopeNodeType");
+        }
+
+
+
+        public static LSLCodeScopeType ResolveCodeScopeNodeType(LSLParser.CodeScopeContext context)
+        {
             if (context.Parent is LSLParser.FunctionDeclarationContext)
             {
                 return LSLCodeScopeType.Function;
@@ -118,7 +101,31 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
             {
                 return LSLCodeScopeType.EventHandler;
             }
-            if (context.Parent is LSLParser.CodeStatementContext)
+            if (context.Parent.Parent is LSLParser.ControlStructureContext)
+            {
+                if (context.Parent.Parent.Parent.Parent is LSLParser.ElseStatementContext)
+                {
+                    return LSLCodeScopeType.ElseIf;
+                }
+                return LSLCodeScopeType.If;
+            }
+            if (context.Parent.Parent is LSLParser.ElseStatementContext)
+            {
+                return LSLCodeScopeType.Else;
+            }
+            if (context.Parent.Parent is LSLParser.DoLoopContext)
+            {
+                return LSLCodeScopeType.DoLoop;
+            }
+            if (context.Parent.Parent is LSLParser.WhileLoopContext)
+            {
+                return LSLCodeScopeType.WhileLoop;
+            }
+            if (context.Parent.Parent is LSLParser.ForLoopContext)
+            {
+                return LSLCodeScopeType.ForLoop;
+            }
+            if (context.Parent.Parent is LSLParser.CodeScopeContext)
             {
                 return LSLCodeScopeType.AnonymousBlock;
             }
