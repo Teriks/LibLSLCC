@@ -1027,7 +1027,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (!isError && expression.IsConstant)
                 {
                     GenSyntaxWarning().ConditionalExpressionIsConstant(
-                        new LSLSourceCodeRange(context.else_keyword),
+                        new LSLSourceCodeRange(context.code.control_structure.condition),
                         LSLConditionalStatementType.ElseIf);
                 }
             }
@@ -1052,7 +1052,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             var result = new LSLElseIfStatementNode(
-                new LSLSourceCodeRange(context.else_keyword),
+                context.else_keyword,
                 context.code.control_structure,
                 code,
                 expression)

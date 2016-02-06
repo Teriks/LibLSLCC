@@ -45,6 +45,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
@@ -66,7 +67,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         internal LSLElseIfStatementNode(
-            LSLSourceCodeRange elseKeywordRange,
+            IToken elseKeyword,
             LSLParser.ControlStructureContext context,
             LSLCodeScopeNode code,
             ILSLExprNode conditionExpression)
@@ -92,7 +93,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             ConditionExpression.Parent = this;
             
 
-            ElseKeywordSourceCodeRange = elseKeywordRange.Clone();
+            ElseKeywordSourceCodeRange = new LSLSourceCodeRange(elseKeyword);
             IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
