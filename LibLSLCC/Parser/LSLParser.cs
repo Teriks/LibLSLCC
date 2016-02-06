@@ -46,22 +46,21 @@ public partial class LSLParser : Parser {
 		LOGICAL_OR=54, DOT=55, Whitespace=56, Newline=57, BlockComment=58, LineComment=59;
 	public const int
 		RULE_vectorLiteral = 0, RULE_rotationLiteral = 1, RULE_functionDeclaration = 2, 
-		RULE_codeScopeOrSingleBlockStatement = 3, RULE_elseIfStatement = 4, RULE_elseStatement = 5, 
-		RULE_ifStatement = 6, RULE_controlStructure = 7, RULE_codeScope = 8, RULE_doLoop = 9, 
-		RULE_whileLoop = 10, RULE_forLoop = 11, RULE_loopStructure = 12, RULE_codeStatement = 13, 
-		RULE_expressionStatement = 14, RULE_returnStatement = 15, RULE_labelStatement = 16, 
-		RULE_jumpStatement = 17, RULE_stateChangeStatement = 18, RULE_localVariableDeclaration = 19, 
-		RULE_globalVariableDeclaration = 20, RULE_expressionListTail = 21, RULE_expressionList = 22, 
-		RULE_dotAccessorExpr = 23, RULE_modifiableLeftValue = 24, RULE_expression = 25, 
-		RULE_optionalExpressionList = 26, RULE_optionalParameterList = 27, RULE_listLiteral = 28, 
-		RULE_compilationUnit = 29, RULE_parameterDefinition = 30, RULE_parameterList = 31, 
-		RULE_eventHandler = 32, RULE_definedState = 33, RULE_defaultState = 34;
+		RULE_elseStatement = 3, RULE_controlStructure = 4, RULE_codeScope = 5, 
+		RULE_doLoop = 6, RULE_whileLoop = 7, RULE_forLoop = 8, RULE_loopStructure = 9, 
+		RULE_codeStatement = 10, RULE_expressionStatement = 11, RULE_returnStatement = 12, 
+		RULE_labelStatement = 13, RULE_jumpStatement = 14, RULE_stateChangeStatement = 15, 
+		RULE_localVariableDeclaration = 16, RULE_globalVariableDeclaration = 17, 
+		RULE_expressionListTail = 18, RULE_expressionList = 19, RULE_dotAccessorExpr = 20, 
+		RULE_modifiableLeftValue = 21, RULE_expression = 22, RULE_optionalExpressionList = 23, 
+		RULE_optionalParameterList = 24, RULE_listLiteral = 25, RULE_compilationUnit = 26, 
+		RULE_parameterDefinition = 27, RULE_parameterList = 28, RULE_eventHandler = 29, 
+		RULE_definedState = 30, RULE_defaultState = 31;
 	public static readonly string[] ruleNames = {
-		"vectorLiteral", "rotationLiteral", "functionDeclaration", "codeScopeOrSingleBlockStatement", 
-		"elseIfStatement", "elseStatement", "ifStatement", "controlStructure", 
-		"codeScope", "doLoop", "whileLoop", "forLoop", "loopStructure", "codeStatement", 
-		"expressionStatement", "returnStatement", "labelStatement", "jumpStatement", 
-		"stateChangeStatement", "localVariableDeclaration", "globalVariableDeclaration", 
+		"vectorLiteral", "rotationLiteral", "functionDeclaration", "elseStatement", 
+		"controlStructure", "codeScope", "doLoop", "whileLoop", "forLoop", "loopStructure", 
+		"codeStatement", "expressionStatement", "returnStatement", "labelStatement", 
+		"jumpStatement", "stateChangeStatement", "localVariableDeclaration", "globalVariableDeclaration", 
 		"expressionListTail", "expressionList", "dotAccessorExpr", "modifiableLeftValue", 
 		"expression", "optionalExpressionList", "optionalParameterList", "listLiteral", 
 		"compilationUnit", "parameterDefinition", "parameterList", "eventHandler", 
@@ -155,13 +154,13 @@ public partial class LSLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 70; Match(LESS_THAN);
-			State = 71; _localctx.vector_x = expression(0);
-			State = 72; _localctx.comma_one = Match(COMMA);
-			State = 73; _localctx.vector_y = expression(0);
-			State = 74; _localctx.comma_two = Match(COMMA);
-			State = 75; _localctx.vector_z = expression(0);
-			State = 76; Match(GREATER_THAN);
+			State = 64; Match(LESS_THAN);
+			State = 65; _localctx.vector_x = expression(0);
+			State = 66; _localctx.comma_one = Match(COMMA);
+			State = 67; _localctx.vector_y = expression(0);
+			State = 68; _localctx.comma_two = Match(COMMA);
+			State = 69; _localctx.vector_z = expression(0);
+			State = 70; Match(GREATER_THAN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -222,15 +221,15 @@ public partial class LSLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 78; Match(LESS_THAN);
-			State = 79; _localctx.rotation_x = expression(0);
-			State = 80; _localctx.comma_one = Match(COMMA);
-			State = 81; _localctx.rotation_y = expression(0);
-			State = 82; _localctx.comma_two = Match(COMMA);
-			State = 83; _localctx.rotation_z = expression(0);
-			State = 84; _localctx.comma_three = Match(COMMA);
-			State = 85; _localctx.rotation_s = expression(0);
-			State = 86; Match(GREATER_THAN);
+			State = 72; Match(LESS_THAN);
+			State = 73; _localctx.rotation_x = expression(0);
+			State = 74; _localctx.comma_one = Match(COMMA);
+			State = 75; _localctx.rotation_y = expression(0);
+			State = 76; _localctx.comma_two = Match(COMMA);
+			State = 77; _localctx.rotation_z = expression(0);
+			State = 78; _localctx.comma_three = Match(COMMA);
+			State = 79; _localctx.rotation_s = expression(0);
+			State = 80; Match(GREATER_THAN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -289,153 +288,19 @@ public partial class LSLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 89;
+			State = 83;
 			_la = TokenStream.La(1);
 			if (_la==TYPE) {
 				{
-				State = 88; _localctx.return_type = Match(TYPE);
+				State = 82; _localctx.return_type = Match(TYPE);
 				}
 			}
 
-			State = 91; _localctx.function_name = Match(ID);
-			State = 92; _localctx.open_parenth = Match(O_PAREN);
-			State = 93; _localctx.parameters = optionalParameterList();
-			State = 94; _localctx.close_parenth = Match(C_PAREN);
-			State = 95; _localctx.code = codeScope();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class CodeScopeOrSingleBlockStatementContext : ParserRuleContext {
-		public CodeScopeContext code;
-		public CodeStatementContext statement;
-		public CodeScopeContext codeScope() {
-			return GetRuleContext<CodeScopeContext>(0);
-		}
-		public CodeStatementContext codeStatement() {
-			return GetRuleContext<CodeStatementContext>(0);
-		}
-		public CodeScopeOrSingleBlockStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_codeScopeOrSingleBlockStatement; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.EnterCodeScopeOrSingleBlockStatement(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.ExitCodeScopeOrSingleBlockStatement(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ILSLVisitor<TResult> typedVisitor = visitor as ILSLVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCodeScopeOrSingleBlockStatement(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public CodeScopeOrSingleBlockStatementContext codeScopeOrSingleBlockStatement() {
-		CodeScopeOrSingleBlockStatementContext _localctx = new CodeScopeOrSingleBlockStatementContext(Context, State);
-		EnterRule(_localctx, 6, RULE_codeScopeOrSingleBlockStatement);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 99;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,1,Context) ) {
-			case 1:
-				{
-				State = 97; _localctx.code = codeScope();
-				}
-				break;
-			case 2:
-				{
-				State = 98; _localctx.statement = codeStatement();
-				}
-				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class ElseIfStatementContext : ParserRuleContext {
-		public IToken else_keyword;
-		public IToken if_keyword;
-		public IToken open_parenth;
-		public ExpressionContext condition;
-		public IToken close_parenth;
-		public CodeScopeOrSingleBlockStatementContext code;
-		public ITerminalNode ELSE() { return GetToken(LSLParser.ELSE, 0); }
-		public ITerminalNode IF() { return GetToken(LSLParser.IF, 0); }
-		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
-		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
-		public CodeScopeOrSingleBlockStatementContext codeScopeOrSingleBlockStatement() {
-			return GetRuleContext<CodeScopeOrSingleBlockStatementContext>(0);
-		}
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public ElseIfStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_elseIfStatement; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.EnterElseIfStatement(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.ExitElseIfStatement(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ILSLVisitor<TResult> typedVisitor = visitor as ILSLVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitElseIfStatement(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ElseIfStatementContext elseIfStatement() {
-		ElseIfStatementContext _localctx = new ElseIfStatementContext(Context, State);
-		EnterRule(_localctx, 8, RULE_elseIfStatement);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 101; _localctx.else_keyword = Match(ELSE);
-			State = 102; _localctx.if_keyword = Match(IF);
-			State = 103; _localctx.open_parenth = Match(O_PAREN);
-			State = 105;
-			_la = TokenStream.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
-				{
-				State = 104; _localctx.condition = expression(0);
-				}
-			}
-
-			State = 107; _localctx.close_parenth = Match(C_PAREN);
-			State = 108; _localctx.code = codeScopeOrSingleBlockStatement();
+			State = 85; _localctx.function_name = Match(ID);
+			State = 86; _localctx.open_parenth = Match(O_PAREN);
+			State = 87; _localctx.parameters = optionalParameterList();
+			State = 88; _localctx.close_parenth = Match(C_PAREN);
+			State = 89; _localctx.code = codeScope();
 			}
 		}
 		catch (RecognitionException re) {
@@ -451,10 +316,10 @@ public partial class LSLParser : Parser {
 
 	public partial class ElseStatementContext : ParserRuleContext {
 		public IToken else_keyword;
-		public CodeScopeOrSingleBlockStatementContext code;
+		public CodeStatementContext code;
 		public ITerminalNode ELSE() { return GetToken(LSLParser.ELSE, 0); }
-		public CodeScopeOrSingleBlockStatementContext codeScopeOrSingleBlockStatement() {
-			return GetRuleContext<CodeScopeOrSingleBlockStatementContext>(0);
+		public CodeStatementContext codeStatement() {
+			return GetRuleContext<CodeStatementContext>(0);
 		}
 		public ElseStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -479,80 +344,12 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ElseStatementContext elseStatement() {
 		ElseStatementContext _localctx = new ElseStatementContext(Context, State);
-		EnterRule(_localctx, 10, RULE_elseStatement);
+		EnterRule(_localctx, 6, RULE_elseStatement);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 110; _localctx.else_keyword = Match(ELSE);
-			State = 111; _localctx.code = codeScopeOrSingleBlockStatement();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class IfStatementContext : ParserRuleContext {
-		public IToken if_keyword;
-		public IToken open_parenth;
-		public ExpressionContext condition;
-		public IToken close_parenth;
-		public CodeScopeOrSingleBlockStatementContext code;
-		public ITerminalNode IF() { return GetToken(LSLParser.IF, 0); }
-		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
-		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
-		public CodeScopeOrSingleBlockStatementContext codeScopeOrSingleBlockStatement() {
-			return GetRuleContext<CodeScopeOrSingleBlockStatementContext>(0);
-		}
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public IfStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_ifStatement; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.EnterIfStatement(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ILSLListener typedListener = listener as ILSLListener;
-			if (typedListener != null) typedListener.ExitIfStatement(this);
-		}
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ILSLVisitor<TResult> typedVisitor = visitor as ILSLVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitIfStatement(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public IfStatementContext ifStatement() {
-		IfStatementContext _localctx = new IfStatementContext(Context, State);
-		EnterRule(_localctx, 12, RULE_ifStatement);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 113; _localctx.if_keyword = Match(IF);
-			State = 114; _localctx.open_parenth = Match(O_PAREN);
-			State = 116;
-			_la = TokenStream.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
-				{
-				State = 115; _localctx.condition = expression(0);
-				}
-			}
-
-			State = 118; _localctx.close_parenth = Match(C_PAREN);
-			State = 119; _localctx.code = codeScopeOrSingleBlockStatement();
+			State = 91; _localctx.else_keyword = Match(ELSE);
+			State = 92; _localctx.code = codeStatement();
 			}
 		}
 		catch (RecognitionException re) {
@@ -567,17 +364,23 @@ public partial class LSLParser : Parser {
 	}
 
 	public partial class ControlStructureContext : ParserRuleContext {
-		public IfStatementContext ifStatement() {
-			return GetRuleContext<IfStatementContext>(0);
+		public IToken if_keyword;
+		public IToken open_parenth;
+		public ExpressionContext condition;
+		public IToken close_parenth;
+		public CodeStatementContext code;
+		public ElseStatementContext else_statement;
+		public ITerminalNode IF() { return GetToken(LSLParser.IF, 0); }
+		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
+		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
+		public CodeStatementContext codeStatement() {
+			return GetRuleContext<CodeStatementContext>(0);
+		}
+		public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
 		}
 		public ElseStatementContext elseStatement() {
 			return GetRuleContext<ElseStatementContext>(0);
-		}
-		public ElseIfStatementContext[] elseIfStatement() {
-			return GetRuleContexts<ElseIfStatementContext>();
-		}
-		public ElseIfStatementContext elseIfStatement(int i) {
-			return GetRuleContext<ElseIfStatementContext>(i);
 		}
 		public ControlStructureContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -602,54 +405,29 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ControlStructureContext controlStructure() {
 		ControlStructureContext _localctx = new ControlStructureContext(Context, State);
-		EnterRule(_localctx, 14, RULE_controlStructure);
+		EnterRule(_localctx, 8, RULE_controlStructure);
+		int _la;
 		try {
-			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 121; ifStatement();
-			State = 131;
+			State = 94; _localctx.if_keyword = Match(IF);
+			State = 95; _localctx.open_parenth = Match(O_PAREN);
+			State = 97;
+			_la = TokenStream.La(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
+				{
+				State = 96; _localctx.condition = expression(0);
+				}
+			}
+
+			State = 99; _localctx.close_parenth = Match(C_PAREN);
+			State = 100; _localctx.code = codeStatement();
+			State = 102;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,6,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
 			case 1:
 				{
-				{
-				State = 123;
-				ErrorHandler.Sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
-						{
-						{
-						State = 122; elseIfStatement();
-						}
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					State = 125;
-					ErrorHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(TokenStream,4,Context);
-				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
-				State = 128;
-				ErrorHandler.Sync(this);
-				switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
-				case 1:
-					{
-					State = 127; elseStatement();
-					}
-					break;
-				}
-				}
-				}
-				break;
-			case 2:
-				{
-				{
-				State = 130; elseStatement();
-				}
+				State = 101; _localctx.else_statement = elseStatement();
 				}
 				break;
 			}
@@ -700,26 +478,26 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public CodeScopeContext codeScope() {
 		CodeScopeContext _localctx = new CodeScopeContext(Context, State);
-		EnterRule(_localctx, 16, RULE_codeScope);
+		EnterRule(_localctx, 10, RULE_codeScope);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 133; _localctx.open_brace = Match(O_BRACE);
-			State = 137;
+			State = 104; _localctx.open_brace = Match(O_BRACE);
+			State = 108;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TYPE) | (1L << DO) | (1L << IF) | (1L << WHILE) | (1L << FOR) | (1L << STATE) | (1L << RETURN) | (1L << JUMP) | (1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << SEMI_COLON) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACE) | (1L << O_BRACKET) | (1L << LABEL_PREFIX) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
 				{
-				State = 134; codeStatement();
+				State = 105; codeStatement();
 				}
 				}
-				State = 139;
+				State = 110;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.La(1);
 			}
-			State = 140; _localctx.close_brace = Match(C_BRACE);
+			State = 111; _localctx.close_brace = Match(C_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -735,15 +513,15 @@ public partial class LSLParser : Parser {
 
 	public partial class DoLoopContext : ParserRuleContext {
 		public IToken loop_keyword;
-		public CodeScopeOrSingleBlockStatementContext code;
+		public CodeStatementContext code;
 		public IToken while_keyword;
 		public IToken open_parenth;
 		public ExpressionContext loop_condition;
 		public IToken close_parenth;
 		public IToken semi_colon;
 		public ITerminalNode DO() { return GetToken(LSLParser.DO, 0); }
-		public CodeScopeOrSingleBlockStatementContext codeScopeOrSingleBlockStatement() {
-			return GetRuleContext<CodeScopeOrSingleBlockStatementContext>(0);
+		public CodeStatementContext codeStatement() {
+			return GetRuleContext<CodeStatementContext>(0);
 		}
 		public ITerminalNode WHILE() { return GetToken(LSLParser.WHILE, 0); }
 		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
@@ -775,25 +553,25 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public DoLoopContext doLoop() {
 		DoLoopContext _localctx = new DoLoopContext(Context, State);
-		EnterRule(_localctx, 18, RULE_doLoop);
+		EnterRule(_localctx, 12, RULE_doLoop);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 142; _localctx.loop_keyword = Match(DO);
-			State = 143; _localctx.code = codeScopeOrSingleBlockStatement();
-			State = 144; _localctx.while_keyword = Match(WHILE);
-			State = 145; _localctx.open_parenth = Match(O_PAREN);
-			State = 147;
+			State = 113; _localctx.loop_keyword = Match(DO);
+			State = 114; _localctx.code = codeStatement();
+			State = 115; _localctx.while_keyword = Match(WHILE);
+			State = 116; _localctx.open_parenth = Match(O_PAREN);
+			State = 118;
 			_la = TokenStream.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
-				State = 146; _localctx.loop_condition = expression(0);
+				State = 117; _localctx.loop_condition = expression(0);
 				}
 			}
 
-			State = 149; _localctx.close_parenth = Match(C_PAREN);
-			State = 150; _localctx.semi_colon = Match(SEMI_COLON);
+			State = 120; _localctx.close_parenth = Match(C_PAREN);
+			State = 121; _localctx.semi_colon = Match(SEMI_COLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -812,12 +590,12 @@ public partial class LSLParser : Parser {
 		public IToken open_parenth;
 		public ExpressionContext loop_condition;
 		public IToken close_parenth;
-		public CodeScopeOrSingleBlockStatementContext code;
+		public CodeStatementContext code;
 		public ITerminalNode WHILE() { return GetToken(LSLParser.WHILE, 0); }
 		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
 		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
-		public CodeScopeOrSingleBlockStatementContext codeScopeOrSingleBlockStatement() {
-			return GetRuleContext<CodeScopeOrSingleBlockStatementContext>(0);
+		public CodeStatementContext codeStatement() {
+			return GetRuleContext<CodeStatementContext>(0);
 		}
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
@@ -845,23 +623,23 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public WhileLoopContext whileLoop() {
 		WhileLoopContext _localctx = new WhileLoopContext(Context, State);
-		EnterRule(_localctx, 20, RULE_whileLoop);
+		EnterRule(_localctx, 14, RULE_whileLoop);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 152; _localctx.loop_keyword = Match(WHILE);
-			State = 153; _localctx.open_parenth = Match(O_PAREN);
-			State = 155;
+			State = 123; _localctx.loop_keyword = Match(WHILE);
+			State = 124; _localctx.open_parenth = Match(O_PAREN);
+			State = 126;
 			_la = TokenStream.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
-				State = 154; _localctx.loop_condition = expression(0);
+				State = 125; _localctx.loop_condition = expression(0);
 				}
 			}
 
-			State = 157; _localctx.close_parenth = Match(C_PAREN);
-			State = 158; _localctx.code = codeScopeOrSingleBlockStatement();
+			State = 128; _localctx.close_parenth = Match(C_PAREN);
+			State = 129; _localctx.code = codeStatement();
 			}
 		}
 		catch (RecognitionException re) {
@@ -884,7 +662,7 @@ public partial class LSLParser : Parser {
 		public IToken second_semi_colon;
 		public OptionalExpressionListContext expression_list;
 		public IToken close_parenth;
-		public CodeScopeOrSingleBlockStatementContext code;
+		public CodeStatementContext code;
 		public ITerminalNode FOR() { return GetToken(LSLParser.FOR, 0); }
 		public ITerminalNode O_PAREN() { return GetToken(LSLParser.O_PAREN, 0); }
 		public OptionalExpressionListContext[] optionalExpressionList() {
@@ -898,8 +676,8 @@ public partial class LSLParser : Parser {
 			return GetToken(LSLParser.SEMI_COLON, i);
 		}
 		public ITerminalNode C_PAREN() { return GetToken(LSLParser.C_PAREN, 0); }
-		public CodeScopeOrSingleBlockStatementContext codeScopeOrSingleBlockStatement() {
-			return GetRuleContext<CodeScopeOrSingleBlockStatementContext>(0);
+		public CodeStatementContext codeStatement() {
+			return GetRuleContext<CodeStatementContext>(0);
 		}
 		public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
@@ -927,27 +705,27 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ForLoopContext forLoop() {
 		ForLoopContext _localctx = new ForLoopContext(Context, State);
-		EnterRule(_localctx, 22, RULE_forLoop);
+		EnterRule(_localctx, 16, RULE_forLoop);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 160; _localctx.loop_keyword = Match(FOR);
-			State = 161; _localctx.open_parenth = Match(O_PAREN);
-			State = 162; _localctx.loop_init = optionalExpressionList();
-			State = 163; _localctx.first_semi_colon = Match(SEMI_COLON);
-			State = 165;
+			State = 131; _localctx.loop_keyword = Match(FOR);
+			State = 132; _localctx.open_parenth = Match(O_PAREN);
+			State = 133; _localctx.loop_init = optionalExpressionList();
+			State = 134; _localctx.first_semi_colon = Match(SEMI_COLON);
+			State = 136;
 			_la = TokenStream.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
-				State = 164; _localctx.loop_condition = expression(0);
+				State = 135; _localctx.loop_condition = expression(0);
 				}
 			}
 
-			State = 167; _localctx.second_semi_colon = Match(SEMI_COLON);
-			State = 168; _localctx.expression_list = optionalExpressionList();
-			State = 169; _localctx.close_parenth = Match(C_PAREN);
-			State = 170; _localctx.code = codeScopeOrSingleBlockStatement();
+			State = 138; _localctx.second_semi_colon = Match(SEMI_COLON);
+			State = 139; _localctx.expression_list = optionalExpressionList();
+			State = 140; _localctx.close_parenth = Match(C_PAREN);
+			State = 141; _localctx.code = codeStatement();
 			}
 		}
 		catch (RecognitionException re) {
@@ -997,26 +775,26 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public LoopStructureContext loopStructure() {
 		LoopStructureContext _localctx = new LoopStructureContext(Context, State);
-		EnterRule(_localctx, 24, RULE_loopStructure);
+		EnterRule(_localctx, 18, RULE_loopStructure);
 		try {
-			State = 175;
+			State = 146;
 			switch (TokenStream.La(1)) {
 			case DO:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 172; _localctx.do_loop = doLoop();
+				State = 143; _localctx.do_loop = doLoop();
 				}
 				break;
 			case FOR:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 173; _localctx.for_loop = forLoop();
+				State = 144; _localctx.for_loop = forLoop();
 				}
 				break;
 			case WHILE:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 174; _localctx.while_loop = whileLoop();
+				State = 145; _localctx.while_loop = whileLoop();
 				}
 				break;
 			default:
@@ -1096,14 +874,14 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public CodeStatementContext codeStatement() {
 		CodeStatementContext _localctx = new CodeStatementContext(Context, State);
-		EnterRule(_localctx, 26, RULE_codeStatement);
+		EnterRule(_localctx, 20, RULE_codeStatement);
 		try {
-			State = 187;
+			State = 158;
 			switch (TokenStream.La(1)) {
 			case TYPE:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 177; _localctx.variable_declaration = localVariableDeclaration();
+				State = 148; _localctx.variable_declaration = localVariableDeclaration();
 				}
 				break;
 			case ID:
@@ -1122,37 +900,37 @@ public partial class LSLParser : Parser {
 			case LOGICAL_NOT:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 178; _localctx.expression_statement = expressionStatement();
+				State = 149; _localctx.expression_statement = expressionStatement();
 				}
 				break;
 			case RETURN:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 179; _localctx.return_statement = returnStatement();
+				State = 150; _localctx.return_statement = returnStatement();
 				}
 				break;
 			case JUMP:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 180; _localctx.jump_statement = jumpStatement();
+				State = 151; _localctx.jump_statement = jumpStatement();
 				}
 				break;
 			case LABEL_PREFIX:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 181; _localctx.label_statement = labelStatement();
+				State = 152; _localctx.label_statement = labelStatement();
 				}
 				break;
 			case STATE:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 182; _localctx.state_change_statement = stateChangeStatement();
+				State = 153; _localctx.state_change_statement = stateChangeStatement();
 				}
 				break;
 			case IF:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 183; _localctx.control_structure = controlStructure();
+				State = 154; _localctx.control_structure = controlStructure();
 				}
 				break;
 			case DO:
@@ -1160,19 +938,19 @@ public partial class LSLParser : Parser {
 			case FOR:
 				EnterOuterAlt(_localctx, 8);
 				{
-				State = 184; _localctx.loop_structure = loopStructure();
+				State = 155; _localctx.loop_structure = loopStructure();
 				}
 				break;
 			case O_BRACE:
 				EnterOuterAlt(_localctx, 9);
 				{
-				State = 185; _localctx.code_scope = codeScope();
+				State = 156; _localctx.code_scope = codeScope();
 				}
 				break;
 			case SEMI_COLON:
 				EnterOuterAlt(_localctx, 10);
 				{
-				State = 186; _localctx.semi_colon = Match(SEMI_COLON);
+				State = 157; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			default:
@@ -1220,12 +998,12 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ExpressionStatementContext expressionStatement() {
 		ExpressionStatementContext _localctx = new ExpressionStatementContext(Context, State);
-		EnterRule(_localctx, 28, RULE_expressionStatement);
+		EnterRule(_localctx, 22, RULE_expressionStatement);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 189; _localctx.expression_rule = expression(0);
-			State = 190; _localctx.semi_colon = Match(SEMI_COLON);
+			State = 160; _localctx.expression_rule = expression(0);
+			State = 161; _localctx.semi_colon = Match(SEMI_COLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1271,24 +1049,24 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ReturnStatementContext returnStatement() {
 		ReturnStatementContext _localctx = new ReturnStatementContext(Context, State);
-		EnterRule(_localctx, 30, RULE_returnStatement);
+		EnterRule(_localctx, 24, RULE_returnStatement);
 		try {
-			State = 198;
+			State = 169;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,13,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,9,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 192; _localctx.return_keyword = Match(RETURN);
-				State = 193; _localctx.return_expression = expression(0);
-				State = 194; _localctx.semi_colon = Match(SEMI_COLON);
+				State = 163; _localctx.return_keyword = Match(RETURN);
+				State = 164; _localctx.return_expression = expression(0);
+				State = 165; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 196; _localctx.return_keyword = Match(RETURN);
-				State = 197; _localctx.semi_colon = Match(SEMI_COLON);
+				State = 167; _localctx.return_keyword = Match(RETURN);
+				State = 168; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			}
@@ -1334,13 +1112,13 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public LabelStatementContext labelStatement() {
 		LabelStatementContext _localctx = new LabelStatementContext(Context, State);
-		EnterRule(_localctx, 32, RULE_labelStatement);
+		EnterRule(_localctx, 26, RULE_labelStatement);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 200; _localctx.label_prefix = Match(LABEL_PREFIX);
-			State = 201; _localctx.label_name = Match(ID);
-			State = 202; _localctx.semi_colon = Match(SEMI_COLON);
+			State = 171; _localctx.label_prefix = Match(LABEL_PREFIX);
+			State = 172; _localctx.label_name = Match(ID);
+			State = 173; _localctx.semi_colon = Match(SEMI_COLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1384,13 +1162,13 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public JumpStatementContext jumpStatement() {
 		JumpStatementContext _localctx = new JumpStatementContext(Context, State);
-		EnterRule(_localctx, 34, RULE_jumpStatement);
+		EnterRule(_localctx, 28, RULE_jumpStatement);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 204; _localctx.jump_keyword = Match(JUMP);
-			State = 205; _localctx.jump_target = Match(ID);
-			State = 206; _localctx.semi_colon = Match(SEMI_COLON);
+			State = 175; _localctx.jump_keyword = Match(JUMP);
+			State = 176; _localctx.jump_target = Match(ID);
+			State = 177; _localctx.semi_colon = Match(SEMI_COLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1435,13 +1213,13 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public StateChangeStatementContext stateChangeStatement() {
 		StateChangeStatementContext _localctx = new StateChangeStatementContext(Context, State);
-		EnterRule(_localctx, 36, RULE_stateChangeStatement);
+		EnterRule(_localctx, 30, RULE_stateChangeStatement);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 208; _localctx.state_keyword = Match(STATE);
-			State = 209;
+			State = 179; _localctx.state_keyword = Match(STATE);
+			State = 180;
 			_localctx.state_target = TokenStream.Lt(1);
 			_la = TokenStream.La(1);
 			if ( !(_la==DEFAULT || _la==ID) ) {
@@ -1450,7 +1228,7 @@ public partial class LSLParser : Parser {
 			else {
 			    Consume();
 			}
-			State = 210; _localctx.semi_colon = Match(SEMI_COLON);
+			State = 181; _localctx.semi_colon = Match(SEMI_COLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1500,27 +1278,27 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public LocalVariableDeclarationContext localVariableDeclaration() {
 		LocalVariableDeclarationContext _localctx = new LocalVariableDeclarationContext(Context, State);
-		EnterRule(_localctx, 38, RULE_localVariableDeclaration);
+		EnterRule(_localctx, 32, RULE_localVariableDeclaration);
 		try {
-			State = 221;
+			State = 192;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,14,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,10,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 212; _localctx.variable_type = Match(TYPE);
-				State = 213; _localctx.variable_name = Match(ID);
-				State = 214; _localctx.operation = Match(EQUAL);
-				State = 215; _localctx.variable_value = expression(0);
-				State = 216; _localctx.semi_colon = Match(SEMI_COLON);
+				State = 183; _localctx.variable_type = Match(TYPE);
+				State = 184; _localctx.variable_name = Match(ID);
+				State = 185; _localctx.operation = Match(EQUAL);
+				State = 186; _localctx.variable_value = expression(0);
+				State = 187; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 218; _localctx.variable_type = Match(TYPE);
-				State = 219; _localctx.variable_name = Match(ID);
-				State = 220; _localctx.semi_colon = Match(SEMI_COLON);
+				State = 189; _localctx.variable_type = Match(TYPE);
+				State = 190; _localctx.variable_name = Match(ID);
+				State = 191; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			}
@@ -1572,27 +1350,27 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public GlobalVariableDeclarationContext globalVariableDeclaration() {
 		GlobalVariableDeclarationContext _localctx = new GlobalVariableDeclarationContext(Context, State);
-		EnterRule(_localctx, 40, RULE_globalVariableDeclaration);
+		EnterRule(_localctx, 34, RULE_globalVariableDeclaration);
 		try {
-			State = 232;
+			State = 203;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,15,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 223; _localctx.variable_type = Match(TYPE);
-				State = 224; _localctx.variable_name = Match(ID);
-				State = 225; _localctx.operation = Match(EQUAL);
-				State = 226; _localctx.variable_value = expression(0);
-				State = 227; _localctx.semi_colon = Match(SEMI_COLON);
+				State = 194; _localctx.variable_type = Match(TYPE);
+				State = 195; _localctx.variable_name = Match(ID);
+				State = 196; _localctx.operation = Match(EQUAL);
+				State = 197; _localctx.variable_value = expression(0);
+				State = 198; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 229; _localctx.variable_type = Match(TYPE);
-				State = 230; _localctx.variable_name = Match(ID);
-				State = 231; _localctx.semi_colon = Match(SEMI_COLON);
+				State = 200; _localctx.variable_type = Match(TYPE);
+				State = 201; _localctx.variable_name = Match(ID);
+				State = 202; _localctx.semi_colon = Match(SEMI_COLON);
 				}
 				break;
 			}
@@ -1637,12 +1415,12 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ExpressionListTailContext expressionListTail() {
 		ExpressionListTailContext _localctx = new ExpressionListTailContext(Context, State);
-		EnterRule(_localctx, 42, RULE_expressionListTail);
+		EnterRule(_localctx, 36, RULE_expressionListTail);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 234; _localctx.comma = Match(COMMA);
-			State = 235; expression(0);
+			State = 205; _localctx.comma = Match(COMMA);
+			State = 206; expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1689,22 +1467,22 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ExpressionListContext expressionList() {
 		ExpressionListContext _localctx = new ExpressionListContext(Context, State);
-		EnterRule(_localctx, 44, RULE_expressionList);
+		EnterRule(_localctx, 38, RULE_expressionList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 237; expression(0);
-			State = 241;
+			State = 208; expression(0);
+			State = 212;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 238; expressionListTail();
+				State = 209; expressionListTail();
 				}
 				}
-				State = 243;
+				State = 214;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.La(1);
 			}
@@ -1753,13 +1531,13 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public DotAccessorExprContext dotAccessorExpr() {
 		DotAccessorExprContext _localctx = new DotAccessorExprContext(Context, State);
-		EnterRule(_localctx, 46, RULE_dotAccessorExpr);
+		EnterRule(_localctx, 40, RULE_dotAccessorExpr);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 244; _localctx.expr_lvalue = Match(ID);
-			State = 245; _localctx.operation = Match(DOT);
-			State = 246; _localctx.member = Match(ID);
+			State = 215; _localctx.expr_lvalue = Match(ID);
+			State = 216; _localctx.operation = Match(DOT);
+			State = 217; _localctx.member = Match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1802,21 +1580,21 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ModifiableLeftValueContext modifiableLeftValue() {
 		ModifiableLeftValueContext _localctx = new ModifiableLeftValueContext(Context, State);
-		EnterRule(_localctx, 48, RULE_modifiableLeftValue);
+		EnterRule(_localctx, 42, RULE_modifiableLeftValue);
 		try {
-			State = 250;
+			State = 221;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,17,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,13,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 248; dotAccessorExpr();
+				State = 219; dotAccessorExpr();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 249; _localctx.variable = Match(ID);
+				State = 220; _localctx.variable = Match(ID);
 				}
 				break;
 			}
@@ -2337,23 +2115,23 @@ public partial class LSLParser : Parser {
 		int _parentState = State;
 		ExpressionContext _localctx = new ExpressionContext(Context, _parentState);
 		ExpressionContext _prevctx = _localctx;
-		int _startState = 50;
-		EnterRecursionRule(_localctx, 50, RULE_expression, _p);
+		int _startState = 44;
+		EnterRecursionRule(_localctx, 44, RULE_expression, _p);
 		int _la;
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 288;
+			State = 259;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,19,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,15,Context) ) {
 			case 1:
 				{
 				_localctx = new Expr_PrefixOperationContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
 
-				State = 253;
+				State = 224;
 				((Expr_PrefixOperationContext)_localctx).operation = TokenStream.Lt(1);
 				_la = TokenStream.La(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) ) {
@@ -2362,7 +2140,7 @@ public partial class LSLParser : Parser {
 				else {
 				    Consume();
 				}
-				State = 254; ((Expr_PrefixOperationContext)_localctx).expr_rvalue = expression(14);
+				State = 225; ((Expr_PrefixOperationContext)_localctx).expr_rvalue = expression(14);
 				}
 				break;
 			case 2:
@@ -2371,11 +2149,11 @@ public partial class LSLParser : Parser {
 				Context = _localctx;
 				_prevctx = _localctx;
 				{
-				State = 255; ((Expr_TypeCastContext)_localctx).open_parenth = Match(O_PAREN);
-				State = 256; ((Expr_TypeCastContext)_localctx).cast_type = Match(TYPE);
-				State = 257; ((Expr_TypeCastContext)_localctx).close_parenth = Match(C_PAREN);
+				State = 226; ((Expr_TypeCastContext)_localctx).open_parenth = Match(O_PAREN);
+				State = 227; ((Expr_TypeCastContext)_localctx).cast_type = Match(TYPE);
+				State = 228; ((Expr_TypeCastContext)_localctx).close_parenth = Match(C_PAREN);
 				}
-				State = 259; ((Expr_TypeCastContext)_localctx).expr_rvalue = expression(13);
+				State = 230; ((Expr_TypeCastContext)_localctx).expr_rvalue = expression(13);
 				}
 				break;
 			case 3:
@@ -2383,8 +2161,8 @@ public partial class LSLParser : Parser {
 				_localctx = new Expr_ModifyingAssignmentContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 260; ((Expr_ModifyingAssignmentContext)_localctx).expr_lvalue = modifiableLeftValue();
-				State = 261;
+				State = 231; ((Expr_ModifyingAssignmentContext)_localctx).expr_lvalue = modifiableLeftValue();
+				State = 232;
 				((Expr_ModifyingAssignmentContext)_localctx).operation = TokenStream.Lt(1);
 				_la = TokenStream.La(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINUS_EQUAL) | (1L << PLUS_EQUAL) | (1L << MUL_EQUAL) | (1L << DIV_EQUAL) | (1L << MOD_EQUAL))) != 0)) ) {
@@ -2393,7 +2171,7 @@ public partial class LSLParser : Parser {
 				else {
 				    Consume();
 				}
-				State = 262; ((Expr_ModifyingAssignmentContext)_localctx).expr_rvalue = expression(3);
+				State = 233; ((Expr_ModifyingAssignmentContext)_localctx).expr_rvalue = expression(3);
 				}
 				break;
 			case 4:
@@ -2401,9 +2179,9 @@ public partial class LSLParser : Parser {
 				_localctx = new Expr_AssignmentContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 264; ((Expr_AssignmentContext)_localctx).expr_lvalue = modifiableLeftValue();
-				State = 265; ((Expr_AssignmentContext)_localctx).operation = Match(EQUAL);
-				State = 266; ((Expr_AssignmentContext)_localctx).expr_rvalue = expression(2);
+				State = 235; ((Expr_AssignmentContext)_localctx).expr_lvalue = modifiableLeftValue();
+				State = 236; ((Expr_AssignmentContext)_localctx).operation = Match(EQUAL);
+				State = 237; ((Expr_AssignmentContext)_localctx).expr_rvalue = expression(2);
 				}
 				break;
 			case 5:
@@ -2411,9 +2189,9 @@ public partial class LSLParser : Parser {
 				_localctx = new ParenthesizedExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 268; ((ParenthesizedExpressionContext)_localctx).open_parenth = Match(O_PAREN);
-				State = 269; ((ParenthesizedExpressionContext)_localctx).expr_value = expression(0);
-				State = 270; ((ParenthesizedExpressionContext)_localctx).close_parenth = Match(C_PAREN);
+				State = 239; ((ParenthesizedExpressionContext)_localctx).open_parenth = Match(O_PAREN);
+				State = 240; ((ParenthesizedExpressionContext)_localctx).expr_value = expression(0);
+				State = 241; ((ParenthesizedExpressionContext)_localctx).close_parenth = Match(C_PAREN);
 				}
 				break;
 			case 6:
@@ -2421,11 +2199,11 @@ public partial class LSLParser : Parser {
 				_localctx = new Expr_FunctionCallContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 272; ((Expr_FunctionCallContext)_localctx).function_name = Match(ID);
+				State = 243; ((Expr_FunctionCallContext)_localctx).function_name = Match(ID);
 				{
-				State = 273; ((Expr_FunctionCallContext)_localctx).open_parenth = Match(O_PAREN);
-				State = 274; ((Expr_FunctionCallContext)_localctx).expression_list = optionalExpressionList();
-				State = 275; ((Expr_FunctionCallContext)_localctx).close_parenth = Match(C_PAREN);
+				State = 244; ((Expr_FunctionCallContext)_localctx).open_parenth = Match(O_PAREN);
+				State = 245; ((Expr_FunctionCallContext)_localctx).expression_list = optionalExpressionList();
+				State = 246; ((Expr_FunctionCallContext)_localctx).close_parenth = Match(C_PAREN);
 				}
 				}
 				break;
@@ -2434,7 +2212,7 @@ public partial class LSLParser : Parser {
 				_localctx = new Expr_DotAccessorExprContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 277; dotAccessorExpr();
+				State = 248; dotAccessorExpr();
 				}
 				break;
 			case 8:
@@ -2442,47 +2220,47 @@ public partial class LSLParser : Parser {
 				_localctx = new Expr_AtomContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 286;
+				State = 257;
 				ErrorHandler.Sync(this);
-				switch ( Interpreter.AdaptivePredict(TokenStream,18,Context) ) {
+				switch ( Interpreter.AdaptivePredict(TokenStream,14,Context) ) {
 				case 1:
 					{
-					State = 278; ((Expr_AtomContext)_localctx).variable = Match(ID);
+					State = 249; ((Expr_AtomContext)_localctx).variable = Match(ID);
 					}
 					break;
 				case 2:
 					{
-					State = 279; ((Expr_AtomContext)_localctx).string_literal = Match(QUOTED_STRING);
+					State = 250; ((Expr_AtomContext)_localctx).string_literal = Match(QUOTED_STRING);
 					}
 					break;
 				case 3:
 					{
-					State = 280; ((Expr_AtomContext)_localctx).integer_literal = Match(INT);
+					State = 251; ((Expr_AtomContext)_localctx).integer_literal = Match(INT);
 					}
 					break;
 				case 4:
 					{
-					State = 281; ((Expr_AtomContext)_localctx).float_literal = Match(FLOAT);
+					State = 252; ((Expr_AtomContext)_localctx).float_literal = Match(FLOAT);
 					}
 					break;
 				case 5:
 					{
-					State = 282; ((Expr_AtomContext)_localctx).hex_literal = Match(HEX_LITERAL);
+					State = 253; ((Expr_AtomContext)_localctx).hex_literal = Match(HEX_LITERAL);
 					}
 					break;
 				case 6:
 					{
-					State = 283; ((Expr_AtomContext)_localctx).vector_literal = vectorLiteral();
+					State = 254; ((Expr_AtomContext)_localctx).vector_literal = vectorLiteral();
 					}
 					break;
 				case 7:
 					{
-					State = 284; ((Expr_AtomContext)_localctx).rotation_literal = rotationLiteral();
+					State = 255; ((Expr_AtomContext)_localctx).rotation_literal = rotationLiteral();
 					}
 					break;
 				case 8:
 					{
-					State = 285; ((Expr_AtomContext)_localctx).list_literal = listLiteral();
+					State = 256; ((Expr_AtomContext)_localctx).list_literal = listLiteral();
 					}
 					break;
 				}
@@ -2490,26 +2268,26 @@ public partial class LSLParser : Parser {
 				break;
 			}
 			Context.Stop = TokenStream.Lt(-1);
-			State = 321;
+			State = 292;
 			ErrorHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(TokenStream,21,Context);
+			_alt = Interpreter.AdaptivePredict(TokenStream,17,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( ParseListeners!=null )
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 319;
+					State = 290;
 					ErrorHandler.Sync(this);
-					switch ( Interpreter.AdaptivePredict(TokenStream,20,Context) ) {
+					switch ( Interpreter.AdaptivePredict(TokenStream,16,Context) ) {
 					case 1:
 						{
 						_localctx = new Expr_MultDivModContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_MultDivModContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 290;
+						State = 261;
 						if (!(Precpred(Context, 12))) throw new FailedPredicateException(this, "Precpred(Context, 12)");
-						State = 291;
+						State = 262;
 						((Expr_MultDivModContext)_localctx).operation = TokenStream.Lt(1);
 						_la = TokenStream.La(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MUL) | (1L << DIV) | (1L << MOD))) != 0)) ) {
@@ -2518,7 +2296,7 @@ public partial class LSLParser : Parser {
 						else {
 						    Consume();
 						}
-						State = 292; ((Expr_MultDivModContext)_localctx).expr_rvalue = expression(13);
+						State = 263; ((Expr_MultDivModContext)_localctx).expr_rvalue = expression(13);
 						}
 						break;
 					case 2:
@@ -2526,9 +2304,9 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_AddSubContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_AddSubContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 293;
+						State = 264;
 						if (!(Precpred(Context, 11))) throw new FailedPredicateException(this, "Precpred(Context, 11)");
-						State = 294;
+						State = 265;
 						((Expr_AddSubContext)_localctx).operation = TokenStream.Lt(1);
 						_la = TokenStream.La(1);
 						if ( !(_la==MINUS || _la==PLUS) ) {
@@ -2537,7 +2315,7 @@ public partial class LSLParser : Parser {
 						else {
 						    Consume();
 						}
-						State = 295; ((Expr_AddSubContext)_localctx).expr_rvalue = expression(12);
+						State = 266; ((Expr_AddSubContext)_localctx).expr_rvalue = expression(12);
 						}
 						break;
 					case 3:
@@ -2545,9 +2323,9 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_BitwiseShiftContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_BitwiseShiftContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 296;
+						State = 267;
 						if (!(Precpred(Context, 10))) throw new FailedPredicateException(this, "Precpred(Context, 10)");
-						State = 297;
+						State = 268;
 						((Expr_BitwiseShiftContext)_localctx).operation = TokenStream.Lt(1);
 						_la = TokenStream.La(1);
 						if ( !(_la==RIGHT_SHIFT || _la==LEFT_SHIFT) ) {
@@ -2556,7 +2334,7 @@ public partial class LSLParser : Parser {
 						else {
 						    Consume();
 						}
-						State = 298; ((Expr_BitwiseShiftContext)_localctx).expr_rvalue = expression(11);
+						State = 269; ((Expr_BitwiseShiftContext)_localctx).expr_rvalue = expression(11);
 						}
 						break;
 					case 4:
@@ -2564,9 +2342,9 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_LogicalCompareContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_LogicalCompareContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 299;
+						State = 270;
 						if (!(Precpred(Context, 9))) throw new FailedPredicateException(this, "Precpred(Context, 9)");
-						State = 300;
+						State = 271;
 						((Expr_LogicalCompareContext)_localctx).operation = TokenStream.Lt(1);
 						_la = TokenStream.La(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LESS_THAN) | (1L << GREATER_THAN) | (1L << LESS_THAN_EQUAL) | (1L << GREATER_THAN_EQUAL))) != 0)) ) {
@@ -2575,7 +2353,7 @@ public partial class LSLParser : Parser {
 						else {
 						    Consume();
 						}
-						State = 301; ((Expr_LogicalCompareContext)_localctx).expr_rvalue = expression(10);
+						State = 272; ((Expr_LogicalCompareContext)_localctx).expr_rvalue = expression(10);
 						}
 						break;
 					case 5:
@@ -2583,9 +2361,9 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_LogicalEqualityContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_LogicalEqualityContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 302;
+						State = 273;
 						if (!(Precpred(Context, 8))) throw new FailedPredicateException(this, "Precpred(Context, 8)");
-						State = 303;
+						State = 274;
 						((Expr_LogicalEqualityContext)_localctx).operation = TokenStream.Lt(1);
 						_la = TokenStream.La(1);
 						if ( !(_la==LOGICAL_EQUAL || _la==LOGICAL_NOT_EQUAL) ) {
@@ -2594,7 +2372,7 @@ public partial class LSLParser : Parser {
 						else {
 						    Consume();
 						}
-						State = 304; ((Expr_LogicalEqualityContext)_localctx).expr_rvalue = expression(9);
+						State = 275; ((Expr_LogicalEqualityContext)_localctx).expr_rvalue = expression(9);
 						}
 						break;
 					case 6:
@@ -2602,12 +2380,12 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_BitwiseAndContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_BitwiseAndContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 305;
+						State = 276;
 						if (!(Precpred(Context, 7))) throw new FailedPredicateException(this, "Precpred(Context, 7)");
 						{
-						State = 306; ((Expr_BitwiseAndContext)_localctx).operation = Match(BITWISE_AND);
+						State = 277; ((Expr_BitwiseAndContext)_localctx).operation = Match(BITWISE_AND);
 						}
-						State = 307; ((Expr_BitwiseAndContext)_localctx).expr_rvalue = expression(8);
+						State = 278; ((Expr_BitwiseAndContext)_localctx).expr_rvalue = expression(8);
 						}
 						break;
 					case 7:
@@ -2615,12 +2393,12 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_BitwiseXorContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_BitwiseXorContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 308;
+						State = 279;
 						if (!(Precpred(Context, 6))) throw new FailedPredicateException(this, "Precpred(Context, 6)");
 						{
-						State = 309; ((Expr_BitwiseXorContext)_localctx).operation = Match(BITWISE_XOR);
+						State = 280; ((Expr_BitwiseXorContext)_localctx).operation = Match(BITWISE_XOR);
 						}
-						State = 310; ((Expr_BitwiseXorContext)_localctx).expr_rvalue = expression(7);
+						State = 281; ((Expr_BitwiseXorContext)_localctx).expr_rvalue = expression(7);
 						}
 						break;
 					case 8:
@@ -2628,12 +2406,12 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_BitwiseOrContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_BitwiseOrContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 311;
+						State = 282;
 						if (!(Precpred(Context, 5))) throw new FailedPredicateException(this, "Precpred(Context, 5)");
 						{
-						State = 312; ((Expr_BitwiseOrContext)_localctx).operation = Match(BITWISE_OR);
+						State = 283; ((Expr_BitwiseOrContext)_localctx).operation = Match(BITWISE_OR);
 						}
-						State = 313; ((Expr_BitwiseOrContext)_localctx).expr_rvalue = expression(6);
+						State = 284; ((Expr_BitwiseOrContext)_localctx).expr_rvalue = expression(6);
 						}
 						break;
 					case 9:
@@ -2641,9 +2419,9 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_Logical_And_OrContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_Logical_And_OrContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 314;
+						State = 285;
 						if (!(Precpred(Context, 4))) throw new FailedPredicateException(this, "Precpred(Context, 4)");
-						State = 315;
+						State = 286;
 						((Expr_Logical_And_OrContext)_localctx).operation = TokenStream.Lt(1);
 						_la = TokenStream.La(1);
 						if ( !(_la==LOGICAL_AND || _la==LOGICAL_OR) ) {
@@ -2652,7 +2430,7 @@ public partial class LSLParser : Parser {
 						else {
 						    Consume();
 						}
-						State = 316; ((Expr_Logical_And_OrContext)_localctx).expr_rvalue = expression(5);
+						State = 287; ((Expr_Logical_And_OrContext)_localctx).expr_rvalue = expression(5);
 						}
 						break;
 					case 10:
@@ -2660,9 +2438,9 @@ public partial class LSLParser : Parser {
 						_localctx = new Expr_PostfixOperationContext(new ExpressionContext(_parentctx, _parentState));
 						((Expr_PostfixOperationContext)_localctx).expr_lvalue = _prevctx;
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
-						State = 317;
+						State = 288;
 						if (!(Precpred(Context, 15))) throw new FailedPredicateException(this, "Precpred(Context, 15)");
-						State = 318;
+						State = 289;
 						((Expr_PostfixOperationContext)_localctx).operation = TokenStream.Lt(1);
 						_la = TokenStream.La(1);
 						if ( !(_la==INCREMENT || _la==DECREMENT) ) {
@@ -2676,9 +2454,9 @@ public partial class LSLParser : Parser {
 					}
 					} 
 				}
-				State = 323;
+				State = 294;
 				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,21,Context);
+				_alt = Interpreter.AdaptivePredict(TokenStream,17,Context);
 			}
 			}
 		}
@@ -2720,16 +2498,16 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public OptionalExpressionListContext optionalExpressionList() {
 		OptionalExpressionListContext _localctx = new OptionalExpressionListContext(Context, State);
-		EnterRule(_localctx, 52, RULE_optionalExpressionList);
+		EnterRule(_localctx, 46, RULE_optionalExpressionList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 325;
+			State = 296;
 			_la = TokenStream.La(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
-				State = 324; expressionList();
+				State = 295; expressionList();
 				}
 			}
 
@@ -2773,16 +2551,16 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public OptionalParameterListContext optionalParameterList() {
 		OptionalParameterListContext _localctx = new OptionalParameterListContext(Context, State);
-		EnterRule(_localctx, 54, RULE_optionalParameterList);
+		EnterRule(_localctx, 48, RULE_optionalParameterList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 328;
+			State = 299;
 			_la = TokenStream.La(1);
 			if (_la==TYPE) {
 				{
-				State = 327; parameterList();
+				State = 298; parameterList();
 				}
 			}
 
@@ -2829,13 +2607,13 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ListLiteralContext listLiteral() {
 		ListLiteralContext _localctx = new ListLiteralContext(Context, State);
-		EnterRule(_localctx, 56, RULE_listLiteral);
+		EnterRule(_localctx, 50, RULE_listLiteral);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 330; Match(O_BRACKET);
-			State = 331; _localctx.expression_list = optionalExpressionList();
-			State = 332; Match(C_BRACKET);
+			State = 301; Match(O_BRACKET);
+			State = 302; _localctx.expression_list = optionalExpressionList();
+			State = 303; Match(C_BRACKET);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2894,53 +2672,53 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public CompilationUnitContext compilationUnit() {
 		CompilationUnitContext _localctx = new CompilationUnitContext(Context, State);
-		EnterRule(_localctx, 58, RULE_compilationUnit);
+		EnterRule(_localctx, 52, RULE_compilationUnit);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 338;
+			State = 309;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
 			while (_la==TYPE || _la==ID) {
 				{
-				State = 336;
+				State = 307;
 				ErrorHandler.Sync(this);
-				switch ( Interpreter.AdaptivePredict(TokenStream,24,Context) ) {
+				switch ( Interpreter.AdaptivePredict(TokenStream,20,Context) ) {
 				case 1:
 					{
-					State = 334; globalVariableDeclaration();
+					State = 305; globalVariableDeclaration();
 					}
 					break;
 				case 2:
 					{
-					State = 335; functionDeclaration();
+					State = 306; functionDeclaration();
 					}
 					break;
 				}
 				}
-				State = 340;
+				State = 311;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.La(1);
 			}
-			State = 342;
+			State = 313;
 			_la = TokenStream.La(1);
 			if (_la==DEFAULT) {
 				{
-				State = 341; defaultState();
+				State = 312; defaultState();
 				}
 			}
 
-			State = 347;
+			State = 318;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
 			while (_la==STATE) {
 				{
 				{
-				State = 344; definedState();
+				State = 315; definedState();
 				}
 				}
-				State = 349;
+				State = 320;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.La(1);
 			}
@@ -2985,12 +2763,12 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ParameterDefinitionContext parameterDefinition() {
 		ParameterDefinitionContext _localctx = new ParameterDefinitionContext(Context, State);
-		EnterRule(_localctx, 60, RULE_parameterDefinition);
+		EnterRule(_localctx, 54, RULE_parameterDefinition);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 350; _localctx.parameter_type = Match(TYPE);
-			State = 351; _localctx.parameter_name = Match(ID);
+			State = 321; _localctx.parameter_type = Match(TYPE);
+			State = 322; _localctx.parameter_name = Match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3038,23 +2816,23 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public ParameterListContext parameterList() {
 		ParameterListContext _localctx = new ParameterListContext(Context, State);
-		EnterRule(_localctx, 62, RULE_parameterList);
+		EnterRule(_localctx, 56, RULE_parameterList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 353; parameterDefinition();
-			State = 358;
+			State = 324; parameterDefinition();
+			State = 329;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 354; Match(COMMA);
-				State = 355; parameterDefinition();
+				State = 325; Match(COMMA);
+				State = 326; parameterDefinition();
 				}
 				}
-				State = 360;
+				State = 331;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.La(1);
 			}
@@ -3109,15 +2887,15 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public EventHandlerContext eventHandler() {
 		EventHandlerContext _localctx = new EventHandlerContext(Context, State);
-		EnterRule(_localctx, 64, RULE_eventHandler);
+		EnterRule(_localctx, 58, RULE_eventHandler);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 361; _localctx.handler_name = Match(ID);
-			State = 362; _localctx.open_parenth = Match(O_PAREN);
-			State = 363; _localctx.parameters = optionalParameterList();
-			State = 364; _localctx.close_parenth = Match(C_PAREN);
-			State = 365; _localctx.code = codeScope();
+			State = 332; _localctx.handler_name = Match(ID);
+			State = 333; _localctx.open_parenth = Match(O_PAREN);
+			State = 334; _localctx.parameters = optionalParameterList();
+			State = 335; _localctx.close_parenth = Match(C_PAREN);
+			State = 336; _localctx.code = codeScope();
 			}
 		}
 		catch (RecognitionException re) {
@@ -3170,13 +2948,13 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public DefinedStateContext definedState() {
 		DefinedStateContext _localctx = new DefinedStateContext(Context, State);
-		EnterRule(_localctx, 66, RULE_definedState);
+		EnterRule(_localctx, 60, RULE_definedState);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 367; _localctx.state_keyword = Match(STATE);
-			State = 368;
+			State = 338; _localctx.state_keyword = Match(STATE);
+			State = 339;
 			_localctx.state_name = TokenStream.Lt(1);
 			_la = TokenStream.La(1);
 			if ( !(_la==DEFAULT || _la==ID) ) {
@@ -3185,21 +2963,21 @@ public partial class LSLParser : Parser {
 			else {
 			    Consume();
 			}
-			State = 369; _localctx.open_brace = Match(O_BRACE);
-			State = 373;
+			State = 340; _localctx.open_brace = Match(O_BRACE);
+			State = 344;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
 			while (_la==ID) {
 				{
 				{
-				State = 370; eventHandler();
+				State = 341; eventHandler();
 				}
 				}
-				State = 375;
+				State = 346;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.La(1);
 			}
-			State = 376; _localctx.close_brace = Match(C_BRACE);
+			State = 347; _localctx.close_brace = Match(C_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3249,27 +3027,27 @@ public partial class LSLParser : Parser {
 	[RuleVersion(0)]
 	public DefaultStateContext defaultState() {
 		DefaultStateContext _localctx = new DefaultStateContext(Context, State);
-		EnterRule(_localctx, 68, RULE_defaultState);
+		EnterRule(_localctx, 62, RULE_defaultState);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 378; _localctx.state_name = Match(DEFAULT);
-			State = 379; _localctx.open_brace = Match(O_BRACE);
-			State = 383;
+			State = 349; _localctx.state_name = Match(DEFAULT);
+			State = 350; _localctx.open_brace = Match(O_BRACE);
+			State = 354;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
 			while (_la==ID) {
 				{
 				{
-				State = 380; eventHandler();
+				State = 351; eventHandler();
 				}
 				}
-				State = 385;
+				State = 356;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.La(1);
 			}
-			State = 386; _localctx.close_brace = Match(C_BRACE);
+			State = 357; _localctx.close_brace = Match(C_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3285,7 +3063,7 @@ public partial class LSLParser : Parser {
 
 	public override bool Sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 25: return expression_sempred((ExpressionContext)_localctx, predIndex);
+		case 22: return expression_sempred((ExpressionContext)_localctx, predIndex);
 		}
 		return true;
 	}
@@ -3309,188 +3087,173 @@ public partial class LSLParser : Parser {
 	private static string _serializeATN()
 	{
 	    StringBuilder sb = new StringBuilder();
-	    sb.Append("\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3=\x187");
+	    sb.Append("\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3=\x16A");
 		sb.Append("\x4\x2\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a");
 		sb.Append("\t\a\x4\b\t\b\x4\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4");
 		sb.Append("\xE\t\xE\x4\xF\t\xF\x4\x10\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4");
 		sb.Append("\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15\x4\x16\t\x16\x4\x17\t\x17");
 		sb.Append("\x4\x18\t\x18\x4\x19\t\x19\x4\x1A\t\x1A\x4\x1B\t\x1B\x4\x1C");
 		sb.Append("\t\x1C\x4\x1D\t\x1D\x4\x1E\t\x1E\x4\x1F\t\x1F\x4 \t \x4!\t!");
-		sb.Append("\x4\"\t\"\x4#\t#\x4$\t$\x3\x2\x3\x2\x3\x2\x3\x2\x3\x2\x3\x2");
-		sb.Append("\x3\x2\x3\x2\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
-		sb.Append("\x3\x3\x3\x3\x3\x4\x5\x4\\\n\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4");
-		sb.Append("\x3\x4\x3\x5\x3\x5\x5\x5\x66\n\x5\x3\x6\x3\x6\x3\x6\x3\x6\x5");
-		sb.Append("\x6l\n\x6\x3\x6\x3\x6\x3\x6\x3\a\x3\a\x3\a\x3\b\x3\b\x3\b\x5");
-		sb.Append("\bw\n\b\x3\b\x3\b\x3\b\x3\t\x3\t\x6\t~\n\t\r\t\xE\t\x7F\x3\t");
-		sb.Append("\x5\t\x83\n\t\x3\t\x5\t\x86\n\t\x3\n\x3\n\a\n\x8A\n\n\f\n\xE");
-		sb.Append("\n\x8D\v\n\x3\n\x3\n\x3\v\x3\v\x3\v\x3\v\x3\v\x5\v\x96\n\v\x3");
-		sb.Append("\v\x3\v\x3\v\x3\f\x3\f\x3\f\x5\f\x9E\n\f\x3\f\x3\f\x3\f\x3\r");
-		sb.Append("\x3\r\x3\r\x3\r\x3\r\x5\r\xA8\n\r\x3\r\x3\r\x3\r\x3\r\x3\r\x3");
-		sb.Append("\xE\x3\xE\x3\xE\x5\xE\xB2\n\xE\x3\xF\x3\xF\x3\xF\x3\xF\x3\xF");
-		sb.Append("\x3\xF\x3\xF\x3\xF\x3\xF\x3\xF\x5\xF\xBE\n\xF\x3\x10\x3\x10");
-		sb.Append("\x3\x10\x3\x11\x3\x11\x3\x11\x3\x11\x3\x11\x3\x11\x5\x11\xC9");
-		sb.Append("\n\x11\x3\x12\x3\x12\x3\x12\x3\x12\x3\x13\x3\x13\x3\x13\x3\x13");
-		sb.Append("\x3\x14\x3\x14\x3\x14\x3\x14\x3\x15\x3\x15\x3\x15\x3\x15\x3");
-		sb.Append("\x15\x3\x15\x3\x15\x3\x15\x3\x15\x5\x15\xE0\n\x15\x3\x16\x3");
-		sb.Append("\x16\x3\x16\x3\x16\x3\x16\x3\x16\x3\x16\x3\x16\x3\x16\x5\x16");
-		sb.Append("\xEB\n\x16\x3\x17\x3\x17\x3\x17\x3\x18\x3\x18\a\x18\xF2\n\x18");
-		sb.Append("\f\x18\xE\x18\xF5\v\x18\x3\x19\x3\x19\x3\x19\x3\x19\x3\x1A\x3");
-		sb.Append("\x1A\x5\x1A\xFD\n\x1A\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3");
-		sb.Append("\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B");
-		sb.Append("\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3");
-		sb.Append("\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B");
-		sb.Append("\x3\x1B\x3\x1B\x3\x1B\x5\x1B\x121\n\x1B\x5\x1B\x123\n\x1B\x3");
-		sb.Append("\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B");
-		sb.Append("\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3");
-		sb.Append("\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B\x3\x1B");
-		sb.Append("\x3\x1B\x3\x1B\x3\x1B\a\x1B\x142\n\x1B\f\x1B\xE\x1B\x145\v\x1B");
-		sb.Append("\x3\x1C\x5\x1C\x148\n\x1C\x3\x1D\x5\x1D\x14B\n\x1D\x3\x1E\x3");
-		sb.Append("\x1E\x3\x1E\x3\x1E\x3\x1F\x3\x1F\a\x1F\x153\n\x1F\f\x1F\xE\x1F");
-		sb.Append("\x156\v\x1F\x3\x1F\x5\x1F\x159\n\x1F\x3\x1F\a\x1F\x15C\n\x1F");
-		sb.Append("\f\x1F\xE\x1F\x15F\v\x1F\x3 \x3 \x3 \x3!\x3!\x3!\a!\x167\n!");
-		sb.Append("\f!\xE!\x16A\v!\x3\"\x3\"\x3\"\x3\"\x3\"\x3\"\x3#\x3#\x3#\x3");
-		sb.Append("#\a#\x176\n#\f#\xE#\x179\v#\x3#\x3#\x3$\x3$\x3$\a$\x180\n$\f");
-		sb.Append("$\xE$\x183\v$\x3$\x3$\x3$\x2\x3\x34%\x2\x4\x6\b\n\f\xE\x10\x12");
-		sb.Append("\x14\x16\x18\x1A\x1C\x1E \"$&(*,.\x30\x32\x34\x36\x38:<>@\x42");
-		sb.Append("\x44\x46\x2\f\x4\x2\t\t\r\r\x6\x2\x1E\x1F\"#\x34\x34\x36\x36");
-		sb.Append("\x4\x2 !\')\x3\x2$&\x3\x2\x1E\x1F\x3\x2\x1A\x1B\x3\x2\x16\x19");
-		sb.Append("\x3\x2\x14\x15\x3\x2\x37\x38\x3\x2\"#\x1A0\x2H\x3\x2\x2\x2\x4");
-		sb.Append("P\x3\x2\x2\x2\x6[\x3\x2\x2\x2\b\x65\x3\x2\x2\x2\ng\x3\x2\x2");
-		sb.Append("\x2\fp\x3\x2\x2\x2\xEs\x3\x2\x2\x2\x10{\x3\x2\x2\x2\x12\x87");
-		sb.Append("\x3\x2\x2\x2\x14\x90\x3\x2\x2\x2\x16\x9A\x3\x2\x2\x2\x18\xA2");
-		sb.Append("\x3\x2\x2\x2\x1A\xB1\x3\x2\x2\x2\x1C\xBD\x3\x2\x2\x2\x1E\xBF");
-		sb.Append("\x3\x2\x2\x2 \xC8\x3\x2\x2\x2\"\xCA\x3\x2\x2\x2$\xCE\x3\x2\x2");
-		sb.Append("\x2&\xD2\x3\x2\x2\x2(\xDF\x3\x2\x2\x2*\xEA\x3\x2\x2\x2,\xEC");
-		sb.Append("\x3\x2\x2\x2.\xEF\x3\x2\x2\x2\x30\xF6\x3\x2\x2\x2\x32\xFC\x3");
-		sb.Append("\x2\x2\x2\x34\x122\x3\x2\x2\x2\x36\x147\x3\x2\x2\x2\x38\x14A");
-		sb.Append("\x3\x2\x2\x2:\x14C\x3\x2\x2\x2<\x154\x3\x2\x2\x2>\x160\x3\x2");
-		sb.Append("\x2\x2@\x163\x3\x2\x2\x2\x42\x16B\x3\x2\x2\x2\x44\x171\x3\x2");
-		sb.Append("\x2\x2\x46\x17C\x3\x2\x2\x2HI\a\x16\x2\x2IJ\x5\x34\x1B\x2JK");
-		sb.Append("\a*\x2\x2KL\x5\x34\x1B\x2LM\a*\x2\x2MN\x5\x34\x1B\x2NO\a\x17");
-		sb.Append("\x2\x2O\x3\x3\x2\x2\x2PQ\a\x16\x2\x2QR\x5\x34\x1B\x2RS\a*\x2");
-		sb.Append("\x2ST\x5\x34\x1B\x2TU\a*\x2\x2UV\x5\x34\x1B\x2VW\a*\x2\x2WX");
-		sb.Append("\x5\x34\x1B\x2XY\a\x17\x2\x2Y\x5\x3\x2\x2\x2Z\\\a\x3\x2\x2[");
-		sb.Append("Z\x3\x2\x2\x2[\\\x3\x2\x2\x2\\]\x3\x2\x2\x2]^\a\r\x2\x2^_\a");
-		sb.Append("+\x2\x2_`\x5\x38\x1D\x2`\x61\a,\x2\x2\x61\x62\x5\x12\n\x2\x62");
-		sb.Append("\a\x3\x2\x2\x2\x63\x66\x5\x12\n\x2\x64\x66\x5\x1C\xF\x2\x65");
-		sb.Append("\x63\x3\x2\x2\x2\x65\x64\x3\x2\x2\x2\x66\t\x3\x2\x2\x2gh\a\x6");
-		sb.Append("\x2\x2hi\a\x5\x2\x2ik\a+\x2\x2jl\x5\x34\x1B\x2kj\x3\x2\x2\x2");
-		sb.Append("kl\x3\x2\x2\x2lm\x3\x2\x2\x2mn\a,\x2\x2no\x5\b\x5\x2o\v\x3\x2");
-		sb.Append("\x2\x2pq\a\x6\x2\x2qr\x5\b\x5\x2r\r\x3\x2\x2\x2st\a\x5\x2\x2");
-		sb.Append("tv\a+\x2\x2uw\x5\x34\x1B\x2vu\x3\x2\x2\x2vw\x3\x2\x2\x2wx\x3");
-		sb.Append("\x2\x2\x2xy\a,\x2\x2yz\x5\b\x5\x2z\xF\x3\x2\x2\x2{\x85\x5\xE");
-		sb.Append("\b\x2|~\x5\n\x6\x2}|\x3\x2\x2\x2~\x7F\x3\x2\x2\x2\x7F}\x3\x2");
-		sb.Append("\x2\x2\x7F\x80\x3\x2\x2\x2\x80\x82\x3\x2\x2\x2\x81\x83\x5\f");
-		sb.Append("\a\x2\x82\x81\x3\x2\x2\x2\x82\x83\x3\x2\x2\x2\x83\x86\x3\x2");
-		sb.Append("\x2\x2\x84\x86\x5\f\a\x2\x85}\x3\x2\x2\x2\x85\x84\x3\x2\x2\x2");
-		sb.Append("\x85\x86\x3\x2\x2\x2\x86\x11\x3\x2\x2\x2\x87\x8B\a-\x2\x2\x88");
-		sb.Append("\x8A\x5\x1C\xF\x2\x89\x88\x3\x2\x2\x2\x8A\x8D\x3\x2\x2\x2\x8B");
-		sb.Append("\x89\x3\x2\x2\x2\x8B\x8C\x3\x2\x2\x2\x8C\x8E\x3\x2\x2\x2\x8D");
-		sb.Append("\x8B\x3\x2\x2\x2\x8E\x8F\a.\x2\x2\x8F\x13\x3\x2\x2\x2\x90\x91");
-		sb.Append("\a\x4\x2\x2\x91\x92\x5\b\x5\x2\x92\x93\a\a\x2\x2\x93\x95\a+");
-		sb.Append("\x2\x2\x94\x96\x5\x34\x1B\x2\x95\x94\x3\x2\x2\x2\x95\x96\x3");
-		sb.Append("\x2\x2\x2\x96\x97\x3\x2\x2\x2\x97\x98\a,\x2\x2\x98\x99\a\x12");
-		sb.Append("\x2\x2\x99\x15\x3\x2\x2\x2\x9A\x9B\a\a\x2\x2\x9B\x9D\a+\x2\x2");
-		sb.Append("\x9C\x9E\x5\x34\x1B\x2\x9D\x9C\x3\x2\x2\x2\x9D\x9E\x3\x2\x2");
-		sb.Append("\x2\x9E\x9F\x3\x2\x2\x2\x9F\xA0\a,\x2\x2\xA0\xA1\x5\b\x5\x2");
-		sb.Append("\xA1\x17\x3\x2\x2\x2\xA2\xA3\a\b\x2\x2\xA3\xA4\a+\x2\x2\xA4");
-		sb.Append("\xA5\x5\x36\x1C\x2\xA5\xA7\a\x12\x2\x2\xA6\xA8\x5\x34\x1B\x2");
-		sb.Append("\xA7\xA6\x3\x2\x2\x2\xA7\xA8\x3\x2\x2\x2\xA8\xA9\x3\x2\x2\x2");
-		sb.Append("\xA9\xAA\a\x12\x2\x2\xAA\xAB\x5\x36\x1C\x2\xAB\xAC\a,\x2\x2");
-		sb.Append("\xAC\xAD\x5\b\x5\x2\xAD\x19\x3\x2\x2\x2\xAE\xB2\x5\x14\v\x2");
-		sb.Append("\xAF\xB2\x5\x18\r\x2\xB0\xB2\x5\x16\f\x2\xB1\xAE\x3\x2\x2\x2");
-		sb.Append("\xB1\xAF\x3\x2\x2\x2\xB1\xB0\x3\x2\x2\x2\xB2\x1B\x3\x2\x2\x2");
-		sb.Append("\xB3\xBE\x5(\x15\x2\xB4\xBE\x5\x1E\x10\x2\xB5\xBE\x5 \x11\x2");
-		sb.Append("\xB6\xBE\x5$\x13\x2\xB7\xBE\x5\"\x12\x2\xB8\xBE\x5&\x14\x2\xB9");
-		sb.Append("\xBE\x5\x10\t\x2\xBA\xBE\x5\x1A\xE\x2\xBB\xBE\x5\x12\n\x2\xBC");
-		sb.Append("\xBE\a\x12\x2\x2\xBD\xB3\x3\x2\x2\x2\xBD\xB4\x3\x2\x2\x2\xBD");
-		sb.Append("\xB5\x3\x2\x2\x2\xBD\xB6\x3\x2\x2\x2\xBD\xB7\x3\x2\x2\x2\xBD");
-		sb.Append("\xB8\x3\x2\x2\x2\xBD\xB9\x3\x2\x2\x2\xBD\xBA\x3\x2\x2\x2\xBD");
-		sb.Append("\xBB\x3\x2\x2\x2\xBD\xBC\x3\x2\x2\x2\xBE\x1D\x3\x2\x2\x2\xBF");
-		sb.Append("\xC0\x5\x34\x1B\x2\xC0\xC1\a\x12\x2\x2\xC1\x1F\x3\x2\x2\x2\xC2");
-		sb.Append("\xC3\a\v\x2\x2\xC3\xC4\x5\x34\x1B\x2\xC4\xC5\a\x12\x2\x2\xC5");
-		sb.Append("\xC9\x3\x2\x2\x2\xC6\xC7\a\v\x2\x2\xC7\xC9\a\x12\x2\x2\xC8\xC2");
-		sb.Append("\x3\x2\x2\x2\xC8\xC6\x3\x2\x2\x2\xC9!\x3\x2\x2\x2\xCA\xCB\a");
-		sb.Append("\x31\x2\x2\xCB\xCC\a\r\x2\x2\xCC\xCD\a\x12\x2\x2\xCD#\x3\x2");
-		sb.Append("\x2\x2\xCE\xCF\a\f\x2\x2\xCF\xD0\a\r\x2\x2\xD0\xD1\a\x12\x2");
-		sb.Append("\x2\xD1%\x3\x2\x2\x2\xD2\xD3\a\n\x2\x2\xD3\xD4\t\x2\x2\x2\xD4");
-		sb.Append("\xD5\a\x12\x2\x2\xD5\'\x3\x2\x2\x2\xD6\xD7\a\x3\x2\x2\xD7\xD8");
-		sb.Append("\a\r\x2\x2\xD8\xD9\a\x13\x2\x2\xD9\xDA\x5\x34\x1B\x2\xDA\xDB");
-		sb.Append("\a\x12\x2\x2\xDB\xE0\x3\x2\x2\x2\xDC\xDD\a\x3\x2\x2\xDD\xDE");
-		sb.Append("\a\r\x2\x2\xDE\xE0\a\x12\x2\x2\xDF\xD6\x3\x2\x2\x2\xDF\xDC\x3");
-		sb.Append("\x2\x2\x2\xE0)\x3\x2\x2\x2\xE1\xE2\a\x3\x2\x2\xE2\xE3\a\r\x2");
-		sb.Append("\x2\xE3\xE4\a\x13\x2\x2\xE4\xE5\x5\x34\x1B\x2\xE5\xE6\a\x12");
-		sb.Append("\x2\x2\xE6\xEB\x3\x2\x2\x2\xE7\xE8\a\x3\x2\x2\xE8\xE9\a\r\x2");
-		sb.Append("\x2\xE9\xEB\a\x12\x2\x2\xEA\xE1\x3\x2\x2\x2\xEA\xE7\x3\x2\x2");
-		sb.Append("\x2\xEB+\x3\x2\x2\x2\xEC\xED\a*\x2\x2\xED\xEE\x5\x34\x1B\x2");
-		sb.Append("\xEE-\x3\x2\x2\x2\xEF\xF3\x5\x34\x1B\x2\xF0\xF2\x5,\x17\x2\xF1");
-		sb.Append("\xF0\x3\x2\x2\x2\xF2\xF5\x3\x2\x2\x2\xF3\xF1\x3\x2\x2\x2\xF3");
-		sb.Append("\xF4\x3\x2\x2\x2\xF4/\x3\x2\x2\x2\xF5\xF3\x3\x2\x2\x2\xF6\xF7");
-		sb.Append("\a\r\x2\x2\xF7\xF8\a\x39\x2\x2\xF8\xF9\a\r\x2\x2\xF9\x31\x3");
-		sb.Append("\x2\x2\x2\xFA\xFD\x5\x30\x19\x2\xFB\xFD\a\r\x2\x2\xFC\xFA\x3");
-		sb.Append("\x2\x2\x2\xFC\xFB\x3\x2\x2\x2\xFD\x33\x3\x2\x2\x2\xFE\xFF\b");
-		sb.Append("\x1B\x1\x2\xFF\x100\t\x3\x2\x2\x100\x123\x5\x34\x1B\x10\x101");
-		sb.Append("\x102\a+\x2\x2\x102\x103\a\x3\x2\x2\x103\x104\a,\x2\x2\x104");
-		sb.Append("\x105\x3\x2\x2\x2\x105\x123\x5\x34\x1B\xF\x106\x107\x5\x32\x1A");
-		sb.Append("\x2\x107\x108\t\x4\x2\x2\x108\x109\x5\x34\x1B\x5\x109\x123\x3");
-		sb.Append("\x2\x2\x2\x10A\x10B\x5\x32\x1A\x2\x10B\x10C\a\x13\x2\x2\x10C");
-		sb.Append("\x10D\x5\x34\x1B\x4\x10D\x123\x3\x2\x2\x2\x10E\x10F\a+\x2\x2");
-		sb.Append("\x10F\x110\x5\x34\x1B\x2\x110\x111\a,\x2\x2\x111\x123\x3\x2");
-		sb.Append("\x2\x2\x112\x113\a\r\x2\x2\x113\x114\a+\x2\x2\x114\x115\x5\x36");
-		sb.Append("\x1C\x2\x115\x116\a,\x2\x2\x116\x123\x3\x2\x2\x2\x117\x123\x5");
-		sb.Append("\x30\x19\x2\x118\x121\a\r\x2\x2\x119\x121\a\x11\x2\x2\x11A\x121");
-		sb.Append("\a\xF\x2\x2\x11B\x121\a\x10\x2\x2\x11C\x121\a\xE\x2\x2\x11D");
-		sb.Append("\x121\x5\x2\x2\x2\x11E\x121\x5\x4\x3\x2\x11F\x121\x5:\x1E\x2");
-		sb.Append("\x120\x118\x3\x2\x2\x2\x120\x119\x3\x2\x2\x2\x120\x11A\x3\x2");
-		sb.Append("\x2\x2\x120\x11B\x3\x2\x2\x2\x120\x11C\x3\x2\x2\x2\x120\x11D");
-		sb.Append("\x3\x2\x2\x2\x120\x11E\x3\x2\x2\x2\x120\x11F\x3\x2\x2\x2\x121");
-		sb.Append("\x123\x3\x2\x2\x2\x122\xFE\x3\x2\x2\x2\x122\x101\x3\x2\x2\x2");
-		sb.Append("\x122\x106\x3\x2\x2\x2\x122\x10A\x3\x2\x2\x2\x122\x10E\x3\x2");
-		sb.Append("\x2\x2\x122\x112\x3\x2\x2\x2\x122\x117\x3\x2\x2\x2\x122\x120");
-		sb.Append("\x3\x2\x2\x2\x123\x143\x3\x2\x2\x2\x124\x125\f\xE\x2\x2\x125");
-		sb.Append("\x126\t\x5\x2\x2\x126\x142\x5\x34\x1B\xF\x127\x128\f\r\x2\x2");
-		sb.Append("\x128\x129\t\x6\x2\x2\x129\x142\x5\x34\x1B\xE\x12A\x12B\f\f");
-		sb.Append("\x2\x2\x12B\x12C\t\a\x2\x2\x12C\x142\x5\x34\x1B\r\x12D\x12E");
-		sb.Append("\f\v\x2\x2\x12E\x12F\t\b\x2\x2\x12F\x142\x5\x34\x1B\f\x130\x131");
-		sb.Append("\f\n\x2\x2\x131\x132\t\t\x2\x2\x132\x142\x5\x34\x1B\v\x133\x134");
-		sb.Append("\f\t\x2\x2\x134\x135\a\x33\x2\x2\x135\x142\x5\x34\x1B\n\x136");
-		sb.Append("\x137\f\b\x2\x2\x137\x138\a\x35\x2\x2\x138\x142\x5\x34\x1B\t");
-		sb.Append("\x139\x13A\f\a\x2\x2\x13A\x13B\a\x32\x2\x2\x13B\x142\x5\x34");
-		sb.Append("\x1B\b\x13C\x13D\f\x6\x2\x2\x13D\x13E\t\n\x2\x2\x13E\x142\x5");
-		sb.Append("\x34\x1B\a\x13F\x140\f\x11\x2\x2\x140\x142\t\v\x2\x2\x141\x124");
-		sb.Append("\x3\x2\x2\x2\x141\x127\x3\x2\x2\x2\x141\x12A\x3\x2\x2\x2\x141");
-		sb.Append("\x12D\x3\x2\x2\x2\x141\x130\x3\x2\x2\x2\x141\x133\x3\x2\x2\x2");
-		sb.Append("\x141\x136\x3\x2\x2\x2\x141\x139\x3\x2\x2\x2\x141\x13C\x3\x2");
-		sb.Append("\x2\x2\x141\x13F\x3\x2\x2\x2\x142\x145\x3\x2\x2\x2\x143\x141");
-		sb.Append("\x3\x2\x2\x2\x143\x144\x3\x2\x2\x2\x144\x35\x3\x2\x2\x2\x145");
-		sb.Append("\x143\x3\x2\x2\x2\x146\x148\x5.\x18\x2\x147\x146\x3\x2\x2\x2");
-		sb.Append("\x147\x148\x3\x2\x2\x2\x148\x37\x3\x2\x2\x2\x149\x14B\x5@!\x2");
-		sb.Append("\x14A\x149\x3\x2\x2\x2\x14A\x14B\x3\x2\x2\x2\x14B\x39\x3\x2");
-		sb.Append("\x2\x2\x14C\x14D\a/\x2\x2\x14D\x14E\x5\x36\x1C\x2\x14E\x14F");
-		sb.Append("\a\x30\x2\x2\x14F;\x3\x2\x2\x2\x150\x153\x5*\x16\x2\x151\x153");
-		sb.Append("\x5\x6\x4\x2\x152\x150\x3\x2\x2\x2\x152\x151\x3\x2\x2\x2\x153");
-		sb.Append("\x156\x3\x2\x2\x2\x154\x152\x3\x2\x2\x2\x154\x155\x3\x2\x2\x2");
-		sb.Append("\x155\x158\x3\x2\x2\x2\x156\x154\x3\x2\x2\x2\x157\x159\x5\x46");
-		sb.Append("$\x2\x158\x157\x3\x2\x2\x2\x158\x159\x3\x2\x2\x2\x159\x15D\x3");
-		sb.Append("\x2\x2\x2\x15A\x15C\x5\x44#\x2\x15B\x15A\x3\x2\x2\x2\x15C\x15F");
-		sb.Append("\x3\x2\x2\x2\x15D\x15B\x3\x2\x2\x2\x15D\x15E\x3\x2\x2\x2\x15E");
-		sb.Append("=\x3\x2\x2\x2\x15F\x15D\x3\x2\x2\x2\x160\x161\a\x3\x2\x2\x161");
-		sb.Append("\x162\a\r\x2\x2\x162?\x3\x2\x2\x2\x163\x168\x5> \x2\x164\x165");
-		sb.Append("\a*\x2\x2\x165\x167\x5> \x2\x166\x164\x3\x2\x2\x2\x167\x16A");
-		sb.Append("\x3\x2\x2\x2\x168\x166\x3\x2\x2\x2\x168\x169\x3\x2\x2\x2\x169");
-		sb.Append("\x41\x3\x2\x2\x2\x16A\x168\x3\x2\x2\x2\x16B\x16C\a\r\x2\x2\x16C");
-		sb.Append("\x16D\a+\x2\x2\x16D\x16E\x5\x38\x1D\x2\x16E\x16F\a,\x2\x2\x16F");
-		sb.Append("\x170\x5\x12\n\x2\x170\x43\x3\x2\x2\x2\x171\x172\a\n\x2\x2\x172");
-		sb.Append("\x173\t\x2\x2\x2\x173\x177\a-\x2\x2\x174\x176\x5\x42\"\x2\x175");
-		sb.Append("\x174\x3\x2\x2\x2\x176\x179\x3\x2\x2\x2\x177\x175\x3\x2\x2\x2");
-		sb.Append("\x177\x178\x3\x2\x2\x2\x178\x17A\x3\x2\x2\x2\x179\x177\x3\x2");
-		sb.Append("\x2\x2\x17A\x17B\a.\x2\x2\x17B\x45\x3\x2\x2\x2\x17C\x17D\a\t");
-		sb.Append("\x2\x2\x17D\x181\a-\x2\x2\x17E\x180\x5\x42\"\x2\x17F\x17E\x3");
-		sb.Append("\x2\x2\x2\x180\x183\x3\x2\x2\x2\x181\x17F\x3\x2\x2\x2\x181\x182");
-		sb.Append("\x3\x2\x2\x2\x182\x184\x3\x2\x2\x2\x183\x181\x3\x2\x2\x2\x184");
-		sb.Append("\x185\a.\x2\x2\x185G\x3\x2\x2\x2![\x65kv\x7F\x82\x85\x8B\x95");
-		sb.Append("\x9D\xA7\xB1\xBD\xC8\xDF\xEA\xF3\xFC\x120\x122\x141\x143\x147");
-		sb.Append("\x14A\x152\x154\x158\x15D\x168\x177\x181");
+		sb.Append("\x3\x2\x3\x2\x3\x2\x3\x2\x3\x2\x3\x2\x3\x2\x3\x2\x3\x3\x3\x3");
+		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x4\x5\x4");
+		sb.Append("V\n\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x5\x3\x5\x3\x5");
+		sb.Append("\x3\x6\x3\x6\x3\x6\x5\x6\x64\n\x6\x3\x6\x3\x6\x3\x6\x5\x6i\n");
+		sb.Append("\x6\x3\a\x3\a\a\am\n\a\f\a\xE\ap\v\a\x3\a\x3\a\x3\b\x3\b\x3");
+		sb.Append("\b\x3\b\x3\b\x5\by\n\b\x3\b\x3\b\x3\b\x3\t\x3\t\x3\t\x5\t\x81");
+		sb.Append("\n\t\x3\t\x3\t\x3\t\x3\n\x3\n\x3\n\x3\n\x3\n\x5\n\x8B\n\n\x3");
+		sb.Append("\n\x3\n\x3\n\x3\n\x3\n\x3\v\x3\v\x3\v\x5\v\x95\n\v\x3\f\x3\f");
+		sb.Append("\x3\f\x3\f\x3\f\x3\f\x3\f\x3\f\x3\f\x3\f\x5\f\xA1\n\f\x3\r\x3");
+		sb.Append("\r\x3\r\x3\xE\x3\xE\x3\xE\x3\xE\x3\xE\x3\xE\x5\xE\xAC\n\xE\x3");
+		sb.Append("\xF\x3\xF\x3\xF\x3\xF\x3\x10\x3\x10\x3\x10\x3\x10\x3\x11\x3");
+		sb.Append("\x11\x3\x11\x3\x11\x3\x12\x3\x12\x3\x12\x3\x12\x3\x12\x3\x12");
+		sb.Append("\x3\x12\x3\x12\x3\x12\x5\x12\xC3\n\x12\x3\x13\x3\x13\x3\x13");
+		sb.Append("\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13\x3\x13\x5\x13\xCE\n\x13");
+		sb.Append("\x3\x14\x3\x14\x3\x14\x3\x15\x3\x15\a\x15\xD5\n\x15\f\x15\xE");
+		sb.Append("\x15\xD8\v\x15\x3\x16\x3\x16\x3\x16\x3\x16\x3\x17\x3\x17\x5");
+		sb.Append("\x17\xE0\n\x17\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3");
+		sb.Append("\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18");
+		sb.Append("\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3");
+		sb.Append("\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18");
+		sb.Append("\x3\x18\x3\x18\x5\x18\x104\n\x18\x5\x18\x106\n\x18\x3\x18\x3");
+		sb.Append("\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18");
+		sb.Append("\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3");
+		sb.Append("\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18\x3\x18");
+		sb.Append("\x3\x18\x3\x18\a\x18\x125\n\x18\f\x18\xE\x18\x128\v\x18\x3\x19");
+		sb.Append("\x5\x19\x12B\n\x19\x3\x1A\x5\x1A\x12E\n\x1A\x3\x1B\x3\x1B\x3");
+		sb.Append("\x1B\x3\x1B\x3\x1C\x3\x1C\a\x1C\x136\n\x1C\f\x1C\xE\x1C\x139");
+		sb.Append("\v\x1C\x3\x1C\x5\x1C\x13C\n\x1C\x3\x1C\a\x1C\x13F\n\x1C\f\x1C");
+		sb.Append("\xE\x1C\x142\v\x1C\x3\x1D\x3\x1D\x3\x1D\x3\x1E\x3\x1E\x3\x1E");
+		sb.Append("\a\x1E\x14A\n\x1E\f\x1E\xE\x1E\x14D\v\x1E\x3\x1F\x3\x1F\x3\x1F");
+		sb.Append("\x3\x1F\x3\x1F\x3\x1F\x3 \x3 \x3 \x3 \a \x159\n \f \xE \x15C");
+		sb.Append("\v \x3 \x3 \x3!\x3!\x3!\a!\x163\n!\f!\xE!\x166\v!\x3!\x3!\x3");
+		sb.Append("!\x2\x3.\"\x2\x4\x6\b\n\f\xE\x10\x12\x14\x16\x18\x1A\x1C\x1E");
+		sb.Append(" \"$&(*,.\x30\x32\x34\x36\x38:<>@\x2\f\x4\x2\t\t\r\r\x6\x2\x1E");
+		sb.Append("\x1F\"#\x34\x34\x36\x36\x4\x2 !\')\x3\x2$&\x3\x2\x1E\x1F\x3");
+		sb.Append("\x2\x1A\x1B\x3\x2\x16\x19\x3\x2\x14\x15\x3\x2\x37\x38\x3\x2");
+		sb.Append("\"#\x181\x2\x42\x3\x2\x2\x2\x4J\x3\x2\x2\x2\x6U\x3\x2\x2\x2");
+		sb.Append("\b]\x3\x2\x2\x2\n`\x3\x2\x2\x2\fj\x3\x2\x2\x2\xEs\x3\x2\x2\x2");
+		sb.Append("\x10}\x3\x2\x2\x2\x12\x85\x3\x2\x2\x2\x14\x94\x3\x2\x2\x2\x16");
+		sb.Append("\xA0\x3\x2\x2\x2\x18\xA2\x3\x2\x2\x2\x1A\xAB\x3\x2\x2\x2\x1C");
+		sb.Append("\xAD\x3\x2\x2\x2\x1E\xB1\x3\x2\x2\x2 \xB5\x3\x2\x2\x2\"\xC2");
+		sb.Append("\x3\x2\x2\x2$\xCD\x3\x2\x2\x2&\xCF\x3\x2\x2\x2(\xD2\x3\x2\x2");
+		sb.Append("\x2*\xD9\x3\x2\x2\x2,\xDF\x3\x2\x2\x2.\x105\x3\x2\x2\x2\x30");
+		sb.Append("\x12A\x3\x2\x2\x2\x32\x12D\x3\x2\x2\x2\x34\x12F\x3\x2\x2\x2");
+		sb.Append("\x36\x137\x3\x2\x2\x2\x38\x143\x3\x2\x2\x2:\x146\x3\x2\x2\x2");
+		sb.Append("<\x14E\x3\x2\x2\x2>\x154\x3\x2\x2\x2@\x15F\x3\x2\x2\x2\x42\x43");
+		sb.Append("\a\x16\x2\x2\x43\x44\x5.\x18\x2\x44\x45\a*\x2\x2\x45\x46\x5");
+		sb.Append(".\x18\x2\x46G\a*\x2\x2GH\x5.\x18\x2HI\a\x17\x2\x2I\x3\x3\x2");
+		sb.Append("\x2\x2JK\a\x16\x2\x2KL\x5.\x18\x2LM\a*\x2\x2MN\x5.\x18\x2NO");
+		sb.Append("\a*\x2\x2OP\x5.\x18\x2PQ\a*\x2\x2QR\x5.\x18\x2RS\a\x17\x2\x2");
+		sb.Append("S\x5\x3\x2\x2\x2TV\a\x3\x2\x2UT\x3\x2\x2\x2UV\x3\x2\x2\x2VW");
+		sb.Append("\x3\x2\x2\x2WX\a\r\x2\x2XY\a+\x2\x2YZ\x5\x32\x1A\x2Z[\a,\x2");
+		sb.Append("\x2[\\\x5\f\a\x2\\\a\x3\x2\x2\x2]^\a\x6\x2\x2^_\x5\x16\f\x2");
+		sb.Append("_\t\x3\x2\x2\x2`\x61\a\x5\x2\x2\x61\x63\a+\x2\x2\x62\x64\x5");
+		sb.Append(".\x18\x2\x63\x62\x3\x2\x2\x2\x63\x64\x3\x2\x2\x2\x64\x65\x3");
+		sb.Append("\x2\x2\x2\x65\x66\a,\x2\x2\x66h\x5\x16\f\x2gi\x5\b\x5\x2hg\x3");
+		sb.Append("\x2\x2\x2hi\x3\x2\x2\x2i\v\x3\x2\x2\x2jn\a-\x2\x2km\x5\x16\f");
+		sb.Append("\x2lk\x3\x2\x2\x2mp\x3\x2\x2\x2nl\x3\x2\x2\x2no\x3\x2\x2\x2");
+		sb.Append("oq\x3\x2\x2\x2pn\x3\x2\x2\x2qr\a.\x2\x2r\r\x3\x2\x2\x2st\a\x4");
+		sb.Append("\x2\x2tu\x5\x16\f\x2uv\a\a\x2\x2vx\a+\x2\x2wy\x5.\x18\x2xw\x3");
+		sb.Append("\x2\x2\x2xy\x3\x2\x2\x2yz\x3\x2\x2\x2z{\a,\x2\x2{|\a\x12\x2");
+		sb.Append("\x2|\xF\x3\x2\x2\x2}~\a\a\x2\x2~\x80\a+\x2\x2\x7F\x81\x5.\x18");
+		sb.Append("\x2\x80\x7F\x3\x2\x2\x2\x80\x81\x3\x2\x2\x2\x81\x82\x3\x2\x2");
+		sb.Append("\x2\x82\x83\a,\x2\x2\x83\x84\x5\x16\f\x2\x84\x11\x3\x2\x2\x2");
+		sb.Append("\x85\x86\a\b\x2\x2\x86\x87\a+\x2\x2\x87\x88\x5\x30\x19\x2\x88");
+		sb.Append("\x8A\a\x12\x2\x2\x89\x8B\x5.\x18\x2\x8A\x89\x3\x2\x2\x2\x8A");
+		sb.Append("\x8B\x3\x2\x2\x2\x8B\x8C\x3\x2\x2\x2\x8C\x8D\a\x12\x2\x2\x8D");
+		sb.Append("\x8E\x5\x30\x19\x2\x8E\x8F\a,\x2\x2\x8F\x90\x5\x16\f\x2\x90");
+		sb.Append("\x13\x3\x2\x2\x2\x91\x95\x5\xE\b\x2\x92\x95\x5\x12\n\x2\x93");
+		sb.Append("\x95\x5\x10\t\x2\x94\x91\x3\x2\x2\x2\x94\x92\x3\x2\x2\x2\x94");
+		sb.Append("\x93\x3\x2\x2\x2\x95\x15\x3\x2\x2\x2\x96\xA1\x5\"\x12\x2\x97");
+		sb.Append("\xA1\x5\x18\r\x2\x98\xA1\x5\x1A\xE\x2\x99\xA1\x5\x1E\x10\x2");
+		sb.Append("\x9A\xA1\x5\x1C\xF\x2\x9B\xA1\x5 \x11\x2\x9C\xA1\x5\n\x6\x2");
+		sb.Append("\x9D\xA1\x5\x14\v\x2\x9E\xA1\x5\f\a\x2\x9F\xA1\a\x12\x2\x2\xA0");
+		sb.Append("\x96\x3\x2\x2\x2\xA0\x97\x3\x2\x2\x2\xA0\x98\x3\x2\x2\x2\xA0");
+		sb.Append("\x99\x3\x2\x2\x2\xA0\x9A\x3\x2\x2\x2\xA0\x9B\x3\x2\x2\x2\xA0");
+		sb.Append("\x9C\x3\x2\x2\x2\xA0\x9D\x3\x2\x2\x2\xA0\x9E\x3\x2\x2\x2\xA0");
+		sb.Append("\x9F\x3\x2\x2\x2\xA1\x17\x3\x2\x2\x2\xA2\xA3\x5.\x18\x2\xA3");
+		sb.Append("\xA4\a\x12\x2\x2\xA4\x19\x3\x2\x2\x2\xA5\xA6\a\v\x2\x2\xA6\xA7");
+		sb.Append("\x5.\x18\x2\xA7\xA8\a\x12\x2\x2\xA8\xAC\x3\x2\x2\x2\xA9\xAA");
+		sb.Append("\a\v\x2\x2\xAA\xAC\a\x12\x2\x2\xAB\xA5\x3\x2\x2\x2\xAB\xA9\x3");
+		sb.Append("\x2\x2\x2\xAC\x1B\x3\x2\x2\x2\xAD\xAE\a\x31\x2\x2\xAE\xAF\a");
+		sb.Append("\r\x2\x2\xAF\xB0\a\x12\x2\x2\xB0\x1D\x3\x2\x2\x2\xB1\xB2\a\f");
+		sb.Append("\x2\x2\xB2\xB3\a\r\x2\x2\xB3\xB4\a\x12\x2\x2\xB4\x1F\x3\x2\x2");
+		sb.Append("\x2\xB5\xB6\a\n\x2\x2\xB6\xB7\t\x2\x2\x2\xB7\xB8\a\x12\x2\x2");
+		sb.Append("\xB8!\x3\x2\x2\x2\xB9\xBA\a\x3\x2\x2\xBA\xBB\a\r\x2\x2\xBB\xBC");
+		sb.Append("\a\x13\x2\x2\xBC\xBD\x5.\x18\x2\xBD\xBE\a\x12\x2\x2\xBE\xC3");
+		sb.Append("\x3\x2\x2\x2\xBF\xC0\a\x3\x2\x2\xC0\xC1\a\r\x2\x2\xC1\xC3\a");
+		sb.Append("\x12\x2\x2\xC2\xB9\x3\x2\x2\x2\xC2\xBF\x3\x2\x2\x2\xC3#\x3\x2");
+		sb.Append("\x2\x2\xC4\xC5\a\x3\x2\x2\xC5\xC6\a\r\x2\x2\xC6\xC7\a\x13\x2");
+		sb.Append("\x2\xC7\xC8\x5.\x18\x2\xC8\xC9\a\x12\x2\x2\xC9\xCE\x3\x2\x2");
+		sb.Append("\x2\xCA\xCB\a\x3\x2\x2\xCB\xCC\a\r\x2\x2\xCC\xCE\a\x12\x2\x2");
+		sb.Append("\xCD\xC4\x3\x2\x2\x2\xCD\xCA\x3\x2\x2\x2\xCE%\x3\x2\x2\x2\xCF");
+		sb.Append("\xD0\a*\x2\x2\xD0\xD1\x5.\x18\x2\xD1\'\x3\x2\x2\x2\xD2\xD6\x5");
+		sb.Append(".\x18\x2\xD3\xD5\x5&\x14\x2\xD4\xD3\x3\x2\x2\x2\xD5\xD8\x3\x2");
+		sb.Append("\x2\x2\xD6\xD4\x3\x2\x2\x2\xD6\xD7\x3\x2\x2\x2\xD7)\x3\x2\x2");
+		sb.Append("\x2\xD8\xD6\x3\x2\x2\x2\xD9\xDA\a\r\x2\x2\xDA\xDB\a\x39\x2\x2");
+		sb.Append("\xDB\xDC\a\r\x2\x2\xDC+\x3\x2\x2\x2\xDD\xE0\x5*\x16\x2\xDE\xE0");
+		sb.Append("\a\r\x2\x2\xDF\xDD\x3\x2\x2\x2\xDF\xDE\x3\x2\x2\x2\xE0-\x3\x2");
+		sb.Append("\x2\x2\xE1\xE2\b\x18\x1\x2\xE2\xE3\t\x3\x2\x2\xE3\x106\x5.\x18");
+		sb.Append("\x10\xE4\xE5\a+\x2\x2\xE5\xE6\a\x3\x2\x2\xE6\xE7\a,\x2\x2\xE7");
+		sb.Append("\xE8\x3\x2\x2\x2\xE8\x106\x5.\x18\xF\xE9\xEA\x5,\x17\x2\xEA");
+		sb.Append("\xEB\t\x4\x2\x2\xEB\xEC\x5.\x18\x5\xEC\x106\x3\x2\x2\x2\xED");
+		sb.Append("\xEE\x5,\x17\x2\xEE\xEF\a\x13\x2\x2\xEF\xF0\x5.\x18\x4\xF0\x106");
+		sb.Append("\x3\x2\x2\x2\xF1\xF2\a+\x2\x2\xF2\xF3\x5.\x18\x2\xF3\xF4\a,");
+		sb.Append("\x2\x2\xF4\x106\x3\x2\x2\x2\xF5\xF6\a\r\x2\x2\xF6\xF7\a+\x2");
+		sb.Append("\x2\xF7\xF8\x5\x30\x19\x2\xF8\xF9\a,\x2\x2\xF9\x106\x3\x2\x2");
+		sb.Append("\x2\xFA\x106\x5*\x16\x2\xFB\x104\a\r\x2\x2\xFC\x104\a\x11\x2");
+		sb.Append("\x2\xFD\x104\a\xF\x2\x2\xFE\x104\a\x10\x2\x2\xFF\x104\a\xE\x2");
+		sb.Append("\x2\x100\x104\x5\x2\x2\x2\x101\x104\x5\x4\x3\x2\x102\x104\x5");
+		sb.Append("\x34\x1B\x2\x103\xFB\x3\x2\x2\x2\x103\xFC\x3\x2\x2\x2\x103\xFD");
+		sb.Append("\x3\x2\x2\x2\x103\xFE\x3\x2\x2\x2\x103\xFF\x3\x2\x2\x2\x103");
+		sb.Append("\x100\x3\x2\x2\x2\x103\x101\x3\x2\x2\x2\x103\x102\x3\x2\x2\x2");
+		sb.Append("\x104\x106\x3\x2\x2\x2\x105\xE1\x3\x2\x2\x2\x105\xE4\x3\x2\x2");
+		sb.Append("\x2\x105\xE9\x3\x2\x2\x2\x105\xED\x3\x2\x2\x2\x105\xF1\x3\x2");
+		sb.Append("\x2\x2\x105\xF5\x3\x2\x2\x2\x105\xFA\x3\x2\x2\x2\x105\x103\x3");
+		sb.Append("\x2\x2\x2\x106\x126\x3\x2\x2\x2\x107\x108\f\xE\x2\x2\x108\x109");
+		sb.Append("\t\x5\x2\x2\x109\x125\x5.\x18\xF\x10A\x10B\f\r\x2\x2\x10B\x10C");
+		sb.Append("\t\x6\x2\x2\x10C\x125\x5.\x18\xE\x10D\x10E\f\f\x2\x2\x10E\x10F");
+		sb.Append("\t\a\x2\x2\x10F\x125\x5.\x18\r\x110\x111\f\v\x2\x2\x111\x112");
+		sb.Append("\t\b\x2\x2\x112\x125\x5.\x18\f\x113\x114\f\n\x2\x2\x114\x115");
+		sb.Append("\t\t\x2\x2\x115\x125\x5.\x18\v\x116\x117\f\t\x2\x2\x117\x118");
+		sb.Append("\a\x33\x2\x2\x118\x125\x5.\x18\n\x119\x11A\f\b\x2\x2\x11A\x11B");
+		sb.Append("\a\x35\x2\x2\x11B\x125\x5.\x18\t\x11C\x11D\f\a\x2\x2\x11D\x11E");
+		sb.Append("\a\x32\x2\x2\x11E\x125\x5.\x18\b\x11F\x120\f\x6\x2\x2\x120\x121");
+		sb.Append("\t\n\x2\x2\x121\x125\x5.\x18\a\x122\x123\f\x11\x2\x2\x123\x125");
+		sb.Append("\t\v\x2\x2\x124\x107\x3\x2\x2\x2\x124\x10A\x3\x2\x2\x2\x124");
+		sb.Append("\x10D\x3\x2\x2\x2\x124\x110\x3\x2\x2\x2\x124\x113\x3\x2\x2\x2");
+		sb.Append("\x124\x116\x3\x2\x2\x2\x124\x119\x3\x2\x2\x2\x124\x11C\x3\x2");
+		sb.Append("\x2\x2\x124\x11F\x3\x2\x2\x2\x124\x122\x3\x2\x2\x2\x125\x128");
+		sb.Append("\x3\x2\x2\x2\x126\x124\x3\x2\x2\x2\x126\x127\x3\x2\x2\x2\x127");
+		sb.Append("/\x3\x2\x2\x2\x128\x126\x3\x2\x2\x2\x129\x12B\x5(\x15\x2\x12A");
+		sb.Append("\x129\x3\x2\x2\x2\x12A\x12B\x3\x2\x2\x2\x12B\x31\x3\x2\x2\x2");
+		sb.Append("\x12C\x12E\x5:\x1E\x2\x12D\x12C\x3\x2\x2\x2\x12D\x12E\x3\x2");
+		sb.Append("\x2\x2\x12E\x33\x3\x2\x2\x2\x12F\x130\a/\x2\x2\x130\x131\x5");
+		sb.Append("\x30\x19\x2\x131\x132\a\x30\x2\x2\x132\x35\x3\x2\x2\x2\x133");
+		sb.Append("\x136\x5$\x13\x2\x134\x136\x5\x6\x4\x2\x135\x133\x3\x2\x2\x2");
+		sb.Append("\x135\x134\x3\x2\x2\x2\x136\x139\x3\x2\x2\x2\x137\x135\x3\x2");
+		sb.Append("\x2\x2\x137\x138\x3\x2\x2\x2\x138\x13B\x3\x2\x2\x2\x139\x137");
+		sb.Append("\x3\x2\x2\x2\x13A\x13C\x5@!\x2\x13B\x13A\x3\x2\x2\x2\x13B\x13C");
+		sb.Append("\x3\x2\x2\x2\x13C\x140\x3\x2\x2\x2\x13D\x13F\x5> \x2\x13E\x13D");
+		sb.Append("\x3\x2\x2\x2\x13F\x142\x3\x2\x2\x2\x140\x13E\x3\x2\x2\x2\x140");
+		sb.Append("\x141\x3\x2\x2\x2\x141\x37\x3\x2\x2\x2\x142\x140\x3\x2\x2\x2");
+		sb.Append("\x143\x144\a\x3\x2\x2\x144\x145\a\r\x2\x2\x145\x39\x3\x2\x2");
+		sb.Append("\x2\x146\x14B\x5\x38\x1D\x2\x147\x148\a*\x2\x2\x148\x14A\x5");
+		sb.Append("\x38\x1D\x2\x149\x147\x3\x2\x2\x2\x14A\x14D\x3\x2\x2\x2\x14B");
+		sb.Append("\x149\x3\x2\x2\x2\x14B\x14C\x3\x2\x2\x2\x14C;\x3\x2\x2\x2\x14D");
+		sb.Append("\x14B\x3\x2\x2\x2\x14E\x14F\a\r\x2\x2\x14F\x150\a+\x2\x2\x150");
+		sb.Append("\x151\x5\x32\x1A\x2\x151\x152\a,\x2\x2\x152\x153\x5\f\a\x2\x153");
+		sb.Append("=\x3\x2\x2\x2\x154\x155\a\n\x2\x2\x155\x156\t\x2\x2\x2\x156");
+		sb.Append("\x15A\a-\x2\x2\x157\x159\x5<\x1F\x2\x158\x157\x3\x2\x2\x2\x159");
+		sb.Append("\x15C\x3\x2\x2\x2\x15A\x158\x3\x2\x2\x2\x15A\x15B\x3\x2\x2\x2");
+		sb.Append("\x15B\x15D\x3\x2\x2\x2\x15C\x15A\x3\x2\x2\x2\x15D\x15E\a.\x2");
+		sb.Append("\x2\x15E?\x3\x2\x2\x2\x15F\x160\a\t\x2\x2\x160\x164\a-\x2\x2");
+		sb.Append("\x161\x163\x5<\x1F\x2\x162\x161\x3\x2\x2\x2\x163\x166\x3\x2");
+		sb.Append("\x2\x2\x164\x162\x3\x2\x2\x2\x164\x165\x3\x2\x2\x2\x165\x167");
+		sb.Append("\x3\x2\x2\x2\x166\x164\x3\x2\x2\x2\x167\x168\a.\x2\x2\x168\x41");
+		sb.Append("\x3\x2\x2\x2\x1DU\x63hnx\x80\x8A\x94\xA0\xAB\xC2\xCD\xD6\xDF");
+		sb.Append("\x103\x105\x124\x126\x12A\x12D\x135\x137\x13B\x140\x14B\x15A");
+		sb.Append("\x164");
 	    return sb.ToString();
 	}
 

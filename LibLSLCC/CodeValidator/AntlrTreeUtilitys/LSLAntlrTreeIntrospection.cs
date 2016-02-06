@@ -54,84 +54,71 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
     {
         public static LSLCodeScopeType ResolveCodeScopeNodeType(LSLParser.CodeStatementContext context)
         {
-            if (context.Parent is LSLParser.CodeScopeOrSingleBlockStatementContext)
+            if (context.Parent is LSLParser.ControlStructureContext)
             {
-                if (context.Parent.Parent is LSLParser.IfStatementContext)
-                {
-                    return LSLCodeScopeType.If;
-                }
-                if (context.Parent.Parent is LSLParser.ElseIfStatementContext)
-                {
-                    return LSLCodeScopeType.ElseIf;
-                }
-                if (context.Parent.Parent is LSLParser.ElseStatementContext)
-                {
-                    return LSLCodeScopeType.Else;
-                }
-                if (context.Parent.Parent is LSLParser.DoLoopContext)
-                {
-                    return LSLCodeScopeType.DoLoop;
-                }
-                if (context.Parent.Parent is LSLParser.WhileLoopContext)
-                {
-                    return LSLCodeScopeType.WhileLoop;
-                }
-                if (context.Parent.Parent is LSLParser.ForLoopContext)
-                {
-                    return LSLCodeScopeType.ForLoop;
-                }
+                return LSLCodeScopeType.If;
             }
-            else
+            if (context.Parent is LSLParser.ElseStatementContext)
             {
-                var parent = context.Parent as LSLParser.CodeScopeContext;
-                if (parent != null)
-                {
-                    return ResolveCodeScopeNodeType(parent);
-                }
+                return context.control_structure != null ? LSLCodeScopeType.ElseIf : LSLCodeScopeType.Else;
+            }
+            if (context.Parent is LSLParser.DoLoopContext)
+            {
+                return LSLCodeScopeType.DoLoop;
+            }
+            if (context.Parent is LSLParser.WhileLoopContext)
+            {
+                return LSLCodeScopeType.WhileLoop;
+            }
+            if (context.Parent is LSLParser.ForLoopContext)
+            {
+                return LSLCodeScopeType.ForLoop;
+            }
+            
+            var parent = context.Parent as LSLParser.CodeScopeContext;
+            if (parent != null)
+            {
+                return ResolveCodeScopeNodeType(parent);
             }
 
             throw new InvalidOperationException(
                 "Could not resolve code scope type from statement in LSLAntlrTreeUtilitys.ResolveCodeScopeNodeType");
         }
 
+
+
         public static LSLCodeScopeType ResolveCodeScopeNodeType(LSLParser.CodeScopeContext context)
         {
-            if (context.Parent is LSLParser.CodeScopeOrSingleBlockStatementContext)
+
+            if (context.Parent is LSLParser.ControlStructureContext)
             {
-                if (context.Parent.Parent is LSLParser.IfStatementContext)
-                {
-                    return LSLCodeScopeType.If;
-                }
-                if (context.Parent.Parent is LSLParser.ElseIfStatementContext)
-                {
-                    return LSLCodeScopeType.ElseIf;
-                }
-                if (context.Parent.Parent is LSLParser.ElseStatementContext)
-                {
-                    return LSLCodeScopeType.Else;
-                }
-                if (context.Parent.Parent is LSLParser.DoLoopContext)
-                {
-                    return LSLCodeScopeType.DoLoop;
-                }
-                if (context.Parent.Parent is LSLParser.WhileLoopContext)
-                {
-                    return LSLCodeScopeType.WhileLoop;
-                }
-                if (context.Parent.Parent is LSLParser.ForLoopContext)
-                {
-                    return LSLCodeScopeType.ForLoop;
-                }
+                return LSLCodeScopeType.If;
             }
-            else if (context.Parent is LSLParser.FunctionDeclarationContext)
+            if (context.Parent is LSLParser.ElseStatementContext)
+            {
+                return LSLCodeScopeType.Else;
+            }
+            if (context.Parent is LSLParser.DoLoopContext)
+            {
+                return LSLCodeScopeType.DoLoop;
+            }
+            if (context.Parent is LSLParser.WhileLoopContext)
+            {
+                return LSLCodeScopeType.WhileLoop;
+            }
+            if (context.Parent is LSLParser.ForLoopContext)
+            {
+                return LSLCodeScopeType.ForLoop;
+            }
+            if (context.Parent is LSLParser.FunctionDeclarationContext)
             {
                 return LSLCodeScopeType.Function;
             }
-            else if (context.Parent is LSLParser.EventHandlerContext)
+            if (context.Parent is LSLParser.EventHandlerContext)
             {
                 return LSLCodeScopeType.EventHandler;
             }
-            else if (context.Parent is LSLParser.CodeStatementContext)
+            if (context.Parent is LSLParser.CodeStatementContext)
             {
                 return LSLCodeScopeType.AnonymousBlock;
             }

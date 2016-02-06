@@ -65,13 +65,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLElseIfStatementNode(LSLParser.ElseIfStatementContext context, LSLCodeScopeNode code,
+        internal LSLElseIfStatementNode(
+            LSLSourceCodeRange elseKeywordRange,
+            LSLParser.ControlStructureContext context,
+            LSLCodeScopeNode code,
             ILSLExprNode conditionExpression)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
+
 
             if (conditionExpression == null)
             {
@@ -83,7 +83,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("code");
             }
 
-            ParserContext = context;
 
             Code = code;
 
@@ -91,12 +90,15 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             Code.Parent = this;
             ConditionExpression.Parent = this;
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            
 
+            ElseKeywordSourceCodeRange = elseKeywordRange.Clone();
             IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
-            ElseKeywordSourceCodeRange = new LSLSourceCodeRange(context.else_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+
+
+            SourceCodeRange = new LSLSourceCodeRange(ElseKeywordSourceCodeRange,code.SourceCodeRange);
 
             SourceCodeRangesAvailable = true;
         }
@@ -106,7 +108,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps ; }
         }
 
-        internal LSLParser.ElseIfStatementContext ParserContext { get; private set; }
+        //internal LSLParser.ElseIfStatementContext ParserContext { get; private set; }
         public LSLCodeScopeNode Code { get; private set; }
         public ILSLExprNode ConditionExpression { get; private set; }
 

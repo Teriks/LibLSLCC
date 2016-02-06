@@ -65,13 +65,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLIfStatementNode(LSLParser.IfStatementContext context, LSLCodeScopeNode code,
+        internal LSLIfStatementNode(LSLParser.ControlStructureContext context, LSLCodeScopeNode code,
             ILSLExprNode conditionExpression)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
 
             if (code == null)
             {
@@ -83,17 +79,19 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("conditionExpression");
             }
 
-            ParserContext = context;
             Code = code;
             ConditionExpression = conditionExpression;
 
             Code.Parent = this;
             ConditionExpression.Parent = this;
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            
+            
 
             IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+
+            SourceCodeRange = new LSLSourceCodeRange(IfKeywordSourceCodeRange, code.SourceCodeRange);
 
             SourceCodeRangesAvailable = true;
         }
@@ -105,7 +103,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps; }
         }
 
-        internal LSLParser.IfStatementContext ParserContext { get; private set; }
         public LSLCodeScopeNode Code { get; private set; }
         public ILSLExprNode ConditionExpression { get; private set; }
 

@@ -51,29 +51,11 @@ public interface ILSLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunctionDeclaration([NotNull] LSLParser.FunctionDeclarationContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LSLParser.codeScopeOrSingleBlockStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCodeScopeOrSingleBlockStatement([NotNull] LSLParser.CodeScopeOrSingleBlockStatementContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="LSLParser.elseIfStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitElseIfStatement([NotNull] LSLParser.ElseIfStatementContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.elseStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitElseStatement([NotNull] LSLParser.ElseStatementContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="LSLParser.ifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIfStatement([NotNull] LSLParser.IfStatementContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LSLParser.controlStructure"/>.
 	/// </summary>

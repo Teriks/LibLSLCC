@@ -88,7 +88,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLControlStatementNode(LSLParser.ControlStructureContext context, LSLIfStatementNode ifStatement,
+        internal LSLControlStatementNode(LSLParser.ControlStructureContext context, 
+            LSLIfStatementNode ifStatement,
             IEnumerable<LSLElseIfStatementNode> elseIfStatements,
             LSLElseStatementNode elseStatement, bool isSingleBlockStatement) :
                 this(context, ifStatement, elseIfStatements, isSingleBlockStatement)

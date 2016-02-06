@@ -276,32 +276,14 @@ functionDeclaration:
 	;
 
 
-//declarations are not allowed in single statement blocks
-//but this case is handled in code
-codeScopeOrSingleBlockStatement: 
-	(code=codeScope|statement=codeStatement);
-
-
-
-
-//condition is optional so an error can be provided when its missing
-elseIfStatement:
-	else_keyword=ELSE if_keyword=IF open_parenth=O_PAREN condition=expression? close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
-	;
-
 
 elseStatement:
-	else_keyword=ELSE code=codeScopeOrSingleBlockStatement
-	;
-
-//condition is optional so an error can be provided when its missing
-ifStatement:
-	if_keyword=IF open_parenth=O_PAREN condition=expression? close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
+	else_keyword=ELSE code=codeStatement
 	;
 
 
 controlStructure:
-	ifStatement (((elseIfStatement)+ (elseStatement)?) | (elseStatement))?
+	if_keyword=IF open_parenth=O_PAREN condition=expression? close_parenth=C_PAREN code=codeStatement (else_statement = elseStatement)?
 	;
 
 
@@ -311,19 +293,19 @@ codeScope:
 
 //loop_condition is optional so an error can be provided when its missing
 doLoop:
-	loop_keyword=DO code=codeScopeOrSingleBlockStatement while_keyword=WHILE open_parenth=O_PAREN loop_condition=expression? close_parenth=C_PAREN semi_colon=SEMI_COLON
+	loop_keyword=DO code=codeStatement while_keyword=WHILE open_parenth=O_PAREN loop_condition=expression? close_parenth=C_PAREN semi_colon=SEMI_COLON
 	;
 
 
 //loop_condition is optional so an error can be provided when its missing
 whileLoop:
-	loop_keyword=WHILE open_parenth=O_PAREN loop_condition=expression? close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
+	loop_keyword=WHILE open_parenth=O_PAREN loop_condition=expression? close_parenth=C_PAREN code=codeStatement
 	;
 
 
 //for loops without a loop condition are allowed
 forLoop:
-	loop_keyword=FOR open_parenth=O_PAREN loop_init=optionalExpressionList first_semi_colon=SEMI_COLON loop_condition=expression? second_semi_colon=SEMI_COLON expression_list=optionalExpressionList close_parenth=C_PAREN code=codeScopeOrSingleBlockStatement
+	loop_keyword=FOR open_parenth=O_PAREN loop_init=optionalExpressionList first_semi_colon=SEMI_COLON loop_condition=expression? second_semi_colon=SEMI_COLON expression_list=optionalExpressionList close_parenth=C_PAREN code=codeStatement
 	;
 
 

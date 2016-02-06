@@ -72,30 +72,6 @@ public partial class LSLBaseListener : ILSLListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunctionDeclaration([NotNull] LSLParser.FunctionDeclarationContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.codeScopeOrSingleBlockStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCodeScopeOrSingleBlockStatement([NotNull] LSLParser.CodeScopeOrSingleBlockStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.codeScopeOrSingleBlockStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCodeScopeOrSingleBlockStatement([NotNull] LSLParser.CodeScopeOrSingleBlockStatementContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.elseIfStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterElseIfStatement([NotNull] LSLParser.ElseIfStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.elseIfStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitElseIfStatement([NotNull] LSLParser.ElseIfStatementContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.elseStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -107,18 +83,6 @@ public partial class LSLBaseListener : ILSLListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitElseStatement([NotNull] LSLParser.ElseStatementContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.ifStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIfStatement([NotNull] LSLParser.IfStatementContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.ifStatement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIfStatement([NotNull] LSLParser.IfStatementContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.controlStructure"/>.
 	/// <para>The default implementation does nothing.</para>

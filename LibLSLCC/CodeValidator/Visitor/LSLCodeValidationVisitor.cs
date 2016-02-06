@@ -946,26 +946,37 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         #region BranchStructureVisitors
 
-        public override ILSLSyntaxTreeNode VisitIfStatement(LSLParser.IfStatementContext context)
+
+
+        public ILSLSyntaxTreeNode VisitElseIfStatement(LSLParser.ElseStatementContext context)
         {
-            if (context == null || context.code == null)
-            {
-                throw LSLCodeValidatorInternalException
-                    .VisitContextInvalidState("VisitIfStatement");
-            }
-
-            var isError = false;
             ILSLExprNode expression;
+            var isError = false;
 
-            if (context.condition == null)
+            if (context.code.control_structure.condition == null)
             {
                 //creating a valid if statement node even if the condition is null
                 //allows return path verification to continue, also various other error checks
                 //make a dummy expression value for the condition node, a constant integer literal
 
-                GenSyntaxError().MissingConditionalExpression(
-                    new LSLSourceCodeRange(context),
-                    LSLConditionalStatementType.If);
+                if (
+                    context.code.control_structure.open_parenth == null ||
+                    context.code.control_structure.close_parenth == null
+                    )
+                {
+                    GenSyntaxError().MissingConditionalExpression(
+                        new LSLSourceCodeRange(context),
+                        LSLConditionalStatementType.ElseIf);
+                }
+                else
+                {
+                    GenSyntaxError().MissingConditionalExpression(
+                        new LSLSourceCodeRange(
+                            context.code.control_structure.open_parenth,
+                            context.code.control_structure.close_parenth),
+                        LSLConditionalStatementType.ElseIf);
+                }
+
 
                 isError = true;
 
@@ -978,90 +989,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             else
             {
-                expression = VisitTopOfExpression(context.condition);
-
-                if (expression.HasErrors)
-                {
-                    isError = true;
-                }
-                else if (!ExpressionValidator.ValidBooleanConditional(expression))
-                {
-                    GenSyntaxError().IfConditionNotValidType(
-                        new LSLSourceCodeRange(context.condition),
-                        expression
-                        );
-
-
-                    isError = true;
-                }
-
-                if (!isError && expression.IsConstant)
-                {
-                    GenSyntaxWarning().ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition),
-                        LSLConditionalStatementType.If);
-                }
-            }
-
-
-            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
-
-
-            if (code == null)
-            {
-                throw LSLCodeValidatorInternalException
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
-                        typeof (LSLCodeScopeNode));
-            }
-
-
-            if (code.HasErrors)
-            {
-                isError = true;
-            }
-
-
-            var result = new LSLIfStatementNode(context, code, expression)
-            {
-                HasErrors = isError
-            };
-
-            return ReturnFromVisit(context, result);
-        }
-
-
-        public override ILSLSyntaxTreeNode VisitElseIfStatement(LSLParser.ElseIfStatementContext context)
-        {
-            if (context == null || context.code == null)
-            {
-                throw LSLCodeValidatorInternalException
-                    .VisitContextInvalidState("VisitElseIfStatement");
-            }
-
-
-            var isError = false;
-            ILSLExprNode expression;
-
-            if (context.condition == null)
-            {
-                //creating a valid if statement node even if the condition is null
-                //allows return path verification to continue, also various other error checks
-                //make a dummy expression value for the condition node, a constant integer literal
-
-                GenSyntaxError().MissingConditionalExpression(new LSLSourceCodeRange(context),
-                    LSLConditionalStatementType.ElseIf);
-
-                isError = true;
-
-                expression = new LSLDummyExpr
-                {
-                    Type = LSLType.Integer,
-                    ExpressionType = LSLExpressionType.Literal,
-                    IsConstant = true
-                };
-            }
-            else
-            {
-                expression = VisitTopOfExpression(context.condition);
+                expression = VisitTopOfExpression(context.code.control_structure.condition);
 
 
                 if (expression.HasErrors)
@@ -1071,7 +999,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 else if (!ExpressionValidator.ValidBooleanConditional(expression))
                 {
                     GenSyntaxError().ElseIfConditionNotValidType(
-                        new LSLSourceCodeRange(context.condition),
+                        new LSLSourceCodeRange(context.code.control_structure.condition),
                         expression
                         );
 
@@ -1082,20 +1010,22 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && expression.IsConstant)
                 {
-                    GenSyntaxWarning().ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition),
+                    GenSyntaxWarning().ConditionalExpressionIsConstant(
+                        new LSLSourceCodeRange(context.code.control_structure.condition),
                         LSLConditionalStatementType.ElseIf);
                 }
             }
 
 
-            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
+            var code =
+                VisitCodeScopeOrSingleBlockStatement(context.code.control_structure.code) as LSLCodeScopeNode;
 
 
             if (code == null)
             {
                 throw LSLCodeValidatorInternalException
                     .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
-                        typeof (LSLCodeScopeNode));
+                        typeof(LSLCodeScopeNode));
             }
 
 
@@ -1105,14 +1035,18 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var result = new LSLElseIfStatementNode(context, code, expression)
+            var result = new LSLElseIfStatementNode(
+                new LSLSourceCodeRange(context.else_keyword),
+                context.code.control_structure,
+                code,
+                expression)
             {
                 HasErrors = isError
             };
 
-
-            return ReturnFromVisit(context, result);
+            return result;
         }
+
 
 
         public override ILSLSyntaxTreeNode VisitElseStatement(LSLParser.ElseStatementContext context)
@@ -1163,49 +1097,156 @@ namespace LibLSLCC.CodeValidator.Visitor
             ScopingManager.EnterControlStatement(result);
 
 
-            foreach (var child in context.children.Select(x => Visit(x) as ILSLBranchStatementNode))
+
+            ILSLExprNode expression;
+
+            if (context.condition == null)
             {
-                if (child == null)
+                //creating a valid if statement node even if the condition is null
+                //allows return path verification to continue, also various other error checks
+                //make a dummy expression value for the condition node, a constant integer literal
+
+
+
+
+                if (context.open_parenth == null || context.close_parenth == null)
                 {
-                    throw new LSLCodeValidatorInternalException(
-                        "Child visit in VisitControlStructure did not return an ILSLBranchStatementNode type");
+                    GenSyntaxError().MissingConditionalExpression(
+                        new LSLSourceCodeRange(context),
+                        LSLConditionalStatementType.If);
+                }
+                else
+                {
+                    GenSyntaxError().MissingConditionalExpression(
+                        new LSLSourceCodeRange(context.open_parenth, context.close_parenth),
+                        LSLConditionalStatementType.If);
                 }
 
-                if (child.HasErrors)
+
+                result.HasErrors = true;
+
+                expression = new LSLDummyExpr
+                {
+                    Type = LSLType.Integer,
+                    ExpressionType = LSLExpressionType.Literal,
+                    IsConstant = true
+                };
+            }
+            else
+            {
+                expression = VisitTopOfExpression(context.condition);
+
+                if (expression.HasErrors)
                 {
                     result.HasErrors = true;
                 }
+                else if (!ExpressionValidator.ValidBooleanConditional(expression))
+                {
+                    GenSyntaxError().IfConditionNotValidType(
+                        new LSLSourceCodeRange(context.condition),
+                        expression
+                        );
 
 
-                var ifNode = child as LSLIfStatementNode;
-                if (ifNode != null)
-                {
-                    result.IfStatement = ifNode;
-                    continue;
-                }
-                var elseIfNode = child as LSLElseIfStatementNode;
-                if (elseIfNode != null)
-                {
-                    result.AddElseIfStatement(elseIfNode);
-                    continue;
-                }
-                var elseNode = child as LSLElseStatementNode;
-                if (elseNode != null)
-                {
-                    result.ElseStatement = elseNode;
-                    continue;
+                    result.HasErrors = true;
                 }
 
-                throw new
-                    LSLCodeValidatorInternalException(
-                    "VisitControlStructure child node Visit did not return proper type");
+                if (!result.HasErrors && expression.IsConstant)
+                {
+                    GenSyntaxWarning().ConditionalExpressionIsConstant(new LSLSourceCodeRange(context.condition),
+                        LSLConditionalStatementType.If);
+                }
             }
+
+            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
+
+
+            if (code == null)
+            {
+                throw LSLCodeValidatorInternalException
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
+                        typeof(LSLCodeScopeNode));
+            }
+
+            if (code.HasErrors)
+            {
+                result.HasErrors = true;
+            }
+
+            result.IfStatement = new LSLIfStatementNode(context, code, expression)
+            {
+                HasErrors = result.HasErrors
+            };
+
+
+            if (context.else_statement == null)
+            {
+                ScopingManager.ExitControlStatement();
+                return ReturnFromVisit(context, result);
+            }
+
+
+            //=============
+
+
+            var elseStatement = context.else_statement;
+
+            do
+            {
+                if (elseStatement.code != null && elseStatement.code.control_structure != null)
+                {
+
+
+                    var createdElseIfStatement = VisitElseIfStatement(elseStatement) as LSLElseIfStatementNode;
+
+                    if (createdElseIfStatement == null)
+                    {
+                        throw new
+                            LSLCodeValidatorInternalException(
+                            "VisitControlStructure child node Visit did not return proper type");
+                    }
+
+                    if (createdElseIfStatement.HasErrors)
+                    {
+                        result.HasErrors = true;
+                    }
+
+                    result.AddElseIfStatement(createdElseIfStatement);
+
+
+                    elseStatement = elseStatement.code.control_structure.else_statement;
+
+                }
+                else
+                {
+                    var createdElseStatement = VisitElseStatement(elseStatement) as LSLElseStatementNode;
+
+                    if (createdElseStatement == null)
+                    {
+                        throw new
+                            LSLCodeValidatorInternalException(
+                            "VisitControlStructure child node Visit did not return proper type");
+                    }
+
+                    if (createdElseStatement.HasErrors)
+                    {
+                        result.HasErrors = true;
+                    }
+
+                    result.ElseStatement = createdElseStatement;
+
+                    elseStatement = null;
+                }
+
+            } while (elseStatement != null);
+
 
             ScopingManager.ExitControlStatement();
 
 
             return ReturnFromVisit(context, result);
         }
+
 
         #endregion
 
@@ -1407,69 +1448,65 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        public override ILSLSyntaxTreeNode VisitCodeScopeOrSingleBlockStatement(
-            LSLParser.CodeScopeOrSingleBlockStatementContext context)
+        public ILSLSyntaxTreeNode VisitCodeScopeOrSingleBlockStatement(
+            LSLParser.CodeStatementContext context)
         {
-            if (context == null || !Utility.OnlyOneNotNull(context.code, context.statement))
+            if (context == null)
             {
                 throw
                     LSLCodeValidatorInternalException.VisitContextInvalidState("VisitCodeScopeOrSingleBlockStatement");
             }
 
 
-            if (context.code != null)
+            if (context.code_scope != null)
             {
-                var code = VisitCodeScope(context.code) as LSLCodeScopeNode;
+                var codeScope = VisitCodeScope(context.code_scope) as LSLCodeScopeNode;
 
-                if (code == null)
+                if (codeScope == null)
                 {
                     throw LSLCodeValidatorInternalException
                         .VisitReturnTypeException("VisitCodeScope", typeof (LSLCodeScopeNode));
                 }
 
-                return ReturnFromVisit(context, code);
+                return ReturnFromVisit(context, codeScope);
             }
 
-            if (context.statement != null)
+
+            ScopingManager.EnterSingleStatementBlock(context);
+
+            var codeStatement = VisitCodeStatement(context) as ILSLCodeStatement;
+
+            ScopingManager.ExitSingleStatementBlock();
+
+
+            if (codeStatement == null)
             {
-                ScopingManager.EnterSingleStatementBlock(context.statement);
-
-                var code = VisitCodeStatement(context.statement) as ILSLCodeStatement;
-
-                ScopingManager.ExitSingleStatementBlock();
-
-
-                if (code == null)
-                {
-                    throw LSLCodeValidatorInternalException
-                        .VisitReturnTypeException("VisitCodeStatement", typeof (ILSLCodeStatement));
-                }
-
-
-                ScopingManager.IncrementScopeId();
-
-                LSLCodeScopeNode result;
-                if (!code.HasErrors)
-                {
-                    result = new LSLCodeScopeNode(context.statement, ScopingManager.CurrentScopeId,
-                        ScopingManager.CurrentCodeScopeType);
-                }
-                else
-                {
-                    result = LSLCodeScopeNode.GetError(new LSLSourceCodeRange(context.statement));
-                }
-
-
-                result.AddCodeStatement(code, context.statement);
-                result.EndScope();
-
-
-                return ReturnFromVisit(context, result);
+                throw LSLCodeValidatorInternalException
+                    .VisitReturnTypeException("VisitCodeStatement", typeof (ILSLCodeStatement));
             }
 
-            //it should never get here
-            throw new LSLCodeValidatorInternalException("VisitCodeScopeOrSingleBlockStatement ended in invalid state");
+
+            ScopingManager.IncrementScopeId();
+
+            LSLCodeScopeNode result;
+            if (!codeStatement.HasErrors)
+            {
+                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId,
+                    ScopingManager.CurrentCodeScopeType);
+            }
+            else
+            {
+                result = LSLCodeScopeNode.GetError(new LSLSourceCodeRange(context));
+            }
+
+
+            result.AddCodeStatement(codeStatement, context);
+            result.EndScope();
+
+
+            return ReturnFromVisit(context, result);
         }
+
 
         #endregion
 
@@ -2171,6 +2208,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 var result = new LSLSemiColonStatement(context, InSingleStatementBlock);
                 return ReturnFromVisit(context, result);
             }
+
 
             if (!ValidateCodeStatementTypeValidInScope(context))
             {

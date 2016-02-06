@@ -62,26 +62,6 @@ public interface ILSLListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunctionDeclaration([NotNull] LSLParser.FunctionDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.codeScopeOrSingleBlockStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterCodeScopeOrSingleBlockStatement([NotNull] LSLParser.CodeScopeOrSingleBlockStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.codeScopeOrSingleBlockStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitCodeScopeOrSingleBlockStatement([NotNull] LSLParser.CodeScopeOrSingleBlockStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.elseIfStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterElseIfStatement([NotNull] LSLParser.ElseIfStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.elseIfStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitElseIfStatement([NotNull] LSLParser.ElseIfStatementContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.elseStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -91,16 +71,6 @@ public interface ILSLListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitElseStatement([NotNull] LSLParser.ElseStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LSLParser.ifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterIfStatement([NotNull] LSLParser.IfStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LSLParser.ifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitIfStatement([NotNull] LSLParser.IfStatementContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.controlStructure"/>.
 	/// </summary>

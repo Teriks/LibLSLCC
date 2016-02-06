@@ -133,7 +133,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
 
-        public override bool VisitCodeScopeOrSingleBlockStatement(
+        /*public override bool VisitCodeScopeOrSingleBlockStatement(
             LSLParser.CodeScopeOrSingleBlockStatementContext context)
         {
             if (context == null || !Utility.OnlyOneNotNull(context.code, context.statement))
@@ -161,7 +161,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
             return true;
-        }
+        }*/
 
 
 

@@ -1044,7 +1044,7 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-            public override bool VisitIfStatement(LSLParser.IfStatementContext context)
+            /*public override bool VisitIfStatement(LSLParser.IfStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
@@ -1082,10 +1082,10 @@ namespace LibLSLCC.AutoComplete
                 _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
 
                 return base.VisitIfStatement(context);
-            }
+            }*/
 
 
-            public override bool VisitElseIfStatement(LSLParser.ElseIfStatementContext context)
+            /*public override bool VisitElseIfStatement(LSLParser.ElseIfStatementContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
@@ -1120,7 +1120,7 @@ namespace LibLSLCC.AutoComplete
                 _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
 
                 return base.VisitElseIfStatement(context);
-            }
+            }*/
 
 
             public override bool VisitElseStatement(LSLParser.ElseStatementContext context)
@@ -1128,8 +1128,8 @@ namespace LibLSLCC.AutoComplete
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
 
-                if (context.code != null && context.code.code != null &&
-                    context.code.code.open_brace.Text == "{")
+                if (context.code != null && context.code.code_scope != null &&
+                    context.code.code_scope.open_brace.Text == "{")
                 {
                     _parent.InSingleStatementCodeScopeTopLevel = false;
                 }
@@ -1171,8 +1171,8 @@ namespace LibLSLCC.AutoComplete
                         _parent.InWhileConditionExpression = false;
 
 
-                        if (context.code != null && context.code.code != null
-                            && context.code.code.open_brace.Text == "{")
+                        if (context.code != null && context.code.code_scope != null
+                            && context.code.code_scope.open_brace.Text == "{")
                         {
                             _parent.InSingleStatementCodeScopeTopLevel = false;
                         }
@@ -1224,8 +1224,8 @@ namespace LibLSLCC.AutoComplete
                         _parent._nestableExpressionElementStack.Clear();
                         _parent.InForLoopClausesArea = false;
 
-                        if (context.code != null && context.code.code != null &&
-                            context.code.code.open_brace.Text == "{")
+                        if (context.code != null && context.code.code_scope != null &&
+                            context.code.code_scope.open_brace.Text == "{")
                         {
                             _parent.InSingleStatementCodeScopeTopLevel = false;
                         }
@@ -1261,8 +1261,8 @@ namespace LibLSLCC.AutoComplete
                 ControlStructureNestingDepth++;
                 _parent.InControlStatementSourceRange = true;
 
-                if (context.code != null && context.code.code != null &&
-                    context.code.code.open_brace.Text == "{")
+                if (context.code != null && context.code.code_scope != null &&
+                    context.code.code_scope.open_brace.Text == "{")
                 {
                     _parent.InSingleStatementCodeScopeTopLevel = false;
                 }
@@ -1293,8 +1293,8 @@ namespace LibLSLCC.AutoComplete
 
                 var val = base.VisitDoLoop(context);
 
-                if (context.code != null && context.code.code != null && context.code.code.close_brace != null &&
-                    context.code.code.close_brace.StartIndex <= _parent._toOffset)
+                if (context.code != null && context.code.code_scope != null && context.code.code_scope.close_brace != null &&
+                    context.code.code_scope.close_brace.StartIndex <= _parent._toOffset)
                 {
                     _parent.InMultiStatementCodeScopeTopLevel = false;
                 }
@@ -1748,7 +1748,17 @@ namespace LibLSLCC.AutoComplete
 
             public override bool VisitCodeStatement(LSLParser.CodeStatementContext context)
             {
-                if (context.Parent is LSLParser.CodeScopeOrSingleBlockStatementContext)
+                var singleStatement = context.code_scope == null &&
+
+                             (context.Parent is LSLParser.ControlStructureContext ||
+                              context.Parent is LSLParser.ElseStatementContext ||
+                              context.Parent is LSLParser.DoLoopContext ||
+                              context.Parent is LSLParser.WhileLoopContext ||
+                              context.Parent is LSLParser.ForLoopContext
+                                 );
+
+
+                if (singleStatement)
                 {
                     if (_parent._toOffset >= context.Start.StartIndex)
                     {

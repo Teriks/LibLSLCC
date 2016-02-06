@@ -79,15 +79,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
 
-            ParserContext = context;
             IsConstantBranch = isConstantBranch;
             Code = code;
 
             code.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
 
             ElseKeywordSourceCodeRange = new LSLSourceCodeRange(context.else_keyword);
+
+            SourceCodeRange = new LSLSourceCodeRange(ElseKeywordSourceCodeRange, code.SourceCodeRange);
 
             SourceCodeRangesAvailable = true;
         }
@@ -98,7 +98,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         public LSLCodeScopeNode Code { get; private set; }
-        internal LSLParser.ElseStatementContext ParserContext { get; private set; }
 
 
         /// <summary>

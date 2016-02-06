@@ -87,6 +87,47 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
+        /// Internal constructor for creating an <see cref="LSLSourceCodeRange"/> that encompasses two ANTLR ITokens.
+        /// </summary>
+        /// <param name="ctxa">The first ANTLR IToken</param>
+        /// <param name="ctxb">The second ANTLR IToken</param>
+        internal LSLSourceCodeRange(IToken ctxa, IToken ctxb)
+        {
+            LineStart = ctxa.Line;
+            ColumnStart = ctxa.Column;
+            StartIndex = ctxa.StartIndex;
+            StopIndex = ctxb.StopIndex;
+
+            
+            ColumnEnd = ctxb.Column + ctxb.Text.Length;
+            LineEnd = ctxb.Line;
+
+            HasIndexInfo = true;
+        }
+
+
+        /// <summary>
+        /// Internal constructor for creating an <see cref="LSLSourceCodeRange"/> that encompasses two other ranges.
+        /// </summary>
+        /// <param name="rangea">The first range</param>
+        /// <param name="rangeb">The second range</param>
+        internal LSLSourceCodeRange(LSLSourceCodeRange rangea, LSLSourceCodeRange rangeb)
+        {
+            LineStart = rangea.LineStart;
+            ColumnStart = rangea.LineEnd;
+
+            StartIndex = rangea.StartIndex;
+
+            StopIndex = rangeb.StopIndex;
+
+            ColumnEnd = rangeb.ColumnEnd;
+            LineEnd = rangeb.LineEnd;
+
+            HasIndexInfo = true;
+        }
+
+
+        /// <summary>
         /// Internal function for creating an <see cref="LSLSourceCodeRange"/> from an ANTLR ParserRuleContext.
         /// </summary>
         /// <param name="ctx">The ANTLR ParserRuleContext</param>
