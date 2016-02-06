@@ -962,7 +962,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         #region BranchStructureVisitors
 
-        public ILSLSyntaxTreeNode VisitElseIfStatement(LSLParser.ElseStatementContext context)
+        private ILSLSyntaxTreeNode VisitElseIfStatement(LSLParser.ElseStatementContext context)
         {
             ILSLExprNode expression;
             var isError = false;
