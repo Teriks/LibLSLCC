@@ -89,39 +89,39 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// Internal constructor for creating an <see cref="LSLSourceCodeRange"/> that encompasses two ANTLR ITokens.
         /// </summary>
-        /// <param name="ctxa">The first ANTLR IToken</param>
-        /// <param name="ctxb">The second ANTLR IToken</param>
-        internal LSLSourceCodeRange(IToken ctxa, IToken ctxb)
+        /// <param name="start">The first ANTLR IToken</param>
+        /// <param name="end">The second ANTLR IToken</param>
+        internal LSLSourceCodeRange(IToken start, IToken end)
         {
-            LineStart = ctxa.Line;
-            ColumnStart = ctxa.Column;
-            StartIndex = ctxa.StartIndex;
-            StopIndex = ctxb.StopIndex;
+            LineStart = start.Line;
+            ColumnStart = start.Column;
+            StartIndex = start.StartIndex;
+            StopIndex = end.StopIndex;
 
             
-            ColumnEnd = ctxb.Column + ctxb.Text.Length;
-            LineEnd = ctxb.Line;
+            ColumnEnd = end.Column + end.Text.Length;
+            LineEnd = end.Line;
 
             HasIndexInfo = true;
         }
 
 
         /// <summary>
-        /// Internal constructor for creating an <see cref="LSLSourceCodeRange"/> that encompasses two other ranges.
+        /// Creates a source code range that spans two <see cref="LSLSourceCodeRange"/> objects.
         /// </summary>
-        /// <param name="rangea">The first range</param>
-        /// <param name="rangeb">The second range</param>
-        internal LSLSourceCodeRange(LSLSourceCodeRange rangea, LSLSourceCodeRange rangeb)
+        /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range starts.</param>
+        /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range ends.</param>
+        public LSLSourceCodeRange(LSLSourceCodeRange start, LSLSourceCodeRange end)
         {
-            LineStart = rangea.LineStart;
-            ColumnStart = rangea.LineEnd;
+            LineStart = start.LineStart;
+            ColumnStart = start.LineEnd;
 
-            StartIndex = rangea.StartIndex;
+            StartIndex = start.StartIndex;
 
-            StopIndex = rangeb.StopIndex;
+            StopIndex = end.StopIndex;
 
-            ColumnEnd = rangeb.ColumnEnd;
-            LineEnd = rangeb.LineEnd;
+            ColumnEnd = end.ColumnEnd;
+            LineEnd = end.LineEnd;
 
             HasIndexInfo = true;
         }
