@@ -973,23 +973,25 @@ namespace LibLSLCC.CodeValidator.Visitor
                 //allows return path verification to continue, also various other error checks
                 //make a dummy expression value for the condition node, a constant integer literal
 
+
+                LSLSourceCodeRange errorLocation;
+
                 if (
                     context.code.control_structure.open_parenth == null ||
                     context.code.control_structure.close_parenth == null
                     )
                 {
-                    GenSyntaxError().MissingConditionalExpression(
-                        new LSLSourceCodeRange(context),
-                        LSLConditionalStatementType.ElseIf);
+                    errorLocation = new LSLSourceCodeRange(context);
                 }
                 else
                 {
-                    GenSyntaxError().MissingConditionalExpression(
+                    errorLocation =
                         new LSLSourceCodeRange(
                             context.code.control_structure.open_parenth,
-                            context.code.control_structure.close_parenth),
-                        LSLConditionalStatementType.ElseIf);
+                            context.code.control_structure.close_parenth);
                 }
+
+                GenSyntaxError().MissingConditionalExpression(errorLocation, LSLConditionalStatementType.ElseIf);
 
 
                 isError = true;
@@ -1025,7 +1027,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (!isError && expression.IsConstant)
                 {
                     GenSyntaxWarning().ConditionalExpressionIsConstant(
-                        new LSLSourceCodeRange(context.code.control_structure.condition),
+                        new LSLSourceCodeRange(context.else_keyword),
                         LSLConditionalStatementType.ElseIf);
                 }
             }
@@ -1119,19 +1121,24 @@ namespace LibLSLCC.CodeValidator.Visitor
                 //make a dummy expression value for the condition node, a constant integer literal
 
 
-                if (context.open_parenth == null || context.close_parenth == null)
+                LSLSourceCodeRange errorLocation;
+
+                if (
+                    context.code.control_structure.open_parenth == null ||
+                    context.code.control_structure.close_parenth == null
+                    )
                 {
-                    GenSyntaxError().MissingConditionalExpression(
-                        new LSLSourceCodeRange(context),
-                        LSLConditionalStatementType.If);
+                    errorLocation = new LSLSourceCodeRange(context);
                 }
                 else
                 {
-                    GenSyntaxError().MissingConditionalExpression(
-                        new LSLSourceCodeRange(context.open_parenth, context.close_parenth),
-                        LSLConditionalStatementType.If);
+                    errorLocation =
+                        new LSLSourceCodeRange(
+                            context.code.control_structure.open_parenth,
+                            context.code.control_structure.close_parenth);
                 }
 
+                GenSyntaxError().MissingConditionalExpression(errorLocation, LSLConditionalStatementType.If);
 
                 result.HasErrors = true;
 
@@ -1189,18 +1196,19 @@ namespace LibLSLCC.CodeValidator.Visitor
             };
 
 
-            if (context.else_statement == null)
+
+            //traverse down the right side of the syntax tree if needed
+
+            var elseStatement = context.else_statement;
+
+
+            if (elseStatement == null)
             {
                 ScopingManager.ExitControlStatement();
                 return ReturnFromVisit(context, result);
             }
 
-
-            //=============
-
-
-            var elseStatement = context.else_statement;
-
+            
             do
             {
                 if (elseStatement.code != null && elseStatement.code.control_structure != null)
@@ -1244,6 +1252,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                     elseStatement = null;
                 }
+
             } while (elseStatement != null);
 
 
@@ -1826,8 +1835,19 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             else
             {
-                GenSyntaxError().MissingConditionalExpression(new LSLSourceCodeRange(context),
-                    LSLConditionalStatementType.DoWhile);
+
+                LSLSourceCodeRange errorLocation;
+
+                if (context.open_parenth == null || context.close_parenth == null)
+                {
+                    errorLocation = new LSLSourceCodeRange(context);
+                }
+                else
+                {
+                    errorLocation = new LSLSourceCodeRange(context.open_parenth, context.close_parenth);
+                }
+
+                GenSyntaxError().MissingConditionalExpression(errorLocation, LSLConditionalStatementType.DoWhile);
 
                 //make a dummy expression, just treat it as a constant integer literal
                 //so return path verification can continue, and other error detections
@@ -1908,8 +1928,19 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             else
             {
-                GenSyntaxError().MissingConditionalExpression(new LSLSourceCodeRange(context),
-                    LSLConditionalStatementType.While);
+
+                LSLSourceCodeRange errorLocation;
+
+                if (context.open_parenth == null || context.close_parenth == null)
+                {
+                    errorLocation = new LSLSourceCodeRange(context);
+                }
+                else
+                {
+                    errorLocation = new LSLSourceCodeRange(context.open_parenth, context.close_parenth);
+                }
+
+                GenSyntaxError().MissingConditionalExpression(errorLocation, LSLConditionalStatementType.While);
 
                 //make a dummy expression, just treat it as a constant integer literal
                 //so return path verification can continue, and other error detections
