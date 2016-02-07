@@ -172,11 +172,9 @@ character that comes after the slash, as in Linden LSL.
 # (2/7/2016 4:26AM) Factor grammar to remove control statement ambiguity
 
 
-A problem with the parser grammer for control statements was causing
-large preformance issues when parsing long if-elseif-else chains, sometimes to 
-the point of putting the parser in an infinite loop.
+A problem with the parser grammar for control statements was causing large performance issues when parsing long
+if-elseif-else chains, sometimes to the point of putting the parser in an infinite loop.
 
-This has been fixed by simplifying the grammar and refactoring the code validator
-class and autocomplete parser.
+This has been fixed by simplifying the grammar and refactoring the code validator class and autocomplete parser.
 
 The abstracted tree LibLSLCC produces still retains the same structure.
