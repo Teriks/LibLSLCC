@@ -39,9 +39,10 @@
 // ============================================================
 // 
 // 
-#endregion
 
-//#define DEBUG_FASTPARSER
+//#define DEBUG_AUTOCOMPLETE_PARSER
+
+#endregion
 
 #region Imports
 
@@ -69,6 +70,7 @@ using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Settings;
 using LibLSLCC.Utility;
+using LSLCCEditor.Utility;
 using LSLCCEditor.Utility.Binding;
 using LSLCCEditor.Utility.Xml;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
@@ -84,7 +86,7 @@ namespace LSLCCEditor.EditControl
     /// </summary>
     public partial class LSLEditorControl : UserControl
     {
-#if DEBUG_FASTPARSER
+#if DEBUG_AUTOCOMPLETE_PARSER
         private readonly DebugObjectView _debugObjectView = new DebugObjectView();
 #endif
 
@@ -267,23 +269,24 @@ namespace LSLCCEditor.EditControl
         private readonly object _propertyChangingLock = new object();
 
 
-        private readonly HashSet<string> _eventIndentBreakCharacters = new HashSet<string>
+        private readonly HashSet<string> _eventIndentBreakTriggers = new HashSet<string>
         {
             "{",
             "}"
         };
 
-        private readonly HashSet<string> _controlStatementIndentBreakCharacters = new HashSet<string>
+        private readonly HashSet<string> _controlStatementIndentBreakTriggers = new HashSet<string>
         {
             ";",
             "{",
             "}"
         };
 
-        private readonly HashSet<string> _singleBlockControlStatementIndentBreakCharacters = new HashSet<string>
+        private readonly HashSet<string> _singleBlockControlStatementIndentBreakTriggers = new HashSet<string>
         {
-            "o", //after the o in 'do'
-            ")", //after the control statement condition
+            "do", 
+            "else", 
+            ")", //after a control statement condition
         };
 
         private readonly object _userChangingTextLock = new object();
@@ -433,7 +436,7 @@ namespace LSLCCEditor.EditControl
 
 
 
-#if DEBUG_FASTPARSER
+#if DEBUG_AUTOCOMPLETE_PARSER
             _debugObjectView.Show();
 #endif
         }
@@ -1050,7 +1053,7 @@ namespace LSLCCEditor.EditControl
                 var fastVarParser = new LSLAutoCompleteParser();
                 fastVarParser.Parse(new StringReader(Editor.Text), caretOffset-1);
 
-#if DEBUG_FASTPARSER
+#if DEBUG_AUTOCOMPLETE_PARSER
     _debugObjectView.ViewObject("", fastVarParser);
 #endif
 
@@ -1854,7 +1857,7 @@ namespace LSLCCEditor.EditControl
             data.ForceIndent = true;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -1931,7 +1934,7 @@ namespace LSLCCEditor.EditControl
             data.ForceIndent = true;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -1971,7 +1974,7 @@ namespace LSLCCEditor.EditControl
             data.ForceIndent = true;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2022,7 +2025,7 @@ namespace LSLCCEditor.EditControl
             data.ForceIndent = true;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2107,7 +2110,7 @@ namespace LSLCCEditor.EditControl
             data.ForceIndent = true;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2230,7 +2233,7 @@ namespace LSLCCEditor.EditControl
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             return data;
         }
@@ -2263,7 +2266,7 @@ namespace LSLCCEditor.EditControl
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             return data;
         }
@@ -2290,13 +2293,13 @@ namespace LSLCCEditor.EditControl
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
                 OffsetCaretAfterInsert = true,
-                CaretOffsetAfterInsert = -2,
+                CaretOffsetAfterInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? 1 : -2),
                 InsertTextAtCaretAfterOffset = false,
                 DescriptionFactory = () => CreateDescriptionTextBlock_DoStatement()
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             return data;
         }
@@ -2329,7 +2332,7 @@ namespace LSLCCEditor.EditControl
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             return data;
         }
@@ -2350,7 +2353,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData("else if", "else if()", 0)
             {
-                AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n}"),
+                AppendOnInsert =  "\n{\n}",
                 ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
@@ -2362,8 +2365,7 @@ namespace LSLCCEditor.EditControl
                 DescriptionFactory = () => CreateDescriptionTextBlock_ElseIfStatement()
             };
 
-            data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+            data.IndentBreakCharacters =  _controlStatementIndentBreakTriggers;
 
             return data;
         }
@@ -2386,7 +2388,7 @@ namespace LSLCCEditor.EditControl
         {
             var data = new LSLCompletionData("else", "else", 0)
             {
-                AppendOnInsert = (autoCompleteParser.InSingleStatementCodeScopeTopLevel ? "" : "\n{\n\t\n}"),
+                AppendOnInsert = "\n{\n\t\n}",
                 ColorBrush = Theme.CompletionWindowItemBrushes.ControlStatementBrush,
                 ForceIndent = true,
                 IndentLevel = scopeLevel,
@@ -2397,8 +2399,7 @@ namespace LSLCCEditor.EditControl
                 DescriptionFactory = () => CreateDescriptionTextBlock_ElseStatement()
             };
 
-            data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+            data.IndentBreakCharacters =  _controlStatementIndentBreakTriggers;
 
             return data;
         }
@@ -2435,7 +2436,7 @@ namespace LSLCCEditor.EditControl
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                    _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                    _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.ForceIndent = true;
 
@@ -2472,7 +2473,7 @@ namespace LSLCCEditor.EditControl
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                 _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                 _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.ForceIndent = true;
 
@@ -2509,7 +2510,7 @@ namespace LSLCCEditor.EditControl
             if (!autoCompleteParser.InSingleStatementCodeScopeTopLevel) return data;
 
             data.IndentBreakCharacters = autoCompleteParser.InSingleStatementCodeScopeTopLevel ?
-                _singleBlockControlStatementIndentBreakCharacters : _controlStatementIndentBreakCharacters;
+                _singleBlockControlStatementIndentBreakTriggers : _controlStatementIndentBreakTriggers;
 
             data.ForceIndent = true;
 
@@ -2597,7 +2598,7 @@ namespace LSLCCEditor.EditControl
                 OffsetCaretAfterInsert = true,
                 CaretOffsetAfterInsert = eventHandler.Name.Length + parameters.Length + 4,
                 InsertTextAtCaretAfterOffset = true,
-                IndentBreakCharacters = _eventIndentBreakCharacters,
+                IndentBreakCharacters = _eventIndentBreakTriggers,
                 DescriptionFactory = () => CreateDescriptionTextBlock_EventHandler(eventHandler)
             };
 
