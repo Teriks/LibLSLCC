@@ -452,11 +452,11 @@ namespace lslcc
             Console.WriteLine();
             Console.WriteLine("Compile Date: " + RetrieveLinkerTimestamp());
 #if DEBUG
-            Console.WriteLine("Build Type: DEBUG");
+            Console.WriteLine("Build Type: Debug");
 #else
             Console.WriteLine("Build Type: Release");
 #endif
-            Console.WriteLine("Version: 0.1.0");
+            Console.WriteLine("Version: 1.0.0");
             Console.WriteLine("=================================");
         }
 
