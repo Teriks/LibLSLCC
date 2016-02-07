@@ -969,7 +969,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             if (context.code.control_structure.condition == null)
             {
-                //creating a valid if statement node even if the condition is null
+                //creating a valid else if statement node even if the condition is null
                 //allows return path verification to continue, also various other error checks
                 //make a dummy expression value for the condition node, a constant integer literal
 
