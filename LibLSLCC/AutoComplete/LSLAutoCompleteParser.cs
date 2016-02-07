@@ -1044,48 +1044,10 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-            /*public override bool VisitIfStatement(LSLParser.IfStatementContext context)
-            {
-                if (context.Start.StartIndex >= _parent._toOffset) return true;
 
 
-                if (context.open_parenth != null)
-                {
-                    if (context.open_parenth.Text == "(" && context.open_parenth.StartIndex <= _parent._toOffset)
-                    {
-                        _parent.InIfConditionExpression = true;
-                    }
-                }
 
-                if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
-                    _parent._toOffset >= context.close_parenth.StartIndex)
-                {
-                    if (context.close_parenth.StartIndex != context.open_parenth.StartIndex)
-                    {
-                        _parent._nestableExpressionElementStack.Clear();
-                        _parent.InIfConditionExpression = false;
-
-
-                        if (context.code != null && context.code.code != null &&
-                            context.code.code.open_brace.Text == "{")
-                        {
-                            _parent.InSingleStatementCodeScopeTopLevel = false;
-                        }
-                        else
-                        {
-                            EnterSingleStatementCodeScope();
-                        }
-                    }
-                }
-
-
-                _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
-
-                return base.VisitIfStatement(context);
-            }*/
-
-
-            public bool VisitElseIfStatement(LSLParser.ControlStructureContext context)
+            private bool VisitElseIfStatement(LSLParser.ControlStructureContext context)
             {
                 if (context.Start.StartIndex >= _parent._toOffset) return true;
 
@@ -1119,17 +1081,15 @@ namespace LibLSLCC.AutoComplete
 
                 _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
 
-                if (!(context.condition == null || context.condition.Start.StartIndex >= _parent._toOffset))
+                if (context.condition != null)
                 {
                     Visit(context.condition);
                 }
-
-                if (!(context.code == null || context.code.Start.StartIndex >= _parent._toOffset))
+                if (context.code != null)
                 {
                     Visit(context.code);
                 }
-
-                if (!(context.else_statement == null || context.else_statement.Start.StartIndex >= _parent._toOffset))
+                if (context.else_statement != null)
                 {
                     Visit(context.else_statement);
                 }
@@ -1162,6 +1122,50 @@ namespace LibLSLCC.AutoComplete
                 _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = false;
 
                 return base.VisitElseStatement(context);
+            }
+
+
+
+            public override bool VisitControlStructure(LSLParser.ControlStructureContext context)
+            {
+                if (context.Start.StartIndex >= _parent._toOffset) return true;
+
+
+                if (context.open_parenth != null)
+                {
+                    if (context.open_parenth.Text == "(" && context.open_parenth.StartIndex <= _parent._toOffset)
+                    {
+                        _parent.InIfConditionExpression = true;
+                    }
+                }
+
+                if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
+                    _parent._toOffset >= context.close_parenth.StartIndex)
+                {
+                    if (context.close_parenth.StartIndex != context.open_parenth.StartIndex)
+                    {
+                        _parent._nestableExpressionElementStack.Clear();
+                        _parent.InIfConditionExpression = false;
+
+
+                        if (context.code != null && context.code.code_scope != null &&
+                            context.code.code_scope.open_brace.Text == "{")
+                        {
+                            _parent.InSingleStatementCodeScopeTopLevel = false;
+                        }
+                        else
+                        {
+                            EnterSingleStatementCodeScope();
+                        }
+                    }
+                }
+
+
+                _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
+
+                base.VisitControlStructure(context);
+
+                return true;
             }
 
 
@@ -1331,47 +1335,6 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-            public override bool VisitControlStructure(LSLParser.ControlStructureContext context)
-            {
-                if (context.Start.StartIndex >= _parent._toOffset) return true;
-
-
-                if (context.open_parenth != null)
-                {
-                    if (context.open_parenth.Text == "(" && context.open_parenth.StartIndex <= _parent._toOffset)
-                    {
-                        _parent.InIfConditionExpression = true;
-                    }
-                }
-
-                if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
-                    _parent._toOffset >= context.close_parenth.StartIndex)
-                {
-                    if (context.close_parenth.StartIndex != context.open_parenth.StartIndex)
-                    {
-                        _parent._nestableExpressionElementStack.Clear();
-                        _parent.InIfConditionExpression = false;
-
-
-                        if (context.code != null && context.code.code_scope != null &&
-                            context.code.code_scope.open_brace.Text == "{")
-                        {
-                            _parent.InSingleStatementCodeScopeTopLevel = false;
-                        }
-                        else
-                        {
-                            EnterSingleStatementCodeScope();
-                        }
-                    }
-                }
-
-
-                _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
-
-                base.VisitControlStructure(context);
-
-                return true;
-            }
 
 
             public override bool VisitExpr_FunctionCall(LSLParser.Expr_FunctionCallContext context)
