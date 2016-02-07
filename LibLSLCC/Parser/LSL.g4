@@ -530,3 +530,5 @@ LineComment
 					});
 				} -> channel(HIDDEN)
 ;
+
+ErrorChar: . ;

@@ -115,17 +115,21 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         public ILSLSyntaxWarningListener SyntaxWarningListener { get; private set; }
 
+
         /// <summary>
         /// A parsing error at the grammar level has occurred somewhere in the source code.
         /// </summary>
         /// <param name="line">The line on which the error occurred.</param>
         /// <param name="column">The character column at which the error occurred.</param>
+        /// <param name="offendingTokenText">The text representing the offending token.</param>
         /// <param name="message">The parsing error messaged passed along from the parsing back end.</param>
-        void ILSLSyntaxErrorListener.GrammarLevelSyntaxError(int line, int column, string message)
+        /// <param name="offendingTokenRange">The source code range of the offending symbol.</param>
+        void ILSLSyntaxErrorListener.GrammarLevelParserSyntaxError(int line, int column, LSLSourceCodeRange offendingTokenRange, string offendingTokenText, string message)
         {
             _errorActionQueue.Enqueue(line,
-                () => SyntaxErrorListener.GrammarLevelSyntaxError(line, column, message));
+                () => SyntaxErrorListener.GrammarLevelParserSyntaxError(line, column, offendingTokenRange, offendingTokenText, message));
         }
+
 
         /// <summary>
         /// A reference to an undefined variable was encountered.
@@ -818,6 +822,14 @@ namespace LibLSLCC.CodeValidator.Components
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.CastExpressionUsedInStaticContext(location));
         }
+
+
+        void ILSLSyntaxErrorListener.AssignmentToUnassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed)
+        {
+            _errorActionQueue.Enqueue(location.StartIndex,
+                () => SyntaxErrorListener.AssignmentToUnassignableExpression(location, assignmentOperatorUsed));
+        }
+
 
         void ILSLSyntaxErrorListener.PostfixOperationOnNonVariable(LSLSourceCodeRange location, LSLPostfixOperationType type)
         {

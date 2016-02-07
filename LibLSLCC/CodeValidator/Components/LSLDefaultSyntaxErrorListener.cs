@@ -65,11 +65,14 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="line">The line on which the error occurred.</param>
         /// <param name="column">The character column at which the error occurred.</param>
+        /// <param name="offendingTokenText">The text representing the offending token.</param>
         /// <param name="message">The parsing error messaged passed along from the parsing back end.</param>
-        public virtual void GrammarLevelSyntaxError(int line, int column, string message)
+        /// <param name="offendingTokenRange">The source code range of the offending symbol.</param>
+        public virtual void GrammarLevelParserSyntaxError(int line, int column, LSLSourceCodeRange offendingTokenRange, string offendingTokenText, string message)
         {
-            OnError(new LSLSourceCodeRange(line, column), message);
+            OnError(offendingTokenRange.Clone(), message);
         }
+
 
         /// <summary>
         /// A reference to an undefined variable was encountered.
@@ -912,6 +915,21 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void CastExpressionUsedInStaticContext(LSLSourceCodeRange location)
         {
             OnError(location, "Cast expressions cannot be used in a static context.");
+        }
+
+
+        /// <summary>
+        /// Occurs with an expression that is left of an assignment type operator is not assignable.
+        /// This includes compound assignment operators such as: +=
+        /// 
+        /// This error occurs only for left expressions that are not library constants.
+        /// There is a separate error for library constants, see <see cref="ILSLSyntaxErrorListener.ModifiedLibraryConstant"/>.
+        /// </summary>
+        /// <param name="location">The source code range of the assignment operator used.</param>
+        /// <param name="assignmentOperatorUsed">The assignment operator used.</param>
+        public void AssignmentToUnassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed)
+        {
+            OnError(location, "Expression left of assignment operator '"+assignmentOperatorUsed+"' is not assignable.");
         }
 
 

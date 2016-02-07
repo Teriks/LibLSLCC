@@ -63,8 +63,10 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="line">The line on which the error occurred.</param>
         /// <param name="column">The character column at which the error occurred.</param>
+        /// <param name="offendingTokenText">The text representing the offending token.</param>
         /// <param name="message">The parsing error messaged passed along from the parsing back end.</param>
-        void GrammarLevelSyntaxError(int line, int column, string message);
+        /// <param name="offendingTokenRange">The source code range of the offending symbol.</param>
+        void GrammarLevelParserSyntaxError(int line, int column, LSLSourceCodeRange offendingTokenRange, string offendingTokenText, string message);
 
 
         /// <summary>
@@ -559,5 +561,16 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="location">The location of the error.</param>
         void CastExpressionUsedInStaticContext(LSLSourceCodeRange location);
+
+        /// <summary>
+        /// Occurs with an expression that is left of an assignment type operator is not assignable.
+        /// This includes compound assignment operators such as: +=
+        /// 
+        /// This error occurs only for left expressions that are not library constants.
+        /// There is a separate error for library constants, see <see cref="ModifiedLibraryConstant"/>.
+        /// </summary>
+        /// <param name="location">The source code range of the assignment operator used.</param>
+        /// <param name="assignmentOperatorUsed">The assignment operator used.</param>
+        void AssignmentToUnassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed);
     }
 }

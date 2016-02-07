@@ -51,6 +51,7 @@
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
     <Compile Include="CodeValidator\Components\LSLValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
+    <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Collections\CloneableExtensions.cs" />
@@ -126,7 +127,6 @@
     <Compile Include="CodeValidator\Primitives\LSLInvalidSymbolNameException.cs" />
     <Compile Include="LibraryData\LSLMissingSubsetDescriptionException.cs" />
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
-    <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="LibraryData\LSLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureMatcher.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\LSLExprNodeInterfaceExtensions.cs" />

@@ -57,6 +57,7 @@ Whitespace=56
 Newline=57
 BlockComment=58
 LineComment=59
+ErrorChar=60
 'do'=2
 'if'=3
 'else'=4

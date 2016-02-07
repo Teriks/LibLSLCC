@@ -43,7 +43,8 @@ public partial class LSLParser : Parser {
 		DIV_EQUAL=38, MOD_EQUAL=39, COMMA=40, O_PAREN=41, C_PAREN=42, O_BRACE=43, 
 		C_BRACE=44, O_BRACKET=45, C_BRACKET=46, LABEL_PREFIX=47, BITWISE_OR=48, 
 		BITWISE_AND=49, BITWISE_NOT=50, BITWISE_XOR=51, LOGICAL_NOT=52, LOGICAL_AND=53, 
-		LOGICAL_OR=54, DOT=55, Whitespace=56, Newline=57, BlockComment=58, LineComment=59;
+		LOGICAL_OR=54, DOT=55, Whitespace=56, Newline=57, BlockComment=58, LineComment=59, 
+		ErrorChar=60;
 	public const int
 		RULE_vectorLiteral = 0, RULE_rotationLiteral = 1, RULE_functionDeclaration = 2, 
 		RULE_elseStatement = 3, RULE_controlStructure = 4, RULE_codeScope = 5, 
@@ -85,7 +86,8 @@ public partial class LSLParser : Parser {
 		"MUL_EQUAL", "DIV_EQUAL", "MOD_EQUAL", "COMMA", "O_PAREN", "C_PAREN", 
 		"O_BRACE", "C_BRACE", "O_BRACKET", "C_BRACKET", "LABEL_PREFIX", "BITWISE_OR", 
 		"BITWISE_AND", "BITWISE_NOT", "BITWISE_XOR", "LOGICAL_NOT", "LOGICAL_AND", 
-		"LOGICAL_OR", "DOT", "Whitespace", "Newline", "BlockComment", "LineComment"
+		"LOGICAL_OR", "DOT", "Whitespace", "Newline", "BlockComment", "LineComment", 
+		"ErrorChar"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -3087,7 +3089,7 @@ public partial class LSLParser : Parser {
 	private static string _serializeATN()
 	{
 	    StringBuilder sb = new StringBuilder();
-	    sb.Append("\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3=\x16A");
+	    sb.Append("\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3>\x16A");
 		sb.Append("\x4\x2\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a");
 		sb.Append("\t\a\x4\b\t\b\x4\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4");
 		sb.Append("\xE\t\xE\x4\xF\t\xF\x4\x10\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4");
