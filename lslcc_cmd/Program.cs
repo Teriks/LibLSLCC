@@ -461,8 +461,9 @@ namespace lslcc
                         break;
                     }
 
-                    foreach (var file in Glob.Glob.Expand(fileArg))
+                    foreach (var file in Glob.Glob.Expand(fileArg).Where(x=>x.Attributes != FileAttributes.Directory))
                     {
+
                         bool specifiedAlready = options.InFiles.Contains(file.FullName);
 
                         if (specifiedAlready)
