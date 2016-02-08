@@ -762,6 +762,13 @@ namespace lslcc
                         {
                             try
                             {
+                                var dir = Path.GetDirectoryName(logFileName);
+
+                                if (!string.IsNullOrWhiteSpace(dir))
+                                {
+                                    Directory.CreateDirectory(dir);
+                                }
+
                                 log = new StreamWriter(logFileName) {AutoFlush = true};
                             }
                             catch (Exception e)
@@ -1019,6 +1026,14 @@ namespace lslcc
 
             try
             {
+
+                var dir = Path.GetDirectoryName(outFile);
+
+                if (!string.IsNullOrWhiteSpace(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
                 using (var outfile = File.Create(outFile))
                 {
                     var compiler = new LSLOpenSimCompiler(defaultProvider, compilerSettings);
