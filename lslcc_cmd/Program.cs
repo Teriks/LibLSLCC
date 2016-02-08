@@ -350,24 +350,8 @@ namespace lslcc
 
         private static void WriteCompilerMessage(TextWriter log, string format, params object[] args)
         {
-            if (log != null)
-            {
-                try
-                {
-                    if (args.Length == 0)
-                    {
-                        log.WriteLine(format);
-                    }
-                    else
-                    {
-                        log.WriteLine(format, args);
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw new LogWriteException(e.Message, e);
-                }
-            }
+            
+            WriteCompilerMessageLogOnly(log, format, args);
 
             if (args.Length == 0)
             {
@@ -376,6 +360,43 @@ namespace lslcc
             else
             {
                 Console.WriteLine(format, args);
+            }
+        }
+
+
+        private static void WriteCompilerMessageLogOnly(TextWriter log, string format, params object[] args)
+        {
+            if (log == null) return;
+
+            try
+            {
+                if (args.Length == 0)
+                {
+                    log.WriteLine(format);
+                }
+                else
+                {
+                    log.WriteLine(format, args);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new LogWriteException(e.Message, e);
+            }
+        }
+
+
+        private static void WriteCompilerMessageLogOnly(TextWriter log)
+        {
+            if (log == null) return;
+
+            try
+            {
+                log.WriteLine();
+            }
+            catch (Exception e)
+            {
+                throw new LogWriteException(e.Message, e);
             }
         }
 
@@ -752,6 +773,8 @@ namespace lslcc
 
             try
             {
+                bool firstFile = true;
+
                 foreach (var inFile in options.InFiles)
                 {
                     if (options.LogFile != null)
@@ -785,10 +808,24 @@ namespace lslcc
 
                     try
                     {
-                        WriteCompilerMessage(log);
+                        if (options.InFiles.Count > 1)
+                        {
+                            const string sep = "____________________________________";
+
+                            Console.WriteLine(Environment.NewLine + sep);
+                            if(!multipleLogs) WriteCompilerMessageLogOnly(log, (firstFile ? "" : Environment.NewLine) + sep);
+                            Console.WriteLine(sep);
+                            if(!multipleLogs) WriteCompilerMessageLogOnly(log, sep);
+                            if(!multipleLogs) WriteCompilerMessageLogOnly(log);
+                        }
+
+                        Console.WriteLine();
+
                         WriteCompilerMessage(log, "Compiling \"" + inFile + "\"...");
 
                         lastReturnCode = CompileFile(log, options, inFile);
+
+                        
                     }
                     catch (LogWriteException e)
                     {
@@ -822,6 +859,8 @@ namespace lslcc
                                 }
                             }
                         }
+
+                        firstFile = false;
                     }
                 }
             }
