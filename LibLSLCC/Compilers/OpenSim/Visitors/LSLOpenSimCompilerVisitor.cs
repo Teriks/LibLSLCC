@@ -763,7 +763,14 @@ private static class UTILITIES
         public override bool VisitFloatLiteral(ILSLFloatLiteralNode node)
         {
             bool parentIsFunctionCall = false;
+
+
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
+
+
+            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
+
+
             ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
@@ -784,7 +791,8 @@ private static class UTILITIES
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
-            var box = !parentIsFunctionCall || inModInvokeTopLevel;
+            //floats in binary expressions always go into stub function
+            var box = !(parentIsFunctionCall || parentIsBinaryExpression) || inModInvokeTopLevel;
 
 
             if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
@@ -823,7 +831,11 @@ private static class UTILITIES
         public override bool VisitIntegerLiteral(ILSLIntegerLiteralNode node)
         {
             bool parentIsFunctionCall = false;
+
+            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
+
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
+
             ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
@@ -844,7 +856,8 @@ private static class UTILITIES
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
-            var box = !parentIsFunctionCall || inModInvokeTopLevel;
+            //integers in binary expressions always go into a stub function
+            var box = !(parentIsFunctionCall || parentIsBinaryExpression) || inModInvokeTopLevel;
 
 
             if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
@@ -857,7 +870,19 @@ private static class UTILITIES
                 Writer.Write("new LSL_Types.LSLInteger(");
             }
 
-            Writer.Write(node.RawText);
+            string value = node.RawText;
+            try
+            {
+                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+                Convert.ToInt32(value, 16);
+            }
+            catch (OverflowException)
+            {
+                //yup
+                value = "-1";
+            }
+
+            Writer.Write(value);
 
             if (box)
             {
@@ -870,11 +895,34 @@ private static class UTILITIES
 
         public override bool VisitHexLiteral(ILSLHexLiteralNode node)
         {
-            Writer.Write("new LSL_Types.LSLInteger(");
+            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
 
-            Writer.Write(node.RawText);
+            //if the parent is a binary expression, the conversion will happen automagically because
+            //the hex literal becomes the argument of a stub function
 
-            Writer.Write(")");
+            if (!parentIsBinaryExpression)
+            {
+                Writer.Write("new LSL_Types.LSLInteger(");
+            }
+
+            string value = node.RawText;
+            try
+            {
+                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+                Convert.ToInt32(value, 16);
+            }
+            catch (OverflowException)
+            {
+                //yup again
+                value = "-1";
+            }
+
+            Writer.Write(value);
+
+            if (!parentIsBinaryExpression)
+            {
+                Writer.Write(")");
+            }
 
             return false;
         }
@@ -916,7 +964,13 @@ private static class UTILITIES
         public override bool VisitStringLiteral(ILSLStringLiteralNode node)
         {
             bool parentIsFunctionCall = false;
+
+
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
+
+            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
+
+
             ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
@@ -937,7 +991,8 @@ private static class UTILITIES
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
-            var box = !parentIsFunctionCall || inModInvokeTopLevel;
+            //strings in binary expressions always go into a stub function
+            var box = !(parentIsFunctionCall || parentIsBinaryExpression) || inModInvokeTopLevel;
 
 
             if (box)
