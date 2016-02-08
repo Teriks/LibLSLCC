@@ -227,6 +227,8 @@ lib_licence = os.path.join(libraryPath, 'bin', 'LICENSE')
 
 lslcc_anyCpu = os.path.join(lslccPath, 'bin', 'AnyCPU')
 
+lslcc_thirdparty_licenses = os.path.join(lslccPath, 'bin', 'ThirdPartyLicenses')
+
 if not os.path.isdir(outputDir):
     os.mkdir(outputDir)
 
@@ -272,6 +274,8 @@ with zipfile.ZipFile(binariesZip, 'w') as zip_file:
         zip_dir_relative(os.path.join(lib_anyCpu, "Debug"), zip_file, archDirTransform=remove_second_folder_down)
 
     zip_dir_relative(lib_thirdparty_licenses, zip_file, archDirTransform=remove_second_folder_down)
+
+    zip_dir_relative(lslcc_thirdparty_licenses, zip_file, archDirTransform=remove_second_folder_down)
 
     lslccArchDir = os.path.basename(lslccPath)
 
