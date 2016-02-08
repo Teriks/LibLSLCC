@@ -178,3 +178,25 @@ if-elseif-else chains, sometimes to the point of putting the parser in an infini
 This has been fixed by simplifying the grammar and refactoring the code validator class and autocomplete parser.
 
 The abstracted tree LibLSLCC produces still retains the same structure.
+
+
+========
+
+
+# (2/8/2016) Add built in input file globbing to lslcc_cmd
+
+Added built in file globbing and the ability to specify
+multiple input files or glob expressions at a time.
+
+Also added output file name templating and options
+for loging to a single file, or multiple files for each
+input file.
+
+see lslcc.exe -h for details
+
+==
+
+This commit also fixes an issue with LSLCCEditors application
+settings.  Carriage return sequences in xml node content were being
+converted into newlines upon saving the settings file, this no
+longer happens.
