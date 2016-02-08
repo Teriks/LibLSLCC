@@ -206,3 +206,6 @@ converted into plain newlines upon saving the settings file.
 
 This no longer happens as carriage returns are now turned into
 XML entities by the settings serializer when settings are persisted.
+
+The application settings fix really only affected how script headers
+under the compiler settings menu were formatted in generated code.
