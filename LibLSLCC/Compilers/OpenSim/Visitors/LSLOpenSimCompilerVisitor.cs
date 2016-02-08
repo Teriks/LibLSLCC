@@ -832,7 +832,12 @@ private static class UTILITIES
         {
             bool parentIsFunctionCall = false;
 
-            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
+            var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
+
+            bool parentIsNonLogicBinaryOperation =
+                !(parentAsBinaryExpression != null &&
+                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
@@ -856,8 +861,12 @@ private static class UTILITIES
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
-            //integers in binary expressions always go into a stub function
-            var box = !(parentIsFunctionCall || parentIsBinaryExpression) || inModInvokeTopLevel;
+            //If the parent is a binary expression, the conversion will happen automagically because
+            //the integer literal becomes the argument of a stub function
+
+            //Except if the parent is a logical operator, in which case a stub is not used.
+            //so it needs to be boxed.
+            var box = !(parentIsFunctionCall || parentIsNonLogicBinaryOperation) || inModInvokeTopLevel;
 
 
             if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
@@ -895,12 +904,19 @@ private static class UTILITIES
 
         public override bool VisitHexLiteral(ILSLHexLiteralNode node)
         {
-            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
+            var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
 
-            //if the parent is a binary expression, the conversion will happen automagically because
+            bool parentIsNonLogicBinaryOperation =
+                !(parentAsBinaryExpression != null &&
+                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+
+            //If the parent is a binary expression, the conversion will happen automagically because
             //the hex literal becomes the argument of a stub function
 
-            if (!parentIsBinaryExpression)
+            //Except if the parent is a logical operator, in which case a stub is not used.
+            //so it needs to be boxed.
+            if (!parentIsNonLogicBinaryOperation)
             {
                 Writer.Write("new LSL_Types.LSLInteger(");
             }
@@ -919,7 +935,7 @@ private static class UTILITIES
 
             Writer.Write(value);
 
-            if (!parentIsBinaryExpression)
+            if (!parentIsNonLogicBinaryOperation)
             {
                 Writer.Write(")");
             }
@@ -968,7 +984,15 @@ private static class UTILITIES
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
-            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
+            var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
+
+            //Strings cannot be used with logical operators, but the same check is made here.
+            //its so that if the binary operation validator implementation is changed to allow it,
+            //than we will still be generating correct code.
+            bool parentIsNonLogicBinaryOperation =
+                !(parentAsBinaryExpression != null &&
+                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
 
 
             ILSLFunctionCallNode parentFunctionCallNode = null;
@@ -991,8 +1015,11 @@ private static class UTILITIES
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
-            //strings in binary expressions always go into a stub function
-            var box = !(parentIsFunctionCall || parentIsBinaryExpression) || inModInvokeTopLevel;
+            //If the parent is a binary expression, the conversion will happen automagically because
+            //the string literal becomes the argument of a stub function
+
+            //Except if the parent is a logical operator, in which case a stub is not used.
+            var box = !(parentIsFunctionCall || parentIsNonLogicBinaryOperation) || inModInvokeTopLevel;
 
 
             if (box)
