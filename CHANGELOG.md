@@ -183,14 +183,13 @@ The abstracted tree LibLSLCC produces still retains the same structure.
 ========
 
 
-# (2/8/2016 2:58AM) Add built in input file globbing to lslcc_cmd
+# (2/8/2016 2:58AM) Added built in input file globbing to lslcc_cmd
 
 Added built in file globbing and the ability to specify
-multiple input files or glob expressions at a time when
-invoking lslcc.exe.
+multiple input files or glob expressions at once when invoking lslcc.exe.
 
-Output file name templating, and a -log option for loging
-to a single file or multiple files has also been added.
+Output file name templating, along with the capability to log
+to a single file or multiple files (one per input file) has been added.
 
 See lslcc.exe -h for details on how to use these.
 
@@ -204,7 +203,7 @@ Also fixed an issue with LSLCCEditor's application settings.
 Carriage return sequences in XML text content were being
 converted into plain newlines upon saving the settings file.
 
-This no longer happens as carriage returns are now turned into
+This no longer happens, as carriage returns are now turned into
 XML entities by the settings serializer when settings are persisted.
 
 The application settings fix really only affected how script headers
