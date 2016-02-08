@@ -767,8 +767,16 @@ private static class UTILITIES
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
+            var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
 
-            bool parentIsBinaryExpression = node.Parent is ILSLBinaryExpressionNode;
+
+            //Floats cannot be used with logical operators, but the same check is made here.
+            //This is here so that, if the binary operation validator is changed to allow it;
+            //than we will still be generating correct code.
+            bool parentIsNonLogicBinaryOperation =
+                !(parentAsBinaryExpression != null &&
+                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
 
 
             ILSLFunctionCallNode parentFunctionCallNode = null;
@@ -791,8 +799,12 @@ private static class UTILITIES
                 inModInvokeTopLevel = libDataNode.ModInvoke;
             }
 
-            //floats in binary expressions always go into stub function
-            var box = !(parentIsFunctionCall || parentIsBinaryExpression) || inModInvokeTopLevel;
+            //If the parent is a binary expression, the conversion will happen automagically because
+            //the float literal becomes the argument of a stub function
+
+            //Except if the parent is a logical operator, in which case a stub is not used.
+            //so it needs to be boxed.
+            var box = !(parentIsFunctionCall || parentIsNonLogicBinaryOperation) || inModInvokeTopLevel;
 
 
             if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
@@ -987,7 +999,7 @@ private static class UTILITIES
             var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
 
             //Strings cannot be used with logical operators, but the same check is made here.
-            //its so that if the binary operation validator implementation is changed to allow it,
+            //This is here so that, if the binary operation validator is changed to allow it;
             //than we will still be generating correct code.
             bool parentIsNonLogicBinaryOperation =
                 !(parentAsBinaryExpression != null &&
