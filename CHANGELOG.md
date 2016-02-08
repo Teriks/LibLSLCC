@@ -188,15 +188,20 @@ The abstracted tree LibLSLCC produces still retains the same structure.
 Added built in file globbing and the ability to specify
 multiple input files or glob expressions at a time.
 
-Also added output file name templating and options
-for loging to a single file, or multiple files for each
-input file.
+Output file name templating, and a -log option for loging
+to a single file or multiple files has also been added.
 
-see lslcc.exe -h for details
+See lslcc.exe -h for details on how to use these.
+
+This was added mostly for running the compiler over a ton of
+files at once for testing purposes.
 
 ==
 
-This commit also fixes an issue with LSLCCEditors application
-settings.  Carriage return sequences in xml node content were being
-converted into newlines upon saving the settings file, this no
-longer happens.
+Also fixed an issue with LSLCCEditor's application settings.
+
+Carriage return sequences in XML text content were being
+converted into plain newlines upon saving the settings file.
+
+This no longer happens as carriage returns are now turned into
+XML entities by the settings serializer when settings are persisted.
