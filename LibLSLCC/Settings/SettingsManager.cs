@@ -45,6 +45,7 @@
 
 using System;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace LibLSLCC.Settings
@@ -89,10 +90,13 @@ namespace LibLSLCC.Settings
         {
             var serializer = new XmlSerializer(typeof (T));
 
-            using (var reader = new StreamWriter(File.Create(file)))
+            XmlWriterSettings writerSettings = new XmlWriterSettings();
+            writerSettings.NewLineHandling = NewLineHandling.Entitize;
+
+            using(var stream = File.Create(file))
+            using (var writer = XmlWriter.Create(stream, writerSettings))
             {
-                reader.AutoFlush = true;
-                serializer.Serialize(reader, Settings);
+                serializer.Serialize(writer, Settings);
             }
         }
 

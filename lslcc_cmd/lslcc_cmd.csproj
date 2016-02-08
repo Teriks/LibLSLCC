@@ -39,11 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentParser.cs" />
+    <Compile Include="Glob.cs" />
+    <Compile Include="HandleSwitchResult.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReturnCode.cs" />
+    <Compile Include="ReturnCodeHelp.cs" />
+    <Compile Include="SwitchResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibLSLCC\LibLSLCC.csproj">
@@ -51,12 +59,17 @@
       <Name>LibLSLCC</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Glob.cs.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
+  
   </Target>
   -->
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="@(ThirdPartyLicenses)" DestinationFolder="bin\ThirdPartyLicenses" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

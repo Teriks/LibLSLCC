@@ -1473,7 +1473,7 @@ private static class UTILITIES
 
             if (!string.IsNullOrWhiteSpace(Settings.ScriptHeader))
             {
-                Writer.WriteLine(Settings.ScriptHeader.Replace("\n", Environment.NewLine));
+                Writer.WriteLine(Settings.ScriptHeader);
                 Writer.Write(Environment.NewLine);
             }
 

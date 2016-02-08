@@ -454,22 +454,24 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public void Reset()
         {
+            
             CurrentEventHandlerSignature = null;
             CurrentEventHandlerContext = null;
             CurrentFunctionBodySignature = null;
             CurrentFunctionContext = null;
 
+            CurrentScopeId = 0;
+
+            _scopeVariables.Clear();
+            _controlStatementStack.Clear();
+            _definedStates.Clear();
             _functionDefinitions.Clear();
             _globalVariables.Clear();
-            _definedStates.Clear();
+            _labelScopes.Clear();
             _parameterScopeVariables.Clear();
             _scopeStack.Clear();
             _scopeTypeStack.Clear();
-            _scopeVariables.Clear();
             _singleBlockStatementTrackingStack.Clear();
-            _controlStatementStack.Clear();
-
-            CurrentScopeId = 0;
         }
 
         public void PreDefineState(string name)

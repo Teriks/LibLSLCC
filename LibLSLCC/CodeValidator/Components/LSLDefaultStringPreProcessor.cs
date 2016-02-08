@@ -57,8 +57,6 @@ namespace LibLSLCC.CodeValidator.Components
     public class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
     {
 
-        private readonly List<LSLStringCharacterError> _invalidEscapeCodes = new List<LSLStringCharacterError>();
-
         /// <summary>
         /// Construct the default implementation of <see cref="ILSLStringPreProcessor"/>
         /// </summary>
@@ -79,7 +77,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         public IEnumerable<LSLStringCharacterError> InvalidEscapeCodes
         {
-            get { return _invalidEscapeCodes; }
+            get { return new List<LSLStringCharacterError>(); }
         }
 
         /// <summary>
@@ -125,7 +123,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         public void Reset()
         {
-            _invalidEscapeCodes.Clear();
+            //_invalidEscapeCodes.Clear();
             //_illegalCharacters.Clear();
             HasErrors = false;
             Result = "";
