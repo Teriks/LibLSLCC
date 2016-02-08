@@ -183,7 +183,7 @@ The abstracted tree LibLSLCC produces still retains the same structure.
 ========
 
 
-# (2/8/2016) Add built in input file globbing to lslcc_cmd
+# (2/8/2016 2:58AM) Add built in input file globbing to lslcc_cmd
 
 Added built in file globbing and the ability to specify
 multiple input files or glob expressions at a time.
