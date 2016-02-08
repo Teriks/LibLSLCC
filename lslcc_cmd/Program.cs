@@ -910,7 +910,7 @@ namespace lslcc
 
             try
             {
-                using (var infile = new StreamReader(options.InFiles.First()))
+                using (var infile = new StreamReader(inFile))
                 {
                     validated = validator.Validate(infile);
 
