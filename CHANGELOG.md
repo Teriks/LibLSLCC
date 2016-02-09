@@ -1,6 +1,6 @@
 # (1/26/2016 ...) Event handler cleanup / URL colors
 
-Cleaned up event handler parameter names so that they formatted more traditionally when generating handlers using autocomplete.
+Cleaned up event handler parameter names so that they formatted more traditionally when generating handlers using auto complete.
 
 They were previously capitalized due to the source the library data was scraped from.
 
@@ -208,3 +208,31 @@ XML entities by the settings serializer when settings are persisted.
 
 The application settings fix really only affected how script headers
 under the compiler settings menu were formatted in generated code.
+
+
+# (2/9/2016 4:38AM) Re-Implement internal LSLLabelCollectorPrePass
+
+This class was not fixed properly after large changes to the ANTLR grammar.
+
+I left it in a state that was breaking return path analysis pretty badly.  oops.
+
+I commented out the visit hooks that were removed by the grammar changes and then forgot to fix it.
+
+Return path analysis for jumps and labels was broken because this pre-pass visitor 
+was not defining proper statement indices and code scope ID's for labels used inside of 
+events and functions.
+
+
+# Fixed code generation for integer/hex literals that overflow/underflow LSL's integer type
+
+Fixed an issue with the code generation behavior for integer/hex literals that are too
+large/small to be contained in a signed 32 bit LSL integer.
+
+Prior to this fix, literals that overflowed would be compiled as is, and then interpreted
+as .NET's long data type.  This was causing C# compiler errors when a literal such as this
+was passed into a function or operator that only expected an Int32 type.
+
+Integer and Hex literals that overflow/underflow LSL's integer type are now compiled as -1
+just like in the Linden compiler.
+
+A new compiler warning is issued when this happens.
