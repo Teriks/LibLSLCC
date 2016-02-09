@@ -48,9 +48,6 @@ using LibLSLCC.Settings;
 
 namespace LSLCCEditor.Settings
 {
-
- 
-
     public static class AppSettings
     {
         private const string CurrentSettingsVersion = "{FB178F2E-D3E1-4545-B90A-193094B02F64}";
