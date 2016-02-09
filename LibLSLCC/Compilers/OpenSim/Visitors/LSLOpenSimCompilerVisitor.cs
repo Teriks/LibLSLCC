@@ -47,6 +47,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -773,10 +774,9 @@ private static class UTILITIES
             //Floats cannot be used with logical operators, but the same check is made here.
             //This is here so that, if the binary operation validator is changed to allow it;
             //than we will still be generating correct code.
-            bool parentIsNonLogicBinaryOperation =
-                !(parentAsBinaryExpression != null &&
-                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+            bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
+                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
 
 
             ILSLFunctionCallNode parentFunctionCallNode = null;
@@ -846,10 +846,14 @@ private static class UTILITIES
 
             var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
 
-            bool parentIsNonLogicBinaryOperation =
-                !(parentAsBinaryExpression != null &&
-                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+            bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
+                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+
+            var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
+
+            bool parentIsUnaryNegate = parentAsPrefixExpression != null &&
+                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negative;
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
@@ -892,18 +896,11 @@ private static class UTILITIES
             }
 
             string value = node.RawText;
-            try
-            {
-                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-                Convert.ToInt32(value, 16);
-            }
-            catch (OverflowException)
-            {
-                //yup
-                value = "-1";
-            }
 
-            Writer.Write(value);
+            //The Lexer makes sure this is in plain integer format [0-9]+, if there is a failure parsing it the only thing it could be is an overflow
+            int discard;
+            Writer.Write(int.TryParse(value, out discard) ? value : 
+                (parentIsUnaryNegate ? "1" : "-1"));
 
             if (box)
             {
@@ -918,10 +915,14 @@ private static class UTILITIES
         {
             var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
 
-            bool parentIsNonLogicBinaryOperation =
-                !(parentAsBinaryExpression != null &&
-                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+            bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
+                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+
+            var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
+
+            bool parentIsUnaryNegate = parentAsPrefixExpression != null &&
+                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negative;
 
             //If the parent is a binary expression, the conversion will happen automagically because
             //the hex literal becomes the argument of a stub function
@@ -934,18 +935,12 @@ private static class UTILITIES
             }
 
             string value = node.RawText;
-            try
-            {
-                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-                Convert.ToInt32(value, 16);
-            }
-            catch (OverflowException)
-            {
-                //yup again
-                value = "-1";
-            }
 
-            Writer.Write(value);
+            //The Lexer makes sure this is in hex format, if there is a failure parsing it the only thing it could be is an overflow
+            int discard;
+
+            Writer.Write(int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out discard) ?
+                value : (parentIsUnaryNegate ? "1" : "-1"));
 
             if (!parentIsNonLogicBinaryOperation)
             {
@@ -1001,10 +996,9 @@ private static class UTILITIES
             //Strings cannot be used with logical operators, but the same check is made here.
             //This is here so that, if the binary operation validator is changed to allow it;
             //than we will still be generating correct code.
-            bool parentIsNonLogicBinaryOperation =
-                !(parentAsBinaryExpression != null &&
-                  (parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                   parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+            bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
+                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
+                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
 
 
             ILSLFunctionCallNode parentFunctionCallNode = null;
