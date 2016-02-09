@@ -271,9 +271,9 @@ private static class UTILITIES
                     Visit(node.LeftExpression);
                     Writer.Write("=new LSL_Types.LSLInteger(System.Math.Round((double)");
                     Visit(node.LeftExpression);
-                    Writer.Write(".value) * ");
+                    Writer.Write(") * ");
                     Visit(node.RightExpression);
-                    Writer.Write(".value)");
+                    Writer.Write(")");
 
                     if (parenths)
                     {

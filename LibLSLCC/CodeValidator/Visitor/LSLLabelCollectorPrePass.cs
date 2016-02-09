@@ -42,6 +42,7 @@
 #endregion
 
 using System.Collections.Generic;
+using LibLSLCC.CodeValidator.AntlrTreeUtilitys;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;
@@ -126,42 +127,36 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public override bool VisitCodeStatement(LSLParser.CodeStatementContext context)
         {
-            base.VisitCodeStatement(context);
-            _statementIndexStack.Peek().Index++;
-            return false;
-        }
-
-
-
-        /*public override bool VisitCodeScopeOrSingleBlockStatement(
-            LSLParser.CodeScopeOrSingleBlockStatementContext context)
-        {
-            if (context == null || !Utility.OnlyOneNotNull(context.code, context.statement))
+            if (context == null)
             {
                 throw
                     LSLCodeValidatorInternalException.
-                        VisitContextInvalidState("VisitCodeScopeOrSingleBlockStatement",
+                        VisitContextInvalidState("VisitCodeStatement",
                             true);
             }
 
-
-            if (context.statement != null)
+            if (LSLAntlrTreeIntrospector.IsBracelessCodeScopeStatement(context))
             {
-                _scopingManager.EnterSingleStatementBlock(context.statement);
+                _scopingManager.EnterSingleStatementBlock(context);
 
                 _currentScopeId++;
                 _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = _currentScopeId});
-                base.VisitCodeScopeOrSingleBlockStatement(context);
+                base.VisitCodeStatement(context);
                 _statementIndexStack.Pop();
+
                 _scopingManager.ExitSingleStatementBlock();
             }
-            if (context.code != null)
+            else
             {
-                base.VisitCodeScopeOrSingleBlockStatement(context);
-            }
+                base.VisitCodeStatement(context);
 
-            return true;
-        }*/
+                if (context.Parent is LSLParser.CodeScopeContext)
+                {
+                    _statementIndexStack.Peek().Index++;
+                }
+            }
+            return false;
+        }
 
 
 
@@ -177,6 +172,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = _currentScopeId});
 
             var result = base.VisitCodeScope(context);
+
             _statementIndexStack.Pop();
             _scopingManager.ExitCodeScopeDuringPrePass();
 

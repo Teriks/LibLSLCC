@@ -81,7 +81,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             ParserContext = context;
             IsSingleBlockStatement = isSingleBlockStatement;
-            ParserContext = context;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
 

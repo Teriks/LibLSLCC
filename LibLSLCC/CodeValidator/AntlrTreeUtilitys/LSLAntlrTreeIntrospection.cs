@@ -52,14 +52,32 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
 {
     internal static class LSLAntlrTreeIntrospector
     {
+        public static bool IsBracelessCodeScopeStatement(LSLParser.CodeStatementContext context)
+        {
+            //if the statement is a code scope who's parent is not another code scope then it cannot be
+            //a brace-less code scope statement used with a do/while/for loop or if/else statement.
+
+            //Control structures (if statement nodes) are excluded if their parent is an else statement.
+            //because that constitutes an 'if else' statement combo that is possibly followed by a single statement, 
+            //or a code scope.
+
+            return context.code_scope == null &&  
+                    !(context.Parent is LSLParser.CodeScopeContext) && 
+                    !(context.Parent is LSLParser.ElseStatementContext && context.control_structure != null);
+        }
+
+
         public static LSLCodeScopeType ResolveCodeScopeNodeType(LSLParser.CodeStatementContext context)
         {
             if (context.Parent is LSLParser.ControlStructureContext)
             {
                 if (context.Parent.Parent.Parent is LSLParser.ElseStatementContext)
                 {
+                    //This is statement is after 'else if'
                     return LSLCodeScopeType.ElseIf;
                 }
+                
+                //This statement is after just 'if'
                 return LSLCodeScopeType.If;
             }
             if (context.Parent is LSLParser.ElseStatementContext)
@@ -85,8 +103,9 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
                 return ResolveCodeScopeNodeType(parent);
             }
 
+            //bugcheck assert
             throw new InvalidOperationException(
-                "Could not resolve code scope type from statement in LSLAntlrTreeUtilitys.ResolveCodeScopeNodeType");
+                "BUGCHECK: Unexpected ANTLR syntax tree structure in LSLAntlrTreeUtilitys.ResolveCodeScopeNodeType");
         }
 
 
@@ -100,7 +119,10 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
             if (context.Parent is LSLParser.EventHandlerContext)
             {
                 return LSLCodeScopeType.EventHandler;
+
             }
+
+
             if (context.Parent.Parent is LSLParser.ControlStructureContext)
             {
                 if (context.Parent.Parent.Parent.Parent is LSLParser.ElseStatementContext)
@@ -130,8 +152,9 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
                 return LSLCodeScopeType.AnonymousBlock;
             }
 
+            //bugcheck assert
             throw new InvalidOperationException(
-                "Could not resolve code scope type from code scope in LSLAntlrTreeUtilitys.ResolveCodeScopeNodeType");
+                "BUGCHECK: Unexpected ANTLR syntax tree structure in LSLAntlrTreeUtilitys.ResolveCodeScopeNodeType");
         }
     }
 }
