@@ -48,6 +48,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -2594,6 +2595,15 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             if (context.integer_literal != null)
             {
+                int discard;
+                if (!int.TryParse(context.integer_literal.Text, out discard))
+                {
+                    GenSyntaxWarning()
+                        .IntegerLiteralOverflow(new LSLSourceCodeRange(context.integer_literal),
+                            context.integer_literal.Text);
+                }
+
+
                 return ReturnFromVisit(context, new LSLIntegerLiteralNode(context));
             }
             if (context.float_literal != null)
@@ -2602,6 +2612,14 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             if (context.hex_literal != null)
             {
+                int discard;
+                if (!int.TryParse(context.hex_literal.Text, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out discard))
+                {
+                    GenSyntaxWarning()
+                        .HexLiteralOverflow(new LSLSourceCodeRange(context.hex_literal),
+                            context.hex_literal.Text);
+                }
+
                 return ReturnFromVisit(context, new LSLHexLiteralNode(context));
             }
             if (context.string_literal != null)

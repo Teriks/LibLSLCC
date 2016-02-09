@@ -572,5 +572,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="location">The source code range of the assignment operator used.</param>
         /// <param name="assignmentOperatorUsed">The assignment operator used.</param>
         void AssignmentToUnassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed);
+
     }
 }

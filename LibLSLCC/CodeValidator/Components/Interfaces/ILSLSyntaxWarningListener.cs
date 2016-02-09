@@ -331,5 +331,20 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
             LSLEventSignature currentEventBodySignature,
             LSLVariableDeclarationNode newDeclarationNode,
             LSLVariableDeclarationNode previousDeclarationNode);
+
+        /// <summary>
+        /// Occurs when an integer literal present in the source code is greater than the max value of a 32 bit LSL integer.
+        /// </summary>
+        /// <param name="location">The source code range of the integer literal.</param>
+        /// <param name="literalText">The text representing the integer literal.</param>
+        void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText);
+
+
+        /// <summary>
+        /// Occurs when a hex literal present in the source code is greater than the max value of a 32 bit LSL integer.
+        /// </summary>
+        /// <param name="location">The source code range of the hex literal.</param>
+        /// <param name="literalText">The text representing the hex literal.</param>
+        void HexLiteralOverflow(LSLSourceCodeRange location, string literalText);
     }
 }

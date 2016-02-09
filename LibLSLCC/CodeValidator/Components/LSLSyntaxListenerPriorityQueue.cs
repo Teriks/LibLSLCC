@@ -1032,6 +1032,21 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+        public void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.IntegerLiteralOverflow(location, literalText));
+        }
+
+
+        public void HexLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.HexLiteralOverflow(location, literalText));
+        }
+
 
         void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
             LSLConditionalStatementType conditionalStatementType)

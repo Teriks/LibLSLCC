@@ -506,6 +506,32 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
+
+        /// <summary>
+        /// Occurs when an integer literal present in the source code is greater than the max value of a 32 bit LSL integer.
+        /// </summary>
+        /// <param name="location">The source code range of the integer literal.</param>
+        /// <param name="literalText">The text representing the integer literal.</param>
+        public void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        {
+            OnWarning(location, string.Format("Integer literal \"{0}\" overflows LSL's integer type, it will compile to -1.",
+                literalText));
+
+        }
+
+
+        /// <summary>
+        /// Occurs when a hex literal present in the source code is greater than the max value of a 32 bit LSL integer.
+        /// </summary>
+        /// <param name="location">The source code range of the hex literal.</param>
+        /// <param name="literalText">The text representing the hex literal.</param>
+        public void HexLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        {
+            OnWarning(location, string.Format("Hex literal \"{0}\" overflows LSL's integer type, it will compile to -1.",
+                literalText));
+        }
+
+
         /// <summary>
         /// A constant value was used for the conditional expression in a control or loop statement.
         /// </summary>
