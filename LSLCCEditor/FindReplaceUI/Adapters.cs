@@ -219,22 +219,6 @@ namespace LSLCCEditor.FindReplaceUI
             _rtb.SelectionChanged -= rtb_SelectionChanged;
         }
 
-        /*private static TextPointer GetPointOld(TextPointer start, int x)
-       {
-           var ret = start;
-           var i = 0;
-           while (i < x && ret != null)
-           {
-               if (ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.Text || ret.GetPointerContext(LogicalDirection.Backward) == TextPointerContext.None)
-                   i++;              
-               if (ret.GetPositionAtOffset(1, LogicalDirection.Forward) == null)
-                   return ret;
-               ret = ret.GetPositionAtOffset(1, LogicalDirection.Forward);
-           }
-           return ret;
-       }*/
-
-
         private static TextPointer GetPoint(TextPointer start, int x)
         {
             var ret = start.GetPositionAtOffset(x);

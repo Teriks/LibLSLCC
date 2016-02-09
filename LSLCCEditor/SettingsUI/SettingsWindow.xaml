@@ -11,8 +11,8 @@
         WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
         </Grid.RowDefinitions>
         <DockPanel LastChildFill="True" Grid.Row="0">
 
@@ -30,9 +30,7 @@
             <Border DockPanel.Dock="Right"  BorderBrush="Gainsboro" BorderThickness="0,2,0,0"  >
                 <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
                     <ContentPresenter 
-                                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}" Margin="5" >
-                        
-                    </ContentPresenter>
+                                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="{Binding ElementName=SettingsPagesList, Path=SelectedItem}" Margin="5" />
                 </ScrollViewer>
             </Border>
         </DockPanel>

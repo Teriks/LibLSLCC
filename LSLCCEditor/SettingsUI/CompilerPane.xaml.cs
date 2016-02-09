@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: CompilerPane.xaml.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

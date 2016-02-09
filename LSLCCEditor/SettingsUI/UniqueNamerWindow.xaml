@@ -16,9 +16,9 @@
             <converters:ElementValidConverter x:Key="ElementValidConverter"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*" />
 
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Margin="15,0,15,0" VerticalAlignment="Center">
             <Label>Name:</Label>
@@ -30,9 +30,9 @@
         <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" >
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}">
-                    <Setter Property="Padding" Value="15,0,15,0"></Setter>
+                    <Setter Property="Padding" Value="15,0,15,0" />
                     <Setter Property="Height" Value="22"/>
-                    <Setter Property="Margin" Value="0,0,15,0"></Setter>
+                    <Setter Property="Margin" Value="0,0,15,0" />
                 </Style>
             </StackPanel.Resources>
             <Button Click="Cancel_OnClick">Cancel</Button>
