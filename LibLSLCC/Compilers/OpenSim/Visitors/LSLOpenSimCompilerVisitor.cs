@@ -895,12 +895,7 @@ private static class UTILITIES
                 Writer.Write("new LSL_Types.LSLInteger(");
             }
 
-            string value = node.RawText;
-
-            //The Lexer makes sure this is in plain integer format [0-9]+, if there is a failure parsing it the only thing it could be is an overflow
-            int discard;
-            Writer.Write(int.TryParse(value, out discard) ? value : 
-                (parentIsUnaryNegate ? "1" : "-1"));
+            Writer.Write(node.IsIntegerLiteralOverflowed() ?  (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
 
             if (box)
             {
@@ -934,13 +929,7 @@ private static class UTILITIES
                 Writer.Write("new LSL_Types.LSLInteger(");
             }
 
-            string value = node.RawText;
-
-            //The Lexer makes sure this is in hex format, if there is a failure parsing it the only thing it could be is an overflow
-            int discard;
-
-            Writer.Write(int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out discard) ?
-                value : (parentIsUnaryNegate ? "1" : "-1"));
+            Writer.Write(node.IsHexLiteralOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
 
             if (!parentIsNonLogicBinaryOperation)
             {

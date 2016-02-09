@@ -52,6 +52,7 @@
     <Compile Include="CodeValidator\Components\LSLValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
+    <Compile Include="CodeValidator\Nodes\Interfaces\LSLLiteralNodeInterfaceExtensions.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Collections\CloneableExtensions.cs" />

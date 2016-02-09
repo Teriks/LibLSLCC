@@ -2595,8 +2595,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             if (context.integer_literal != null)
             {
-                int discard;
-                if (!int.TryParse(context.integer_literal.Text, out discard))
+                var intLiteralNode = new LSLIntegerLiteralNode(context);
+
+                if (intLiteralNode.IsIntegerLiteralOverflowed())
                 {
                     GenSyntaxWarning()
                         .IntegerLiteralOverflow(new LSLSourceCodeRange(context.integer_literal),
@@ -2604,7 +2605,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
 
 
-                return ReturnFromVisit(context, new LSLIntegerLiteralNode(context));
+                return ReturnFromVisit(context, intLiteralNode);
             }
             if (context.float_literal != null)
             {
@@ -2612,15 +2613,16 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             if (context.hex_literal != null)
             {
-                int discard;
-                if (!int.TryParse(context.hex_literal.Text, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out discard))
+                var hexLiteralNode = new LSLHexLiteralNode(context);
+
+                if (hexLiteralNode.IsHexLiteralOverflowed())
                 {
                     GenSyntaxWarning()
                         .HexLiteralOverflow(new LSLSourceCodeRange(context.hex_literal),
                             context.hex_literal.Text);
                 }
 
-                return ReturnFromVisit(context, new LSLHexLiteralNode(context));
+                return ReturnFromVisit(context, hexLiteralNode);
             }
             if (context.string_literal != null)
             {
