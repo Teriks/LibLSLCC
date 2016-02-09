@@ -42,13 +42,10 @@
 #endregion
 #region Imports
 
-using System;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
 using LibLSLCC.Settings;
 using LSLCCEditor.Settings;
-using LSLCCEditor.Utility.Xml;
 
 #endregion
 
@@ -74,9 +71,9 @@ namespace LSLCCEditor
                 i = i.InnerException;
             }
 
-            MessageBox.Show("An unexpected error has occurred.  The program will need to exit.\n" +
+            MessageBox.Show("An unexpected error has occurred.  The program needs to exit.\n" +
                             "Error details:\n\n" + details,
-                "Unexpected error", MessageBoxButton.OK);
+                            "Unexpected error", MessageBoxButton.OK);
 
             Current.Shutdown();
         }

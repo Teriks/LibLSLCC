@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
 using Microsoft.Win32;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace LSLCCEditor.SettingsUI
 {
@@ -36,12 +32,12 @@ namespace LSLCCEditor.SettingsUI
             }
             catch (XmlSyntaxException ex)
             {
-                System.Windows.Forms.MessageBox.Show("An XML syntax error was encountered while loading the file, settings could not be applied: "
+                MessageBox.Show(owner, "An XML syntax error was encountered while loading the file, settings could not be applied: "
                                 + Environment.NewLine + Environment.NewLine + ex.Message);
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("There was an unknown error while loading the settings file, settings could not be applied: "
+                MessageBox.Show(owner, "There was an unknown error while loading the settings file, settings could not be applied: "
                                 + Environment.NewLine + Environment.NewLine + ex.Message);
             }
         }
@@ -71,7 +67,7 @@ namespace LSLCCEditor.SettingsUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An unexpected problem occurred while trying to save the file: "
+                MessageBox.Show(owner, "An unexpected problem occurred while trying to save the file: "
                                 + Environment.NewLine + Environment.NewLine + ex.Message);
             }
         }

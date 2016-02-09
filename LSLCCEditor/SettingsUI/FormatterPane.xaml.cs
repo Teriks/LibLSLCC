@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml.Serialization;
 using LibLSLCC.Formatter;
 using LSLCCEditor.Settings;
-using MessageBox = System.Windows.Forms.MessageBox;
+using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace LSLCCEditor.SettingsUI
@@ -148,11 +135,11 @@ namespace LSLCCEditor.SettingsUI
         private void Import_OnClick(object sender, RoutedEventArgs e)
         {
 
-            var dialogResult = MessageBox.Show(
+            var dialogResult = MessageBox.Show(OwnerSettingsWindow,
             "Are you sure you want to overwrite the currently selected configuration by importing one over it?", "Overwrite Selected Configuration?",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (dialogResult != DialogResult.Yes) return;
+            if (dialogResult != MessageBoxResult.Yes) return;
 
             ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Formatter Configuration (*.xml)|*.xml", ".xml",
             reader =>

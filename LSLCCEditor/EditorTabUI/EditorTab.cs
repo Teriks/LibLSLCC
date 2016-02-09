@@ -48,6 +48,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
@@ -308,7 +309,7 @@ namespace LSLCCEditor.EditorTabUI
                 Dispatcher.Invoke(() =>
                 {
                     var r =
-                        MessageBox.Show(
+                        MessageBox.Show(Application.Current.MainWindow,
                             "This file has been deleted outside of the editor, would you like to close this tab?",
                             "File Deleted", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (r == MessageBoxResult.Yes)
@@ -336,7 +337,8 @@ namespace LSLCCEditor.EditorTabUI
             {
                 Dispatcher.Invoke(() =>
                 {
-                    var r = MessageBox.Show("This file was changed outside of this tab, would you like to reload it?",
+                    var r = MessageBox.Show(Application.Current.MainWindow, 
+                        "This file was changed outside of this tab, would you like to reload it?",
                         "File Changed", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (r != MessageBoxResult.Yes)
                     {
@@ -353,7 +355,8 @@ namespace LSLCCEditor.EditorTabUI
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show("File could not be loaded: " + e.Message, "Error");
+                        MessageBox.Show(Application.Current.MainWindow, 
+                            "File could not be loaded: " + e.Message, "Error");
                     }
                 });
             }
@@ -387,18 +390,26 @@ namespace LSLCCEditor.EditorTabUI
                     var source = Encoding.UTF8.GetBytes(SourceCode);
                     var oldHash = md5.ComputeHash(source, 0, source.Length);
                     byte[] newHash;
-                    using (var stream = File.OpenRead(FilePath))
+
+                    try
                     {
-                        newHash = md5.ComputeHash(stream);
+                        using (var stream = File.OpenRead(FilePath))
+                        {
+                            newHash = md5.ComputeHash(stream);
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                        // ignored
                     }
 
-                    if (!oldHash.SequenceEqual(newHash))
+                    if (oldHash.SequenceEqual(newHash)) return;
+
+                    _fileChanged = true;
+                    if (IsSelected)
                     {
-                        _fileChanged = true;
-                        if (IsSelected)
-                        {
-                            CheckExternalChanges();
-                        }
+                        CheckExternalChanges();
                     }
                 }
             });
@@ -421,12 +432,14 @@ namespace LSLCCEditor.EditorTabUI
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Application.Current.MainWindow, 
+                    e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return false;
         }
 
-        public void OpenFile(string fileName)
+
+        private void OpenFile(string fileName)
         {
             Content.SourceCode = File.ReadAllText(fileName);
 
@@ -447,12 +460,14 @@ namespace LSLCCEditor.EditorTabUI
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Could Not Open File", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Application.Current.MainWindow, 
+                    e.Message, "Could Not Open File", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return false;
         }
 
-        public bool SaveTabToNewFile()
+
+        private bool SaveTabToNewFile()
         {
             var saveDialog = new SaveFileDialog
             {
@@ -468,22 +483,21 @@ namespace LSLCCEditor.EditorTabUI
             }
 
             var showDialog = saveDialog.ShowDialog();
-            if (showDialog != null && showDialog.Value)
-            {
-                File.WriteAllText(saveDialog.FileName, SourceCode);
 
-                TabName = Path.GetFileName(saveDialog.FileName);
-                ChangesPending = false;
-                MemoryOnly = false;
-                FilePath = saveDialog.FileName;
+            if (showDialog == null || !showDialog.Value) return false;
 
 
-                WatchNewFile(FilePath);
+            File.WriteAllText(saveDialog.FileName, SourceCode);
 
-                return true;
-            }
+            TabName = Path.GetFileName(saveDialog.FileName);
+            ChangesPending = false;
+            MemoryOnly = false;
+            FilePath = saveDialog.FileName;
 
-            return false;
+
+            WatchNewFile(FilePath);
+
+            return true;
         }
 
         public bool SaveTabToNewFileInteractive()
@@ -494,7 +508,8 @@ namespace LSLCCEditor.EditorTabUI
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Application.Current.MainWindow, 
+                    e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return false;
         }
@@ -615,7 +630,7 @@ namespace LSLCCEditor.EditorTabUI
             var dir = Path.GetDirectoryName(FilePath);
             if (dir == null)
             {
-                throw new InvalidOperationException("OpenFolderImpl: Directory null");
+                throw new InvalidOperationException("EditorTab.OpenFolderImpl: Directory null");
             }
 
             var filePath = FilePath;
@@ -645,7 +660,8 @@ namespace LSLCCEditor.EditorTabUI
 
                     if (string.IsNullOrWhiteSpace(newName))
                     {
-                        MessageBox.Show("A file name must be provided.", "Could Not Rename File", MessageBoxButton.OK,
+                        MessageBox.Show(Application.Current.MainWindow, 
+                            "A file name must be provided.", "Could Not Rename File", MessageBoxButton.OK,
                             MessageBoxImage.Error);
                         return;
                     }
@@ -667,7 +683,8 @@ namespace LSLCCEditor.EditorTabUI
                             }
                             catch (Exception e)
                             {
-                                MessageBox.Show(e.Message, "Could Not Rename File", MessageBoxButton.OK,
+                                MessageBox.Show(Application.Current.MainWindow,
+                                    e.Message, "Could Not Rename File", MessageBoxButton.OK,
                                     MessageBoxImage.Error);
                             }
                         }
@@ -712,7 +729,8 @@ namespace LSLCCEditor.EditorTabUI
                 MessageBoxResult r;
                 if (MemoryOnly)
                 {
-                    r = MessageBox.Show("Would you like to save this tab to a file before closing?", "Save Changes",
+                    r = MessageBox.Show(Application.Current.MainWindow, 
+                        "Would you like to save this tab to a file before closing?", "Save Changes",
                         buttons, MessageBoxImage.Question);
 
                     if (r == MessageBoxResult.Yes)
@@ -725,7 +743,8 @@ namespace LSLCCEditor.EditorTabUI
                         }
                         catch (Exception e)
                         {
-                            MessageBox.Show(e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show(Application.Current.MainWindow,
+                                e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     else if (r == MessageBoxResult.Cancel)
@@ -735,7 +754,8 @@ namespace LSLCCEditor.EditorTabUI
                 }
                 else
                 {
-                    r = MessageBox.Show("Would you like to save this tab before closing?",
+                    r = MessageBox.Show(Application.Current.MainWindow, 
+                        "Would you like to save this tab before closing?",
                         "Save Changes To \"" + FilePath + "\"",
                         buttons, MessageBoxImage.Question);
 
@@ -749,7 +769,8 @@ namespace LSLCCEditor.EditorTabUI
                         }
                         catch (Exception e)
                         {
-                            MessageBox.Show(e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show(Application.Current.MainWindow, 
+                                e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     else if (r == MessageBoxResult.Cancel)

@@ -15,9 +15,7 @@ using LSLCCEditor.EditControl;
 using LSLCCEditor.Settings;
 using LSLCCEditor.Utility.Xml;
 using Xceed.Wpf.Toolkit;
-using MessageBox = System.Windows.Forms.MessageBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace LSLCCEditor.SettingsUI
@@ -447,12 +445,12 @@ namespace LSLCCEditor.SettingsUI
 
         private void Import_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialogResult = MessageBox.Show(
+            var dialogResult = MessageBox.Show(OwnerSettingsWindow,
                 "Are you sure you want to overwrite the currently selected theme by importing one over it?",
                 "Overwrite Selected Theme?",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (dialogResult != DialogResult.Yes) return;
+            if (dialogResult != MessageBoxResult.Yes) return;
 
 
             ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Editor Theme (*.xml)|*.xml;", ".xml",

@@ -138,7 +138,7 @@ namespace LSLCCEditor
             }
             catch (LSLLibraryDataXmlSyntaxException err)
             {
-                MessageBox.Show(
+                MessageBox.Show(this,
                     "There is a syntax error in one of your XML library data files and the application must close." 
                     + LSLFormatTools.CreateNewLinesString(2) + err.Message,
                     "Library Data Syntax Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -204,6 +204,8 @@ namespace LSLCCEditor
 
             var initialTab = (EditorTab) TabControl.SelectedItem;
 
+            initialTab.IsSelected = true;
+
             SetLibraryMenuFromTab(initialTab);
 
             FindDialogManager.CurrentEditor = initialTab.Content.Editor.Editor;
@@ -218,15 +220,14 @@ namespace LSLCCEditor
             {
                 var tab = EditorTabs[i];
 
-                if (tab.ChangesPending)
-                {
-                    TabControl.SelectedIndex = i;
-                    if (!tab.Close())
-                    {
-                        e.Cancel = true;
-                        break;
-                    }
-                }
+                if (!tab.ChangesPending) continue;
+
+                TabControl.SelectedIndex = i;
+
+                if (tab.Close()) continue;
+
+                e.Cancel = true;
+                break;
             }
         }
 
@@ -361,30 +362,29 @@ namespace LSLCCEditor
             foreach (var i in e.AddedItems)
             {
                 var tab = i as EditorTab;
-                if (tab != null)
+                if (tab == null) continue;
+
+                _libraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
+
+                SetLibraryMenuFromTab(tab);
+
+                _libraryDataProvider.ActiveSubsets.Clear();
+                _libraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
+                tab.Content.Editor.UpdateHighlightingFromDataProvider();
+
+
+                tab.Content.Editor.Editor.Unloaded += (o, args) =>
                 {
-                    _libraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
-
-                    SetLibraryMenuFromTab(tab);
-
-                    _libraryDataProvider.ActiveSubsets.Clear();
-                    _libraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
-                    tab.Content.Editor.UpdateHighlightingFromDataProvider();
-
-
-                    tab.Content.Editor.Editor.Unloaded += (o, args) =>
+                    if (ReferenceEquals(FindDialogManager.CurrentEditor, tab.Content.Editor.Editor) && _droppingTabAfterDragging)
                     {
-                        if (ReferenceEquals(FindDialogManager.CurrentEditor, tab.Content.Editor.Editor) && _droppingTabAfterDragging)
-                        {
-                            FindDialogManager.CurrentEditor = null;
-                        }
-                    };
+                        FindDialogManager.CurrentEditor = null;
+                    }
+                };
 
-                    FindDialogManager.CurrentEditor = tab.Content.Editor.Editor;
+                FindDialogManager.CurrentEditor = tab.Content.Editor.Editor;
 
-                    tab.IsSelected = true;
-                    tab.CheckExternalChanges();
-                }
+                tab.IsSelected = true;
+                tab.CheckExternalChanges();
             }
         }
 
@@ -446,7 +446,8 @@ namespace LSLCCEditor
                         }
                         catch (Exception err)
                         {
-                            MessageBox.Show(err.Message, "Could Not Save Before Compiling",
+                            MessageBox.Show(this, err.Message, 
+                                "Could Not Save Before Compiling",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
                         }
@@ -457,7 +458,7 @@ namespace LSLCCEditor
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.Message, "Could Not Compile",
+                MessageBox.Show(this, err.Message, "Could Not Compile",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
@@ -542,13 +543,13 @@ namespace LSLCCEditor
                 }
                 catch (LSLCompilerInternalException error)
                 {
-                    MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
+                    MessageBox.Show(this, "Please report this message with the code that caused it: " + error.Message,
                         "Internal Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 }
                 catch (Exception error)
                 {
-                    MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
+                    MessageBox.Show(this, "Please report this message with the code that caused it: " + error.Message,
                         "Unknown Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     
                 }
@@ -611,13 +612,13 @@ namespace LSLCCEditor
             }
             catch (LSLCodeValidatorInternalException error)
             {
-                MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
+                MessageBox.Show(this, "Please report this message with the code that caused it: " + error.Message,
                     "Internal Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 validated = null;
             }
             catch (Exception error)
             {
-                MessageBox.Show("Please report this message with the code that caused it: " + error.Message,
+                MessageBox.Show(this, "Please report this message with the code that caused it: " + error.Message,
                     "Unknown Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 validated = null;
             }
