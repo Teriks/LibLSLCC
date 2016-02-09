@@ -1032,7 +1032,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        public void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        void ILSLSyntaxWarningListener.IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -1040,7 +1040,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        public void HexLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        void ILSLSyntaxWarningListener.HexLiteralOverflow(LSLSourceCodeRange location, string literalText)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
