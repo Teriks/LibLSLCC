@@ -779,6 +779,11 @@ private static class UTILITIES
                     parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
 
 
+            var inVectorOrRotationInitializer = 
+                node.Parent is ILSLVectorLiteralNode || 
+                node.Parent is ILSLRotationLiteralNode;
+
+
             ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
@@ -804,13 +809,10 @@ private static class UTILITIES
 
             //Except if the parent is a logical operator, in which case a stub is not used.
             //so it needs to be boxed.
-            var box = !(parentIsFunctionCall || parentIsNonLogicBinaryOperation) || inModInvokeTopLevel;
+            var box =
+                !(parentIsFunctionCall || parentIsNonLogicBinaryOperation || inVectorOrRotationInitializer) || 
+                inModInvokeTopLevel;
 
-
-            if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
-            {
-                box = false;
-            }
 
             if (box)
             {
@@ -857,6 +859,10 @@ private static class UTILITIES
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
+            var inVectorOrRotationInitializer = 
+                node.Parent is ILSLVectorLiteralNode ||
+                node.Parent is ILSLRotationLiteralNode;
+
             ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
@@ -882,13 +888,10 @@ private static class UTILITIES
 
             //Except if the parent is a logical operator, in which case a stub is not used.
             //so it needs to be boxed.
-            var box = !(parentIsFunctionCall || parentIsNonLogicBinaryOperation) || inModInvokeTopLevel;
+            var box = 
+                !(parentIsFunctionCall || parentIsNonLogicBinaryOperation || inVectorOrRotationInitializer) ||
+                inModInvokeTopLevel;
 
-
-            if (node.Parent is ILSLVectorLiteralNode || node.Parent is ILSLRotationLiteralNode)
-            {
-                box = false;
-            }
 
             if (box)
             {
@@ -918,6 +921,7 @@ private static class UTILITIES
 
             bool parentIsUnaryNegate = parentAsPrefixExpression != null &&
                                        parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negative;
+
 
             //If the parent is a binary expression, the conversion will happen automagically because
             //the hex literal becomes the argument of a stub function
