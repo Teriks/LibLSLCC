@@ -1,5 +1,4 @@
 #region FileInfo
-
 // 
 // File: AppSettingsNode.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System;
 using System.Linq;
 using System.Reflection;

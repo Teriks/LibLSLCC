@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System.Reflection;
 using LibLSLCC.CodeValidator.Enums;
 

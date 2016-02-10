@@ -1,5 +1,4 @@
 #region FileInfo
-
 // 
 // File: IDefaultSettingsValueFactory.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System.Reflection;
 
 namespace LibLSLCC.Settings

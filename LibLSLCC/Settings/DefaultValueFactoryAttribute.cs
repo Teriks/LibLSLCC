@@ -1,5 +1,4 @@
 #region FileInfo
-
 // 
 // File: DefaultValueFactoryAttribute.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System;
 
 namespace LibLSLCC.Settings

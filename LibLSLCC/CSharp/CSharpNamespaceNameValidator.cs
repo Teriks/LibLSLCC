@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: CSharpNamespaceNameValidator.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System.Text.RegularExpressions;
 
 namespace LibLSLCC.CSharp

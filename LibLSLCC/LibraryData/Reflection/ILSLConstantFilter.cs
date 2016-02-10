@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System.Reflection;
 
 namespace LibLSLCC.LibraryData.Reflection

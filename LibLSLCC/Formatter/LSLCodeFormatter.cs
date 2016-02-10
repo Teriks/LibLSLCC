@@ -40,7 +40,6 @@
 // 
 // 
 #endregion
-
 using System;
 using System.IO;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;

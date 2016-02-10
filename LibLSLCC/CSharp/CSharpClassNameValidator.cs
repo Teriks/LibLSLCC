@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: CSharpClassNameValidator.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;

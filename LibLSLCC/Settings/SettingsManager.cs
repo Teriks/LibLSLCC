@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: SettingsManager.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System;
 using System.IO;
 using System.Xml;

@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: CSharpNamespace.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System;
 using LibLSLCC.Collections;
 using LibLSLCC.Settings;

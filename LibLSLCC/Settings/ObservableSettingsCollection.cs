@@ -1,5 +1,4 @@
 ﻿#region FileInfo
-
 // 
 // File: ObservableSettingsCollection.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.Collections;

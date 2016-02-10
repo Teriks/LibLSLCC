@@ -1,5 +1,4 @@
 #region FileInfo
-
 // 
 // File: DefaultValueInitializer.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 using System;
 using System.ComponentModel;
 using System.Linq;

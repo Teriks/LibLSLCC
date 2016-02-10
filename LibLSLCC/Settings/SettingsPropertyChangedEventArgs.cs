@@ -1,5 +1,4 @@
 #region FileInfo
-
 // 
 // File: SettingsPropertyChangedEventArgs.cs
 // 
@@ -40,9 +39,7 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
 namespace LibLSLCC.Settings
 {
     public class SettingsPropertyChangedEventArgs<TSetting>
