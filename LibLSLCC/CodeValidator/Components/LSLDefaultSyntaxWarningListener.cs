@@ -544,7 +544,7 @@ namespace LibLSLCC.CodeValidator.Components
         {
             OnWarning(location,
                 string.Format(
-                    "Return statement in event handler \"{0}\" returns a value, event return values are discarded.",
+                    "Return statement in event handler \"{0}\" returns a value that will be discarded.",
                     eventSignature.Name));
         }
 
