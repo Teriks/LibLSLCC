@@ -2061,7 +2061,7 @@ private static class UTILITIES
 
         public override bool VisitElseIfStatement(ILSLElseIfStatementNode node)
         {
-            Writer.Write(Environment.NewLine + GenIndent() + "else if(");
+            Writer.Write(GenIndent() + "else if(");
 
             WriteBooleanConditionContent(node.ConditionExpression.Type, node.ConditionExpression);
 
@@ -2076,7 +2076,7 @@ private static class UTILITIES
 
         public override bool VisitElseStatement(ILSLElseStatementNode node)
         {
-            Writer.WriteLine(Environment.NewLine + GenIndent() + "else");
+            Writer.WriteLine(GenIndent() + "else");
             Visit(node.Code);
             return false;
         }
