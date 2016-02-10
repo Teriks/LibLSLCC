@@ -1362,14 +1362,11 @@ private static class UTILITIES
 
             Visit(node.Code);
 
-            Writer.Write(Environment.NewLine + GenIndent() + "while(");
-
+            Writer.Write(GenIndent() + "while(");
 
             WriteBooleanConditionContent(node.ConditionExpression.Type, node.ConditionExpression);
 
-            Writer.Write(");");
-
-            Writer.WriteLine();
+            Writer.WriteLine(");");
 
             return false;
         }
@@ -1421,9 +1418,6 @@ private static class UTILITIES
 
 
             Visit(node.Code);
-
-            Writer.WriteLine();
-
 
             return false;
         }
@@ -1501,12 +1495,11 @@ private static class UTILITIES
             foreach (var statement in node.CodeStatements)
             {
                 Visit(statement);
-                Writer.WriteLine();
             }
 
             _indentLevel--;
 
-            Writer.Write(GenIndent() + "}");
+            Writer.WriteLine(GenIndent() + "}");
 
             return false;
         }
@@ -1880,7 +1873,7 @@ private static class UTILITIES
 
                 Writer.Write(GenIndent() + "UTILITIES.ForceStatement(");
                 Visit(node.ReturnExpression);
-                Writer.Write(");");
+                Writer.WriteLine(");");
             }
             else
             {
@@ -1893,7 +1886,7 @@ private static class UTILITIES
                     Visit(node.ReturnExpression);
                 }
 
-                Writer.Write(";");
+                Writer.WriteLine(";");
 
             }
 
@@ -1916,7 +1909,7 @@ private static class UTILITIES
         {
             if (node.IsDeadCode) return false;
 
-            Writer.Write(GenIndent() + "this.state(\"" + node.StateTargetName + "\");");
+            Writer.WriteLine(GenIndent() + "this.state(\"" + node.StateTargetName + "\");");
             return false;
         }
 
@@ -1925,7 +1918,7 @@ private static class UTILITIES
         {
             if (node.IsDeadCode) return false;
 
-            Writer.Write(GenIndent() + "goto " + "LSLLabel_" + node.LabelName + ";");
+            Writer.WriteLine(GenIndent() + "goto " + "LSLLabel_" + node.LabelName + ";");
             return false;
         }
 
@@ -1944,7 +1937,7 @@ private static class UTILITIES
             }
             else
             {
-                Writer.Write(GenIndent() + "LSLLabel_" + node.LabelName + ":" +
+                Writer.WriteLine(GenIndent() + "LSLLabel_" + node.LabelName + ":" +
                              (node.IsLastStatementInScope ? ";" : ""));
             }
 
@@ -1960,7 +1953,7 @@ private static class UTILITIES
             {
                 Writer.Write(GenIndent());
                 Visit(node.Expression);
-                Writer.Write(";");
+                Writer.WriteLine(";");
             }
             return false;
         }
@@ -2024,7 +2017,7 @@ private static class UTILITIES
                 Writer.Write(variableName);
                 Writer.Write(" = ");
                 Writer.Write(LSLType_To_CSharpDefaultInitializer(node.TypeString));
-                Writer.Write(";");
+                Writer.WriteLine(";");
             }
             else
             {
@@ -2033,7 +2026,7 @@ private static class UTILITIES
                 Writer.Write(variableName);
                 Writer.Write(" = ");
                 Visit(node.DeclarationExpression);
-                Writer.Write(";");
+                Writer.WriteLine(";");
             }
 
             return false;
