@@ -1,4 +1,5 @@
-# (1/26/2016 ...) Event handler cleanup / URL colors
+# (1/26/2016 ...) 
+# Event handler cleanup / URL colors
 
 Cleaned up event handler parameter names so that they formatted more traditionally when generating handlers using auto complete.
 
@@ -12,7 +13,8 @@ Its at: `Settings -> Editor Theme -> Syntax Highlighting / Editor Color -> Urls`
 =======
 
 
-# (1/31/2016 ...) Fix to code formatter
+# (1/31/2016 ...)
+# Fix to code formatter
 
 Fixed an issue with formatting braceless conditional/loop expressions containing comments before the
 single statement that makes up the code body.
@@ -46,7 +48,8 @@ settings for braceless control/loop statements.
 =======
 
 
-# (1/31/2016 ...) Code generation change
+# (1/31/2016 ...)
+# Code generation change
 
 Remove unnecessary code generation for implicit boolean conversions of vector/rotation/list and string.
 
@@ -91,7 +94,8 @@ public static void ForceStatement<T>(T value){}
 
 =======
 
-# (2/4/2016 11:44PM) Give logical AND and OR equal precedence
+# (2/4/2016 11:44PM)
+# Give logical AND and OR equal precedence
 
 In Linden LSL `(0 && 0 || 1) == TRUE`, and `(1 || 0 && 0) == FALSE`
 
@@ -107,7 +111,8 @@ Because some string constants may be defined as a CSharp built in string instead
 
 =======
 
-# (2/5/2016 11:58AM) Make modifiable LValues part of grammar
+# (2/5/2016 11:58AM) 
+# Make modifiable LValues part of grammar
 
 Having:
 
@@ -171,7 +176,8 @@ character that comes after the slash, as in Linden LSL.
 =======
 
 
-# (2/7/2016 4:26AM) Factor grammar to remove control statement ambiguity
+# (2/7/2016 4:26AM) 
+# Factor grammar to remove control statement ambiguity
 
 
 A problem with the parser grammar for control statements was causing large performance issues when parsing long
@@ -185,7 +191,8 @@ The abstracted tree LibLSLCC produces still retains the same structure.
 ========
 
 
-# (2/8/2016 2:58AM) Added built in input file globbing to lslcc_cmd
+# (2/8/2016 2:58AM)
+# Added built in input file globbing to lslcc_cmd
 
 Added built in file globbing and the ability to specify
 multiple input files or glob expressions at once when invoking lslcc.exe.
@@ -212,7 +219,8 @@ The application settings fix really only affected how script headers
 under the compiler settings menu were formatted in generated code.
 
 
-# (2/9/2016 4:38AM) Re-Implement internal LSLLabelCollectorPrePass
+# (2/9/2016 4:38AM) 
+# Re-Implement internal LSLLabelCollectorPrePass
 
 This class was not fixed properly after large changes to the ANTLR grammar.
 
@@ -241,7 +249,8 @@ just like in the Linden compiler.
 A new compiler warning is issued when this happens.
 
 
-# (2/9/2016 9:32 PM) Allow returning values from event handlers, with warning 
+# (2/9/2016 9:32 PM)
+# Allow returning values from event handlers, with warning 
  
 The Linden compiler allows you to return a value from an event handler, LibLSLCC previously  
 deemed this a syntax error. 
