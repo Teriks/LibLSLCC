@@ -253,4 +253,4 @@ This is the same behavior that the Linden compiler uses.
 Previously, if a statement inside of a code scope was optimized away, a blank line 
 would be generated in its place. 
  
-The new behavior is just to omit the blank line where the statement would have been.
+The new behavior is to omit the blank line where the statement would have been.
