@@ -56,6 +56,7 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.Collections;
 using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
@@ -158,12 +159,23 @@ private static class UTILITIES
             return "_o" + ((int)binOp.Left) + "" + ((int)binOp.Operation) + "" + ((int)binOp.Right);
         }
 
+        /// <summary>
+        /// Tracks what event handler node compilation is currently taking place in.
+        /// </summary>
+        private ILSLEventHandlerNode _currentLslEventHandlerNode;
+
+
+        /// <summary>
+        /// Tracks what function declaration node compilation is currently taking place in.
+        /// </summary>
+        private ILSLFunctionDeclarationNode _currentLslFunctionDeclarationNode;
+
 
         /// <summary>
         ///     Tracks what state body that LSL code generation is taking place in
         ///     use to determine the names of generated event handler functions.
         /// </summary>
-        private string _currentLslStateBody;
+        private ILSLStateScopeNode _currentLslStateNode;
 
         /// <summary>
         ///     The indent level, used to create pretty output
@@ -180,6 +192,7 @@ private static class UTILITIES
         public LSLOpenSimCompilerSettings Settings { get; set; }
 
         public ILSLLibraryDataProvider LibraryDataProvider { get; set; }
+
         public TextWriter Writer { get; private set; }
 
 
@@ -212,7 +225,12 @@ private static class UTILITIES
 
         public void Reset()
         {
-            _currentLslStateBody = "";
+            _currentLslFunctionDeclarationNode = null;
+
+            _currentLslStateNode = null;
+
+            _currentLslEventHandlerNode = null;
+
             _indentLevel = 0;
             _binOpsUsed.Clear();
         }
@@ -521,8 +539,8 @@ private static class UTILITIES
         }
 
 
-        private readonly Dictionary<LSLType, string> _modInvokeFunctionMap
-            = new Dictionary<LSLType, string>
+        private readonly IReadOnlyHashMap<LSLType, string> _modInvokeFunctionMap
+            = new HashMap<LSLType, string>
             {
                 {LSLType.Void, "modInvokeN"},
                 {LSLType.String, "modInvokeS"},
@@ -1706,9 +1724,12 @@ private static class UTILITIES
 
         public override bool VisitEventHandler(ILSLEventHandlerNode node)
         {
+
+            _currentLslEventHandlerNode = node;
+
             Writer.Write(GenIndent());
 
-            var handlerName = _currentLslStateBody + "_event_" + node.Name;
+            var handlerName = _currentLslStateNode.StateName + "_event_" + node.Name;
 
 
             if (node.HasParameterNodes)
@@ -1724,6 +1745,8 @@ private static class UTILITIES
 
             Visit(node.EventBodyNode);
 
+            _currentLslEventHandlerNode = null;
+
             return false;
         }
 
@@ -1736,6 +1759,9 @@ private static class UTILITIES
         /// <returns>default(T)</returns>
         public override bool VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
+
+            _currentLslFunctionDeclarationNode = node;
+
             Writer.Write(GenIndent() + "public ");
 
             if (node.ReturnType != LSLType.Void)
@@ -1761,13 +1787,15 @@ private static class UTILITIES
 
             Visit(node.FunctionBodyNode);
 
+            _currentLslFunctionDeclarationNode = null;
+
             return false;
         }
 
 
         public override bool VisitDefaultState(ILSLStateScopeNode node)
         {
-            _currentLslStateBody = "default";
+            _currentLslStateNode = node;
 
             var eventHandlers = node.EventHandlers;
             var i = 0;
@@ -1778,6 +1806,8 @@ private static class UTILITIES
             }
 
             Visit(eventHandlers[i]);
+
+            _currentLslStateNode = null;
 
             return false;
         }
@@ -1785,7 +1815,7 @@ private static class UTILITIES
 
         public override bool VisitDefinedState(ILSLStateScopeNode node)
         {
-            _currentLslStateBody = node.StateName;
+            _currentLslStateNode = node;
 
             var eventHandlers = node.EventHandlers;
             var i = 0;
@@ -1796,6 +1826,8 @@ private static class UTILITIES
             }
 
             Visit(eventHandlers[i]);
+
+            _currentLslStateNode = null;
 
             return false;
         }

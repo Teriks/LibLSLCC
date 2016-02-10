@@ -79,6 +79,23 @@ namespace LibLSLCC.Formatter.Visitor
         private bool _wroteCommentBeforeSingleBlockStatement;
 
 
+        private void Reset()
+        {
+            _expressionContextStack.Clear();
+            _comments.Clear();
+            
+
+            _indentLevel = 0;
+            _sourceReference = "";
+            _writeColumn = 0;
+            _writeLine = 0;
+            _tabsWrittenSinceLastLine = 0;
+            _nonTabsWrittenSinceLastLine = 0;
+            _binaryExpressionsSinceNewLine = 0;
+            _wroteCommentBeforeSingleBlockStatement = false;
+        }
+
+
         /// <summary>
         /// Default constructor for the formatting visitor.
         /// </summary>
@@ -195,21 +212,28 @@ namespace LibLSLCC.Formatter.Visitor
         public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
             bool closeStream = true)
         {
-            _sourceReference = sourceReference;
-
-            foreach (var comment in node.Comments)
+            try
             {
-                _comments.AddLast(comment);
+                _sourceReference = sourceReference;
+
+                foreach (var comment in node.Comments)
+                {
+                    _comments.AddLast(comment);
+                }
+
+                Writer = writer;
+
+                Visit(node);
+                Writer.Flush();
+
+                if (closeStream)
+                {
+                    Writer.Close();
+                }
             }
-
-            Writer = writer;
-
-            Visit(node);
-            Writer.Flush();
-
-            if (closeStream)
+            finally
             {
-                Writer.Close();
+                Reset();
             }
         }
 

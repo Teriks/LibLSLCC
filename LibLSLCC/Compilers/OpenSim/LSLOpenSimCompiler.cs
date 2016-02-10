@@ -138,10 +138,9 @@ namespace LibLSLCC.Compilers.OpenSim
             {
                 _visitor.WriteAndFlush(compilationUnit, textWriter, false);
             }
-            catch (LSLCompilerInternalException)
+            finally
             {
                 _visitor.Reset();
-                throw;
             }
         }
     }
