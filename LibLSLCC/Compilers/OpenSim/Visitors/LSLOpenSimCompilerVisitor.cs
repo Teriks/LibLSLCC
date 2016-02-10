@@ -78,7 +78,7 @@ private static class UTILITIES
     public static void ForceStatement<T>(T val) {}
 
     public static bool ToBool(LSL_Types.LSLString str)
-    {		
+    {
         return str.Length != 0;
     }
 
