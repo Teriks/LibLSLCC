@@ -42,6 +42,7 @@
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Glob.cs" />
     <Compile Include="HandleSwitchResult.cs" />
+    <Compile Include="LogWriteException.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
