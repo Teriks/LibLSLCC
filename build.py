@@ -263,9 +263,15 @@ def remove_second_folder_down(path):
 
 
 
+try:
+    import zlib
+    zipMode= zipfile.ZIP_DEFLATED
+except:
+    zipMode= zipfile.ZIP_STORED
+
 
 # make the timestamped binary release zip file
-with zipfile.ZipFile(binariesZip, 'w') as zip_file:
+with zipfile.ZipFile(binariesZip, 'w', zipMode) as zip_file:
 
     if not args.debug_only:
         zip_dir_relative(os.path.join(lib_anyCpu, "Release"), zip_file, archDirTransform=remove_second_folder_down)
