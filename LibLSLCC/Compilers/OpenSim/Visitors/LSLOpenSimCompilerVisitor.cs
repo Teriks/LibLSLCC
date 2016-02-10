@@ -47,7 +47,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -78,9 +77,9 @@ private static class UTILITIES
 {
     public static void ForceStatement<T>(T val) {}
 
-    public static bool ToBool(LSL_Types.LSLString str)		
+    public static bool ToBool(LSL_Types.LSLString str)
     {		
-        return str.Length != 0;		
+        return str.Length != 0;
     }
 
     public static LSL_Types.Quaternion Negate(LSL_Types.Quaternion rot)
