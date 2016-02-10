@@ -265,9 +265,9 @@ def remove_second_folder_down(path):
 
 try:
     import zlib
-    zipMode= zipfile.ZIP_DEFLATED
+    zipMode = zipfile.ZIP_DEFLATED
 except:
-    zipMode= zipfile.ZIP_STORED
+    zipMode = zipfile.ZIP_STORED
 
 
 # make the timestamped binary release zip file
