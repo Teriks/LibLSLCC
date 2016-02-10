@@ -533,6 +533,23 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
+        ///     Occurs when a return value inside of an event handler returns an expression instead of nothing.
+        ///     The return value of the expression is simply discarded in this case.
+        /// </summary>
+        /// <param name="location">The location.</param>
+        /// <param name="eventSignature">The signature of the event handler this warning occurred in.</param>
+        /// <param name="returnExpression">The return expression.</param>
+        public void ReturnedValueFromEventHandler(LSLSourceCodeRange location, LSLEventSignature eventSignature,
+            ILSLExprNode returnExpression)
+        {
+            OnWarning(location,
+                string.Format(
+                    "Return statement in event handler \"{0}\" returns a value, event return values are discarded.",
+                    eventSignature.Name));
+        }
+
+
+        /// <summary>
         /// A constant value was used for the conditional expression in a control or loop statement.
         /// </summary>
         /// <param name="location">The location in the source code.</param>

@@ -2140,15 +2140,12 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (containingFunction == null)
                 {
-                    GenSyntaxError().ReturnedValueFromEventHandler(
+                    GenSyntaxWarning().ReturnedValueFromEventHandler(
                         new LSLSourceCodeRange(context),
+                        ScopingManager.CurrentEventHandlerSignature,
                         returnExpression);
-
-                    return ReturnFromVisit(context, LSLReturnStatementNode
-                        .GetError(new LSLSourceCodeRange(context)));
                 }
-
-                if (containingFunction.ReturnType == LSLType.Void)
+                else if (containingFunction.ReturnType == LSLType.Void)
                 {
                     GenSyntaxError().ReturnedValueFromVoidFunction(
                         new LSLSourceCodeRange(context),
@@ -2166,10 +2163,10 @@ namespace LibLSLCC.CodeValidator.Visitor
                         .GetError(new LSLSourceCodeRange(context)));
                 }
 
-
-                var valid = ExpressionValidator.
-                    ValidateReturnTypeMatch(containingFunction.ReturnType,
-                        returnExpression);
+                //You can return anything from an event handler.
+                //If its not inside a function, than it's inside an event.
+                var valid = containingFunction == null ||
+                    ExpressionValidator.ValidateReturnTypeMatch(containingFunction.ReturnType, returnExpression);
 
 
                 if (!valid)

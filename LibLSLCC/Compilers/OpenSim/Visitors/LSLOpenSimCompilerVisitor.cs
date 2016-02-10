@@ -1870,15 +1870,32 @@ private static class UTILITIES
         {
             if (node.IsDeadCode) return false;
 
-            Writer.Write(GenIndent() + "return");
-
-            if (node.HasReturnExpression)
+            //Check if we are inside of an event handler, and if a return value is present.
+            if (_currentLslEventHandlerNode != null && node.HasReturnExpression)
             {
-                Writer.Write(" ");
-                Visit(node.ReturnExpression);
-            }
+                //Returning a value from an event handler is allowed in LSL, LibLSLCC only generates a warning now.
+                //
+                //I am not going to bother optimizing out the need for UTILITIES.ForceStatement,
+                //because returning a value from an event handler is pointless and probably used infrequently
 
-            Writer.Write(";");
+                Writer.Write(GenIndent() + "UTILITIES.ForceStatement(");
+                Visit(node.ReturnExpression);
+                Writer.Write(");");
+            }
+            else
+            {
+
+                Writer.Write(GenIndent() + "return");
+
+                if (node.HasReturnExpression)
+                {
+                    Writer.Write(" ");
+                    Visit(node.ReturnExpression);
+                }
+
+                Writer.Write(";");
+
+            }
 
             return false;
         }

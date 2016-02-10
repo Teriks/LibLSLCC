@@ -329,16 +329,6 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
-        /// <summary>
-        /// Attempted to return a value from an event handler.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="attemptedReturnExpression">The expression attempted to be returned.</param>
-        public virtual void ReturnedValueFromEventHandler(LSLSourceCodeRange location,
-            ILSLExprNode attemptedReturnExpression)
-        {
-            OnError(location, "Cannot return a value from an Event Handler.");
-        }
 
         /// <summary>
         /// A user defined function was re-defined.

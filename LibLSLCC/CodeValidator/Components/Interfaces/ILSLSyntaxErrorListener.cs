@@ -216,12 +216,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         void ImproperParameterCountInFunctionCall(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature, ILSLExprNode[] parameterExpressionsGiven);
 
-        /// <summary>
-        /// Attempted to return a value from an event handler.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="attemptedReturnExpression">The expression attempted to be returned.</param>
-        void ReturnedValueFromEventHandler(LSLSourceCodeRange location, ILSLExprNode attemptedReturnExpression);
 
 
         /// <summary>

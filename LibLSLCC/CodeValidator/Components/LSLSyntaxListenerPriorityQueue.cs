@@ -356,17 +356,7 @@ namespace LibLSLCC.CodeValidator.Components
                         parameterExpressionsGiven));
         }
 
-        /// <summary>
-        /// Attempted to return a value from an event handler.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="attemptedReturnExpression">The expression attempted to be returned.</param>
-        void ILSLSyntaxErrorListener.ReturnedValueFromEventHandler(LSLSourceCodeRange location,
-            ILSLExprNode attemptedReturnExpression)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.ReturnedValueFromEventHandler(location, attemptedReturnExpression));
-        }
+
 
         /// <summary>
         /// A user defined function was re-defined.
@@ -1045,6 +1035,14 @@ namespace LibLSLCC.CodeValidator.Components
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.HexLiteralOverflow(location, literalText));
+        }
+
+
+        void ILSLSyntaxWarningListener.ReturnedValueFromEventHandler(LSLSourceCodeRange location, LSLEventSignature eventSignature, ILSLExprNode returnExpression)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.ReturnedValueFromEventHandler(location, eventSignature, returnExpression));
         }
 
 
