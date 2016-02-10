@@ -533,8 +533,8 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        ///     Occurs when a return value inside of an event handler returns an expression instead of nothing.
-        ///     The return value of the expression is simply discarded in this case.
+        /// Occurs when a return value inside of an event handler returns an expression instead of nothing.
+        /// The return value of the expression is simply discarded in this case.
         /// </summary>
         /// <param name="location">The location.</param>
         /// <param name="eventSignature">The signature of the event handler this warning occurred in.</param>
