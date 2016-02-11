@@ -260,3 +260,9 @@ Previously, if a statement inside of a code scope was optimized away, a blank li
 would be generated in its place. 
  
 The new behavior is to omit the blank line where the statement would have been.
+
+# (2/11/2016 9:32 PM)<br/> Clean up all syntax tree node implementations
+
+LibLSLCC's syntax tree nodes no longer hold any references to the ANTLR tree nodes
+they abstract.  This allows for complete garbage collection of the ANTLR tree once 
+LibLSLCC is done building its own abstracted tree.
