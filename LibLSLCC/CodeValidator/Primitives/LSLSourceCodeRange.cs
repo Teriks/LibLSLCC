@@ -382,15 +382,15 @@ namespace LibLSLCC.CodeValidator.Primitives
 
         public LSLSourceCodeRange Clone()
         {
-            return new LSLSourceCodeRange()
+            return new LSLSourceCodeRange
             {
-                ColumnEnd = this.ColumnEnd,
-                ColumnStart = this.ColumnStart,
-                HasIndexInfo = this.HasIndexInfo,
-                LineEnd = this.LineEnd,
-                LineStart = this.LineStart,
-                StartIndex = this.StartIndex,
-                StopIndex = this.StopIndex
+                ColumnEnd = ColumnEnd,
+                ColumnStart = ColumnStart,
+                HasIndexInfo = HasIndexInfo,
+                LineEnd = LineEnd,
+                LineStart = LineStart,
+                StartIndex = StartIndex,
+                StopIndex = StopIndex
             };
         }
     }

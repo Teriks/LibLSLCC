@@ -56,7 +56,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLRotationLiteralNode : ILSLRotationLiteralNode, ILSLExprNode
     {
-        private LSLRotationLiteralNode lSLRotationLiteralNode;
 
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]

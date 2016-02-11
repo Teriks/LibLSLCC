@@ -84,13 +84,10 @@ namespace LSLCCEditor
         {
 
 #if !DEBUG
-           Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 #endif
 
             AppSettings.Load();
-
-
-
 
         }
 

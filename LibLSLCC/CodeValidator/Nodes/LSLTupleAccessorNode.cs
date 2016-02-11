@@ -56,7 +56,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLTupleAccessorNode : ILSLTupleAccessorNode, ILSLExprNode
     {
-        private LSLTupleAccessorNode lSLTupleAccessorNode;
 
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]

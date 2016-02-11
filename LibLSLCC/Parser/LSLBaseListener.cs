@@ -11,6 +11,13 @@
 // Generated from Parser\LSL.g4 by ANTLR 4.5.2
 
 // Unreachable code detected
+
+using System;
+using System.CodeDom.Compiler;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -20,20 +27,13 @@
 #pragma warning disable 419
 
 namespace LibLSLCC.Parser {
-
-using Antlr4.Runtime.Misc;
-using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
-using ITerminalNode = Antlr4.Runtime.Tree.ITerminalNode;
-using IToken = Antlr4.Runtime.IToken;
-using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
-
-/// <summary>
+    /// <summary>
 /// This class provides an empty implementation of <see cref="ILSLListener"/>,
 /// which can be extended to create a listener which only needs to handle a subset
 /// of the available methods.
 /// </summary>
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5.2")]
-[System.CLSCompliant(false)]
+[GeneratedCode("ANTLR", "4.5.2")]
+[CLSCompliant(false)]
 public partial class LSLBaseListener : ILSLListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LSLParser.vectorLiteral"/>.

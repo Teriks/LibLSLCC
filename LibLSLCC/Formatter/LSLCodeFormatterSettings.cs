@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using LibLSLCC.Settings;
 
 namespace LibLSLCC.Formatter

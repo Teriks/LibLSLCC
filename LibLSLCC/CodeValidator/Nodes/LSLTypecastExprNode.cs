@@ -56,7 +56,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLTypecastExprNode : ILSLTypecastExprNode, ILSLExprNode
     {
-        private LSLTypecastExprNode lSLTypecastExprNode;
 
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]

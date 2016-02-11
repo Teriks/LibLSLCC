@@ -40,10 +40,9 @@
 // 
 // 
 #endregion
-using System.CodeDom;
+
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace LibLSLCC.CSharp
