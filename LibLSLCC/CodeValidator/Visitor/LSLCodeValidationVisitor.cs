@@ -3085,10 +3085,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                             .UseOfDeprecatedLibraryFunction(location.Clone(), functionSignature);
                     }
 
-                    result = new LSLFunctionCallNode(context, functionSignature, expressionList)
-                    {
-                        HasErrors = expressionList.HasErrors
-                    };
+                    result = new LSLFunctionCallNode(context, functionSignature, expressionList);
                 }
                 else
                 {
