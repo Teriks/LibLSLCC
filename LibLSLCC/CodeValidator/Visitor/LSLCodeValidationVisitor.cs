@@ -3038,8 +3038,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 GenSyntaxError().CallToFunctionInStaticContext(location);
 
-                return ReturnFromVisit(context, LSLFunctionCallNode.GetError(
-                    new LSLSourceCodeRange(context)));
+                return ReturnFromVisit(context, LSLFunctionCallNode.GetError(location));
             }
 
 
@@ -3065,15 +3064,13 @@ namespace LibLSLCC.CodeValidator.Visitor
                 var functionSignatures = LibraryDataProvider.GetLibraryFunctionSignatures(functionName);
 
 
-                LSLLibraryFunctionSignature functionSignature = null;
                 if (!expressionList.HasErrors)
                 {
-                    functionSignature = ValidateLibraryFunctionCallSignatureMatch(context, functionSignatures,
-                        expressionList.ExpressionNodes);
+                    var functionSignature = ValidateLibraryFunctionCallSignatureMatch(context, functionSignatures, expressionList.ExpressionNodes);
 
                     if (functionSignature == null)
                     {
-                        return LSLFunctionCallNode.GetError(new LSLSourceCodeRange(context));
+                        return LSLFunctionCallNode.GetError(location);
                     }
 
 #if DEBUG_OVERLOAD_MATCHES
@@ -3085,19 +3082,25 @@ namespace LibLSLCC.CodeValidator.Visitor
                     if (functionSignature.Deprecated)
                     {
                         GenSyntaxWarning()
-                            .UseOfDeprecatedLibraryFunction(new LSLSourceCodeRange(context), functionSignature);
+                            .UseOfDeprecatedLibraryFunction(location.Clone(), functionSignature);
                     }
-                }
 
-                result = new LSLFunctionCallNode(context, functionSignature, expressionList)
+                    result = new LSLFunctionCallNode(context, functionSignature, expressionList)
+                    {
+                        HasErrors = expressionList.HasErrors
+                    };
+                }
+                else
                 {
-                    HasErrors = expressionList.HasErrors
-                };
+                    return LSLFunctionCallNode.GetError(location);
+                }
             }
             else if (ScopingManager.FunctionIsPreDefined(functionName))
             {
-                var expressionList = VisitFunctionCallParameters(expressionListRule,
-                    LSLExpressionListType.UserFunctionCallParameters) as LSLExpressionListNode;
+                var expressionList = 
+                    VisitFunctionCallParameters(
+                        expressionListRule, 
+                        LSLExpressionListType.UserFunctionCallParameters) as LSLExpressionListNode;
 
                 if (expressionList == null)
                 {
@@ -3108,18 +3111,27 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 var functionSignature = ScopingManager.ResolveFunctionPreDefine(functionName);
 
-                var match = false;
-                if (!expressionList.HasErrors)
+                if (functionSignature == null)
                 {
-                    match = ValidateFunctionCallSignatureMatch(context, functionSignature,
-                        expressionList.ExpressionNodes);
+                    return LSLFunctionCallNode.GetError(location);
                 }
 
-                result = new LSLFunctionCallNode(context, functionSignature, expressionList)
+                if (!expressionList.HasErrors)
                 {
-                    HasErrors = !match | expressionList.HasErrors
-                };
+                    var match = ValidateFunctionCallSignatureMatch(context, functionSignature,
+                        expressionList.ExpressionNodes);
 
+                    if (!match)
+                    {
+                        return LSLFunctionCallNode.GetError(location);
+                    }
+                }
+                else
+                {
+                    return LSLFunctionCallNode.GetError(location);
+                }
+
+                result = new LSLFunctionCallNode(context, functionSignature, expressionList);
 
                 AddReferenceToFunctionDefinition(functionSignature, result);
             }
@@ -3127,8 +3139,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 GenSyntaxError().CallToUndefinedFunction(location, functionName);
 
-                return ReturnFromVisit(context, LSLFunctionCallNode.GetError(
-                    new LSLSourceCodeRange(context)));
+                return ReturnFromVisit(context, LSLFunctionCallNode.GetError(location));
             }
 
 
