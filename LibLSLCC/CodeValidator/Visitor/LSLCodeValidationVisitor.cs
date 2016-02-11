@@ -3088,6 +3088,14 @@ namespace LibLSLCC.CodeValidator.Visitor
                     }
                 }
 
+                if (functionSignature == null)
+                {
+                    //Just make a dummy.
+                    //Theres a syntax error in the parameters but we still want this function to count as referenced.
+                    //LSLFunctionCallNode's constructor will throw if it's given a null signature
+                    functionSignature = new LSLLibraryFunctionSignature(LSLType.Void, functionName);
+                }
+
                 result = new LSLFunctionCallNode(context, functionSignature, expressionList)
                 {
                     HasErrors = expressionList.HasErrors
@@ -3104,7 +3112,10 @@ namespace LibLSLCC.CodeValidator.Visitor
                         .VisitReturnTypeException("VisitFunctionCallParameters", typeof(LSLExpressionListNode));
                 }
 
-
+                //Guaranteed to return non null, checked first with:
+                //
+                // ScopingManager.FunctionIsPreDefined(functionName)
+                //
                 var functionSignature = ScopingManager.ResolveFunctionPreDefine(functionName);
 
                 var match = false;
