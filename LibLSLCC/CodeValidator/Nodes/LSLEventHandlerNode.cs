@@ -79,18 +79,19 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("eventBodyNode");
             }
 
-            ParserContext = context;
-            EventBodyNode = eventBodyNode;
-            ParameterListNode = parameterListNode;
+            Name = context.handler_name.Text;
 
+            EventBodyNode = eventBodyNode;
             EventBodyNode.Parent = this;
+
+            ParameterListNode = parameterListNode;
             ParameterListNode.Parent = this;
+
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
-
-        internal LSLParser.EventHandlerContext ParserContext { get; private set; }
 
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
@@ -108,10 +109,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The name of the event handler.
         /// </summary>
-        public string Name
-        {
-            get { return ParserContext.handler_name.Text; }
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// True if the event handler has parameters.

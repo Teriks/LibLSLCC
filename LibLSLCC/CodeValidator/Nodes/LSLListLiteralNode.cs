@@ -57,7 +57,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLListLiteralNode : ILSLListLiteralNode, ILSLExprNode
     {
-// ReSharper disable UnusedParameter.Local
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLListLiteralNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -75,10 +76,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             HasPossibleSideEffects = expressionListNode.AnyExpressionHasPossibleSideEffects;
             IsConstant = expressionListNode.AllExpressionsConstant;
-            ParserContext = context;
+
             ExpressionListNode = expressionListNode;
-
-
             ExpressionListNode.Parent = this;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
@@ -86,7 +85,31 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.ListLiteralContext ParserContext { get; private set; }
+
+        public LSLListLiteralNode(LSLListLiteralNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            HasPossibleSideEffects = other.HasPossibleSideEffects;
+            IsConstant = other.IsConstant;
+
+            ExpressionListNode = other.ExpressionListNode.Clone();
+            ExpressionListNode.Parent = this;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
 
         /// <summary>
         /// A list of expressions that were used to initialize the list literal, or an empty list.
@@ -144,19 +167,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLListLiteralNode(ParserContext, ExpressionListNode.Clone())
-            {
-                HasErrors = HasErrors,
-                IsConstant = IsConstant,
-                Parent = Parent,
-                ParserContext = ParserContext,
-                HasPossibleSideEffects = HasPossibleSideEffects
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLListLiteralNode(this);
         }
 
 

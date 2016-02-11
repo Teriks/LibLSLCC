@@ -63,6 +63,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
         }
 
+        public LSLHexLiteralNode(LSLHexLiteralNode context)
+            : base(context)
+        {
+        }
+
         internal LSLHexLiteralNode(LSLParser.Expr_AtomContext context)
             : base(context, LSLType.Integer)
         {
@@ -100,18 +105,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            var x = new LSLHexLiteralNode(ParserContext)
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
-
-            return x;
+            return HasErrors ? GetError(SourceCodeRange) : new LSLHexLiteralNode(this);
         }
     }
 }

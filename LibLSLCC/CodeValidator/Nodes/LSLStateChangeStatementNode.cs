@@ -66,8 +66,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         internal LSLStateChangeStatementNode(LSLParser.StateChangeStatementContext context, bool isSingleBlockStatement)
         {
-            ParserContext = context;
             IsSingleBlockStatement = isSingleBlockStatement;
+
+            StateTargetName = context.state_target.Text;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
             StateKeywordSourceCodeRange = new LSLSourceCodeRange(context.state_keyword);
             SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
@@ -76,7 +78,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.StateChangeStatementContext ParserContext { get; private set; }
 
         /// <summary>
         /// If the scope has a return path, this is set to the node that causes the function to return.
@@ -155,10 +156,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The name of the state that this state change statement jumps to.
         /// </summary>
-        public string StateTargetName
-        {
-            get { return ParserContext.state_target.Text; }
-        }
+        public string StateTargetName { get; private set; }
 
 
         /// <summary>

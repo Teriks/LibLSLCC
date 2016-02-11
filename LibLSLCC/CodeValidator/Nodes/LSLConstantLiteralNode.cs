@@ -64,15 +64,31 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        public LSLConstantLiteralNode(LSLConstantLiteralNode other)
+        {
+            RawText = other.RawText;
+            Type = other.Type;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+            }
+
+            Parent = other.Parent;
+            HasErrors = other.HasErrors;
+        }
+
         protected internal LSLConstantLiteralNode(LSLParser.Expr_AtomContext context, LSLType type)
         {
-            ParserContext = context;
+            RawText = context.children[0].GetText();
             Type = type;
             SourceCodeRange = new LSLSourceCodeRange(context);
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.Expr_AtomContext ParserContext { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -93,10 +109,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The raw text of the literal taken from the source code.
         /// </summary>
-        public string RawText
-        {
-            get { return ParserContext.children[0].GetText(); }
-        }
+        public string RawText { get; private set; }
 
 
         /// <summary>

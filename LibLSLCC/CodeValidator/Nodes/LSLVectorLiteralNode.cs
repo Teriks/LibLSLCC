@@ -56,7 +56,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLVectorLiteralNode : ILSLVectorLiteralNode, ILSLExprNode
     {
-// ReSharper disable UnusedParameter.Local
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLVectorLiteralNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -65,49 +66,69 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLVectorLiteralNode(LSLParser.VectorLiteralContext context, ILSLExprNode x, ILSLExprNode y,
-            ILSLExprNode z)
+        internal LSLVectorLiteralNode(LSLParser.VectorLiteralContext context, ILSLExprNode x, ILSLExprNode y, ILSLExprNode z)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
-
             if (x == null)
             {
                 throw new ArgumentNullException("x");
             }
-            x.Parent = this;
-
             if (y == null)
             {
                 throw new ArgumentNullException("y");
             }
-            y.Parent = this;
-
             if (z == null)
             {
                 throw new ArgumentNullException("z");
             }
-            z.Parent = this;
 
-
-            ParserContext = context;
             XExpression = x;
             YExpression = y;
             ZExpression = z;
 
+            XExpression.Parent = this;
+            YExpression.Parent = this;
+            ZExpression.Parent = this;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             CommaOneSourceCodeRange = new LSLSourceCodeRange(context.comma_one);
-
             CommaTwoSourceCodeRange = new LSLSourceCodeRange(context.comma_two);
 
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.VectorLiteralContext ParserContext { get; private set; }
 
+        public LSLVectorLiteralNode(LSLVectorLiteralNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            XExpression = other.XExpression.Clone();
+            YExpression = other.YExpression.Clone();
+            ZExpression = other.ZExpression.Clone();
+
+            XExpression.Parent = this;
+            YExpression.Parent = this;
+            ZExpression.Parent = this;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (!SourceCodeRangesAvailable) return;
+
+            SourceCodeRange = other.SourceCodeRange.Clone();
+
+            CommaOneSourceCodeRange = other.CommaOneSourceCodeRange.Clone();
+            CommaTwoSourceCodeRange = other.CommaTwoSourceCodeRange.Clone();
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
 
         /// <summary>
         /// The expression node used to initialize the X Axis Component of the vector literal.  
@@ -173,16 +194,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLVectorLiteralNode(ParserContext, XExpression.Clone(), YExpression.Clone(), ZExpression.Clone())
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLVectorLiteralNode(this);
         }
 
 

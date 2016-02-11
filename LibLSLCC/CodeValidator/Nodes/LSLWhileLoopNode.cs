@@ -79,23 +79,20 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             IsSingleBlockStatement = inSingleBlockStatementScope;
-            ParserContext = context;
+
             ConditionExpression = conditionExpression;
+            ConditionExpression.Parent = this;
+
             Code = code;
+            Code.Parent = this;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
             WhileKeywordSourceCodeRange = new LSLSourceCodeRange(context.loop_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
-           
-
-            code.Parent = this;
-            conditionExpression.Parent = this;
 
             SourceCodeRangesAvailable = true;
         }
-
-        internal LSLParser.WhileLoopContext ParserContext { get; private set; }
 
 
         /// <summary>

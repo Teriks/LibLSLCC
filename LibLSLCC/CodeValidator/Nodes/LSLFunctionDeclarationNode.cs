@@ -81,20 +81,24 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("functionBodyNode");
             }
 
-            ParserContext = context;
+
+            ReturnTypeString = context.return_type == null ? "" : context.return_type.Text;
+
+            ReturnType = context.return_type == null ? LSLType.Void : LSLTypeTools.FromLSLTypeString(ReturnTypeString);
+
+            Name = context.function_name.Text;
+
+
             ParameterListNode = parameterListNode;
+            ParameterListNode.Parent = this;
+
             FunctionBodyNode = functionBodyNode;
-
-
             FunctionBodyNode.Parent = this;
 
-            ParameterListNode.Parent = this;
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
-
-        internal LSLParser.FunctionDeclarationContext ParserContext { get; private set; }
 
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
@@ -136,36 +140,17 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// The string from the source code that represents the return type assigned to the function definition,
         /// or an empty string if no return type was assigned.
         /// </summary>
-        public string ReturnTypeString
-        {
-            get
-            {
-                if (ParserContext.return_type == null) return "";
-
-                return ParserContext.return_type.Text;
-            }
-        }
+        public string ReturnTypeString { get; set; }
 
         /// <summary>
         /// The name of the function.
         /// </summary>
-        public string Name
-        {
-            get { return ParserContext.function_name.Text; }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// The return type assigned to the function definition, it will be <see cref="LSLType.Void"/> if no return type was given.
         /// </summary>
-        public LSLType ReturnType
-        {
-            get
-            {
-                if (ParserContext.return_type == null) return LSLType.Void;
-
-                return LSLTypeTools.FromLSLTypeString(ReturnTypeString);
-            }
-        }
+        public LSLType ReturnType { get; set; }
 
         ILSLParameterListNode ILSLFunctionDeclarationNode.ParameterListNode
         {

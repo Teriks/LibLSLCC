@@ -65,6 +65,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         private readonly GenericArray<LSLStateScopeNode> _stateDeclarations = new GenericArray<LSLStateScopeNode>();
         private int _addCounter;
         private LSLStateScopeNode _defaultState;
+
+
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLCompilationUnitNode(LSLSourceCodeRange sourceRange, Err err)
@@ -81,16 +83,11 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            ParserContext = context;
-
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
 
-
-
-        internal LSLParser.CompilationUnitContext ParserContext { get; private set; }
 
         public IReadOnlyGenericArray<LSLVariableDeclarationNode> GlobalVariableDeclarations
         {

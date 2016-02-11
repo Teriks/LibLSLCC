@@ -54,7 +54,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// <summary>
     /// Represents a range in LSL source code.
     /// </summary>
-    public class LSLSourceCodeRange
+    public class LSLSourceCodeRange : ICloneable
     {
 
         /// <summary>
@@ -373,6 +373,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             LineEnd = statement.SourceCodeRange.LineEnd;
             ColumnEnd = statement.SourceCodeRange.ColumnEnd;
             StopIndex = statement.SourceCodeRange.StopIndex;
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
         }
 
         public LSLSourceCodeRange Clone()

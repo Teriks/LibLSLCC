@@ -253,7 +253,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 foreach (var parameter in functionSignature.ParameterListNode.Parameters)
                 {
                     //parameter references are implicitly not constant
-                    var parameterRef = LSLVariableDeclarationNode.CreateParameter(parameter.ParserContext);
+                    var parameterRef = LSLVariableDeclarationNode.CreateParameter(parameter);
 
 
                     _parameterScopeVariables.Add(parameter.Name, parameterRef);
@@ -301,8 +301,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 foreach (var parameter in eventSig.ParameterListNode.Parameters)
                 {
                     //parameter references are implicitly not constant
-                    var parameterRef = LSLVariableDeclarationNode.CreateParameter(parameter.ParserContext);
-
+                    var parameterRef = LSLVariableDeclarationNode.CreateParameter(parameter);
 
                     _parameterScopeVariables.Add(parameter.Name, parameterRef);
                 }

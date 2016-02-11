@@ -78,17 +78,16 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             IsSingleBlockStatement = isSingleBlockStatement;
-            ParserContext = context;
+
             Expression = expression;
 
-            expression.Parent = this;
+            Expression.Parent = this;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.ExpressionStatementContext ParserContext { get; private set; }
 
 
         public ILSLExprNode Expression { get; private set; }

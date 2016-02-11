@@ -65,8 +65,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLJumpStatementNode(LSLParser.JumpStatementContext context, LSLLabelStatementNode jumpTarget,
-            bool isSingleBlockStatement)
+        internal LSLJumpStatementNode(
+            LSLParser.JumpStatementContext context, 
+            LSLLabelStatementNode jumpTarget,
+            bool isSingleBlockStatement
+            )
         {
             if (context == null)
             {
@@ -79,9 +82,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             IsSingleBlockStatement = isSingleBlockStatement;
-            ParserContext = context;
+
+            LabelName = context.jump_target.Text;
+
             JumpTarget = jumpTarget;
-            jumpTarget.AddJumpToHere(this);
+            JumpTarget.AddJumpToHere(this);
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             LabelNameSourceCodeRange = new LSLSourceCodeRange(context.jump_target);
@@ -91,7 +97,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.JumpStatementContext ParserContext { get; private set; }
         public LSLLabelStatementNode JumpTarget { get; set; }
 
         #region ILSLCodeStatement Members
@@ -211,10 +216,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The name of the label that the jump statement jumps to.
         /// </summary>
-        public string LabelName
-        {
-            get { return ParserContext.jump_target.Text; }
-        }
+        public string LabelName { get; private set; }
 
         ILSLLabelStatementNode ILSLJumpStatementNode.JumpTarget
         {

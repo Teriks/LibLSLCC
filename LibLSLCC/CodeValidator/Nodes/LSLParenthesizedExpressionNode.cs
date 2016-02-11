@@ -56,7 +56,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLParenthesizedExpressionNode : ILSLParenthesizedExpressionNode, ILSLExprNode
     {
-// ReSharper disable UnusedParameter.Local
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLParenthesizedExpressionNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -78,7 +79,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("innerExpression");
             }
 
-            ParserContext = context;
             InnerExpression = innerExpression;
             InnerExpression.Parent = this;
             SourceCodeRange = new LSLSourceCodeRange(context);
@@ -86,7 +86,28 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.ParenthesizedExpressionContext ParserContext { get; private set; }
+
+        public LSLParenthesizedExpressionNode(LSLParenthesizedExpressionNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            InnerExpression = other.InnerExpression.Clone();
+            InnerExpression.Parent = this;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            { 
+                SourceCodeRange = other.SourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
 
         /// <summary>
         /// The expression node contained within the parenthesis, this should never be null.
@@ -126,16 +147,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLParenthesizedExpressionNode(ParserContext, InnerExpression.Clone())
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLParenthesizedExpressionNode(this);
         }
 
 

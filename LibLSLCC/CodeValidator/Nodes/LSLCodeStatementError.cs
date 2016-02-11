@@ -62,7 +62,6 @@ namespace LibLSLCC.CodeValidator.Nodes
     {
         public LSLCodeStatementError(LSLParser.CodeStatementContext parserContext, bool isSingleBlockStatement)
         {
-            ParserContext = parserContext;
             IsSingleBlockStatement = isSingleBlockStatement;
 
             SourceCodeRange = new LSLSourceCodeRange(parserContext);
@@ -70,7 +69,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.CodeStatementContext ParserContext { get; private set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public bool HasReturnStatementNode

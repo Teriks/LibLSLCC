@@ -102,10 +102,43 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+
+
+        public LSLExpressionListNode(LSLExpressionListNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+
+            ListType = other.ListType;
+
+            foreach (var lslExprNode in other.ExpressionNodes)
+            {
+                var node = lslExprNode.Clone();
+
+                node.Parent = this;
+
+                AddExpression(node);
+            }
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
+
         internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext,
             LSLExpressionListType listType)
         {
-            ParserContext = parserContext;
             ListType = listType;
             SourceCodeRange = new LSLSourceCodeRange(parserContext);
 
@@ -127,12 +160,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 AddExpression(lslExprNode);
             }
-            SourceCodeRange = new LSLSourceCodeRange(parserContext);
 
+            SourceCodeRange = new LSLSourceCodeRange(parserContext);
             SourceCodeRangesAvailable = true;
         }
-
-        internal LSLParser.OptionalExpressionListContext ParserContext { get; set; }
 
 
         /// <summary>
@@ -220,26 +251,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep cloned copy of this expression list node.</returns>
         public LSLExpressionListNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            var r = new LSLExpressionListNode(ParserContext, ListType)
-            {
-                HasErrors = HasErrors,
-                Parent = Parent,
-                SourceCodeRangesAvailable = SourceCodeRangesAvailable
-            };
-
-
-            foreach (var expressionNode in _expressionNodes)
-            {
-                r.AddExpression(expressionNode);
-            }
-
-            return r;
+            return HasErrors ? GetError(SourceCodeRange) : new LSLExpressionListNode(this);
         }
+
 
         /// <summary>
         /// Adds a new source code range for a comma encountered in an expression list.

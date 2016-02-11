@@ -69,7 +69,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         internal LSLLabelStatementNode(LSLParser.LabelStatementContext context, bool isSingleBlockStatement)
         {
             IsSingleBlockStatement = isSingleBlockStatement;
-            ParserContext = context;
+
+            LabelName = context.label_name.Text;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             LabelNameSourceCodeRange = new LSLSourceCodeRange(context.label_name);
@@ -79,8 +81,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.LabelStatementContext ParserContext { get; private set; }
-        internal LSLParser.CodeScopeContext ParentScopeParserContext { get; set; }
         public LSLCodeScopeNode ParentScope { get; set; }
 
         public IReadOnlyGenericArray<LSLJumpStatementNode> JumpsToHere
@@ -109,10 +109,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The name of the label.
         /// </summary>
-        public string LabelName
-        {
-            get { return ParserContext.label_name.Text; }
-        }
+        public string LabelName { get; private set; }
 
         /// <summary>
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.

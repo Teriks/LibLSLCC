@@ -63,6 +63,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
         }
 
+
+        public LSLFloatLiteralNode(LSLFloatLiteralNode other) : base(other)
+        {
+            
+        }
+
+
         internal LSLFloatLiteralNode(LSLParser.Expr_AtomContext context)
             : base(context, LSLType.Float)
         {
@@ -100,18 +107,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            var x = new LSLFloatLiteralNode(ParserContext)
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
-
-            return x;
+            return HasErrors ? GetError(SourceCodeRange) : new LSLFloatLiteralNode(this);
         }
     }
 }

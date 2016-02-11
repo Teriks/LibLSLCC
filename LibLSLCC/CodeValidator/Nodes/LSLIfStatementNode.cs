@@ -80,12 +80,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             Code = code;
-            ConditionExpression = conditionExpression;
-
             Code.Parent = this;
+
+            ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
-            
-            
 
             IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);

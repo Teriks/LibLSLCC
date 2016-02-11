@@ -56,7 +56,9 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLTypecastExprNode : ILSLTypecastExprNode, ILSLExprNode
     {
-// ReSharper disable UnusedParameter.Local
+        private LSLTypecastExprNode lSLTypecastExprNode;
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLTypecastExprNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -78,18 +80,49 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("castedExpression");
             }
 
+            CastToTypeString = context.cast_type.Text;
+            CastToType = LSLTypeTools.FromLSLTypeString(CastToTypeString);
 
-            ParserContext = context;
             CastedExpression = castedExpression;
-            Type = result;
             CastedExpression.Parent = this;
+
+            Type = result;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
 
 
-        internal LSLParser.Expr_TypeCastContext ParserContext { get; private set; }
+
+        public LSLTypecastExprNode(LSLTypecastExprNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            CastToTypeString = other.CastToTypeString;
+            CastToType = other.CastToType;
+
+            CastedExpression = other.CastedExpression.Clone();
+            CastedExpression.Parent = this;
+
+            Type = other.Type;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
+
 
         /// <summary>
         /// The expression node that represents the expression being casted.  This should never be null.
@@ -110,18 +143,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The <see cref="LSLType"/> that represents the type the expression is being cast to.
         /// </summary>
-        public LSLType CastToType
-        {
-            get { return LSLTypeTools.FromLSLTypeString(ParserContext.cast_type.Text); }
-        }
+        public LSLType CastToType { get; private set; }
 
         /// <summary>
         /// The raw type name of the type the expression is being cast to, taken from the source code.
         /// </summary>
-        public string CastToTypeString
-        {
-            get { return ParserContext.cast_type.Text; }
-        }
+        public string CastToTypeString { get; private set; }
 
         public static
             LSLTypecastExprNode GetError(LSLSourceCodeRange sourceRange)
@@ -146,16 +173,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLTypecastExprNode(ParserContext, Type, CastedExpression.Clone())
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLTypecastExprNode(this);
         }
 
 

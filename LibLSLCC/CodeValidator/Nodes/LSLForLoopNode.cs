@@ -80,11 +80,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             IsSingleBlockStatement = inSingleBlockStatementScope;
-            ParserContext = context;
+
             InitExpressionsList = initExpressions;
-            ConditionExpression = conditionExpression;
+            InitExpressionsList.Parent = this;
+
             AfterthoughExpressions = afterthoughExpressions;
-            Code = code;
+            AfterthoughExpressions.Parent = this;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
             FirstSemiColonSourceCodeRange = new LSLSourceCodeRange(context.first_semi_colon);
@@ -93,24 +94,24 @@ namespace LibLSLCC.CodeValidator.Nodes
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
             ForKeywordSourceCodeRange = new LSLSourceCodeRange(context.loop_keyword);
 
-            afterthoughExpressions.Parent = this;
-            initExpressions.Parent = this;
 
             SourceCodeRangesAvailable = true;
 
+            Code = code;
 
-            if (code != null)
+            if (Code != null)
             {
-                code.Parent = this;
+                Code.Parent = this;
             }
 
-            if (conditionExpression != null)
+            ConditionExpression = conditionExpression;
+
+            if (ConditionExpression != null)
             {
-                conditionExpression.Parent = this;
+                ConditionExpression.Parent = this;
             }
         }
 
-        internal LSLParser.ForLoopContext ParserContext { get; private set; }
         public ILSLExpressionListNode InitExpressionsList { get; private set; }
 
 

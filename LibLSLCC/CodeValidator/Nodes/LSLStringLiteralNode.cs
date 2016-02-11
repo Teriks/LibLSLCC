@@ -64,6 +64,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
         }
 
+
+        public LSLStringLiteralNode(LSLStringLiteralNode other) : base(other)
+        {
+            PreProccessedText = other.PreProccessedText;
+        }
+
+
         internal LSLStringLiteralNode(LSLParser.Expr_AtomContext context, string preProccessedText)
             : base(context, LSLType.String)
         {
@@ -112,18 +119,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            var x = new LSLStringLiteralNode(ParserContext, PreProccessedText)
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
-
-            return x;
+            return HasErrors ? GetError(SourceCodeRange) : new LSLStringLiteralNode(this);
         }
     }
 }

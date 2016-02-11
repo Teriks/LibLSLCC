@@ -66,7 +66,37 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLBinaryExpressionNode(LSLParser.ExpressionContext context,
+
+        public LSLBinaryExpressionNode(LSLBinaryExpressionNode other)
+        {
+            Type = other.Type;
+            LeftExpression = other.LeftExpression.Clone();
+            RightExpression = other.RightExpression.Clone();
+
+            LeftExpression.Parent = this;
+            RightExpression.Parent = this;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            Operation = other.Operation;
+            OperationString = other.OperationString;
+
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+
+                OperationSourceCodeRange = other.OperationSourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+
+        }
+
+
+        internal LSLBinaryExpressionNode(
+            LSLParser.ExpressionContext context,
             IToken operationToken,
             ILSLExprNode leftExpression,
             ILSLExprNode rightExpression,
@@ -89,7 +119,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
 
-            ParserContext = context;
             Type = returns;
             LeftExpression = leftExpression;
             RightExpression = rightExpression;
@@ -97,22 +126,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             leftExpression.Parent = this;
             rightExpression.Parent = this;
 
-
             ParseAndSetOperation(operationString);
-            OperationString = operationString;
-
+            
             SourceCodeRange = new LSLSourceCodeRange(context);
-
-            OperationToken = operationToken;
 
             OperationSourceCodeRange = new LSLSourceCodeRange(operationToken);
 
             SourceCodeRangesAvailable = true;
         }
 
-
-        internal IToken OperationToken { get; private set; }
-        internal LSLParser.ExpressionContext ParserContext { get; private set; }
 
 
         public ILSLExprNode LeftExpression { get; private set; }
@@ -163,7 +185,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         private void ParseAndSetOperation(string operationString)
         {
-            Operation = LSLBinaryOperationTypeTools.ParseFromOperator(operationString);
+            OperationString = operationString;
+            Operation = LSLBinaryOperationTypeTools.ParseFromOperator(OperationString);
         }
 
         #region Nested type: Err
@@ -292,13 +315,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 return GetError(SourceCodeRange);
             }
 
-            return new LSLBinaryExpressionNode(ParserContext, OperationToken, RightExpression.Clone(),
-                LeftExpression.Clone(), Type,
-                OperationString)
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return new LSLBinaryExpressionNode(this);
         }
 
         #endregion

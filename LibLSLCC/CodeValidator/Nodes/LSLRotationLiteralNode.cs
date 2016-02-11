@@ -56,7 +56,9 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLRotationLiteralNode : ILSLRotationLiteralNode, ILSLExprNode
     {
-// ReSharper disable UnusedParameter.Local
+        private LSLRotationLiteralNode lSLRotationLiteralNode;
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLRotationLiteralNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -72,36 +74,32 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 throw new ArgumentNullException("context");
             }
-
             if (x == null)
             {
                 throw new ArgumentNullException("x");
             }
-            x.Parent = this;
-
             if (y == null)
             {
                 throw new ArgumentNullException("y");
             }
-            y.Parent = this;
-
             if (z == null)
             {
                 throw new ArgumentNullException("z");
             }
-            z.Parent = this;
-
             if (s == null)
             {
                 throw new ArgumentNullException("s");
             }
-            s.Parent = this;
 
-            ParserContext = context;
             XExpression = x;
             YExpression = y;
             ZExpression = z;
             SExpression = s;
+
+            XExpression.Parent = this;
+            YExpression.Parent = this;
+            ZExpression.Parent = this;
+            SExpression.Parent = this;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
 
@@ -112,9 +110,37 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
+        public LSLRotationLiteralNode(LSLRotationLiteralNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
 
+            XExpression = other.XExpression.Clone();
+            YExpression = other.YExpression.Clone();
+            ZExpression = other.ZExpression.Clone();
+            SExpression = other.SExpression.Clone();
 
-        internal LSLParser.RotationLiteralContext ParserContext { get; private set; }
+            XExpression.Parent = this;
+            YExpression.Parent = this;
+            ZExpression.Parent = this;
+            SExpression.Parent = this;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (!SourceCodeRangesAvailable) return;
+
+            SourceCodeRange = other.SourceCodeRange.Clone();
+
+            CommaOneSourceCodeRange = other.CommaOneSourceCodeRange.Clone();
+            CommaTwoSourceCodeRange = other.CommaTwoSourceCodeRange.Clone();
+            CommaThreeSourceCodeRange = other.CommaThreeSourceCodeRange.Clone();
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
 
         /// <summary>
         /// The expression node used to initialize the X (first) Component of the rotation literal.  
@@ -196,18 +222,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLRotationLiteralNode(ParserContext, XExpression.Clone(), YExpression.Clone(),
-                ZExpression.Clone(),
-                SExpression.Clone())
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLRotationLiteralNode(this);
         }
 
 

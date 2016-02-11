@@ -44,6 +44,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
@@ -60,7 +61,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         private readonly bool _libraryFunction;
         private readonly LSLFunctionSignature _librarySignature;
         private readonly LSLPreDefinedFunctionSignature _preDefinition;
-// ReSharper disable UnusedParameter.Local
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -69,20 +71,32 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLFunctionCallNode(LSLParser.Expr_FunctionCallContext context,
+
+
+        internal LSLFunctionCallNode(
+            LSLParser.Expr_FunctionCallContext context,
             LSLPreDefinedFunctionSignature preDefinition,
             LSLExpressionListNode parameterList)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+            if (preDefinition == null)
+            {
+                throw new ArgumentNullException("preDefinition");
+            }
             if (parameterList == null)
             {
                 throw new ArgumentNullException("parameterList");
             }
 
 
-            ParserContext = context;
+            Name = context.function_name.Text;
 
             _preDefinition = preDefinition;
             _libraryFunction = false;
+
             ParameterListNode = parameterList;
 
             parameterList.Parent = this;
@@ -95,17 +109,29 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLFunctionCallNode(LSLParser.Expr_FunctionCallContext context,
+
+
+        internal LSLFunctionCallNode(
+            LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature signature,
             LSLExpressionListNode parameterList)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+            if (signature == null)
+            {
+                throw new ArgumentNullException("signature");
+            }
             if (parameterList == null)
             {
                 throw new ArgumentNullException("parameterList");
             }
 
 
-            ParserContext = context;
+            Name = context.function_name.Text;
+
             _librarySignature = signature;
             _preDefinition = null;
             _libraryFunction = true;
@@ -120,7 +146,43 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.Expr_FunctionCallContext ParserContext { get; private set; }
+
+
+        public LSLFunctionCallNode(LSLFunctionCallNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            Name = other.Name;
+
+            _preDefinition = other._preDefinition;
+            _libraryFunction = other._libraryFunction;
+            _librarySignature = other._librarySignature;
+
+            if (other.ParameterListNode != null)
+            {
+                ParameterListNode = other.ParameterListNode.Clone();
+                ParameterListNode.Parent = this;
+            }
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+
+                SourceCodeRange = other.SourceCodeRange.Clone();
+                OpenParenthSourceCodeRange = other.OpenParenthSourceCodeRange.Clone();
+                CloseParenthSourceCodeRange = other.CloseParenthSourceCodeRange.Clone();
+                FunctionNameSourceCodeRange = other.FunctionNameSourceCodeRange.Clone();
+
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
 
         /// <summary>
         /// A list of parameter expressions used to call the function, or an empty list if no parameters were used.
@@ -143,12 +205,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             get
             {
-                if (!_libraryFunction)
-                {
-                    return _preDefinition.DefinitionNode;
-                }
-
-                return null;
+                return !_libraryFunction ? _preDefinition.DefinitionNode : null;
             }
         }
 
@@ -187,10 +244,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The name of the function that was called.
         /// </summary>
-        public string Name
-        {
-            get { return ParserContext.function_name.Text; }
-        }
+        public string Name { get; private set; }
 
         IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLFunctionCallNode.ParameterExpressions
         {
@@ -204,11 +258,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             get
             {
-                if (_libraryFunction)
-                {
-                    return _librarySignature;
-                }
-                return _preDefinition;
+                return _libraryFunction ? _librarySignature : _preDefinition;
             }
         }
 
@@ -244,27 +294,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            var parameterList = ParameterListNode == null ? null : ParameterListNode.Clone();
-
-            if (_libraryFunction)
-            {
-                return new LSLFunctionCallNode(ParserContext, _librarySignature, parameterList)
-                {
-                    HasErrors = HasErrors,
-                    Parent = Parent,
-                };
-            }
-
-            return new LSLFunctionCallNode(ParserContext, _preDefinition, parameterList)
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLFunctionCallNode(this);
         }
 
 

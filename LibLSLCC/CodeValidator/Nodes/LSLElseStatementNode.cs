@@ -80,9 +80,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
             IsConstantBranch = isConstantBranch;
-            Code = code;
 
-            code.Parent = this;
+
+            Code = code;
+            Code.Parent = this;
 
 
             ElseKeywordSourceCodeRange = new LSLSourceCodeRange(context.else_keyword);

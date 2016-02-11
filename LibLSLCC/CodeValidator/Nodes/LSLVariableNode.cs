@@ -56,7 +56,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLVariableNode : ILSLVariableNode, ILSLExprNode
     {
-        private string _libraryConstantName = "";
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLVariableNode(LSLSourceCodeRange sourceRange, Err err)
@@ -71,9 +70,29 @@ namespace LibLSLCC.CodeValidator.Nodes
             IsConstant = false;
         }
 
-        internal LSLParser.LocalVariableDeclarationContext LocalDeclarationContext { get; private set; }
-        internal LSLParser.GlobalVariableDeclarationContext GlobalDeclarationContext { get; private set; }
-        internal LSLParser.ParameterDefinitionContext ParameterDeclarationContext { get; private set; }
+
+        public LSLVariableNode(LSLVariableNode other)
+        {
+            Name = other.Name;
+            Type = other.Type;
+
+            TypeString = other.TypeString;
+            IsConstant = other.IsConstant;
+
+            ExpressionType = other.ExpressionType;
+            Declaration = other.Declaration;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -120,31 +139,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The raw type string describing the type of the variable referenced.
         /// </summary>
-        public string TypeString
-        {
-            get
-            {
-                if (IsGlobal)
-                {
-                    return GlobalDeclarationContext.variable_type.Text;
-                }
-                if (IsLocal)
-                {
-                    return LocalDeclarationContext.variable_type.Text;
-                }
-                if (IsParameter)
-                {
-                    return ParameterDeclarationContext.TYPE().GetText();
-                }
-                if (IsLibraryConstant)
-                {
-                    return Type.ToLSLTypeString();
-                }
+        public string TypeString { get; private set; }
 
-
-                throw new InvalidOperationException("Object in invalid state");
-            }
-        }
 
         public static
             LSLVariableNode GetError(LSLSourceCodeRange sourceRange)
@@ -155,65 +151,60 @@ namespace LibLSLCC.CodeValidator.Nodes
         internal static LSLVariableNode CreateVar(LSLParser.GlobalVariableDeclarationContext context,
             ILSLVariableDeclarationNode declaration)
         {
-            var n = new LSLVariableNode
+            return new LSLVariableNode
             {
+                Name = context.variable_name.Text,
+                TypeString = context.variable_type.Text,
                 Type = LSLTypeTools.FromLSLTypeString(context.variable_type.Text),
                 ExpressionType = LSLExpressionType.GlobalVariable,
                 IsConstant = false,
-                GlobalDeclarationContext = context,
                 SourceCodeRange = new LSLSourceCodeRange(context),
                 Declaration = declaration,
                 SourceCodeRangesAvailable = true
             };
-
-            return n;
         }
 
         internal static LSLVariableNode CreateVar(LSLParser.LocalVariableDeclarationContext context,
             ILSLVariableDeclarationNode declaration)
         {
-            var n = new LSLVariableNode
+            return new LSLVariableNode
             {
+                Name = context.variable_name.Text,
+                TypeString = context.variable_type.Text,
                 Type = LSLTypeTools.FromLSLTypeString(context.variable_type.Text),
                 ExpressionType = LSLExpressionType.LocalVariable,
                 IsConstant = false,
-                LocalDeclarationContext = context,
                 SourceCodeRange = new LSLSourceCodeRange(context),
                 Declaration = declaration,
                 SourceCodeRangesAvailable = true
             };
-
-            return n;
         }
 
         internal static LSLVariableNode CreateLibraryConstant(LSLType type, string name)
         {
-            var n = new LSLVariableNode
+            return new LSLVariableNode
             {
+                Name = name,
+                TypeString = type.ToLSLTypeString(),
                 Type = type,
                 ExpressionType = LSLExpressionType.LibraryConstant,
                 IsConstant = true,
-                _libraryConstantName = name,
-                SourceCodeRange = new LSLSourceCodeRange(),
                 SourceCodeRangesAvailable = false
             };
-
-            return n;
         }
 
-        internal static LSLVariableNode CreateParameter(LSLParser.ParameterDefinitionContext context)
+        internal static LSLVariableNode CreateParameter(LSLParameterNode node)
         {
-            var n = new LSLVariableNode
+            return new LSLVariableNode
             {
-                Type = LSLTypeTools.FromLSLTypeString(context.TYPE().GetText()),
+                Name = node.Name,
+                TypeString = node.Type.ToLSLTypeString(),
+                Type = node.Type,
                 ExpressionType = LSLExpressionType.ParameterVariable,
                 IsConstant = false,
-                ParameterDeclarationContext = context,
-                SourceCodeRange = new LSLSourceCodeRange(context),
+                SourceCodeRange = node.SourceCodeRange.Clone(),
                 SourceCodeRangesAvailable = true
             };
-
-            return n;
         }
 
         #region Nested type: Err
@@ -233,26 +224,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            var n = new LSLVariableNode
-            {
-                GlobalDeclarationContext = GlobalDeclarationContext,
-                LocalDeclarationContext = LocalDeclarationContext,
-                ParameterDeclarationContext = ParameterDeclarationContext,
-                IsConstant = IsConstant,
-                Type = Type,
-                ExpressionType = ExpressionType,
-                HasErrors = HasErrors,
-                Parent = Parent,
-                _libraryConstantName = _libraryConstantName,
-                Declaration = Declaration,
-                SourceCodeRangesAvailable = SourceCodeRangesAvailable
-            };
-            return n;
+            return HasErrors ? GetError(SourceCodeRange) : new LSLVariableNode(this);
         }
 
 
@@ -265,33 +237,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The name of the referenced variable.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                if (IsGlobal)
-                {
-                    return GlobalDeclarationContext.variable_name.Text;
-                }
-
-                if (IsLocal)
-                {
-                    return LocalDeclarationContext.variable_name.Text;
-                }
-
-                if (IsParameter)
-                {
-                    return ParameterDeclarationContext.ID().GetText();
-                }
-
-                if (IsLibraryConstant)
-                {
-                    return _libraryConstantName;
-                }
-
-                throw new InvalidOperationException("Object in invalid state");
-            }
-        }
+        public string Name { get; private set; }
 
 
         /// <summary>

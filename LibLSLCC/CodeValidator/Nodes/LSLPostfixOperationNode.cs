@@ -56,7 +56,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLPostfixOperationNode : ILSLPostfixOperationNode, ILSLExprNode
     {
-// ReSharper disable UnusedParameter.Local
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLPostfixOperationNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -78,7 +79,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("leftExpression");
             }
 
-            ParserContext = context;
             Type = resultType;
             LeftExpression = leftExpression;
             LeftExpression.Parent = this;
@@ -92,7 +92,33 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.Expr_PostfixOperationContext ParserContext { get; private set; }
+        public LSLPostfixOperationNode(LSLPostfixOperationNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            Type = other.Type;
+
+            LeftExpression = other.LeftExpression.Clone();
+            LeftExpression.Parent = this;
+
+            Operation = other.Operation;
+            OperationString = other.OperationString;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+                OperationSourceCodeRange = other.OperationSourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
 
         /// <summary>
         /// The expression that is left of the postfix operator, this should never be null.
@@ -114,10 +140,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The postfix operation string taken from the source code.
         /// </summary>
-        public string OperationString
-        {
-            get { return ParserContext.operation.Text; }
-        }
+        public string OperationString { get; private set; }
 
         ILSLReadOnlyExprNode ILSLPostfixOperationNode.LeftExpression
         {
@@ -132,7 +155,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         private void ParseAndSetOperation(string operationString)
         {
-            Operation = LSLPostfixOperationTypeTools.ParseFromOperator(operationString);
+            OperationString = operationString;
+            Operation = LSLPostfixOperationTypeTools.ParseFromOperator(OperationString);
         }
 
         #region Nested type: Err
@@ -152,16 +176,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLPostfixOperationNode(ParserContext, Type, LeftExpression.Clone())
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLPostfixOperationNode(this);
         }
 
 

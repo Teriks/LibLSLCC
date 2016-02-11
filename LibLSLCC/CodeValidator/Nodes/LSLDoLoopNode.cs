@@ -79,11 +79,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             IsSingleBlockStatement = inSingleBlockStatementScope;
-            ParserContext = context;
+
             Code = code;
+            Code.Parent = this;
+
             ConditionExpression = conditionExpression;
-            code.Parent = this;
-            conditionExpression.Parent = this;
+            ConditionExpression.Parent = this;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
             DoKeywordSourceCodeRange = new LSLSourceCodeRange(context.loop_keyword);
@@ -94,8 +95,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             SourceCodeRangesAvailable = true;
         }
-
-        internal LSLParser.DoLoopContext ParserContext { get; private set; }
 
 
         /// <summary>

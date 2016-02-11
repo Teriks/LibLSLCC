@@ -86,13 +86,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
             Code = code;
+            Code.Parent = this;
 
             ConditionExpression = conditionExpression;
-
-            Code.Parent = this;
             ConditionExpression.Parent = this;
             
-
             ElseKeywordSourceCodeRange = new LSLSourceCodeRange(elseKeyword);
             IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
@@ -109,7 +107,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps ; }
         }
 
-        //internal LSLParser.ElseIfStatementContext ParserContext { get; private set; }
         public LSLCodeScopeNode Code { get; private set; }
         public ILSLExprNode ConditionExpression { get; private set; }
 

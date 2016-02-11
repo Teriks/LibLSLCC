@@ -75,10 +75,9 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-
             StateName = "default";
-            DefaultStateContext = context;
             IsDefaultState = true;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
@@ -96,10 +95,9 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-
             StateName = context.state_name.Text;
             IsDefinedState = true;
-            DefinedStateContext = context;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
@@ -119,11 +117,13 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("eventHandlers");
             }
 
-
             foreach (var lslEventHandlerNode in eventHandlers)
             {
                 AddEventHandler(lslEventHandlerNode);
             }
+
+            StateName = "default";
+            IsDefaultState = true;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
 
@@ -143,6 +143,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("eventHandlers");
             }
 
+            StateName = context.state_name.Text;
+            IsDefinedState = true;
 
             foreach (var lslEventHandlerNode in eventHandlers)
             {
@@ -159,8 +161,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.DefinedStateContext DefinedStateContext { get; private set; }
-        internal LSLParser.DefaultStateContext DefaultStateContext { get; private set; }
 
         public IReadOnlyGenericArray<LSLEventHandlerNode> EventHandlers
         {

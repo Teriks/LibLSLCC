@@ -70,7 +70,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLParameterListNode(LSLParser.OptionalParameterListContext context,
+        internal LSLParameterListNode(
+            LSLParser.OptionalParameterListContext context,
             IEnumerable<LSLParameterNode> parameterNodes)
         {
             if (parameterNodes == null)
@@ -78,21 +79,19 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("parameterNodes");
             }
 
-
             foreach (var lslParameterNode in _parameters)
             {
                 AddParameterNode(lslParameterNode);
             }
 
-            ParserContext = context;
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
 
+
         public LSLParameterListNode(LSLParser.OptionalParameterListContext context)
         {
-            ParserContext = context;
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
@@ -106,7 +105,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
         }
 
-        internal LSLParser.OptionalParameterListContext ParserContext { get; private set; }
 
 
         /// <summary>

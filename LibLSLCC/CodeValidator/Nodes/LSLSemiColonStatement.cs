@@ -62,13 +62,13 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            ParserContext = context;
             IsSingleBlockStatement = isSingleBlockStatement;
 
             SourceCodeRangesAvailable = true;
+
+            SourceCodeRange = new LSLSourceCodeRange(context);
         }
 
-        internal LSLParser.CodeStatementContext ParserContext { get; private set; }
 
 
         /// <summary>
@@ -129,10 +129,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange
-        {
-            get { return new LSLSourceCodeRange(ParserContext); }
-        }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.

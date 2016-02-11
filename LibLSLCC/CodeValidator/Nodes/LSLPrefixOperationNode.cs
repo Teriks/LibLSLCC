@@ -79,7 +79,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
 
-            ParserContext = context;
             Type = resultType;
             RightExpression = rightExpression;
             RightExpression.Parent = this;
@@ -93,7 +92,33 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.Expr_PrefixOperationContext ParserContext { get; private set; }
+
+        public LSLPrefixOperationNode(LSLPrefixOperationNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            Type = other.Type;
+
+            RightExpression = other.RightExpression.Clone();
+            RightExpression.Parent = this;
+
+            Operation = other.Operation;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+                OperationSourceCodeRange = other.OperationSourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
+
 
         /// <summary>
         /// The expression that is right of the prefix operator, this should never be null.
@@ -116,10 +141,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The prefix operation string taken from the source code.
         /// </summary>
-        public string OperationString
-        {
-            get { return ParserContext.operation.Text; }
-        }
+        public string OperationString { get; private set; }
 
         ILSLReadOnlyExprNode ILSLPrefixOperationNode.RightExpression
         {
@@ -134,7 +156,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         private void ParseAndSetOperation(string operationString)
         {
-            Operation = LSLPrefixOperationTypeTools.ParseFromOperator(operationString);
+            OperationString = operationString;
+            Operation = LSLPrefixOperationTypeTools.ParseFromOperator(OperationString);
         }
 
         #region Nested type: Err
@@ -154,16 +177,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLPrefixOperationNode(ParserContext, Type, RightExpression.Clone())
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLPrefixOperationNode(this);
         }
 
 

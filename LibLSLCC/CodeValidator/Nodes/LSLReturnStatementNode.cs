@@ -56,6 +56,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLReturnStatementNode : ILSLReturnStatementNode, ILSLCodeStatement
     {
+
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLReturnStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -79,10 +80,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             IsSingleBlockStatement = isSingleBlockStatement;
-            ParserContext = context;
-            ReturnExpression = returnExpression;
 
+            ReturnExpression = returnExpression;
             ReturnExpression.Parent = this;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
             ReturnKeywordSourceCodeRange = new LSLSourceCodeRange(context.return_keyword);
             SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
@@ -93,8 +94,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, bool isSingleBlockStatement)
         {
             IsSingleBlockStatement = isSingleBlockStatement;
-            ParserContext = context;
+
             ReturnExpression = null;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
             ReturnKeywordSourceCodeRange = new LSLSourceCodeRange(context.return_keyword);
             SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
@@ -102,7 +104,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.ReturnStatementContext ParserContext { get; private set; }
         public ILSLExprNode ReturnExpression { get; private set; }
 
 

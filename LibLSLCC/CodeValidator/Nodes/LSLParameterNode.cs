@@ -66,13 +66,17 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         public LSLParameterNode(LSLParser.ParameterDefinitionContext context)
         {
-            ParserContext = context;
+            Name = context.parameter_name.Text;
+
+            TypeString = context.parameter_type.Text;
+
+            Type = LSLTypeTools.FromLSLTypeString(TypeString);
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.ParameterDefinitionContext ParserContext { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -82,26 +86,17 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The name of the parameter.
         /// </summary>
-        public string Name
-        {
-            get { return ParserContext.ID().GetText(); }
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// The <see cref="LSLType"/> associated with the parameter.
         /// </summary>
-        public LSLType Type
-        {
-            get { return LSLTypeTools.FromLSLTypeString(ParserContext.TYPE().GetText()); }
-        }
+        public LSLType Type { get; private set; }
 
         /// <summary>
         /// The string representation of the <see cref="LSLType"/> for the parameter, taken from the source code.
         /// </summary>
-        public string TypeString
-        {
-            get { return ParserContext.TYPE().GetText(); }
-        }
+        public string TypeString { get; private set; }
 
         /// <summary>
         /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.

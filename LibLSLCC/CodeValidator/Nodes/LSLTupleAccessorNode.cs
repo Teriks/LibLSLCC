@@ -56,7 +56,9 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
     public class LSLTupleAccessorNode : ILSLTupleAccessorNode, ILSLExprNode
     {
-// ReSharper disable UnusedParameter.Local
+        private LSLTupleAccessorNode lSLTupleAccessorNode;
+
+        // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLTupleAccessorNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -84,17 +86,44 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            ParserContext = context;
+            AccessedComponentString = context.member.Text;
             AccessedComponent = accessedComponent;
+
             AccessedType = accessedType;
+
             AccessedExpression = accessedExpression;
             AccessedExpression.Parent = this;
+
             SourceCodeRange = new LSLSourceCodeRange(context);
 
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLParser.DotAccessorExprContext ParserContext { get; private set; }
+        public LSLTupleAccessorNode(LSLTupleAccessorNode other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+            AccessedComponentString = other.AccessedComponentString;
+            AccessedComponent = other.AccessedComponent;
+
+            AccessedType = other.AccessedType;
+
+            AccessedExpression = other.AccessedExpression.Clone();
+            AccessedExpression.Parent = this;
+
+            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+
+            if (SourceCodeRangesAvailable)
+            {
+                SourceCodeRange = other.SourceCodeRange.Clone();
+            }
+
+            HasErrors = other.HasErrors;
+            Parent = other.Parent;
+        }
 
 
         /// <summary>
@@ -114,10 +143,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The raw name of the accessed tuple member, taken from the source code.
         /// </summary>
-        public string AccessedComponentString
-        {
-            get { return ParserContext.member.Text; }
-        }
+        public string AccessedComponentString { get; private set; }
 
         /// <summary>
         /// The tuple component accessed.
@@ -171,16 +197,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceCodeRange);
-            }
-
-            return new LSLTupleAccessorNode(ParserContext, AccessedExpression.Clone(), AccessedType, AccessedComponent)
-            {
-                HasErrors = HasErrors,
-                Parent = Parent
-            };
+            return HasErrors ? GetError(SourceCodeRange) : new LSLTupleAccessorNode(this);
         }
 
 

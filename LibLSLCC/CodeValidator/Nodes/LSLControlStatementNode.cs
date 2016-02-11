@@ -79,7 +79,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            ParserContext = context;
             IsSingleBlockStatement = isSingleBlockStatement;
 
             SourceCodeRange = new LSLSourceCodeRange(context);
@@ -87,26 +86,30 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLControlStatementNode(LSLParser.ControlStructureContext context, 
+        internal LSLControlStatementNode(
+            LSLParser.ControlStructureContext context, 
             LSLIfStatementNode ifStatement,
             IEnumerable<LSLElseIfStatementNode> elseIfStatements,
-            LSLElseStatementNode elseStatement, bool isSingleBlockStatement) :
-                this(context, ifStatement, elseIfStatements, isSingleBlockStatement)
+            LSLElseStatementNode elseStatement, bool isSingleBlockStatement
+
+            ) : this(context, ifStatement, elseIfStatements, isSingleBlockStatement)
         {
             if (elseStatement == null)
             {
                 throw new ArgumentNullException("elseStatement");
             }
 
-            SourceCodeRangesAvailable = true;
-
             ElseStatement = elseStatement;
             elseStatement.Parent = this;
         }
 
-        internal LSLControlStatementNode(LSLParser.ControlStructureContext context, LSLIfStatementNode ifStatement,
-            IEnumerable<LSLElseIfStatementNode> elseIfStatements, bool isSingleBlockStatement) :
-                this(context, ifStatement, isSingleBlockStatement)
+        internal LSLControlStatementNode(
+            LSLParser.ControlStructureContext context, 
+            LSLIfStatementNode ifStatement,
+            IEnumerable<LSLElseIfStatementNode> elseIfStatements, 
+            bool isSingleBlockStatement
+            
+            ) : this(context, ifStatement, isSingleBlockStatement)
         {
             if (elseIfStatements == null)
             {
@@ -117,20 +120,19 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 AddElseIfStatement(lslElseIfStatementNode);
             }
-
-            SourceCodeRangesAvailable = true;
         }
 
-        internal LSLControlStatementNode(LSLParser.ControlStructureContext context,
+        internal LSLControlStatementNode(
+            LSLParser.ControlStructureContext context,
             LSLIfStatementNode ifStatement,
-            bool isSingleBlockStatement) : this(context, isSingleBlockStatement)
+            bool isSingleBlockStatement
+
+            ) : this(context, isSingleBlockStatement)
         {
             if (ifStatement == null)
             {
                 throw new ArgumentNullException("ifStatement");
             }
-
-            SourceCodeRangesAvailable = true;
 
             IfStatement = ifStatement;
             IfStatement.Parent = this;
@@ -145,7 +147,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 {
                     value.Parent = this;
                 }
-
 
                 _elseStatement = value;
             }
@@ -171,7 +172,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return _elseIfStatements ?? new List<LSLElseIfStatementNode>(); }
         }
 
-        internal LSLParser.ControlStructureContext ParserContext { get; private set; }
 
         /// <summary>
         ///     If the scope has a return path, this is set to the node that causes the function to return.
