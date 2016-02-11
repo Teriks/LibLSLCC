@@ -3118,8 +3118,11 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!expressionList.HasErrors)
                 {
-                    var match = ValidateFunctionCallSignatureMatch(context, functionSignature,
-                        expressionList.ExpressionNodes);
+                    var match = 
+                        ValidateFunctionCallSignatureMatch(
+                            context, 
+                            functionSignature, 
+                            expressionList.ExpressionNodes);
 
                     if (!match)
                     {
