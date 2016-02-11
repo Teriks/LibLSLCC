@@ -90,6 +90,7 @@ namespace LibLSLCC.Settings
 
             XmlWriterSettings writerSettings = new XmlWriterSettings();
             writerSettings.NewLineHandling = NewLineHandling.Entitize;
+            writerSettings.CloseOutput = true;
 
             using (var writer = XmlWriter.Create(File.Create(file), writerSettings))
             {
