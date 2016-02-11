@@ -81,10 +81,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 throw new ArgumentNullException("context");
             }
-            if (preDefinition == null)
-            {
-                throw new ArgumentNullException("preDefinition");
-            }
+
             if (parameterList == null)
             {
                 throw new ArgumentNullException("parameterList");
@@ -119,10 +116,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 throw new ArgumentNullException("context");
             }
-            if (signature == null)
-            {
-                throw new ArgumentNullException("signature");
-            }
+
             if (parameterList == null)
             {
                 throw new ArgumentNullException("parameterList");
@@ -306,7 +300,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if this syntax tree node contains syntax errors.
         /// </summary>
-        public bool HasErrors { get; private set; }
+        public bool HasErrors { get; internal set; }
 
 
         /// <summary>
