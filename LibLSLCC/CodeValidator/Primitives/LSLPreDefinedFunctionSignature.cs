@@ -75,11 +75,6 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         public LSLParameterListNode ParameterListNode { get; private set; }
 
-        /// <summary>
-        /// Internal property representing the ANTLR context for the function declaration node.
-        /// </summary>
-        internal LSLParser.FunctionDeclarationContext DeclarationContext { get; set; }
-
 
         /// <summary>
         /// The <see cref="LSLFunctionDeclarationNode"/> in the syntax tree that this function signature belongs to/represents.

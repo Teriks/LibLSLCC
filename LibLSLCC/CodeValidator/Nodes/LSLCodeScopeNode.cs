@@ -114,11 +114,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public ILSLCodeStatement FirstDeadStatementNode { get; private set; }
 
-        /// <summary>
-        ///     The parser context for the first statement node that is considered to be dead,
-        ///     when dead code is detected
-        /// </summary>
-        internal LSLParser.CodeStatementContext FirstDeadStatementNodeContext { get; private set; }
 
 
 
@@ -344,7 +339,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                         if (FirstDeadStatementNode == null)
                         {
                             FirstDeadStatementNode = statement;
-                            FirstDeadStatementNodeContext = context;
                         }
 
                         _deadCodeSegmentsStack.Push(
@@ -363,7 +357,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                         if (FirstDeadStatementNode == null)
                         {
                             FirstDeadStatementNode = statement;
-                            FirstDeadStatementNodeContext = context;
                         }
 
                         _deadCodeSegmentsStack.Push(
@@ -381,7 +374,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                         if (FirstDeadStatementNode == null)
                         {
                             FirstDeadStatementNode = statement;
-                            FirstDeadStatementNodeContext = context;
                         }
 
                         _deadCodeSegmentsStack.Push(
@@ -454,7 +446,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                         if (FirstDeadStatementNode == null)
                         {
                             FirstDeadStatementNode = statement;
-                            FirstDeadStatementNodeContext = context;
                         }
 
                         if (!_insideDeadCode)
