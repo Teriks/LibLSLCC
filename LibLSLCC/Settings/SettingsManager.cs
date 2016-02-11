@@ -91,8 +91,7 @@ namespace LibLSLCC.Settings
             XmlWriterSettings writerSettings = new XmlWriterSettings();
             writerSettings.NewLineHandling = NewLineHandling.Entitize;
 
-            using(var stream = File.Create(file))
-            using (var writer = XmlWriter.Create(stream, writerSettings))
+            using (var writer = XmlWriter.Create(File.Create(file), writerSettings))
             {
                 serializer.Serialize(writer, Settings);
             }
