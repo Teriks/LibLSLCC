@@ -115,13 +115,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if this syntax tree node contains syntax errors.
         /// </summary>
-        public bool HasErrors { get; internal set; }
+        public bool HasErrors { get; private set; }
 
 
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; set; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
         /// <summary>

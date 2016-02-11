@@ -86,14 +86,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if this syntax tree node contains syntax errors.
         /// </summary>
-        public bool HasErrors { get; internal set; }
+        public bool HasErrors { get; private set; }
 
         public LSLSourceCodeRange SourceCodeRange
         {
             get { return new LSLSourceCodeRange(); }
         }
 
-        public bool SourceCodeRangesAvailable { get; set; }
+        public bool SourceCodeRangesAvailable { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
@@ -129,7 +129,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
         /// </summary>
-        public bool HasPossibleSideEffects { get; set; }
+        public bool HasPossibleSideEffects { get; private set; }
 
 
         /// <summary>

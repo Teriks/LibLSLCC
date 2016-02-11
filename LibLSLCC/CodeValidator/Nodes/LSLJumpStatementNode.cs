@@ -97,7 +97,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        public LSLLabelStatementNode JumpTarget { get; set; }
+        public LSLLabelStatementNode JumpTarget { get; private set; }
 
         #region ILSLCodeStatement Members
 
@@ -159,7 +159,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if this syntax tree node contains syntax errors.
         /// </summary>
-        public bool HasErrors { get; internal set; }
+        public bool HasErrors { get; private set; }
 
 
         /// <summary>

@@ -115,7 +115,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         /// Set to true if the last call to validate generated syntax warnings
         /// </summary>
-        public bool HasSyntaxWarnings { get; set; }
+        public bool HasSyntaxWarnings { get; private set; }
 
 
         /// <summary>

@@ -81,10 +81,16 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("functionBodyNode");
             }
 
-
-            ReturnTypeString = context.return_type == null ? "" : context.return_type.Text;
-
-            ReturnType = context.return_type == null ? LSLType.Void : LSLTypeTools.FromLSLTypeString(ReturnTypeString);
+            if (context.return_type != null)
+            {
+                ReturnTypeString = context.return_type.Text;
+                ReturnType = LSLTypeTools.FromLSLTypeString(ReturnTypeString);
+            }
+            else
+            {
+                ReturnTypeString = "";
+                ReturnType = LSLType.Void;
+            }
 
             Name = context.function_name.Text;
 
@@ -140,17 +146,17 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// The string from the source code that represents the return type assigned to the function definition,
         /// or an empty string if no return type was assigned.
         /// </summary>
-        public string ReturnTypeString { get; set; }
+        public string ReturnTypeString { get; private set; }
 
         /// <summary>
         /// The name of the function.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// The return type assigned to the function definition, it will be <see cref="LSLType.Void"/> if no return type was given.
         /// </summary>
-        public LSLType ReturnType { get; set; }
+        public LSLType ReturnType { get; private set; }
 
         ILSLParameterListNode ILSLFunctionDeclarationNode.ParameterListNode
         {

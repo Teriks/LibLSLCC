@@ -74,7 +74,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            CodeScopeContext = context;
             ScopeId = scopeId;
             IsCodeScope = true;
 
@@ -92,7 +91,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            SingleStatementContext = context;
             ScopeId = scopeId;
             IsSingleBlockStatement = true;
 
@@ -102,9 +100,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             SourceCodeRangesAvailable = true;
         }
-
-        internal LSLParser.CodeScopeContext CodeScopeContext { get; private set; }
-        internal LSLParser.CodeStatementContext SingleStatementContext { get; private set; }
 
         /// <summary>
         ///     Code statements that are children of this code scope
@@ -137,7 +132,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     True if this code scope has a valid return path
         /// </summary>
-        public bool HasReturnPath { get; set; }
+        public bool HasReturnPath { get; private set; }
 
         #endregion
 

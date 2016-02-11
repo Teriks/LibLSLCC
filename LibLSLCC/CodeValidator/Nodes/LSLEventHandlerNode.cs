@@ -171,7 +171,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; set; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
 
 
