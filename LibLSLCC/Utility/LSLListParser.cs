@@ -171,7 +171,7 @@ namespace LibLSLCC.Utility
     /// <summary>
     ///     Tool for parsing LSL list from source code styled strings.
     /// </summary>
-    public class LSLListParser
+    public static class LSLListParser
     {
         /// <summary>
         ///     List parsing option flags.
@@ -242,6 +242,7 @@ namespace LibLSLCC.Utility
         ///     Encountered an un-parseable expression in the list, only literal values and possibly variable names are acceptable
         ///     when parsing.
         /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public static List<ILSLListExpr> ParseList(string list,
             LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
         {
@@ -608,6 +609,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Interface for parsed list elements.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public interface ILSLListExpr
         {
             /// <summary>
@@ -632,6 +634,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Vector list item.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LSLVector : ILSLListExpr
         {
             /// <summary>
@@ -715,6 +718,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Rotation list item.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LSLRotation : ILSLListExpr
         {
             /// <summary>
@@ -813,6 +817,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Float list item.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LSLFloat : ILSLListExpr
         {
             /// <summary>
@@ -861,6 +866,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Integer list item.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LSLInteger : ILSLListExpr
         {
             /// <summary>
@@ -909,6 +915,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Key List item, they can be created by specifying '(key)""' as  list item, using a cast expression.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LSLKey : ILSLListExpr
         {
             /// <summary>
@@ -956,6 +963,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     String list item.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LSLString : ILSLListExpr
         {
             /// <summary>
@@ -1003,6 +1011,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         ///     Variable reference list item.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LSLVariable : ILSLListExpr
         {
             /// <summary>

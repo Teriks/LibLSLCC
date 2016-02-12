@@ -52,18 +52,55 @@ using LibLSLCC.Utility;
 
 namespace LibLSLCC.LibraryData.Reflection
 {
+    public sealed class AutoFilteredMethodEventArgs : EventArgs
+    {
+        public MethodInfo Member { get; private set; }
+
+
+        public AutoFilteredMethodEventArgs(MethodInfo member)
+        {
+            Member = member;
+        }
+    }
+
+    public sealed class AutoFilteredConstantEventArgs : EventArgs
+    {
+        public MemberInfo Member { get; private set; }
+
+
+        public AutoFilteredConstantEventArgs(MemberInfo member)
+        {
+            Member = member;
+        }
+    }
+
+    public sealed class AutoFilteredConstantFieldEventArgs : EventArgs
+    {
+        public AutoFilteredConstantFieldEventArgs(FieldInfo member)
+        {
+            Member = member;
+        }
+
+
+        public FieldInfo Member { get; private set; }
+    }
+
+    public sealed class AutoFilteredConstantPropertyEventArgs : EventArgs
+    {
+        public AutoFilteredConstantPropertyEventArgs(PropertyInfo member)
+        {
+            Member = member;
+        }
+
+
+        public PropertyInfo Member { get; private set; }
+    }
+
     /// <summary>
     /// Serializes library signature objects from CSharp types using runtime reflection
     /// </summary>
     public class LSLLibraryDataReflectionSerializer
     {
-
-        public delegate void AutoFilteredMethodEvent(object sender, MethodInfo member);
-        public delegate void AutoFilteredConstantEvent(object sender, MemberInfo member);
-        public delegate void AutoFilteredConstantFieldEvent(object sender, FieldInfo member);
-        public delegate void AutoFilteredConstantPropertyEvent(object sender, PropertyInfo member);
-
-
 
         /// <summary>
         /// Gets or sets the method filter which can pre-filter <see cref="MethodInfo"/> objects from the reflection search results.
@@ -137,7 +174,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Occurs when <see cref="FilterMethodsWithUnmappedReturnTypes"/> is <c>true</c> and an un-attributed method is filtered because 
         /// <see cref="ReturnTypeConverter"/> cannot successfully convert it's return type to an <see cref="LSLType"/>.
         /// </summary>
-        public event AutoFilteredMethodEvent OnFilterMethodWithUnmappedReturnType;
+        public event EventHandler<AutoFilteredMethodEventArgs> OnFilterMethodWithUnmappedReturnType;
 
 
         /// <summary>
@@ -157,7 +194,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Occurs when <see cref="FilterMethodsWithUnmappedParamTypes"/> is <c>true</c> and an un-attributed method is filtered because 
         /// <see cref="ParamTypeConverter"/> cannot successfully convert one of it's parameter types to an <see cref="LSLType"/>.
         /// </summary>
-        public event AutoFilteredMethodEvent OnFilterMethodWithUnmappedParamType;
+        public event EventHandler<AutoFilteredMethodEventArgs> OnFilterMethodWithUnmappedParamType;
 
 
         /// <summary>
@@ -176,21 +213,21 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Occurs when <see cref="FilterConstantsWithUnmappedTypes"/> is <c>true</c> and an un-attributed constant is filtered because 
         /// <see cref="ConstantTypeConverter"/> cannot successfully convert its type to an <see cref="LSLType"/>.
         /// </summary>
-        public event AutoFilteredConstantEvent OnFilterConstantWithUnmappedType;
+        public event EventHandler<AutoFilteredConstantEventArgs> OnFilterConstantWithUnmappedType;
 
 
         /// <summary>
         /// Occurs when <see cref="FilterConstantsWithUnmappedTypes"/> is <c>true</c> and an un-attributed constant Property is filtered because 
         /// <see cref="ConstantTypeConverter"/> cannot successfully convert its type to an <see cref="LSLType"/>.
         /// </summary>
-        public event AutoFilteredConstantEvent OnFilterConstantPropertyWithUnmappedType;
+        public event EventHandler<AutoFilteredConstantEventArgs> OnFilterConstantPropertyWithUnmappedType;
 
 
         /// <summary>
         /// Occurs when <see cref="FilterConstantsWithUnmappedTypes"/> is <c>true</c> and an un-attributed constant Field is filtered because 
         /// <see cref="ConstantTypeConverter"/> cannot successfully convert its type to an <see cref="LSLType"/>.
         /// </summary>
-        public event AutoFilteredConstantEvent OnFilterConstantFieldWithUnmappedType;
+        public event EventHandler<AutoFilteredConstantEventArgs> OnFilterConstantFieldWithUnmappedType;
 
 
 
@@ -251,17 +288,17 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <summary>
         /// Occurs when <see cref="FilterNullConstants"/> is <c>true</c> and an un-attributed constant is filtered for having a null field/property value.
         /// </summary>
-        public event AutoFilteredConstantEvent OnFilterNullConstant;
+        public event EventHandler<AutoFilteredConstantEventArgs> OnFilterNullConstant;
 
         /// <summary>
         /// Occurs when <see cref="FilterNullConstants"/> is <c>true</c> and an un-attributed constant is filtered for having a null property value.
         /// </summary>
-        public event AutoFilteredConstantPropertyEvent OnFilterNullConstantProperty;
+        public event EventHandler<AutoFilteredConstantPropertyEventArgs> OnFilterNullConstantProperty;
 
         /// <summary>
         /// Occurs when <see cref="FilterNullConstants"/> is <c>true</c> and an un-attributed constant is filtered for having a null field value.
         /// </summary>
-        public event AutoFilteredConstantFieldEvent OnFilterNullConstantField;
+        public event EventHandler<AutoFilteredConstantFieldEventArgs> OnFilterNullConstantField;
 
         /// <summary>
         /// Gets or sets a value indicating whether to filter un-attributed fields and properties whose values where converted into an invalid/un-parsable
@@ -279,19 +316,19 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Occurs when <see cref="FilterInvalidValueStrings"/> is <c>true</c> and an un-attributed constant is filtered for having
         /// an invalid ValueString generated for it by <see cref="ValueStringConverter"/>.
         /// </summary>
-        public event AutoFilteredConstantEvent OnFilterInvalidValueString;
+        public event EventHandler<AutoFilteredConstantEventArgs> OnFilterInvalidValueString;
 
         /// <summary>
         /// Occurs when <see cref="FilterInvalidValueStrings"/> is <c>true</c> and an un-attributed constant Property is filtered for having
         /// an invalid ValueString generated for it by <see cref="ValueStringConverter"/>.
         /// </summary>
-        public event AutoFilteredConstantPropertyEvent OnFilterInvalidValueStringProperty;
+        public event EventHandler<AutoFilteredConstantPropertyEventArgs> OnFilterInvalidValueStringProperty;
 
         /// <summary>
         /// Occurs when <see cref="FilterInvalidValueStrings"/> is <c>true</c> and an un-attributed constant Field is filtered for having
         /// an invalid ValueString generated for it by <see cref="ValueStringConverter"/>.
         /// </summary>
-        public event AutoFilteredConstantFieldEvent OnFilterInvalidValueStringField;
+        public event EventHandler<AutoFilteredConstantFieldEventArgs> OnFilterInvalidValueStringField;
 
 
         /// <summary>
@@ -309,19 +346,19 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Occurs when <see cref="FilterValueStringConversionFailures"/> is <c>true</c> and an un-attributed constant is filtered because
         /// <see cref="ValueStringConverter"/> reported a ValueString conversion failure for the constants retrieved value.
         /// </summary>
-        public event AutoFilteredConstantEvent OnFilterValueStringConversionFailure;
+        public event EventHandler<AutoFilteredConstantEventArgs> OnFilterValueStringConversionFailure;
 
         /// <summary>
         /// Occurs when <see cref="FilterValueStringConversionFailures"/> is <c>true</c> and an un-attributed constant Property is filtered because
         /// <see cref="ValueStringConverter"/> reported a ValueString conversion failure for the constant Property's retrieved value.
         /// </summary>
-        public event AutoFilteredConstantPropertyEvent OnFilterValueStringConversionFailureProperty;
+        public event EventHandler<AutoFilteredConstantPropertyEventArgs> OnFilterValueStringConversionFailureProperty;
 
         /// <summary>
         /// Occurs when <see cref="FilterValueStringConversionFailures"/> is <c>true</c> and an un-attributed constant Field is filtered because
         /// <see cref="ValueStringConverter"/> reported a ValueString conversion failure for the constant Field's retrieved value.
         /// </summary>
-        public event AutoFilteredConstantFieldEvent OnFilterValueStringConversionFailureField;
+        public event EventHandler<AutoFilteredConstantFieldEventArgs> OnFilterValueStringConversionFailureField;
 
         /// <summary>
         /// Gets or sets a value indicating whether the serializer should only de-serialize methods marked with an <see cref="LSLFunctionAttribute"/>.
@@ -682,6 +719,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Instance properties will be considered <c>null</c> if one is not provided.
         /// </param>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public LSLLibraryConstantSignature DeSerializeConstant(PropertyInfo info, object optionalInstance = null)
         {
             var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
@@ -732,6 +770,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Instance fields will be considered <c>null</c> if one is not provided.
         /// </param>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public LSLLibraryConstantSignature DeSerializeConstant(FieldInfo info, object optionalInstance = null)
         {
             var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
@@ -868,7 +907,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
 
-        private bool FilterCompilerGenerated(MemberInfo info)
+        private static bool FilterCompilerGenerated(MemberInfo info)
         {
             return
                 info.GetCustomAttributesData()
@@ -935,14 +974,14 @@ namespace LibLSLCC.LibraryData.Reflection
         protected virtual void InvokeOnFilterNullConstant(MemberInfo member)
         {
             var handler = OnFilterNullConstant;
-            if (handler != null) handler(this, member);
+            if (handler != null) handler(this, new AutoFilteredConstantEventArgs(member));
 
             if (OnFilterNullConstantProperty != null)
             {
                 var prop = member as PropertyInfo;
                 if (prop != null)
                 {
-                    OnFilterNullConstantProperty(this, prop);
+                    OnFilterNullConstantProperty(this, new AutoFilteredConstantPropertyEventArgs(prop));
                 }
             }
 
@@ -951,7 +990,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 var field = member as FieldInfo;
                 if (field != null)
                 {
-                    OnFilterNullConstantField(this, field);
+                    OnFilterNullConstantField(this, new AutoFilteredConstantFieldEventArgs(field));
                 }
             }
         }
@@ -959,14 +998,14 @@ namespace LibLSLCC.LibraryData.Reflection
         protected virtual void InvokeOnFilterInvalidValueString(MemberInfo member)
         {
             var handler = OnFilterInvalidValueString;
-            if (handler != null) handler(this, member);
+            if (handler != null) handler(this, new AutoFilteredConstantEventArgs(member));
 
             if (OnFilterInvalidValueStringProperty != null)
             {
                 var prop = member as PropertyInfo;
                 if (prop != null)
                 {
-                    OnFilterInvalidValueStringProperty(this, prop);
+                    OnFilterInvalidValueStringProperty(this, new AutoFilteredConstantPropertyEventArgs(prop));
                 }
             }
 
@@ -975,7 +1014,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 var field = member as FieldInfo;
                 if (field != null)
                 {
-                    OnFilterInvalidValueStringField(this, field);
+                    OnFilterInvalidValueStringField(this, new AutoFilteredConstantFieldEventArgs(field));
                 }
             }
         }
@@ -983,14 +1022,14 @@ namespace LibLSLCC.LibraryData.Reflection
         protected virtual void InvokeOnFilterValueStringConversionFailure(MemberInfo member)
         {
             var handler = OnFilterValueStringConversionFailure;
-            if (handler != null) handler(this, member);
+            if (handler != null) handler(this, new AutoFilteredConstantEventArgs(member));
 
             if (OnFilterValueStringConversionFailureProperty != null)
             {
                 var prop = member as PropertyInfo;
                 if (prop != null)
                 {
-                    OnFilterValueStringConversionFailureProperty(this, prop);
+                    OnFilterValueStringConversionFailureProperty(this, new AutoFilteredConstantPropertyEventArgs(prop));
                 }
             }
 
@@ -999,7 +1038,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 var field = member as FieldInfo;
                 if (field != null)
                 {
-                    OnFilterValueStringConversionFailureField(this, field);
+                    OnFilterValueStringConversionFailureField(this, new AutoFilteredConstantFieldEventArgs(field));
                 }
             }
         }
@@ -1007,14 +1046,14 @@ namespace LibLSLCC.LibraryData.Reflection
         protected virtual void InvokeOnFilterConstantWithUnmappedType(MemberInfo member)
         {
             var handler = OnFilterConstantWithUnmappedType;
-            if (handler != null) handler(this, member);
+            if (handler != null) handler(this, new AutoFilteredConstantEventArgs(member));
 
             if (OnFilterConstantPropertyWithUnmappedType != null)
             {
                 var prop = member as PropertyInfo;
                 if (prop != null)
                 {
-                    OnFilterConstantPropertyWithUnmappedType(this, prop);
+                    OnFilterConstantPropertyWithUnmappedType(this, new AutoFilteredConstantEventArgs(prop));
                 }
             }
 
@@ -1023,7 +1062,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 var field = member as FieldInfo;
                 if (field != null)
                 {
-                    OnFilterConstantFieldWithUnmappedType(this, field);
+                    OnFilterConstantFieldWithUnmappedType(this, new AutoFilteredConstantEventArgs(field));
                 }
             }
         }
@@ -1031,13 +1070,13 @@ namespace LibLSLCC.LibraryData.Reflection
         protected virtual void InvokeOnFilterMethodWithUnmappedParamType(MethodInfo member)
         {
             var handler = OnFilterMethodWithUnmappedParamType;
-            if (handler != null) handler(this, member);
+            if (handler != null) handler(this, new AutoFilteredMethodEventArgs(member));
         }
 
         protected virtual void InvokeOnFilterMethodWithUnmappedReturnType(MethodInfo member)
         {
             var handler = OnFilterMethodWithUnmappedReturnType;
-            if (handler != null) handler(this, member);
+            if (handler != null) handler(this, new AutoFilteredMethodEventArgs(member));
         }
     }
 }

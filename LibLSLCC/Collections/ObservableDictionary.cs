@@ -113,7 +113,7 @@ namespace LibLSLCC.Collections
         }
 
 
-        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly
+        public bool IsReadOnly
         {
             get { return false; }
         }
@@ -163,12 +163,12 @@ namespace LibLSLCC.Collections
             }
         }
 
-        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
+        public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             return _keyed.Contains(item);
         }
 
-        void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             _keyed.CopyTo(array, arrayIndex);
         }
@@ -266,7 +266,7 @@ namespace LibLSLCC.Collections
             }
         }
 
-        private bool _IsEqual(TValue left, TValue right)
+        private static bool _IsEqual(TValue left, TValue right)
         {
             return EqualityComparer<TValue>.Default.Equals(left, right);
         }

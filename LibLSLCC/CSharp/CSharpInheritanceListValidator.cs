@@ -45,6 +45,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
@@ -83,7 +84,7 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The parsing results for the inherited types in the inheritance list.
         /// </value>
-        public CSharpClassNameValidationResult[] InheritedTypes { get; internal set; }
+        public IReadOnlyGenericArray<CSharpClassNameValidationResult> InheritedTypes { get; internal set; }
 
         /// <summary>
         /// Gets a list of constrained parameter names that were given constraints with the 'where' keyword.
@@ -91,7 +92,7 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The constrained type parameter names.
         /// </value>
-        public string[] ConstrainedTypeParameters { get; internal set; }
+        public IReadOnlyGenericArray<string> ConstrainedTypeParameters { get; internal set; }
 
         /// <summary>
         /// Gets a multi-dimensional array of parameter constraint descriptions that directly 
@@ -101,7 +102,8 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The parameter constraints associated with the generic parameter names in <see cref="ConstrainedTypeParameters"/>.
         /// </value>
-        public CSharpTypeConstraintValidationResult[][] ParameterConstraints { get; internal set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        public IReadOnlyGenericArray<IReadOnlyGenericArray<CSharpTypeConstraintValidationResult>> ParameterConstraints { get; internal set; }
 
         /// <summary>
         /// Gets the full formated signature of the parsed inheritance list.
@@ -148,7 +150,7 @@ namespace LibLSLCC.CSharp
         public CSharpClassNameValidationResult TypeSignature { get; internal set; }
 
 
-        private bool CompareTypeSignatures(CSharpClassNameValidationResult x, CSharpClassNameValidationResult y)
+        private static bool CompareTypeSignatures(CSharpClassNameValidationResult x, CSharpClassNameValidationResult y)
         {
             if (x == null) return y == null;
             if (y == null) return false;
@@ -215,7 +217,8 @@ namespace LibLSLCC.CSharp
                     case CSharpTypeConstraintType.Type:
                         return TypeSignature.FullSignature ?? "";
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new InvalidOperationException(
+                            "Bugcheck, unexpected enum member in: CSharpTypeConstraintType CSharpTypeConstraintValidationResult.ConstraintType");
                 }
             }
         }
@@ -369,8 +372,7 @@ namespace LibLSLCC.CSharp
 
             var inheritedTypes = new HashSet<CSharpClassNameValidationResult>(compareValidatedType);
             var constrainedTypeParameters = new HashSet<string>();
-            var typeConstraints =
-                new List<HashSet<CSharpTypeConstraintValidationResult>>();
+            var typeConstraints = new GenericArray<HashSet<CSharpTypeConstraintValidationResult>>();
 
             result.Success = true;
 
@@ -802,15 +804,15 @@ namespace LibLSLCC.CSharp
                 return result;
             }
 
-            result.ConstrainedTypeParameters = constrainedTypeParameters.ToArray();
-            result.InheritedTypes = inheritedTypes.ToArray();
-            result.ParameterConstraints = typeConstraints.Select(x => x.ToArray()).ToArray();
+            result.ConstrainedTypeParameters = constrainedTypeParameters.ToGenericArray();
+            result.InheritedTypes = inheritedTypes.ToGenericArray();
+            result.ParameterConstraints = typeConstraints.Select(x => x.ToGenericArray()).ToGenericArray();
 
             result.Fullsignature = "";
-            if (result.InheritedTypes.Length > 0)
+            if (result.InheritedTypes.Count > 0)
             {
                 result.Fullsignature += string.Join(", ", result.InheritedTypes.Select(x => x.FullSignature));
-                if (result.ConstrainedTypeParameters.Length > 0)
+                if (result.ConstrainedTypeParameters.Count > 0)
                 {
                     result.Fullsignature += " ";
                 }

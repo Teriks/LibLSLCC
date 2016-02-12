@@ -74,7 +74,7 @@ namespace LibLSLCC.Utility
                 {
                     if (character == '\t')
                     {
-                        columns += 4;
+                        columns += tabSize;
                     }
                     else if (character == ' ')
                     {

@@ -50,7 +50,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// Optional Attribute for exposing method parameters to <see cref="LSLLibraryDataReflectionSerializer"/> without having to map types.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public class LSLParamAttribute : Attribute
+    public sealed class LSLParamAttribute : Attribute
     {
         /// <summary>
         /// Gets the <see cref="LSLType"/> of the parameter as specified by the attribute.

@@ -45,6 +45,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
@@ -174,7 +175,7 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The sub validation results for the generic arguments.
         /// </value>
-        public CSharpClassNameValidationResult[] GenericArguments { get; internal set; }
+        public IReadOnlyGenericArray<CSharpClassNameValidationResult> GenericArguments { get; internal set; }
 
         /// <summary>
         /// Gets the type validation result for this parsed type.  This is only ever non <c>null</c> if a callback for type validation
@@ -293,9 +294,9 @@ namespace LibLSLCC.CSharp
 
 
             string fullyQualifiedName = "";
-            var genericArgs = new List<CSharpClassNameValidationResult>();
+            var genericArgs = new GenericArray<CSharpClassNameValidationResult>();
 
-            var qualifications = new List<Qualification>()
+            var qualifications = new GenericArray<Qualification>()
             {
                 new Qualification(new StringBuilder(), index)
             };
@@ -524,7 +525,7 @@ namespace LibLSLCC.CSharp
             {
                 QualifiedName = fullyQualifiedName,
                 BaseName = baseNameString,
-                GenericArguments = genericArgs.ToArray(),
+                GenericArguments = genericArgs,
                 IsGeneric = isGeneric,
                 Success = true
             };

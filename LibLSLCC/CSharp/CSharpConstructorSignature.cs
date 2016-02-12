@@ -52,7 +52,7 @@ namespace LibLSLCC.CSharp
     /// Abstracts a CSharp constructor signature in the form: () | (Type param, ..) | (...) : base(...) | (...) : this(...)
     /// If an invalid CSharp constructor signature string is used to construct this object, an <see cref="ArgumentException"/> will be thrown.
     /// </summary>
-    public class CSharpConstructorSignature : SettingsBaseClass<CSharpConstructorSignature>, IObservableHashSetItem
+    public sealed class CSharpConstructorSignature : SettingsBaseClass<CSharpConstructorSignature>, IObservableHashSetItem
     {
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
         {

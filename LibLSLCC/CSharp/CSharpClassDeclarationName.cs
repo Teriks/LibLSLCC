@@ -51,7 +51,7 @@ namespace LibLSLCC.CSharp
     /// <summary>
     /// Abstracts a CSharp class declaration name/name signature string, providing validation through parsing.
     /// </summary>
-    public class CSharpClassDeclarationName : SettingsBaseClass<CSharpClassDeclarationName>, IObservableHashSetItem
+    public sealed class CSharpClassDeclarationName : SettingsBaseClass<CSharpClassDeclarationName>, IObservableHashSetItem
     {
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
         {

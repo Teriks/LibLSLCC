@@ -44,6 +44,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
@@ -103,7 +104,7 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The parsing results for each parameter type.
         /// </value>
-        public CSharpClassNameValidationResult[] ParameterTypes { get; internal set; }
+        public IReadOnlyGenericArray<CSharpClassNameValidationResult> ParameterTypes { get; internal set; }
 
         /// <summary>
         /// Gets the parameter names.
@@ -111,7 +112,7 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The parameter names.
         /// </value>
-        public string[] ParameterNames { get; internal set; }
+        public IReadOnlyGenericArray<string> ParameterNames { get; internal set; }
 
         /// <summary>
         /// Gets the parameter forwarding type, if any.  IE, what the constructor signature forwarded its parameter's to (base, this or none)
@@ -127,7 +128,7 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The forwarded parameter names.
         /// </value>
-        public string[] ForwardedParameters { get; internal set; }
+        public IReadOnlyGenericArray<string> ForwardedParameters { get; internal set; }
     }
 
 
@@ -189,9 +190,9 @@ namespace LibLSLCC.CSharp
             States state = States.Start;
             string accum = "";
 
-            var parameterTypes = new List<CSharpClassNameValidationResult>();
+            var parameterTypes = new GenericArray<CSharpClassNameValidationResult>();
             var parameterNames = new HashSet<string>();
-            var forwardedParameters = new List<string>();
+            var forwardedParameters = new GenericArray<string>();
 
             int unclosedGenericsBrackets = 0;
 
@@ -487,9 +488,9 @@ namespace LibLSLCC.CSharp
                 return result;
             }
 
-            result.ParameterTypes = parameterTypes.ToArray();
-            result.ParameterNames = parameterNames.ToArray();
-            result.ForwardedParameters = forwardedParameters.ToArray();
+            result.ParameterTypes = parameterTypes;
+            result.ParameterNames = parameterNames.ToGenericArray();
+            result.ForwardedParameters = forwardedParameters;
 
             return result;
         }

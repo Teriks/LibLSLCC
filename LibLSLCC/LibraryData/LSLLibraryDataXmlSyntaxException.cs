@@ -50,6 +50,7 @@ namespace LibLSLCC.LibraryData
     /// Exception thrown by <see cref="LSLLibraryDataXmlSerializer.Parse"/> and the XML reading methods of <see cref="LSLXmlLibraryDataProvider"/>
     /// when there are syntax errors in XML library data.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")]
     [Serializable]
     public class LSLLibraryDataXmlSyntaxException : Exception
     {

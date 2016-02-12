@@ -52,7 +52,7 @@ namespace LibLSLCC.LibraryData
     /// a subset.
     /// </summary>
     [Serializable]
-    public class LSLDuplicateSignatureException : Exception
+    public class LSLDuplicateSignatureException : InvalidOperationException
     {
         /// <summary>
         /// Default constructor.

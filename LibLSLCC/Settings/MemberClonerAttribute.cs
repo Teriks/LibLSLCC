@@ -49,9 +49,9 @@ namespace LibLSLCC.Settings
     public sealed class MemberClonerAttribute : Attribute
     {
         public Type ClonerType { get; private set; }
-        public MemberClonerAttribute(Type cloner)
+        public MemberClonerAttribute(Type clonerType)
         {
-            ClonerType = cloner;
+            ClonerType = clonerType;
         }
 
     }

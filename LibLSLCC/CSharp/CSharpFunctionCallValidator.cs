@@ -44,6 +44,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
@@ -55,9 +56,9 @@ namespace LibLSLCC.CSharp
 
         public int ErrorIndex { get; internal set; }
 
-        public CSharpClassNameValidationResult[] ExplicitGenericParameters { get; internal set; }
+        public IReadOnlyGenericArray<CSharpClassNameValidationResult> ExplicitGenericParameters { get; internal set; }
 
-        public CSharpParameterSignature[] Parameters { get; internal set; }
+        public IReadOnlyGenericArray<CSharpParameterSignature> Parameters { get; internal set; }
 
         public string MethodName { get; internal set; }
     }
@@ -116,13 +117,13 @@ namespace LibLSLCC.CSharp
         }
 
 
-        private static bool IsValidPlainParameter(string paramText, int paramStartIndex, int paramEndIndex,
+        private static bool IsValidPlainParameter(string paramText, int paramStartIndex,
             out string err, out int errIndex)
         {
             errIndex = paramStartIndex;
 
 
-            //the syntax of a plain parameter expression with no new keyword by abusing the codedomcompiler..
+            //Check the syntax of a plain parameter expression with no new keyword by abusing the CodeDom compiler..
 
             //Not using Roslyn.Compilers since its not a namespace included with mono by default yet.
             //Could use NRefactory, but.. it's an added assembly on windows and not on mono, it comes with mono by default and may be some other version. 
@@ -167,7 +168,7 @@ namespace LibLSLCC.CSharp
         }
 
 
-        private static bool IsValidNewParameter(string paramText, int paramStartIndex, int paramEndIndex, out string err,
+        private static bool IsValidNewParameter(string paramText, int paramStartIndex, out string err,
             out int errIndex)
         {
             errIndex = paramStartIndex;
@@ -242,8 +243,8 @@ namespace LibLSLCC.CSharp
         {
             var result = new CSharpFunctionCallValidationResult {Success = true};
 
-            var explicitGenericParameters = new List<CSharpClassNameValidationResult>();
-            var parameters = new List<CSharpParameterSignature>();
+            var explicitGenericParameters = new GenericArray<CSharpClassNameValidationResult>();
+            var parameters = new GenericArray<CSharpParameterSignature>();
 
             var lastModifier = CSharpParameterModifier.None;
 
@@ -460,7 +461,7 @@ namespace LibLSLCC.CSharp
                         int errIndex;
 
                         if (lastModifier == CSharpParameterModifier.New &&
-                            !IsValidNewParameter(param, index - (accum.Length - 1), index, out err, out errIndex))
+                            !IsValidNewParameter(param, index - (accum.Length - 1), out err, out errIndex))
                         {
                             result.Success = false;
                             result.ErrorDescription = err;
@@ -470,7 +471,7 @@ namespace LibLSLCC.CSharp
 
 
                         if (lastModifier == CSharpParameterModifier.None &&
-                            !IsValidPlainParameter(param, index - (accum.Length - 1), index, out err, out errIndex))
+                            !IsValidPlainParameter(param, index - (accum.Length - 1), out err, out errIndex))
                         {
                             result.Success = false;
                             result.ErrorDescription = err;
@@ -572,7 +573,7 @@ namespace LibLSLCC.CSharp
                         int errIndex;
 
                         if (lastModifier == CSharpParameterModifier.New &&
-                            !IsValidNewParameter(param, index - (accum.Length - 1), index, out err, out errIndex))
+                            !IsValidNewParameter(param, index - (accum.Length - 1), out err, out errIndex))
                         {
                             result.Success = false;
                             result.ErrorDescription = err;
@@ -582,7 +583,7 @@ namespace LibLSLCC.CSharp
 
 
                         if (lastModifier == CSharpParameterModifier.None &&
-                            !IsValidPlainParameter(param, index - (accum.Length - 1), index, out err, out errIndex))
+                            !IsValidPlainParameter(param, index - (accum.Length - 1), out err, out errIndex))
                         {
                             result.Success = false;
                             result.ErrorDescription = err;
@@ -722,8 +723,8 @@ namespace LibLSLCC.CSharp
 
 
             result.MethodName = methodName;
-            result.Parameters = parameters.ToArray();
-            result.ExplicitGenericParameters = explicitGenericParameters.ToArray();
+            result.Parameters = parameters;
+            result.ExplicitGenericParameters = explicitGenericParameters;
             return result;
         }
     }

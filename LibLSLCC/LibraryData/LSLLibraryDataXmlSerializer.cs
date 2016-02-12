@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLLibraryDataXmlSerializer.cs
 // 
@@ -39,9 +40,12 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
+using System;
 using System.Linq;
 using System.Security;
 using System.Xml;
@@ -52,40 +56,63 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.LibraryData
 {
+    public sealed class SerializeConstantSignatureEventArgs : EventArgs
+
+    {
+        public LSLLibraryConstantSignature Signature { get; private set; }
+
+
+        public SerializeConstantSignatureEventArgs(LSLLibraryConstantSignature signature)
+        {
+            Signature = signature;
+        }
+    }
+
+
+    public sealed class SerializeEventHandlerSignatureEventArgs : EventArgs
+
+    {
+        public SerializeEventHandlerSignatureEventArgs(LSLLibraryEventSignature eventSignature)
+        {
+            EventSignature = eventSignature;
+        }
+
+
+        public LSLLibraryEventSignature EventSignature { get; private set; }
+    }
+
+
+    public sealed class SerializeFunctionSignatureEventArgs : EventArgs
+
+    {
+        public SerializeFunctionSignatureEventArgs(LSLLibraryFunctionSignature functionSignature)
+        {
+            FunctionSignature = functionSignature;
+        }
+
+
+        public LSLLibraryFunctionSignature FunctionSignature { get; private set; }
+    }
+
+
+    public sealed class SerializeSubsetDescriptionEventArgs : EventArgs
+
+    {
+        public SerializeSubsetDescriptionEventArgs(LSLLibrarySubsetDescription subsetDescription)
+        {
+            SubsetDescription = subsetDescription;
+        }
+
+
+        public LSLLibrarySubsetDescription SubsetDescription { get; private set; }
+    }
+
 
     /// <summary>
     /// An event driven SAX parser for LSL Library data
     /// </summary>
     public class LSLLibraryDataXmlSerializer
     {
-        /// <summary>
-        /// Delegate for the ReadLibraryConstantDefinition event.
-        /// </summary>
-        /// <param name="sig">The signature that gets passed into the event when its read from XML.</param>
-        public delegate void LibraryConstantSignatureEvent(LSLLibraryConstantSignature sig);
-
-
-        /// <summary>
-        /// Delegate for the ReadLibraryEventHandlerDefinition event.
-        /// </summary>
-        /// <param name="sig">The signature that gets passed into the event when its read from XML.</param>
-        public delegate void LibraryEventHandlerSignatureEvent(LSLLibraryEventSignature sig);
-
-
-        /// <summary>
-        /// Delegate for the ReadLibraryFunctionDefinition event.
-        /// </summary>
-        /// <param name="sig">The signature that gets passed into the event when its read from XML.</param>
-        public delegate void LibraryFunctionSignatureEvent(LSLLibraryFunctionSignature sig);
-
-
-        /// <summary>
-        /// Delegate for the ReadLibrarySubsetDescription event.
-        /// </summary>
-        /// <param name="desc">The description object that gets passed into the event when its read from XML.</param>
-        public delegate void LibrarySubsetDescriptionEvent(LSLLibrarySubsetDescription desc);
-
-
         /// <summary>
         /// Info about the current XML line as parsing in progress.
         /// </summary>
@@ -100,23 +127,23 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// This event is fired when a function definition has been retrieved from XML markup.
         /// </summary>
-        public event LibraryFunctionSignatureEvent ReadLibraryFunctionDefinition;
+        public event EventHandler<SerializeFunctionSignatureEventArgs> ReadLibraryFunctionDefinition;
 
         /// <summary>
         /// This event is fired when a constant definition has been retrieved from XML markup.
         /// </summary>
-        public event LibraryConstantSignatureEvent ReadLibraryConstantDefinition;
+        public event EventHandler<SerializeConstantSignatureEventArgs> ReadLibraryConstantDefinition;
 
         /// <summary>
         /// This event is fired when an event handler definition has been retrieved from XML markup.
         /// </summary>
-        public event LibraryEventHandlerSignatureEvent ReadLibraryEventHandlerDefinition;
+        public event EventHandler<SerializeEventHandlerSignatureEventArgs> ReadLibraryEventHandlerDefinition;
 
 
         /// <summary>
         /// This event is fired when a library subset description has been retrieved from XML markup.
         /// </summary>
-        public event LibrarySubsetDescriptionEvent ReadLibrarySubsetDescription;
+        public event EventHandler<SerializeSubsetDescriptionEventArgs> ReadLibrarySubsetDescription;
 
 
         /// <summary>
@@ -125,7 +152,7 @@ namespace LibLSLCC.LibraryData
         protected virtual void OnReadLibraryFunctionDefinition(LSLLibraryFunctionSignature sig)
         {
             var handler = ReadLibraryFunctionDefinition;
-            if (handler != null) handler(sig);
+            if (handler != null) handler(this, new SerializeFunctionSignatureEventArgs(sig));
         }
 
 
@@ -135,8 +162,9 @@ namespace LibLSLCC.LibraryData
         protected virtual void OnReadLibraryEventHandlerDefinition(LSLLibraryEventSignature sig)
         {
             var handler = ReadLibraryEventHandlerDefinition;
-            if (handler != null) handler(sig);
+            if (handler != null) handler(this, new SerializeEventHandlerSignatureEventArgs(sig));
         }
+
 
         /// <summary>
         /// This event is fired when a constant definition has been retrieved from XML markup.
@@ -144,9 +172,8 @@ namespace LibLSLCC.LibraryData
         protected virtual void OnReadLibraryConstantDefinition(LSLLibraryConstantSignature sig)
         {
             var handler = ReadLibraryConstantDefinition;
-            if (handler != null) handler(sig);
+            if (handler != null) handler(this, new SerializeConstantSignatureEventArgs(sig));
         }
-
 
 
         /// <summary>
@@ -155,7 +182,7 @@ namespace LibLSLCC.LibraryData
         protected virtual void OnReadLibrarySubsetDescription(LSLLibrarySubsetDescription desc)
         {
             var handler = ReadLibrarySubsetDescription;
-            if (handler != null) handler(desc);
+            if (handler != null) handler(this, new SerializeSubsetDescriptionEventArgs(desc));
         }
 
 
@@ -262,28 +289,28 @@ namespace LibLSLCC.LibraryData
             foreach (var func in dataProvider.SubsetDescriptions.Values)
             {
                 writer.WriteStartElement("SubsetDescription");
-                ((IXmlSerializable)func).WriteXml(writer);
+                ((IXmlSerializable) func).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
-            foreach (var func in dataProvider.LibraryFunctions.SelectMany(x=>x))
+            foreach (var func in dataProvider.LibraryFunctions.SelectMany(x => x))
             {
                 writer.WriteStartElement("LibraryFunction");
-                ((IXmlSerializable)func).WriteXml(writer);
+                ((IXmlSerializable) func).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
             foreach (var ev in dataProvider.LibraryEvents)
             {
                 writer.WriteStartElement("EventHandler");
-                ((IXmlSerializable)ev).WriteXml(writer);
+                ((IXmlSerializable) ev).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
             foreach (var con in dataProvider.LibraryConstants)
             {
                 writer.WriteStartElement("LibraryConstant");
-                ((IXmlSerializable)con).WriteXml(writer);
+                ((IXmlSerializable) con).WriteXml(writer);
                 writer.WriteEndElement();
             }
 
@@ -292,6 +319,5 @@ namespace LibLSLCC.LibraryData
                 writer.WriteEndElement();
             }
         }
-
     }
 }

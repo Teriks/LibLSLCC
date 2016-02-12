@@ -51,7 +51,7 @@ namespace LibLSLCC.CSharp
     /// <summary>
     /// Abstraction that provides parsing and validation for CSharp namespace strings.
     /// </summary>
-    public class CSharpNamespace : SettingsBaseClass<CSharpNamespace>, IObservableHashSetItem
+    public sealed class CSharpNamespace : SettingsBaseClass<CSharpNamespace>, IObservableHashSetItem
     {
         private string _fullSignature;
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string> {"Name"};

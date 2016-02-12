@@ -55,7 +55,7 @@ namespace LibLSLCC.Settings
         SyntaxError,
     }
 
-    public class SettingsManagerConfigErrorEventArgs
+    public sealed class SettingsManagerConfigErrorEventArgs : EventArgs
     {
         public SettingsManagerConfigErrorEventArgs(SettingsErrorType errorType, bool settingsReset)
         {
@@ -69,13 +69,13 @@ namespace LibLSLCC.Settings
     }
 
 
-    public class SettingsManager<T> where T : new()
+    public sealed class SettingsManager<T> where T : new()
     {
         private readonly bool _resetOnConfigError;
         public T Settings { get; private set; }
 
 
-        public event Action<object, SettingsManagerConfigErrorEventArgs> ConfigError;
+        public event EventHandler<SettingsManagerConfigErrorEventArgs> ConfigError;
 
 
         public SettingsManager(bool resetSettingsOnConfigError = true)
@@ -146,7 +146,8 @@ namespace LibLSLCC.Settings
             }
         }
 
-        protected virtual void OnConfigError(SettingsErrorType type)
+
+        private void OnConfigError(SettingsErrorType type)
         {
             var handler = ConfigError;
             if (handler != null) handler(this, new SettingsManagerConfigErrorEventArgs(type, _resetOnConfigError));

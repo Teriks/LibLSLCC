@@ -81,6 +81,7 @@ namespace LibLSLCC.Collections
         /// Create a new instance of an <see cref="HashMap{TKey, TValue}"/> class by wrapping an <see cref="IDictionary{TKey, TValue}"/>.
         /// </summary>
         /// <param name="items">The items.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static HashMap<TKey, TValue> CreateWrapper(IDictionary<TKey, TValue> items)
         {
             return new HashMap<TKey, TValue>(items);
@@ -139,8 +140,10 @@ namespace LibLSLCC.Collections
         /// </summary>
         /// <param name="info">The information.</param>
         /// <param name="context">The context.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         protected HashMap(SerializationInfo info, StreamingContext context)
         {
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             GetObjectData(info, context);
         }
 
@@ -340,7 +343,7 @@ namespace LibLSLCC.Collections
         /// true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
         /// </returns>
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
+        public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             return _items.Contains(item);
         }

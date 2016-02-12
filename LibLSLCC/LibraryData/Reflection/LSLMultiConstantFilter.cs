@@ -43,6 +43,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
@@ -62,14 +63,14 @@ namespace LibLSLCC.LibraryData.Reflection
         /// The <see cref="ILSLConstantFilter"/>'s being used to filter.
         /// </value>
         // ReSharper disable once CollectionNeverUpdated.Global
-        public List<ILSLConstantFilter> Filters { get; private set; }
+        public Collection<ILSLConstantFilter> Filters { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LSLMultiMethodFilter"/> class.
         /// </summary>
         public LSLMultiConstantFilter()
         {
-            Filters = new List<ILSLConstantFilter>();
+            Filters = new Collection<ILSLConstantFilter>();
         }
 
 

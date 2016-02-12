@@ -61,6 +61,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// Represents the status of an attempted function signature match against parameter expressions
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class  Match
         { 
             /// <summary>
@@ -119,6 +120,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Represents the status of an attempted overload resolution match against parameter expressions.
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class OverloadMatch<T> where T : LSLFunctionSignature
         {
              /// <summary>

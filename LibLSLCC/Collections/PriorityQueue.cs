@@ -115,6 +115,7 @@ namespace LibLSLCC.Collections
         ///     Initializes a new instance of priority queue with specified data and default priority comparer
         /// </summary>
         /// <param name="data">data to be inserted into priority queue</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public PriorityQueue(IEnumerable<KeyValuePair<TPriority, TValue>> data)
             : this(data, Comparer<TPriority>.Default)
         {
@@ -126,10 +127,18 @@ namespace LibLSLCC.Collections
         /// </summary>
         /// <param name="data">data to be inserted into priority queue</param>
         /// <param name="comparer">priority comparer</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public PriorityQueue(IEnumerable<KeyValuePair<TPriority, TValue>> data, IComparer<TPriority> comparer)
         {
-            if (data == null || comparer == null)
-                throw new ArgumentNullException();
+
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+            if (comparer == null)
+            {
+                throw new ArgumentNullException("comparer");
+            }
 
             _comparer = comparer;
             _baseHeap = new List<KeyValuePair<TPriority, TValue>>(data);
@@ -152,13 +161,24 @@ namespace LibLSLCC.Collections
         ///     source priority queues must have equal comparers,
         ///     otherwise <see cref="InvalidOperationException" /> will be thrown
         /// </remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static PriorityQueue<TPriority, TValue> MergeQueues(PriorityQueue<TPriority, TValue> pq1,
             PriorityQueue<TPriority, TValue> pq2)
         {
-            if (pq1 == null || pq2 == null)
-                throw new ArgumentNullException();
+            if (pq1 == null)
+            {
+                throw new ArgumentNullException("pq1");
+            }
+
+            if (pq2 == null)
+            {
+                throw new ArgumentNullException("pq2");
+            }
+
             if (pq1._comparer != pq2._comparer)
+            {
                 throw new InvalidOperationException("Priority queues to be merged must have equal comparers");
+            }
             return MergeQueues(pq1, pq2, pq1._comparer);
         }
 
@@ -170,6 +190,7 @@ namespace LibLSLCC.Collections
         /// <param name="pq2">second priority queue</param>
         /// <param name="comparer">comparer for resultant priority queue</param>
         /// <returns>resultant priority queue</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static PriorityQueue<TPriority, TValue> MergeQueues(PriorityQueue<TPriority, TValue> pq1,
             PriorityQueue<TPriority, TValue> pq2, IComparer<TPriority> comparer)
         {

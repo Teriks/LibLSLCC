@@ -52,7 +52,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// This is to be used on classes that contain methods and fields/properties that are to be reflected as library data objects.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class LSLLibraryDataSerializableAttribute : Attribute
+    public sealed class LSLLibraryDataSerializableAttribute : Attribute
     {
         /// <summary>
         /// Gets or sets the <see cref="ILSLReturnTypeConverter"/> used to convert the return types of methods in a given class to <see cref="LSLType"/>'s.

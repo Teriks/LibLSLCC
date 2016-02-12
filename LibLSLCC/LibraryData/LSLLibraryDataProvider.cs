@@ -338,7 +338,7 @@ namespace LibLSLCC.LibraryData
         private readonly HashSet<LSLLibraryEventSignature> _uniqueOwnedEvents = new HashSet<LSLLibraryEventSignature>(new LambdaEqualityComparer<object>(ReferenceEquals, RuntimeHelpers.GetHashCode));
 
 
-        private void SignaturesSubsetsChanged(object sender)
+        private void SignaturesSubsetsChanged(object sender, LibraryDataSubsetsChangedEventArgs e)
         {
             throw new InvalidOperationException(
                 string.Format("The given library signature is owned by an '{0}' and it does not allow you to change the signature's Subsets.  ", GetType().Name) +
@@ -716,20 +716,20 @@ namespace LibLSLCC.LibraryData
             LiveFiltering = liveFiltering;
             ActiveSubsets = new LSLLibraryDataSubsetCollection();
 
-            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnOnSubsetsChanged;
-            ActiveSubsets.OnSubsetAdded += ActiveSubsetsOnOnSubsetAdded;
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
+            ActiveSubsets.OnSubsetAdded += ActiveSubsetsOnSubsetAdded;
         }
 
 
 
-        private void ActiveSubsetsOnOnSubsetAdded(object o, string subset)
+        private void ActiveSubsetsOnSubsetAdded(object o, LibraryDataSubsetAddedEventArgs subsetAdded)
         {
             if (!LiveFiltering) return;
 
-            if (!SubsetDescriptions.ContainsKey(subset))
+            if (!SubsetDescriptions.ContainsKey(subsetAdded.SubsetName))
             {
                 throw new LSLMissingSubsetDescriptionException(
-                    "The subset \""+subset+
+                    "The subset \""+subsetAdded+
                     "\" cannot be added to the library data providers ActiveSubsets collection while live filtering because a SubsetDescription does not exist for that subset name");
             }
         }
@@ -746,12 +746,12 @@ namespace LibLSLCC.LibraryData
             LiveFiltering = liveFiltering;
             ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
 
-            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnOnSubsetsChanged;
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
         }
 
 
 
-        private void ActiveSubsetsOnOnSubsetsChanged(object o)
+        private void ActiveSubsetsOnSubsetsChanged(object o, LibraryDataSubsetsChangedEventArgs e)
         {
             if (!LiveFiltering)
             {

@@ -1432,7 +1432,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     result.HasErrors = true;
                 }
 
-                result.AddCodeStatement(child, codeStatementContext);
+                result.AddCodeStatement(child);
             }
 
             result.EndScope();
@@ -1514,7 +1514,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            result.AddCodeStatement(codeStatement, context);
+            result.AddCodeStatement(codeStatement);
             result.EndScope();
 
 

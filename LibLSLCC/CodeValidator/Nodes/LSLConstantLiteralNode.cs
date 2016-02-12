@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        public LSLConstantLiteralNode(LSLConstantLiteralNode other)
+        protected LSLConstantLiteralNode(LSLConstantLiteralNode other)
         {
             RawText = other.RawText;
             Type = other.Type;

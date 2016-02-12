@@ -164,10 +164,10 @@ private static class UTILITIES
         private ILSLEventHandlerNode _currentLslEventHandlerNode;
 
 
-        /// <summary>
+        /*/// <summary>
         /// Tracks what function declaration node compilation is currently taking place in.
         /// </summary>
-        private ILSLFunctionDeclarationNode _currentLslFunctionDeclarationNode;
+        private ILSLFunctionDeclarationNode _currentLslFunctionDeclarationNode;*/
 
 
         /// <summary>
@@ -224,7 +224,7 @@ private static class UTILITIES
 
         public void Reset()
         {
-            _currentLslFunctionDeclarationNode = null;
+            //_currentLslFunctionDeclarationNode = null;
 
             _currentLslStateNode = null;
 
@@ -635,7 +635,7 @@ private static class UTILITIES
         }
 
 
-        private string GenerateExpandedListConstant(string constantValueString)
+        private static string GenerateExpandedListConstant(string constantValueString)
         {
             return "new LSL_Types.list(" +
                    string.Join(", ", LSLListParser.ParseListAsEnumerable("[" + constantValueString + "]").Select(e =>
@@ -1752,7 +1752,7 @@ private static class UTILITIES
         public override bool VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
 
-            _currentLslFunctionDeclarationNode = node;
+            //_currentLslFunctionDeclarationNode = node;
 
             Writer.Write(GenIndent() + "public ");
 
@@ -1779,7 +1779,7 @@ private static class UTILITIES
 
             Visit(node.FunctionBodyNode);
 
-            _currentLslFunctionDeclarationNode = null;
+            //_currentLslFunctionDeclarationNode = null;
 
             return false;
         }

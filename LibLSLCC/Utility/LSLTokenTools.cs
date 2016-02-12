@@ -49,7 +49,7 @@ namespace LibLSLCC.Utility
     /// <summary>
     /// Tools for dealing with LSL token strings, mostly symbol names.
     /// </summary>
-    public class LSLTokenTools
+    public static class LSLTokenTools
     {
         /// <summary>
         /// A raw string copy of a regex that matches/validates LSL ID Tokens, IE: variable names, state names, label names, function names
@@ -59,7 +59,7 @@ namespace LibLSLCC.Utility
         /// <summary>
         /// This regex matches/validates LSL ID Tokens, IE: variable names, state names, label names, function names
         /// </summary>
-        public static Regex IDRegex = new Regex(LSLLexer.IDRegex);
+        public static readonly Regex IDRegex = new Regex(LSLLexer.IDRegex);
 
         /// <summary>
         /// This regex matches/validates LSL ID Tokens, IE: variable names, state names, label names, function names

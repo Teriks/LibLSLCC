@@ -560,6 +560,7 @@ namespace LibLSLCC.AutoComplete
             FunctionCallParameterList
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class GlobalVariable
         {
             public GlobalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
@@ -582,6 +583,7 @@ namespace LibLSLCC.AutoComplete
             public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class StateBlock
         {
             public StateBlock(string name, LSLSourceCodeRange range)
@@ -595,10 +597,11 @@ namespace LibLSLCC.AutoComplete
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class GlobalFunction
         {
             public GlobalFunction(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
-                LSLSourceCodeRange nameRange, List<LocalParameter> parameters)
+                LSLSourceCodeRange nameRange, IList<LocalParameter> parameters)
             {
                 Parameters = parameters.WrapWithGenericArray();
                 Name = name;
@@ -614,7 +617,7 @@ namespace LibLSLCC.AutoComplete
 
 
             public GlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
-                List<LocalParameter> parameters)
+                IList<LocalParameter> parameters)
             {
                 Parameters = parameters.WrapWithGenericArray();
                 Name = name;
@@ -640,7 +643,7 @@ namespace LibLSLCC.AutoComplete
                 get
                 {
                     var sig = "";
-                    if (ReturnType != "")
+                    if (!string.IsNullOrEmpty(ReturnType))
                     {
                         sig += ReturnType + " ";
                     }
@@ -671,6 +674,7 @@ namespace LibLSLCC.AutoComplete
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class ScopeAddress
         {
             public ScopeAddress(int codeAreaId, int scopeId, int scopeLevel)
@@ -692,6 +696,7 @@ namespace LibLSLCC.AutoComplete
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LocalVariable
         {
             public LocalVariable(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
@@ -715,6 +720,7 @@ namespace LibLSLCC.AutoComplete
             public LSLSourceCodeRange SourceCodeRange { get; private set; }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LocalLabel
         {
             public LocalLabel(string name)
@@ -726,6 +732,7 @@ namespace LibLSLCC.AutoComplete
             public string Name { get; private set; }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LocalJump
         {
             public LocalJump(string target)
@@ -737,6 +744,7 @@ namespace LibLSLCC.AutoComplete
             public string Target { get; private set; }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public class LocalParameter
         {
             public LocalParameter(string name, string type, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
@@ -1541,7 +1549,7 @@ namespace LibLSLCC.AutoComplete
 
                 _parent.CurrentFunction = context.function_name != null ? context.function_name.Text : null;
 
-                _parent.CurrentFunctionReturnType = returnTypeText == ""
+                _parent.CurrentFunctionReturnType = string.IsNullOrEmpty(returnTypeText)
                     ? LSLType.Void
                     : LSLTypeTools.FromLSLTypeString(returnTypeText);
 

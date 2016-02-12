@@ -173,8 +173,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// A user defined function was never referenced.
         /// </summary>
         /// <param name="location">The location in the source code of the function that was never referenced.</param>
-        /// <param name="function">The function declaration node of the un-referenced function.</param>
-        void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function);
+        /// <param name="functionDeclarationNode">The function declaration node of the un-referenced function.</param>
+        void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode functionDeclarationNode);
 
         /// <summary>
         /// A user defined global variable was never referenced.

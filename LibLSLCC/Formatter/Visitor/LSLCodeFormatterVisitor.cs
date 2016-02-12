@@ -147,7 +147,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         private void Write(string str)
         {
-            if (str == string.Empty)
+            if (string.IsNullOrEmpty(str))
             {
                 return;
             }
@@ -165,35 +165,38 @@ namespace LibLSLCC.Formatter.Visitor
                 else if (c == '\t')
                 {
                     _tabsWrittenSinceLastLine++;
-                    OnTabWritten();
+                    //OnTabWritten();
                 }
                 else
                 {
                     _nonTabsWrittenSinceLastLine++;
-                    OnNonTabWritten();
+                    //OnNonTabWritten();
                 }
 
                 if (c == '\n') continue;
 
                 _writeColumn++;
-                OnColumnCharacterWritten();
+                //OnColumnCharacterWritten();
             }
 
             Writer.Write(str);
         }
 
 
-        private void OnColumnCharacterWritten()
+        /*private void OnColumnCharacterWritten()
         {
-        }
+            //
+        }*/
 
-        private void OnNonTabWritten()
+        /*private void OnNonTabWritten()
         {
-        }
+            //
+        }*/
 
-        private void OnTabWritten()
+        /*private void OnTabWritten()
         {
-        }
+            //
+        }*/
 
 
         private void OnNewLineWritten()
@@ -566,13 +569,13 @@ namespace LibLSLCC.Formatter.Visitor
             ExpressionWrappingPush(false, null);
             Write("(");
 
-            WriteCommentsBetweenRange(node.SourceCodeRange.GetFirstCharRange(), node.InnerExpression.SourceCodeRange);
+            WriteCommentsBetweenRange(node.SourceCodeRange.FirstCharRange, node.InnerExpression.SourceCodeRange);
 
 
             Visit(node.InnerExpression);
 
 
-            WriteCommentsBetweenRange(node.InnerExpression.SourceCodeRange, node.SourceCodeRange.GetLastCharRange());
+            WriteCommentsBetweenRange(node.InnerExpression.SourceCodeRange, node.SourceCodeRange.LastCharRange);
 
             Write(")");
             ExpressionWrappingPop();
@@ -608,7 +611,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write("<");
 
-            WriteCommentsBetweenRange(node.SourceCodeRange.GetFirstCharRange(), node.XExpression.SourceCodeRange);
+            WriteCommentsBetweenRange(node.SourceCodeRange.FirstCharRange, node.XExpression.SourceCodeRange);
 
             Visit(node.XExpression);
 
@@ -651,7 +654,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Visit(node.SExpression);
 
-            WriteCommentsBetweenRange(node.SExpression.SourceCodeRange, node.SourceCodeRange.GetLastCharRange());
+            WriteCommentsBetweenRange(node.SExpression.SourceCodeRange, node.SourceCodeRange.LastCharRange);
 
             Write(">");
 
@@ -695,7 +698,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write("<");
 
-            WriteCommentsBetweenRange(node.SourceCodeRange.GetFirstCharRange(), node.XExpression.SourceCodeRange);
+            WriteCommentsBetweenRange(node.SourceCodeRange.FirstCharRange, node.XExpression.SourceCodeRange);
 
             Visit(node.XExpression);
 
@@ -725,7 +728,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Visit(node.ZExpression);
 
-            WriteCommentsBetweenRange(node.ZExpression.SourceCodeRange, node.SourceCodeRange.GetLastCharRange());
+            WriteCommentsBetweenRange(node.ZExpression.SourceCodeRange, node.SourceCodeRange.LastCharRange);
 
             Write(">");
 
@@ -1965,13 +1968,13 @@ namespace LibLSLCC.Formatter.Visitor
 
 
                 WriteCommentsBetweenRange(node.DeclarationExpression.SourceCodeRange,
-                    node.SourceCodeRange.GetLastCharRange());
+                    node.SourceCodeRange.LastCharRange);
 
                 Write(";");
             }
             else
             {
-                WriteCommentsBetweenRange(node.NameSourceCodeRange, node.SourceCodeRange.GetLastCharRange());
+                WriteCommentsBetweenRange(node.NameSourceCodeRange, node.SourceCodeRange.LastCharRange);
 
                 Write(";");
             }

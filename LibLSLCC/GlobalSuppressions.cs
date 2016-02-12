@@ -59,3 +59,6 @@ using System.Diagnostics.CodeAnalysis;
 [assembly:
     SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "LSL", Scope = "type",
         Target = "LibLSLCC.CodeValidator.ValidatorNodes.Interfaces.ILSLReadOnlyExprNode")]
+[assembly: SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes", Scope = "member", Target = "LibLSLCC.LibraryData.LSLXmlLibraryDataProvider.#System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)")]
+[assembly: SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes", Scope = "member", Target = "LibLSLCC.LibraryData.LSLXmlLibraryDataProvider.#System.Xml.Serialization.IXmlSerializable.GetSchema()")]
+

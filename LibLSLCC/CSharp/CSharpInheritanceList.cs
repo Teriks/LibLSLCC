@@ -51,7 +51,7 @@ namespace LibLSLCC.CSharp
     /// <summary>
     /// Abstraction that provides parsing and validation for CSharp inheritance list strings.
     /// </summary>
-    public class CSharpInheritanceList : SettingsBaseClass<CSharpInheritanceList>, IObservableHashSetItem
+    public sealed class CSharpInheritanceList : SettingsBaseClass<CSharpInheritanceList>, IObservableHashSetItem
     {
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
         {
@@ -129,7 +129,7 @@ namespace LibLSLCC.CSharp
             {
                 if (FullSignature == null) return null;
 
-                if (_validatedSignature.InheritedTypes.Length > 0)
+                if (_validatedSignature.InheritedTypes.Count > 0)
                 {
                     return ": " + FullSignature;
                 }

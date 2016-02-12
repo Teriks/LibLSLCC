@@ -144,7 +144,7 @@ namespace LibLSLCC.CodeValidator.Components
 
                     var chr1 = str[i + 1];
 
-                    var result = ReplaceEscapeCode(i, chr1);
+                    var result = ReplaceEscapeCode(chr1);
 
                     if (HasErrors) yield break;
 
@@ -190,7 +190,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
 
-        private string ReplaceEscapeCode(int index, char code)
+        private static string ReplaceEscapeCode(char code)
         {
             if (code == 't')
             {

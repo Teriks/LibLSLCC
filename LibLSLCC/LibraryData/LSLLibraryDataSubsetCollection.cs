@@ -49,6 +49,50 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.LibraryData
 {
+
+    public sealed class LibraryDataSubsetAddedEventArgs : EventArgs
+    {
+        public LibraryDataSubsetAddedEventArgs(string subsetName)
+        {
+            SubsetName = subsetName;
+        }
+
+        public string SubsetName { get; private set; }
+    }
+
+    public sealed class LibraryDataSubsetRemovedEventArgs : EventArgs
+    {
+        public LibraryDataSubsetRemovedEventArgs(string subsetName)
+        {
+            SubsetName = subsetName;
+        }
+
+        public string SubsetName { get; private set; }
+    }
+
+    public sealed class LibraryDataSubsetsChangedEventArgs : EventArgs
+    {
+        public LSLLibraryDataSubsetCollection Collection { get; private set; }
+
+
+        public LibraryDataSubsetsChangedEventArgs(LSLLibraryDataSubsetCollection collection)
+        {
+            Collection = collection;
+        }
+    }
+
+    public sealed class LibraryDataSubsetsClearedEventArgs : EventArgs
+    {
+        public LSLLibraryDataSubsetCollection Collection { get; private set; }
+
+
+        public LibraryDataSubsetsClearedEventArgs(LSLLibraryDataSubsetCollection collection)
+        {
+            Collection = collection;
+        }
+    }
+
+
     /// <summary>
     /// Collection wrapper for library subset strings
     /// </summary>
@@ -60,26 +104,26 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Fired when a subset string that does not already exist is added.
         /// </summary>
-        public event Action<object, string> OnSubsetAdded;
+        public event EventHandler<LibraryDataSubsetAddedEventArgs> OnSubsetAdded;
 
         /// <summary>
         /// Fired when an existing subset string is removed. This is not called
         /// when clear is called.
         /// </summary>
-        public event Action<object, string> OnSubsetRemoved;
+        public event EventHandler<LibraryDataSubsetRemovedEventArgs> OnSubsetRemoved;
 
         /// <summary>
         /// Fired when the collection changes at all. Including cleared,
         /// but only when the collection was not already empty.
         /// 
         /// </summary>
-        public event Action<object> OnSubsetsChanged;
+        public event EventHandler<LibraryDataSubsetsChangedEventArgs> OnSubsetsChanged;
 
         /// <summary>
         /// Fired when the subset collection is cleared, but only if the collection
         /// was not empty when it was cleared.
         /// </summary>
-        public event Action<object> OnSubsetsCleared;
+        public event EventHandler<LibraryDataSubsetsClearedEventArgs> OnSubsetsCleared;
 
         /// <summary>
         /// Construct a subsets collection out of an exiting enumerable of strings
@@ -108,8 +152,8 @@ namespace LibLSLCC.LibraryData
             if (_subsets.Contains(subsetName)) return;
 
             _subsets.Add(subsetName);
-            OnSubsetsChangedEvent(this);
-            OnSubsetAddedEvent(this, subsetName);
+            OnSubsetsChangedEvent();
+            OnSubsetAddedEvent(subsetName);
         }
 
         /// <summary>
@@ -260,8 +304,8 @@ namespace LibLSLCC.LibraryData
 
             if (_subsets.Add(subsetName) == false) return false;
 
-            OnSubsetsChangedEvent(this);
-            OnSubsetAddedEvent(this, subsetName);
+            OnSubsetsChangedEvent();
+            OnSubsetAddedEvent(subsetName);
 
             return true;
         }
@@ -273,7 +317,7 @@ namespace LibLSLCC.LibraryData
         {
             if (_subsets.Count <= 0) return;
             _subsets.Clear();
-            OnSubsetsClearedEvent(this);
+            OnSubsetsClearedEvent();
         }
 
 
@@ -358,8 +402,8 @@ namespace LibLSLCC.LibraryData
         {
             if (_subsets.Remove(subsetName) == false) return false;
 
-            OnSubsetsChangedEvent(this);
-            OnSubsetRemovedEvent(this, subsetName);
+            OnSubsetsChangedEvent();
+            OnSubsetRemovedEvent(subsetName);
 
             return true;
         }
@@ -368,10 +412,10 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Fired when a subset string that does not already exist is added.
         /// </summary>
-        protected virtual void OnSubsetAddedEvent(object arg1, string arg2)
+        protected virtual void OnSubsetAddedEvent(string arg2)
         {
             var handler = OnSubsetAdded;
-            if (handler != null) handler(arg1, arg2);
+            if (handler != null) handler(this, new LibraryDataSubsetAddedEventArgs(arg2));
         }
 
 
@@ -379,10 +423,10 @@ namespace LibLSLCC.LibraryData
         /// Fired when an existing subset string is removed. This is not called
         /// when clear is called.
         /// </summary>
-        protected virtual void OnSubsetRemovedEvent(object arg1, string arg2)
+        protected virtual void OnSubsetRemovedEvent(string arg2)
         {
             var handler = OnSubsetRemoved;
-            if (handler != null) handler(arg1, arg2);
+            if (handler != null) handler(this, new LibraryDataSubsetRemovedEventArgs(arg2));
         }
 
 
@@ -390,10 +434,10 @@ namespace LibLSLCC.LibraryData
         /// Fired when the collection changes at all. Including cleared,
         /// but only when the collection was not already empty.
         /// </summary>
-        protected virtual void OnSubsetsChangedEvent(object arg1)
+        protected virtual void OnSubsetsChangedEvent()
         {
             var handler = OnSubsetsChanged;
-            if (handler != null) handler(arg1);
+            if (handler != null) handler(this, new LibraryDataSubsetsChangedEventArgs(this));
         }
 
 
@@ -401,10 +445,10 @@ namespace LibLSLCC.LibraryData
         /// Fired when the subset collection is cleared, but only if the collection
         /// was not empty when it was cleared.
         /// </summary>
-        protected virtual void OnSubsetsClearedEvent(object arg1)
+        protected virtual void OnSubsetsClearedEvent()
         {
             var handler = OnSubsetsCleared;
-            if (handler != null) handler(arg1);
+            if (handler != null) handler(this, new LibraryDataSubsetsClearedEventArgs(this));
         }
 
 

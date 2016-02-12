@@ -251,10 +251,10 @@ namespace LibLSLCC.CodeValidator.Components
         /// A user defined function was never referenced.
         /// </summary>
         /// <param name="location">The location in the source code of the function that was never referenced.</param>
-        /// <param name="function">The function declaration node of the un-referenced function.</param>
-        public virtual void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function)
+        /// <param name="functionDeclarationNode">The function declaration node of the un-referenced function.</param>
+        public virtual void FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode functionDeclarationNode)
         {
-            OnWarning(location, string.Format("Function \"{0}\" was never used.", function.Name));
+            OnWarning(location, string.Format("Function \"{0}\" was never used.", functionDeclarationNode.Name));
         }
 
 

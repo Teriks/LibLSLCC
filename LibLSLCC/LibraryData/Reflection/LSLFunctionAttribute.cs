@@ -50,7 +50,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// Optional Attribute for explicitly exposing methods to <see cref="LSLLibraryDataReflectionSerializer"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class LSLFunctionAttribute : Attribute
+    public sealed class LSLFunctionAttribute : Attribute
     {
         public LSLType ReturnType { get; private set; }
 

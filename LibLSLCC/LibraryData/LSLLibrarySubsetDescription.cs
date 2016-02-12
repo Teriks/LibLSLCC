@@ -50,7 +50,7 @@ namespace LibLSLCC.LibraryData
     /// <summary>
     /// Represents a description for a named library subset.
     /// </summary>
-    public class LSLLibrarySubsetDescription : IXmlSerializable
+    public sealed class LSLLibrarySubsetDescription : IXmlSerializable
     {
         private string _subset;
 

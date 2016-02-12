@@ -298,8 +298,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     the jump statements that jump to to them.
         /// </remarks>
         /// <param name="statement">The statement to add to the code scope</param>
-        /// <param name="context">The parser context which it was added in (while visiting that context)</param>
-        public void AddCodeStatement(ILSLCodeStatement statement, LSLParser.CodeStatementContext context)
+        public void AddCodeStatement(ILSLCodeStatement statement)
         {
             if (statement == null)
             {

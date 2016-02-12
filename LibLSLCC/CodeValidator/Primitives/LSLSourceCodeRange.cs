@@ -344,10 +344,10 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Get a source code range for the first character in this <see cref="LSLSourceCodeRange"/>.
         /// The return value is only relevant if HasIndexInfo is set to true.
         /// </summary>
-        /// <returns>The source code range of the first character in this <see cref="LSLSourceCodeRange"/>.</returns>
-        public LSLSourceCodeRange GetFirstCharRange()
+        /// <value>The source code range of the first character in this <see cref="LSLSourceCodeRange"/>.</value>
+        public LSLSourceCodeRange FirstCharRange
         {
-            return new LSLSourceCodeRange(LineStart, ColumnStart, LineStart, ColumnStart, StartIndex, StartIndex);
+            get { return new LSLSourceCodeRange(LineStart, ColumnStart, LineStart, ColumnStart, StartIndex, StartIndex); }
         }
 
 
@@ -355,10 +355,10 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Get a source code range for the last character in this <see cref="LSLSourceCodeRange"/>.
         /// The return value is only relevant if HasIndexInfo is set to true.
         /// </summary>
-        /// <returns>The source code range of the last character in this <see cref="LSLSourceCodeRange"/>.</returns>
-        public LSLSourceCodeRange GetLastCharRange()
+        /// <value>The source code range of the last character in this <see cref="LSLSourceCodeRange"/>.</value>
+        public LSLSourceCodeRange LastCharRange
         {
-            return new LSLSourceCodeRange(LineEnd, ColumnEnd, LineEnd, ColumnEnd, StopIndex, StopIndex);
+            get { return new LSLSourceCodeRange(LineEnd, ColumnEnd, LineEnd, ColumnEnd, StopIndex, StopIndex); }
         }
 
 

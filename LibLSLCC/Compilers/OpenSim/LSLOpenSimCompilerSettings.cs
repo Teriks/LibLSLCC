@@ -110,6 +110,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <summary>
         /// This set should contain all the namespace's that the generated code should import
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ObservableSettingsHashSet<CSharpNamespace> GeneratedNamespaceImports
         {
             get { return _generatedNamespaceImports; }

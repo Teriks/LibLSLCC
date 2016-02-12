@@ -43,6 +43,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
@@ -62,14 +63,14 @@ namespace LibLSLCC.LibraryData.Reflection
         /// The <see cref="ILSLMethodFilter"/>'s being used to filter.
         /// </value>
         // ReSharper disable once CollectionNeverUpdated.Global
-        public List<ILSLMethodFilter> Filters { get; private set; }
+        public Collection<ILSLMethodFilter> Filters { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LSLMultiMethodFilter"/> class.
         /// </summary>
         public LSLMultiMethodFilter()
         {
-            Filters= new List<ILSLMethodFilter>();
+            Filters= new Collection<ILSLMethodFilter>();
         }
 
         /// <summary>

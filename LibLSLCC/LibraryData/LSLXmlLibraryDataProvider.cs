@@ -148,36 +148,36 @@ namespace LibLSLCC.LibraryData
                 var serializer = new LSLLibraryDataXmlSerializer();
 
 
-                serializer.ReadLibrarySubsetDescription += desc =>
+                serializer.ReadLibrarySubsetDescription += (sender,e) =>
                 {
                     lineInfo = serializer.CurrentLineInfo;
-                    AddSubsetDescription(desc);
+                    AddSubsetDescription(e.SubsetDescription);
                 };
 
                 if((loadOptions & LSLLibraryDataLoadOptions.Functions) == LSLLibraryDataLoadOptions.Functions)
                 {
-                    serializer.ReadLibraryFunctionDefinition += signature =>
+                    serializer.ReadLibraryFunctionDefinition += (sender, e) =>
                     {
                         lineInfo = serializer.CurrentLineInfo;
-                        DefineFunction(signature);
+                        DefineFunction(e.FunctionSignature);
                     };
                 }
 
                 if ((loadOptions & LSLLibraryDataLoadOptions.Events) == LSLLibraryDataLoadOptions.Events)
                 {
-                    serializer.ReadLibraryEventHandlerDefinition += signature =>
+                    serializer.ReadLibraryEventHandlerDefinition += (sender, e) =>
                     {
                         lineInfo = serializer.CurrentLineInfo;
-                        DefineEventHandler(signature);
+                        DefineEventHandler(e.EventSignature);
                     };
                 }
 
                 if ((loadOptions & LSLLibraryDataLoadOptions.Constants) == LSLLibraryDataLoadOptions.Constants)
                 {
-                    serializer.ReadLibraryConstantDefinition += signature =>
+                    serializer.ReadLibraryConstantDefinition += (sender, e) =>
                     {
                         lineInfo = serializer.CurrentLineInfo;
-                        DefineConstant(signature);
+                        DefineConstant(e.Signature);
                     };
                 }
 
@@ -287,7 +287,7 @@ namespace LibLSLCC.LibraryData
 
             if (string.IsNullOrWhiteSpace(filename))
             {
-                throw new ArgumentException("filename");
+                throw new ArgumentException("Filename cannot be whitespace", "filename");
             }
 
             using (var reader = new XmlTextReader(new StreamReader(filename, true)))
@@ -321,7 +321,7 @@ namespace LibLSLCC.LibraryData
 
             if (string.IsNullOrWhiteSpace(path))
             {
-                throw new ArgumentException("path");
+                throw new ArgumentException("Path cannot be whitespace.", "path");
             }
 
             foreach (var file in Directory.EnumerateFiles(path, "*.xml"))
@@ -357,7 +357,7 @@ namespace LibLSLCC.LibraryData
 
             if (string.IsNullOrWhiteSpace(path))
             {
-                throw new ArgumentException("path");
+                throw new ArgumentException("Path cannot be whitespace.", "path");
             }
 
             ClearLibraryData();
@@ -397,7 +397,7 @@ namespace LibLSLCC.LibraryData
 
             if (string.IsNullOrWhiteSpace(filename))
             {
-                throw new ArgumentException("filename");
+                throw new ArgumentException("Filename cannot be whitespace", "filename");
             }
 
             ClearLibraryData();

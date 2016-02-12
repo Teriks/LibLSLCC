@@ -58,7 +58,7 @@ namespace LibLSLCC.CSharp
 
         private static readonly Regex TrailingCharacterGroup = new Regex("[" + TrailingCharacter + "]");
 
-        private static readonly Regex Id = new Regex("^[" + StartingCharacter + "][" + TrailingCharacter + "]*$");
+        //private static readonly Regex Id = new Regex("^[" + StartingCharacter + "][" + TrailingCharacter + "]*$");
 
         public static bool IsStartingCharacter(char c)
         {
@@ -69,10 +69,6 @@ namespace LibLSLCC.CSharp
         {
             return TrailingCharacterGroup.IsMatch("" + c);
         }
-
-        private static readonly object CompilerLock = new object();
-
-
 
         public static bool IsValidIdentifier(string str)
         {

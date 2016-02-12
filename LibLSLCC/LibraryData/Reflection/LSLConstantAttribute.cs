@@ -50,7 +50,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// Optional attribute for exposing properties and fields to <see cref="LSLLibraryDataReflectionSerializer"/> without having to map types.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class LSLConstantAttribute : Attribute
+    public sealed class LSLConstantAttribute : Attribute
     {
         /// <summary>
         /// Gets the <see cref="LSLType"/> of the constant as specified by the attribute.
@@ -121,10 +121,10 @@ namespace LibLSLCC.LibraryData.Reflection
         /// <summary>
         /// Initializes a new instance of the <see cref="LSLConstantAttribute"/> class.
         /// </summary>
-        /// <param name="constantType">The <see cref="LSLType"/> of the constant.</param>
-        public LSLConstantAttribute(LSLType constantType)
+        /// <param name="type">The <see cref="LSLType"/> of the constant.</param>
+        public LSLConstantAttribute(LSLType type)
         {
-            Type = constantType;
+            Type = type;
         }
 
         /// <summary>

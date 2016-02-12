@@ -890,10 +890,10 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxWarningListener.RedundantCast(location, castType));
         }
 
-        void ILSLSyntaxWarningListener.FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode function)
+        void ILSLSyntaxWarningListener.FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode functionDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxWarningListener.FunctionNeverUsed(location, function));
+                () => SyntaxWarningListener.FunctionNeverUsed(location, functionDeclarationNode));
         }
 
         void ILSLSyntaxWarningListener.GlobalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable)

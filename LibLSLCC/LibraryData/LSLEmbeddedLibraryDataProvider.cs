@@ -65,6 +65,7 @@ namespace LibLSLCC.LibraryData
         /// Get a stream that points the default library XML data embedded in the LibLSLCC assembly.
         /// </summary>
         /// <returns>A stream containing the default library XML data embedded in LibLSLCC</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static Stream GetDefaultLibraryDataStream()
         {
             return typeof(LSLEmbeddedLibraryDataProvider).Assembly.GetManifestResourceStream(
@@ -112,7 +113,7 @@ namespace LibLSLCC.LibraryData
 
                 var reader = new XmlTextReader(libraryData);
 
-                FillFromXml(reader);
+                FillFromXml(reader, loadOptions);
             }
         }
 

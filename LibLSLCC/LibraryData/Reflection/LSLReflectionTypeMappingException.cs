@@ -55,6 +55,7 @@ namespace LibLSLCC.LibraryData.Reflection
     /// <seealso cref="LSLLibraryDataReflectionSerializer.FilterMethodsWithUnmappedReturnTypes" />
     /// <seealso cref="LSLLibraryDataReflectionSerializer.FilterMethodsWithUnmappedParamTypes" />
     /// <seealso cref="LSLLibraryDataReflectionSerializer.FilterConstantsWithUnmappedTypes"/>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")]
     [Serializable]
     public class LSLReflectionTypeMappingException : LSLLibraryDataReflectionException
     {
@@ -70,8 +71,24 @@ namespace LibLSLCC.LibraryData.Reflection
         /// </summary>
         public Type MissingType { get; private set; }
 
+
+
+        public LSLReflectionTypeMappingException()
+        {
+        }
+
+        public LSLReflectionTypeMappingException(string message) : base(message)
+        {
+        }
+
+        public LSLReflectionTypeMappingException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LSLReflectionTypeMappingException"/> class.
+        /// <param name="missingType">The type that was missing a mapping to convert it into an <see cref="LSLType"/></param>
         /// </summary>
         public LSLReflectionTypeMappingException(Type missingType)
         {

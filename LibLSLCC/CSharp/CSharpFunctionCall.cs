@@ -51,7 +51,7 @@ namespace LibLSLCC.CSharp
     /// <summary>
     /// Abstraction that provides parsing and validation for CSharp inheritance list strings.
     /// </summary>
-    public class CSharpFunctionCall : SettingsBaseClass<CSharpFunctionCall>, IObservableHashSetItem
+    public sealed class CSharpFunctionCall : SettingsBaseClass<CSharpFunctionCall>, IObservableHashSetItem
     {
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
         {
