@@ -229,9 +229,9 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// The return type of the cast operation is also evaluated and returned in the result.
         /// </summary>
         /// <param name="castTo">The type being casted to.</param>
-        /// <param name="from">The expression being casted.</param>
+        /// <param name="castedExpression">The expression being casted.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult"/> containing the validation results.</returns>
-        LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode from);
+        LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode castedExpression);
 
 
         /// <summary>

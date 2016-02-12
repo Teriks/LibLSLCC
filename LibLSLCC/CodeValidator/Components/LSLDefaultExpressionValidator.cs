@@ -436,19 +436,19 @@ namespace LibLSLCC.CodeValidator.Components
         /// <summary>
         /// Validates and returns the type resulting from a cast operation.
         /// </summary>
-        /// <param name="from">The expression to preform the cast on.</param>
+        /// <param name="castedExpression">The expression to preform the cast on.</param>
         /// <param name="castTo">The type that is being casted to.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult"/> object</returns>
-        public LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode from)
+        public LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode castedExpression)
         {
-            if (from.HasErrors)
+            if (castedExpression.HasErrors)
             {
                 return LSLExpressionValidatorResult.Error;
             }
 
 
             LSLType t;
-            if (_operations.TryGetValue("(" + castTo + ")" + @from.Type, out t))
+            if (_operations.TryGetValue("(" + castTo + ")" + castedExpression.Type, out t))
             {
                 return new LSLExpressionValidatorResult(t, true);
             }
