@@ -221,7 +221,8 @@ namespace LibLSLCC.CodeValidator.Components
             AddBinaryOperation(LSLType.Vector, LSLBinaryOperationType.ModulusAssign, LSLType.Vector, LSLType.Vector);
 
 
-            //yes wtf, but its in lsl, cast results in a list containing the item on the right
+            //yes strange, but it's in LSL. this cast results in a list containing the item on the right.
+            //Like this: (list)"I am a list element now";
             AddCastOperation(LSLType.List, LSLType.String, LSLType.List);
             AddCastOperation(LSLType.List, LSLType.Key, LSLType.List);
             AddCastOperation(LSLType.List, LSLType.Integer, LSLType.List);
