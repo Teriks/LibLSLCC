@@ -49,6 +49,8 @@ namespace LibLSLCC.Settings
     public class CloningDefaultValueFactory<T> : IDefaultSettingsValueFactory where T : new()
     {
         private static readonly T Default = new T();
+
+        // ReSharper disable once StaticMemberInGenericType
         private static readonly DefaultCloner Cloner = new DefaultCloner();
         public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
         {

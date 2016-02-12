@@ -40,8 +40,8 @@
 // 
 // 
 #endregion
+
 using System;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -77,7 +77,7 @@ namespace DemoArea
 
     class MySimpleConverter : ILSLParamTypeConverter, ILSLReturnTypeConverter, ILSLConstantTypeConverter
     {
-        private bool Convert(Type inType, out LSLType outType)
+        private static bool Convert(Type inType, out LSLType outType)
         {
             if (typeof (string) == inType)
             {
@@ -304,7 +304,7 @@ namespace DemoArea
     /// <summary>
     /// Currently a scratch pad area
     /// </summary>
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

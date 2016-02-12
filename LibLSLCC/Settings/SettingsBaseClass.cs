@@ -44,7 +44,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using LibLSLCC.Collections;
@@ -130,7 +130,7 @@ namespace LibLSLCC.Settings
         }
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChangedRecursive(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
         {
             if (!_subscribedChanged.ContainsKey(owner))
@@ -164,7 +164,7 @@ namespace LibLSLCC.Settings
 
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanged(object owner, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
         {
             if (!_subscribedChanged.ContainsKey(owner))
@@ -183,7 +183,7 @@ namespace LibLSLCC.Settings
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanged(object owner, string propertyName, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
         {
             if (!_subscribedChanged.ContainsKey(owner))
@@ -231,7 +231,7 @@ namespace LibLSLCC.Settings
         }
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChangingRecursive(object owner, Action<SettingsPropertyChangingEventArgs<object>> handler)
         {
             if (!_subscribedChanging.ContainsKey(owner))
@@ -265,7 +265,7 @@ namespace LibLSLCC.Settings
         }
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanging(object owner, Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
         {
             if (!_subscribedChanging.ContainsKey(owner))
@@ -285,7 +285,7 @@ namespace LibLSLCC.Settings
         }
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanging(object owner, string propertyName, Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
         {
             if (!_subscribedChanging.ContainsKey(owner))

@@ -697,7 +697,7 @@ namespace LibraryDataScrapingTools
                     CreatePrompt = true,
                     Filter = "LibLSLCC Library Data (*.xml) | *.xml",
                     OverwritePrompt = true,
-                    Title = "Select a place to save the removed library elements data.",
+                    Title = "Select a place to save the removed library elements data."
                     
                 };
 

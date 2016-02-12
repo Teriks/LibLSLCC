@@ -45,7 +45,7 @@ using System;
 
 namespace LibLSLCC.Settings
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class DefaultValueFactoryAttribute : Attribute
     {
         public Type FactoryType { get; private set; }

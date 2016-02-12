@@ -473,7 +473,7 @@ namespace LibLSLCC.Utility
             {
                 atomToken.vector_literal.vector_x,
                 atomToken.vector_literal.vector_y,
-                atomToken.vector_literal.vector_z,
+                atomToken.vector_literal.vector_z
             };
 
             for (var i = 0; i < vecComponents.Length; i++)

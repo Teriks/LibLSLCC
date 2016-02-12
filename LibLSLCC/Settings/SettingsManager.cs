@@ -52,7 +52,7 @@ namespace LibLSLCC.Settings
     {
         FileMissing,
         FileUnreadable,
-        SyntaxError,
+        SyntaxError
     }
 
     public sealed class SettingsManagerConfigErrorEventArgs : EventArgs
