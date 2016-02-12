@@ -266,3 +266,9 @@ The new behavior is to omit the blank line where the statement would have been.
 LibLSLCC's syntax tree nodes no longer hold any references to the ANTLR tree nodes
 they abstract.  This allows for complete garbage collection of the ANTLR tree once 
 LibLSLCC is done building its own abstracted tree.
+
+
+# (2/11/2016 11:46 PM)<br/> Fix many code analysis warnings, suppress some
+
+Just a large code cleanup in general.  A few significant public API changes.
+This is why I am still not versioning yet, getting close though.
