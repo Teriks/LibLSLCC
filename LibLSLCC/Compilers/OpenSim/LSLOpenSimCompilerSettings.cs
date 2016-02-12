@@ -70,6 +70,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// Construct an <see cref="LSLOpenSimCompilerSettings"/> object that uses a given <see cref="ILSLLibraryDataProvider"/> implementation
         /// to provide library data to the compiler.
         /// </summary>
+        // ReSharper disable once EmptyConstructor
         public LSLOpenSimCompilerSettings()
         {
 

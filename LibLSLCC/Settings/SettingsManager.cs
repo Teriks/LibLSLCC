@@ -88,9 +88,11 @@ namespace LibLSLCC.Settings
         {
             var serializer = new XmlSerializer(typeof (T));
 
-            XmlWriterSettings writerSettings = new XmlWriterSettings();
-            writerSettings.NewLineHandling = NewLineHandling.Entitize;
-            writerSettings.CloseOutput = true;
+            var writerSettings = new XmlWriterSettings
+            {
+                NewLineHandling = NewLineHandling.Entitize,
+                CloseOutput = true
+            };
 
             using (var writer = XmlWriter.Create(File.Create(file), writerSettings))
             {

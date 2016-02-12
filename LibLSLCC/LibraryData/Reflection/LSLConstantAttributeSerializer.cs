@@ -102,6 +102,11 @@ namespace LibLSLCC.LibraryData.Reflection
             var propertyInfo = info as PropertyInfo;
             var fieldInfo = info as FieldInfo;
 
+            if (propertyInfo == null && fieldInfo == null)
+            {
+                throw new ArgumentNullException("info", "info must be a PropertyInfo or FieldInfo object.");
+            }
+
             bool isProperty = propertyInfo != null;
 
 

@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System;
 using System.Reflection;
 
 namespace LibLSLCC.Settings
@@ -58,6 +59,11 @@ namespace LibLSLCC.Settings
         {
             var prop = member as PropertyInfo;
             var field = member as FieldInfo;
+
+            if (prop == null && field == null)
+            {
+                throw new ArgumentException("member must be a PropertyInfo or FieldInfo object.", "member");
+            }
 
             var defaultValue = prop != null ? prop.GetValue(Default, null) : field.GetValue(Default);
 

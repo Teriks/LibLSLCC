@@ -416,6 +416,11 @@ namespace LibLSLCC.LibraryData.Reflection
             var asProperty = info as PropertyInfo;
             var asField = info as FieldInfo;
 
+            if (asProperty == null && asField == null)
+            {
+                throw new ArgumentException("info must be a PropertyInfo object or FieldInfo object.", "info");
+            }
+
             bool isProperty = asProperty != null;
 
             Type constantMemberType = isProperty

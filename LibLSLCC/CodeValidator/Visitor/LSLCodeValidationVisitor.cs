@@ -2381,7 +2381,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             var result = VisitAssignment(
-                new AssignmentExpressionContext(leftVariable, context.operation, context.expr_rvalue, context, true));
+                new AssignmentExpressionContext(leftVariable, context.operation, context.expr_rvalue, context));
 
             if (result.HasErrors)
             {
@@ -2436,8 +2436,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             var result = VisitAssignment(
-                new AssignmentExpressionContext(leftVariable, context.operation, context.expr_rvalue, context,
-                    true));
+                new AssignmentExpressionContext(leftVariable, context.operation, context.expr_rvalue, context));
 
 
             if (result.HasErrors)

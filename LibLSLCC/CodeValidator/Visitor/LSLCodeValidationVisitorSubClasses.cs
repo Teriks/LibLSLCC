@@ -66,20 +66,17 @@ namespace LibLSLCC.CodeValidator.Visitor
         private struct BinaryExpressionContext
         {
             public readonly LSLParser.ExpressionContext LeftContext;
-            public readonly bool ModifiesLValue;
             public readonly IToken OperationToken;
             public readonly LSLParser.ExpressionContext OriginalContext;
             public readonly LSLParser.ExpressionContext RightContext;
 
             public BinaryExpressionContext(LSLParser.ExpressionContext exprLvalue, IToken operationToken,
-                LSLParser.ExpressionContext exprRvalue, LSLParser.ExpressionContext originalContext,
-                bool modifiesLValue = false)
+                LSLParser.ExpressionContext exprRvalue, LSLParser.ExpressionContext originalContext)
             {
                 LeftContext = exprLvalue;
                 OperationToken = operationToken;
                 RightContext = exprRvalue;
                 OriginalContext = originalContext;
-                ModifiesLValue = modifiesLValue;
             }
         }
 
@@ -91,20 +88,17 @@ namespace LibLSLCC.CodeValidator.Visitor
         private struct AssignmentExpressionContext
         {
             public readonly ILSLExprNode LeftExpr;
-            public readonly bool ModifiesLValue;
             public readonly IToken OperationToken;
             public readonly LSLParser.ExpressionContext OriginalContext;
             public readonly LSLParser.ExpressionContext RightContext;
 
             public AssignmentExpressionContext(ILSLExprNode exprLvalue, IToken operationToken,
-                LSLParser.ExpressionContext exprRvalue, LSLParser.ExpressionContext originalContext,
-                bool modifiesLValue = false)
+                LSLParser.ExpressionContext exprRvalue, LSLParser.ExpressionContext originalContext)
             {
                 LeftExpr = exprLvalue;
                 OperationToken = operationToken;
                 RightContext = exprRvalue;
                 OriginalContext = originalContext;
-                ModifiesLValue = modifiesLValue;
             }
         }
 

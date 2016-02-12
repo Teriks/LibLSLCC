@@ -281,7 +281,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 }
 
                 //group by rank, using the HashMap object.
-                List<T> signaturesWithTheSameRank = null;
+                List<T> signaturesWithTheSameRank;
 
                 //get a reference to a group with the same rank, if one exists
                 if (rankingToSignatureGroup.TryGetValue(matchRank, out signaturesWithTheSameRank))

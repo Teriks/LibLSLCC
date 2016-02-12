@@ -44,6 +44,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using LibLSLCC.Collections;
@@ -388,10 +389,28 @@ namespace LibLSLCC.Settings
             var subscribedChanging = baseType.GetField("_subscribedChanging", bindFlags);
             var subscribedChanged = baseType.GetField("_subscribedChanged", bindFlags);
 
+            if (subscribedChanged == null || subscribedChanging == null)
+            {
+                throw new ArgumentException(
+                    "baseType was expected to have the private properties _subscribedChanged and _subscribedChanging, but did not",
+                    "baseType");
+            }
+
 
             var changing = subscribedChanging.GetValue(oldVal) as ICloneable;
             var changed = subscribedChanged.GetValue(oldVal) as ICloneable;
 
+            if (changing == null)
+            {
+                throw new InvalidOperationException(
+                    "SettingsBaseClass.TransferObservers: baseType._subscribedChanging does not implement ICloneable.");
+            }
+
+            if (changed == null)
+            {
+                throw new InvalidOperationException(
+                    "SettingsBaseClass.TransferObservers: baseType._subscribedChanged does not implement ICloneable.");
+            }
 
             subscribedChanging.SetValue(newVal, changing.Clone());
             subscribedChanged.SetValue(newVal, changed.Clone());
