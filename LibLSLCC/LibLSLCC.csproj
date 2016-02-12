@@ -280,7 +280,6 @@
     <Compile Include="CodeValidator\Visitor\LSLVisitorScopeTracker.cs" />
     <Compile Include="CodeValidator\LSLCodeValidator.cs" />
     <Compile Include="Formatter\Visitor\LSLCodeFormatterVisitor.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Parser\LSLBaseListener.cs" />
     <Compile Include="Parser\LSLBaseVisitor.cs" />
     <Compile Include="Parser\LSLLexer.cs" />
