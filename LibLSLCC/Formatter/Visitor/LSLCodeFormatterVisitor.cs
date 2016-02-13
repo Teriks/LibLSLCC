@@ -2011,7 +2011,7 @@ namespace LibLSLCC.Formatter.Visitor
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingIfBrace);
 
-                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                        spaceBeforeOpeningBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningIfBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.ElseIf)
@@ -2021,7 +2021,7 @@ namespace LibLSLCC.Formatter.Visitor
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseIfBrace);
 
-                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                        spaceBeforeOpeningBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseIfBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.Else)
@@ -2031,7 +2031,7 @@ namespace LibLSLCC.Formatter.Visitor
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseBrace);
 
-                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                        spaceBeforeOpeningBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.ForLoop)
@@ -2041,7 +2041,7 @@ namespace LibLSLCC.Formatter.Visitor
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
 
-                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                        spaceBeforeOpeningBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.DoLoop)
@@ -2051,7 +2051,7 @@ namespace LibLSLCC.Formatter.Visitor
                         spaceBeforeClosingBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingDoLoopBrace);
 
-                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                        spaceBeforeOpeningBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
 
                     }
@@ -2062,7 +2062,7 @@ namespace LibLSLCC.Formatter.Visitor
                         spaceBeforeClosingBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingWhileLoopBrace);
 
-                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                        spaceBeforeOpeningBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningWhileLoopBrace);
                     }
 
@@ -2175,7 +2175,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingIfBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningIfBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.ElseIf)
@@ -2185,7 +2185,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseIfBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseIfBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.Else)
@@ -2195,7 +2195,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.ForLoop)
@@ -2205,7 +2205,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.DoLoop)
@@ -2215,7 +2215,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingDoLoopBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.WhileLoop)
@@ -2225,7 +2225,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingWhileLoopBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningWhileLoopBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.EventHandler)
@@ -2235,7 +2235,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingEventBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningEventBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.Function)
@@ -2245,7 +2245,7 @@ namespace LibLSLCC.Formatter.Visitor
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingFunctionBrace);
 
-                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
+                    spaceBeforeOpeningBrace = 
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningFunctionBrace);
                 }
 
