@@ -205,7 +205,7 @@ namespace DemoArea
 
         //This constant gets expanded into the generated source, and also generates a deprecation warning.
         [LSLConstant(LSLType.Integer, Expand = true, Deprecated = true)]
-        static public int CONSTANT_Y = 10;
+        static public int CONSTANT_A = 10;
 
 
         //The serializer will read private properties and fields
@@ -216,19 +216,19 @@ namespace DemoArea
 
         //ValueString is explicitly set so it will use that instead of the field value, no converters required.
         [LSLConstant(LSLType.String, ValueString = "sup")]
-        static public string CONSTANT_TT { get; set; }
+        static public string CONSTANT_C { get; set; }
 
 
         //ValueString is explicitly set so it will use that instead of the field value, no converters required.
         [LSLConstant(LSLType.List, ValueString = "1,2,<7,7,7>")]
-        static public string CONSTANT_LL { get; set; }
+        static public string CONSTANT_D { get; set; }
 
 
 
         //The converter on the property attribute will be used instead of the serializer's or the class level converter.
         //You can override type converters and value string converters at the member level.
         [LSLConstant(LSLType.Key, ValueStringConverter = typeof(PreferedValueStringConverter))]
-        static public string CONSTANT_D { get { return "hello world"; } }
+        static public string CONSTANT_E { get { return "hello world"; } }
 
 
         //A function that explicitly returns LSLType.Float.
