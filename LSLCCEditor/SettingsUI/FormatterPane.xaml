@@ -292,7 +292,7 @@
                     <StackPanel>
                         <Label Content="Min Newlines Between Distinct Local Statements:" />
                         <xctk:IntegerUpDown Minimum="1"
-                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
+                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctLocalStatements}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Min Newlines Between Event Handlers:" />
@@ -316,14 +316,14 @@
                             Value="{Binding  Path=CurrentFormatterSettings.MaximumNewLinesAtBeginingOfStateScope}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label>Max Newlines At Beginning Of Code Scope:</Label>
-                        <xctk:IntegerUpDown Minimum="1"
-                            Value="{Binding  Path=CurrentFormatterSettings.MaximumNewLinesAtBeginingOfCodeScope}" />
-                    </StackPanel>
-                    <StackPanel>
                         <Label>Max Newlines At End Of State Scope:</Label>
                         <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding  Path=CurrentFormatterSettings.MaximumNewLinesAtEndOfStateScope}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label>Max Newlines At Beginning Of Code Scope:</Label>
+                        <xctk:IntegerUpDown Minimum="1"
+                            Value="{Binding  Path=CurrentFormatterSettings.MaximumNewLinesAtBeginingOfCodeScope}" />
                     </StackPanel>
                     <StackPanel>
                         <Label>Max Newlines At End Of Code Scope:</Label>

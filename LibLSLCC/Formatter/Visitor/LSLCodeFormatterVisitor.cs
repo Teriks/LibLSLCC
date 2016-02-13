@@ -2708,12 +2708,12 @@ namespace LibLSLCC.Formatter.Visitor
                  node is ILSLLabelStatementNode ||
                  node is ILSLCodeScopeNode))
             {
-                if (linesBetweenTwoNodes < Settings.MinimumNewLinesBetweenDistinctStatements && !(
+                if (linesBetweenTwoNodes < Settings.MinimumNewLinesBetweenDistinctLocalStatements && !(
                     (nextNode is ILSLVariableDeclarationNode && node is ILSLVariableDeclarationNode) ||
                     (nextNode is ILSLExpressionStatementNode && node is ILSLExpressionStatementNode)
                     ))
                 {
-                    linesBetweenTwoNodes = Settings.MinimumNewLinesBetweenDistinctStatements;
+                    linesBetweenTwoNodes = Settings.MinimumNewLinesBetweenDistinctLocalStatements;
                 }
             }
 
