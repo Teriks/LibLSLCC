@@ -190,6 +190,7 @@ namespace LibLSLCC.Formatter
             get { return _minimumExpressionsInDeclarationToWrap; }
             set
             {
+                if (value < 1) value = 1;
                 SetField(ref _minimumExpressionsInDeclarationToWrap, value, "MinimumExpressionsInDeclarationToWrap");
             }
         }
@@ -210,7 +211,11 @@ namespace LibLSLCC.Formatter
         public int MinimumExpressionsInStatementToWrap
         {
             get { return _minimumExpressionsInStatementToWrap; }
-            set { SetField(ref _minimumExpressionsInStatementToWrap, value, "MinimumExpressionsInStatementToWrap"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumExpressionsInStatementToWrap, value, "MinimumExpressionsInStatementToWrap");
+            }
         }
 
         public bool ReturnExpressionWrapping
@@ -229,7 +234,11 @@ namespace LibLSLCC.Formatter
         public int MinimumExpressionsInReturnToWrap
         {
             get { return _minimumExpressionsInReturnToWrap; }
-            set { SetField(ref _minimumExpressionsInReturnToWrap, value, "MinimumExpressionsInReturnToWrap"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumExpressionsInReturnToWrap, value, "MinimumExpressionsInReturnToWrap");
+            }
         }
 
         public bool IfExpressionWrapping
@@ -248,13 +257,20 @@ namespace LibLSLCC.Formatter
         public int MinimumExpressionsInIfToWrap
         {
             get { return _minimumExpressionsInIfToWrap; }
-            set { SetField(ref _minimumExpressionsInIfToWrap, value, "MinimumExpressionsInIfToWrap"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumExpressionsInIfToWrap, value, "MinimumExpressionsInIfToWrap");
+            }
         }
 
         public bool ElseIfExpressionWrapping
         {
             get { return _elseIfExpressionWrapping; }
-            set { SetField(ref _elseIfExpressionWrapping, value, "ElseIfExpressionWrapping"); }
+            set
+            {
+                SetField(ref _elseIfExpressionWrapping, value, "ElseIfExpressionWrapping");
+            }
         }
 
         public int ColumnsBeforeElseIfExpressionWrap
@@ -267,7 +283,11 @@ namespace LibLSLCC.Formatter
         public int MinimumExpressionsInElseIfToWrap
         {
             get { return _minimumExpressionsInElseIfToWrap; }
-            set { SetField(ref _minimumExpressionsInElseIfToWrap, value, "MinimumExpressionsInElseIfToWrap"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumExpressionsInElseIfToWrap, value, "MinimumExpressionsInElseIfToWrap");
+            }
         }
 
         public bool WhileExpressionWrapping
@@ -286,7 +306,11 @@ namespace LibLSLCC.Formatter
         public int MinimumExpressionsInWhileToWrap
         {
             get { return _minimumExpressionsInWhileToWrap; }
-            set { SetField(ref _minimumExpressionsInWhileToWrap, value, "MinimumExpressionsInWhileToWrap"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumExpressionsInWhileToWrap, value, "MinimumExpressionsInWhileToWrap");
+            }
         }
 
         public bool DoWhileExpressionWrapping
@@ -305,7 +329,11 @@ namespace LibLSLCC.Formatter
         public int MinimumExpressionsInDoWhileToWrap
         {
             get { return _minimumExpressionsInDoWhileToWrap; }
-            set { SetField(ref _minimumExpressionsInDoWhileToWrap, value, "MinimumExpressionsInDoWhileToWrap"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumExpressionsInDoWhileToWrap, value, "MinimumExpressionsInDoWhileToWrap");
+            }
         }
 
         public bool IfStatementBracesOnNewLine
@@ -519,14 +547,22 @@ namespace LibLSLCC.Formatter
         public int MaximumNewLinesAtEndOfCodeScope
         {
             get { return _maximumNewLinesAtEndOfCodeScope; }
-            set { SetField(ref _maximumNewLinesAtEndOfCodeScope, value, "MaximumNewLinesAtEndOfCodeScope"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _maximumNewLinesAtEndOfCodeScope, value, "MaximumNewLinesAtEndOfCodeScope");
+            }
         }
 
         [DefaultValueFactory(typeof(ResetIfLessThanOne))]
         public int MaximumNewLinesAtBeginingOfCodeScope
         {
             get { return _maximumNewLinesAtBeginingOfCodeScope; }
-            set { SetField(ref _maximumNewLinesAtBeginingOfCodeScope, value, "MaximumNewLinesAtBeginingOfCodeScope"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _maximumNewLinesAtBeginingOfCodeScope, value, "MaximumNewLinesAtBeginingOfCodeScope");
+            }
         }
 
         [DefaultValueFactory(typeof(ResetIfLessThanOne))]
@@ -535,6 +571,7 @@ namespace LibLSLCC.Formatter
             get { return _minimumNewLinesBetweenDistinctLocalStatements; }
             set
             {
+                if (value < 1) value = 1;
                 SetField(ref _minimumNewLinesBetweenDistinctLocalStatements, value,
                     "MinimumNewLinesBetweenDistinctLocalStatements");
             }
@@ -546,6 +583,7 @@ namespace LibLSLCC.Formatter
             get { return _maximumNewLinesAtBeginingOfStateScope; }
             set
             {
+                if (value < 1) value = 1;
                 SetField(ref _maximumNewLinesAtBeginingOfStateScope, value, "MaximumNewLinesAtBeginingOfStateScope");
             }
         }
@@ -554,14 +592,22 @@ namespace LibLSLCC.Formatter
         public int MinimumNewLinesBetweenEventHandlers
         {
             get { return _minimumNewLinesBetweenEventHandlers; }
-            set { SetField(ref _minimumNewLinesBetweenEventHandlers, value, "MinimumNewLinesBetweenEventHandlers"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumNewLinesBetweenEventHandlers, value, "MinimumNewLinesBetweenEventHandlers");
+            }
         }
 
         [DefaultValueFactory(typeof(ResetIfLessThanOne))]
         public int MaximumNewLinesAtEndOfStateScope
         {
             get { return _maximumNewLinesAtEndOfStateScope; }
-            set { SetField(ref _maximumNewLinesAtEndOfStateScope, value, "MaximumNewLinesAtEndOfStateScope"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _maximumNewLinesAtEndOfStateScope, value, "MaximumNewLinesAtEndOfStateScope");
+            }
         }
 
 
@@ -626,7 +672,11 @@ namespace LibLSLCC.Formatter
         public int MinimumNewLinesBetweenDistinctGlobalStatements
         {
             get { return _minimumNewLinesBetweenDistinctGlobalStatements; }
-            set { SetField(ref _minimumNewLinesBetweenDistinctGlobalStatements,value,"MinimumNewLinesBetweenDistinctGlobalStatements"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _minimumNewLinesBetweenDistinctGlobalStatements,value,"MinimumNewLinesBetweenDistinctGlobalStatements");
+            }
         }
     }
 }
