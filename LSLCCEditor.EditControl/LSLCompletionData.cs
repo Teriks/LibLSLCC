@@ -190,8 +190,8 @@ namespace LSLCCEditor.EditControl
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            var prep = string.IsNullOrWhiteSpace(PrependOnInsert) ? "" : PrependOnInsert;
-            var app = string.IsNullOrWhiteSpace(AppendOnInsert) ? "" : AppendOnInsert;
+            var prep = string.IsNullOrEmpty(PrependOnInsert) ? "" : PrependOnInsert;
+            var app = string.IsNullOrEmpty(AppendOnInsert) ? "" : AppendOnInsert;
             var insertionText = string.IsNullOrWhiteSpace(CaretOffsetInsertionText) ? "" : CaretOffsetInsertionText;
 
             //AvalonEdit apparently MODFIES segment descriptions passed to Document.Replace. wtf.exe

@@ -70,12 +70,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        public bool HasReturnStatementNode
-        {
-            get { return false; }
-        }
-
         /// <summary>
         /// True if this statement belongs to a single statement code scope.
         /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
@@ -176,6 +170,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public ulong ScopeId { get; set; }
+        public int ScopeId { get; set; }
     }
 }

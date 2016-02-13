@@ -1,6 +1,6 @@
-﻿#region FileInfo
+#region FileInfo
 // 
-// File: DebugObjectView.xaml.cs
+// File: LSLAutoCompleteLocalLabel.cs
 // 
 // 
 // ============================================================
@@ -40,33 +40,24 @@
 // 
 // 
 #endregion
-using System.Reflection;
-using System.Windows;
-
-namespace LSLCCEditor.Utility
+namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Interaction logic for DebugObjectView.xaml
+    /// Represents a local label statement parsed by the auto complete parser.
     /// </summary>
-    public partial class DebugObjectView : Window
+    public class LSLAutoCompleteLocalLabel
     {
-        public DebugObjectView()
+        internal LSLAutoCompleteLocalLabel(string name)
         {
-            InitializeComponent();
+            Name = name;
         }
 
-        public void ViewObject(string empty, object lslAutoCompleteParser)
-        {
-            Properties.Items.Clear();
-            var members = lslAutoCompleteParser.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-            foreach (var member in members)
-            {
-                var val = member.GetValue(lslAutoCompleteParser);
-                if (val == null) val = "NULL";
-
-                Properties.Items.Add(member.Name + " = "+val+";");
-            }
-        }
+        /// <summary>
+        /// Gets the name used in the label statement.
+        /// </summary>
+        /// <value>
+        /// The name used in the label statement.
+        /// </value>
+        public string Name { get; private set; }
     }
 }

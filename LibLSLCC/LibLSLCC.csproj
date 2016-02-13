@@ -30,7 +30,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Optimize>true</Optimize>
-    <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -48,6 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoComplete\LSLAutoCompleteGlobalFunction.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteGlobalVariable.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteLocalJump.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteLocalLabel.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteLocalParameter.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteLocalVariable.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteStateBlock.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteScopeAddress.cs" />
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
     <Compile Include="CodeValidator\Components\LSLValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
@@ -118,7 +127,11 @@
     <Compile Include="Settings\SettingsPropertyChangedEventArgs.cs" />
     <Compile Include="Settings\SettingsPropertyChangingEventArgs.cs" />
     <Compile Include="CSharp\CSharpClassNameValidator.cs" />
-    <Compile Include="Utility\LSLListParser.cs" />
+    <Compile Include="Utility\ListParser\ILSLListExpr.cs" />
+    <Compile Include="Utility\ListParser\LSLListFloatExpr.cs" />
+    <Compile Include="Utility\ListParser\LSLListIntegerExpr.cs" />
+    <Compile Include="Utility\ListParser\LSLListKeyExpr.cs" />
+    <Compile Include="Utility\ListParser\LSLListParser.cs" />
     <Compile Include="CodeValidator\Components\LSLSyntaxListenerPriorityQueue.cs" />
     <Compile Include="CodeValidator\Enums\LSLCommentType.cs" />
     <Compile Include="CodeValidator\Enums\LSLConditionalStatementType.cs" />
@@ -140,6 +153,12 @@
     <Compile Include="Collections\IReadOnlyHashMap.cs" />
     <Compile Include="Utility\LambdaEqualityComparer.cs" />
     <Compile Include="Settings\SettingsBaseClass.cs" />
+    <Compile Include="Utility\ListParser\LSLListParserOptionsConstraintException.cs" />
+    <Compile Include="Utility\ListParser\LSLListParserSyntaxException.cs" />
+    <Compile Include="Utility\ListParser\LSLListRotationExpr.cs" />
+    <Compile Include="Utility\ListParser\LSLListStringExpr.cs" />
+    <Compile Include="Utility\ListParser\LSLListVariableExpr.cs" />
+    <Compile Include="Utility\ListParser\LSLListVectorExpr.cs" />
     <Compile Include="Utility\LSLTokenTools.cs" />
     <Compile Include="Utility\LSLFormatTools.cs" />
     <Compile Include="AutoComplete\LSLCommentStringSkipper.cs" />

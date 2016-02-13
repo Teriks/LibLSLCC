@@ -67,7 +67,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLCodeScopeNode(LSLParser.CodeScopeContext context, ulong scopeId, LSLCodeScopeType codeScopeType)
+        internal LSLCodeScopeNode(LSLParser.CodeScopeContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
             {
@@ -84,7 +84,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, ulong scopeId, LSLCodeScopeType codeScopeType)
+        internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
             {
@@ -220,7 +220,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     event handlers, the tree builder increments the id as new scopes are encountered
         ///     inside the top level scope
         /// </summary>
-        public ulong ScopeId { get; set; }
+        public int ScopeId { get; set; }
 
         /// <summary>
         ///     The index of this statement in its parent scope

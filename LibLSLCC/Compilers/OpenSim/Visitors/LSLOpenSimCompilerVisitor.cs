@@ -59,6 +59,7 @@ using LibLSLCC.Collections;
 using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
+using LibLSLCC.Utility.ListParser;
 
 #endregion
 
@@ -638,7 +639,7 @@ private static class UTILITIES
         private static string GenerateExpandedListConstant(string constantValueString)
         {
             return "new LSL_Types.list(" +
-                   string.Join(", ", LSLListParser.ParseListAsEnumerable("[" + constantValueString + "]").Select(e =>
+                   string.Join(", ", LSLListParser.ParseList("[" + constantValueString + "]").Select(e =>
                    {
                        switch (e.Type)
                        {

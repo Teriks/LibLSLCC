@@ -1,6 +1,6 @@
-﻿#region FileInfo
+#region FileInfo
 // 
-// File: DebugObjectView.xaml.cs
+// File: LSLAutoCompleteStateBlock.cs
 // 
 // 
 // ============================================================
@@ -40,33 +40,20 @@
 // 
 // 
 #endregion
-using System.Reflection;
-using System.Windows;
+using LibLSLCC.CodeValidator.Primitives;
 
-namespace LSLCCEditor.Utility
+namespace LibLSLCC.AutoComplete
 {
-    /// <summary>
-    /// Interaction logic for DebugObjectView.xaml
-    /// </summary>
-    public partial class DebugObjectView : Window
+    public class LSLAutoCompleteStateBlock
     {
-        public DebugObjectView()
+        public LSLAutoCompleteStateBlock(string name, LSLSourceCodeRange range)
         {
-            InitializeComponent();
+            Name = name;
+            SourceCodeRange = range;
         }
 
-        public void ViewObject(string empty, object lslAutoCompleteParser)
-        {
-            Properties.Items.Clear();
-            var members = lslAutoCompleteParser.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-            foreach (var member in members)
-            {
-                var val = member.GetValue(lslAutoCompleteParser);
-                if (val == null) val = "NULL";
-
-                Properties.Items.Add(member.Name + " = "+val+";");
-            }
-        }
+        public string Name { get; private set; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
     }
 }

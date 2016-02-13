@@ -70,6 +70,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
         internal LSLParameterListNode(
             LSLParser.OptionalParameterListContext context,
             IEnumerable<LSLParameterNode> parameterNodes)
@@ -96,16 +97,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             SourceCodeRangesAvailable = true;
         }
-
-
-        // ReSharper disable UnusedParameter.Local
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLParameterListNode(Err err)
-            // ReSharper restore UnusedParameter.Local
-        {
-        }
-
-
 
         /// <summary>
         /// The <see cref="LSLParameterNode"/> objects that are children of this node, or an empty list.

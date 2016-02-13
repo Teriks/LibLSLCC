@@ -53,6 +53,7 @@ using System.Xml.Serialization;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Utility;
+using LibLSLCC.Utility.ListParser;
 
 #endregion
 

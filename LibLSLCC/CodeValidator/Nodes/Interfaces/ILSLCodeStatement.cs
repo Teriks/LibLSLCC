@@ -83,7 +83,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         /// this is not the scopes level.
         /// </summary>
-        ulong ScopeId { get; }
+        int ScopeId { get; }
 
 
         /// <summary>
@@ -129,6 +129,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         /// this is not the scopes level.
         /// </summary>
-        new ulong ScopeId { get; set; }
+        new int ScopeId { get; set; }
     }
 }

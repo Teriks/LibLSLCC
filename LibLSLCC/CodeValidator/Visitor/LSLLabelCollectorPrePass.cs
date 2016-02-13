@@ -59,7 +59,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
 
-        private ulong _currentScopeId;
+        private int _currentScopeId;
 
 
         public LSLLabelCollectorPrePass(LSLVisitorScopeTracker scopingManager,
@@ -213,7 +213,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         private class StatementIndexContainer
         {
             public int Index;
-            public ulong ScopeId;
+            public int ScopeId;
         }
     }
 }

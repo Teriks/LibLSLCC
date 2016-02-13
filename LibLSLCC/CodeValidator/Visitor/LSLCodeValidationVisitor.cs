@@ -1124,8 +1124,8 @@ namespace LibLSLCC.CodeValidator.Visitor
                 LSLSourceCodeRange errorLocation;
 
                 if (
-                    context.code.control_structure.open_parenth == null ||
-                    context.code.control_structure.close_parenth == null
+                    context.open_parenth == null ||
+                    context.close_parenth == null
                     )
                 {
                     errorLocation = new LSLSourceCodeRange(context);
@@ -1134,8 +1134,8 @@ namespace LibLSLCC.CodeValidator.Visitor
                 {
                     errorLocation =
                         new LSLSourceCodeRange(
-                            context.code.control_structure.open_parenth,
-                            context.code.control_structure.close_parenth);
+                            context.open_parenth,
+                            context.close_parenth);
                 }
 
                 GenSyntaxError().MissingConditionalExpression(errorLocation, LSLConditionalStatementType.If);

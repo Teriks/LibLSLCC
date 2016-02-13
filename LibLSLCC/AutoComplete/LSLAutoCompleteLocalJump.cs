@@ -1,6 +1,6 @@
-﻿#region FileInfo
+#region FileInfo
 // 
-// File: DebugObjectView.xaml.cs
+// File: LSLAutoCompleteLocalJump.cs
 // 
 // 
 // ============================================================
@@ -40,33 +40,24 @@
 // 
 // 
 #endregion
-using System.Reflection;
-using System.Windows;
-
-namespace LSLCCEditor.Utility
+namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Interaction logic for DebugObjectView.xaml
+    /// Represents a local jump statement parsed by the auto complete parser.
     /// </summary>
-    public partial class DebugObjectView : Window
+    public class LSLAutoCompleteLocalJump
     {
-        public DebugObjectView()
+        internal LSLAutoCompleteLocalJump(string targetName)
         {
-            InitializeComponent();
+            TargetName = targetName;
         }
 
-        public void ViewObject(string empty, object lslAutoCompleteParser)
-        {
-            Properties.Items.Clear();
-            var members = lslAutoCompleteParser.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-            foreach (var member in members)
-            {
-                var val = member.GetValue(lslAutoCompleteParser);
-                if (val == null) val = "NULL";
-
-                Properties.Items.Add(member.Name + " = "+val+";");
-            }
-        }
+        /// <summary>
+        /// Gets a string representing the name of the label this jump statement jumps to.
+        /// </summary>
+        /// <value>
+        /// The string representing the name of the label this jump statement jumps to.
+        /// </value>
+        public string TargetName { get; private set; }
     }
 }

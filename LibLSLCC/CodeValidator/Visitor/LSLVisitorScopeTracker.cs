@@ -97,7 +97,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        public ulong CurrentScopeId { get; private set; }
+        public int CurrentScopeId { get; private set; }
         public ILSLValidatorServiceProvider ValidatorServiceProvider { get; private set; }
 
         public bool InSingleStatementBlock

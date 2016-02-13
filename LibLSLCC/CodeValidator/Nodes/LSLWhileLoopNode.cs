@@ -147,7 +147,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public ulong ScopeId { get; set; }
+        public int ScopeId { get; set; }
 
 
         /// <summary>

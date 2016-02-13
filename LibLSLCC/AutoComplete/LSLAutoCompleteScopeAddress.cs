@@ -1,6 +1,6 @@
-﻿#region FileInfo
+#region FileInfo
 // 
-// File: DebugObjectView.xaml.cs
+// File: LSLScopeAddress.cs
 // 
 // 
 // ============================================================
@@ -40,33 +40,26 @@
 // 
 // 
 #endregion
-using System.Reflection;
-using System.Windows;
-
-namespace LSLCCEditor.Utility
+namespace LibLSLCC.AutoComplete
 {
-    /// <summary>
-    /// Interaction logic for DebugObjectView.xaml
-    /// </summary>
-    public partial class DebugObjectView : Window
+    public class LSLAutoCompleteScopeAddress
     {
-        public DebugObjectView()
+        public LSLAutoCompleteScopeAddress(int codeAreaId, int scopeId, int scopeLevel)
         {
-            InitializeComponent();
+            CodeAreaId = codeAreaId;
+            ScopeId = scopeId;
+            ScopeLevel = scopeLevel;
         }
 
-        public void ViewObject(string empty, object lslAutoCompleteParser)
+
+        public int CodeAreaId { get; private set; }
+        public int ScopeLevel { get; private set; }
+        public int ScopeId { get; private set; }
+
+
+        public override string ToString()
         {
-            Properties.Items.Clear();
-            var members = lslAutoCompleteParser.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-            foreach (var member in members)
-            {
-                var val = member.GetValue(lslAutoCompleteParser);
-                if (val == null) val = "NULL";
-
-                Properties.Items.Add(member.Name + " = "+val+";");
-            }
+            return string.Format("(CodeAreaID: {0}, ScopeId: {1}, ScopeLevel: {2})", CodeAreaId, ScopeId, ScopeLevel);
         }
     }
 }

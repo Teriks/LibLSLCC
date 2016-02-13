@@ -743,8 +743,7 @@ namespace LibLSLCC.Annotations
     public CollectionAccessType CollectionAccessType { get; private set; }
   }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2217:DoNotMarkEnumsWithFlags")]
-    [Flags]
+  [Flags]
   public enum CollectionAccessType
   {
     /// <summary>Method does not use or modify content of the collection.</summary>

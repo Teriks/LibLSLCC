@@ -1,6 +1,6 @@
-﻿#region FileInfo
+#region FileInfo
 // 
-// File: DebugObjectView.xaml.cs
+// File: ILSLListExpr.cs
 // 
 // 
 // ============================================================
@@ -40,33 +40,31 @@
 // 
 // 
 #endregion
-using System.Reflection;
-using System.Windows;
+using LibLSLCC.CodeValidator.Enums;
 
-namespace LSLCCEditor.Utility
+namespace LibLSLCC.Utility.ListParser
 {
     /// <summary>
-    /// Interaction logic for DebugObjectView.xaml
+    ///     Interface for parsed list elements.
     /// </summary>
-    public partial class DebugObjectView : Window
+    public interface ILSLListExpr
     {
-        public DebugObjectView()
-        {
-            InitializeComponent();
-        }
+        /// <summary>
+        ///     True if this list item represents a variable reference.
+        /// </summary>
+        bool IsVariableReference { get; }
 
-        public void ViewObject(string empty, object lslAutoCompleteParser)
-        {
-            Properties.Items.Clear();
-            var members = lslAutoCompleteParser.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        /// <summary>
+        ///     The list item type, it will be void if its a variable reference
+        /// </summary>
+        LSLType Type { get; }
 
-            foreach (var member in members)
-            {
-                var val = member.GetValue(lslAutoCompleteParser);
-                if (val == null) val = "NULL";
-
-                Properties.Items.Add(member.Name + " = "+val+";");
-            }
-        }
+        /// <summary>
+        ///     Gets string representing the element, with quoting characters for the type.
+        /// </summary>
+        /// <value>
+        ///     The value string.
+        /// </value>
+        string ValueString { get; }
     }
 }

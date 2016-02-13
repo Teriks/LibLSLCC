@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: DebugObjectView.xaml.cs
+// File: LSLListVariableExpr.cs
 // 
 // 
 // ============================================================
@@ -40,33 +40,54 @@
 // 
 // 
 #endregion
-using System.Reflection;
-using System.Windows;
+using LibLSLCC.CodeValidator.Enums;
 
-namespace LSLCCEditor.Utility
+namespace LibLSLCC.Utility.ListParser
 {
     /// <summary>
-    /// Interaction logic for DebugObjectView.xaml
+    ///     Variable reference list item.
     /// </summary>
-    public partial class DebugObjectView : Window
+    public class LSLListVariableExpr : ILSLListExpr
     {
-        public DebugObjectView()
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLListVariableExpr" /> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        public LSLListVariableExpr(string name)
         {
-            InitializeComponent();
+            Name = name;
         }
 
-        public void ViewObject(string empty, object lslAutoCompleteParser)
+        /// <summary>
+        ///     Name of the variable referenced
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        ///     True if this list item represents a variable reference.
+        /// </summary>
+        public bool IsVariableReference
         {
-            Properties.Items.Clear();
-            var members = lslAutoCompleteParser.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            get { return true; }
+        }
 
-            foreach (var member in members)
-            {
-                var val = member.GetValue(lslAutoCompleteParser);
-                if (val == null) val = "NULL";
+        /// <summary>
+        ///     The list item type, it will be void if its a variable reference
+        /// </summary>
+        public LSLType Type
+        {
+            get { return LSLType.Void; }
+        }
 
-                Properties.Items.Add(member.Name + " = "+val+";");
-            }
+        /// <summary>
+        ///     Gets string representing the element, with quoting characters for the type.
+        /// </summary>
+        /// <value>
+        ///     The value string.
+        /// </value>
+        public string ValueString
+        {
+            get { return Name; }
         }
     }
 }

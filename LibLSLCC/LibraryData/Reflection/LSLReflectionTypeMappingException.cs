@@ -43,6 +43,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 using LibLSLCC.CodeValidator.Enums;
 
 namespace LibLSLCC.LibraryData.Reflection
@@ -55,7 +56,6 @@ namespace LibLSLCC.LibraryData.Reflection
     /// <seealso cref="LSLLibraryDataReflectionSerializer.FilterMethodsWithUnmappedReturnTypes" />
     /// <seealso cref="LSLLibraryDataReflectionSerializer.FilterMethodsWithUnmappedParamTypes" />
     /// <seealso cref="LSLLibraryDataReflectionSerializer.FilterConstantsWithUnmappedTypes"/>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")]
     [Serializable]
     public class LSLReflectionTypeMappingException : LSLLibraryDataReflectionException
     {
@@ -73,6 +73,19 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
 
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+            {
+                throw new ArgumentNullException("info");
+            }
+
+            info.AddValue("MissingType", MissingType.ToString());
+
+            base.GetObjectData(info, context);
+        }
+
         public LSLReflectionTypeMappingException()
         {
         }
@@ -84,6 +97,8 @@ namespace LibLSLCC.LibraryData.Reflection
         public LSLReflectionTypeMappingException(string message, Exception innerException) : base(message, innerException)
         {
         }
+
+
 
 
         /// <summary>

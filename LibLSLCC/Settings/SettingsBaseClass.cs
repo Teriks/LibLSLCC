@@ -507,6 +507,10 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// Assign all settings properties 
+        /// </summary>
+        /// <param name="other"></param>
         public void MemberwiseAssign(TSetting other)
         {
             var myType = GetType();

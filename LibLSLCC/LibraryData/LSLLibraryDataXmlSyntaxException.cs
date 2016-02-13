@@ -43,6 +43,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 namespace LibLSLCC.LibraryData
 {
@@ -50,15 +51,30 @@ namespace LibLSLCC.LibraryData
     /// Exception thrown by <see cref="LSLLibraryDataXmlSerializer.Parse"/> and the XML reading methods of <see cref="LSLXmlLibraryDataProvider"/>
     /// when there are syntax errors in XML library data.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")]
     [Serializable]
     public class LSLLibraryDataXmlSyntaxException : Exception
     {
 
         /// <summary>
-        /// The line number on which the exception occured.
+        /// The line number on which the exception occurred.
         /// </summary>
         public int LineNumber { get; private set; }
+
+
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+            {
+                throw new ArgumentNullException("info");
+            }
+
+            info.AddValue("LineNumber", LineNumber.ToString());
+
+            base.GetObjectData(info, context);
+        }
+
 
         //
         // For guidelines regarding the creation of new exception types, see

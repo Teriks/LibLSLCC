@@ -1,6 +1,6 @@
-﻿#region FileInfo
+#region FileInfo
 // 
-// File: DebugObjectView.xaml.cs
+// File: LSLListKeyExpr.cs
 // 
 // 
 // ============================================================
@@ -40,33 +40,54 @@
 // 
 // 
 #endregion
-using System.Reflection;
-using System.Windows;
+using LibLSLCC.CodeValidator.Enums;
 
-namespace LSLCCEditor.Utility
+namespace LibLSLCC.Utility.ListParser
 {
     /// <summary>
-    /// Interaction logic for DebugObjectView.xaml
+    ///     Key List item, they can be created by specifying '(key)""' as  list item, using a cast expression.
     /// </summary>
-    public partial class DebugObjectView : Window
+    public class LSLListKeyExpr : ILSLListExpr
     {
-        public DebugObjectView()
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLListKeyExpr" /> class.
+        /// </summary>
+        /// <param name="val">The value.</param>
+        public LSLListKeyExpr(string val)
         {
-            InitializeComponent();
+            Value = val;
         }
 
-        public void ViewObject(string empty, object lslAutoCompleteParser)
+        /// <summary>
+        ///     The raw value of the key, without quotes.
+        /// </summary>
+        public string Value { get; private set; }
+
+        /// <summary>
+        ///     True if this list item represents a variable reference.
+        /// </summary>
+        public bool IsVariableReference
         {
-            Properties.Items.Clear();
-            var members = lslAutoCompleteParser.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            get { return false; }
+        }
 
-            foreach (var member in members)
-            {
-                var val = member.GetValue(lslAutoCompleteParser);
-                if (val == null) val = "NULL";
+        /// <summary>
+        ///     The list item type, it will be void if its a variable reference
+        /// </summary>
+        public LSLType Type
+        {
+            get { return LSLType.Key; }
+        }
 
-                Properties.Items.Add(member.Name + " = "+val+";");
-            }
+        /// <summary>
+        ///     Gets string representing the element, with quoting characters for the type.
+        /// </summary>
+        /// <value>
+        ///     The value string.
+        /// </value>
+        public string ValueString
+        {
+            get { return Value; }
         }
     }
 }
