@@ -1215,14 +1215,14 @@ namespace LibLSLCC.AutoComplete
                 }
 
 
-                if (context.close_parenth == null) return true;
+                if (context.close_parenth == null || context.close_parenth.TokenIndex == -1) return true;
 
                 Visit(context.code);
 
-                if (context.code == null || 
+                if (context.code == null ||
                     context.code.exception != null) return true;
 
-                if (context.close_parenth.StartIndex <= _parent._toOffset &&
+                if (context.code.code_scope != null && context.close_parenth.StartIndex <= _parent._toOffset &&
                     context.code.Start.StartIndex > _parent.ParseToOffset)
                 {
                     _parent.InSingleStatementCodeScopeTopLevel = false;
@@ -1329,14 +1329,14 @@ namespace LibLSLCC.AutoComplete
                     Visit(context.condition);
                 }
 
-                if (context.close_parenth == null) return true;
+                if (context.close_parenth == null || context.close_parenth.TokenIndex == -1) return true;
 
                 Visit(context.code);
 
                 if (context.code == null || 
                     context.code.exception != null) return true;
 
-                if (context.close_parenth.StartIndex <= _parent._toOffset &&
+                if (context.code.code_scope != null && context.close_parenth.StartIndex <= _parent._toOffset &&
                     context.code.Start.StartIndex > _parent.ParseToOffset)
                 {
                     _parent.InSingleStatementCodeScopeTopLevel = false;
