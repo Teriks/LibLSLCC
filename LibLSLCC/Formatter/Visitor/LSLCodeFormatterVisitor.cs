@@ -76,7 +76,7 @@ namespace LibLSLCC.Formatter.Visitor
         private int _tabsWrittenSinceLastLine;
         private int _nonTabsWrittenSinceLastLine;
         private int _binaryExpressionsSinceNewLine;
-        private bool _wroteCommentBeforeSingleBlockStatement;
+        private bool _wroteCommentBeforeControlStatementCode;
         private bool _wroteCommentAfterControlChainMember;
 
 
@@ -93,7 +93,7 @@ namespace LibLSLCC.Formatter.Visitor
             _tabsWrittenSinceLastLine = 0;
             _nonTabsWrittenSinceLastLine = 0;
             _binaryExpressionsSinceNewLine = 0;
-            _wroteCommentBeforeSingleBlockStatement = false;
+            _wroteCommentBeforeControlStatementCode = false;
         }
 
 
@@ -743,12 +743,12 @@ namespace LibLSLCC.Formatter.Visitor
             Write("do");
 
 
-            if (WriteCommentsBetweenRange(node.DoKeywordSourceCodeRange, node.Code.SourceCodeRange, 1))
-            {
-                _wroteCommentBeforeSingleBlockStatement = node.Code.IsSingleBlockStatement;
-            }
+            _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.DoKeywordSourceCodeRange,
+                node.Code.SourceCodeRange, 1);
 
             Visit(node.Code);
+
+            _wroteCommentBeforeControlStatementCode = false;
 
             var comments = WriteCommentsBetweenRange(node.Code.SourceCodeRange, node.WhileKeywordSourceCodeRange);
 
@@ -866,12 +866,12 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(")");
 
-            if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
-            {
-                _wroteCommentBeforeSingleBlockStatement = node.Code.IsSingleBlockStatement;
-            }
+            _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange,
+                node.Code.SourceCodeRange, 1);
 
             Visit(node.Code);
+
+            _wroteCommentBeforeControlStatementCode = false;
 
             return true;
         }
@@ -900,13 +900,12 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(")");
 
-            if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
-            {
-                _wroteCommentBeforeSingleBlockStatement = node.Code.IsSingleBlockStatement;
-            }
+            _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange,
+                node.Code.SourceCodeRange, 1);
 
             Visit(node.Code);
 
+            _wroteCommentBeforeControlStatementCode = false;
 
             return true;
         }
@@ -1806,19 +1805,20 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 _indentLevel++;
 
-                if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
-                {
-                    _wroteCommentBeforeSingleBlockStatement = true;
-                }
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange,
+                    node.Code.SourceCodeRange, 1);
 
                 _indentLevel--;
             }
             else
             {
-                WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
             }
 
             Visit(node.Code);
+
+            _wroteCommentBeforeControlStatementCode = false;
+
             return true;
         }
 
@@ -1869,19 +1869,21 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 _indentLevel++;
 
-                if (WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1))
-                {
-                    _wroteCommentBeforeSingleBlockStatement = true;
-                }
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange,
+                    node.Code.SourceCodeRange, 1);
 
                 _indentLevel--;
             }
             else
             {
-                WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
+                _wroteCommentBeforeControlStatementCode = 
+                    WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.Code.SourceCodeRange, 1);
             }
 
             Visit(node.Code);
+
+            _wroteCommentBeforeControlStatementCode = false;
+
             return true;
         }
 
@@ -1901,19 +1903,20 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 _indentLevel++;
 
-                if (WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.Code.SourceCodeRange, 1))
-                {
-                    _wroteCommentBeforeSingleBlockStatement = true;
-                }
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange,
+                    node.Code.SourceCodeRange, 1);
 
                 _indentLevel--;
             }
             else
             {
-                WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.Code.SourceCodeRange, 1);
+                _wroteCommentBeforeControlStatementCode = 
+                    WriteCommentsBetweenRange(node.ElseKeywordSourceCodeRange, node.Code.SourceCodeRange, 1);
             }
 
             Visit(node.Code);
+
+            _wroteCommentBeforeControlStatementCode = false;
 
             return true;
         }
@@ -2004,53 +2007,66 @@ namespace LibLSLCC.Formatter.Visitor
                     if (node.CodeScopeType == LSLCodeScopeType.If)
                     {
                         newLine = Settings.IfStatementBracesOnNewLine;
+
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingIfBrace);
-                        spaceBeforeOpeningBrace =
+
+                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningIfBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.ElseIf)
                     {
                         newLine = Settings.ElseIfStatementBracesOnNewLine;
+
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseIfBrace);
-                        spaceBeforeOpeningBrace =
+
+                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseIfBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.Else)
                     {
                         newLine = Settings.ElseStatementBracesOnNewLine;
+
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseBrace);
-                        spaceBeforeOpeningBrace =
+
+                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.ForLoop)
                     {
                         newLine = Settings.ForLoopBracesOnNewLine;
+
                         spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
-                        spaceBeforeOpeningBrace =
+
+                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.DoLoop)
                     {
                         newLine = Settings.DoLoopBracesOnNewLine;
-                        spaceBeforeClosingBrace =
+
+                        spaceBeforeClosingBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingDoLoopBrace);
-                        spaceBeforeOpeningBrace =
+
+                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
+
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.WhileLoop)
                     {
                         newLine = Settings.WhileLoopBracesOnNewLine;
-                        spaceBeforeClosingBrace =
+
+                        spaceBeforeClosingBrace = 
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingWhileLoopBrace);
-                        spaceBeforeOpeningBrace =
+
+                        spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningWhileLoopBrace);
                     }
 
-                    if (newLine || _wroteCommentBeforeSingleBlockStatement)
+                    if (newLine || _wroteCommentBeforeControlStatementCode)
                     {
                         Write("\n" + GenIndent() + spaceBeforeOpeningBrace + "{");
                     }
@@ -2070,11 +2086,11 @@ namespace LibLSLCC.Formatter.Visitor
                 {
                     _indentLevel++;
 
-                    if (Settings.IndentBracelessControlStatements || _wroteCommentBeforeSingleBlockStatement)
+                    if (Settings.IndentBracelessControlStatements || _wroteCommentBeforeControlStatementCode)
                     {
                         
                         Write("\n" + GenIndent());
-                        _wroteCommentBeforeSingleBlockStatement = false;
+                        _wroteCommentBeforeControlStatementCode = false;
                         
                     }
                     else
@@ -2155,69 +2171,85 @@ namespace LibLSLCC.Formatter.Visitor
                 if (snode.CodeScopeType == LSLCodeScopeType.If)
                 {
                     newLine = Settings.IfStatementBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingIfBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningIfBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.ElseIf)
                 {
                     newLine = Settings.ElseIfStatementBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseIfBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseIfBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.Else)
                 {
                     newLine = Settings.ElseStatementBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.ForLoop)
                 {
                     newLine = Settings.ForLoopBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.DoLoop)
                 {
                     newLine = Settings.DoLoopBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingDoLoopBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.WhileLoop)
                 {
                     newLine = Settings.WhileLoopBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingWhileLoopBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningWhileLoopBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.EventHandler)
                 {
                     newLine = Settings.EventBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingEventBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningEventBrace);
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.Function)
                 {
                     newLine = Settings.FunctionBracesOnNewLine;
+
                     spaceBeforeClosingBrace =
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingFunctionBrace);
-                    spaceBeforeOpeningBrace =
+
+                    spaceBeforeOpeningBrace = _wroteCommentBeforeControlStatementCode ? "" :
                         LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningFunctionBrace);
                 }
 
-                if (newLine)
+                if (newLine || _wroteCommentBeforeControlStatementCode)
                 {
                     Write("\n" + GenIndent() + spaceBeforeOpeningBrace + "{\n");
                 }
