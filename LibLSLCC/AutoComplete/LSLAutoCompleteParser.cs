@@ -1538,24 +1538,26 @@ namespace LibLSLCC.AutoComplete
                     _parent._nestableExpressionElementStack.Push(NestableExpressionElementType.FunctionCallParameterList);
                 }
 
-                var v = base.VisitExpr_FunctionCall(context);
+                base.VisitExpr_FunctionCall(context);
 
-                if (context.open_parenth != null && context.close_parenth != null
-                    && context.close_parenth.Text == ")" && _parent._toOffset >= context.close_parenth.StartIndex)
+                if (
+                    context.open_parenth == null || 
+                    context.close_parenth == null || 
+                    context.close_parenth.Text != ")" ||
+                    _parent._toOffset < context.close_parenth.StartIndex) return true;
+
+                if (context.expression_list != null && context.expression_list.Stop.Text == ",")
                 {
-                    if (context.expression_list != null && context.expression_list.Stop.Text == ",")
-                    {
-                        return true;
-                    }
+                    return true;
+                }
 
-                    if (context.open_parenth.StartIndex != context.close_parenth.StartIndex)
-                    {
-                        _parent._nestableExpressionElementStack.Pop();
-                    }
+                if (context.open_parenth.StartIndex != context.close_parenth.StartIndex)
+                {
+                    _parent._nestableExpressionElementStack.Pop();
                 }
 
 
-                return v;
+                return true;
             }
 
 
