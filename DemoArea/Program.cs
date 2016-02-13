@@ -466,10 +466,10 @@ default{
             string testStr = ""hello world"";
 
             integer i = 0;
-            for(; i < CONSTANT_X ; i++)
+            for(; i < CONSTANT_A ; i++)
             {
                 //reference a deprecated constant, causes a warning
-                integer expand = CONSTANT_Y;
+                integer expand = CONSTANT_B;
 
                 function(expand, testStr , 1,2,3,4,5);
 
