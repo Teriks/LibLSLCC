@@ -2053,7 +2053,7 @@ namespace LibLSLCC.Formatter.Visitor
                     }
                     else
                     {
-                        Write(GenIndent() + spaceBeforeOpeningBrace + "{");
+                        Write(spaceBeforeOpeningBrace + "{");
                     }
 
                     _indentLevel++;
@@ -2065,13 +2065,14 @@ namespace LibLSLCC.Formatter.Visitor
                 }
                 else
                 {
-                    
+                    _indentLevel++;
+
                     if (Settings.IndentBracelessControlStatements || _wroteCommentBeforeSingleBlockStatement)
                     {
-                        _indentLevel++;
+                        
                         Write("\n" + GenIndent());
                         _wroteCommentBeforeSingleBlockStatement = false;
-                        _indentLevel--;
+                        
                     }
                     else
                     {
@@ -2079,6 +2080,8 @@ namespace LibLSLCC.Formatter.Visitor
                     }
 
                     Visit(statement);
+
+                    _indentLevel--;
                 }
             }
 

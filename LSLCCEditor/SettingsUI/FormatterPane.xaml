@@ -154,7 +154,7 @@
                         <Label>Else Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementBracesOnNewLine}">:Newline</CheckBox>
                     </StackPanel>
                 </ItemsControl>
             </Expander>
