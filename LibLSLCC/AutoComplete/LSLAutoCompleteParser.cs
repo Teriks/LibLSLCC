@@ -867,7 +867,7 @@ namespace LibLSLCC.AutoComplete
 
             var x = new Visitor(this);
 
-            x.Visit(parser.compilationUnit());
+            x.VisitCompilationUnit(parser.compilationUnit());
 
             ScopeAddressAtOffset = new LSLAutoCompleteScopeAddress(x.CodeAreaId, x.ScopeId, x.ScopeLevel);
         }
@@ -1209,6 +1209,10 @@ namespace LibLSLCC.AutoComplete
 
                 _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
 
+                if (context.condition != null)
+                {
+                    Visit(context.condition);
+                }
 
                 if (context.close_parenth == null) return true;
                 if (context.code == null || context.code.exception != null) return true;
@@ -1221,7 +1225,7 @@ namespace LibLSLCC.AutoComplete
                     return true;
                 }
 
-                Visit(context.code);
+                base.VisitCodeStatement(context.code);
 
                 if (context.else_statement == null) return true;
 
@@ -1233,7 +1237,7 @@ namespace LibLSLCC.AutoComplete
                     return true;
                 }
 
-                Visit(context.else_statement);
+                base.VisitElseStatement(context.else_statement);
 
                 return true;
             }
@@ -1332,7 +1336,7 @@ namespace LibLSLCC.AutoComplete
                     return true;
                 }
 
-                Visit(context.code);
+                base.VisitCodeStatement(context.code);
 
                 if (context.else_statement != null)
                 {
@@ -1344,7 +1348,7 @@ namespace LibLSLCC.AutoComplete
                         return true;
                     }
 
-                    Visit(context.else_statement);
+                    base.VisitElseStatement(context.else_statement);
                 }
 
 
