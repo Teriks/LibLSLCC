@@ -81,6 +81,13 @@
             </StackPanel>
             <Expander Header="Braceless Control Statements" MinWidth="400" HorizontalAlignment="Right" Margin="0,2,2,2" Width="791">
                 <ItemsControl Padding="0,10,10,0">
+                    <ItemsControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ItemsControl.Resources>
                     <CheckBox IsChecked="{Binding CurrentFormatterSettings.IndentBracelessControlStatements}" Margin="10"
                           FlowDirection="RightToLeft">
                         :Indent Braceless Control Statements
@@ -92,15 +99,32 @@
                 </ItemsControl>
             </Expander>
             <Expander Header="Else/Else-If Breaking" MinWidth="400" HorizontalAlignment="Right" Margin="0,2,2,2" Width="791">
+                <Expander.Resources>
+                    <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                </Expander.Resources>
                 <ItemsControl Padding="0,10,10,0">
-                    <CheckBox IsChecked="{Binding CurrentFormatterSettings.ElseIfStatementOnNewLine}" Margin="10"
-                          FlowDirection="RightToLeft">
-                        :Else-If On New Line
-                    </CheckBox>
-                    <CheckBox IsChecked="{Binding CurrentFormatterSettings.ElseStatementOnNewLine}" Margin="10"
-                          FlowDirection="RightToLeft">
-                        :Else On New Line
-                    </CheckBox>
+                    <ItemsControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ItemsControl.Resources>
+                    <StackPanel>
+                        <Label>Spaces Before Unbroken Else-If:</Label>
+                        <xctk:IntegerUpDown
+                            Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeUnbrokenElseIfStatement}"
+                            IsEnabled="{Binding ElementName=ElseIfOnNewLineCheckbox, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}" />
+                        <CheckBox Name="ElseIfOnNewLineCheckbox" IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfStatementOnNewLine}">:On New Line</CheckBox>
+                    </StackPanel>
+                    <StackPanel>
+
+                        <Label>Spaces Before Unbroken  Else:</Label>
+                        <xctk:IntegerUpDown
+                            Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeUnbrokenElseStatement}" 
+                            IsEnabled="{Binding ElementName=ElseOnNewLineCheckbox, Path=IsChecked, Converter={StaticResource InverseBooleanConverter}}"/>
+                        <CheckBox Name="ElseOnNewLineCheckbox" IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementOnNewLine}">:On New Line</CheckBox>
+                    </StackPanel>
                 </ItemsControl>
             </Expander>
             <Expander Header="Spaces Before Opening Braces" MinWidth="400">
