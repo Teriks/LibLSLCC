@@ -285,14 +285,14 @@
                         </ResourceDictionary>
                     </ItemsControl.Resources>
                     <StackPanel>
-                        <Label Content="Min Newlines Between Distinct Statements:" />
+                        <Label Content="Min Newlines Between Distinct Global Statements:" />
                         <xctk:IntegerUpDown Minimum="1"
-                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
+                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctGlobalStatements}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="Min Newlines Between Event And Following Comment:" />
+                        <Label Content="Min Newlines Between Distinct Local Statements:" />
                         <xctk:IntegerUpDown Minimum="1"
-                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenEventAndFollowingComment}" />
+                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctStatements}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Min Newlines Between Event Handlers:" />

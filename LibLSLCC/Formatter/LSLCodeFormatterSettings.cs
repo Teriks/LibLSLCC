@@ -115,7 +115,6 @@ namespace LibLSLCC.Formatter
         private int _maximumNewLinesAtBeginingOfStateScope = 2;
         private int _minimumNewLinesBetweenEventHandlers = 2;
         private int _maximumNewLinesAtEndOfStateScope = 2;
-        private int _minimumNewLinesBetweenEventAndFollowingComment = 3;
         private bool _convertBracelessControlStatements;
         private string _newlineSequence = "\n";
         private string _tabString = "\t";
@@ -129,6 +128,7 @@ namespace LibLSLCC.Formatter
         private bool _addSpacesBeforeOpeningFunctionBraceAfterCommentBreak;
         private bool _addSpacesBeforeOpeningEventBraceAfterCommentBreak;
         private bool _addSpacesBeforeOpeningStateBraceAfterCommentBreak;
+        private int _minimumNewLinesBetweenDistinctGlobalStatements = 3;
 
         public bool RemoveComments
         {
@@ -530,15 +530,7 @@ namespace LibLSLCC.Formatter
             set { SetField(ref _maximumNewLinesAtEndOfStateScope, value, "MaximumNewLinesAtEndOfStateScope"); }
         }
 
-        public int MinimumNewLinesBetweenEventAndFollowingComment
-        {
-            get { return _minimumNewLinesBetweenEventAndFollowingComment; }
-            set
-            {
-                SetField(ref _minimumNewLinesBetweenEventAndFollowingComment, value,
-                    "MinimumNewLinesBetweenEventAndFollowingComment");
-            }
-        }
+
 
         public bool AddSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak
         {
@@ -594,6 +586,12 @@ namespace LibLSLCC.Formatter
         {
             get { return _addSpacesBeforeOpeningStateBraceAfterCommentBreak; }
             set { SetField(ref _addSpacesBeforeOpeningStateBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningStateBraceAfterCommentBreak"); }
+        }
+
+        public int MinimumNewLinesBetweenDistinctGlobalStatements
+        {
+            get { return _minimumNewLinesBetweenDistinctGlobalStatements; }
+            set { SetField(ref _minimumNewLinesBetweenDistinctGlobalStatements,value,"MinimumNewLinesBetweenDistinctGlobalStatements"); }
         }
     }
 }

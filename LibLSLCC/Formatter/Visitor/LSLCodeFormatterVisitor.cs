@@ -1171,12 +1171,12 @@ namespace LibLSLCC.Formatter.Visitor
                     linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
                                                        node.SourceCodeRange.LineEnd);
 
-                    if (linesBetweenNodeAndFirstComment == 0 && linesBetweenCommentAndNextNode < 3)
+                    if (linesBetweenNodeAndFirstComment == 0 && linesBetweenCommentAndNextNode < Settings.MinimumNewLinesBetweenDistinctGlobalStatements)
                     {
                         if ((nextNode is ILSLFunctionDeclarationNode || nextNode is ILSLStateScopeNode) &&
                             (node is ILSLFunctionDeclarationNode || node is ILSLVariableDeclarationNode))
                         {
-                            linesBetweenCommentAndNextNode = 3;
+                            linesBetweenCommentAndNextNode = Settings.MinimumNewLinesBetweenDistinctGlobalStatements;
                         }
                     }
 
@@ -1197,7 +1197,10 @@ namespace LibLSLCC.Formatter.Visitor
                 (nextNode is ILSLStateScopeNode && node is ILSLVariableDeclarationNode) ||
                 (nextNode is ILSLStateScopeNode && node is ILSLStateScopeNode))
             {
-                if (linesBetweenTwoNodes < 3) linesBetweenTwoNodes = 3;
+                if (linesBetweenTwoNodes < Settings.MinimumNewLinesBetweenDistinctGlobalStatements)
+                {
+                    linesBetweenTwoNodes = Settings.MinimumNewLinesBetweenDistinctGlobalStatements;
+                }
             }
 
             Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes));
@@ -1520,9 +1523,9 @@ namespace LibLSLCC.Formatter.Visitor
                         var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
                                                                node.SourceCodeRange.LineEnd);
 
-                        if (linesBetweenNodeAndFirstComment < Settings.MinimumNewLinesBetweenEventAndFollowingComment)
+                        if (linesBetweenNodeAndFirstComment < Settings.MinimumNewLinesBetweenEventHandlers)
                         {
-                            linesBetweenNodeAndFirstComment = Settings.MinimumNewLinesBetweenEventAndFollowingComment;
+                            linesBetweenNodeAndFirstComment = Settings.MinimumNewLinesBetweenEventHandlers;
                         }
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
