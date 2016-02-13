@@ -231,7 +231,5 @@ namespace LibLSLCC.Utility
         {
             return CreateRepeatingString(newLines, "\n");
         }
-
-
     }
 }
