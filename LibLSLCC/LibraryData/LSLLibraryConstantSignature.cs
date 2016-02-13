@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -302,10 +303,30 @@ namespace LibLSLCC.LibraryData
 
         public static bool ValidateValueString(LSLType type, string valueString)
         {
+            if (type == LSLType.Void)
+            {
+                throw new ArgumentException("type must not be LSLType.Void", "type");
+            }
+
             try
             {
-                var f = new LSLLibraryConstantSignature(type, "constant", valueString);
-                return true;
+                string discard;
+                switch (type)
+                {
+                    case LSLType.Float:
+                        return ValidateFloatValueString(valueString, out discard);
+                    case LSLType.Integer:
+                        return ValidateIntegerValueString(valueString, out discard);
+                    case LSLType.List:
+                        return ValidateListValueString(valueString, out discard);
+                    case LSLType.Vector:
+                        return ValidateVectorValueString(valueString, out discard);
+                    case LSLType.Rotation:
+                        return ValidateRotationValueString(valueString, out discard);
+                    case LSLType.String:
+                        return true;
+                }
+                return false;
             }
             catch (LSLInvalidConstantValueStringException)
             {
@@ -315,18 +336,64 @@ namespace LibLSLCC.LibraryData
 
         public static bool TryParseValueString(LSLType type, string valueString, out string formated)
         {
+            if (type == LSLType.Void)
+            {
+                throw new ArgumentException("type must not be LSLType.Void", "type");
+            }
+
+            formated = null;
+
             try
             {
-                var f = new LSLLibraryConstantSignature(type, "constant", valueString);
-                formated = f.ValueString;
-                return true;
+                switch (type)
+                {
+                    case LSLType.Float:
+                        return ValidateFloatValueString(valueString, out formated);
+                    case LSLType.Integer:
+                        return ValidateIntegerValueString(valueString, out formated);
+                    case LSLType.List:
+                        return ValidateListValueString(valueString, out formated);
+                    case LSLType.Vector:
+                        return ValidateVectorValueString(valueString, out formated);
+                    case LSLType.Rotation:
+                        return ValidateRotationValueString(valueString, out formated);
+                    case LSLType.String:
+                        formated = valueString;
+                        return true;
+                }
+
+                return false;
             }
             catch (LSLInvalidConstantValueStringException)
             {
-                formated = null;
                 return false;
             }
         }
+
+
+        public static bool ValidateFloatValueString(string value, out string valueString)
+        {
+            valueString = null;
+
+            string stripSpecifiers = value.TrimEnd('f', 'F', 'd', 'D');
+
+            double f;
+            if (!double.TryParse(stripSpecifiers, out f))
+            {
+                int i;
+                if (!int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
+                {
+                    return false;
+                }
+                valueString = value;
+            }
+            else
+            {
+                valueString = stripSpecifiers;
+            }
+            return true;
+        }
+
 
         private void SetFloatValueString(string value)
         {
@@ -344,7 +411,34 @@ namespace LibLSLCC.LibraryData
                 }
                 _valueString = value;
             }
-            _valueString = stripSpecifiers;
+            else
+            {
+                _valueString = stripSpecifiers;
+            }
+        }
+
+
+        public static bool ValidateIntegerValueString(string value, out string valueString)
+        {
+            valueString = null;
+
+            bool b;
+            if (!bool.TryParse(value, out b))
+            {
+                int i;
+                if (!int.TryParse(value, out i) &&
+                    !int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
+                {
+                    return false;
+                }
+
+                valueString = value;
+            }
+            else
+            {
+                valueString = b ? "1" : "0";
+            }
+            return true;
         }
 
 
@@ -368,7 +462,44 @@ namespace LibLSLCC.LibraryData
                 //make it integral
                 _valueString = b ? "1" : "0";
             }
-            
+        }
+
+
+        public static bool ValidateListValueString(string value, out string valueString)
+        {
+            valueString = null;
+
+            try
+            {
+                string s = value.Trim(' ');
+
+                if (string.IsNullOrWhiteSpace(s))
+                {
+                    return false;
+                }
+
+                char firstChar = s[0];
+                char lastChar = s[s.Length - 1];
+
+                if ((firstChar == '[' || lastChar == ']') &&
+                    (firstChar != '[' || lastChar != ']'))
+                {
+                    return false;
+                }
+                if (firstChar == '[')
+                {
+                    s = s.Substring(1, s.Length - 2);
+                }
+
+
+                valueString = string.IsNullOrWhiteSpace(s) ? "" : LSLListParser.Format("[" + s + "]", false);
+            }
+            catch (LSLListParserSyntaxException)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void SetListValueString(string value)
@@ -398,9 +529,7 @@ namespace LibLSLCC.LibraryData
                     s = s.Substring(1, s.Length - 2);
                 }
 
-                if (string.IsNullOrWhiteSpace(s)) _valueString = "";
-
-                _valueString = LSLListParser.Format("[" + s + "]", false);
+                _valueString = string.IsNullOrWhiteSpace(s) ? "" : LSLListParser.Format("[" + s + "]", false);
             }
             catch (LSLListParserSyntaxException e)
             {
@@ -408,8 +537,51 @@ namespace LibLSLCC.LibraryData
             }
         }
 
+
+        public static bool ValidateRotationValueString(string value, out string valueString)
+        {
+            valueString = null;
+
+            string s = value.Trim(' ');
+
+
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return false;
+            }
+
+
+            char firstChar = s[0];
+            char lastChar = s[s.Length - 1];
+
+            if ((firstChar == '<' || lastChar == '>') &&
+                (firstChar != '<' || lastChar != '>'))
+            {
+                return false;
+            }
+
+            if (firstChar == '<')
+            {
+                s = s.Substring(1, s.Length - 2);
+            }
+
+
+            var match = _rotationValidationRegex.Match(s);
+            if (!match.Success)
+            {
+                return false;
+            }
+
+
+            valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
+
+            return true;
+        }
+
         private void SetRotationValueString(string value)
         {
+           
+
             string s = value.Trim(' ');
 
 
@@ -444,6 +616,45 @@ namespace LibLSLCC.LibraryData
             }
 
             _valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
+        }
+
+
+        private static bool ValidateVectorValueString(string value, out string valueString)
+        {
+            valueString = null;
+
+            string s = value.Trim(' ');
+
+
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return false;
+            }
+
+            char firstChar = s[0];
+            char lastChar = s[s.Length - 1];
+
+            if ((firstChar == '<' || lastChar == '>') &&
+                (firstChar != '<' || lastChar != '>'))
+            {
+                return false;
+            }
+
+            if (firstChar == '<')
+            {
+                s = s.Substring(1, s.Length - 2);
+            }
+
+
+            var match = _vectorValidationRegex.Match(s);
+            if (!match.Success)
+            {
+                return false;
+            }
+
+            valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
+
+            return true;
         }
 
 
