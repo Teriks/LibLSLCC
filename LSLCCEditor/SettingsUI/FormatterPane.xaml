@@ -142,55 +142,64 @@
                         <Label>Functions:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningFunctionBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}" >:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningFunctionBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>States:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningStateBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.StateBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.StateBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningStateBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Events:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningEventBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.EventBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.EventBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningEventBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>For Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningForBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ForLoopBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ForLoopBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningForLoopBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>While Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningWhileLoopBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.WhileLoopBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.WhileLoopBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Do Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningDoLoopBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.DoLoopBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.DoLoopBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningDoLoopBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>If Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningIfBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.IfStatementBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.IfStatementBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningIfBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Else If Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseIfBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfStatementBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfStatementBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningElseIfBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Else Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementBracesOnNewLine}">:Brace On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningElseBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
                 </ItemsControl>
             </Expander>

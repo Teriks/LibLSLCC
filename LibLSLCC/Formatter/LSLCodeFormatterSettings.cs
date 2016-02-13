@@ -120,6 +120,15 @@ namespace LibLSLCC.Formatter
         private string _newlineSequence = "\n";
         private string _tabString = "\t";
         private bool _stripComments;
+        private bool _addSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningDoLoopBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningForLoopBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningElseBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningElseIfBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningIfBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningFunctionBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningEventBraceAfterCommentBreak;
+        private bool _addSpacesBeforeOpeningStateBraceAfterCommentBreak;
 
         public bool StripComments
         {
@@ -531,6 +540,60 @@ namespace LibLSLCC.Formatter
             }
         }
 
+        public bool AddSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak"); }
+        }
 
+
+        public bool AddSpacesBeforeOpeningDoLoopBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningDoLoopBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningDoLoopBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningDoLoopBraceAfterCommentBreak"); }
+        }
+
+
+        public bool AddSpacesBeforeOpeningForLoopBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningForLoopBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningForLoopBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningForLoopBraceAfterCommentBreak"); }
+        }
+
+        public bool AddSpacesBeforeOpeningElseBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningElseBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningElseBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningElseBraceAfterCommentBreak"); }
+        }
+
+        public bool AddSpacesBeforeOpeningElseIfBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningElseIfBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningElseIfBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningElseIfBraceAfterCommentBreak"); }
+        }
+
+        public bool AddSpacesBeforeOpeningIfBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningIfBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningIfBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningIfBraceAfterCommentBreak"); }
+        }
+
+        public bool AddSpacesBeforeOpeningFunctionBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningFunctionBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningFunctionBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningFunctionBraceAfterCommentBreak"); }
+        }
+
+        public bool AddSpacesBeforeOpeningEventBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningEventBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningEventBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningEventBraceAfterCommentBreak"); }
+        }
+
+        public bool AddSpacesBeforeOpeningStateBraceAfterCommentBreak
+        {
+            get { return _addSpacesBeforeOpeningStateBraceAfterCommentBreak; }
+            set { SetField(ref _addSpacesBeforeOpeningStateBraceAfterCommentBreak,value,"AddSpacesBeforeOpeningStateBraceAfterCommentBreak"); }
+        }
     }
 }
