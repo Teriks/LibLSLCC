@@ -98,7 +98,7 @@
                     </CheckBox>
                 </ItemsControl>
             </Expander>
-            <Expander Header="Else/Else-If Breaking" MinWidth="400" HorizontalAlignment="Right" Margin="0,2,2,2" Width="791">
+            <Expander Header="Else-If/Else Breaking" MinWidth="400" HorizontalAlignment="Right" Margin="0,2,2,2" Width="791">
                 <Expander.Resources>
                     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                 </Expander.Resources>
