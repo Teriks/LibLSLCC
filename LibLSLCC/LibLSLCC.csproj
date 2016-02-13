@@ -30,8 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Optimize>true</Optimize>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
