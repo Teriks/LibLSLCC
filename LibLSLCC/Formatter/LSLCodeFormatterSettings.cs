@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System.Reflection;
 using LibLSLCC.Settings;
 
 namespace LibLSLCC.Formatter
@@ -118,12 +119,42 @@ namespace LibLSLCC.Formatter
         private string _newlineSequence = "\n";
         private string _tabString = "\t";
 
+        private class DefaultNewlineSequenceFactory : IDefaultSettingsValueFactory 
+        {
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+            {
+                return settingValue == null || settingValue.ToString() == "";
+            }
+
+
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
+            {
+                return "\n";
+            }
+        }
+
+        [DefaultValueFactory(typeof(DefaultNewlineSequenceFactory))]
         public string NewlineSequence
         {
             get { return _newlineSequence; }
             set { SetField(ref _newlineSequence, value, "NewlineSequence"); }
         }
 
+        private class TabStringlineSequenceFactory : IDefaultSettingsValueFactory
+        {
+            public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+            {
+                return settingValue == null || settingValue.ToString() == "";
+            }
+
+
+            public object GetDefaultValue(MemberInfo member, object objectInstance)
+            {
+                return "\t";
+            }
+        }
+
+        [DefaultValueFactory(typeof(TabStringlineSequenceFactory))]
         public string TabString
         {
             get { return _tabString; }
