@@ -127,8 +127,9 @@ namespace LibLSLCC.Settings
 
                 try
                 {
-                    using (var reader = new StreamReader(File.OpenRead(file)))
+                    using (var reader = new XmlTextReader(File.OpenRead(file)))
                     {
+                        reader.WhitespaceHandling = WhitespaceHandling.All;
                         Settings = (T) serializer.Deserialize(reader);
                     }
                 }
