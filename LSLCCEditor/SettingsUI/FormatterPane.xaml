@@ -80,16 +80,28 @@
                           SelectedItem="{Binding Path=SelectedFormatterConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Expander Header="Braceless Control Statements" MinWidth="400" HorizontalAlignment="Right" Margin="0,2,2,2" Width="791">
-                <StackPanel>
-                <CheckBox IsChecked="{Binding CurrentFormatterSettings.IndentBracelessControlStatements}" Margin="10"
+                <ItemsControl Padding="0,10,10,0">
+                    <CheckBox IsChecked="{Binding CurrentFormatterSettings.IndentBracelessControlStatements}" Margin="10"
                           FlowDirection="RightToLeft">
-                    :Indent Braceless Control Statements
-                </CheckBox>
-                <CheckBox IsChecked="{Binding CurrentFormatterSettings.ConvertBracelessControlStatements}" Margin="10"
+                        :Indent Braceless Control Statements
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding CurrentFormatterSettings.ConvertBracelessControlStatements}" Margin="10"
                           FlowDirection="RightToLeft">
-                    :Convert Braceless Control Statements
-                </CheckBox>
-                </StackPanel>
+                        :Convert Braceless Control Statements
+                    </CheckBox>
+                </ItemsControl>
+            </Expander>
+            <Expander Header="Else/Else-If Breaking" MinWidth="400" HorizontalAlignment="Right" Margin="0,2,2,2" Width="791">
+                <ItemsControl Padding="0,10,10,0">
+                    <CheckBox IsChecked="{Binding CurrentFormatterSettings.ElseIfStatementOnNewLine}" Margin="10"
+                          FlowDirection="RightToLeft">
+                        :Else-If On New Line
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding CurrentFormatterSettings.ElseStatementOnNewLine}" Margin="10"
+                          FlowDirection="RightToLeft">
+                        :Else On New Line
+                    </CheckBox>
+                </ItemsControl>
             </Expander>
             <Expander Header="Spaces Before Opening Braces" MinWidth="400">
                 <ItemsControl Padding="0,10,10,0">
@@ -106,55 +118,55 @@
                         <Label>Functions:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningFunctionBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}" >:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.FunctionBracesOnNewLine}" >:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>States:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningStateBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.StateBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.StateBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Events:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningEventBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.EventBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.EventBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>For Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningForBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ForLoopBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ForLoopBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>While Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningWhileLoopBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.WhileLoopBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.WhileLoopBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Do Loops:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningDoLoopBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.DoLoopBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.DoLoopBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>If Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningIfBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.IfStatementBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.IfStatementBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Else If Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseIfBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfStatementBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseIfStatementBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                     <StackPanel>
                         <Label>Else Statements:</Label>
                         <xctk:IntegerUpDown
                             Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningElseBrace}" />
-                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementBracesOnNewLine}">:Newline</CheckBox>
+                        <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ElseStatementBracesOnNewLine}">:Brace On New Line</CheckBox>
                     </StackPanel>
                 </ItemsControl>
             </Expander>
