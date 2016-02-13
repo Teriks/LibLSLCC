@@ -324,6 +324,7 @@ namespace LibLSLCC.LibraryData
                     case LSLType.Rotation:
                         return ValidateRotationValueString(valueString, out discard);
                     case LSLType.String:
+                    case LSLType.Key:
                         return true;
                 }
                 return false;
@@ -358,6 +359,7 @@ namespace LibLSLCC.LibraryData
                     case LSLType.Rotation:
                         return ValidateRotationValueString(valueString, out formated);
                     case LSLType.String:
+                    case LSLType.Key:
                         formated = valueString;
                         return true;
                 }

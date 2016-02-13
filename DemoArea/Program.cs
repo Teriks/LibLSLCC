@@ -219,6 +219,11 @@ namespace DemoArea
         static public string CONSTANT_TT { get; set; }
 
 
+        //ValueString is explicitly set so it will use that instead of the field value, no converters required.
+        [LSLConstant(LSLType.List, ValueString = "1,2,<7,7,7>")]
+        static public string CONSTANT_LL { get; set; }
+
+
 
         //The converter on the property attribute will be used instead of the serializer's or the class level converter.
         //You can override type converters and value string converters at the member level.
