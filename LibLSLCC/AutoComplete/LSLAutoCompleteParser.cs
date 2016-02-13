@@ -1214,8 +1214,13 @@ namespace LibLSLCC.AutoComplete
                     Visit(context.condition);
                 }
 
+
                 if (context.close_parenth == null) return true;
-                if (context.code == null || context.code.exception != null) return true;
+
+                Visit(context.code);
+
+                if (context.code == null || 
+                    context.code.exception != null) return true;
 
                 if (context.close_parenth.StartIndex <= _parent._toOffset &&
                     context.code.Start.StartIndex > _parent.ParseToOffset)
@@ -1225,7 +1230,6 @@ namespace LibLSLCC.AutoComplete
                     return true;
                 }
 
-                base.VisitCodeStatement(context.code);
 
                 if (context.else_statement == null) return true;
 
@@ -1237,7 +1241,7 @@ namespace LibLSLCC.AutoComplete
                     return true;
                 }
 
-                base.VisitElseStatement(context.else_statement);
+                Visit(context.else_statement);
 
                 return true;
             }
@@ -1326,7 +1330,11 @@ namespace LibLSLCC.AutoComplete
                 }
 
                 if (context.close_parenth == null) return true;
-                if (context.code == null || context.code.exception != null) return true;
+
+                Visit(context.code);
+
+                if (context.code == null || 
+                    context.code.exception != null) return true;
 
                 if (context.close_parenth.StartIndex <= _parent._toOffset &&
                     context.code.Start.StartIndex > _parent.ParseToOffset)
@@ -1335,8 +1343,6 @@ namespace LibLSLCC.AutoComplete
                     _parent.InMultiStatementCodeScopeTopLevel = false;
                     return true;
                 }
-
-                base.VisitCodeStatement(context.code);
 
                 if (context.else_statement != null)
                 {
@@ -1348,7 +1354,7 @@ namespace LibLSLCC.AutoComplete
                         return true;
                     }
 
-                    base.VisitElseStatement(context.else_statement);
+                    Visit(context.else_statement);
                 }
 
 
