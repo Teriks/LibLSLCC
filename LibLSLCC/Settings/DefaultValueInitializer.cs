@@ -183,6 +183,78 @@ namespace LibLSLCC.Settings
         }
 
 
+        public static T DoNeccessaryResets<T>(T instance)
+        {
+            var settingsProperties =
+                instance.GetType()
+                    .GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance)
+                    .ToArray();
+            var settingsFields =
+                instance.GetType()
+                    .GetFields(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance)
+                    .ToArray();
+
+
+            var valueFactoryInitQueue = new PriorityQueue<int, Action>();
+
+
+            foreach (var member in settingsProperties.Concat<MemberInfo>(settingsFields))
+            {
+                var asField = member as FieldInfo;
+                var asProp = member as PropertyInfo;
+
+                var isField = asField != null;
+
+                if (!isField && !(asProp.CanRead && asProp.CanWrite)) continue;
+
+                var fieldValue = isField ? asField.GetValue(instance) : asProp.GetValue(instance, null);
+
+                var fieldType = isField ? asField.FieldType : asProp.PropertyType;
+
+
+                var factoryAttribute = member.GetCustomAttributes(typeof(DefaultValueFactoryAttribute), true).ToList();
+
+                var defaultAttribute = member.GetCustomAttributes(typeof(DefaultValueAttribute), true).ToList();
+
+                if (defaultAttribute.Any() && factoryAttribute.Any())
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            "Property: '{0} {1}.{2}' uses both a [DefaultValueFactoryAttribute] and a [DefaultValueAttribute].",
+                            fieldType.FullName,
+                            member.DeclaringType.FullName,
+                            member.Name));
+                }
+
+                if (factoryAttribute.Any())
+                {
+                    var factory = ((DefaultValueFactoryAttribute)factoryAttribute.First());
+
+                    //copy the for-each item reference into a local
+                    //to avoid a possible compiler portability issue when using it in a lambda enclosure
+                    var localMember = member;
+                    valueFactoryInitQueue.Enqueue(factory.InitOrder, () =>
+                    {
+                        if (factory.Factory.CheckForNecessaryResets(localMember, instance, fieldValue))
+                        {
+                            SetValue(localMember, instance, factory.Factory.GetDefaultValue(localMember, instance));
+                        }
+                    });
+                }
+            }
+
+            while (!valueFactoryInitQueue.IsEmpty)
+            {
+                //invoke the queued up actions for DefaultValueFactoryAttribute in order after all the other fields have been initialized
+                valueFactoryInitQueue.Dequeue().Value();
+            }
+
+            return instance;
+        }
+
+
+
+
         public static T Init<T>(T instance)
         {
             var settingsProperties =

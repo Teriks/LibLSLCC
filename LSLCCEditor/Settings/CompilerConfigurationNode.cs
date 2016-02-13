@@ -58,6 +58,9 @@ namespace LSLCCEditor.Settings
                 {
                     return true;
                 }
+
+                DefaultValueInitializer.DoNeccessaryResets((LSLOpenSimCompilerSettings)settingValue);
+
                 return false;
             }
 

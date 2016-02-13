@@ -65,6 +65,9 @@ namespace LSLCCEditor.Settings
                 {
                     return true;
                 }
+
+                DefaultValueInitializer.DoNeccessaryResets((LSLCodeFormatterSettings)settingValue);
+
                 return false;
             }
 

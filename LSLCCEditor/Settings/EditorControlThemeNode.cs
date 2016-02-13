@@ -59,6 +59,9 @@ namespace LSLCCEditor.Settings
                 {
                     return true;
                 }
+
+                DefaultValueInitializer.DoNeccessaryResets((LSLEditorControlTheme)settingValue);
+
                 return false;
             }
 

@@ -90,6 +90,7 @@ namespace LibLSLCC.Settings
 
             var writerSettings = new XmlWriterSettings
             {
+                Indent = true,
                 NewLineHandling = NewLineHandling.Entitize,
                 CloseOutput = true
             };

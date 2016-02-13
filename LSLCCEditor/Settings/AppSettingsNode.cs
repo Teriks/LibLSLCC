@@ -126,7 +126,11 @@ namespace LSLCCEditor.Settings
 
                 foreach (var kvp in dict.ToList())
                 {
-                    if (kvp.Value != null && kvp.Value.EditorControlSettings != null) continue;
+                    if (kvp.Value != null && kvp.Value.EditorControlSettings != null)
+                    {
+                        DefaultValueInitializer.DoNeccessaryResets(kvp.Value);
+                        continue;
+                    }
 
                     var initNode = new EditorControlSettingsNode();
                     dict[kvp.Key] = initNode;
@@ -225,7 +229,11 @@ namespace LSLCCEditor.Settings
 
                 foreach (var kvp in dict.ToList())
                 {
-                    if (kvp.Value != null && kvp.Value.OpenSimCompilerSettings != null) continue;
+                    if (kvp.Value != null && kvp.Value.OpenSimCompilerSettings != null)
+                    {
+                        DefaultValueInitializer.DoNeccessaryResets(kvp.Value);
+                        continue;
+                    }
 
                     var initNode = new CompilerConfigurationNode();
                     dict[kvp.Key] = initNode;
@@ -359,7 +367,11 @@ namespace LSLCCEditor.Settings
 
                 foreach (var kvp in dict.ToList())
                 {
-                    if (kvp.Value != null && kvp.Value.FormatterSettings != null) continue;
+                    if (kvp.Value != null && kvp.Value.FormatterSettings != null)
+                    {
+                        DefaultValueInitializer.DoNeccessaryResets(kvp.Value);
+                        continue;
+                    }
 
                     var initNode = new FormatterSettingsNode();
                     dict[kvp.Key] = initNode;
@@ -454,7 +466,11 @@ namespace LSLCCEditor.Settings
 
                 foreach (var kvp in dict.ToList())
                 {
-                    if (kvp.Value != null && kvp.Value.Theme != null) continue;
+                    if (kvp.Value != null && kvp.Value.Theme != null)
+                    {
+                        DefaultValueInitializer.DoNeccessaryResets(kvp.Value);
+                        continue;
+                    }
 
                     var initNode = new EditorControlThemeNode();
                     dict[kvp.Key] = initNode;
