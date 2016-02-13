@@ -1985,27 +1985,102 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitSingleStatementCodeScope(ILSLCodeScopeNode node)
         {
-            _indentLevel++;
-
-
             var statement = node.CodeStatements.First();
 
-            if (!(statement is ILSLSemiColonStatement))
+            if (statement is ILSLSemiColonStatement)
             {
-                if (Settings.IndentBracelessControlStatements || _wroteCommentBeforeSingleBlockStatement)
+                Visit(statement);
+            }
+            else
+            {
+                if (Settings.ConvertBracelessControlStatements)
                 {
+                    var newLine = false;
+                    var spaceBeforeOpeningBrace = "";
+                    var spaceBeforeClosingBrace = "";
+                    if (node.CodeScopeType == LSLCodeScopeType.If)
+                    {
+                        newLine = Settings.IfStatementBracesOnNewLine;
+                        spaceBeforeClosingBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingIfBrace);
+                        spaceBeforeOpeningBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningIfBrace);
+                    }
+                    else if (node.CodeScopeType == LSLCodeScopeType.ElseIf)
+                    {
+                        newLine = Settings.ElseIfStatementBracesOnNewLine;
+                        spaceBeforeClosingBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseIfBrace);
+                        spaceBeforeOpeningBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseIfBrace);
+                    }
+                    else if (node.CodeScopeType == LSLCodeScopeType.Else)
+                    {
+                        newLine = Settings.ElseStatementBracesOnNewLine;
+                        spaceBeforeClosingBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingElseBrace);
+                        spaceBeforeOpeningBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningElseBrace);
+                    }
+                    else if (node.CodeScopeType == LSLCodeScopeType.ForLoop)
+                    {
+                        newLine = Settings.ForLoopBracesOnNewLine;
+                        spaceBeforeClosingBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
+                        spaceBeforeOpeningBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
+                    }
+                    else if (node.CodeScopeType == LSLCodeScopeType.DoLoop)
+                    {
+                        newLine = Settings.DoLoopBracesOnNewLine;
+                        spaceBeforeClosingBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingDoLoopBrace);
+                        spaceBeforeOpeningBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
+                    }
+                    else if (node.CodeScopeType == LSLCodeScopeType.WhileLoop)
+                    {
+                        newLine = Settings.WhileLoopBracesOnNewLine;
+                        spaceBeforeClosingBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingWhileLoopBrace);
+                        spaceBeforeOpeningBrace =
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningWhileLoopBrace);
+                    }
+
+                    if (newLine || _wroteCommentBeforeSingleBlockStatement)
+                    {
+                        Write("\n" + GenIndent() + spaceBeforeOpeningBrace + "{");
+                    }
+                    else
+                    {
+                        Write(GenIndent() + spaceBeforeOpeningBrace + "{");
+                    }
+
+                    _indentLevel++;
                     Write("\n" + GenIndent());
-                    _wroteCommentBeforeSingleBlockStatement = false;
+                    Visit(statement);
+                    _indentLevel--;
+
+                    Write("\n" + GenIndent() + spaceBeforeClosingBrace + "}");
                 }
                 else
                 {
-                    Write(" ");
+                    
+                    if (Settings.IndentBracelessControlStatements || _wroteCommentBeforeSingleBlockStatement)
+                    {
+                        _indentLevel++;
+                        Write("\n" + GenIndent());
+                        _wroteCommentBeforeSingleBlockStatement = false;
+                        _indentLevel--;
+                    }
+                    else
+                    {
+                        Write(" ");
+                    }
+
+                    Visit(statement);
                 }
             }
-
-            Visit(statement);
-
-            _indentLevel--;
 
             return true;
         }

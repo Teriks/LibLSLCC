@@ -1488,6 +1488,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             ScopingManager.EnterSingleStatementBlock(context);
 
+            var currentCodeScopeType = ScopingManager.CurrentCodeScopeType;
+
             var codeStatement = VisitCodeStatement(context) as ILSLCodeStatement;
 
             ScopingManager.ExitSingleStatementBlock();
@@ -1505,8 +1507,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             LSLCodeScopeNode result;
             if (!codeStatement.HasErrors)
             {
-                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId,
-                    ScopingManager.CurrentCodeScopeType);
+                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId, currentCodeScopeType);
             }
             else
             {

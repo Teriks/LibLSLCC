@@ -79,11 +79,17 @@
                           ItemsSource="{Binding Path=FormatterConfigurationNames, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding Path=SelectedFormatterConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
-            <Expander Header="Braceless Control Statements" MinWidth="400">
+            <Expander Header="Braceless Control Statements" MinWidth="400" HorizontalAlignment="Right" Margin="0,2,2,2" Width="791">
+                <StackPanel>
                 <CheckBox IsChecked="{Binding CurrentFormatterSettings.IndentBracelessControlStatements}" Margin="10"
                           FlowDirection="RightToLeft">
                     :Indent Braceless Control Statements
                 </CheckBox>
+                <CheckBox IsChecked="{Binding CurrentFormatterSettings.ConvertBracelessControlStatements}" Margin="10"
+                          FlowDirection="RightToLeft">
+                    :Convert Braceless Control Statements
+                </CheckBox>
+                </StackPanel>
             </Expander>
             <Expander Header="Spaces Before Opening Braces" MinWidth="400">
                 <ItemsControl Padding="0,10,10,0">

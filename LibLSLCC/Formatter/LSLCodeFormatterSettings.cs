@@ -114,6 +114,7 @@ namespace LibLSLCC.Formatter
         private int _minimumNewLinesBetweenEventHandlers = 2;
         private int _maximumNewLinesAtEndOfStateScope = 2;
         private int _minimumNewLinesBetweenEventAndFollowingComment = 3;
+        private bool _convertBracelessControlStatements;
 
         public bool DeclarationExpressionWrapping
         {
@@ -413,7 +414,21 @@ namespace LibLSLCC.Formatter
         public bool IndentBracelessControlStatements
         {
             get { return _indentBracelessControlStatements; }
-            set { SetField(ref _indentBracelessControlStatements, value, "IndentBracelessControlStatements"); }
+            set
+            {
+                if (value) ConvertBracelessControlStatements = false;
+                SetField(ref _indentBracelessControlStatements, value, "IndentBracelessControlStatements");
+            }
+        }
+
+        public bool ConvertBracelessControlStatements
+        {
+            get { return _convertBracelessControlStatements; }
+            set
+            {
+                if (value) IndentBracelessControlStatements = false;
+                SetField(ref _convertBracelessControlStatements, value, "ConvertBracelessControlStatements");
+            }
         }
 
         public int SpacesBeforeUnbrokenElseIfStatement
@@ -492,5 +507,7 @@ namespace LibLSLCC.Formatter
                     "MinimumNewLinesBetweenEventAndFollowingComment");
             }
         }
+
+
     }
 }
