@@ -115,6 +115,20 @@ namespace LibLSLCC.Formatter
         private int _maximumNewLinesAtEndOfStateScope = 2;
         private int _minimumNewLinesBetweenEventAndFollowingComment = 3;
         private bool _convertBracelessControlStatements;
+        private string _newlineSequence = "\n";
+        private string _tabString = "\t";
+
+        public string NewlineSequence
+        {
+            get { return _newlineSequence; }
+            set { SetField(ref _newlineSequence, value, "NewlineSequence"); }
+        }
+
+        public string TabString
+        {
+            get { return _tabString; }
+            set { SetField(ref _tabString, value, "TabString"); }
+        }
 
         public bool DeclarationExpressionWrapping
         {

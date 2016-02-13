@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -153,6 +154,8 @@ namespace LibLSLCC.Formatter.Visitor
                 return;
             }
 
+            StringBuilder strBuilder = new StringBuilder();
+
             foreach (var c in str)
             {
                 if (c == '\n')
@@ -162,16 +165,24 @@ namespace LibLSLCC.Formatter.Visitor
                     _tabsWrittenSinceLastLine = 0;
                     _nonTabsWrittenSinceLastLine = 0;
                     OnNewLineWritten();
+
+                    strBuilder.Append(Settings.NewlineSequence);
                 }
                 else if (c == '\t')
                 {
+                    
                     _tabsWrittenSinceLastLine++;
                     //OnTabWritten();
+
+                    strBuilder.Append(Settings.TabString);
                 }
                 else
                 {
+                    
                     _nonTabsWrittenSinceLastLine++;
                     //OnNonTabWritten();
+
+                    strBuilder.Append(c);
                 }
 
                 if (c == '\n') continue;
@@ -180,7 +191,7 @@ namespace LibLSLCC.Formatter.Visitor
                 //OnColumnCharacterWritten();
             }
 
-            Writer.Write(str);
+            Writer.Write(strBuilder.ToString());
         }
 
 
