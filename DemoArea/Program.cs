@@ -200,35 +200,35 @@ namespace DemoArea
         //a value for this constant, even when an object instance
         //is passed to the class serializer.
         [LSLConstant(LSLType.Integer, ValueString = "5")]
-        public int CONSTANT_X = 10;
+        public int CONSTANT_A = 10;
 
 
         //This constant gets expanded into the generated source, and also generates a deprecation warning.
         [LSLConstant(LSLType.Integer, Expand = true, Deprecated = true)]
-        static public int CONSTANT_A = 10;
+        static public int CONSTANT_B = 10;
 
 
         //The serializer will read private properties and fields
         //The type and value string converters used here are the one's specified in the class attribute.
         [LSLConstant]
-        static public string CONSTANT_B { private get { return "hello"; } set { value = ""; } }
+        static public string CONSTANT_C { private get { return "hello"; } set { value = ""; } }
 
 
         //ValueString is explicitly set so it will use that instead of the field value, no converters required.
         [LSLConstant(LSLType.String, ValueString = "sup")]
-        static public string CONSTANT_C { get; set; }
+        static public string CONSTANT_D { get; set; }
 
 
         //ValueString is explicitly set so it will use that instead of the field value, no converters required.
         [LSLConstant(LSLType.List, ValueString = "1,2,<7,7,7>")]
-        static public string CONSTANT_D { get; set; }
+        static public string CONSTANT_E { get; set; }
 
 
 
         //The converter on the property attribute will be used instead of the serializer's or the class level converter.
         //You can override type converters and value string converters at the member level.
         [LSLConstant(LSLType.Key, ValueStringConverter = typeof(PreferedValueStringConverter))]
-        static public string CONSTANT_E { get { return "hello world"; } }
+        static public string CONSTANT_F { get { return "hello world"; } }
 
 
         //A function that explicitly returns LSLType.Float.
