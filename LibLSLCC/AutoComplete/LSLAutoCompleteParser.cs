@@ -1222,6 +1222,7 @@ namespace LibLSLCC.AutoComplete
                 if (context.code == null ||
                     context.code.exception != null) return true;
 
+
                 if (context.code.code_scope != null && context.close_parenth.StartIndex <= _parent._toOffset &&
                     context.code.Start.StartIndex > _parent.ParseToOffset)
                 {
@@ -1253,7 +1254,14 @@ namespace LibLSLCC.AutoComplete
 
                 if (context.code != null && context.code.control_structure != null)
                 {
-                    return VisitElseIfStatement(context.code.control_structure);
+                    if (context.code.control_structure.Start.StartIndex < _parent._toOffset)
+                    {
+                        return VisitElseIfStatement(context.code.control_structure);
+                    }
+
+                    _parent.InMultiStatementCodeScopeTopLevel = false;
+                    _parent.InSingleStatementCodeScopeTopLevel = false;
+                    return false;
                 }
 
                 if (context.code != null &&
@@ -1272,7 +1280,8 @@ namespace LibLSLCC.AutoComplete
 
                 if (context.code == null || context.code.exception != null) return true;
 
-                if (context.else_keyword.StopIndex <= _parent._toOffset &&
+                if (context.code.code_scope != null && 
+                    context.else_keyword.StopIndex <= _parent._toOffset &&
                     context.code.Start.StartIndex >= _parent.ParseToOffset)
                 {
                     _parent.InSingleStatementCodeScopeTopLevel = false;
@@ -1335,6 +1344,7 @@ namespace LibLSLCC.AutoComplete
 
                 if (context.code == null || 
                     context.code.exception != null) return true;
+
 
                 if (context.code.code_scope != null && context.close_parenth.StartIndex <= _parent._toOffset &&
                     context.code.Start.StartIndex > _parent.ParseToOffset)
