@@ -55,14 +55,14 @@ namespace LibLSLCC.Utility
     public static class LSLFormatTools
     {
         /// <summary>
-        ///     Gets the number of spaces required to match the length of the whitespace leading up to the first non-whitespace
-        ///     character in a string (new line is not considered whitespace here).
+        ///  Gets the number of spaces required to match the length of the whitespace leading up to the first non-whitespace
+        ///  character in a string (new line is not considered whitespace here).
         /// </summary>
         /// <param name="str">The string to consider</param>
         /// <param name="tabSize">The size of a tab character in spaces</param>
         /// <returns>
-        ///     The number of space characters required to match the length of all the whitespace characters at the end of the
-        ///     string (except newlines)
+        ///  The number of space characters required to match the length of all the whitespace characters at the end of the
+        ///  string (except newlines)
         /// </returns>
         public static int GetStringSpacesIndented(this string str, int tabSize = 4)
         {
@@ -90,7 +90,7 @@ namespace LibLSLCC.Utility
         }
 
         /// <summary>
-        ///     Gets the number of spaces required to exactly match the length of a given string up to the first new line
+        ///  Gets the number of spaces required to exactly match the length of a given string up to the first new line
         /// </summary>
         /// <param name="str">Input string to get the length in spaces of</param>
         /// <param name="tabSize">Tab size in spaces, defaults to 4</param>
@@ -134,14 +134,14 @@ namespace LibLSLCC.Utility
         }
 
         /// <summary>
-        ///     Creates a spacer string using tabs up until spaces are required for alignment.
-        ///     Strings less than tabSize end up being only spaces.
+        /// Creates a spacer string using tabs up until spaces are required for alignment.
+        /// Strings less than tabSize end up being only spaces.
         /// </summary>
         /// <param name="spaces">The number of spaces the spacer string should be equivalent to</param>
         /// <param name="tabSize">The size of a tab character in spaces, default value is 4</param>
         /// <returns>
-        ///     A string consisting of leading tabs and possibly trailing spaces that is equivalent in length
-        ///     to the number of spaces provided in the spaces parameter
+        ///  A string consisting of leading tabs and possibly trailing spaces that is equivalent in length
+        ///  to the number of spaces provided in the spaces parameter
         /// </returns>
         public static string CreateTabCorrectSpaceString(int spaces, int tabSize = 4)
         {
@@ -202,7 +202,7 @@ namespace LibLSLCC.Utility
         }
 
         /// <summary>
-        ///     Generate a string with N number of spaces in it
+        /// Generate a string with N number of spaces in it
         /// </summary>
         /// <param name="spaces">Number of spaces</param>
         /// <returns>A string containing 'spaces' number of spaces</returns>
@@ -212,7 +212,7 @@ namespace LibLSLCC.Utility
         }
 
         /// <summary>
-        ///     Generate a string with N number of tabs in it
+        ///  Generate a string with N number of tabs in it
         /// </summary>
         /// <param name="tabs">Number of tabs</param>
         /// <returns>A string containing 'tabs' number of tabs</returns>
@@ -222,7 +222,8 @@ namespace LibLSLCC.Utility
         }
 
         /// <summary>
-        ///     Generate a string with N number of newlines in it
+        /// Generate a string with N number of newlines in it.
+        /// The newlines are explicitly '\n' characters, not <see cref="Environment.NewLine"/>
         /// </summary>
         /// <param name="newLines">Number of newlines</param>
         /// <returns>A string containing 'newLines' number of newlines</returns>
