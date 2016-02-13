@@ -41,6 +41,7 @@
 // 
 #endregion
 
+using System;
 using System.Reflection;
 using LibLSLCC.Settings;
 
@@ -116,8 +117,15 @@ namespace LibLSLCC.Formatter
         private int _maximumNewLinesAtEndOfStateScope = 2;
         private int _minimumNewLinesBetweenEventAndFollowingComment = 3;
         private bool _convertBracelessControlStatements;
-        private string _newlineSequence = "\n";
+        private string _newlineSequence = Environment.NewLine;
         private string _tabString = "\t";
+        private bool _stripComments;
+
+        public bool StripComments
+        {
+            get { return _stripComments; }
+            set { SetField(ref _stripComments, value, "StripComments"); }
+        }
 
         public string NewlineSequence
         {

@@ -923,6 +923,9 @@ namespace LibLSLCC.Formatter.Visitor
 
         private IEnumerable<LSLComment> GetComments(int sourceRangeStart, int sourceRangeEnd)
         {
+            if(Settings.StripComments) yield break;
+
+
             var first = _comments.First;
 
             while (first != null)
