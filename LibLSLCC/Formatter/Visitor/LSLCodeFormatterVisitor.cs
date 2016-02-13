@@ -77,6 +77,7 @@ namespace LibLSLCC.Formatter.Visitor
         private int _nonTabsWrittenSinceLastLine;
         private int _binaryExpressionsSinceNewLine;
         private bool _wroteCommentBeforeSingleBlockStatement;
+        private bool _wroteCommentAfterControlChainMember;
 
 
         private void Reset()
@@ -1767,8 +1768,10 @@ namespace LibLSLCC.Formatter.Visitor
 
                 var nextNode = nodes[nodeAheadIndex];
 
-                WriteCommentsBetweenRange(node.SourceCodeRange, nextNode.SourceCodeRange, 1);
+                _wroteCommentAfterControlChainMember = WriteCommentsBetweenRange(node.SourceCodeRange, nextNode.SourceCodeRange, 1);
             }
+
+            _wroteCommentAfterControlChainMember = false;
 
             return true;
         }
@@ -1821,7 +1824,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitElseIfStatement(ILSLElseIfStatementNode node)
         {
-            if (Settings.ElseIfStatementOnNewLine)
+            if (Settings.ElseIfStatementOnNewLine || _wroteCommentAfterControlChainMember)
             {
                 Write("\n" + GenIndent() + "else");
             }
@@ -1884,7 +1887,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitElseStatement(ILSLElseStatementNode node)
         {
-            if (Settings.ElseStatementOnNewLine)
+            if (Settings.ElseStatementOnNewLine || _wroteCommentAfterControlChainMember)
             {
                 Write("\n" + GenIndent() + "else");
             }
