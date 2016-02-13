@@ -79,6 +79,21 @@
                           ItemsSource="{Binding Path=FormatterConfigurationNames, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding Path=SelectedFormatterConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
+            <Expander Header="Comments" MinWidth="400">
+                <ItemsControl Padding="0,10,10,0">
+                    <ItemsControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ItemsControl.Resources>
+                    <CheckBox IsChecked="{Binding CurrentFormatterSettings.RemoveComments}" Margin="10"
+                          FlowDirection="RightToLeft">
+                        :Remove Comments
+                    </CheckBox>
+                </ItemsControl>
+            </Expander>
             <Expander Header="Braceless Control Statements" MinWidth="400">
                 <ItemsControl Padding="0,10,10,0">
                     <ItemsControl.Resources>

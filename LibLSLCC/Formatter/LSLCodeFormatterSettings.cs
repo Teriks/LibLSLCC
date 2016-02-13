@@ -119,7 +119,7 @@ namespace LibLSLCC.Formatter
         private bool _convertBracelessControlStatements;
         private string _newlineSequence = "\n";
         private string _tabString = "\t";
-        private bool _stripComments;
+        private bool _removeComments;
         private bool _addSpacesBeforeOpeningWhileLoopBraceAfterCommentBreak;
         private bool _addSpacesBeforeOpeningDoLoopBraceAfterCommentBreak;
         private bool _addSpacesBeforeOpeningForLoopBraceAfterCommentBreak;
@@ -130,10 +130,10 @@ namespace LibLSLCC.Formatter
         private bool _addSpacesBeforeOpeningEventBraceAfterCommentBreak;
         private bool _addSpacesBeforeOpeningStateBraceAfterCommentBreak;
 
-        public bool StripComments
+        public bool RemoveComments
         {
-            get { return _stripComments; }
-            set { SetField(ref _stripComments, value, "StripComments"); }
+            get { return _removeComments; }
+            set { SetField(ref _removeComments, value, "RemoveComments"); }
         }
 
         public string NewlineSequence
