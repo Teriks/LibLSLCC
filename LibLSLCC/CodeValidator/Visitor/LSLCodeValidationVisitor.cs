@@ -1488,11 +1488,8 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             ScopingManager.EnterSingleStatementBlock(context);
 
-            var currentCodeScopeType = ScopingManager.CurrentCodeScopeType;
 
             var codeStatement = VisitCodeStatement(context) as ILSLCodeStatement;
-
-            ScopingManager.ExitSingleStatementBlock();
 
 
             if (codeStatement == null)
@@ -1501,19 +1498,20 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .VisitReturnTypeException("VisitCodeStatement", typeof (ILSLCodeStatement));
             }
 
-
             ScopingManager.IncrementScopeId();
 
             LSLCodeScopeNode result;
             if (!codeStatement.HasErrors)
             {
-                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId, currentCodeScopeType);
+                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId, ScopingManager.CurrentCodeScopeType);
             }
             else
             {
                 result = LSLCodeScopeNode.GetError(new LSLSourceCodeRange(context));
             }
 
+
+            ScopingManager.ExitSingleStatementBlock();
 
             result.AddCodeStatement(codeStatement);
             result.EndScope();

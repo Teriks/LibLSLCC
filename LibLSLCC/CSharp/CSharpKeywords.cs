@@ -95,7 +95,6 @@ namespace LibLSLCC.CSharp
         }
 
 
-
         public static readonly IReadOnlyHashedSet<string> NonContextualKeywordSet = new HashedSet<string>()
         {
             "abstract",
@@ -181,7 +180,5 @@ namespace LibLSLCC.CSharp
         {
             return NonContextualKeywordSet.Contains(str);
         }
-
-
     }
 }
