@@ -9,14 +9,21 @@ def setVersion(dir,  version):
     with open(file, 'r') as content_file:
         content = content_file.read();
 
-    tempfile = file+".tmp";
-    with open(tempfile, 'w+') as content_file:
-        content = re.sub(r'\[assembly: AssemblyVersion\("[^"]*"\)\]',
+    match = re.search(r'\[assembly: AssemblyVersion\("([^"]*)"\)\]', content)
+
+    if match.group(1) == version:
+        print(d + " already up to date.\n")
+        return
+
+    content = re.sub(r'\[assembly: AssemblyVersion\("[^"]*"\)\]',
                          r'[assembly: AssemblyVersion("'+version+'")]', content)
 
-        content = re.sub(r'\[assembly: AssemblyFileVersion\("[^"]*"\)\]',
+    content = re.sub(r'\[assembly: AssemblyFileVersion\("[^"]*"\)\]',
                          r'[assembly: AssemblyFileVersion("'+version+'")]', content)
+ 
+    tempfile = file+".tmp";
 
+    with open(tempfile, 'w+') as content_file:
         content_file.write(content)
 
     #if theres an exception prior, the temp file will not move over.
