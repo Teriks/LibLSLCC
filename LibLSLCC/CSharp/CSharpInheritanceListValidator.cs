@@ -43,6 +43,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.Collections;
@@ -102,7 +103,7 @@ namespace LibLSLCC.CSharp
         /// <value>
         /// The parameter constraints associated with the generic parameter names in <see cref="ConstrainedTypeParameters"/>.
         /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public IReadOnlyGenericArray<IReadOnlyGenericArray<CSharpTypeConstraintValidationResult>> ParameterConstraints { get; internal set; }
 
         /// <summary>

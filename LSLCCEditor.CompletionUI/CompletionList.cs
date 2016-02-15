@@ -28,7 +28,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 
-
 namespace LSLCCEditor.CompletionUI
 {
     public class CompletionList : Control

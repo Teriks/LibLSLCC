@@ -54,7 +54,7 @@ namespace LibLSLCC.CodeValidator.Components
     /// <summary>
     /// The default implementation of <see cref="ILSLStringPreProcessor"/> for the library
     /// </summary>
-    public class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
+    public sealed class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
     {
 
         /// <summary>

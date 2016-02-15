@@ -50,6 +50,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Timers;
 using System.Windows;
@@ -60,7 +61,6 @@ using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Compilers.OpenSim;
-using LibLSLCC.Compilers;
 using LibLSLCC.Formatter;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
@@ -123,7 +123,7 @@ namespace LSLCCEditor
 
         private void Initialize()
         {
-            var assembly = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var assembly = Assembly.GetEntryAssembly().Location;
 
             var appDirectory = Path.GetDirectoryName(assembly);
 

@@ -40,14 +40,10 @@
 // 
 // 
 #endregion
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
+
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 
 namespace LSLCCEditor.Utility.Wpf

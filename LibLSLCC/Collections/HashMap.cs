@@ -45,6 +45,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -81,7 +82,7 @@ namespace LibLSLCC.Collections
         /// Create a new instance of an <see cref="HashMap{TKey, TValue}"/> class by wrapping an <see cref="IDictionary{TKey, TValue}"/>.
         /// </summary>
         /// <param name="items">The items.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
+        [SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static HashMap<TKey, TValue> CreateWrapper(IDictionary<TKey, TValue> items)
         {
             return new HashMap<TKey, TValue>(items);
@@ -140,7 +141,7 @@ namespace LibLSLCC.Collections
         /// </summary>
         /// <param name="info">The information.</param>
         /// <param name="context">The context.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         protected HashMap(SerializationInfo info, StreamingContext context)
         {
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor

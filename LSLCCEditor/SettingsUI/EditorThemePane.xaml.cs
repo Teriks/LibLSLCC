@@ -40,17 +40,12 @@
 // 
 // 
 #endregion
-using System;
+
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Security;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
@@ -58,7 +53,6 @@ using LSLCCEditor.Settings;
 using LSLCCEditor.Utility.Xml;
 using Xceed.Wpf.Toolkit;
 using MessageBox = System.Windows.MessageBox;
-using UserControl = System.Windows.Controls.UserControl;
 
 namespace LSLCCEditor.SettingsUI
 {

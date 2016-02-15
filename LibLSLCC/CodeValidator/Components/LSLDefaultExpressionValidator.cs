@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Components
     ///     etc.. in standard LSL
     ///     validations for expression types in lists/vectors/rotations and function call parameters match that of standard LSL
     /// </summary>
-    public class LSLDefaultExpressionValidator : ILSLExpressionValidator
+    public sealed class LSLDefaultExpressionValidator : ILSLExpressionValidator
     {
         private readonly Dictionary<string, LSLType> _operations = new Dictionary<string, LSLType>();
 

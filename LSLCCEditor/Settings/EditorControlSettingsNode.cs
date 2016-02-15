@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System.Reflection;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;

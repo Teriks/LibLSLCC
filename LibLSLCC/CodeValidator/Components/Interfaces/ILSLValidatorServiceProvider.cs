@@ -42,7 +42,6 @@
 #endregion
 #region Imports
 
-using System;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.LibraryData;
 
@@ -85,31 +84,5 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// warnings from the code validator
         /// </summary>
         ILSLSyntaxWarningListener SyntaxWarningListener { get; }
-    }
-
-    /// <summary>
-    /// Extensions for ILSLValidatorServiceProvider
-    /// </summary>
-    public static class ILSLValidatorServiceProvideExtensions
-    {
-        /// <summary>
-        /// Returns true if all service provider properties are non null
-        /// </summary>
-        /// <param name="provider">The <see cref="ILSLValidatorServiceProvider"/> to check.</param>
-        /// <returns>True if all properties are initialized.</returns>
-        public static bool IsComplete(this ILSLValidatorServiceProvider provider)
-        {
-            if (provider == null)
-            {
-                throw new ArgumentNullException("provider");
-            }
-
-
-            return provider.ExpressionValidator != null
-                   && provider.LibraryDataProvider != null
-                   && provider.StringLiteralPreProcessor != null
-                   && provider.SyntaxErrorListener != null
-                   && provider.SyntaxWarningListener != null;
-        }
     }
 }

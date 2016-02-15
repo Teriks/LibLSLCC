@@ -40,8 +40,8 @@
 // 
 // 
 #endregion
+
 using System.Reflection;
-using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
 

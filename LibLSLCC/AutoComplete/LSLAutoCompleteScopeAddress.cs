@@ -42,7 +42,7 @@
 #endregion
 namespace LibLSLCC.AutoComplete
 {
-    public class LSLAutoCompleteScopeAddress
+    public sealed class LSLAutoCompleteScopeAddress
     {
         public LSLAutoCompleteScopeAddress(int codeAreaId, int scopeId, int scopeLevel)
         {

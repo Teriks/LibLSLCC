@@ -43,6 +43,7 @@
 #region Imports
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
@@ -73,7 +74,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Enumerable of the <see cref="LSLLibraryFunctionSignature"/> overloads defined according to this data provider
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LibraryFunctions { get; }
 
         /// <summary>

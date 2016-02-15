@@ -63,7 +63,7 @@ namespace LibLSLCC.AutoComplete
     /// <summary>
     /// An LSL parser that can help with implementing context aware auto-complete inside of code editors.
     /// </summary>
-    public class LSLAutoCompleteParser
+    public sealed class LSLAutoCompleteParser
     {
         private static readonly Regex JumpRegex = new Regex("jump\\s*(" + LSLTokenTools.IDRegexString + ")");
         private static readonly Regex LabelRegex = new Regex("@\\s*(" + LSLTokenTools.IDRegexString + ")");

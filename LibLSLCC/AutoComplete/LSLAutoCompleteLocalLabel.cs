@@ -45,7 +45,7 @@ namespace LibLSLCC.AutoComplete
     /// <summary>
     /// Represents a local label statement parsed by the auto complete parser.
     /// </summary>
-    public class LSLAutoCompleteLocalLabel
+    public sealed class LSLAutoCompleteLocalLabel
     {
         internal LSLAutoCompleteLocalLabel(string name)
         {

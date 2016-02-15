@@ -78,10 +78,16 @@ namespace LibLSLCC.CodeValidator
         public LSLCodeValidator(ILSLValidatorServiceProvider validatorServices)
         {
             ValidatorServices = validatorServices;
-            if (!validatorServices.IsComplete())
+
+            string describeNulls;
+            if (!validatorServices.IsComplete(out describeNulls))
             {
-                throw new ArgumentException("An ILSLValidatorServiceProvider property was null", "validatorServices");
+                throw new ArgumentException("ILSLValidatorServiceProvider is incomplete:"+
+                    Environment.NewLine+
+                    Environment.NewLine+
+                    describeNulls);
             }
+
 
             _validationVisitor = new LSLCodeValidationVisitor(validatorServices);
             //_antlrLexerErrorHandler = new LSLAntlrLexerErrorHandler(validatorServices.SyntaxErrorListener);

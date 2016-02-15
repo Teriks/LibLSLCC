@@ -40,17 +40,17 @@
 // 
 // 
 #endregion
+
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using LibLSLCC.CSharp;
 using LibLSLCC.Settings;
 using LSLCCEditor.Settings;
 using LSLCCEditor.Utility.Validation;
-using MessageBox = System.Windows.MessageBox;
-using UserControl = System.Windows.Controls.UserControl;
 
 namespace LSLCCEditor.SettingsUI
 {

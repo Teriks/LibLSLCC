@@ -43,6 +43,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -724,7 +725,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Instance properties will be considered <c>null</c> if one is not provided.
         /// </param>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public LSLLibraryConstantSignature DeSerializeConstant(PropertyInfo info, object optionalInstance = null)
         {
             var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
@@ -775,7 +776,7 @@ namespace LibLSLCC.LibraryData.Reflection
         /// Instance fields will be considered <c>null</c> if one is not provided.
         /// </param>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature"/> or <c>null</c>.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public LSLLibraryConstantSignature DeSerializeConstant(FieldInfo info, object optionalInstance = null)
         {
             var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);

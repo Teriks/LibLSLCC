@@ -70,7 +70,6 @@ using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Settings;
 using LibLSLCC.Utility;
-using LSLCCEditor.Utility;
 using LSLCCEditor.Utility.Binding;
 using LSLCCEditor.Utility.Xml;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;

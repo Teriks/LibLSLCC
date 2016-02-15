@@ -45,7 +45,7 @@ namespace LibLSLCC.AutoComplete
     /// <summary>
     /// Represents a local jump statement parsed by the auto complete parser.
     /// </summary>
-    public class LSLAutoCompleteLocalJump
+    public sealed class LSLAutoCompleteLocalJump
     {
         internal LSLAutoCompleteLocalJump(string targetName)
         {

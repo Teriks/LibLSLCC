@@ -44,6 +44,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace LibLSLCC.Collections
@@ -81,7 +82,7 @@ namespace LibLSLCC.Collections
         /// Create a new instance of an <see cref="GenericArray{T}"/> class by wrapping an <see cref="IList{T}"/>.
         /// </summary>
         /// <param name="list">The list.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
+        [SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static GenericArray<T> CreateWrapper(IList<T> list)
         {
             return new GenericArray<T>(list);

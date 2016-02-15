@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.AutoComplete
@@ -47,7 +48,7 @@ namespace LibLSLCC.AutoComplete
     /// <summary>
     /// Represents a local variable declaration parsed by the auto complete parser.
     /// </summary>
-    public class LSLAutoCompleteLocalVariable
+    public sealed class LSLAutoCompleteLocalVariable
     {
         internal LSLAutoCompleteLocalVariable(string name, string typeString, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
             LSLSourceCodeRange nameRange, LSLAutoCompleteScopeAddress address)

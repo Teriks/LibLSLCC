@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator.Components
     ///     to members which will be used directly as part of <see cref="LSLCodeValidator"/>'s implementation.
     ///     <see cref="Default"/> will return a copy of this object with all the default implementations assigned to its properties. 
     /// </summary>
-    public class LSLValidatorServiceProvider : ILSLValidatorServiceProvider
+    public sealed class LSLValidatorServiceProvider : ILSLValidatorServiceProvider
     {
         /// <summary>
         /// The expression validator is in charge of determining if two types are valid

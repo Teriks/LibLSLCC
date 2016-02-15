@@ -40,11 +40,12 @@
 // 
 // 
 #endregion
+
 using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.AutoComplete
 {
-    public class LSLAutoCompleteStateBlock
+    public sealed class LSLAutoCompleteStateBlock
     {
         public LSLAutoCompleteStateBlock(string name, LSLSourceCodeRange range)
         {

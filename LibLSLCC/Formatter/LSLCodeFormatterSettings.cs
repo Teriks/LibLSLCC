@@ -41,7 +41,6 @@
 // 
 #endregion
 
-using System;
 using System.Reflection;
 using LibLSLCC.Settings;
 

@@ -49,7 +49,6 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 
-
 namespace LibraryDataScrapingTools.LibraryDataScrapers
 {
     public class CachedWebDownloader

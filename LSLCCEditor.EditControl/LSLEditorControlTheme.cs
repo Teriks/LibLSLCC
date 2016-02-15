@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System.Windows;
 using System.Windows.Media;
 using LibLSLCC.Settings;

@@ -46,7 +46,7 @@ namespace LibLSLCC.AutoComplete
     /// <summary>
     /// A class to help determine if an offset into LSL source code is inside of a comment or string literal.
     /// </summary>
-    public class LSLCommentStringSkipper
+    public sealed class LSLCommentStringSkipper
     {
         private int _lastStringStart;
 

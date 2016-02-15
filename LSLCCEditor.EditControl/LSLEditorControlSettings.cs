@@ -41,9 +41,7 @@
 // 
 #endregion
 
-using System.Windows.Media;
 using LibLSLCC.Settings;
-using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl
 {
@@ -72,28 +70,28 @@ namespace LSLCCEditor.EditControl
 
 
 
-        [DefaultValueFactory(typeof(LSLEditorControlSettings.DefaultsFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool CaseInsensitiveAutoCompleteMatching
         {
             get { return _caseInsensitiveAutoCompleteMatching; }
             set {SetField(ref _caseInsensitiveAutoCompleteMatching,value, "CaseInsensitiveAutoCompleteMatching"); }
         }
 
-        [DefaultValueFactory(typeof(LSLEditorControlSettings.DefaultsFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool CamelCaseAutoCompleteMatching
         {
             get { return _camelCaseAutoCompleteMatching; }
             set {SetField(ref _camelCaseAutoCompleteMatching,value, "CamelCaseAutoCompleteMatching"); }
         }
 
-        [DefaultValueFactory(typeof(LSLEditorControlSettings.DefaultsFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool SubstringSearchAutoCompleteMatching
         {
             get { return _substringSearchAutoCompleteMatching; }
             set {SetField(ref _substringSearchAutoCompleteMatching,value, "SubstringSearchAutoCompleteMatching"); }
         }
 
-        [DefaultValueFactory(typeof(LSLEditorControlSettings.DefaultsFactory))]
+        [DefaultValueFactory(typeof(DefaultsFactory))]
         public bool ConstantCompletionFirstCharIsCaseSensitive
         {
             get { return _constantCompletionFirstCharIsCaseSensitive; }

@@ -45,6 +45,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -115,7 +116,7 @@ namespace LibLSLCC.Collections
         ///     Initializes a new instance of priority queue with specified data and default priority comparer
         /// </summary>
         /// <param name="data">data to be inserted into priority queue</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public PriorityQueue(IEnumerable<KeyValuePair<TPriority, TValue>> data)
             : this(data, Comparer<TPriority>.Default)
         {
@@ -127,7 +128,7 @@ namespace LibLSLCC.Collections
         /// </summary>
         /// <param name="data">data to be inserted into priority queue</param>
         /// <param name="comparer">priority comparer</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public PriorityQueue(IEnumerable<KeyValuePair<TPriority, TValue>> data, IComparer<TPriority> comparer)
         {
 
@@ -161,7 +162,7 @@ namespace LibLSLCC.Collections
         ///     source priority queues must have equal comparers,
         ///     otherwise <see cref="InvalidOperationException" /> will be thrown
         /// </remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
+        [SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static PriorityQueue<TPriority, TValue> MergeQueues(PriorityQueue<TPriority, TValue> pq1,
             PriorityQueue<TPriority, TValue> pq2)
         {
@@ -190,7 +191,7 @@ namespace LibLSLCC.Collections
         /// <param name="pq2">second priority queue</param>
         /// <param name="comparer">comparer for resultant priority queue</param>
         /// <returns>resultant priority queue</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
+        [SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static PriorityQueue<TPriority, TValue> MergeQueues(PriorityQueue<TPriority, TValue> pq1,
             PriorityQueue<TPriority, TValue> pq2, IComparer<TPriority> comparer)
         {

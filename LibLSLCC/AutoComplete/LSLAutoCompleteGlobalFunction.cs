@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Primitives;
@@ -50,7 +51,7 @@ namespace LibLSLCC.AutoComplete
     /// <summary>
     /// Represents a global function declaration that was parsed by the auto complete parser
     /// </summary>
-    public class LSLAutoCompleteGlobalFunction
+    public sealed class LSLAutoCompleteGlobalFunction
     {
         internal LSLAutoCompleteGlobalFunction(string name, string returnTypeString, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
             LSLSourceCodeRange nameRange, IList<LSLAutoCompleteLocalParameter> parameters)

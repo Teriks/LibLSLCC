@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 
@@ -65,7 +66,7 @@ namespace LibLSLCC.LibraryData
         /// Get a stream that points the default library XML data embedded in the LibLSLCC assembly.
         /// </summary>
         /// <returns>A stream containing the default library XML data embedded in LibLSLCC</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static Stream GetDefaultLibraryDataStream()
         {
             return typeof(LSLEmbeddedLibraryDataProvider).Assembly.GetManifestResourceStream(

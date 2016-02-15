@@ -43,7 +43,6 @@
 #region Imports
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
@@ -54,13 +53,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public interface ILSLCodeStatementError : ILSLReadOnlyCodeStatement
+    internal sealed class LSLCodeStatementError : ILSLCodeStatement
     {
-    }
-
-    public class LSLCodeStatementError : ILSLCodeStatementError, ILSLCodeStatement
-    {
-        public LSLCodeStatementError(LSLParser.CodeStatementContext parserContext, bool isSingleBlockStatement)
+        internal LSLCodeStatementError(LSLParser.CodeStatementContext parserContext, bool isSingleBlockStatement)
         {
             IsSingleBlockStatement = isSingleBlockStatement;
 
