@@ -39,16 +39,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentParser.cs" />
+    <Compile Include="ArgParseException.cs" />
+    <Compile Include="ArgParser.cs" />
+    <Compile Include="ArgSwitch.cs" />
+    <Compile Include="ArgSwitchDesc.cs" />
+    <Compile Include="ArgSwitchHelpWriteEvent.cs" />
     <Compile Include="Glob.cs" />
-    <Compile Include="HandleSwitchResult.cs" />
-    <Compile Include="LogWriteException.cs" />
-    <Compile Include="Options.cs" />
+    <Compile Include="InputFileCompiler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnCode.cs" />
     <Compile Include="ReturnCodeHelp.cs" />
-    <Compile Include="SwitchResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

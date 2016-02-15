@@ -1,6 +1,7 @@
 ﻿#region FileInfo
+
 // 
-// File: Program.cs
+// File: cs
 // 
 // 
 // ============================================================
@@ -39,23 +40,19 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.Compilers;
-using LibLSLCC.Compilers.OpenSim;
+using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.LibraryData;
-
 
 #endregion
 
@@ -63,83 +60,6 @@ namespace lslcc
 {
     internal class Program
     {
-        private const string InternalErrorMessage =
-            "Please create a bug report with the code that caused this message, and the message itself.";
-
-        /// <summary>
-        ///     The output header for lslcc related command errors.
-        ///     this is not related to syntax error messages from the compiler itself.
-        /// </summary>
-        private const string CmdErrorHeader = "ERROR: ";
-
-        /// <summary>
-        ///     The output header for lslcc related command warnings.
-        ///     this is not related to syntax warning messages from the compiler itself.
-        /// </summary>
-        private const string CmdWarningHeader = "WARNING: ";
-
-        /// <summary>
-        ///     The output header for lslcc related command notices.
-        ///     this is not related to messages from the compiler itself.
-        /// </summary>
-        private const string CmdNoticeHeader = "NOTICE: ";
-
-        /// <summary>
-        ///     The output header that gets placed before the raw content of an exception message of any sort.
-        /// </summary>
-        private const string CmdExceptionHeader = "REASON: ";
-
-        /// <summary>
-        ///     The client side script compiler header.
-        ///     This content gets placed at the top of scripts compiled with the -clientcode switch.
-        /// </summary>
-        private const string ClientSideScriptCompilerHeader =
-            @"//c#
-/** 
-*  Do not remove //c# from the first line of this script.
-*
-*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
-*
-*  Please note this script does not support being reset, because a constructor was not generated.
-*  Compile using the server side script option to generate a script constructor.
-*
-*  This code will run on an unmodified OpenSim server, however script resets will not reset global variables,
-*  and OpenSim will be unable to save the state of this script as its global variables are created in an object container.
-*
-*/ 
-";
-
-        /// <summary>
-        ///     The server side script compiler header.
-        ///     This content gets placed at the top of scripts compiled with the -servercode switch.
-        /// </summary>
-        private const string ServerSideScriptCompilerHeader =
-            @"//c#-raw
-/** 
-*  Do not remove //c#-raw from the first line of this script.
-*
-*  This is OpenSim CSharp code, CSharp scripting must be enabled on the server to run.
-*
-*  This is a server side script.  It constitutes a fully generated script class that
-*  will be sent to the CSharp compiler in OpenSim.  This code supports script resets.
-*
-*  This script is meant to upload compatible with the LibLSLCC OpenSim fork.
-*
-*  If you are running a version of OpenSim with the LibLSLCC compiler enabled, you must add 'csraw'
-*  to the allowed list of compiler languages under [XEngine] for this script to successfully upload.
-*
-*  Adding 'csraw' to your allowed language list when using the old OpenSim compiler will have no effect
-*  besides an error being written to your log file.  OpenSim will run but you will not actually be able
-*  to use the 'csraw' upload type.
-*
-*  Note that you can also set 'CreateClassWrapperForCSharpScripts' to 'false' under the [LibLCLCC]
-*  OpenSim.ini config section in order to enable 'csraw' mode uploads for every CSharp script sent to the 
-*  LibLSLCC compiler;  Including those marked with '//c#' if you have 'cs' in your list of allowed languages.
-*
-*/ 
-";
-
-
         private static bool FileNameIsValid(string fileName)
         {
             FileInfo fi = null;
@@ -158,12 +78,7 @@ namespace lslcc
             {
             }
 
-            if (ReferenceEquals(fi, null))
-            {
-                return false;
-            }
-
-            return true;
+            return !ReferenceEquals(fi, null);
         }
 
 
@@ -197,9 +112,6 @@ namespace lslcc
         }
 
 
-
-
-
         private static void WriteReturnCodes()
         {
             const string indent = "    ";
@@ -229,101 +141,6 @@ namespace lslcc
         }
 
 
-        private static void WriteHelp()
-        {
-            const string indent = "    ";
-
-            var defaultLibraryDataProvider = new LSLEmbeddedLibraryDataProvider();
-
-            Console.WriteLine();
-            Console.WriteLine("LibLSLCC command line OpenSim LSL compiler");
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine("Examples:");
-            Console.WriteLine();
-            Console.WriteLine(indent + "lslcc -i script.lsl -o script.cs");
-            Console.WriteLine();
-            Console.WriteLine(indent + "lslcc -i script.lsl dir{0}script2.lsl -o \"{{dir}}{{name}}.cs\"", Path.DirectorySeparatorChar);
-            Console.WriteLine();
-            Console.WriteLine(indent + "lslcc -i \"dir{0}**{0}*.lsl\" \"dir2{0}*\" -o \"{{dir}}{{name}}.cs\"  (built in globing)", Path.DirectorySeparatorChar);
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine("-i: One or more input files or glob expressions (quote globs on *nix).");
-            Console.WriteLine("-o: (Optional) output file or output file name template.");
-            Console.WriteLine();
-            Console.WriteLine(indent + "If you do not specify an output file or output file template, the directory and");
-            Console.WriteLine(indent + "name of the input file is used and given a '.cs' extension (equivalent to - o \"{dir}{name}.cs\".");
-            Console.WriteLine(indent + "In that case, the output file is written to the directory the input file resides in.");
-            Console.WriteLine();
-
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-log: log file or log file name template");
-            Console.WriteLine();
-            Console.WriteLine(indent + "If this is a file name template such as \"{dir}{name}.log\", then a separate log file is created");
-            Console.WriteLine(indent + "for each input file.  Otherwise, all compiler output is appended to the specified file.");
-            Console.WriteLine();
-
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-log-return-code:");
-            Console.WriteLine();
-            Console.WriteLine(indent + "Append a textual representation of the compiler return code to the end of each log file name.");
-            Console.WriteLine();
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-librarysubsets: subset1;subset2;... (default is just lsl)");
-            Console.WriteLine();
-            Console.WriteLine(indent + "Set the available library subsets when compiling ( Separated by semi-colons ; )");
-            Console.WriteLine(indent + "Spaces are not allowed between the names and the semi-colons unless you quote the string.");
-            Console.WriteLine();
-            Console.WriteLine(indent + "All acceptable values are:");
-            Console.WriteLine();
-            Console.WriteLine(indent + "" + string.Join(";", defaultLibraryDataProvider.PossibleSubsets));
-            Console.WriteLine();
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-servercode: (On by default)");
-            Console.WriteLine();
-            Console.WriteLine(indent + "Compile server side code, code that OpenSim would pass directly to the CSharp compiler.");
-            Console.WriteLine(indent + "This type of code supports script resets, but un-modified builds of OpenSim provide");
-            Console.WriteLine(indent + "no way to upload it from your client.");
-            Console.WriteLine();
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-clientcode:");
-            Console.WriteLine();
-            Console.WriteLine(indent + "Compile client up-loadable code that works with all versions of OpenSim, ");
-            Console.WriteLine(indent + "but does not support script resets.");
-            Console.WriteLine();
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-coop-stop:");
-            Console.WriteLine();
-            Console.WriteLine(indent + "Insert cooperative termination calls used by OpenSim when co-op script stop mode is enabled.");
-            Console.WriteLine();
-
-
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-            Console.WriteLine("-returncodes: show lslcc return code descriptions.");
-            Console.WriteLine();
-            Console.WriteLine("-h: show lslcc general help.");
-            Console.WriteLine();
-            Console.WriteLine("-v: show lslcc version and program info.");
-
-            Console.WriteLine();
-            Console.WriteLine("======================================");
-            Console.WriteLine();
-        }
-
-
         private static void WriteAbout()
         {
             Console.WriteLine("=================================");
@@ -341,775 +158,401 @@ namespace lslcc
 #endif
             var version = Assembly.GetEntryAssembly().GetName().Version;
             Console.WriteLine();
-            Console.WriteLine("Version: "+version);
+            Console.WriteLine("Version: " + version);
             Console.WriteLine();
             Console.WriteLine("=================================");
         }
 
 
-        private static void WriteCompilerMessage(TextWriter log, string format, params object[] args)
-        {
-            
-            WriteCompilerMessageLogOnly(log, format, args);
-
-            if (args.Length == 0)
-            {
-                Console.WriteLine(format);
-            }
-            else
-            {
-                Console.WriteLine(format, args);
-            }
-        }
-
-
-        private static void WriteCompilerMessageLogOnly(TextWriter log, string format, params object[] args)
-        {
-            if (log == null) return;
-
-            try
-            {
-                if (args.Length == 0)
-                {
-                    log.WriteLine(format);
-                }
-                else
-                {
-                    log.WriteLine(format, args);
-                }
-            }
-            catch (Exception e)
-            {
-                throw new LogWriteException(e.Message, e);
-            }
-        }
-
-
-        private static void WriteCompilerMessageLogOnly(TextWriter log)
-        {
-            if (log == null) return;
-
-            try
-            {
-                log.WriteLine();
-            }
-            catch (Exception e)
-            {
-                throw new LogWriteException(e.Message, e);
-            }
-        }
-
-
-        private class SyntaxErrorListener : LSLDefaultSyntaxErrorListener
-        {
-            private readonly TextWriter _log;
-
-
-            public SyntaxErrorListener(TextWriter log)
-            {
-                _log = log;
-            }
-
-
-            protected override void OnError(LSLSourceCodeRange location, string message)
-            {
-                WriteCompilerMessage(_log, "({0},{1}) ERROR: {2}", MapLineNumber(location.LineStart),
-                    location.ColumnStart, message + Environment.NewLine);
-            }
-        }
-
-
-        private class SyntaxWarningListener : LSLDefaultSyntaxWarningListener
-        {
-            private readonly TextWriter _log;
-
-
-            public SyntaxWarningListener(TextWriter log)
-            {
-                _log = log;
-            }
-
-
-            protected override void OnWarning(LSLSourceCodeRange location, string message)
-            {
-                WriteCompilerMessage(_log, "({0},{1}) WARNING: {2}", MapLineNumber(location.LineStart),
-                    location.ColumnStart, message + Environment.NewLine);
-            }
-        }
-
-
-        private static void WriteCompilerMessage(TextWriter log)
-        {
-            if (log != null)
-            {
-                try
-                {
-                    log.WriteLine();
-                }
-                catch (Exception e)
-                {
-                    throw new LogWriteException(e.Message, e);
-                }
-            }
-
-            Console.WriteLine();
-        }
 
 
         public static int Main(string[] args)
         {
-            Options options = new Options();
+            var defaultLibraryDataProvider = new LSLEmbeddedLibraryDataProvider();
+
+            ArgParser argParser = new ArgParser();
 
 
-            var switchHandlers =
-                new Dictionary<string, Func<string[], int, SwitchResult>>();
-
-
-            switchHandlers.Add("-i", (argArray, index) =>
+            argParser.AddSwitch(new ArgSwitchDesc("-i")
             {
-                var result = new SwitchResult(0);
-
-                result.OptionValid = true;
-
-                for (int i = index + 1; i < argArray.Length; i++)
+                MinArgs = 1,
+                HelpLine = "One or more input files or glob expressions (quote globs on *nix).",
+            })
+                .AddWriteBeforeShortHelp((sender, e) =>
                 {
-                    string fileArg = argArray[i];
+                    e.Writer.WriteLine();
+                    e.Writer.WriteLine("LibLSLCC command line OpenSim LSL compiler");
+                    e.Writer.WriteLine();
+                    e.Writer.WriteLine();
+                    e.Writer.WriteLine("Examples:");
+                    e.Writer.WriteLine();
+                    e.Writer.WriteLine(argParser.HelpDescriptionIndent + "lslcc -i script.lsl -o script.cs");
+                    e.Writer.WriteLine();
+                    e.Writer.WriteLine(
+                        argParser.HelpDescriptionIndent +
+                        "lslcc -i script.lsl dir{0}script2.lsl -o \"{{dir}}{{name}}.cs\"", Path.DirectorySeparatorChar);
+                    e.Writer.WriteLine();
+                    e.Writer.WriteLine(
+                        argParser.HelpDescriptionIndent +
+                        "lslcc -i \"dir{0}**{0}*.lsl\" \"dir2{0}*\" -o \"{{dir}}{{name}}.cs\"  (built in globing)",
+                        Path.DirectorySeparatorChar);
+                    e.Writer.WriteLine();
+                    e.Writer.WriteLine();
+                });
 
 
-                    if (fileArg.StartsWith("-"))
-                    {
-                        break;
-                    }
-
-                    foreach (var file in Glob.Glob.Expand(fileArg).Where(x=>x.Attributes != FileAttributes.Directory))
-                    {
-
-                        bool specifiedAlready = options.InFiles.Contains(file.FullName);
-
-                        if (specifiedAlready)
-                        {
-                            Console.WriteLine(CmdErrorHeader + "An input file was specified multiple times, use -h for help.");
-                            result.OptionValid = false;
-                        }
-                        else if (result.OptionValid)
-                        {
-                            options.InFiles.Add(file.FullName);
-                        }
-                    }
-                    result.ArgsConsumed++;
+            argParser.AddSwitch(new ArgSwitchDesc("-o")
+            {
+                MinArgs = 1,
+                MaxArgs = 1,
+                HelpLine = "(Optional) output file or output file name template.",
+                DescriptionLines =
+                {
+                    "If you do not specify an output file or output file template, the directory and",
+                    "name of the input file is used and given a '.cs' extension (equivalent to -o \"{dir}{name}.cs\".",
+                    "In that case, the output file is written to the directory the input file resides in.",
+                    "",
+                    "Note that the \"{dir}\" template expands to the directory the source code is in, with a trailing",
+                    "directory separator at the end."
                 }
+            });
 
-                return result;
+            argParser.AddSwitch(new ArgSwitchDesc("-log")
+            {
+                MinArgs = 1,
+                MaxArgs = 1,
+                HelpLine = "log file or log file name template.",
+                DescriptionLines =
+                {
+                    "If this is a file name template such as \"{dir}{name}.log\", then a separate log file is created",
+                    "for each input file.  Otherwise, all compiler output is appended to the specified file.",
+                    "",
+                    "The template \"{returncode}\" can also be used in the log file name, a textual representation of",
+                    "the compiler return code will be written in its place.  See -returncodes for return code names."
+                }
             });
 
 
-            switchHandlers.Add("-o", (argArray, index) =>
+            argParser.AddSwitch(new ArgSwitchDesc("-librarysubsets")
             {
-                int paramIndex = index + 1;
-
-                if (paramIndex > (argArray.Length-1))
+                MinArgs = 1,
+                MaxArgs = 1,
+                HelpLine = "subset1;subset2;... (default is just lsl)",
+                DescriptionLines =
                 {
-                    Console.WriteLine(CmdErrorHeader + "Option -o requires an argument, use -h for help.");
-                    return new SwitchResult() {OptionValid = false};
+                    "Set the available library subsets when compiling ( Separated by semi-colons ; )",
+                    "Spaces are not allowed between the names and the semi-colons unless you quote the string.",
+                    "",
+                    "All acceptable values are:",
+                    "",
+                    string.Join(";", defaultLibraryDataProvider.PossibleSubsets)
                 }
-
-
-                string fileArg = argArray[paramIndex];
-
-                var result = new SwitchResult(1);
-
-                var validateName = fileArg.Replace("{name}", "name");
-                validateName = validateName.Replace("{dir}", "dir" + Path.DirectorySeparatorChar);
-
-                if (!FileNameIsValid(validateName))
-                {
-                    Console.WriteLine(CmdErrorHeader + "Output file '{0}' uses an invalid file name.", fileArg);
-                    result.OptionValid = false;
-                }
-                else if (options.OutFile == null)
-                {
-                    options.OutFile = fileArg;
-                    result.OptionValid = true;
-                }
-                else
-                {
-                    Console.WriteLine(CmdErrorHeader + "Output file specified multiple times, use -h for help.");
-                    result.OptionValid = false;
-                }
-
-                return result;
             });
 
 
-            switchHandlers.Add("-log", (argArray, index) =>
+
+            argParser.AddSwitch(new ArgSwitchDesc("-clientcode")
             {
-                int paramIndex = index + 1;
-
-                if (paramIndex > (argArray.Length - 1))
+                MaxArgs = 0,
+                HelpLine = "subset1;subset2;... (default is just lsl)",
+                DescriptionLines =
                 {
-                    Console.WriteLine(CmdErrorHeader + "Option -log requires an argument, use -h for help.");
-                    return new SwitchResult() { OptionValid = false };
+                    "Compile client uploadable code that works with all versions of OpenSim starting with 0.8, ",
+                    "but does not support script resets.",
+                    "",
+                    "The default behavior of lslcc is to compile server side code, which cannot be uploaded",
+                    "from the client unless the server your using is modified to allow it."
                 }
-
-                string fileArg = argArray[paramIndex];
-
-                var result = new SwitchResult(1);
-
-                var validateName = fileArg.Replace("{name}", "name");
-                validateName = validateName.Replace("{dir}", "dir" + Path.DirectorySeparatorChar);
-
-                if (!FileNameIsValid(validateName))
-                {
-                    Console.WriteLine(CmdErrorHeader + "Log file '{0}' uses an invalid file name.", fileArg);
-                    result.OptionValid = false;
-                }
-                else if (options.LogFile == null)
-                {
-                    options.LogFile = fileArg;
-                    result.OptionValid = true;
-                }
-                else
-                {
-                    Console.WriteLine(CmdErrorHeader + "Log file specified multiple times, use -h for help.");
-                    result.OptionValid = false;
-                }
-
-                return result;
             });
 
 
-            switchHandlers.Add("-log-return-code", (argArray, index) =>
+            argParser.AddSwitch(new ArgSwitchDesc("-coop-stop")
             {
-                var result = new SwitchResult() {OptionValid = true};
-
-                options.LogReturnCode = true;
-
-                return result;
-            });
-
-
-            switchHandlers.Add("-librarysubsets", (argArray, index) =>
-            {
-                int paramIndex = index + 1;
-
-                if (paramIndex > (argArray.Length - 1))
+                MaxArgs = 0,
+                DescriptionLines =
                 {
-                    Console.WriteLine(CmdErrorHeader + "Option -librarysubsets requires an argument, use -h for help.");
-                    return new SwitchResult() { OptionValid = false };
+                    "Insert cooperative termination calls used by OpenSim when co-op script stop mode is enabled.",
                 }
-
-                var libs = argArray[paramIndex];
-
-                var result = new SwitchResult(1) {OptionValid = true};
-
-                foreach (var lib in libs.Split(';').Select(x => x.Trim()))
-                {
-                    if (LSLLibraryDataSubsetNameParser.ValidateSubsetName(lib))
-                    {
-                        options.LibrarySubsets.Add(lib);
-                    }
-                    else
-                    {
-                        Console.WriteLine(CmdErrorHeader +
-                                          "LibrarySubset '{0}' has an invalid name, it does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).",
-                            lib);
-
-                        result.OptionValid = false;
-                        break;
-                    }
-                }
-
-                return result;
             });
 
 
-            switchHandlers.Add("-clientcode", (argArray, index) =>
+            argParser.AddSwitch(new ArgSwitchDesc("-returncodes")
             {
-                var result = new SwitchResult();
+                MustBeUsedAlone = true,
+                MaxArgs = 0,
+                HelpLine = "show lslcc return code descriptions."
+            })
+                .AddWriteAfterShortHelp((sender, e) => { e.Writer.WriteLine(); });
 
-                if (options.ServerCode)
-                {
-                    Console.WriteLine(CmdErrorHeader +
-                                      "Cannot specify -clientcode because -servercode was already specified.");
-                    result.OptionValid = false;
-                }
-                else
-                {
-                    result.OptionValid = true;
-                    options.ClientCode = true;
-                }
 
-                return result;
+            argParser.AddSwitch(new ArgSwitchDesc("-h")
+            {
+                MustBeUsedAlone = true,
+                MaxArgs = 1,
+                HelpLine = "show lslcc general help."
             });
 
-
-            switchHandlers.Add("-servercode", (argArray, index) =>
+            argParser.AddSwitch(new ArgSwitchDesc("-v")
             {
-                var result = new SwitchResult();
-
-                if (options.ClientCode)
-                {
-                    Console.WriteLine(CmdErrorHeader +
-                                      "Cannot specify -servercode because -clientcode was already specified.");
-                    result.OptionValid = false;
-                }
-                else
-                {
-                    result.OptionValid = true;
-                    options.ServerCode = true;
-                }
-
-                return result;
-            });
+                MustBeUsedAlone = true,
+                MaxArgs = 0,
+                HelpLine = "show lslcc version and program info."
+            })
+                .AddWriteAfterShortHelp((sender, e) => { e.Writer.WriteLine(); });
 
 
-            switchHandlers.Add("-coop-stop", (argArray, index) =>
+            Dictionary<string, ArgSwitch> prms;
+            try
             {
-                options.CoOpStop = true;
-
-                return new SwitchResult {OptionValid = true};
-            });
-
-
-            switchHandlers.Add("-h", (argArray, index) =>
+                prms = argParser.ParseArgs(args).ToDictionary(x => x.Name);
+            }
+            catch (ArgParseException e)
             {
-                WriteHelp();
+                Console.WriteLine(e.Message);
+                return ReturnCode.InvalidOption;
+            }
 
-                return new SwitchResult {OptionValid = true, Terminates = true};
-            });
 
-
-            switchHandlers.Add("-v", (argArray, index) =>
+            if (prms.Count == 0)
             {
-                WriteAbout();
+                Console.WriteLine("No arguments specified, see -h for help.");
+                return ReturnCode.InvalidOption;
+            }
 
-                return new SwitchResult {OptionValid = true, Terminates = true};
-            });
 
-
-            switchHandlers.Add("-returncodes", (argArray, index) =>
+            if (prms[""].Arguments.Count > 0)
             {
-                WriteReturnCodes();
-
-                return new SwitchResult {OptionValid = true, Terminates = true};
-            });
-
-
-            var switchResults = ArgumentParser.HandleSwitches(args, switchHandlers);
-
-
-            //=======================
-            //=======================
-
-
-            if (switchResults.UnknownOption)
-            {
-                Console.WriteLine(CmdErrorHeader + "Unknown Option '{0}',  use -h for help.",
-                    switchResults.UnknownOptionString);
-                Console.WriteLine(CmdNoticeHeader + "Arguments Passed: '{0}'",
-                    string.Join(" ", args.Select(x => x.Contains(' ') ? '"' + x + '"' : x)));
+                Console.WriteLine("Invalid arguments, see -h for help.");
                 return ReturnCode.UnknownOption;
             }
 
 
-            if (switchResults.InvalidOption)
+            if (prms.ContainsKey("-returncodes"))
             {
-                return ReturnCode.InvalidOption;
+                WriteReturnCodes();
+                return ReturnCode.Success;
             }
-
-            if (switchResults.TerminationRequested)
+            if (prms.ContainsKey("-h"))
             {
+                argParser.WriteHelp(Console.Out);
+                return ReturnCode.Success;
+            }
+            if (prms.ContainsKey("-v"))
+            {
+                WriteAbout();
                 return ReturnCode.Success;
             }
 
+            
 
-            if (options.InFiles.Count == 0)
+            ArgSwitch inputFiles;
+
+            if (!prms.TryGetValue("-i", out inputFiles))
             {
-                Console.WriteLine(CmdErrorHeader + "No input files specified, use -h for help.");
+                Console.WriteLine("Input file(s) not specified, use -i for help.");
                 return ReturnCode.MissingInputFile;
             }
 
 
-            if (options.OutFile == null)
-            {
-                options.OutFile = "{dir}{name}.cs";
 
-                Console.WriteLine(CmdNoticeHeader + "Output file not specified, using '{0}'.", options.OutFile);
+            ArgSwitch subsets;
+            var specifiedLibrarySubsets = new HashSet<string>();
+
+            if (!prms.TryGetValue("-librarysubsets", out subsets))
+            {
+                specifiedLibrarySubsets.Add("lsl");
+            }
+            else
+            {
+                var subsetString = subsets.Arguments.First();
+                foreach (var subset in subsetString.Split(';'))
+                {
+                    if (subset == "lsl" && specifiedLibrarySubsets.Contains("os-lsl"))
+                    {
+                        Console.WriteLine("The library subset \"lsl\" cannot be used when the subset \"os-lsl\" is already specified.");
+                        return ReturnCode.InvalidOption;
+                    }
+
+                    if (subset == "os-lsl" && specifiedLibrarySubsets.Contains("lsl"))
+                    {
+                        Console.WriteLine("The library subset \"os-lsl\" cannot be used when the subset \"lsl\" is already specified.");
+                        return ReturnCode.InvalidOption;
+                    }
+
+                    specifiedLibrarySubsets.Add(subset);
+                }
             }
 
 
-            if (options.LibrarySubsets.Count == 0)
+            var specifiedFiles = new HashSet<string>();
+
+            foreach (var file in inputFiles.Arguments.SelectMany(x => new Glob.Glob(x).Expand()))
             {
-                options.LibrarySubsets.Add("lsl");
-                Console.WriteLine(CmdNoticeHeader + "No library subsets specified, adding 'lsl'.");
+                if (specifiedFiles.Contains(file.FullName))
+                {
+                    Console.WriteLine("Input file \"{0}\" specified more than once.", file.FullName);
+                    return ReturnCode.InvalidOption;
+                }
+
+                specifiedFiles.Add(file.FullName);
             }
 
-            if (options.InFiles.Count > 1 && !(options.OutFile.Contains("{dir}") || options.OutFile.Contains("{name}")))
+            if (specifiedFiles.Count == 0)
             {
-                Console.WriteLine(CmdErrorHeader +
-                                  "Option -o must us a filename template such as \"{dir}{name}.cs\" when multiple input files are specified.");
+                Console.WriteLine("The specified input file(s) could not be found.");
                 return ReturnCode.InvalidOption;
             }
 
 
-            if (options.OutFile == options.LogFile)
-            {
-                Console.WriteLine(CmdErrorHeader + "Parameter for option -o and -log cannot be the same.");
-                return ReturnCode.InvalidOption;
-            }
-
-
-            int lastReturnCode = ReturnCode.Success;
-
-
-            StreamWriter log = null;
-
-
-            bool multipleLogs = options.LogFile != null && 
-                (options.LogFile.Contains("{name}") || options.LogFile.Contains("{dir}"));
 
             string logFileName = null;
+            TextWriter singularLog = null;
+            bool multiLog = false;
+
+            ArgSwitch logFile;
+            if (prms.TryGetValue("-log", out logFile))
+            {
+                logFileName = logFile.Arguments.First();
+
+                if (!IsMultiFileOutputLogTemplate(logFileName))
+                {
+                    try
+                    {
+                        singularLog = new StreamWriter(logFileName) {AutoFlush = true};
+                    }
+                    catch (IOException)
+                    {
+                        Console.WriteLine("Could not open log file \"{0}\" for writing.", logFileName);
+                        return ReturnCode.LogFileAccessError;
+                    }
+                }
+                else
+                {
+                    multiLog = true;
+                }
+            }
+
+
+            int returnCode = ReturnCode.Success;
+
+            Console.WriteLine();
 
             try
             {
                 bool firstFile = true;
 
-                foreach (var inFile in options.InFiles)
+                foreach (var file in specifiedFiles)
                 {
-                    if (options.LogFile != null)
-                    {
-                        logFileName = ExpandOutputFileVars(inFile, options.LogFile);
 
-                        if (log == null)
+                    specifiedFiles.Add(file);
+
+                    var compiler = new InputFileCompiler(file)
+                    {
+                        LibrarySubsets = specifiedLibrarySubsets,
+                        ClientCode = prms.ContainsKey("-clientcode"),
+                        CoOpStop = prms.ContainsKey("-coop-stop")
+                    };
+
+
+                    ArgSwitch outFile;
+
+                    var outputFile = file + ".cs";
+
+                    if (prms.TryGetValue("-o", out outFile))
+                    {
+                        outputFile = outFile.Arguments.First();
+
+                        if (IsMultiFileOutputTemplate(outputFile))
+                        {
+                            outputFile = ExpandOutputFileVars(file, outputFile);
+                        }
+                    }
+
+                    returnCode = compiler.Compile(outputFile);
+
+                    if (multiLog)
+                    {
+                        var outLogFile = ExpandOutputLogFileVars(file, logFileName, returnCode);
+
+                        var directory = Path.GetDirectoryName(outLogFile);
+                        if (directory != null) Directory.CreateDirectory(directory);
+
+                        try
+                        {
+                            using (var writer = new StreamWriter(outLogFile) {AutoFlush = true})
+                            {
+                                if (!firstFile)
+                                {
+                                    WriteLogSeperator(Console.Out);
+                                }
+                                compiler.WriteMessageQueue(true, Console.Out, writer);
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            Console.WriteLine("NOTICE: Could not write log file \"{0}\" due to file access error.",
+                                outLogFile);
+                        }
+                    }
+                    else
+                    {
+                        if (singularLog != null)
                         {
                             try
                             {
-                                var dir = Path.GetDirectoryName(logFileName);
-
-                                if (!string.IsNullOrWhiteSpace(dir))
+                                if (!firstFile)
                                 {
-                                    Directory.CreateDirectory(dir);
+                                    WriteLogSeperator(Console.Out);
+                                    WriteLogSeperator(singularLog);
                                 }
-
-                                log = new StreamWriter(logFileName) {AutoFlush = true};
+                                compiler.WriteMessageQueue(true, Console.Out, singularLog);
                             }
-                            catch (Exception e)
+                            catch (IOException)
                             {
-                                Console.WriteLine(CmdErrorHeader + "Log File '{0}' could not be opened for writing.",
-                                    logFileName);
-                                Console.WriteLine();
-                                Console.WriteLine(CmdExceptionHeader + e.Message);
-                                lastReturnCode = ReturnCode.LogFileAccessError;
+                                Console.WriteLine("NOTICE: Could not write log file \"{0}\" due to file access error.", logFileName);
                             }
                         }
-                    }
-
-
-                    try
-                    {
-                        if (options.InFiles.Count > 1)
+                        else
                         {
-                            const string sep = "____________________________________";
-
-                            Console.WriteLine(Environment.NewLine + sep);
-                            if(!multipleLogs) WriteCompilerMessageLogOnly(log, (firstFile ? "" : Environment.NewLine) + sep);
-                            Console.WriteLine(sep);
-                            if(!multipleLogs) WriteCompilerMessageLogOnly(log, sep);
-                            if(!multipleLogs) WriteCompilerMessageLogOnly(log);
-                        }
-
-                        Console.WriteLine();
-
-                        WriteCompilerMessage(log, "Compiling \"" + inFile + "\"...");
-
-                        lastReturnCode = CompileFile(log, options, inFile);
-
-                        
-                    }
-                    catch (LogWriteException e)
-                    {
-                        Console.WriteLine(CmdErrorHeader + "Log File '{0}' could not be written to.", logFileName);
-                        Console.WriteLine();
-                        Console.WriteLine(CmdExceptionHeader + e.Message);
-                        lastReturnCode = ReturnCode.LogFileAccessError;
-                    }
-                    finally
-                    {
-                        if (log != null && multipleLogs)
-                        {
-                            log.Close();
-                            log = null;
-
-                            if (options.LogReturnCode)
+                            if (!firstFile)
                             {
-                                try
-                                {
-                                    MoveFileWithOverwrite(logFileName,
-                                        logFileName + ReturnCode.ReturnCodeNameMap[lastReturnCode]);
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine(
-                                        CmdErrorHeader + "Log File '{0}' could not be renamed to append return code.",
-                                        logFileName);
-                                    Console.WriteLine();
-                                    Console.WriteLine(CmdExceptionHeader + e.Message);
-                                    lastReturnCode = ReturnCode.LogFileAccessError;
-                                }
+                                WriteLogSeperator(Console.Out);
                             }
+                            compiler.WriteMessageQueue(true);
                         }
-
-                        firstFile = false;
                     }
+
+                    firstFile = false;
                 }
+
             }
             finally
             {
-                if (log != null && !multipleLogs)
+                if (singularLog != null)
                 {
-                    log.Close();
-
-                    if (options.LogReturnCode)
-                    {
-                        try
-                        {
-                            MoveFileWithOverwrite(logFileName,
-                                logFileName + ReturnCode.ReturnCodeNameMap[lastReturnCode]);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(
-                                CmdErrorHeader + "Log File '{0}' could not be renamed to append return code.",
-                                logFileName);
-                            Console.WriteLine();
-                            Console.WriteLine(CmdExceptionHeader + e.Message);
-                            lastReturnCode = ReturnCode.LogFileAccessError;
-                        }
-                    }
+                    singularLog.Close();
                 }
             }
 
-            return lastReturnCode;
+            return returnCode;
         }
 
 
-        private static void MoveFileWithOverwrite(string fileName, string newName)
+        private static void WriteLogSeperator(TextWriter writer)
         {
-            if (File.Exists(newName)) File.Delete(newName);
-            File.Move(fileName, newName);
+            writer.WriteLine();
+            writer.WriteLine("__________________________________________");
+            writer.WriteLine();
         }
 
-
-
-        private static readonly LSLValidatorServiceProvider ValidatorServices = new LSLValidatorServiceProvider
+        private static bool IsMultiFileOutputTemplate(string inFile)
         {
-            ExpressionValidator = new LSLDefaultExpressionValidator(),
-            StringLiteralPreProcessor = new LSLDefaultStringPreProcessor()
-        };
+            return inFile.Contains("{name}") || inFile.Contains("{dir}");
+        }
 
-
-        private static int CompileFile(StreamWriter log, Options options, string inFile)
+        private static bool IsMultiFileOutputLogTemplate(string inFile)
         {
-
-
-            //==========
-            // Validate Code, Build Tree
-            //==========
-
-            //so we can print the errors exactly when we want to
-            var syntaxListener = new LSLSyntaxListenerPriorityQueue(
-                new SyntaxErrorListener(log),
-                new SyntaxWarningListener(log)
-                );
-
-
-
-            ValidatorServices.SyntaxErrorListener = syntaxListener;
-            ValidatorServices.SyntaxWarningListener = syntaxListener;
-
-
-
-            var defaultProvider = new LSLEmbeddedLibraryDataProvider();
-
-            ValidatorServices.LibraryDataProvider = defaultProvider;
-
-
-            foreach (var library in options.LibrarySubsets)
-            {
-                if (defaultProvider.SubsetDescriptions.ContainsKey(library))
-                {
-                    defaultProvider.ActiveSubsets.Add(library);
-                }
-                else
-                {
-                    WriteCompilerMessage(log,
-                        CmdWarningHeader + "Library subset '{0}' does not exist and was ignored.", library);
-                }
-            }
-
-
-            var validator = new LSLCodeValidator(ValidatorServices);
-
-
-            ILSLCompilationUnitNode validated;
-
-
-            try
-            {
-                using (var infile = new StreamReader(inFile))
-                {
-                    validated = validator.Validate(infile);
-
-
-                    if (validator.HasSyntaxErrors)
-                    {
-                        WriteCompilerMessage(log);
-                        WriteCompilerMessage(log, "===============================");
-                        WriteCompilerMessage(log);
-                        WriteCompilerMessage(log, "Syntax Errors:");
-                        WriteCompilerMessage(log);
-
-                        syntaxListener.InvokeQueuedErrors();
-
-                        WriteCompilerMessage(log, "===============================");
-                        WriteCompilerMessage(log);
-                    }
-
-
-                    if (validator.HasSyntaxWarnings)
-                    {
-                        if (!validator.HasSyntaxErrors)
-                        {
-                            WriteCompilerMessage(log);
-                            WriteCompilerMessage(log, "===============================");
-                            WriteCompilerMessage(log);
-                        }
-
-                        WriteCompilerMessage(log, "Syntax Warnings:");
-                        WriteCompilerMessage(log);
-
-                        syntaxListener.InvokeQueuedWarnings();
-
-                        WriteCompilerMessage(log, "===============================");
-                        WriteCompilerMessage(log);
-                    }
-
-                    if (validator.HasSyntaxErrors)
-                    {
-                        WriteCompilerMessage(log, "Compilation phase did not start due to syntax errors.");
-                        return ReturnCode.SyntaxErrors;
-                    }
-                }
-            }
-            catch (IOException error)
-            {
-                WriteCompilerMessage(log, CmdErrorHeader + "Input File '{0}' could not be read from.", inFile);
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, CmdExceptionHeader + error.Message);
-                return ReturnCode.InputFileUnreadable;
-            }
-            catch (LSLCodeValidatorInternalException error)
-            {
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, "Code Validator, internal error.");
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, CmdExceptionHeader + error.Message);
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, InternalErrorMessage);
-                return ReturnCode.CodeValidatorInternalError;
-            }
-            catch (Exception error)
-            {
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, "Code Validator, unknown error.");
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, CmdExceptionHeader + error.Message);
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, InternalErrorMessage);
-                return ReturnCode.CodeValidatorUnknownError;
-            }
-
-
-            //==========
-            // Compile Tree Into Code
-            //==========
-
-
-            LSLOpenSimCompilerSettings compilerSettings;
-
-            if (!options.ServerCode && !options.ClientCode)
-            {
-                options.ServerCode = true;
-            }
-
-            if (options.ServerCode)
-            {
-                compilerSettings =
-                    LSLOpenSimCompilerSettings.OpenSimServerSideDefault();
-
-                compilerSettings.ScriptHeader = ServerSideScriptCompilerHeader;
-                compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
-            }
-            else
-            {
-                compilerSettings =
-                    LSLOpenSimCompilerSettings.OpenSimClientUploadable();
-
-                compilerSettings.ScriptHeader = ClientSideScriptCompilerHeader;
-                compilerSettings.InsertCoOpTerminationCalls = options.CoOpStop;
-            }
-
-
-            string outFile = ExpandOutputFileVars(inFile, options.OutFile);
-
-            try
-            {
-
-                var dir = Path.GetDirectoryName(outFile);
-
-                if (!string.IsNullOrWhiteSpace(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-
-                using (var outfile = File.Create(outFile))
-                {
-                    var compiler = new LSLOpenSimCompiler(defaultProvider, compilerSettings);
-
-                    compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
-                }
-
-                WriteCompilerMessage(log, "Finished, output to \"" + outFile + "\"");
-            }
-            catch (IOException error)
-            {
-                WriteCompilerMessage(log, CmdErrorHeader + "Output File '{0}' could not be written to.", outFile);
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, CmdExceptionHeader + error.Message);
-                return ReturnCode.OutputFileUnwritable;
-            }
-            catch (LSLCompilerInternalException error)
-            {
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, "Compiler internal error:");
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, CmdExceptionHeader + error.Message);
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, InternalErrorMessage);
-                return ReturnCode.CompilerInternalError;
-            }
-            catch (Exception error)
-            {
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, "Compiler unknown error:");
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, CmdExceptionHeader + error.Message);
-                WriteCompilerMessage(log);
-                WriteCompilerMessage(log, InternalErrorMessage);
-                return ReturnCode.CompilerUnknownError;
-            }
-
-            return ReturnCode.Success;
+            return inFile.Contains("{name}") || inFile.Contains("{dir}") || inFile.Contains("{returncode}");
         }
 
 
@@ -1129,5 +572,28 @@ namespace lslcc
             }
             return outFile;
         }
+
+
+
+        private static string ExpandOutputLogFileVars(string inFile, string outputLogFileTemplate, int returnCode)
+        {
+            string outFile = outputLogFileTemplate.Replace("{name}", Path.GetFileName(inFile));
+
+            var directory = Path.GetDirectoryName(inFile);
+
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                outFile = outFile.Replace("{dir}", directory + Path.DirectorySeparatorChar);
+            }
+            else
+            {
+                outFile = outFile.Replace("{dir}", "." + Path.DirectorySeparatorChar);
+            }
+
+            outFile = outFile.Replace("{returncode}", ReturnCode.ReturnCodeNameMap[returnCode]);
+
+            return outFile;
+        }
+
     }
 }

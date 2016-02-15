@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace lslcc
 {
     [Serializable]
-    internal class LogWriteException : Exception
+    internal class ArgParseException : Exception
     {
         //
         // For guidelines regarding the creation of new exception types, see
@@ -13,22 +13,22 @@ namespace lslcc
         //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
         //
 
-        public LogWriteException()
+        public ArgParseException()
         {
         }
 
 
-        public LogWriteException(string message) : base(message)
+        public ArgParseException(string message) : base(message)
         {
         }
 
 
-        public LogWriteException(string message, Exception inner) : base(message, inner)
+        public ArgParseException(string message, Exception inner) : base(message, inner)
         {
         }
 
 
-        protected LogWriteException(
+        protected ArgParseException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {
