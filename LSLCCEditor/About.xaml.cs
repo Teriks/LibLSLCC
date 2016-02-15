@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -39,7 +40,12 @@ namespace LSLCCEditor
                 var name = assy.GetName();
                 LoadedAssembliesBox.Items.Add(name.Name + " v"+name.Version);
             }
-            
+
+            using (var reader = File.OpenRead("license.rtf"))
+            {
+                LicenseText.SelectAll();
+                LicenseText.Selection.Load(reader, DataFormats.Rtf);
+            }
         }
     }
 }

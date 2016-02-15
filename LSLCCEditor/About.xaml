@@ -5,26 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LSLCCEditor"
         mc:Ignorable="d"
-        Title="About" Height="300" MinHeight="200" MinWidth="200" Width="400" Icon="lsl_script_icon.ico" Topmost="True" ResizeMode="CanResize" Name="_this" WindowStartupLocation="CenterOwner">
+        Title="About" Height="500" MinHeight="200" MinWidth="200" Width="600" Icon="lsl_script_icon.ico" Topmost="True" ResizeMode="CanResizeWithGrip" Name="_this"
+        WindowStartupLocation="CenterOwner" >
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="105"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0"  Margin="10">
+        <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MinHeight="50"></RowDefinition>
-                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Image  Source="lsl_script_icon.ico" Width="46" Height="46"></Image>
-                <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=_this, Path=NameAndVersion}"/>
-            </StackPanel>
+            <Grid Grid.Row="0"  Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Image Source="lsl_script_icon.ico" Width="45" Height="45"/>
+                    <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=_this, Path=NameAndVersion}"/>
+                </StackPanel>
 
-            <TextBlock Grid.Row="1" Margin="6,10,0,0">Author: Eric A. Blundell</TextBlock>
+                <TextBlock Grid.Row="1" Margin="6,10,0,0">Author: Eric A. Blundell</TextBlock>
+            </Grid>
+            <Expander Grid.Row="1" Margin="8" Header="License"  MaxHeight="300">
+                <RichTextBox Name="LicenseText" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            </Expander>
+            <Expander Grid.Row="2" Margin="8" Header="Loaded Assemblies">
+                <ListBox Name="LoadedAssembliesBox"/>
+            </Expander>
+
         </Grid>
-        <GroupBox Grid.Row="1" Margin="8" Header="Loaded Assemblies">
-            <ListBox Name="LoadedAssembliesBox"/>
-        </GroupBox>
     </Grid>
 </Window>
