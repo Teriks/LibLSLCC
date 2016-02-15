@@ -1,2 +1,14 @@
 snapshot_2_11_2016_11-51PM
 1.0.0.{commits}
+
+# {major}.{minor}.{patch/bugfix}.{revision} 
+#
+# revision is commits to this assembly since patch increment,
+# the git tag here has to change manually when patch changes.
+#
+# revision goes to zero when patch increments, patch goes to zero when 
+# minor increments, minor goes to zero when major increments.
+#
+# commits are measured from the tag specified in the first line to HEAD
+#
+# only the first two lines of this file are significant to version.py
