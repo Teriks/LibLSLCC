@@ -38,6 +38,9 @@ namespace LSLCCEditor
             foreach (var assy in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var name = assy.GetName();
+
+                if(name.Name == "Microsoft.GeneratedCode") continue;
+
                 LoadedAssembliesBox.Items.Add(name.Name + " v"+name.Version);
             }
 
