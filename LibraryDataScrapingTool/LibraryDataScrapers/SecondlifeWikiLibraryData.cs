@@ -146,16 +146,13 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public static readonly string WebCacheFileDirectory;
 
+
         static SecondlifeWikiLibraryData()
         {
             var appDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (appDirectory != null)
             {
                 WebCacheFileDirectory = Path.Combine(appDirectory, "SecondlifeWikiLibraryDataCache");
-            }
-            else
-            {
-                throw new DirectoryNotFoundException("Could not find the directory of the executing assembly in order to store Cache Data for type (SecondlifeWikiLibraryData.");
             }
         }
 
@@ -164,7 +161,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             
             _client = new CachedWebDownloader(WebCacheFileDirectory);
 
-            var documentationProvider1 = documentationProvider;
             _subsets = subsets.ToList();
 
 
@@ -175,7 +171,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             foreach (var lslLibraryConstantSignature in GetLSLConstants())
             {
                 lslLibraryConstantSignature.DocumentationString =
-                    documentationProvider1.DocumentConstant(lslLibraryConstantSignature);
+                    documentationProvider.DocumentConstant(lslLibraryConstantSignature);
 
                 _constants.Add(lslLibraryConstantSignature.Name, lslLibraryConstantSignature);
             }
@@ -183,7 +179,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             foreach (var lslLibraryFunctionSignature in GetLSLFunctions())
             {
                 lslLibraryFunctionSignature.DocumentationString =
-                    documentationProvider1.DocumentFunction(lslLibraryFunctionSignature);
+                    documentationProvider.DocumentFunction(lslLibraryFunctionSignature);
 
                 if (_functions.ContainsKey(lslLibraryFunctionSignature.Name))
                 {
@@ -200,7 +196,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             foreach (var lslLibraryEventSignature in GetLSLEvents())
             {
                 lslLibraryEventSignature.DocumentationString =
-                    documentationProvider1.DocumentEvent(lslLibraryEventSignature);
+                    documentationProvider.DocumentEvent(lslLibraryEventSignature);
 
                 _events.Add(lslLibraryEventSignature.Name, lslLibraryEventSignature);
             }

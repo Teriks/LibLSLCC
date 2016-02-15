@@ -44,6 +44,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
@@ -125,6 +126,7 @@ namespace LibLSLCC.LibraryData
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
@@ -135,6 +137,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             _ReadXml(reader);
@@ -202,6 +205,7 @@ namespace LibLSLCC.LibraryData
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
+        [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         void IXmlSerializable.WriteXml(XmlWriter writer)
         {
             LSLLibraryDataXmlSerializer.WriteXml(this, writer, false);
