@@ -95,6 +95,10 @@
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"
                       InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick" />
 
+            <MenuItem Header="Help" >
+                <MenuItem Header="About" Click="About_OnClick"/>
+            </MenuItem>
+
         </Menu>
         <Border Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,10,0">
             <StackPanel Orientation="Horizontal">

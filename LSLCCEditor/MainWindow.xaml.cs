@@ -123,7 +123,12 @@ namespace LSLCCEditor
 
         private void Initialize()
         {
-            var assembly = Assembly.GetEntryAssembly().Location;
+            var entryAssembly = Assembly.GetEntryAssembly();
+
+            Title = "LSLCCEditor v" + entryAssembly.GetName().Version;
+
+
+            var assembly = entryAssembly.Location;
 
             var appDirectory = Path.GetDirectoryName(assembly);
 
@@ -991,6 +996,14 @@ namespace LSLCCEditor
                 _tabDragTimer.Dispose();
                 _tabDragTimer = null;
             }
+        }
+
+
+        private void About_OnClick(object sender, RoutedEventArgs e)
+        {
+            var about = new About();
+            about.Owner = this;
+            about.ShowDialog();
         }
     }
 }
