@@ -452,6 +452,8 @@ namespace DemoArea
             LSLCodeValidator validator = new LSLCodeValidator(validatorServices);
 
 
+
+
             StringReader strReader = new StringReader(
  @"
 
