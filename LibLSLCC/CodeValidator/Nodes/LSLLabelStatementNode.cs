@@ -54,12 +54,12 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public class LSLLabelStatementNode : ILSLLabelStatementNode, ILSLCodeStatement
+    public sealed class LSLLabelStatementNode : ILSLLabelStatementNode, ILSLCodeStatement
     {
         private readonly GenericArray<LSLJumpStatementNode> _jumpsToHere = new GenericArray<LSLJumpStatementNode>();
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLLabelStatementNode(LSLSourceCodeRange sourceRange, Err err)
+        private LSLLabelStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
             SourceCodeRange = sourceRange;
@@ -150,7 +150,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
-        protected enum Err
+        private enum Err
         {
             Err
         }

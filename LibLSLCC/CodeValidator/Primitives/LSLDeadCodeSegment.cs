@@ -52,7 +52,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     ///     A code segment type for housing a range of statement nodes that are considered to be dead.
     ///     a DeadCodeType enum property is provided to describe what caused the code to be dead
     /// </summary>
-    public class LSLDeadCodeSegment : LSLCodeSegment
+    public  sealed class LSLDeadCodeSegment : LSLCodeSegment
     {
 
         /// <summary>

@@ -48,7 +48,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// <summary>
     /// A container for LSL source code comment strings.
     /// </summary>
-    public class LSLComment
+    public sealed class LSLComment
     {
         /// <summary>
         /// The raw comment text.

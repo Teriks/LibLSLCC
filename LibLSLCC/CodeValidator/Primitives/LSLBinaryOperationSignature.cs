@@ -51,7 +51,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// <summary>
     /// Represents the signature of a binary operation. Includes the types on either side of the expression, and the operation type.
     /// </summary>
-    public class LSLBinaryOperationSignature
+    public sealed class LSLBinaryOperationSignature
     {
 
         /// <summary>

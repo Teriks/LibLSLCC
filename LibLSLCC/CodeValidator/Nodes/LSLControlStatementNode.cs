@@ -58,14 +58,14 @@ namespace LibLSLCC.CodeValidator.Nodes
 {
 
 
-    public class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
+    public sealed class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
     {
         private readonly List<LSLElseIfStatementNode> _elseIfStatements = new List<LSLElseIfStatementNode>();
         private LSLElseStatementNode _elseStatement;
         private LSLIfStatementNode _ifStatement;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLControlStatementNode(LSLSourceCodeRange sourceRange, Err err)
+        private LSLControlStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
             SourceCodeRange = sourceRange;
@@ -268,7 +268,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
-        protected enum Err
+        private enum Err
         {
             Err
         }

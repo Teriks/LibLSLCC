@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// <summary>
     /// Represents the status of an attempted function signature match against parameter expressions
     /// </summary>
-    public class LSLFunctionSignatureMatch
+    public sealed class LSLFunctionSignatureMatch
     {
         /// <summary>
         /// True if not enough parameter expressions were supplied to the function signature.

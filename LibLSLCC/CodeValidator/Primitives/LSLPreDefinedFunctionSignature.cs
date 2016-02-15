@@ -54,7 +54,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// <summary>
     /// Represents a function signature that was parsed during the pre-pass that occurs during code validation.
     /// </summary>
-    public class LSLPreDefinedFunctionSignature : LSLFunctionSignature
+    public sealed class LSLPreDefinedFunctionSignature : LSLFunctionSignature
     {
         /// <summary>
         /// Construct an <see cref="LSLPreDefinedFunctionSignature"/> from an <see cref="LSLType"/> representing the return type, a function name and an <see cref="LSLParameterListNode"/>

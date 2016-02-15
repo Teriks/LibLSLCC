@@ -53,7 +53,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// <summary>
     /// Represents a basic parameter that belongs to either an event handler or function signature.
     /// </summary>
-    public class LSLParameter
+    public sealed class LSLParameter
     {
         /// <summary>
         ///     Construct a parameter object

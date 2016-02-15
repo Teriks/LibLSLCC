@@ -114,7 +114,7 @@ namespace LibLSLCC.CSharp
     /// Class name validation result's produced by <see cref="CSharpClassNameValidator.ValidateDeclaration"/> 
     /// and <see cref="CSharpClassNameValidator.ValidateInitialization"/>.
     /// </summary>
-    public class CSharpClassNameValidationResult
+    public sealed class CSharpClassNameValidationResult
     {
         /// <summary>
         /// Gets a value indicating whether the given string passed to <see cref="CSharpClassNameValidator.ValidateDeclaration"/>

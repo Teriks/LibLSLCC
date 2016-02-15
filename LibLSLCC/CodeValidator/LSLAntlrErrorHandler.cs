@@ -50,7 +50,7 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator
 {
-    internal class LSLAntlrErrorHandler : IAntlrErrorListener<IToken>
+    internal sealed class LSLAntlrErrorHandler : IAntlrErrorListener<IToken>
     {
         private static readonly Regex NonLValueAssignmentError =
             new Regex("mismatched input '[*+-/%]?=' expecting {(.*?)}");

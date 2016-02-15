@@ -50,7 +50,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Visitor
 {
-    internal class LSLLabelCollectorPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
+    internal sealed class LSLLabelCollectorPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {
         private readonly LSLVisitorScopeTracker _scopingManager;
 

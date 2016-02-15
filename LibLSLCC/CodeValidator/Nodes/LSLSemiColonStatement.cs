@@ -53,7 +53,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public class LSLSemiColonStatement : ILSLSemiColonStatement, ILSLCodeStatement
+    public sealed class LSLSemiColonStatement : ILSLSemiColonStatement, ILSLCodeStatement
     {
         internal LSLSemiColonStatement(LSLParser.CodeStatementContext context, bool isSingleBlockStatement)
         {

@@ -55,7 +55,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public class LSLCompilationUnitNode : ILSLCompilationUnitNode, ILSLSyntaxTreeNode
+    public sealed class LSLCompilationUnitNode : ILSLCompilationUnitNode, ILSLSyntaxTreeNode
     {
         private readonly GenericArray<LSLFunctionDeclarationNode> _functionDeclarations = new GenericArray<LSLFunctionDeclarationNode>();
 
@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLCompilationUnitNode(LSLSourceCodeRange sourceRange, Err err)
+        private LSLCompilationUnitNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
             SourceCodeRange = sourceRange;
@@ -243,7 +243,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
-        protected enum Err
+        private enum Err
         {
             Err
         }

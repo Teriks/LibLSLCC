@@ -50,7 +50,7 @@ namespace LibLSLCC.Utility.ListParser
     /// <summary>
     ///     Float list item.
     /// </summary>
-    public class LSLListFloatExpr : ILSLListExpr
+    public sealed class LSLListFloatExpr : ILSLListExpr
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListFloatExpr" /> class.

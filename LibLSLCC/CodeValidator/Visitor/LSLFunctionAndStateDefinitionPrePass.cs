@@ -51,7 +51,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Visitor
 {
-    internal class LSLFunctionAndStateDefinitionPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
+    internal sealed class LSLFunctionAndStateDefinitionPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {
         private readonly LSLVisitorScopeTracker _scopingManager;
         private readonly ILSLValidatorServiceProvider _validatorServiceProvider;

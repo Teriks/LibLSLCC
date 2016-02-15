@@ -48,7 +48,7 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
-    public class CSharpFunctionCallValidationResult
+    public sealed class CSharpFunctionCallValidationResult
     {
         public bool Success { get; internal set; }
 
@@ -72,7 +72,7 @@ namespace LibLSLCC.CSharp
         New
     }
 
-    public class CSharpParameterSignature
+    public sealed class CSharpParameterSignature
     {
         public override int GetHashCode()
         {

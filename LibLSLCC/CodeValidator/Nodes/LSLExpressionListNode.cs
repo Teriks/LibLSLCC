@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
@@ -56,45 +57,13 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    /// <summary>
-    /// Represents the different types of expression lists that an <see cref="ILSLExpressionListNode"/> can represent.
-    /// </summary>
-    public enum LSLExpressionListType
-    {
-        /// <summary>
-        /// The expression list is a list literal initializer.
-        /// </summary>
-        ListInitializer,
-
-        /// <summary>
-        /// The expression list represents the parameters used to call a user defined function.
-        /// </summary>
-        UserFunctionCallParameters,
-
-        /// <summary>
-        /// The expression list represents the parameters used to call a library defined function.
-        /// </summary>
-        LibraryFunctionCallParameters,
-
-        /// <summary>
-        /// The expression list represents the expression list used in a for-loops afterthoughts clause.
-        /// </summary>
-        ForLoopAfterthoughts,
-
-        /// <summary>
-        /// The expression list represents the expression list used in a for-loops initialization clause.
-        /// </summary>
-        ForLoopInitExpressions
-    }
-
-
-    public class LSLExpressionListNode : ILSLExpressionListNode
+    public sealed class LSLExpressionListNode : ILSLExpressionListNode
     {
         private readonly GenericArray<LSLSourceCodeRange> _commaSourceCodeRanges = new GenericArray<LSLSourceCodeRange>();
         private readonly GenericArray<ILSLExprNode> _expressionNodes = new GenericArray<ILSLExprNode>();
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLExpressionListNode(LSLSourceCodeRange sourceRange, Err err)
+        private LSLExpressionListNode(LSLSourceCodeRange sourceRange, Err err)
 
             // ReSharper restore UnusedParameter.Local
         {
@@ -266,7 +235,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
-        protected enum Err
+        private enum Err
         {
             Err
         }

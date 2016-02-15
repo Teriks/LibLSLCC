@@ -53,7 +53,7 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// Represents a statement that causes a jump to happen in a constant manner.
     /// As in:  There is no condition under which a jump to a single known label will not occur.
     /// </summary>
-    public class LSLConstantJumpDescription
+    public sealed class LSLConstantJumpDescription
     {
 
         /// <summary>

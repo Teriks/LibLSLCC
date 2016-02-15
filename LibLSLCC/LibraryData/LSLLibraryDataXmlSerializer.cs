@@ -56,7 +56,7 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.LibraryData
 {
-    public sealed class SerializeConstantSignatureEventArgs : EventArgs
+    public class SerializeConstantSignatureEventArgs : EventArgs
 
     {
         public LSLLibraryConstantSignature Signature { get; private set; }
@@ -69,7 +69,7 @@ namespace LibLSLCC.LibraryData
     }
 
 
-    public sealed class SerializeEventHandlerSignatureEventArgs : EventArgs
+    public class SerializeEventHandlerSignatureEventArgs : EventArgs
 
     {
         public SerializeEventHandlerSignatureEventArgs(LSLLibraryEventSignature eventSignature)
@@ -82,7 +82,7 @@ namespace LibLSLCC.LibraryData
     }
 
 
-    public sealed class SerializeFunctionSignatureEventArgs : EventArgs
+    public class SerializeFunctionSignatureEventArgs : EventArgs
 
     {
         public SerializeFunctionSignatureEventArgs(LSLLibraryFunctionSignature functionSignature)
@@ -95,7 +95,7 @@ namespace LibLSLCC.LibraryData
     }
 
 
-    public sealed class SerializeSubsetDescriptionEventArgs : EventArgs
+    public class SerializeSubsetDescriptionEventArgs : EventArgs
 
     {
         public SerializeSubsetDescriptionEventArgs(LSLLibrarySubsetDescription subsetDescription)

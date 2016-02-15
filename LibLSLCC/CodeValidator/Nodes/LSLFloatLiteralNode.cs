@@ -53,11 +53,11 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public class LSLFloatLiteralNode : LSLConstantLiteralNode, ILSLFloatLiteralNode
+    public sealed class LSLFloatLiteralNode : LSLConstantLiteralNode, ILSLFloatLiteralNode
     {
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLFloatLiteralNode(LSLSourceCodeRange sourceRange, Err err)
+        private LSLFloatLiteralNode(LSLSourceCodeRange sourceRange, Err err)
             : base(sourceRange, Err.Err)
             // ReSharper restore UnusedParameter.Local
         {

@@ -65,7 +65,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Visitor
 {
-    internal partial class LSLCodeValidationVisitor : LSLBaseVisitor<ILSLSyntaxTreeNode>
+    internal sealed partial class LSLCodeValidationVisitor : LSLBaseVisitor<ILSLSyntaxTreeNode>
     {
         private readonly ILSLValidatorServiceProvider _validatorServices;
         private ILSLSyntaxErrorListener _syntaxErrorListenerOveride;

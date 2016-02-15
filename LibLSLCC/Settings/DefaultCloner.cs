@@ -47,8 +47,7 @@ namespace LibLSLCC.Settings
 {
     public class DefaultCloner : ICloner
     {
-
-        public object Clone(object instance)
+        public virtual object Clone(object instance)
         {
             var i = instance as ICloneable;
             if (i != null) return i.Clone();

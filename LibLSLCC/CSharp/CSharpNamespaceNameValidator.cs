@@ -48,7 +48,7 @@ namespace LibLSLCC.CSharp
     /// <summary>
     /// Validation result created by <see cref="CSharpNamespaceNameValidator.Validate"/>
     /// </summary>
-    public class CSharpNamespaceValidatorResult
+    public sealed class CSharpNamespaceValidatorResult
     {
         /// <summary>
         /// Gets a value indicating whether the namespace was successfully parsed.

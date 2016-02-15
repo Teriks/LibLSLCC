@@ -62,7 +62,7 @@ namespace LibLSLCC.Formatter.Visitor
     /// <summary>
     /// An LSL Syntax tree visitor that formats code.
     /// </summary>
-    internal class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
+    internal sealed class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
     {
         public LSLCodeFormatterSettings Settings { get; private set; }
 

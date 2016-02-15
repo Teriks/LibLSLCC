@@ -50,7 +50,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Visitor
 {
-    internal partial class LSLCodeValidationVisitor
+    internal sealed partial class LSLCodeValidationVisitor
     {
         #region InternalClasses
 

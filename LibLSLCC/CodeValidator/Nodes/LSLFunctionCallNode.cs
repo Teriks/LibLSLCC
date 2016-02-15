@@ -55,7 +55,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public class LSLFunctionCallNode : ILSLFunctionCallNode, ILSLExprNode
+    public sealed class LSLFunctionCallNode : ILSLFunctionCallNode, ILSLExprNode
     {
         private readonly bool _libraryFunction;
         private readonly LSLFunctionSignature _librarySignature;
@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
+        private LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
             SourceCodeRange = sourceCodeRange;
@@ -282,7 +282,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
-        protected enum Err
+        private enum Err
         {
             Err
         }

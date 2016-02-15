@@ -49,7 +49,7 @@ namespace LibLSLCC.Utility.ListParser
     /// <summary>
     ///     Rotation list item.
     /// </summary>
-    public class LSLListRotationExpr : ILSLListExpr
+    public sealed class LSLListRotationExpr : ILSLListExpr
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListRotationExpr" /> class.

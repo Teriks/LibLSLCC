@@ -48,7 +48,7 @@ namespace LibLSLCC.Utility.ListParser
     /// <summary>
     ///     Variable reference list item.
     /// </summary>
-    public class LSLListVariableExpr : ILSLListExpr
+    public sealed class LSLListVariableExpr : ILSLListExpr
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListVariableExpr" /> class.

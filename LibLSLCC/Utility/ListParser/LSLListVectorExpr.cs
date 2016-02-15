@@ -49,7 +49,7 @@ namespace LibLSLCC.Utility.ListParser
     /// <summary>
     ///     Vector list item.
     /// </summary>
-    public class LSLListVectorExpr : ILSLListExpr
+    public sealed class LSLListVectorExpr : ILSLListExpr
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListVectorExpr" /> class.

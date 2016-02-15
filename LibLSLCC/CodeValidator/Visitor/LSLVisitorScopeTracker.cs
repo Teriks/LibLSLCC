@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Visitor
     }
 
 
-    internal class LSLVisitorScopeTracker
+    internal sealed class LSLVisitorScopeTracker
     {
         private readonly Stack<LSLControlStatementNode> _controlStatementStack = new Stack<LSLControlStatementNode>();
 

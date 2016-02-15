@@ -48,7 +48,7 @@ namespace LibLSLCC.Utility.ListParser
     /// <summary>
     ///     String list item.
     /// </summary>
-    public class LSLListStringExpr : ILSLListExpr
+    public sealed class LSLListStringExpr : ILSLListExpr
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListStringExpr" /> class.

@@ -66,7 +66,7 @@ using LibLSLCC.Utility.ListParser;
 namespace LibLSLCC.Compilers.OpenSim.Visitors
 {
     // ReSharper disable InconsistentNaming
-    internal class LSLOpenSimCompilerVisitor : LSLValidatorNodeVisitor<bool>
+    internal sealed class LSLOpenSimCompilerVisitor : LSLValidatorNodeVisitor<bool>
         // ReSharper restore InconsistentNaming
     {
         private const string UtilityLibrary =

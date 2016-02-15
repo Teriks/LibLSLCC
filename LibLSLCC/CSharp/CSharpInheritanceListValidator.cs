@@ -51,7 +51,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CSharp
 {
 
-    public class CSharpInheritanceListValidationResult
+    public sealed class CSharpInheritanceListValidationResult
     {
         /// <summary>
         /// Gets a value indicating whether the inheritance list signature parse was successful.
@@ -145,7 +145,7 @@ namespace LibLSLCC.CSharp
     /// <summary>
     /// Represents a parsed type constraint in an inheritance list signature.
     /// </summary>
-    public class CSharpTypeConstraintValidationResult
+    public sealed class CSharpTypeConstraintValidationResult
     {
         public CSharpTypeConstraintType ConstraintType { get; internal set; }
         public CSharpClassNameValidationResult TypeSignature { get; internal set; }

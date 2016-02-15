@@ -71,7 +71,7 @@ namespace LibLSLCC.CSharp
     /// <summary>
     /// Constructor signature parsing results returned by <see cref="CSharpConstructorSignatureValidator.Validate"/>.
     /// </summary>
-    public class CSharpConstructorSignatureValidationResult
+    public sealed class CSharpConstructorSignatureValidationResult
     {
         /// <summary>
         /// Gets a value indicating whether the constructor signature parse was successful.

@@ -48,7 +48,7 @@ using LibLSLCC.Formatter.Visitor;
 
 namespace LibLSLCC.Formatter
 {
-    public class LSLCodeFormatter
+    public sealed class LSLCodeFormatter
     {
         private LSLCodeFormatterSettings _settings;
 

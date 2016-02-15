@@ -50,7 +50,7 @@ namespace LibLSLCC.Utility.ListParser
     /// <summary>
     ///     Integer list item.
     /// </summary>
-    public class LSLListIntegerExpr : ILSLListExpr
+    public sealed class LSLListIntegerExpr : ILSLListExpr
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListIntegerExpr" /> class.

@@ -53,16 +53,16 @@ using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    internal class LSLDummyExpr : ILSLExprNode
+    internal sealed class LSLDummyExpr : ILSLExprNode
     {
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLDummyExpr(Err err)
+        private LSLDummyExpr(Err err)
 // ReSharper restore UnusedParameter.Local
         {
         }
 
-        public LSLDummyExpr()
+        internal LSLDummyExpr()
         {
             SourceCodeRangesAvailable = false;
         }
@@ -74,7 +74,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
-        protected enum Err
+        private enum Err
         {
             Err
         }

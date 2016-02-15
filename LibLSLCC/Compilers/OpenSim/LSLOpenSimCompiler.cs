@@ -56,7 +56,7 @@ namespace LibLSLCC.Compilers.OpenSim
     /// <summary>
     /// A compiler that converts LSL Syntax trees into CSharp code that is compatible with OpenSim's CSharp LSL runtime.
     /// </summary>
-    public class LSLOpenSimCompiler
+    public sealed class LSLOpenSimCompiler
         // ReSharper restore InconsistentNaming
     {
         private readonly LSLOpenSimCompilerVisitor _visitor = new LSLOpenSimCompilerVisitor();

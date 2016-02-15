@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator
     /// inside of the <see cref="ILSLValidatorServiceProvider"/> implementation assigned to the <see cref="ValidatorServices"/> property.
     /// </para>
     /// </summary>
-    public class LSLCodeValidator : ILSLCodeValidator
+    public sealed class LSLCodeValidator : ILSLCodeValidator
     {
         private readonly LSLAntlrErrorHandler _antlrParserErrorHandler;
         private readonly LSLCodeValidationVisitor _validationVisitor;

@@ -54,12 +54,12 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public class LSLTypecastExprNode : ILSLTypecastExprNode, ILSLExprNode
+    public sealed class LSLTypecastExprNode : ILSLTypecastExprNode, ILSLExprNode
     {
 
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        protected LSLTypecastExprNode(LSLSourceCodeRange sourceRange, Err err)
+        private LSLTypecastExprNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
             SourceCodeRange = sourceRange;
@@ -157,7 +157,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
-        protected enum Err
+        private enum Err
         {
             Err
         }

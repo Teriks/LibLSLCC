@@ -50,7 +50,7 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.LibraryData
 {
 
-    public sealed class LibraryDataSubsetAddedEventArgs : EventArgs
+    public class LibraryDataSubsetAddedEventArgs : EventArgs
     {
         public LibraryDataSubsetAddedEventArgs(string subsetName)
         {
@@ -60,7 +60,7 @@ namespace LibLSLCC.LibraryData
         public string SubsetName { get; private set; }
     }
 
-    public sealed class LibraryDataSubsetRemovedEventArgs : EventArgs
+    public class LibraryDataSubsetRemovedEventArgs : EventArgs
     {
         public LibraryDataSubsetRemovedEventArgs(string subsetName)
         {
@@ -70,7 +70,7 @@ namespace LibLSLCC.LibraryData
         public string SubsetName { get; private set; }
     }
 
-    public sealed class LibraryDataSubsetsChangedEventArgs : EventArgs
+    public class LibraryDataSubsetsChangedEventArgs : EventArgs
     {
         public LSLLibraryDataSubsetCollection Collection { get; private set; }
 
@@ -81,7 +81,7 @@ namespace LibLSLCC.LibraryData
         }
     }
 
-    public sealed class LibraryDataSubsetsClearedEventArgs : EventArgs
+    public class LibraryDataSubsetsClearedEventArgs : EventArgs
     {
         public LSLLibraryDataSubsetCollection Collection { get; private set; }
 

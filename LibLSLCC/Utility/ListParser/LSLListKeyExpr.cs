@@ -48,7 +48,7 @@ namespace LibLSLCC.Utility.ListParser
     /// <summary>
     ///     Key List item, they can be created by specifying '(key)""' as  list item, using a cast expression.
     /// </summary>
-    public class LSLListKeyExpr : ILSLListExpr
+    public sealed class LSLListKeyExpr : ILSLListExpr
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListKeyExpr" /> class.
