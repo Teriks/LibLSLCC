@@ -155,7 +155,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
             else
             {
-                throw new Exception("Could not find the directory of the executing assembly in order to store Cache Data for type (SecondlifeWikiLibraryData.");
+                throw new DirectoryNotFoundException("Could not find the directory of the executing assembly in order to store Cache Data for type (SecondlifeWikiLibraryData.");
             }
         }
 

@@ -64,7 +64,7 @@ using Microsoft.Win32;
 
 namespace LSLCCEditor.EditorTabUI
 {
-    public class EditorTab : DependencyObject
+    public class EditorTab : DependencyObject , IDisposable
     {
         public static readonly DependencyProperty TabHeaderProperty = DependencyProperty.Register(
             "TabHeader", typeof (string), typeof (EditorTab), new FrameworkPropertyMetadata("New (Unsaved)"));
@@ -803,6 +803,15 @@ namespace LSLCCEditor.EditorTabUI
         private void CloseCommandImpl(object o)
         {
             Close();
+        }
+
+
+        public virtual void Dispose()
+        {
+            if (_fileWatcher != null)
+            {
+                _fileWatcher.Dispose();
+            }
         }
     }
 }

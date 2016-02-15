@@ -79,7 +79,7 @@ namespace LSLCCEditor
     /// <summary>
     ///     Interaction logic for Window1.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
         public static readonly RoutedCommand FileNew = new RoutedCommand();
         public static readonly RoutedCommand FileOpen = new RoutedCommand();
@@ -969,6 +969,15 @@ namespace LSLCCEditor
                 _settingsWindow = null;
             };
             _settingsWindow.Show();
+        }
+
+
+        public virtual void Dispose()
+        {
+            if (_tabDragTimer != null)
+            {
+                _tabDragTimer.Dispose();
+            }
         }
     }
 }

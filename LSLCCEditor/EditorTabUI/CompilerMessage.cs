@@ -70,6 +70,7 @@ namespace LSLCCEditor.EditorTabUI
         private string _messageText;
         private Brush _messageTypeColor;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CompilerMessage(CompilerMessageType type, string header, LSLSourceCodeRange location, string message, bool showLineInfo = true)
         {
             CodeLocation = location;
@@ -89,6 +90,7 @@ namespace LSLCCEditor.EditorTabUI
             SetColors(type);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CompilerMessage(CompilerMessageType type, string header, string message, bool showLineInfo = true)
         {
             CodeLocation = new LSLSourceCodeRange(0, 0);
