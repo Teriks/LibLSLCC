@@ -57,7 +57,7 @@ using LibLSLCC.LibraryData.Reflection;
 namespace DemoArea
 {
 
-
+    
     class MyValueStringConverter : ILSLValueStringConverter
     {
 
@@ -451,7 +451,6 @@ namespace DemoArea
 
             LSLCodeValidator validator = new LSLCodeValidator(validatorServices);
 
-                   
 
             StringReader strReader = new StringReader(
  @"
