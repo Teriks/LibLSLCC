@@ -971,12 +971,25 @@ namespace LSLCCEditor
             _settingsWindow.Show();
         }
 
-
-        public virtual void Dispose()
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~MainWindow()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+
             if (_tabDragTimer != null)
             {
                 _tabDragTimer.Dispose();
+                _tabDragTimer = null;
             }
         }
     }
