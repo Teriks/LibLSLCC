@@ -42,8 +42,8 @@ namespace LSLCCEditor.CompletionUI
         }
 
 
-        public event Action<ICompletionData> CompletionDataAdded;
-        public event Action<ICompletionData> CompletionDataRemoved;
+        public event EventHandler<CompletionDataAddedEventArgs> CompletionDataAdded;
+        public event EventHandler<CompletionDataRemovedEventArgs> CompletionDataRemoved;
 
         public CompletionList()
         {
@@ -513,12 +513,18 @@ namespace LSLCCEditor.CompletionUI
 
         protected virtual void OnCompletionDataAdded(ICompletionData obj)
         {
-            if (CompletionDataAdded != null) CompletionDataAdded(obj);
+            if (CompletionDataAdded != null)
+            {
+                CompletionDataAdded(this, new CompletionDataAddedEventArgs(obj));
+            }
         }
 
         protected virtual void OnCompletionDataRemoved(ICompletionData obj)
         {
-            if (CompletionDataRemoved != null) CompletionDataRemoved(obj);
+            if (CompletionDataRemoved != null)
+            {
+                CompletionDataRemoved(this, new CompletionDataRemovedEventArgs(obj));
+            }
         }
     }
 }

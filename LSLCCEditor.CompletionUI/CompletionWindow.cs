@@ -257,11 +257,12 @@ namespace LSLCCEditor.CompletionUI
             set { SetValue(SizeToCompletionTextBlockContentProperty, value); }
         }
 
-        private void CompletionListOnCompletionDataAdded(ICompletionData completionData)
+
+        private void CompletionListOnCompletionDataAdded(object sender, CompletionDataAddedEventArgs completionDataAddedEventArgs)
         {
             if (!SizeToCompletionTextBlockContent) return;
 
-            var tBox = completionData.Content as TextBlock;
+            var tBox = completionDataAddedEventArgs.CompletionData.Content as TextBlock;
             if (tBox == null) return;
 
 

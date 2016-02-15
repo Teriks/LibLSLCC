@@ -56,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Boxes.cs" />
+    <Compile Include="CompletionDataAddedEventArgs.cs" />
+    <Compile Include="CompletionDataRemovedEventArgs.cs" />
     <Compile Include="CompletionList.cs" />
     <Compile Include="CompletionListBox.cs" />
     <Compile Include="CompletionWindow.cs" />
