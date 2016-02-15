@@ -50,6 +50,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.LibraryData;
@@ -420,11 +421,19 @@ namespace lslcc
                     {
                         singularLog = new StreamWriter(logFileName) {AutoFlush = true};
                     }
-                    catch (IOException)
+                    catch (IOException e)
                     {
                         Console.WriteLine("Could not open log file \"{0}\" for writing.", logFileName);
+                        Console.WriteLine("Reason: "+ e.Message);
                         return ReturnCode.LogFileAccessError;
                     }
+                    catch (UnauthorizedAccessException e)
+                    {
+                        Console.WriteLine("Could not open log file \"{0}\" for writing.", logFileName);
+                        Console.WriteLine("Reason: " + e.Message);
+                        return ReturnCode.LogFileAccessError;
+                    }
+
                 }
                 else
                 {
@@ -490,8 +499,7 @@ namespace lslcc
                         }
                         catch (IOException)
                         {
-                            Console.WriteLine("NOTICE: Could not write log file \"{0}\" due to file access error.",
-                                outLogFile);
+                            Console.WriteLine("NOTICE: Could not write log file \"{0}\" due to IO error.", outLogFile);
                         }
                     }
                     else
@@ -509,7 +517,7 @@ namespace lslcc
                             }
                             catch (IOException)
                             {
-                                Console.WriteLine("NOTICE: Could not write log file \"{0}\" due to file access error.", logFileName);
+                                Console.WriteLine("NOTICE: Could not write log file \"{0}\" due to IO error.", logFileName);
                             }
                         }
                         else

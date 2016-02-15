@@ -298,6 +298,13 @@ namespace lslcc
                 WriteLine(CmdExceptionHeader + error.Message);
                 return ReturnCode.InputFileUnreadable;
             }
+            catch (UnauthorizedAccessException error)
+            {
+                WriteLine(CmdErrorHeader + "Input File '{0}' could not be read from.", _fileName);
+                WriteLine();
+                WriteLine(CmdExceptionHeader + error.Message);
+                return ReturnCode.InputFileUnreadable;
+            }
             catch (LSLCodeValidatorInternalException error)
             {
                 WriteLine();
@@ -363,6 +370,13 @@ namespace lslcc
                 WriteLine("Finished, output to \"" + outputFile + "\"");
             }
             catch (IOException error)
+            {
+                WriteLine(CmdErrorHeader + "Output File '{0}' could not be written to.", outputFile);
+                WriteLine();
+                WriteLine(CmdExceptionHeader + error.Message);
+                return ReturnCode.OutputFileUnwritable;
+            }
+            catch (UnauthorizedAccessException error)
             {
                 WriteLine(CmdErrorHeader + "Output File '{0}' could not be written to.", outputFile);
                 WriteLine();
