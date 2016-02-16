@@ -38,6 +38,7 @@ def setVersion(file, version):
 
 
 print("")
+print("Updating assembly versions...")
 
 scriptDir = os.path.dirname(os.path.realpath(__file__));
 
