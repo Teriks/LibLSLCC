@@ -56,6 +56,7 @@
     <Compile Include="Converters\IntegerGreaterThanToBoolConverter.cs" />
     <Compile Include="Converters\IntegerGreaterThanToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\MultiBooleanVisibilityConverter.cs" />
     <Compile Include="DebugObjectView.xaml.cs">
       <DependentUpon>DebugObjectView.xaml</DependentUpon>
     </Compile>

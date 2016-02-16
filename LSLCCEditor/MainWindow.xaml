@@ -10,6 +10,9 @@
         Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip"  AllowDrop="True" Name="_this">
+    <Window.Resources>
+        <ResourceDictionary Source="MainWindowResources.xaml"/>
+    </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileNew}" Executed="NewFile_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" />
@@ -46,6 +49,8 @@
             <converters:BooleanToVisibilityConverter
                 x:Key="InverseBooleanToVisibilityConverter"
                 True="Collapsed" False="Visible" />
+            <converters:MultiBooleanVisibilityConverter 
+                x:Key="MultiBooleanToHiddenVisibilityConverter" True="Visible" False="Hidden" />
             <converters:IntegerGreaterThanToVisibilityConverter x:Key="IntegerNotZeroToVisibilityConverter" />
             <converters:IntegerGreaterThanToBoolConverter x:Key="IntegerNotZeroToBoolConverter" />
         </Grid.Resources>
@@ -56,9 +61,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-
-        <Menu Grid.Row="0" Name="ToolbarMenu" VerticalContentAlignment="Center">
+        <Menu Grid.Row="0" Name="ToolbarMenu">
             <MenuItem Header="File">
                 <MenuItem Header="New" InputGestureText="Ctrl+N" Click="NewFile_OnClick" />
                 <MenuItem Header="Save" InputGestureText="Ctrl+S" Click="Save_OnClick"
@@ -126,7 +129,6 @@
                                                           Margin="10,2" />
                                     </Border>
                                     <ControlTemplate.Triggers>
-
                                         <Trigger Property="IsSelected" Value="False">
                                             <Setter TargetName="Border" Property="Background" Value="Gainsboro" />
                                         </Trigger>
@@ -134,15 +136,12 @@
                                             <Setter TargetName="Border" Property="Background" Value="#FFE8E8E8" />
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0"/>
-                                            <Setter TargetName="Border" Property="BorderBrush" Value="#FF26A0DA"/>
                                             <Setter TargetName="Border" Property="Background" Value="#C0DDEB" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-
                     </Style>
                 </TabControl.Resources>
                 <TabControl.Template>
@@ -196,14 +195,18 @@
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <TextBlock Text="{Binding TabHeader}" />
-                            <Button Margin="5,1.5,0,0"
+                            <Button Margin="8,1.5,-7,0" Style="{DynamicResource TabCloseButtonStyle}" 
                                     Height="15" Width="15"
-                                    Content="X"
                                     FontSize="8"
                                     Padding="0"
-                                    HorizontalContentAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Command="{Binding CloseCommand}" />
+                                    Command="{Binding CloseCommand}" >
+                                <Button.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiBooleanToHiddenVisibilityConverter}">
+                                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=TabItem}" Path="IsSelected"/>
+                                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=TabItem}" Path="IsMouseOver"/>
+                                    </MultiBinding>
+                                </Button.Visibility>
+                            </Button>
                         </StackPanel>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
