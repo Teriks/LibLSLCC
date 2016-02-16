@@ -57,7 +57,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("lslcc")]
-[assembly: AssemblyCopyright("Teriks ©  2014")]
+[assembly: AssemblyCopyright("Teriks ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -3,36 +3,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LSLCCEditor"
         mc:Ignorable="d"
-        Title="About" Height="500" MinHeight="200" MinWidth="200" Width="600" Icon="lsl_script_icon.ico" Topmost="True" ResizeMode="CanResizeWithGrip" Name="_this"
+        Title="About" Height="350" MinHeight="200" MinWidth="200" Width="600" Icon="lsl_script_icon.ico" Topmost="True" ResizeMode="CanResizeWithGrip" Name="_this"
         WindowStartupLocation="CenterOwner" >
     <Grid>
-        <Grid DockPanel.Dock="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid DockPanel.Dock="Top">
+                <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0"  Margin="10">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Image Source="lsl_script_icon.ico" Width="45" Height="45"/>
-                    <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=_this, Path=NameAndVersion}"/>
-                </StackPanel>
-
-                <TextBlock Grid.Row="1" Margin="6,10,0,0">Author: Eric A. Blundell</TextBlock>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Image Source="lsl_script_icon.ico" Width="45" Height="45"/>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=_this, Path=NameAndVersion}"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" Margin="6,10,0,0" Text="{Binding ElementName=_this, Path=Copyright, StringFormat={}Copyright: {0}}"/>
             </Grid>
-            <Expander Grid.Row="1" Margin="8" Header="License"  MaxHeight="300">
-                <RichTextBox Name="LicenseText" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            <Expander Grid.Row="1" Margin="8" Header="License"  >
+                    <RichTextBox Name="LicenseText" HorizontalScrollBarVisibility="Auto" IsReadOnly="True"/>
             </Expander>
-            <Expander Grid.Row="2" Margin="8" Header="Loaded Assemblies">
-                <ListBox Name="LoadedAssembliesBox"/>
+            <GridSplitter Grid.Row="2" Background="DarkGray" Height="4" HorizontalAlignment="Stretch"/>
+            <Expander Grid.Row="3" Margin="8" Header="Loaded Assemblies">
+                    <ListBox Name="LoadedAssembliesBox">
+                        <ListBox.Template>
+                            <ControlTemplate>
+                                <Border CornerRadius="2" 
+			                    BorderBrush="{TemplateBinding BorderBrush}"
+			                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ItemsPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </ListBox.Template>
+                    </ListBox>
             </Expander>
 
         </Grid>
+        </ScrollViewer>
     </Grid>
+
 </Window>
