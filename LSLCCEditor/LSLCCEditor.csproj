@@ -256,7 +256,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="drag_script.cur" />
     <Resource Include="ThirdPartyLicences\folder-readme.txt" />
     <None Include="LibraryData\folder-readme.txt" />
     <ThirdPartyLicenses Include="..\ThirdPartyLicenses\Xceed.Wpf.Toolkit.txt">
