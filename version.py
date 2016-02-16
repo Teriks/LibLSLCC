@@ -67,3 +67,6 @@ for dir in versionFileContent.keys():
         print(dir + " = " + versionTemplate + " was " + was)
     else:
         print(dir + " version already up to date.")
+
+
+print("")
