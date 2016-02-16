@@ -1,37 +1,37 @@
 {	
 	"LibLSLCC" :
 	{
-		"last_version_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits}"
+		"last_tag" : "snapshot_2_11_2016_11-51PM",
+		"version_template" : "1.0.0.{commits_since_last_tag}"
 	},
 	"LibraryDataScrapingTool" :
 	{
-		"last_version_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits}"
+		"last_tag" : "snapshot_2_11_2016_11-51PM",
+		"version_template" : "1.0.0.{commits_since_last_tag}"
 	},
 	"lslcc_cmd" :
 	{
-		"last_version_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits}"
+		"last_tag" : "snapshot_2_11_2016_11-51PM",
+		"version_template" : "1.0.0.{commits_since_last_tag}"
 	},
 	"LSLCCEditor" :
 	{
-		"last_version_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits}"
+		"last_tag" : "snapshot_2_11_2016_11-51PM",
+		"version_template" : "1.0.0.{commits_since_last_tag}"
 	},
 	"LSLCCEditor.CompletionUI" :
 	{
-		"last_version_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits}"
+		"last_tag" : "snapshot_2_11_2016_11-51PM",
+		"version_template" : "1.0.0.{commits_since_last_tag}"
 	},
 	"LSLCCEditor.EditControl" :
 	{
-		"last_version_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits}"
+		"last_tag" : "snapshot_2_11_2016_11-51PM",
+		"version_template" : "1.0.0.{commits_since_last_tag}"
 	},
 	"LSLCCEditor.Utility" :
 	{
-		"last_version_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits}"
+		"last_tag" : "snapshot_2_11_2016_11-51PM",
+		"version_template" : "1.0.0.{commits_since_last_tag}"
 	}
 }

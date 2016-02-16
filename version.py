@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import subprocess
 import os
 import re
@@ -48,14 +50,14 @@ for dir in versionFileContent.keys():
 
     versionFile = os.path.join(versionsDir, dir, "Version.cs")
 
-    lastTag = versionFileContent[dir]["last_version_tag"]
+    lastTag = versionFileContent[dir]["last_tag"]
 
     commitsSinceLastTag = int(
         subprocess.check_output("git rev-list " + lastTag.rstrip() + "..HEAD --count -- " + dir).decode("utf-8"))
 
     versionTemplate = versionFileContent[dir]["version_template"]
 
-    versionTemplate = versionTemplate.replace("{commits}", str(commitsSinceLastTag))
+    versionTemplate = versionTemplate.replace("{commits_since_last_tag}", str(commitsSinceLastTag))
 
     was = setVersion(versionFile, versionTemplate)
 
