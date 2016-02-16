@@ -22,10 +22,15 @@
                 </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <Image Source="lsl_script_icon.ico" Width="45" Height="45"/>
-                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=_this, Path=NameAndVersion}"/>
+                        <Border VerticalAlignment="Bottom">
+                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=_this, Path=NameAndVersion}" FontWeight="Medium" FontSize="16"/>
+                        </Border>
                     </StackPanel>
-                    <TextBlock Grid.Row="1" Margin="6,10,0,0" Text="{Binding ElementName=_this, Path=Copyright, StringFormat={}Copyright: {0}}"/>
-            </Grid>
+                    <StackPanel Margin="6,10,0,0" Grid.Row="1" Orientation="Horizontal">
+                        <TextBlock Text="Copyright:  "/>
+                        <TextBlock Text="{Binding ElementName=_this, Path=Copyright}" FontWeight="Medium"/>
+                    </StackPanel>
+                </Grid>
             <Expander Grid.Row="1" Margin="8" Header="License"  >
                     <RichTextBox Name="LicenseText" IsReadOnly="True"/>
             </Expander>
