@@ -62,18 +62,8 @@ namespace LSLCCEditor
         {
             e.Handled = true;
 
-            var details = "";
-            var i = e.Exception;
-
-            while (i != null)
-            {
-                details += i.Message + "\n\n";
-                i = i.InnerException;
-            }
-
-            MessageBox.Show("An unexpected error has occurred.  The program needs to exit.\n" +
-                            "Error details:\n\n" + details,
-                            "Unexpected error", MessageBoxButton.OK);
+            var exceptionWindow = new ExceptionView(e.Exception);
+            exceptionWindow.ShowDialog();
 
             Current.Shutdown();
         }

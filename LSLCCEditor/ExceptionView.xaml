@@ -1,0 +1,46 @@
+﻿<Window x:Class="LSLCCEditor.ExceptionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Unhandled Exception" Height="420" Width="600" MinHeight="350" MinWidth="450" x:Name="This" WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Margin="20,20,0,20"
+                   Text="An unexpected error has occurred and the application needs to close.&#10;Please report this error information to the developers:" />
+        <Border Grid.Row="1" BorderThickness="1" BorderBrush="DarkGray" Margin="20,0,20,15">
+            <TextBox Background="Transparent" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MinHeight="50"
+                     BorderThickness="0"
+                     Text="{Binding ElementName=This, Path=Message, Mode=OneWay}"
+                     IsReadOnly="True"
+                     TextWrapping="Wrap" />
+        </Border>
+        <GridSplitter Grid.Row="2" Background="DarkGray" Height="4" HorizontalAlignment="Stretch"/>
+        <Border Grid.Row="3" BorderBrush="DarkGray" >
+            <TextBlock Text="Stack Trace:" Margin="20,5,0,5" />
+        </Border>
+        <Border Grid.Row="4" BorderThickness="1" BorderBrush="DarkGray" Margin="20,0,20,0">
+            <TextBox Background="Transparent"
+                     BorderThickness="0"
+                     Text="{Binding ElementName=This, Path=StackTrace, Mode=OneWay}"
+                     IsReadOnly="True"
+                     TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+        </Border>
+        <Border Grid.Row="5" Padding="20,15,20,15" Margin="0,20,0,0"
+                Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Margin="0,0,10,0" Padding="5,0,5,0" Click="Save_Click" Content="Save Report" Name="SaveButton" />
+                <Button Margin="0,0,0,0" Width="70" Click="Okay_Click" Content="Okay" Name="OkayButton" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
