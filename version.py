@@ -2,55 +2,64 @@ import subprocess
 import os
 import re
 import shutil
+import json
 
-def setVersion(dir,  version):
-    file = os.path.join(dir,"Properties", "AssemblyInfo.cs")
+
+def setVersion(file, version):
 
     with open(file, 'r') as content_file:
         content = content_file.read();
 
     match = re.search(r'\[assembly: AssemblyVersion\("([^"]*)"\)\]', content)
 
-    if match.group(1) == version:
-        print(d + " already up to date.\n")
-        return
+    was = match.group(1)
+
+    if was == version:
+        return was
 
     content = re.sub(r'\[assembly: AssemblyVersion\("[^"]*"\)\]',
-                         r'[assembly: AssemblyVersion("'+version+'")]', content)
+                     r'[assembly: AssemblyVersion("' + version + '")]', content)
 
     content = re.sub(r'\[assembly: AssemblyFileVersion\("[^"]*"\)\]',
-                         r'[assembly: AssemblyFileVersion("'+version+'")]', content)
- 
-    tempfile = file+".tmp";
+                     r'[assembly: AssemblyFileVersion("' + version + '")]', content)
+
+    tempfile = file + ".tmp";
 
     with open(tempfile, 'w+') as content_file:
         content_file.write(content)
 
-    #if theres an exception prior, the temp file will not move over.
-    #an exception above will likely cause the temp file to be blank.
-    #blanking the source file would be bad.
+    # if theres an exception prior, the temp file will not move over.
+    # an exception above will likely cause the temp file to be blank.
+    # blanking the source file would be bad.
     shutil.move(tempfile, file)
+    return was
 
-
-dirs = [x for x in next(os.walk('.'))[1] if os.path.isfile(os.path.join(x,"version.txt"))]
 
 print("")
 
-for d in dirs:
-    versionFile = os.path.join(d, "version.txt")
+scriptDir = os.path.dirname(os.path.realpath(__file__));
 
-    with open(versionFile, 'r') as content_file:
-        versionFileContent = content_file.read()
+versionsDir = os.path.join(scriptDir, "versions")
 
-    parts = versionFileContent.split('\n')
+with open("version.json", 'r') as content_file:
+    versionFileContent = json.load(content_file)
 
-    lastTag = parts[0].strip()
+for dir in versionFileContent.keys():
 
-    commitsSinceLastTag = int(subprocess.check_output("git rev-list "+lastTag.rstrip()+"..HEAD --count -- "+d).decode("utf-8"))
+    versionFile = os.path.join(versionsDir, dir, "Version.cs")
 
-    versionTemplate = parts[1].strip()
+    lastTag = versionFileContent[dir]["last_version_tag"]
+
+    commitsSinceLastTag = int(
+        subprocess.check_output("git rev-list " + lastTag.rstrip() + "..HEAD --count -- " + dir).decode("utf-8"))
+
+    versionTemplate = versionFileContent[dir]["version_template"]
 
     versionTemplate = versionTemplate.replace("{commits}", str(commitsSinceLastTag))
 
-    print(d + " = " + versionTemplate + "\n")
-    setVersion(d, versionTemplate)
+    was = setVersion(versionFile, versionTemplate)
+
+    if versionTemplate != was:
+        print(dir + " = " + versionTemplate + " was " + was + "\n")
+    else:
+        print(dir + " version already up to date.\n")
