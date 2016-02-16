@@ -55,7 +55,10 @@ using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -69,7 +72,9 @@ using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplaceUI;
 using LSLCCEditor.Settings;
 using LSLCCEditor.SettingsUI;
+using LSLCCEditor.Utility.Wpf;
 using Microsoft.Win32;
+using Path = System.IO.Path;
 
 #endregion
 
@@ -821,6 +826,8 @@ namespace LSLCCEditor
             FindDialogManager.ShowAsReplace(this);
         }
 
+
+        private DragAdorner _dragAdorner;
         private void TabStackPanelPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (EditorTabs.Count <= 1) return;
@@ -847,11 +854,50 @@ namespace LSLCCEditor
                     _tabDragTimer.Stop();
                     _tabDragTimer.Dispose();
                     _tabDragTimer = null;
+
+                    _dragAdorner = new DragAdorner(TopWindowGrid, CreateScriptDragAdornerElement(textBlock.Text));
+                    _dragAdorner.MousePosition = e.GetPosition(this);
+
+                    DragOver += TopWindowGridOnDragOver;
+
+
                     DragDrop.DoDragDrop(contentPresenter, contentPresenter, DragDropEffects.All);
+
+
+                    DragOver -= TopWindowGridOnDragOver;
+
+                    _dragAdorner.Remove();
+
+                    _dragAdorner = null;
+
                 });
             };
             _tabDragTimer.Start();
         }
+
+
+        private UIElement CreateScriptDragAdornerElement(string tabName)
+        {
+            var border = new Border
+            {
+                Background = new SolidColorBrush(Colors.Gainsboro),
+                BorderBrush = new SolidColorBrush(Colors.Black),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(15, 2, 15, 2),
+                Child = new TextBlock {Text = tabName}
+            };
+
+            return border;
+        }
+
+        private void TopWindowGridOnDragOver(object sender, DragEventArgs dragEventArgs)
+        {
+            if(_dragAdorner != null)
+            {
+                _dragAdorner.MousePosition = dragEventArgs.GetPosition(this.TopWindowGrid);
+            }
+        }
+
 
         private void TabStackPanelOnPreviewMouseUp(object sender, MouseButtonEventArgs e)
         {

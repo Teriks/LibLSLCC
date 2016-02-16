@@ -9,12 +9,7 @@
         mc:Ignorable="d"
         Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip" >
-
-    <Window.Resources>
-
-        
-    </Window.Resources>
+        Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip"  AllowDrop="True">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileNew}" Executed="NewFile_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" />
@@ -46,7 +41,7 @@
         <KeyBinding Modifiers="Control" Key="F" Command="{x:Static lslccEditor:MainWindow.SearchFind}" />
         <KeyBinding Modifiers="Control" Key="H" Command="{x:Static lslccEditor:MainWindow.SearchReplace}" />
     </Window.InputBindings>
-    <Grid>
+    <Grid Name="TopWindowGrid">
         <Grid.Resources>
             <converters:BooleanToVisibilityConverter
                 x:Key="InverseBooleanToVisibilityConverter"
