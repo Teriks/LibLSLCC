@@ -61,6 +61,9 @@ for dir in versionFileContent.keys():
 
     was = setVersion(versionFile, versionTemplate)
 
+    # so this script can be a pre-commit hook
+    subprocess.call("git add "+versionFile)
+
     if versionTemplate != was:
         print(dir + " = " + versionTemplate + " was " + was + "\n")
     else:
