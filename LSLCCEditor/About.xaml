@@ -27,7 +27,7 @@
                     <TextBlock Grid.Row="1" Margin="6,10,0,0" Text="{Binding ElementName=_this, Path=Copyright, StringFormat={}Copyright: {0}}"/>
             </Grid>
             <Expander Grid.Row="1" Margin="8" Header="License"  >
-                    <RichTextBox Name="LicenseText" HorizontalScrollBarVisibility="Auto" IsReadOnly="True"/>
+                    <RichTextBox Name="LicenseText" IsReadOnly="True"/>
             </Expander>
             <GridSplitter Grid.Row="2" Background="DarkGray" Height="4" HorizontalAlignment="Stretch"/>
             <Expander Grid.Row="3" Margin="8" Header="Loaded Assemblies">
