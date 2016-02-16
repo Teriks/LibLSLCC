@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="About" Height="350" MinHeight="200" MinWidth="200" Width="600" Icon="lsl_script_icon.ico" Topmost="True" ResizeMode="CanResizeWithGrip" Name="_this"
+        Title="About" Height="350" MinHeight="250" MinWidth="500" Width="550" Icon="lsl_script_icon.ico" Topmost="True" Name="_this"
         WindowStartupLocation="CenterOwner" >
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">

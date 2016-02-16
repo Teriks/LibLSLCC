@@ -60,6 +60,7 @@ using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Formatter;
 using LibLSLCC.LibraryData;
