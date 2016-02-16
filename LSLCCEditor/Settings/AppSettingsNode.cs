@@ -65,6 +65,27 @@ namespace LSLCCEditor.Settings
         private string _currentFormatterConfigurationName;
         private XmlDictionary<string, EditorControlThemeNode> _editorControlThemes;
         private string _currentEditorControlThemeName;
+        private bool _showSpaces;
+        private bool _showTabs;
+        private bool _showEndOfLine;
+
+        public bool ShowSpaces
+        {
+            get { return _showSpaces; }
+            set { SetField(ref _showSpaces,value, "ShowSpaces"); }
+        }
+
+        public bool ShowTabs
+        {
+            get { return _showTabs; }
+            set { SetField(ref _showTabs,value, "ShowTabs"); }
+        }
+
+        public bool ShowEndOfLine
+        {
+            get { return _showEndOfLine; }
+            set { SetField(ref _showEndOfLine,value, "ShowEndOfLine"); }
+        }
 
 
         private const string ClientSideScriptCompilerHeader =
@@ -150,7 +171,6 @@ namespace LSLCCEditor.Settings
                         new EditorControlSettingsNode() {EditorControlSettings = new LSLEditorControlSettings()}
                     }
                 };
-
                 return d;
             }
         }

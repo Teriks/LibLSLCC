@@ -243,9 +243,37 @@ namespace LSLCCEditor.EditControl
         }
 
         public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
-            "Settings", typeof (LSLEditorControlSettings), typeof (LSLEditorControl), new PropertyMetadata(default(LSLEditorControlSettings)));
+            "Settings", typeof (LSLEditorControlSettings), typeof (LSLEditorControl), new PropertyMetadata(default(LSLEditorControlSettings), SettingsPropertyChangedCallback));
 
 
+        private static void SettingsPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var self = (LSLEditorControl)dependencyObject;
+
+
+            if (dependencyPropertyChangedEventArgs.OldValue != null)
+            {
+                var old = (LSLEditorControlSettings) dependencyPropertyChangedEventArgs.OldValue;
+
+                old.UnSubscribePropertyChanged(self, "ShowEndOfLine");
+                old.UnSubscribePropertyChanged(self, "ShowSpaces");
+                old.UnSubscribePropertyChanged(self, "ShowTabs");
+            }
+
+            if (dependencyPropertyChangedEventArgs.NewValue == null) return;
+
+
+            var n = (LSLEditorControlSettings) dependencyPropertyChangedEventArgs.NewValue;
+
+
+            self.Editor.Options.ShowEndOfLine = n.ShowEndOfLine;
+            self.Editor.Options.ShowSpaces = n.ShowSpaces;
+            self.Editor.Options.ShowTabs = n.ShowTabs;
+
+            n.SubscribePropertyChanged(self, "ShowEndOfLine",args => self.Editor.Options.ShowEndOfLine = (bool)args.NewValue);
+            n.SubscribePropertyChanged(self, "ShowSpaces", args => self.Editor.Options.ShowSpaces = (bool)args.NewValue);
+            n.SubscribePropertyChanged(self, "ShowTabs", args => self.Editor.Options.ShowTabs = (bool)args.NewValue);
+        }
 
 
         public LSLEditorControlSettings Settings
@@ -432,7 +460,6 @@ namespace LSLCCEditor.EditControl
             Settings.ConstantCompletionFirstCharIsCaseSensitive = true;
 
             Editor.TextArea.Options.EnableRectangularSelection = true;
-
 
 
 #if DEBUG_AUTOCOMPLETE_PARSER

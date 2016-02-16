@@ -108,6 +108,82 @@ namespace LSLCCEditor
         private LSLValidatorServiceProvider _validatorServices;
 
 
+        public static readonly DependencyProperty ShowEndOfLineProperty = DependencyProperty.Register(
+            "ShowEndOfLine", typeof (bool), typeof (MainWindow), new PropertyMetadata(default(bool), ShowEndOfLinePropertyChanged));
+
+
+        private static void ShowEndOfLinePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var self = (MainWindow) dependencyObject;
+
+            var newValue = (bool)dependencyPropertyChangedEventArgs.NewValue;
+
+            AppSettings.Settings.ShowEndOfLine = newValue;
+
+            foreach (var tab in self.EditorTabs)
+            {
+                tab.Content.Editor.Settings.ShowEndOfLine = newValue;
+            }
+        }
+
+
+        public bool ShowEndOfLine
+        {
+            get { return (bool) GetValue(ShowEndOfLineProperty); }
+            set { SetValue(ShowEndOfLineProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowTabsProperty = DependencyProperty.Register(
+            "ShowTabs", typeof (bool), typeof (MainWindow), new PropertyMetadata(default(bool), ShowTabsPropertyChanged));
+
+
+        private static void ShowTabsPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var self = (MainWindow)dependencyObject;
+
+            var newValue = (bool)dependencyPropertyChangedEventArgs.NewValue;
+
+            AppSettings.Settings.ShowTabs = newValue;
+
+            foreach (var tab in self.EditorTabs)
+            {
+                tab.Content.Editor.Settings.ShowTabs = newValue;
+            }
+        }
+
+
+        public bool ShowTabs
+        {
+            get { return (bool) GetValue(ShowTabsProperty); }
+            set { SetValue(ShowTabsProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowSpacesProperty = DependencyProperty.Register(
+            "ShowSpaces", typeof (bool), typeof (MainWindow), new PropertyMetadata(default(bool), ShowSpacesPropertyChanged));
+
+
+        private static void ShowSpacesPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var self = (MainWindow)dependencyObject;
+
+            var newValue = (bool)dependencyPropertyChangedEventArgs.NewValue;
+
+            AppSettings.Settings.ShowSpaces = newValue;
+
+            foreach (var tab in self.EditorTabs)
+            {
+                tab.Content.Editor.Settings.ShowSpaces = newValue;
+            }
+        }
+
+
+        public bool ShowSpaces
+        {
+            get { return (bool) GetValue(ShowSpacesProperty); }
+            set { SetValue(ShowSpacesProperty, value); }
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -133,6 +209,12 @@ namespace LSLCCEditor
 
         private void Initialize()
         {
+            ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
+            ShowSpaces = AppSettings.Settings.ShowSpaces;
+            ShowTabs = AppSettings.Settings.ShowTabs;
+
+
+
             var entryAssembly = Assembly.GetEntryAssembly();
 
             Title = "LSLCCEditor v" + entryAssembly.GetName().Version;
@@ -404,6 +486,10 @@ namespace LSLCCEditor
                 ChangesPending = false
             };
 
+
+            tab.Content.Editor.Settings.ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
+            tab.Content.Editor.Settings.ShowSpaces = AppSettings.Settings.ShowSpaces;
+            tab.Content.Editor.Settings.ShowTabs = AppSettings.Settings.ShowTabs;
 
             return tab;
         }

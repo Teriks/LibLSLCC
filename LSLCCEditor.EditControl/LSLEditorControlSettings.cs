@@ -51,7 +51,9 @@ namespace LSLCCEditor.EditControl
         private bool _camelCaseAutoCompleteMatching;
         private bool _substringSearchAutoCompleteMatching;
         private bool _constantCompletionFirstCharIsCaseSensitive = true;
-
+        private bool _showSpaces;
+        private bool _showEndOfLine;
+        private bool _showTabs;
 
 
         public LSLEditorControlSettings()
@@ -98,6 +100,25 @@ namespace LSLCCEditor.EditControl
             set {SetField(ref _constantCompletionFirstCharIsCaseSensitive,value, "ConstantCompletionFirstCharIsCaseSensitive"); }
         }
 
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public bool ShowSpaces
+        {
+            get { return _showSpaces; }
+            set { SetField(ref _showSpaces, value, "ShowSpaces"); }
+        }
 
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public bool ShowEndOfLine
+        {
+            get { return _showEndOfLine; }
+            set { SetField(ref _showEndOfLine, value, "ShowEndOfLine"); }
+        }
+
+        [DefaultValueFactory(typeof(DefaultsFactory))]
+        public bool ShowTabs
+        {
+            get { return _showTabs; }
+            set { SetField(ref _showTabs, value, "ShowTabs"); }
+        }
     }
 }
