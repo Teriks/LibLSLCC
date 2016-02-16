@@ -39,6 +39,7 @@ def setVersion(file, version):
 
 print("")
 print("Updating assembly versions...")
+print("")
 
 scriptDir = os.path.dirname(os.path.realpath(__file__));
 
@@ -63,6 +64,6 @@ for dir in versionFileContent.keys():
     was = setVersion(versionFile, versionTemplate)
 
     if versionTemplate != was:
-        print(dir + " = " + versionTemplate + " was " + was + "\n")
+        print(dir + " = " + versionTemplate + " was " + was)
     else:
-        print(dir + " version already up to date.\n")
+        print(dir + " version already up to date.")
