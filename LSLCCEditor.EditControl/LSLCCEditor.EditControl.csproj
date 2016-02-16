@@ -54,6 +54,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\versions\LSLCCEditor.EditControl\Version.cs">
+      <Link>Version.cs</Link>
+    </Compile>
     <Compile Include="LSLCompletionData.cs" />
     <Compile Include="LSLCompletionWindowItemBrushes.cs" />
     <Compile Include="LSLEditorControl.xaml.cs">

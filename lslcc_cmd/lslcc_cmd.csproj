@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\versions\lslcc_cmd\Version.cs">
+      <Link>Version.cs</Link>
+    </Compile>
     <Compile Include="ArgParseException.cs" />
     <Compile Include="ArgParser.cs" />
     <Compile Include="ArgSwitch.cs" />

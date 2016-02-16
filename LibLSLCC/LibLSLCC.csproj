@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\versions\LibLSLCC\Version.cs">
+      <Link>Version.cs</Link>
+    </Compile>
     <Compile Include="AutoComplete\LSLAutoCompleteGlobalFunction.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteGlobalVariable.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteLocalJump.cs" />

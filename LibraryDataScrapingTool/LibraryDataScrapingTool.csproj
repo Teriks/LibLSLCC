@@ -58,6 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\versions\LibraryDataScrapingTool\Version.cs">
+      <Link>Version.cs</Link>
+    </Compile>
     <Compile Include="LibraryDataDiff.cs" />
     <Compile Include="LibraryDataScrapers\CachedWebDownloader.cs" />
     <Compile Include="LibraryDataScrapers\LLSDDocumentationScraper.cs" />

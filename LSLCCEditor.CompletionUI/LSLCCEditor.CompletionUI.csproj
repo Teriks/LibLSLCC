@@ -55,6 +55,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\versions\LSLCCEditor.CompletionUI\Version.cs">
+      <Link>Version.cs</Link>
+    </Compile>
     <Compile Include="Boxes.cs" />
     <Compile Include="CompletionDataAddedEventArgs.cs" />
     <Compile Include="CompletionDataRemovedEventArgs.cs" />
