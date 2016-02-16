@@ -96,7 +96,7 @@
             </MenuItem>
             <MenuItem Header="Settings" Click="SettingsMenu_Click" />
             <MenuItem Header="Help" >
-                <MenuItem Header="About" Click="About_OnClick" InputGestureText="Ctrl+F1"/>
+                <MenuItem Header="About" Click="About_OnClick" />
             </MenuItem>
 
         </Menu>
@@ -128,15 +128,15 @@
                                     <ControlTemplate.Triggers>
 
                                         <Trigger Property="IsSelected" Value="False">
-                                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="Border" Property="Background" Value="Gainsboro" />
                                         </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#FFE8E8E8" />
+                                        </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
-                                            <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"/>
-                                            <Setter TargetName="Border" Property="Background" Value="#FFF29D" />
+                                            <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0"/>
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="#FF26A0DA"/>
+                                            <Setter TargetName="Border" Property="Background" Value="#C0DDEB" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>

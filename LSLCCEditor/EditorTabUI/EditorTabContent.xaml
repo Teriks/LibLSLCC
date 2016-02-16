@@ -14,12 +14,10 @@
             <RowDefinition Height="0.4*" />
         </Grid.RowDefinitions>
 
-        <Border BorderThickness="1" Grid.Row="0" BorderBrush="Black" Margin="5">
-            <editControl:LSLEditorControl x:FieldModifier="public" x:Name="Editor"
+        <editControl:LSLEditorControl Grid.Row="0" x:FieldModifier="public" x:Name="Editor" Margin="0,0,0,5"
                                         Text="{Binding SourceCode}"
                                         LibraryDataProvider="{Binding LibraryDataProvider}"
                                         TextChanged="Editor_OnTextChanged" Loaded="Editor_OnLoaded" Unloaded="Editor_OnUnloaded"/>
-        </Border>
 
         <GridSplitter Grid.Row="1"
                       Height="4" Margin="0" Background="DarkGray"
