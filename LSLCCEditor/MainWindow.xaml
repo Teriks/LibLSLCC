@@ -74,7 +74,7 @@
                 <MenuItem IsCheckable="True" Header="Show Tabs" IsChecked="{Binding ElementName=_this,Path=ShowTabs}"/>
                 <MenuItem IsCheckable="True" Header="Show Spaces" IsChecked="{Binding ElementName=_this,Path=ShowSpaces}"/>
             </MenuItem>
-            <MenuItem Header="Settings" Click="SettingsMenu_Click" />
+
 
 
             <MenuItem Header="Tools"
@@ -86,17 +86,17 @@
             </MenuItem>
             <MenuItem Name="TabLibraryDataMenu" Header="Tab Library Data"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" />
+            <MenuItem Header="Compile"
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"
+                      InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick" ToolTip="Ctrl+Alt+C"/>
             <MenuItem Header="Search"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}">
                 <MenuItem Header="Find" InputGestureText="Ctrl+F" Click="Find_OnClick" />
                 <MenuItem Header="Replace" InputGestureText="Ctrl+H" Click="Replace_OnClick" />
             </MenuItem>
-            <MenuItem Header="Compile"
-                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"
-                      InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick" />
-
+            <MenuItem Header="Settings" Click="SettingsMenu_Click" />
             <MenuItem Header="Help" >
-                <MenuItem Header="About" Click="About_OnClick"/>
+                <MenuItem Header="About" Click="About_OnClick" InputGestureText="Ctrl+F1"/>
             </MenuItem>
 
         </Menu>
