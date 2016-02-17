@@ -123,7 +123,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// If the scope has a return path, this is set to the node that causes the function to return.
         /// it may be a return statement, or a control chain node.
         /// </summary>
-        new ILSLCodeStatement ReturnPath { get; set; }
+        new ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
         /// <summary>
         /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.

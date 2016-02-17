@@ -99,7 +99,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         ///     The top level return statement for a code scope, if one exists
         /// </summary>
-        LSLReturnStatementNode ReturnStatementNode { get; }
+        ILSLReturnStatementNode ReturnStatementNode { get; }
 
 
         /// <summary>

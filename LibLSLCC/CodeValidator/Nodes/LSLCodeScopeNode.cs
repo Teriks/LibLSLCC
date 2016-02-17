@@ -101,21 +101,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        /// <summary>
-        ///     Code statements that are children of this code scope
-        /// </summary>
-        public IEnumerable<ILSLCodeStatement> CodeStatements
-        {
-            get { return _codeStatements; }
-        }
-
-        /// <summary>
-        ///     The first statement node to be considered dead, when dead code is detected
-        /// </summary>
-        public ILSLCodeStatement FirstDeadStatementNode { get; private set; }
-
-
-
 
         /// <summary>
         /// The type of code scope this node represents.
@@ -161,7 +146,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     Code statements that are children of this code scope
         /// </summary>
-        IEnumerable<ILSLReadOnlyCodeStatement> ILSLCodeScopeNode.CodeStatements
+        public IEnumerable<ILSLReadOnlyCodeStatement> CodeStatements
         {
             get { return _codeStatements; }
         }
@@ -185,10 +170,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     The first statement node to be considered dead, when dead code is detected
         /// </summary>
-        ILSLReadOnlyCodeStatement ILSLCodeScopeNode.FirstDeadStatementNode
-        {
-            get { return FirstDeadStatementNode; }
-        }
+        public ILSLReadOnlyCodeStatement FirstDeadStatementNode { get; private set; }
 
         /// <summary>
         ///     Returns descriptions of all dead code segments in the top level of this scope,
@@ -202,17 +184,15 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     The top level return statement for a code scope, if one exists
         /// </summary>
-        public LSLReturnStatementNode ReturnStatementNode { get; private set; }
+        public ILSLReturnStatementNode ReturnStatementNode { get; private set; }
 
         /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
-        ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
-        {
-            get { return ReturnPath; }
-        }
+
+
 
         /// <summary>
         ///     A unique identifier for this scope, all direct descendants
@@ -246,7 +226,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     act as a sole return path; there is no constant evaluation in condition
         ///     statements so they are equivalent to a singular if statement
         /// </remarks>
-        public ILSLCodeStatement ReturnPath { get; set; }
+        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
+
+
 
         public static
             LSLCodeScopeNode GetError(LSLSourceCodeRange sourceRange)
@@ -467,6 +449,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
             if (!_insideDeadCode) return;
+
             if (_insideDeadCodeAfterReturnPath)
             {
                 var label = statement as LSLLabelStatementNode;
@@ -516,6 +499,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 _deadCodeSegmentsStack.Peek().AddStatement(statement);
             }
         }
+
 
         /// <summary>
         ///     Must be called after all statements have been added to the code scope, in order to

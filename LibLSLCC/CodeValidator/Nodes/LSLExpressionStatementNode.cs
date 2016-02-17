@@ -54,7 +54,7 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-    public sealed class LSLExpressionStatementNode : ILSLExpressionStatementNode, ILSLSyntaxTreeNode
+    public sealed class LSLExpressionStatementNode : ILSLExpressionStatementNode, ILSLCodeStatement
     {
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -97,7 +97,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     If the scope has a return path, this is set to the node that causes the function to return.
         ///     it may be a return statement, or a control chain node.
         /// </summary>
-        public ILSLCodeStatement ReturnPath { get; set; }
+        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

@@ -46,13 +46,10 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     /// <summary>
     /// AST node interface for branch statement nodes that participate in the dead code detection algorithm.
     /// </summary>
-    public interface ILSLBranchStatementNode : ILSLSyntaxTreeNode
+    internal interface ILSLBranchStatementNode : ILSLReadOnlyBranchStatementNode, ILSLSyntaxTreeNode
     {
 
-        /// <summary>
-        /// Determines if the condition controlling the branch is a constant expression.
-        /// </summary>
-        bool IsConstantBranch { get; }
+
     }
 
     /// <summary>

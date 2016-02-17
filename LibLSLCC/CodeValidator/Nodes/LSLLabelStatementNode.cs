@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return _jumpsToHere; }
         }
 
-        public ILSLCodeStatement ReturnPath { get; set; }
+        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
         IReadOnlyGenericArray<ILSLJumpStatementNode> ILSLLabelStatementNode.JumpsToHere
         {
