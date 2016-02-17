@@ -11,17 +11,6 @@
 // Generated from Parser\LSL.g4 by ANTLR 4.5.2
 
 // Unreachable code detected
-
-using System;
-using System.CodeDom.Compiler;
-using System.Text;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.Collections;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -31,8 +20,20 @@ using LibLSLCC.Collections;
 #pragma warning disable 419
 
 namespace LibLSLCC.Parser {
-    [GeneratedCode("ANTLR", "4.5.2")]
-[CLSCompliant(false)]
+
+	using LibLSLCC.Collections;
+	using LibLSLCC.CodeValidator.Enums;
+	using LibLSLCC.CodeValidator.Primitives;
+
+using System;
+using System.Text;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using DFA = Antlr4.Runtime.Dfa.DFA;
+
+[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5.2")]
+[System.CLSCompliant(false)]
 public partial class LSLLexer : Lexer {
 	public const int
 		TYPE=1, DO=2, IF=3, ELSE=4, WHILE=5, FOR=6, DEFAULT=7, STATE=8, RETURN=9, 
@@ -178,18 +179,17 @@ public partial class LSLLexer : Lexer {
 		switch (actionIndex) {
 		case 0: 
 		                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-							_comments.Add(new LSLComment()
-							{
-								Text = this.Text, 
-		                        SourceCodeRange = new LSLSourceCodeRange(
+							_comments.Add(new LSLComment(
+							this.Text, 
+							LSLCommentType.Block,
+							new LSLSourceCodeRange(
 		                            this.TokenStartLine,
 		                            this.TokenStartColumn,
 		                            this.TokenStartLine + lineData.Lines, 
 		                            lineData.EndColumn, 
 		                            this.TokenStartCharIndex, 
-		                            this.Text.Length+this.TokenStartCharIndex),
-									Type = LSLCommentType.Block
-							});
+		                            this.Text.Length+this.TokenStartCharIndex)
+							));
 						 break;
 		}
 	}
@@ -197,18 +197,17 @@ public partial class LSLLexer : Lexer {
 		switch (actionIndex) {
 		case 1: 
 		                    var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-							_comments.Add(new LSLComment()
-							{
-								Text = this.Text, 
-		                        SourceCodeRange = new LSLSourceCodeRange(
+							_comments.Add(new LSLComment(
+							this.Text, 
+							LSLCommentType.SingleLine,
+		                    new LSLSourceCodeRange(
 		                            this.TokenStartLine,
 		                            this.TokenStartColumn,
 		                            this.TokenStartLine + lineData.Lines, 
 		                            lineData.EndColumn, 
 		                            this.TokenStartCharIndex, 
-		                            this.Text.Length+this.TokenStartCharIndex),
-									Type = LSLCommentType.SingleLine
-							});
+		                            this.Text.Length+this.TokenStartCharIndex)
+							));
 						 break;
 		}
 	}

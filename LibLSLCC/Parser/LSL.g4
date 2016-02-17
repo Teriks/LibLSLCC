@@ -498,36 +498,34 @@ Newline
 BlockComment
 : '/*' .*? '*/' {
                     var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-					_comments.Add(new LSLComment()
-					{
-						Text = this.Text, 
-                        SourceCodeRange = new LSLSourceCodeRange(
+					_comments.Add(new LSLComment(
+					this.Text, 
+					LSLCommentType.Block,
+					new LSLSourceCodeRange(
                             this.TokenStartLine,
                             this.TokenStartColumn,
                             this.TokenStartLine + lineData.Lines, 
                             lineData.EndColumn, 
                             this.TokenStartCharIndex, 
-                            this.Text.Length+this.TokenStartCharIndex),
-							Type = LSLCommentType.Block
-					});
+                            this.Text.Length+this.TokenStartCharIndex)
+					));
 				} -> channel(HIDDEN)
 ;
 
 LineComment
 : '//' ~[\r\n]* {
                     var lineData = CountStringLines(this.TokenStartColumn, this.Text);
-					_comments.Add(new LSLComment()
-					{
-						Text = this.Text, 
-                        SourceCodeRange = new LSLSourceCodeRange(
+					_comments.Add(new LSLComment(
+					this.Text, 
+					LSLCommentType.SingleLine,
+                    new LSLSourceCodeRange(
                             this.TokenStartLine,
                             this.TokenStartColumn,
                             this.TokenStartLine + lineData.Lines, 
                             lineData.EndColumn, 
                             this.TokenStartCharIndex, 
-                            this.Text.Length+this.TokenStartCharIndex),
-							Type = LSLCommentType.SingleLine
-					});
+                            this.Text.Length+this.TokenStartCharIndex)
+					));
 				} -> channel(HIDDEN)
 ;
 

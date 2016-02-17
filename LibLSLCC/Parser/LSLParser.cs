@@ -11,15 +11,6 @@
 // Generated from Parser\LSL.g4 by ANTLR 4.5.2
 
 // Unreachable code detected
-
-using System;
-using System.CodeDom.Compiler;
-using System.Text;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -29,9 +20,19 @@ using Antlr4.Runtime.Tree;
 #pragma warning disable 419
 
 namespace LibLSLCC.Parser {
-    [GeneratedCode("ANTLR", "4.5.2")]
-[CLSCompliant(false)]
-public partial class LSLParser : Antlr4.Runtime.Parser {
+using System;
+using System.Text;
+using System.Diagnostics;
+using System.Collections.Generic;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+using DFA = Antlr4.Runtime.Dfa.DFA;
+
+[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5.2")]
+[System.CLSCompliant(false)]
+public partial class LSLParser : Parser {
 	public const int
 		TYPE=1, DO=2, IF=3, ELSE=4, WHILE=5, FOR=6, DEFAULT=7, STATE=8, RETURN=9, 
 		JUMP=10, ID=11, HEX_LITERAL=12, INT=13, FLOAT=14, QUOTED_STRING=15, SEMI_COLON=16, 
@@ -2272,7 +2273,7 @@ public partial class LSLParser : Antlr4.Runtime.Parser {
 			State = 292;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,17,Context);
-			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( ParseListeners!=null )
 						TriggerExitRuleEvent();

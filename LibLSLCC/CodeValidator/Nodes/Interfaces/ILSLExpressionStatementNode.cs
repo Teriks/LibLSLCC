@@ -46,7 +46,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     /// <summary>
     /// AST node interface for expression statements, expression statements are the statements that occur line by line inside of code scope.
     /// </summary>
-    public interface ILSLExpressionStatementNode : ILSLCodeStatement
+    public interface ILSLExpressionStatementNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
         /// The top expression node that represents the expression in the statement.

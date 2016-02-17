@@ -50,20 +50,28 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// </summary>
     public sealed class LSLComment
     {
+        public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceCodeRange)
+        {
+            Text = text;
+            Type = type;
+            SourceCodeRange = sourceCodeRange;
+        }
+
+
         /// <summary>
         /// The raw comment text.
         /// </summary>
-        public string Text { get; set; }
+        public string Text { get; private set; }
 
         /// <summary>
         /// The source code range which the comment occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; set; }
+        public LSLSourceCodeRange SourceCodeRange { get; private set; }
 
         /// <summary>
         /// The LSLCommentType type of the comment.
         /// </summary>
-        public LSLCommentType Type { get; set; }
+        public LSLCommentType Type { get; private set; }
 
         public override string ToString()
         {
