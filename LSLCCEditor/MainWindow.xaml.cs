@@ -609,8 +609,6 @@ namespace LSLCCEditor
 
 #if !DEBUG
             bool compileSuccess = false;
-#else
-            bool compileSuccess = true;
 #endif
 
             using (var outfile = File.OpenWrite(destinationFile))
@@ -642,6 +640,7 @@ namespace LSLCCEditor
             }
 
 #if !DEBUG
+
             if (compileSuccess)
             {
 
@@ -652,6 +651,9 @@ namespace LSLCCEditor
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error",
                     "An internal compiler exception occurred, please report the code that caused this.", false) { Clickable = false });
             }
+
+#else
+            tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice", "Program compiled successfully", false) { Clickable = false });
 #endif
         }
 

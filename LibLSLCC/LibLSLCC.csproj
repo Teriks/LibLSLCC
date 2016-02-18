@@ -32,7 +32,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
     <Optimize>true</Optimize>
-    <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -68,7 +69,6 @@
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\LSLLiteralNodeInterfaceExtensions.cs" />
     <Compile Include="CodeValidator\Enums\LSLExpressionListType.cs" />
-    <Compile Include="CodeValidator\Primitives\LSLToken.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Collections\CloneableExtensions.cs" />

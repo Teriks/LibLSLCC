@@ -97,12 +97,14 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = other.HasErrors;
         }
 
+#pragma warning disable CS3001 // Argument type is not CLS-compliant
         /// <summary>
         /// Create a constant literal node using the ANTLR context of the expression atom that represents the source literal.
         /// </summary>
         /// <param name="context">The ANTLR context of the source literal.</param>
         /// <param name="type">The <see cref="LSLType"/> that the source code literal represents.</param>
         protected internal LSLConstantLiteralNode(LSLParser.Expr_AtomContext context, LSLType type)
+#pragma warning restore CS3001 // Argument type is not CLS-compliant
         {
             RawText = context.children[0].GetText();
             Type = type;
