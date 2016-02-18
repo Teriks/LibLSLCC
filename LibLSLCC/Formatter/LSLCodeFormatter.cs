@@ -103,9 +103,19 @@ namespace LibLSLCC.Formatter
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings"/> is left <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="node"/> or <paramref name="writer"/> is <c>null</c>.</exception>
         public void Format(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
             bool closeStream = false)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
+
             if (Settings == null)
             {
                 throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
@@ -123,14 +133,24 @@ namespace LibLSLCC.Formatter
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings"/> is left <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="node"/> or <paramref name="writer"/> is <c>null</c>.</exception>
         public void Format(ILSLCompilationUnitNode node, TextWriter writer,
             bool closeStream = false)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
+
             if (Settings == null)
             {
                 throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
             }
-
+ 
             var formatter = new LSLCodeFormatterVisitor(Settings);
             formatter.WriteAndFlush(null, node, writer, closeStream);
         }
