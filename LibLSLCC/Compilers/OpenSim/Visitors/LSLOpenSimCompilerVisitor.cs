@@ -206,19 +206,34 @@ private static class UTILITIES
 
         public void WriteAndFlush(ILSLCompilationUnitNode node, TextWriter writer, bool closeStream = true)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
+
             if (Settings == null)
             {
                 throw new InvalidOperationException(GetType().Name + ".Settings property cannot be null!");
             }
 
-            Writer = writer;
-
-            Visit(node);
-            Writer.Flush();
-
-            if (closeStream)
+            try
             {
-                Writer.Close();
+                Writer = writer;
+
+                Visit(node);
+
+                Writer.Flush();
+            }
+            finally
+            {
+                if (closeStream)
+                {
+                    Writer.Close();
+                }
             }
         }
 
@@ -232,6 +247,7 @@ private static class UTILITIES
             _currentLslEventHandlerNode = null;
 
             _indentLevel = 0;
+
             _binOpsUsed.Clear();
         }
 

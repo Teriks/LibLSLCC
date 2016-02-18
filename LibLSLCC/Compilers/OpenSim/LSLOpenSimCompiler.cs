@@ -138,6 +138,15 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <param name="textWriter">The text writer to write the generated code to.</param>
         public void Compile(ILSLCompilationUnitNode compilationUnit, TextWriter textWriter)
         {
+            if (compilationUnit == null)
+            {
+                throw new ArgumentNullException("compilationUnit");
+            }
+            if (textWriter == null)
+            {
+                throw new ArgumentNullException("textWriter");
+            }
+
             try
             {
                 _visitor.WriteAndFlush(compilationUnit, textWriter, false);

@@ -222,6 +222,7 @@ namespace LibLSLCC.Formatter.Visitor
             _binaryExpressionsSinceNewLine = 0;
         }
 
+
         /// <summary>
         /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, <paramref name="sourceReference"/> is only required if you want to keep comments.
         /// </summary>
@@ -229,9 +230,19 @@ namespace LibLSLCC.Formatter.Visitor
         /// <param name="node">The top level <see cref="ILSLCompilationUnitNode"/> to format.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="node"/> or <paramref name="writer"/> is <c>null</c>.</exception>
         public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
             bool closeStream = false)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
+
             try
             {
                 _sourceReference = sourceReference;
@@ -247,15 +258,16 @@ namespace LibLSLCC.Formatter.Visitor
                 Writer = writer;
 
                 Visit(node);
-                Writer.Flush();
 
+                Writer.Flush();
+            }
+            finally
+            {
                 if (closeStream)
                 {
                     Writer.Close();
                 }
-            }
-            finally
-            {
+
                 Reset();
             }
         }
