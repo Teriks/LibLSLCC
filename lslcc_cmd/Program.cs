@@ -384,7 +384,9 @@ namespace lslcc
 
             var specifiedFiles = new HashSet<string>();
 
-            foreach (var file in inputFiles.Arguments.SelectMany(x => new Glob.Glob(x).Expand()))
+            foreach (var file in inputFiles.Arguments
+                .SelectMany(x => new Glob.Glob(x).Expand()
+                .Where(y=>y.Attributes!=FileAttributes.Directory)))
             {
                 if (specifiedFiles.Contains(file.FullName))
                 {
