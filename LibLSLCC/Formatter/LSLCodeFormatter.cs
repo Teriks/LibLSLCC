@@ -108,7 +108,7 @@ namespace LibLSLCC.Formatter
         {
             if (Settings == null)
             {
-                throw new InvalidOperationException("LSLCodeFormatter.Settings cannot be null.");
+                throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
             }
 
             var formatter = new LSLCodeFormatterVisitor(Settings);
@@ -128,7 +128,7 @@ namespace LibLSLCC.Formatter
         {
             if (Settings == null)
             {
-                throw new InvalidOperationException("LSLCodeFormatter.Settings cannot be null.");
+                throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
             }
 
             var formatter = new LSLCodeFormatterVisitor(Settings);

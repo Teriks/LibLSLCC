@@ -755,7 +755,7 @@ namespace LibLSLCC.LibraryData
         {
             if (!LiveFiltering)
             {
-                throw new InvalidOperationException("Cannot change the active subsets of a LSLLibraryDataProvider when the object is not in LiveFiltering mode.");
+                throw new InvalidOperationException("Cannot change the active subsets of an "+GetType().Name+" when the object is not in LiveFiltering mode.");
             }
         }
 

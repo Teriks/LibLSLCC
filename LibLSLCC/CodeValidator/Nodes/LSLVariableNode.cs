@@ -295,7 +295,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 return visitor.VisitLibraryConstantVariableReference(this);
             }
 
-            throw new InvalidOperationException("LSLVariableNode could not be visited, its state is invalid");
+            throw new InvalidOperationException(typeof(LSLVariableNode).Name + " could not be visited, its state is invalid");
         }
 
 

@@ -122,7 +122,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
                 throw new LSLLibraryDataAttributeException(
                     string.Format(
-                        "Class '{0}' is tagged with an [LSLLibraryDataSerializableAttribute.{1}] type" +
+                        "Class '{0}' is tagged with an [" + typeof(LSLLibraryDataSerializableAttribute).Name + ".{1}] type" +
                         "'{2}' that does not derive from {3}.",
                         fromClass.FullName,
                         name,

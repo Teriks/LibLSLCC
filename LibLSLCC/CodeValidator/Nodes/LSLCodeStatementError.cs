@@ -125,7 +125,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
-            throw new NotImplementedException("Visited LSLCodeStatementError");
+            throw new NotImplementedException("Visited "+typeof(LSLCodeStatementError).Name);
         }
 
 

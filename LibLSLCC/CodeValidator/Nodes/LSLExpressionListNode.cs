@@ -310,7 +310,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 return visitor.VisitForLoopInitExpressions(this);
             }
 
-            throw new InvalidOperationException("Visit LSLExpressionList, unknown ListTypes");
+            throw new InvalidOperationException("Visit "+typeof(LSLExpressionListNode)+", unknown LSLExpressionListType.");
         }
 
 

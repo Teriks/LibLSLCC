@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>LibLSLCC.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -61,7 +61,7 @@
     <Compile Include="AutoComplete\LSLAutoCompleteLocalVariable.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteStateBlock.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteScopeAddress.cs" />
-    <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospection.cs" />
+    <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospector.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLValidatorServiceProvideExtensions.cs" />
     <Compile Include="CodeValidator\Components\LSLValidatorServiceProvider.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />

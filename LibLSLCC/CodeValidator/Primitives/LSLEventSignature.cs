@@ -136,7 +136,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
                 if (!LSLTokenTools.IDRegexAnchored.IsMatch(value))
                 {
-                    throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Event name '{0}' contained invalid characters or formating.", value));
+                    throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Event name '{0}' contained invalid characters or formatting.", value));
                 } 
                 _name = value;
             }

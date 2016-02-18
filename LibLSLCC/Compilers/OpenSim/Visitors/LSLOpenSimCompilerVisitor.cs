@@ -667,7 +667,7 @@ private static class UTILITIES
                                return ("new LSL_Types.list(" + e.ValueString + ")");
                            default:
                                throw new InvalidOperationException(
-                                   "LSLOpenSimCompilerVisitor.GenerateExpandedListConstant encountered a Void list element type.");
+                                   typeof(LSLOpenSimCompilerVisitor).Name+".GenerateExpandedListConstant encountered a Void list element type.");
                        }
                    })) + ")";
         }
@@ -703,7 +703,7 @@ private static class UTILITIES
                         break;
                     default:
                         throw new InvalidOperationException(
-                            "LSLOpenSimCompilerVisitor.VisitLibraryConstantVariableReference retrieved a library  "
+                            typeof(LSLOpenSimCompilerVisitor).Name + ".VisitLibraryConstantVariableReference retrieved a library "
                             + "constant from the library data provider using 'LSLType.Void' as its Type.");
                 }
             }

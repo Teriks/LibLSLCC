@@ -353,7 +353,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             if (selectedGroup.Count > 1)
             {
-                throw new InvalidOperationException("LSLFunctionSignatureMatcher.MatchOverloads: Algorithm bug check assertion.");
+                throw new InvalidOperationException(typeof(LSLFunctionSignatureMatcher).Name+".MatchOverloads: Algorithm bug check assertion.");
             }
 
             //There was only one signature match in the grouping, it had the lowest rank so its the best.

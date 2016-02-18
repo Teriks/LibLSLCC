@@ -513,7 +513,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 //this is always an error
                 throw new LSLLibraryDataReflectionException(
                     string.Format(
-                        "LSLLibraryDataReflectionSerializer.ValueStringConverter returned success and a null ValueString " +
+                        typeof(LSLLibraryDataReflectionSerializer).Name + ".ValueStringConverter returned success and a null ValueString " +
                         "from {0} '{1}' of type '{2}' in class of type '{3}'.  " +
                         "The retrieved {4} value was '{5}' (ToSTring'd):",
                         fieldDescription,
@@ -535,8 +535,8 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataReflectionException(
                         string.Format(
-                            "LSLLibraryDataReflectionSerializer.ValueStringConverter returned the ValueString '{0}' that " +
-                            "LSLLibraryConstantSignature could not parse for LSLType '{1}'. The property value given to the converter was " +
+                            typeof(LSLLibraryDataReflectionSerializer).Name + ".ValueStringConverter returned the ValueString '{0}' that " +
+                            typeof(LSLLibraryConstantSignature).Name + " could not parse for LSLType '{1}'. The property value given to the converter was " +
                             "taken from {2} '{3}' of type '{4}' in class of type '{5}'.  " +
                             "The {6} value was '{7}' (ToString'd):" +
                             LSLFormatTools.CreateNewLinesString(2) + e.Message,

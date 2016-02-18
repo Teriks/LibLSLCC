@@ -234,14 +234,14 @@ namespace LibLSLCC.LibraryData
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new LSLInvalidSymbolNameException(
-                        "LSLFunctionSignature: Function name was null or whitespace.");
+                        GetType().Name + ": Constant name was null or whitespace.");
                 }
 
                 if (!LSLTokenTools.IDRegexAnchored.IsMatch(value))
                 {
                     throw new LSLInvalidSymbolNameException(
                         string.Format(
-                            "LSLConstantSignature: Constant name '{0}' contained invalid characters or formating.",
+                            GetType().Name + ": Constant name '{0}' contained invalid characters or formatting.",
                             value));
                 }
 

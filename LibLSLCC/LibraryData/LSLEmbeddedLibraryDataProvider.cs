@@ -109,7 +109,7 @@ namespace LibLSLCC.LibraryData
                 if (libraryData == null)
                 {
                     throw new InvalidOperationException(
-                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLEmbeddedLibraryDataProvider.xml");
+                        "Could not locate manifest resource LibLSLCC.LibraryData.default.xml");
                 }
 
                 var reader = new XmlTextReader(libraryData);
@@ -131,7 +131,7 @@ namespace LibLSLCC.LibraryData
                 if (libraryData == null)
                 {
                     throw new InvalidOperationException(
-                        "Could not locate manifest resource LibLSLCC.CodeValidator.Components.LibraryData.LSLEmbeddedLibraryDataProvider.xml");
+                        "Could not locate manifest resource LibLSLCC.LibraryData.default.xml");
                 }
 
                 var reader = new XmlTextReader(libraryData);

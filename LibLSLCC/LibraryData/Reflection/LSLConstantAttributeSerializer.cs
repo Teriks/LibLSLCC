@@ -175,7 +175,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[LSLConstantAttribute.ValueStringConverter] cannot be used on property/field '{0}' in class '{1}' because [LSLConstantAttribute.ValueString] is already explicitly set.",
+                            "["+typeof(LSLConstantAttribute).Name+ ".ValueStringConverter] cannot be used on property/field '{0}' in class '{1}' because [" + typeof(LSLConstantAttribute).Name + ".ValueString] is already explicitly set.",
                             info.Name, info.DeclaringType.FullName));
                 }
 
@@ -192,7 +192,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[LSLConstantAttribute.ValueStringConverter] does not implement ILSLValueStringConverter on property/field '{0}' in class '{1}'.",
+                            "[" + typeof(LSLConstantAttribute).Name + ".ValueStringConverter] does not implement " + typeof(ILSLValueStringConverter).Name + " on property/field '{0}' in class '{1}'.",
                             info.Name, info.DeclaringType.FullName));
                 }
             }
@@ -204,7 +204,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[LSLConstantAttribute.TypeConverter] cannot be used on property/field '{0}' in class '{1}' because [LSLConstantAttribute.Type] is already explicitly set.",
+                            "[" + typeof(LSLConstantAttribute).Name + ".TypeConverter] cannot be used on property/field '{0}' in class '{1}' because [" + typeof(LSLConstantAttribute).Name + ".Type] is already explicitly set.",
                             info.Name, info.DeclaringType.FullName));
                 }
 
@@ -220,7 +220,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[LSLConstantAttribute.TypeConverter] does not implement ILSLConstantTypeConverter on property/field '{0}' in class '{1}'.",
+                            "[" + typeof(LSLConstantAttribute).Name + ".TypeConverter] does not implement " + typeof(ILSLConstantTypeConverter).Name + " on property/field '{0}' in class '{1}'.",
                             info.Name, info.DeclaringType.FullName));
                 }
             }
@@ -247,7 +247,7 @@ namespace LibLSLCC.LibraryData.Reflection
                     {
                         throw new LSLLibraryDataAttributeException(
                             string.Format(
-                                "Property '{0}' in class '{1}' has no get accessor and [LSLConstantAttribute.ValueString] was not explicitly set.",
+                                "Property '{0}' in class '{1}' has no get accessor and [" + typeof(LSLConstantAttribute).Name + ".ValueString] was not explicitly set.",
                                 info.Name, info.DeclaringType.FullName));
                     }
                 }
@@ -262,7 +262,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "Static {0} '{1}' in class '{2}' is tagged with [LSLConstantAttribute] and returned a null value.", 
+                            "Static {0} '{1}' in class '{2}' is tagged with [" + typeof(LSLConstantAttribute).Name + "] and returned a null value.", 
                             isProperty ? "Property" : "Field",
                             info.Name, info.DeclaringType.FullName));
                 }
@@ -273,7 +273,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "Instance {0} '{1}' in class '{2}' has cannot have its value retrieved because no instance of '{1}' was supplied and [LSLConstantAttribute.ValueString] was not explicitly set.",
+                            "Instance {0} '{1}' in class '{2}' has cannot have its value retrieved because no instance of '{1}' was supplied and [" + typeof(LSLConstantAttribute).Name + ".ValueString] was not explicitly set.",
                             isProperty ? "Property" : "Field",
                             info.Name, info.DeclaringType.FullName));
                 }
@@ -298,7 +298,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "Instance {0} '{1}' in class '{2}' is tagged with [LSLConstantAttribute] and returned a null value.",
+                            "Instance {0} '{1}' in class '{2}' is tagged with [" + typeof(LSLConstantAttribute).Name + "] and returned a null value.",
                             isProperty ? "Property" : "Field",
                             info.Name, info.DeclaringType.FullName));
                 }
@@ -312,8 +312,8 @@ namespace LibLSLCC.LibraryData.Reflection
                 throw new LSLLibraryDataAttributeException(
                     string.Format(
                         (isProperty ? "Property" : "Field") +
-                        " '{0}' in class '{1}' uses an [LSLContantAttribute] without an [LSLContantAttribute.ValueString] or" +
-                        " [LSLContantAttribute.ValueStringConverter], one or the other is required if no fall-back value string converter is defined in the serializer.",
+                        " '{0}' in class '{1}' uses an [" + typeof(LSLConstantAttribute).Name + "] without an [" + typeof(LSLConstantAttribute).Name + ".ValueString] or" +
+                        " [" + typeof(LSLConstantAttribute).Name + ".ValueStringConverter], one or the other is required if no fall-back value string converter is defined in the serializer.",
                         info.Name, info.DeclaringType.FullName));
             }
 
@@ -322,8 +322,8 @@ namespace LibLSLCC.LibraryData.Reflection
                 throw new LSLLibraryDataAttributeException(
                     string.Format(
                         (isProperty ? "Property" : "Field") +
-                        " '{0}' in class '{1}' uses an [LSLContantAttribute] without a [LSLContantAttribute.Type] or" +
-                        " [LSLContantAttribute.TypeConverter], one or the other is required if no fall-back type converter is defined in the serializer.",
+                        " '{0}' in class '{1}' uses an [" + typeof(LSLConstantAttribute).Name + "] without a [" + typeof(LSLConstantAttribute).Name + ".Type] or" +
+                        " [" + typeof(LSLConstantAttribute).Name + ".TypeConverter], one or the other is required if no fall-back type converter is defined in the serializer.",
                         info.Name, info.DeclaringType.FullName));
             }
 

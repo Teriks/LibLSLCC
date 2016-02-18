@@ -229,7 +229,7 @@ namespace LibLSLCC.CSharp
                         return TypeSignature.FullSignature ?? "";
                     default:
                         throw new InvalidOperationException(
-                            "Bugcheck, unexpected enum member in: CSharpTypeConstraintType CSharpTypeConstraintValidationResult.ConstraintType");
+                            "Bugcheck, unexpected enum member in: CSharpTypeConstraintType " + typeof(CSharpTypeConstraintValidationResult).Name + ".ConstraintType");
                 }
             }
         }

@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             if (!LSLTokenTools.IDRegexAnchored.IsMatch(name))
             {
-                throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Parameter name '{0}' contained invalid characters or formating.", name));
+                throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Parameter name '{0}' contained invalid characters or formatting.", name));
             }
 
             Type = type;

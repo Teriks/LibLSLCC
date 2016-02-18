@@ -357,7 +357,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             throw new InvalidOperationException(
-                "LSLFunctionCallNode could not be visited, object is in an invalid state");
+                typeof(LSLFunctionCallNode).Name+" could not be visited, object is in an invalid state");
         }
 
 

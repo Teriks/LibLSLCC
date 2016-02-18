@@ -88,22 +88,22 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
             if (provider.ExpressionValidator == null)
             {
-                nullProps += "ILSLValidatorServiceProvider.ExpressionValidator is null." + Environment.NewLine;
+                nullProps += typeof(ILSLValidatorServiceProvider).Name+".ExpressionValidator is null." + Environment.NewLine;
             }
             if (provider.LibraryDataProvider == null)
             {
-                nullProps += "ILSLValidatorServiceProvider.LibraryDataProvider is null." + Environment.NewLine;
+                nullProps += typeof(ILSLValidatorServiceProvider).Name + ".LibraryDataProvider is null." + Environment.NewLine;
             }
             if (provider.SyntaxErrorListener == null)
             {
-                nullProps += "ILSLValidatorServiceProvider.SyntaxErrorListener is null." + Environment.NewLine;
+                nullProps += typeof(ILSLValidatorServiceProvider).Name + ".SyntaxErrorListener is null." + Environment.NewLine;
             }
             if (provider.SyntaxWarningListener == null)
             {
-                nullProps += "ILSLValidatorServiceProvider.SyntaxWarningListener is null.";
+                nullProps += typeof(ILSLValidatorServiceProvider).Name + ".SyntaxWarningListener is null.";
             }
 
-            describeNulls = nullProps == string.Empty ? null : nullProps;
+            describeNulls = string.IsNullOrEmpty(nullProps) ? null : nullProps;
 
             return describeNulls == null;
         }

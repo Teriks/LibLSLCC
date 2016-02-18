@@ -2252,7 +2252,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (statement == null)
             {
                 throw new LSLCodeValidatorInternalException(
-                    "VisitCodeStatement Visit(context.children[0]) did not return an ILSLCodeStatement");
+                    "VisitCodeStatement Visit(context.children[0]) did not return an " + typeof(ILSLCodeStatement).Name);
             }
 
             return ReturnFromVisit(context, statement);
@@ -2349,7 +2349,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             throw new InvalidOperationException(
-                "Internal error VisitExpressionContent in LSLCodeValidationVisitor returned a non ILSLExprNode type");
+                "Internal error VisitExpressionContent in "+typeof(LSLCodeValidationVisitor).Name+" returned a non " + typeof(ILSLExprNode).Name);
         }
 
 
@@ -2363,7 +2363,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
             throw new InvalidOperationException(
-                "Internal error VisitExpressionContent in LSLCodeValidationVisitor returned a non ILSLExprNode type");
+                "Internal error VisitExpressionContent in LSLCodeValidationVisitor returned a non " + typeof(ILSLExprNode).Name);
         }
 
 
