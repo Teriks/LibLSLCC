@@ -48,42 +48,89 @@ using System.Xml.Serialization;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// Describes a settings read error type.
+    /// </summary>
     public enum SettingsErrorType
     {
+        /// <summary>
+        /// Settings file not found.
+        /// </summary>
         FileMissing,
+
+        /// <summary>
+        /// Settings file could not be read.
+        /// </summary>
         FileUnreadable,
+
+        /// <summary>
+        /// Syntax error in the settings file.
+        /// </summary>
         SyntaxError
     }
 
+    /// <summary>
+    /// Event arguments for the settings manager ConfigError event.  <see cref="SettingsManager{T}.ConfigError"/>
+    /// </summary>
     public sealed class SettingsManagerConfigErrorEventArgs : EventArgs
     {
+        /// <summary>
+        /// Construct the config error event args.
+        /// </summary>
+        /// <param name="errorType">The error type.</param>
+        /// <param name="settingsReset">Whether or not the settings were reset to default.</param>
         public SettingsManagerConfigErrorEventArgs(SettingsErrorType errorType, bool settingsReset)
         {
             ErrorType = errorType;
             SettingsReset = settingsReset;
         }
 
+        /// <summary>
+        /// Whether or not the settings were reset to default.
+        /// </summary>
         public bool SettingsReset { get; private set; }
 
+        /// <summary>
+        /// The error type.
+        /// </summary>
         public SettingsErrorType ErrorType { get; private set; }
     }
 
 
+    /// <summary>
+    /// Manages loading a serializable settings object to and from disk.  <see cref="SettingsBaseClass{T}"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class SettingsManager<T> where T : new()
     {
         private readonly bool _resetOnConfigError;
+
+        /// <summary>
+        /// The settings object being managed.
+        /// </summary>
         public T Settings { get; private set; }
 
 
+        /// <summary>
+        /// Occurs when there is an error reading the settings object off disk.
+        /// </summary>
         public event EventHandler<SettingsManagerConfigErrorEventArgs> ConfigError;
 
 
+        /// <summary>
+        /// Construct the settings manager.
+        /// </summary>
+        /// <param name="resetSettingsOnConfigError">Whether or not settings errors reset the settings object to have default property values.</param>
         public SettingsManager(bool resetSettingsOnConfigError = true)
         {
             _resetOnConfigError = resetSettingsOnConfigError;
         }
 
 
+        /// <summary>
+        /// Save the settings object to disk.
+        /// </summary>
+        /// <param name="file">The name of the file name to save to.</param>
         public void Save(string file)
         {
             var serializer = new XmlSerializer(typeof (T));
@@ -102,6 +149,9 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// Reset all settings properties to default in the settings managed settings object.
+        /// </summary>
         public void ApplyDefaults()
         {
             Settings = new T();
@@ -119,6 +169,10 @@ namespace LibLSLCC.Settings
             OnConfigError(type);
         }
 
+        /// <summary>
+        /// Load the settings object from the specified file.
+        /// </summary>
+        /// <param name="file">The file to load the managed settings object from.</param>
         public void Load(string file)
         {
             if (File.Exists(file))

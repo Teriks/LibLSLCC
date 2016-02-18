@@ -45,14 +45,34 @@ using System;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// An attribute for defining a default value factory for a field or property.
+    /// </summary>
+    /// <seealso cref="DefaultValueInitializer"/>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public sealed class DefaultValueFactoryAttribute : Attribute
     {
+        /// <summary>
+        /// The <see cref="Type"/> of the default value factory used to create a default value for the field/property.
+        /// </summary>
         public Type FactoryType { get; private set; }
+
+        /// <summary>
+        /// The priority of default value initialization for this field/property when <see cref="DefaultValueInitializer.Init{T}"/> is used.
+        /// </summary>
         public int InitOrder { get; private set; }
 
+        /// <summary>
+        /// An instance of the default value factory type, specified by <see cref="FactoryType"/>.
+        /// </summary>
         public IDefaultSettingsValueFactory Factory { get; private set; }
 
+        /// <summary>
+        /// Construct the <see cref="DefaultValueFactoryAttribute"/> using a given type and <paramref name="initOrder"/>.
+        /// </summary>
+        /// <param name="factoryType">The <see cref="Type"/> for producing default field/property values, which should derive from <see cref="IDefaultSettingsValueFactory"/>.</param>
+        /// <param name="initOrder">The priority of default value initialization for this field/property when <see cref="DefaultValueInitializer.Init{T}"/> is used.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="factoryType"/> does not implement <see cref="IDefaultSettingsValueFactory"/>.</exception>
         public DefaultValueFactoryAttribute(Type factoryType, int initOrder=0)
         {
             FactoryType = factoryType;

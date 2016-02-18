@@ -116,7 +116,11 @@ namespace LibLSLCC.CSharp
 
 
 
-
+        /// <summary>
+        /// Implicitly converts a string into a <see cref="CSharpFunctionCall"/> by parsing it.
+        /// </summary>
+        /// <param name="fullSignature">The string representing the full signature of the function call.</param>
+        /// <returns>The newly created <see cref="CSharpFunctionCall"/> from the string.</returns>
 
         public static implicit operator CSharpFunctionCall(string fullSignature)
         {

@@ -51,6 +51,10 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// A base class for settings objects.
+    /// </summary>
+    /// <typeparam name="TSetting"></typeparam>
     public abstract class SettingsBaseClass<TSetting> : ICloneable, INotifyPropertyChanged, INotifyPropertyChanging
         where TSetting : class
     {
@@ -84,10 +88,24 @@ namespace LibLSLCC.Settings
                     <object, HashMap<string, Action<SettingsPropertyChangingEventArgs<TSetting>>>>();
 
 
+        /// <summary>
+        /// The property changed event, fired when a settings property has changed.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+
+        /// <summary>
+        /// The property changing event, fired when a settings property is about to change, but has not changed yet.
+        /// </summary>
         public event PropertyChangingEventHandler PropertyChanging;
 
 
+        /// <summary>
+        /// Occurs when a property is about to change but has not changed yet.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that is fixing to change.</param>
+        /// <param name="oldValue">The old value of the property.</param>
+        /// <param name="newValue">The new value of the property.</param>
         protected virtual void OnPropertyChanging(string propertyName, object oldValue, object newValue)
         {
             var handler = PropertyChanging;
@@ -130,6 +148,11 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// Subscribe to the property changed event on this settings object and all child settings objects recursively.
+        /// </summary>
+        /// <param name="owner">The object that is subscribing to the changed event.</param>
+        /// <param name="handler">The changed event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChangedRecursive(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
         {
@@ -164,6 +187,11 @@ namespace LibLSLCC.Settings
 
 
 
+        /// <summary>
+        /// Subscribe to the property changed event on this settings object.
+        /// </summary>
+        /// <param name="owner">The object that is subscribing to the changed event.</param>
+        /// <param name="handler">The changed event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanged(object owner, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
         {
@@ -183,6 +211,12 @@ namespace LibLSLCC.Settings
             }
         }
 
+        /// <summary>
+        /// Subscribe to the property changed event on this settings object for a specific property.
+        /// </summary>
+        /// <param name="owner">The object that is subscribing to the changed event.</param>
+        /// <param name="propertyName">The name of the property to subscribe to.</param>
+        /// <param name="handler">The changed event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanged(object owner, string propertyName, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
         {
@@ -203,23 +237,36 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// Remove all property changed subscriptions belonging to an object from this settings object and all child settings objects recursively.
+        /// </summary>
+        /// <param name="owner">The subscriber to remove subscriptions for.</param>
         public void UnSubscribePropertyChangedRecursive(object owner)
         {
             _subscribedChanged.Remove(owner);
 
             foreach (var child in GetAllNonNullSettingsBaseChildren())
             {
-                var subscribeMethod = child.GetType().GetMethod("UnSubscribePropertyChangedRecursive");
+                var unSubscribeMethod = child.GetType().GetMethod("UnSubscribePropertyChangedRecursive");
 
-                subscribeMethod.Invoke(child, new[] {owner});
+                unSubscribeMethod.Invoke(child, new[] {owner});
             }
         }
 
+        /// <summary>
+        /// Remove a property changed subscription from this settings object given the subscriber object.
+        /// </summary>
+        /// <param name="owner">The subscriber to remove the subscription for.</param>
         public void UnSubscribePropertyChanged(object owner)
         {
             _subscribedChanged.Remove(owner);
         }
 
+        /// <summary>
+        /// Remove a specific property changed subscription from this settings object given the subscriber object and the property name.
+        /// </summary>
+        /// <param name="owner">The subscriber to remove the subscription for.</param>
+        /// <param name="propertyName">The property name to remove the subscription for.</param>
         public void UnSubscribePropertyChanged(object owner, string propertyName)
         {
             var dictRef = _subscribedChanged[owner];
@@ -230,7 +277,11 @@ namespace LibLSLCC.Settings
             }
         }
 
-
+        /// <summary>
+        /// Subscribe to the property changing event on this settings object and all child settings objects recursively.
+        /// </summary>
+        /// <param name="owner">The object that is subscribing to the changing event.</param>
+        /// <param name="handler">The changing event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChangingRecursive(object owner, Action<SettingsPropertyChangingEventArgs<object>> handler)
         {
@@ -264,7 +315,11 @@ namespace LibLSLCC.Settings
             }
         }
 
-
+        /// <summary>
+        /// Subscribe to the property changing event on this settings object.
+        /// </summary>
+        /// <param name="owner">The object that is subscribing to the changing event.</param>
+        /// <param name="handler">The changing event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanging(object owner, Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
         {
@@ -284,7 +339,12 @@ namespace LibLSLCC.Settings
             }
         }
 
-
+        /// <summary>
+        /// Subscribe to the property changing event on this settings object for a specific property.
+        /// </summary>
+        /// <param name="owner">The object that is subscribing to the changing event.</param>
+        /// <param name="propertyName">The name of the property to subscribe to.</param>
+        /// <param name="handler">The changing event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public void SubscribePropertyChanging(object owner, string propertyName, Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
         {
@@ -304,7 +364,10 @@ namespace LibLSLCC.Settings
             }
         }
 
-
+        /// <summary>
+        /// Remove all property changing subscriptions belonging to an object from this settings object and all child settings objects recursively.
+        /// </summary>
+        /// <param name="owner">The subscriber to remove subscriptions for.</param>
         public void UnSubscribePropertyChangingRecursive(object owner)
         {
             _subscribedChanging.Remove(owner);
@@ -317,12 +380,20 @@ namespace LibLSLCC.Settings
             }
         }
 
-
+        /// <summary>
+        /// Remove a property changing subscription from this settings object given the subscriber object.
+        /// </summary>
+        /// <param name="owner">The subscriber to remove the subscription for.</param>
         public void UnSubscribePropertyChanging(object owner)
         {
             _subscribedChanging.Remove(owner);
         }
 
+        /// <summary>
+        /// Remove a specific property changing subscription from this settings object given the subscriber object and the property name.
+        /// </summary>
+        /// <param name="owner">The subscriber to remove the subscription for.</param>
+        /// <param name="propertyName">The property name to remove the subscription for.</param>
         public void UnSubscribePropertyChanging(object owner, string propertyName)
         {
             var dictRef = _subscribedChanging[owner];
@@ -334,6 +405,12 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// Occurs when after a property has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that has changed.</param>
+        /// <param name="oldValue">The old value of the property.</param>
+        /// <param name="newValue">The new value of the property.</param>
         protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -359,7 +436,15 @@ namespace LibLSLCC.Settings
             }
         }
 
-
+        /// <summary>
+        /// A tool for implementing the property changed/changing interface that goes in a public properties set handler.
+        /// This should be used in properties that wish to abide by the property changed/changing interface.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field">The backing field of the property.</param>
+        /// <param name="value">The new value the property is being set to.</param>
+        /// <param name="propertyName">Name of the property being set.</param>
+        /// <returns></returns>
         protected bool SetField<T>(ref T field, T value, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
@@ -416,7 +501,12 @@ namespace LibLSLCC.Settings
             subscribedChanged.SetValue(newVal, changed.Clone());
         }
 
-
+        /// <summary>
+        /// Returns a hash code for this settings object.  This uses the hash code all public instance fields and properties to generate a hash.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
         public override int GetHashCode()
         {
             var myType = GetType();
@@ -446,7 +536,13 @@ namespace LibLSLCC.Settings
             return hash;
         }
 
-
+        /// <summary>
+        /// Determines whether the specified <see cref="SettingsBaseClass{T}" />, is equal to this instance by comparing its public instance fields and properties.
+        /// </summary>
+        /// <param name="other">The <see cref="SettingsBaseClass{T}" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="SettingsBaseClass{T}" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
         public override bool Equals(object other)
         {
             if (other == null) return false;
@@ -499,7 +595,10 @@ namespace LibLSLCC.Settings
             return mval.Equals(tval) && mval.GetHashCode() == tval.GetHashCode();
         }
 
-
+        /// <summary>
+        /// Deep clones this settings object.
+        /// </summary>
+        /// <returns>A deep clone of this settings object.</returns>
         public TSetting Clone()
         {
             ICloneable i = this;
@@ -530,7 +629,10 @@ namespace LibLSLCC.Settings
             }
         }
 
-
+        /// <summary>
+        /// Deep clones this settings object.
+        /// </summary>
+        /// <returns>A deep clone of this settings object.</returns>
         object ICloneable.Clone()
         {
             var myType = GetType();

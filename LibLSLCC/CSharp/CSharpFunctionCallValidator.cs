@@ -48,57 +48,117 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
+    /// <summary>
+    /// Result object for <see cref="CSharpFunctionCallValidator.Validate"/>
+    /// </summary>
     public sealed class CSharpFunctionCallValidationResult
     {
+        /// <summary>
+        /// <c>true</c> if the function call was succesfully parsed.
+        /// </summary>
         public bool Success { get; internal set; }
 
+        /// <summary>
+        /// An error description if <see cref="Success"/> is <c>false</c>
+        /// </summary>
         public string ErrorDescription { get; internal set; }
 
+        /// <summary>
+        /// The index in the parsed string at which an error was detected if <see cref="Success"/> is <c>false</c>.
+        /// </summary>
         public int ErrorIndex { get; internal set; }
 
+        /// <summary>
+        /// The explicit generic parameters specified if any.
+        /// </summary>
         public IReadOnlyGenericArray<CSharpClassNameValidationResult> ExplicitGenericParameters { get; internal set; }
 
+        /// <summary>
+        /// The parsed function call parameters.
+        /// </summary>
         public IReadOnlyGenericArray<CSharpParameterSignature> Parameters { get; internal set; }
 
+        /// <summary>
+        /// The parsed method name from the function call signature.
+        /// </summary>
         public string MethodName { get; internal set; }
     }
 
 
+    /// <summary>
+    /// Represents the possible parameter modifiers of a CSharp function call.
+    /// </summary>
     public enum CSharpParameterModifier
     {
+        /// <summary>
+        /// no modifiers
+        /// </summary>
         None,
+
+        /// <summary>
+        /// the out modifier.
+        /// </summary>
         Out,
+
+        /// <summary>
+        /// the pass by reference modifier.
+        /// </summary>
         Ref,
+
+        /// <summary>
+        /// this means that the parameter passed was a brand new object, which was created directly in the parameter slot.
+        /// </summary>
         New
     }
 
+    /// <summary>
+    /// Represents the signature of a parameter passed to a CSharp function method call.
+    /// </summary>
     public sealed class CSharpParameterSignature
     {
+        /// <summary>
+        /// Calculate a hash for the parameter signature using <see cref="ParameterText"/> and <see cref="Modifier"/>
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
-            return (Name != null ? Name.GetHashCode() : 0);
+            return (ParameterText != null ? ParameterText.GetHashCode() : 0);
         }
 
+        /// <summary>
+        /// The modifier that appears in front of the parameter
+        /// </summary>
         public CSharpParameterModifier Modifier { get; private set; }
 
-        public string Name { get; private set; }
+        /// <summary>
+        /// The text that represents the parsed parameter, after the modifier if one is present.
+        /// </summary>
+        public string ParameterText { get; private set; }
 
-        internal CSharpParameterSignature(string name, CSharpParameterModifier modifier)
+        internal CSharpParameterSignature(string parameterText, CSharpParameterModifier modifier)
         {
             Modifier = modifier;
-            Name = name;
+            ParameterText = parameterText;
         }
 
+        /// <summary>
+        /// Test equality using <see cref="ParameterText"/> and <see cref="Modifier"/>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             var o = obj as CSharpParameterSignature;
             if (o == null) return false;
 
-            return string.Equals(o.Name, Name);
+            return string.Equals(o.ParameterText, ParameterText);
         }
     }
 
 
+    /// <summary>
+    /// Static class containing utilities for validating a CSharp method call signature.
+    /// </summary>
     public static class CSharpFunctionCallValidator
     {
         private enum States
@@ -239,6 +299,11 @@ namespace LibLSLCC.CSharp
         }
 
 
+        /// <summary>
+        /// Parses and validates a string as a CSharp method call.
+        /// </summary>
+        /// <param name="signature">The method call signature, without a semi-colon at the end.</param>
+        /// <returns>The parse/validation result.  <see cref="CSharpFunctionCallValidationResult"/></returns>
         public static CSharpFunctionCallValidationResult Validate(string signature)
         {
             var result = new CSharpFunctionCallValidationResult {Success = true};

@@ -50,6 +50,11 @@ using System.Linq;
 
 namespace LibLSLCC.Collections
 {
+    /// <summary>
+    /// Observable and bindable dictionary implementation.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
     public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged,
         INotifyPropertyChanged
     {
@@ -96,39 +101,65 @@ namespace LibLSLCC.Collections
 
         private readonly KeyedDictCollection _keyed;
 
+
+
+        /// <summary>
+        /// Construct an empty ObservableDictionary.
+        /// </summary>
         public ObservableDictionary()
         {
             _keyed = new KeyedDictCollection();
         }
 
 
+        /// <summary>
+        /// Construct an observable dictionary from an existing dictionary.
+        /// </summary>
+        /// <param name="other">The other dictionary.</param>
         public ObservableDictionary(IDictionary<TKey, TValue> other)
         {
             _keyed = new KeyedDictCollection(other);
         }
 
+        /// <summary>
+        /// Construct an observable dictionary from an existing dictionary and a key comparer.
+        /// </summary>
+        /// <param name="other">The other dictionary.</param>
+        /// <param name="comparer">A comparer.</param>
         public ObservableDictionary(IDictionary<TKey, TValue> other, IEqualityComparer<TKey> comparer)
         {
             _keyed = new KeyedDictCollection(other, comparer);
         }
 
-
+        /// <summary>
+        /// Whether or not this collection is read only.  (<c>false</c>)
+        /// </summary>
         public bool IsReadOnly
         {
             get { return false; }
         }
 
+
+        /// <summary>
+        /// The keys currently in use in this dictionary.
+        /// </summary>
         public ICollection<TKey> Keys
         {
             get { return _keyed.Items.Select(x => x.Key).ToList(); }
         }
 
+        /// <summary>
+        /// The values currently in use in this dictionary
+        /// </summary>
         public ICollection<TValue> Values
         {
             get { return _keyed.Items.Select(x => x.Value).ToList(); }
         }
 
-
+        /// <summary>
+        /// Returns an enumerator over the key value pairs in this dictionary.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return _keyed.Select(x => x).GetEnumerator();
@@ -149,6 +180,10 @@ namespace LibLSLCC.Collections
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
+
+        /// <summary>
+        /// Clear the dictionary.
+        /// </summary>
         public void Clear()
         {
             int cnt = _keyed.Count;
@@ -163,11 +198,21 @@ namespace LibLSLCC.Collections
             }
         }
 
+        /// <summary>
+        /// Check if this dictionary contains a specific key value pair.
+        /// </summary>
+        /// <param name="item">The pair to check for.</param>
+        /// <returns><c>true</c> if this dictionary contains the specified pair.</returns>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             return _keyed.Contains(item);
         }
 
+        /// <summary>
+        /// Copies the key value pairs in this dictionary to an array starting at <paramref name="arrayIndex"/>.
+        /// </summary>
+        /// <param name="array">The array to copy to.</param>
+        /// <param name="arrayIndex">The index in <paramref name="arrayIndex"/> at which to start copying</param>
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             _keyed.CopyTo(array, arrayIndex);
@@ -175,28 +220,41 @@ namespace LibLSLCC.Collections
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
         {
-            if (_keyed.Remove(item))
-            {
-                OnPropertyChanged("Count");
-                OnPropertyChanged("Item[]");
-                OnPropertyChanged("Values");
-                OnPropertyChanged("Keys");
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
-                return true;
-            }
-            return false;
+            if (!_keyed.Remove(item)) return false;
+
+            OnPropertyChanged("Count");
+            OnPropertyChanged("Item[]");
+            OnPropertyChanged("Values");
+            OnPropertyChanged("Keys");
+
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+
+            return true;
         }
 
+        /// <summary>
+        /// The number of items currently in this dictionary.
+        /// </summary>
         public int Count
         {
             get { return _keyed.Count; }
         }
 
+        /// <summary>
+        /// Check if this dictionary contains the specified key.
+        /// </summary>
+        /// <param name="key">The key to check for.</param>
+        /// <returns><c>true</c> if this dictionary contains the specified key.</returns>
         public bool ContainsKey(TKey key)
         {
             return _keyed.Contains(key);
         }
 
+        /// <summary>
+        /// Add a value with the given key to this dictionary.
+        /// </summary>
+        /// <param name="key">The key to use.</param>
+        /// <param name="value">The value to associate with the key.</param>
         public void Add(TKey key, TValue value)
         {
             _keyed.Add(new KeyValuePair<TKey, TValue>(key, value));
@@ -210,6 +268,12 @@ namespace LibLSLCC.Collections
                 new KeyValuePair<TKey, TValue>(key, value)));
         }
 
+
+        /// <summary>
+        /// Remove a value from this dictionary given its key.
+        /// </summary>
+        /// <param name="key">The key the value is associated with.</param>
+        /// <returns><c>true</c> if the key value pair was removed, <c>false</c> if the key was not found.</returns>
         public bool Remove(TKey key)
         {
             if (_keyed.Contains(key))
@@ -231,7 +295,12 @@ namespace LibLSLCC.Collections
             return false;
         }
 
-
+        /// <summary>
+        /// Attempt to get the value associated with a given key.
+        /// </summary>
+        /// <param name="key">The key to try to get the value for.</param>
+        /// <param name="value">The found value is put here, otherwise this 'out' variable is assigned <c>null</c>.</param>
+        /// <returns><c>true</c> if the key existed and the value was found.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (_keyed.Contains(key))
@@ -243,6 +312,11 @@ namespace LibLSLCC.Collections
             return false;
         }
 
+        /// <summary>
+        /// Return a given value by its key.
+        /// </summary>
+        /// <param name="key">The key that is associated with the value.</param>
+        /// <returns>The value if it exists.</returns>
         public TValue this[TKey key]
         {
             get { return _keyed[key].Value; }
@@ -255,14 +329,13 @@ namespace LibLSLCC.Collections
                 _keyed.Dictionary[key] = newItem;
 
 
-                if (!_IsEqual(oldItem.Value, value))
-                {
-                    OnPropertyChanged("Item[]");
-                    OnPropertyChanged("Values");
+                if (_IsEqual(oldItem.Value, value)) return;
 
-                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
-                        oldItem, newItem, index));
-                }
+                OnPropertyChanged("Item[]");
+                OnPropertyChanged("Values");
+
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
+                    oldItem, newItem, index));
             }
         }
 
@@ -271,8 +344,15 @@ namespace LibLSLCC.Collections
             return EqualityComparer<TValue>.Default.Equals(left, right);
         }
 
+        /// <summary>
+        /// This event is raised when this dictionary's item collection is changed.
+        /// </summary>
         public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
 
+        /// <summary>
+        /// This event is raised when this dictionary's item collection is changed.
+        /// </summary>
+        /// <param name="e"></param>
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             if (CollectionChanged != null)
@@ -281,8 +361,15 @@ namespace LibLSLCC.Collections
             }
         }
 
+        /// <summary>
+        /// This event is raised when a property of this dictionary changes. (such as Count, Item[], Values, or Keys)
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+
+        /// <summary>
+        /// This event is raised when a property of this dictionary changes. (such as Count, Item[], Values, or Keys)
+        /// </summary>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;

@@ -54,6 +54,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLTypecastExprNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLTypecastExprNode : ILSLTypecastExprNode, ILSLExprNode
     {
 
@@ -93,7 +96,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
+        /// <summary>
+        /// Create an <see cref="LSLTypecastExprNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
         public LSLTypecastExprNode(LSLTypecastExprNode other)
         {
             if (other == null)
@@ -149,6 +155,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public string CastToTypeString { get; private set; }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLTypecastExprNode GetError(LSLSourceCodeRange sourceRange)
         {

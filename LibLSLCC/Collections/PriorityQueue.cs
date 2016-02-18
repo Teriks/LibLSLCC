@@ -508,6 +508,11 @@ namespace LibLSLCC.Collections
 
         #endregion
 
+
+        /// <summary>
+        /// Create a shallow clone of this priority queue.
+        /// </summary>
+        /// <returns>A shallow clone of this priority queue.</returns>
         public virtual object Clone()
         {
             var instance = new PriorityQueue<TPriority, TValue>(_comparer);

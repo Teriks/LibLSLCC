@@ -50,12 +50,35 @@ namespace LibLSLCC.CSharp
     /// </summary>
     public enum MemberAccessibilityLevel
     {
+        /// <summary>
+        /// public accessibility
+        /// </summary>
         Public,
+
+        /// <summary>
+        /// default accessibility
+        /// </summary>
         Default,
+
+        /// <summary>
+        /// private accessibility
+        /// </summary>
         Private,
+
+        /// <summary>
+        /// internal accessibility
+        /// </summary>
         Internal,
+
+        /// <summary>
+        /// protected accessibility
+        /// </summary>
         Protected,
-        ProtectedInternal,
+
+        /// <summary>
+        /// protected internal accessibility
+        /// </summary>
+        ProtectedInternal
     }
 
 

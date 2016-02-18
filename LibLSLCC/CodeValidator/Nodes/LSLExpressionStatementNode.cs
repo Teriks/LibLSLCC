@@ -54,6 +54,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLExpressionStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLExpressionStatementNode : ILSLExpressionStatementNode, ILSLCodeStatement
     {
 // ReSharper disable UnusedParameter.Local
@@ -89,7 +92,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
+        /// <summary>
+        /// The top expression node that represents the expression in the statement.
+        /// </summary>
         public ILSLExprNode Expression { get; private set; }
 
 
@@ -120,6 +125,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public int ScopeId { get; set; }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLExpressionStatementNode GetError(LSLSourceCodeRange sourceRange)
         {

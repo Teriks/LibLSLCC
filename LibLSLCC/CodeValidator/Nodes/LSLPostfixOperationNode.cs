@@ -54,6 +54,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLPostfixOperationNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLPostfixOperationNode : ILSLPostfixOperationNode, ILSLExprNode
     {
 
@@ -92,6 +95,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
+        /// <summary>
+        /// Create an <see cref="LSLPostfixOperationNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
         public LSLPostfixOperationNode(LSLPostfixOperationNode other)
         {
             if (other == null)
@@ -147,6 +154,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return LeftExpression; }
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLPostfixOperationNode GetError(LSLSourceCodeRange sourceRange)
         {

@@ -105,6 +105,10 @@ namespace LibLSLCC.Formatter.Visitor
         /// </summary>
         public LSLCodeFormatterVisitor(LSLCodeFormatterSettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
             Settings = settings;
         }
 
@@ -219,23 +223,25 @@ namespace LibLSLCC.Formatter.Visitor
         }
 
         /// <summary>
-        /// Writes formated code to a TextWriter as a given <see cref="ILSLCompilationUnitNode"/> is visited.
-        /// A reference to the original source code text is required.
+        /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, <paramref name="sourceReference"/> is only required if you want to keep comments.
         /// </summary>
-        /// <param name="sourceReference">A reference to the original source code text.</param>
-        /// <param name="node">The <see cref="ILSLCompilationUnitNode"/> that was created from the source code text.  Most likely by <see cref="LSLCodeValidator"/>.</param>
-        /// <param name="writer">The TextWriter to write the formatted code to.</param>
-        /// <param name="closeStream">Whether or not to call .Close() on the TextWriter when done writing to it.</param>
+        /// <param name="sourceReference">The source code of the script, only necessary if comments exist.  Passing <c>null</c> will cause all comments to be stripped, regardless of formatter settings.</param>
+        /// <param name="node">The top level <see cref="ILSLCompilationUnitNode"/> to format.</param>
+        /// <param name="writer">The writer to write the formated source code to.</param>
+        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
         public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
-            bool closeStream = true)
+            bool closeStream = false)
         {
             try
             {
                 _sourceReference = sourceReference;
 
-                foreach (var comment in node.Comments)
+                if (_sourceReference != null && !Settings.RemoveComments)
                 {
-                    _comments.AddLast(comment);
+                    foreach (var comment in node.Comments)
+                    {
+                        _comments.AddLast(comment);
+                    }
                 }
 
                 Writer = writer;
@@ -925,9 +931,6 @@ namespace LibLSLCC.Formatter.Visitor
 
         private IEnumerable<LSLComment> GetComments(int sourceRangeStart, int sourceRangeEnd)
         {
-            if(Settings.RemoveComments) yield break;
-
-
             var first = _comments.First;
 
             while (first != null)
@@ -2114,7 +2117,7 @@ namespace LibLSLCC.Formatter.Visitor
                         newLine = Settings.ForLoopBracesOnNewLine;
 
                         spaceBeforeClosingBrace =
-                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForLoopBrace);
 
                         if (_wroteCommentAfterControlChainMember)
                         {
@@ -2122,13 +2125,13 @@ namespace LibLSLCC.Formatter.Visitor
                             {
                                 spaceBeforeOpeningBrace =
                                     LSLFormatTools.CreateTabCorrectSpaceString(
-                                        Settings.SpacesBeforeOpeningForBrace);
+                                        Settings.SpacesBeforeOpeningForLoopBrace);
                             }
                         }
                         else
                         {
                             spaceBeforeOpeningBrace =
-                                LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
+                                LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForLoopBrace);
                         }
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.DoLoop)
@@ -2351,7 +2354,7 @@ namespace LibLSLCC.Formatter.Visitor
                     newLine = Settings.ForLoopBracesOnNewLine;
 
                     spaceBeforeClosingBrace =
-                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForBrace);
+                        LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingForLoopBrace);
 
                     if (_wroteCommentAfterControlChainMember)
                     {
@@ -2359,13 +2362,13 @@ namespace LibLSLCC.Formatter.Visitor
                         {
                             spaceBeforeOpeningBrace =
                                 LSLFormatTools.CreateTabCorrectSpaceString(
-                                    Settings.SpacesBeforeOpeningForBrace);
+                                    Settings.SpacesBeforeOpeningForLoopBrace);
                         }
                     }
                     else
                     {
                         spaceBeforeOpeningBrace =
-                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForBrace);
+                            LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningForLoopBrace);
                     }
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.DoLoop)

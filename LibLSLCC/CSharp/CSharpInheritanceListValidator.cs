@@ -51,6 +51,9 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CSharp
 {
 
+    /// <summary>
+    /// Parse/validation result returned by <see cref="CSharpInheritanceListValidator.Validate"/>.
+    /// </summary>
     public sealed class CSharpInheritanceListValidationResult
     {
         /// <summary>
@@ -147,7 +150,14 @@ namespace LibLSLCC.CSharp
     /// </summary>
     public sealed class CSharpTypeConstraintValidationResult
     {
+        /// <summary>
+        /// The type of generic constraint used.
+        /// </summary>
         public CSharpTypeConstraintType ConstraintType { get; internal set; }
+
+        /// <summary>
+        /// The type signature used in the constraint, if <see cref="ConstraintType"/> is <see cref="CSharpTypeConstraintType.Type"/>.
+        /// </summary>
         public CSharpClassNameValidationResult TypeSignature { get; internal set; }
 
 
@@ -236,7 +246,9 @@ namespace LibLSLCC.CSharp
         }
     }
 
-
+    /// <summary>
+    /// Static class containing utilities for validating a CSharp inheritance list string.
+    /// </summary>
     public static class CSharpInheritanceListValidator
     {
         //type -> regular|generic

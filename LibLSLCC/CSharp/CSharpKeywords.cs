@@ -46,8 +46,14 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CSharp
 {
+    /// <summary>
+    /// Static class with utilities for identifying and dealing with CSharp keywords
+    /// </summary>
     public static class CSharpKeywords
     {
+        /// <summary>
+        /// A map of built in type names to their corresponding <see cref="Type"/>.
+        /// </summary>
         public static readonly IReadOnlyHashMap<string, Type> BuiltInTypeMap = new HashMap<string, Type>()
         {
             {"bool", typeof (bool)},
@@ -95,6 +101,9 @@ namespace LibLSLCC.CSharp
         }
 
 
+        /// <summary>
+        /// A hashed set of non contextual CSharp keywords/reserved words.
+        /// </summary>
         public static readonly IReadOnlyHashedSet<string> NonContextualKeywordSet = new HashedSet<string>()
         {
             "abstract",
@@ -176,6 +185,11 @@ namespace LibLSLCC.CSharp
             "while"
         };
 
+        /// <summary>
+        /// Determines whether a string is a non contextual CSharp keyword/reserved word.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <returns></returns>
         public static bool IsNonContextualKeyword(string str)
         {
             return NonContextualKeywordSet.Contains(str);

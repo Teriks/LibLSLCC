@@ -59,7 +59,7 @@ namespace LibLSLCC.Collections
         /// The value associated with the given key.
         /// </value>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns>The value associated with the specified key</returns>
         TValue this[TKey key] { get; }
 
         /// <summary>

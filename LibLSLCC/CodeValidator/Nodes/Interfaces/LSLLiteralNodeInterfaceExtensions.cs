@@ -45,6 +45,9 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
+    /// <summary>
+    /// Extensions for LSL literal nodes.
+    /// </summary>
     public static class LSLLiteralNodeInterfaceExtensions
     {
         /// <summary>

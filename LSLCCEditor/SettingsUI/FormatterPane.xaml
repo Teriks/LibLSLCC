@@ -177,7 +177,7 @@
                     <StackPanel>
                         <Label>For Loops:</Label>
                         <xctk:IntegerUpDown
-                            Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningForBrace}" />
+                            Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeOpeningForLoopBrace}" />
                         <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.ForLoopBracesOnNewLine}" Margin="0,0,10,0">:On New Line</CheckBox>
                         <CheckBox IsChecked="{Binding Path=CurrentFormatterSettings.AddSpacesBeforeOpeningForLoopBraceAfterCommentBreak}">:Spaces After Comment Break</CheckBox>
                     </StackPanel>
@@ -246,7 +246,7 @@
                     <StackPanel>
                         <Label>For Loops:</Label>
                         <xctk:IntegerUpDown
-                            Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeClosingForBrace}" />
+                            Value="{Binding  Path=CurrentFormatterSettings.SpacesBeforeClosingForLoopBrace}" />
                     </StackPanel>
                     <StackPanel>
                         <Label>While Loops:</Label>

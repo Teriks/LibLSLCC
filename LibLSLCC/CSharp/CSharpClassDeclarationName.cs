@@ -100,6 +100,11 @@ namespace LibLSLCC.CSharp
         }
 
 
+        /// <summary>
+        /// Implicitly converts a string into a <see cref="CSharpClassDeclarationName"/> by parsing it.
+        /// </summary>
+        /// <param name="fullSignature">The string representing the full signature of the class declaration name.</param>
+        /// <returns>The newly created <see cref="CSharpClassDeclarationName"/> from the string.</returns>
         public static implicit operator CSharpClassDeclarationName(string fullSignature)
         {
             return new CSharpClassDeclarationName(fullSignature);

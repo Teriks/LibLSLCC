@@ -138,6 +138,11 @@ namespace LibLSLCC.Collections
             return ((IEnumerable) _items).GetEnumerator();
         }
 
+        /// <summary>
+        /// Add and item to this hashed set.
+        /// </summary>
+        /// <param name="item">The item to add.</param>
+        /// <returns><c>true</c> if the item was added, <c>false</c> if it already existed in the hashed set.</returns>
         public bool Add(T item)
         {
             return _items.Add(item);
@@ -314,7 +319,10 @@ namespace LibLSLCC.Collections
             return _items.SetEquals(other);
         }
 
-
+        /// <summary>
+        /// Returns a shallow copy of this hashed set.
+        /// </summary>
+        /// <returns>A shallow copy of this hashed set.</returns>
         public virtual object Clone()
         {
             return new HashSet<T>(this.AsEnumerable());

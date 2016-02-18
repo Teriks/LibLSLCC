@@ -50,6 +50,12 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// </summary>
     public sealed class LSLComment
     {
+        /// <summary>
+        /// Construct a comment object from comment text, type and source code range.
+        /// </summary>
+        /// <param name="text">The text that up the entire comment, including the special comment start/end sequences.</param>
+        /// <param name="type">The comment type.  <see cref="LSLCommentType"/></param>
+        /// <param name="sourceCodeRange">The source code range that the comment occupies.</param>
         public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceCodeRange)
         {
             Text = text;
@@ -73,6 +79,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         public LSLCommentType Type { get; private set; }
 
+
+        /// <summary>
+        /// Returns the comment text.
+        /// </summary>
+        /// <seealso cref="Text"/>
+        /// <returns><see cref="Text"/></returns>
         public override string ToString()
         {
             return Text;

@@ -46,18 +46,39 @@ using System.Reflection;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// An implementation of <see cref="IDefaultSettingsValueFactory"/> that gets its 
+    /// default values by cloning from a static instance of the provided generic type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class CloningDefaultValueFactory<T> : IDefaultSettingsValueFactory where T : new()
     {
         private static readonly T Default = new T();
 
         // ReSharper disable once StaticMemberInGenericType
         private static readonly DefaultCloner Cloner = new DefaultCloner();
-        public bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
+
+
+        /// <summary>
+        /// The default implementation simply checks the property value for <c>null</c>.
+        /// </summary>
+        /// <param name="member">The member of the settings field/property being checked for a necessary reset.</param>
+        /// <param name="objectInstance">The object instance the settings field/property belongs to.</param>
+        /// <param name="settingValue">The value of the settings field/property being checked.</param>
+        /// <returns></returns>
+        public virtual bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
         {
             return settingValue == null;
         }
 
-        public object GetDefaultValue(MemberInfo member, object objectInstance)
+        /// <summary>
+        /// Returns the default value for a given settings member (field/property).
+        /// </summary>
+        /// <param name="member">The <see cref="FieldInfo"/> or <see cref="PropertyInfo"/> of the settings field/property.</param>
+        /// <param name="objectInstance">The settings object instance.</param>
+        /// <returns>The default value for the field/property.</returns>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="member"/> is not a <see cref="FieldInfo"/> or <see cref="PropertyInfo"/> object.</exception>
+        public virtual object GetDefaultValue(MemberInfo member, object objectInstance)
         {
             var prop = member as PropertyInfo;
             var field = member as FieldInfo;

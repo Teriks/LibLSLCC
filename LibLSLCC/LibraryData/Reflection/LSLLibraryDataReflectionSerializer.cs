@@ -53,47 +53,87 @@ using LibLSLCC.Utility;
 
 namespace LibLSLCC.LibraryData.Reflection
 {
+    /// <summary>
+    /// EventArgs for FilterMethod events in <see cref="LSLLibraryDataReflectionSerializer"/>.
+    /// </summary>
     public sealed class AutoFilteredMethodEventArgs : EventArgs
     {
+        /// <summary>
+        /// The method that was filtered.
+        /// </summary>
         public MethodInfo Member { get; private set; }
 
 
+        /// <summary>
+        /// Construct a filtered method event args object given the filtered <see cref="MethodInfo"/>.
+        /// </summary>
+        /// <param name="member">The <see cref="MethodInfo"/> that was filtered.</param>
         public AutoFilteredMethodEventArgs(MethodInfo member)
         {
             Member = member;
         }
     }
 
+    /// <summary>
+    /// EventArg for FilterConstant events in <see cref="LSLLibraryDataReflectionSerializer"/>.
+    /// </summary>
     public sealed class AutoFilteredConstantEventArgs : EventArgs
     {
+        /// <summary>
+        /// The member that was filtered.
+        /// </summary>
         public MemberInfo Member { get; private set; }
 
 
+        /// <summary>
+        /// Construct a filtered constant event args object given the filtered <see cref="MemberInfo"/>.
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> that was filtered.</param>
         public AutoFilteredConstantEventArgs(MemberInfo member)
         {
             Member = member;
         }
     }
 
+    /// <summary>
+    /// EventArg for FilterConstantField events in <see cref="LSLLibraryDataReflectionSerializer"/>.
+    /// </summary>
     public sealed class AutoFilteredConstantFieldEventArgs : EventArgs
     {
+
+        /// <summary>
+        /// Construct a filtered constant event args object given the filtered <see cref="FieldInfo"/>.
+        /// </summary>
+        /// <param name="member">The <see cref="FieldInfo"/> that was filtered.</param>
         public AutoFilteredConstantFieldEventArgs(FieldInfo member)
         {
             Member = member;
         }
 
-
+        /// <summary>
+        /// The member that was filtered.
+        /// </summary>
         public FieldInfo Member { get; private set; }
     }
 
+    /// <summary>
+    /// EventArg for FilterConstantProperty events in <see cref="LSLLibraryDataReflectionSerializer"/>.
+    /// </summary>
     public sealed class AutoFilteredConstantPropertyEventArgs : EventArgs
     {
+
+        /// <summary>
+        /// Construct a filtered constant event args object given the filtered <see cref="PropertyInfo"/>.
+        /// </summary>
+        /// <param name="member">The <see cref="PropertyInfo"/> that was filtered.</param>
         public AutoFilteredConstantPropertyEventArgs(PropertyInfo member)
         {
             Member = member;
         }
 
-
+        /// <summary>
+        /// The member that was filtered.
+        /// </summary>
         public PropertyInfo Member { get; private set; }
     }
 
@@ -977,6 +1017,14 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
 
+        /// <summary>
+        /// <para>
+        /// Invokes <see cref="OnFilterNullConstant"/> first.
+        /// Then Invokes <see cref="OnFilterNullConstantProperty"/> if <paramref name="member"/> is a <see cref="PropertyInfo"/> object.
+        /// Otherwise, invokes <see cref="OnFilterNullConstantField"/> if <paramref name="member"/> is a <see cref="FieldInfo"/> object.
+        /// </para>
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> of the member being filtered.</param>
         protected virtual void InvokeOnFilterNullConstant(MemberInfo member)
         {
             var handler = OnFilterNullConstant;
@@ -1001,6 +1049,15 @@ namespace LibLSLCC.LibraryData.Reflection
             }
         }
 
+
+        /// <summary>
+        /// <para>
+        /// Invokes <see cref="OnFilterInvalidValueString"/> first.
+        /// Then Invokes <see cref="OnFilterInvalidValueStringProperty"/> if <paramref name="member"/> is a <see cref="PropertyInfo"/> object.
+        /// Otherwise, invokes <see cref="OnFilterInvalidValueStringField"/> if <paramref name="member"/> is a <see cref="FieldInfo"/> object.
+        /// </para>
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> of the member being filtered.</param>
         protected virtual void InvokeOnFilterInvalidValueString(MemberInfo member)
         {
             var handler = OnFilterInvalidValueString;
@@ -1025,6 +1082,15 @@ namespace LibLSLCC.LibraryData.Reflection
             }
         }
 
+
+        /// <summary>
+        /// <para>
+        /// Invokes <see cref="OnFilterValueStringConversionFailure"/> first.
+        /// Then Invokes <see cref="OnFilterValueStringConversionFailureProperty"/> if <paramref name="member"/> is a <see cref="PropertyInfo"/> object.
+        /// Otherwise, invokes <see cref="OnFilterValueStringConversionFailureField"/> if <paramref name="member"/> is a <see cref="FieldInfo"/> object.
+        /// </para>
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> of the member being filtered.</param>
         protected virtual void InvokeOnFilterValueStringConversionFailure(MemberInfo member)
         {
             var handler = OnFilterValueStringConversionFailure;
@@ -1049,6 +1115,14 @@ namespace LibLSLCC.LibraryData.Reflection
             }
         }
 
+        /// <summary>
+        /// <para>
+        /// Invokes <see cref="OnFilterConstantWithUnmappedType"/> first.
+        /// Then Invokes <see cref="OnFilterConstantPropertyWithUnmappedType"/> if <paramref name="member"/> is a <see cref="PropertyInfo"/> object.
+        /// Otherwise, invokes <see cref="OnFilterConstantFieldWithUnmappedType"/> if <paramref name="member"/> is a <see cref="FieldInfo"/> object.
+        /// </para>
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> of the member being filtered.</param>
         protected virtual void InvokeOnFilterConstantWithUnmappedType(MemberInfo member)
         {
             var handler = OnFilterConstantWithUnmappedType;
@@ -1073,12 +1147,21 @@ namespace LibLSLCC.LibraryData.Reflection
             }
         }
 
+        /// <summary>
+        /// Invokes <see cref="OnFilterMethodWithUnmappedParamType"/>.
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> of the member being filtered.</param>
         protected virtual void InvokeOnFilterMethodWithUnmappedParamType(MethodInfo member)
         {
             var handler = OnFilterMethodWithUnmappedParamType;
             if (handler != null) handler(this, new AutoFilteredMethodEventArgs(member));
         }
 
+
+        /// <summary>
+        /// Invokes <see cref="OnFilterMethodWithUnmappedReturnType"/>.
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> of the member being filtered.</param>
         protected virtual void InvokeOnFilterMethodWithUnmappedReturnType(MethodInfo member)
         {
             var handler = OnFilterMethodWithUnmappedReturnType;

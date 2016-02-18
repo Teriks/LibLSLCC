@@ -137,7 +137,11 @@ namespace LibLSLCC.CSharp
             }
         }
 
-
+        /// <summary>
+        /// Implicitly converts a string into a <see cref="CSharpInheritanceList"/> by parsing it.
+        /// </summary>
+        /// <param name="fullSignature">The string representing the full inheritance list.</param>
+        /// <returns>The newly created <see cref="CSharpInheritanceList"/> from the string.</returns>
         public static implicit operator CSharpInheritanceList(string fullSignature)
         {
             return new CSharpInheritanceList(fullSignature);

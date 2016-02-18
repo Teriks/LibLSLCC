@@ -54,6 +54,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLWhileLoopNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLWhileLoopNode : ILSLWhileLoopNode, ILSLCodeStatement
     {
 // ReSharper disable UnusedParameter.Local
@@ -101,11 +104,15 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool IsSingleBlockStatement { get; private set; }
 
-
+        /// <summary>
+        /// The condition expression that controls the loop.
+        /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
 
 
-
+        /// <summary>
+        /// The code scope node that represents the code scope of the loop body.
+        /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
 
 
@@ -194,7 +201,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
 
 
-
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLWhileLoopNode GetError(LSLSourceCodeRange sourceRange)
         {

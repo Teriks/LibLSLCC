@@ -56,54 +56,86 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.LibraryData
 {
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryConstantDefinition"/>
+    /// </summary>
     public class SerializeConstantSignatureEventArgs : EventArgs
 
     {
+        /// <summary>
+        /// The <see cref="LSLLibraryConstantSignature"/> node that was read.
+        /// </summary>
         public LSLLibraryConstantSignature Signature { get; private set; }
 
 
+        /// <summary>
+        /// Constructs the event args around a given <see cref="LSLLibraryConstantSignature"/> that was just read.
+        /// </summary>
+        /// <param name="signature"></param>
         public SerializeConstantSignatureEventArgs(LSLLibraryConstantSignature signature)
         {
             Signature = signature;
         }
     }
 
-
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryEventHandlerDefinition"/>
+    /// </summary>
     public class SerializeEventHandlerSignatureEventArgs : EventArgs
 
     {
+        /// <summary>
+        /// Constructs the event args around a given <see cref="LSLLibraryEventSignature"/> that was just read.
+        /// </summary>
         public SerializeEventHandlerSignatureEventArgs(LSLLibraryEventSignature eventSignature)
         {
             EventSignature = eventSignature;
         }
 
-
+        /// <summary>
+        /// The <see cref="LSLLibraryEventSignature"/> node that was read.
+        /// </summary>
         public LSLLibraryEventSignature EventSignature { get; private set; }
     }
 
-
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryFunctionDefinition"/>
+    /// </summary>
     public class SerializeFunctionSignatureEventArgs : EventArgs
 
     {
+        /// <summary>
+        /// Constructs the event args around a given <see cref="LSLLibraryFunctionSignature"/> that was just read.
+        /// </summary>
         public SerializeFunctionSignatureEventArgs(LSLLibraryFunctionSignature functionSignature)
         {
             FunctionSignature = functionSignature;
         }
 
-
+        /// <summary>
+        /// The <see cref="LSLLibraryFunctionSignature"/> node that was read.
+        /// </summary>
         public LSLLibraryFunctionSignature FunctionSignature { get; private set; }
     }
 
-
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibrarySubsetDescription"/>
+    /// </summary>
     public class SerializeSubsetDescriptionEventArgs : EventArgs
 
     {
+        /// <summary>
+        /// Constructs the event args around a given <see cref="LSLLibrarySubsetDescription"/> that was just read.
+        /// </summary>
         public SerializeSubsetDescriptionEventArgs(LSLLibrarySubsetDescription subsetDescription)
         {
             SubsetDescription = subsetDescription;
         }
 
 
+        /// <summary>
+        /// The <see cref="LSLLibrarySubsetDescription"/> node that was read.
+        /// </summary>
         public LSLLibrarySubsetDescription SubsetDescription { get; private set; }
     }
 

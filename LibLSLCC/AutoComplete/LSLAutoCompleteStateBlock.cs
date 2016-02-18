@@ -45,8 +45,16 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.AutoComplete
 {
+    /// <summary>
+    /// Represents a state block parsed by the auto complete parser.
+    /// </summary>
     public sealed class LSLAutoCompleteStateBlock
     {
+        /// <summary>
+        /// Construct an auto complete state block given a state name and source code range.
+        /// </summary>
+        /// <param name="name">The name of the state.</param>
+        /// <param name="range">The source code range the state block occupies.</param>
         public LSLAutoCompleteStateBlock(string name, LSLSourceCodeRange range)
         {
             Name = name;
@@ -54,7 +62,15 @@ namespace LibLSLCC.AutoComplete
         }
 
 
+        /// <summary>
+        /// The name of the state.
+        /// </summary>
         public string Name { get; private set; }
+
+
+        /// <summary>
+        /// The source code range the state block occupies.
+        /// </summary>
         public LSLSourceCodeRange SourceCodeRange { get; private set; }
     }
 }

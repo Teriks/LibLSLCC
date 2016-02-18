@@ -55,6 +55,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLStateScopeNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLStateScopeNode : ILSLStateScopeNode, ILSLSyntaxTreeNode
     {
         private readonly GenericArray<LSLEventHandlerNode> _eventHandlers = new GenericArray<LSLEventHandlerNode>();
@@ -161,7 +164,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-
+        /// <summary>
+        /// A list of event handlers nodes for each event handler that was used in the state.  
+        /// This should never be empty.
+        /// </summary>
         public IReadOnlyGenericArray<LSLEventHandlerNode> EventHandlers
         {
             get { return _eventHandlers; }
@@ -197,12 +203,23 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return _eventHandlers; }
         }
 
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLStateScopeNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLStateScopeNode(sourceRange, Err.Err);
         }
 
+        /// <summary>
+        /// Adds an <see cref="LSLEventHandlerNode"/> as a child of this state scope node.
+        /// </summary>
+        /// <param name="node">The event handler node to add.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public void AddEventHandler(LSLEventHandlerNode node)
         {
             if (node == null)
@@ -261,6 +278,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public LSLSourceCodeRange StateNameSourceCodeRange { get; private set; }
 
+        /// <summary>
+        /// The source code range where the state keyword is located.
+        /// For the default state, this will be the location of the 'default' keyword.
+        /// </summary>
         public LSLSourceCodeRange StateKeywordSourceCodeRange { get; private set; }
 
 

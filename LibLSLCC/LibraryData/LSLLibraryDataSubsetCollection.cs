@@ -50,42 +50,81 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.LibraryData
 {
 
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataSubsetCollection.OnSubsetAdded"/>
+    /// </summary>
     public class LibraryDataSubsetAddedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Constructs the event arguments using the name of the subset added.
+        /// </summary>
+        /// <param name="subsetName">The name of the subset added.</param>
         public LibraryDataSubsetAddedEventArgs(string subsetName)
         {
             SubsetName = subsetName;
         }
 
+        /// <summary>
+        /// The subset name added.
+        /// </summary>
         public string SubsetName { get; private set; }
     }
 
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataSubsetCollection.OnSubsetRemoved"/>
+    /// </summary>
     public class LibraryDataSubsetRemovedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Constructs the event arguments using the name of the subset removed.
+        /// </summary>
+        /// <param name="subsetName">The name of the subset removed.</param>
         public LibraryDataSubsetRemovedEventArgs(string subsetName)
         {
             SubsetName = subsetName;
         }
 
+        /// <summary>
+        /// The subset name removed.
+        /// </summary>
         public string SubsetName { get; private set; }
     }
 
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataSubsetCollection.OnSubsetsChanged"/>
+    /// </summary>
     public class LibraryDataSubsetsChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// The <see cref="LSLLibraryDataSubsetCollection"/> that was changed.
+        /// </summary>
         public LSLLibraryDataSubsetCollection Collection { get; private set; }
 
 
+        /// <summary>
+        /// Constructs the event arguments using a reference to the collection that was changed.
+        /// </summary>
+        /// <param name="collection">The collection that was changed.</param>
         public LibraryDataSubsetsChangedEventArgs(LSLLibraryDataSubsetCollection collection)
         {
             Collection = collection;
         }
     }
 
+    /// <summary>
+    /// EventArgs for <see cref="LSLLibraryDataSubsetCollection.OnSubsetsCleared"/>
+    /// </summary>
     public class LibraryDataSubsetsClearedEventArgs : EventArgs
     {
+        /// <summary>
+        /// The <see cref="LSLLibraryDataSubsetCollection"/> that was cleared.
+        /// </summary>
         public LSLLibraryDataSubsetCollection Collection { get; private set; }
 
-
+        /// <summary>
+        /// Constructs the event arguments using a reference to the collection that was cleared.
+        /// </summary>
+        /// <param name="collection">The collection that was cleared.</param>
         public LibraryDataSubsetsClearedEventArgs(LSLLibraryDataSubsetCollection collection)
         {
             Collection = collection;

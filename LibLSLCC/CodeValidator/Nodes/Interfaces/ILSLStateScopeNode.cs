@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
         /// <summary>
         /// A list of event handlers nodes for each event handler that was used in the state.  
-        /// This should never be empty unless syntax errors are present.
+        /// This should never be empty.
         /// </summary>
         IReadOnlyGenericArray<ILSLEventHandlerNode> EventHandlers { get; }
 

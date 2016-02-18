@@ -46,14 +46,35 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.Collections
 {
+    /// <summary>
+    /// <see cref="IEnumerable{T}"/> extensions.
+    /// </summary>
     public static class EnumerableExtensions
     {
+        /// <summary>
+        /// Find the minimum object in an <see cref="IEnumerable{T}"/> using a selection key.
+        /// </summary>
+        /// <param name="source">The <see cref="IEnumerable{T}"/> source.</param>
+        /// <param name="selector">The key selector function.</param>
+        /// <typeparam name="TSource">The type <see cref="IEnumerable{T}"/> enumerates over.</typeparam>
+        /// <typeparam name="TKey">The key type used in the MinBy comparison.</typeparam>
+        /// <returns>The smallest element found.</returns>
         public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source,
     Func<TSource, TKey> selector)
         {
             return source.MinBy(selector, Comparer<TKey>.Default);
         }
 
+
+        /// <summary>
+        /// Find the minimum object in an <see cref="IEnumerable{T}"/> using a selection key.
+        /// </summary>
+        /// <param name="source">The <see cref="IEnumerable{T}"/> source.</param>
+        /// <param name="selector">The key selector function.</param>
+        /// <param name="comparer">The comparer used to compare keys.</param>
+        /// <typeparam name="TSource">The type <see cref="IEnumerable{T}"/> enumerates over.</typeparam>
+        /// <typeparam name="TKey">The key type used in the MinBy comparison.</typeparam>
+        /// <returns>The smallest element found.</returns>
         public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source,
             Func<TSource, TKey> selector, IComparer<TKey> comparer)
         {
@@ -61,23 +82,25 @@ namespace LibLSLCC.Collections
             if (selector == null) throw new ArgumentNullException("selector");
             if (comparer == null) throw new ArgumentNullException("comparer");
 
-            using (IEnumerator<TSource> sourceIterator = source.GetEnumerator())
+            using (var sourceIterator = source.GetEnumerator())
             {
                 if (!sourceIterator.MoveNext())
                 {
                     throw new InvalidOperationException("Sequence was empty");
                 }
-                TSource min = sourceIterator.Current;
-                TKey minKey = selector(min);
+
+                var min = sourceIterator.Current;
+                var minKey = selector(min);
+
                 while (sourceIterator.MoveNext())
                 {
-                    TSource candidate = sourceIterator.Current;
-                    TKey candidateProjected = selector(candidate);
-                    if (comparer.Compare(candidateProjected, minKey) < 0)
-                    {
-                        min = candidate;
-                        minKey = candidateProjected;
-                    }
+                    var candidate = sourceIterator.Current;
+                    var candidateProjected = selector(candidate);
+
+                    if (comparer.Compare(candidateProjected, minKey) >= 0) continue;
+
+                    min = candidate;
+                    minKey = candidateProjected;
                 }
                 return min;
             }
@@ -85,6 +108,14 @@ namespace LibLSLCC.Collections
 
 
 
+        /// <summary>
+        /// Find the maximum object in an <see cref="IEnumerable{T}"/> using a selection key.
+        /// </summary>
+        /// <param name="source">The <see cref="IEnumerable{T}"/> source.</param>
+        /// <param name="selector">The key selector function.</param>
+        /// <typeparam name="TSource">The type <see cref="IEnumerable{T}"/> enumerates over.</typeparam>
+        /// <typeparam name="TKey">The key type used in the MaxBy comparison.</typeparam>
+        /// <returns>The largest element found.</returns>
         public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source,
             Func<TSource, TKey> selector)
         {
@@ -92,6 +123,15 @@ namespace LibLSLCC.Collections
         }
 
 
+        /// <summary>
+        /// Find the maximum object in an <see cref="IEnumerable{T}"/> using a selection key.
+        /// </summary>
+        /// <param name="source">The <see cref="IEnumerable{T}"/> source.</param>
+        /// <param name="selector">The key selector function.</param>
+        /// <param name="comparer">The comparer used to compare keys.</param>
+        /// <typeparam name="TSource">The type <see cref="IEnumerable{T}"/> enumerates over.</typeparam>
+        /// <typeparam name="TKey">The key type used in the MaxBy comparison.</typeparam>
+        /// <returns>The largest element found.</returns>
         public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source,
             Func<TSource, TKey> selector, IComparer<TKey> comparer)
         {
@@ -104,17 +144,19 @@ namespace LibLSLCC.Collections
                 {
                     throw new InvalidOperationException("Sequence contains no elements");
                 }
+
                 var max = sourceIterator.Current;
                 var maxKey = selector(max);
+
                 while (sourceIterator.MoveNext())
                 {
                     var candidate = sourceIterator.Current;
                     var candidateProjected = selector(candidate);
-                    if (comparer.Compare(candidateProjected, maxKey) > 0)
-                    {
-                        max = candidate;
-                        maxKey = candidateProjected;
-                    }
+
+                    if (comparer.Compare(candidateProjected, maxKey) <= 0) continue;
+
+                    max = candidate;
+                    maxKey = candidateProjected;
                 }
                 return max;
             }

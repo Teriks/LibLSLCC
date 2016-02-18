@@ -55,6 +55,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLVariableDeclarationNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLVariableDeclarationNode : ILSLVariableDeclarationNode, ILSLCodeStatement
     {
         private readonly GenericArray<LSLVariableNode> _references = new GenericArray<LSLVariableNode>();
@@ -74,6 +77,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
+        /// <summary>
+        /// Create an <see cref="LSLVariableDeclarationNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
         public LSLVariableDeclarationNode(LSLVariableDeclarationNode other)
         {
 
@@ -85,7 +92,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             IsSingleBlockStatement = other.IsSingleBlockStatement;
             DeclarationExpression = other.DeclarationExpression;
 
-            IsConstant = other.IsConstant;
             DeadCodeType = other.DeadCodeType;
 
             IsDeadCode = other.IsDeadCode;
@@ -122,8 +128,20 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public LSLVariableNode VariableNode { get; private set; }
 
+
+
+        /// <summary>
+        /// The expression used to initialize this variable declaration, this will be null if 'HasDeclarationExpression' is false.
+        /// If neither 'IsLocal' or 'IsGlobal' are true, than this property will always be null.
+        /// </summary>
         public ILSLExprNode DeclarationExpression { get; private set; }
 
+
+
+        /// <summary>
+        /// A list of variable nodes representing references to this variable declaration in the source code.  Or an empty list.
+        /// ILSLVariableNodes are used to represent a reference to a declared variable, and are present in the syntax tree at the site of reference.
+        /// </summary>
         public IReadOnlyGenericArray<LSLVariableNode> References
         {
             get { return _references; }
@@ -233,6 +251,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return References; }
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLVariableDeclarationNode GetError(LSLSourceCodeRange sourceRange)
         {
@@ -410,11 +435,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLCodeStatement Members
 
-        public bool IsConstant
-        {
-            get { return VariableNode.IsConstant; }
-            private set { VariableNode.IsConstant = value; }
-        }
 
 
         /// <summary>

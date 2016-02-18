@@ -48,7 +48,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     public interface ILSLLoopNode
     {
         /// <summary>
-        /// The condition expression that controls the loop, this could be null in the case of for-loops.
+        /// The condition expression that controls the loop.
         /// </summary>
         ILSLReadOnlyExprNode ConditionExpression { get; }
 

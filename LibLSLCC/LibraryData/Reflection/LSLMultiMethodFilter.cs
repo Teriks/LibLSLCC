@@ -107,6 +107,11 @@ namespace LibLSLCC.LibraryData.Reflection
             Filters.Add(filter);
         }
 
+
+        /// <summary>
+        /// Returns an enumerator that enumerates through the <see cref="ILSLMethodFilter"/> objects that have been added to this <see cref="LSLMultiMethodFilter"/>.
+        /// </summary>
+        /// <returns>An enumerator over the <see cref="ILSLMethodFilter"/> objects that have been added to this <see cref="LSLMultiMethodFilter"/>.</returns>
         public IEnumerator<ILSLMethodFilter> GetEnumerator()
         {
             return Filters.GetEnumerator();

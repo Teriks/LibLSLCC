@@ -51,6 +51,9 @@ namespace LibLSLCC.Collections
     /// </summary>
     public interface IObservableHashSetItem : INotifyPropertyChanging
     {
+        /// <summary>
+        /// The set of property names that are involved with generating the hash code for an object.
+        /// </summary>
         IReadOnlyHashedSet<string> HashEqualityPropertyNames { get; }
     }
 }

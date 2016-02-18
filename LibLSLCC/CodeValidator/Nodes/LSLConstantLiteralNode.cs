@@ -53,9 +53,22 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Base class for constant literal nodes.
+    /// </summary>
+    /// <seealso cref="LSLIntegerLiteralNode"/>
+    /// <seealso cref="LSLHexLiteralNode"/>
+    /// <seealso cref="LSLFloatLiteralNode"/>
+    /// <seealso cref="LSLStringLiteralNode"/>
     public abstract class LSLConstantLiteralNode : ILSLExprNode
     {
 // ReSharper disable UnusedParameter.Local
+
+        /// <summary>
+        /// Allows easy creation of an error state from derived nodes.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <param name="err">Dummy error enum parameter.</param>
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         protected LSLConstantLiteralNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
@@ -64,7 +77,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-
+        /// <summary>
+        /// Create an <see cref="LSLConstantLiteralNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
         protected LSLConstantLiteralNode(LSLConstantLiteralNode other)
         {
             RawText = other.RawText;
@@ -81,6 +97,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = other.HasErrors;
         }
 
+        /// <summary>
+        /// Create a constant literal node using the ANTLR context of the expression atom that represents the source literal.
+        /// </summary>
+        /// <param name="context">The ANTLR context of the source literal.</param>
+        /// <param name="type">The <see cref="LSLType"/> that the source code literal represents.</param>
         protected internal LSLConstantLiteralNode(LSLParser.Expr_AtomContext context, LSLType type)
         {
             RawText = context.children[0].GetText();
@@ -97,8 +118,14 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region Nested type: Err
 
+        /// <summary>
+        /// Dummy argument for the protected constructor <see cref="LSLConstantLiteralNode(LSLSourceCodeRange, Err)"/>.
+        /// </summary>
         protected enum Err
         {
+            /// <summary>
+            /// Dummy member
+            /// </summary>
             Err
         }
 

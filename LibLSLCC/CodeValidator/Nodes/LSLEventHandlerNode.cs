@@ -55,6 +55,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLEventHandlerNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLEventHandlerNode : ILSLEventHandlerNode, ILSLSyntaxTreeNode
     {
 // ReSharper disable UnusedParameter.Local
@@ -93,13 +96,28 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
+        /// <summary>
+        /// An in order list of parameter nodes that belong to the event handler, or an empty enumerable if none exist.
+        /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
             get { return ParameterListNode.Parameters; }
         }
 
+        /// <summary>
+        /// The code scope node that represents the code body of the event handler.
+        /// </summary>
         public LSLCodeScopeNode EventBodyNode { get; private set; }
+
+
+        /// <summary>
+        /// The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
+        /// It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
+        /// Ideally you should not be handling a syntax tree with syntax errors in it.
+        /// </summary>
         public LSLParameterListNode ParameterListNode { get; private set; }
+
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -134,22 +152,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return ParameterListNode; }
         }
 
+
         /// <summary>
-        /// Get an <see cref="LSLEventSignature "/> representation of the event handlers signature.
-        /// This could be null or throw an exception if the event handler node contains syntax errors.
-        /// Ideally you should not be handling a syntax tree with syntax errors in it.
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
         /// </summary>
-        /// <returns>An <see cref="LSLEventSignature "/> representing the signature of the event handler node.</returns>
-        public LSLEventSignature ToSignature()
-        {
-            if (Name == null || ParameterListNode == null || ParameterListNode.Parameters == null) return null;
-
-            return new LSLEventSignature(Name,
-                ParameterListNode.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
-        }
-
-
-
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLEventHandlerNode GetError(LSLSourceCodeRange sourceRange)
         {

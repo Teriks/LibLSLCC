@@ -57,7 +57,9 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
 
-
+    /// <summary>
+    /// Default <see cref="ILSLControlStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
     {
         private readonly List<LSLElseIfStatementNode> _elseIfStatements = new List<LSLElseIfStatementNode>();
@@ -138,6 +140,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             IfStatement.Parent = this;
         }
 
+        /// <summary>
+        /// The else statement child of this control statement node if one exists, otherwise null.
+        /// </summary>
         public LSLElseStatementNode ElseStatement
         {
             get { return _elseStatement; }
@@ -152,6 +157,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
+        /// <summary>
+        /// The if statement child of this control statement node if one exists, otherwise null.
+        /// </summary>
         public LSLIfStatementNode IfStatement
         {
             get { return _ifStatement; }
@@ -167,6 +175,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
+        /// <summary>
+        /// The else-if statement children of this control statement node if one exists, otherwise an empty enumerable.
+        /// </summary>
         public IEnumerable<LSLElseIfStatementNode> ElseIfStatements
         {
             get { return _elseIfStatements ?? new List<LSLElseIfStatementNode>(); }
@@ -237,12 +248,24 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public int ScopeId { get; set; }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLControlStatementNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLControlStatementNode(sourceRange, Err.Err);
         }
 
+        /// <summary>
+        /// Add an <see cref="LSLElseIfStatementNode"/> to this control statement chain.
+        /// </summary>
+        /// <param name="node">The <see cref="LSLElseIfStatementNode"/> to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="node"/> is <c>null</c>.</exception>
         public void AddElseIfStatement(LSLElseIfStatementNode node)
         {
             if (node == null)

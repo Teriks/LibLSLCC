@@ -88,6 +88,11 @@ namespace LibLSLCC.CSharp
             _fullSignature = name;
         }
 
+        /// <summary>
+        /// Implicitly converts a string into a CSharpNamespace.
+        /// </summary>
+        /// <param name="name">The name string to convert from.</param>
+        /// <returns></returns>
         public static implicit operator CSharpNamespace(string name)
         {
             return new CSharpNamespace(name);

@@ -55,6 +55,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLBinaryExpressionNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLBinaryExpressionNode : ILSLBinaryExpressionNode, ILSLExprNode
     {
 // ReSharper disable UnusedParameter.Local
@@ -67,6 +70,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
+        /// <summary>
+        /// Create an <see cref="LSLBinaryExpressionNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
         public LSLBinaryExpressionNode(LSLBinaryExpressionNode other)
         {
             Type = other.Type;
@@ -137,10 +144,16 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
 
+        /// <summary>
+        /// The expression tree on the left of side of the binary operation.
+        /// </summary>
         public ILSLExprNode LeftExpression { get; private set; }
 
 
 
+        /// <summary>
+        /// The expression tree on the right side of the binary operation.
+        /// </summary>
         public ILSLExprNode RightExpression { get; private set; }
 
 
@@ -177,6 +190,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return RightExpression; }
         }
 
+        /// <summary>
+        /// Gets an instance of this node that represents a syntax error in the node.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>An error form of the node.</returns>
         public static
             LSLBinaryExpressionNode GetError(LSLSourceCodeRange sourceRange)
         {

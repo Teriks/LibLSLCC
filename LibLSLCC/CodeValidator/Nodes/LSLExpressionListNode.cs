@@ -57,6 +57,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLExpressionListNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLExpressionListNode : ILSLExpressionListNode
     {
         private readonly GenericArray<LSLSourceCodeRange> _commaSourceCodeRanges = new GenericArray<LSLSourceCodeRange>();
@@ -74,6 +77,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
 
+        /// <summary>
+        /// Create an <see cref="LSLExpressionListNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
         public LSLExpressionListNode(LSLExpressionListNode other)
         {
             if (other == null)
@@ -192,6 +199,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return _commaSourceCodeRanges; }
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static LSLExpressionListNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLExpressionListNode(sourceRange, Err.Err);

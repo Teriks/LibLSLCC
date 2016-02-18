@@ -47,6 +47,9 @@ using System.Linq;
 
 namespace LibLSLCC.Collections
 {
+    /// <summary>
+    /// Extensions related to the <see cref="ICloneable"/> interface.
+    /// </summary>
     public static class CloneableExtensions
     {
         /// <summary>

@@ -54,6 +54,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLLabelStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLLabelStatementNode : ILSLLabelStatementNode, ILSLCodeStatement
     {
         private readonly GenericArray<LSLJumpStatementNode> _jumpsToHere = new GenericArray<LSLJumpStatementNode>();
@@ -81,14 +84,21 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-        public LSLCodeScopeNode ParentScope { get; set; }
 
+        /// <summary>
+        /// A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
+        /// </summary>
         public IReadOnlyGenericArray<LSLJumpStatementNode> JumpsToHere
         {
             get { return _jumpsToHere; }
         }
 
+        /// <summary>
+        /// If the scope has a return path, this is set to the node that causes the function to return.
+        /// it may be a return statement, or a control chain node.
+        /// </summary>
         public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
+
 
         IReadOnlyGenericArray<ILSLJumpStatementNode> ILSLLabelStatementNode.JumpsToHere
         {
@@ -137,11 +147,22 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
 
+        /// <summary>
+        /// Adds a <see cref="JumpsToHere"/> reference from a given <see cref="LSLJumpStatementNode"/>
+        /// </summary>
+        /// <param name="jump"></param>
         public void AddJumpToHere(LSLJumpStatementNode jump)
         {
             _jumpsToHere.Add(jump);
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLLabelStatementNode GetError(LSLSourceCodeRange sourceRange)
         {

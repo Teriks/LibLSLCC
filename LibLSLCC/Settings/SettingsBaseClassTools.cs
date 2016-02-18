@@ -45,8 +45,17 @@ using System;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// Misc tools for dealing with classes that derive from <see cref="SettingsBaseClass{T}"/>
+    /// </summary>
     public static class SettingsBaseClassTools
     {
+        /// <summary>
+        /// Detects if a type derives from the generic <see cref="SettingsBaseClass{T}"/>
+        /// </summary>
+        /// <param name="type">The type to test.</param>
+        /// <param name="baseType">Outputs the full generic type of the <see cref="SettingsBaseClass{T}"/> if the class derives from it, otherwise <c>null</c>.</param>
+        /// <returns><c>true</c> if the class derives from a form of <see cref="SettingsBaseClass{T}"/></returns>
         public static bool HasSettingsBase(Type type, out Type baseType)
         {
             var baseSearch = type.BaseType;
@@ -77,6 +86,11 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// Detects if a type derives from the generic <see cref="SettingsBaseClass{T}"/>
+        /// </summary>
+        /// <param name="type">The type to test.</param>
+        /// <returns><c>true</c> if the class derives from a form of <see cref="SettingsBaseClass{T}"/></returns>
         public static bool HasSettingsBase(Type type)
         {
             Type discard;

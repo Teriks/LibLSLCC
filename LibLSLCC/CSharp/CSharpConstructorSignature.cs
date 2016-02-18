@@ -121,7 +121,11 @@ namespace LibLSLCC.CSharp
             get { return _validatedSignature; }
         }
 
-
+        /// <summary>
+        /// Implicitly converts a string into a <see cref="CSharpConstructorSignature"/> by parsing it.
+        /// </summary>
+        /// <param name="fullSignature">The string representing the full constructor signature.</param>
+        /// <returns>The newly created <see cref="CSharpConstructorSignature"/> from the string.</returns>
         public static implicit operator CSharpConstructorSignature(string fullSignature)
         {
             return new CSharpConstructorSignature(fullSignature);

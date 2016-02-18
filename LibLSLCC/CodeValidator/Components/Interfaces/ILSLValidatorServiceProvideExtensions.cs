@@ -74,7 +74,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// Returns true if all service provider properties are non null
         /// </summary>
         /// <param name="provider">The <see cref="ILSLValidatorServiceProvider"/> to check.</param>
-        /// <param name="describeNulls">A string describing which properties are null if <see cref="IsComplete"/> returns <c>false</c></param>
+        /// <param name="describeNulls">A string describing which properties are null if <see cref="IsComplete(ILSLValidatorServiceProvider, out string)"/> returns <c>false</c></param>
         /// <returns>True if all properties are initialized.</returns>
         public static bool IsComplete(this ILSLValidatorServiceProvider provider, out string describeNulls)
         {

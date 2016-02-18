@@ -296,7 +296,11 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         public int StopIndex { get; private set; }
 
-
+        /// <summary>
+        /// Gets a string representation of the source code range.
+        /// In the format: "(LineStart: 0, LineEnd: 0, ColumnStart: 0, ColumnEnd: 0, StartIndex: 0, StopIndex: 0)"
+        /// </summary>
+        /// <returns>The string representation of the source code range.</returns>
         public override string ToString()
         {
             return string.Format(
@@ -380,6 +384,10 @@ namespace LibLSLCC.CodeValidator.Primitives
             return Clone();
         }
 
+        /// <summary>
+        /// Creates a clone of this source code range.
+        /// </summary>
+        /// <returns>A clone of the source code range.</returns>
         public LSLSourceCodeRange Clone()
         {
             return new LSLSourceCodeRange

@@ -53,6 +53,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLHexLiteralNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLHexLiteralNode : LSLConstantLiteralNode, ILSLHexLiteralNode
     {
         // ReSharper disable UnusedParameter.Local
@@ -63,8 +66,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
         }
 
-        public LSLHexLiteralNode(LSLHexLiteralNode context)
-            : base(context)
+        /// <summary>
+        /// Create an <see cref="LSLHexLiteralNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        public LSLHexLiteralNode(LSLHexLiteralNode other)
+            : base(other)
         {
         }
 
@@ -94,6 +101,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             return Clone();
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static LSLHexLiteralNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLHexLiteralNode(sourceRange, Err.Err);

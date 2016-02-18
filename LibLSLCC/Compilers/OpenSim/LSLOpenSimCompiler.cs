@@ -70,12 +70,17 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <exception cref="ArgumentNullException">If 'settings' is null.</exception>
         public LSLOpenSimCompiler(ILSLLibraryDataProvider libraryDataProvider, LSLOpenSimCompilerSettings settings)
         {
+            if (libraryDataProvider == null)
+            {
+                throw new ArgumentNullException("libraryDataProvider");
+            }
+
             if (settings == null)
             {
                 throw new ArgumentNullException("settings");
             }
 
-            LibraryDataProvider = libraryDataProvider;
+            _visitor.LibraryDataProvider = libraryDataProvider;
             Settings = settings;
         }
 
@@ -86,23 +91,22 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <param name="libraryDataProvider">An <see cref="ILSLLibraryDataProvider"/> implementation.</param>
         public LSLOpenSimCompiler(ILSLLibraryDataProvider libraryDataProvider)
         {
-            LibraryDataProvider = libraryDataProvider;
+            if (libraryDataProvider == null)
+            {
+                throw new ArgumentNullException("libraryDataProvider");
+            }
+
+            _visitor.LibraryDataProvider = libraryDataProvider;
             Settings = new LSLOpenSimCompilerSettings();
         }
 
 
-
+        /// <summary>
+        /// The library data provider the compiler is using to provide modInvoke information.
+        /// </summary>
         public ILSLLibraryDataProvider LibraryDataProvider
         {
             get { return _visitor.LibraryDataProvider; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _visitor.LibraryDataProvider = value;
-            }
         }
 
 

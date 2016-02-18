@@ -291,7 +291,14 @@ namespace LibLSLCC.Collections
         }
 
 
-  
+        /// <summary>
+        /// Gets the value associated with the specified key.
+        /// </summary>
+        /// <value>
+        /// The value associated with the given key.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns>The value associated with the specified key</returns>
         public TValue this[TKey key]
         {
             get { return _items[key]; }
@@ -359,7 +366,10 @@ namespace LibLSLCC.Collections
             _items.ToList().CopyTo(array, arrayIndex);
         }
 
-
+        /// <summary>
+        /// Create a shallow copy of this hash map.
+        /// </summary>
+        /// <returns>A shallow copy of this hash map.</returns>
         public virtual object Clone()
         {
             var copy = new HashMap<TKey, TValue>();

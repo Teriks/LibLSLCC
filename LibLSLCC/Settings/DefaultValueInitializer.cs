@@ -49,6 +49,12 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// A static class with utilities for initializing an objects field/property's with default values.
+    /// </summary>
+    /// <seealso cref="IDefaultSettingsValueFactory"/>
+    /// <seealso cref="DefaultValueFactoryAttribute"/>
+    /// <seealso cref="DefaultValueAttribute"/>
     public static class DefaultValueInitializer
     {
         private static void SetValue(MemberInfo field, object instance, object value)
@@ -74,6 +80,22 @@ namespace LibLSLCC.Settings
             }
         }
 
+        /// <summary>
+        /// Get the default value for a given public instance field/property in an object instance.
+        /// </summary>
+        /// <param name="instance">The object instance.</param>
+        /// <param name="memberName">The field/property name.</param>
+        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/></typeparam>
+        /// <returns>The default value for the public field/property specified by <paramref name="memberName"/>.</returns>
+        /// <exception cref="InvalidOperationException"> 
+        /// <para>
+        /// Thrown if the field/property does not possess a <see cref="DefaultValueFactoryAttribute"/> or <see cref="DefaultValueAttribute"/> and
+        /// its declared type possesses no default constructor.
+        /// </para>
+        /// <para>
+        /// Also thrown if the field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
+        /// </para>
+        /// </exception>
         public static object GetDefaultValue<T>(T instance, string memberName)
         {
             var settingsProperty =
@@ -155,6 +177,23 @@ namespace LibLSLCC.Settings
 
 
 
+        /// <summary>
+        /// Sets a field/property of <paramref name="instance"/> to its default value.
+        /// </summary>
+        /// <param name="instance">The instance of the object containing the field/property.</param>
+        /// <param name="memberName">The member name of the field/property.</param>
+        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/></typeparam>
+        /// <returns><paramref name="instance"/></returns>
+        /// <para>
+        /// Thrown if the field/property does not possess a <see cref="DefaultValueFactoryAttribute"/> or <see cref="DefaultValueAttribute"/> and
+        /// its declared type possesses no default constructor.
+        /// </para>
+        /// <para>
+        /// Also thrown if the field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
+        /// </para>
+        /// <para>
+        /// Also thrown if <paramref name="memberName"/> is not a field or property.
+        /// </para>
         public static T SetToDefault<T>(T instance, string memberName)
         {
             var defaultValue = GetDefaultValue(instance, memberName);
@@ -183,6 +222,21 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// <para>
+        /// Checks for necessary resets on fields/properties of an object using <see cref="IDefaultSettingsValueFactory.CheckForNecessaryResets"/>,
+        /// then resets them to their default value using <see cref="IDefaultSettingsValueFactory.GetDefaultValue"/> if necessary.
+        /// </para>
+        /// <para>
+        /// This only affects fields/properties possessing a <see cref="DefaultValueFactoryAttribute"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="instance">The object instance to check for and preform necessary field/property resets on.</param>
+        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/>.</typeparam>
+        /// <returns><paramref name="instance"/></returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if a field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
+        /// </exception>
         public static T DoNeccessaryResets<T>(T instance)
         {
             var settingsProperties =

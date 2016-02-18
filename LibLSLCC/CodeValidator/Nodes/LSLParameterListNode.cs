@@ -57,6 +57,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLParameterListNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLParameterListNode : ILSLParameterListNode
     {
         private readonly GenericArray<LSLParameterNode> _parameters = new GenericArray<LSLParameterNode>();
@@ -91,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        public LSLParameterListNode(LSLParser.OptionalParameterListContext context)
+        internal LSLParameterListNode(LSLParser.OptionalParameterListContext context)
         {
             SourceCodeRange = new LSLSourceCodeRange(context);
 
@@ -160,6 +163,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             return visitor.VisitParameterDefinitionList(this);
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLParameterListNode GetError(LSLSourceCodeRange sourceRange)
         {

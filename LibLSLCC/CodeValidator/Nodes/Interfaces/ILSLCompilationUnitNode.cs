@@ -63,25 +63,24 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
         /// <summary>
         /// Global variable declaration nodes, in order of appearance.
-        /// Returns and empty enumerable if non exist.
+        /// Returns and empty enumerable if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLVariableDeclarationNode> GlobalVariableDeclarations { get; }
 
         /// <summary>
         /// User defined function nodes, in order of appearance. 
-        /// Returns and empty enumerable if non exist.
+        /// Returns and empty enumerable if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLFunctionDeclarationNode> FunctionDeclarations { get; }
 
         /// <summary>
         /// User defined state nodes, in order of appearance.
-        /// Returns and empty enumerable if non exist.
+        /// Returns and empty enumerable if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLStateScopeNode> StateDeclarations { get; }
 
         /// <summary>
-        /// The state node for the default script state, or null if one did not exist. (An error).
-        /// Ideally you should not be handling the syntax tree if there were syntax errors though.
+        /// The state node for the default script state.
         /// </summary>
         ILSLStateScopeNode DefaultState { get; }
     }

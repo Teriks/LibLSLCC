@@ -54,6 +54,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLForLoopNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLForLoopNode : ILSLForLoopNode, ILSLCodeStatement
     {
 // ReSharper disable UnusedParameter.Local
@@ -112,14 +115,29 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
+
+        /// <summary>
+        /// The expression list node that contains the expressions used in the initialization clause of the for-loop.
+        /// This property should never be null unless the for loop node is an erroneous node.
+        /// Ideally you should not be handling a syntax tree containing syntax errors.
+        /// </summary>
         public ILSLExpressionListNode InitExpressionsList { get; private set; }
 
-
+        /// <summary>
+        /// The condition expression that controls the loop.
+        /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
 
-
+        /// <summary>
+        /// The expression list node that contains the expressions used in the afterthought area of the for-loop's clauses.
+        /// This property should never be null unless the for loop node is an erroneous node.
+        /// Ideally you should not be handling a syntax tree containing syntax errors.
+        /// </summary>
         public LSLExpressionListNode AfterthoughExpressions { get; private set; }
 
+        /// <summary>
+        /// The code scope node that represents the code scope of the loop body.
+        /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
 
 
@@ -196,7 +214,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public int ScopeId { get; set; }
 
-
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLForLoopNode GetError(LSLSourceCodeRange sourceRange)
         {

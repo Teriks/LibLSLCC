@@ -54,6 +54,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLIfStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLIfStatementNode : ILSLIfStatementNode, ILSLBranchStatementNode
     {
 // ReSharper disable UnusedParameter.Local
@@ -95,13 +98,23 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
+        /// <summary>
+        /// <see cref="ILSLCodeScopeNode.ConstantJumps"/> returned from <see cref="Code"/>
+        /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
             get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps; }
         }
 
+        /// <summary>
+        /// The code inside the if statement.
+        /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
+
+
+        /// <summary>
+        /// The expression inside the condition clause of the if statement.
+        /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -160,6 +173,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLIfStatementNode GetError(LSLSourceCodeRange sourceRange)
         {

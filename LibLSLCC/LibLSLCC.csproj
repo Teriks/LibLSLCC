@@ -19,11 +19,13 @@
     <OutputPath>bin\AnyCPU\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DocumentationFile>bin\LibLSLCC_Doc.XML</DocumentationFile>
-    <NoWarn>3003;3001;3002;1574;1591;0419;1734</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>LibLSLCC.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\AnyCPU\Release\</OutputPath>
@@ -123,7 +125,6 @@
     <Compile Include="Settings\DefaultValueFactoryAttribute.cs" />
     <Compile Include="Settings\DefaultValueInitializer.cs" />
     <Compile Include="Settings\IDefaultSettingsValueFactory.cs" />
-    <Compile Include="Settings\ObservableSettingsCollection.cs" />
     <Compile Include="Settings\ObservableSettingsHashSet.cs" />
     <Compile Include="Settings\SettingsBaseClassTools.cs" />
     <Compile Include="Settings\SettingsManager.cs" />

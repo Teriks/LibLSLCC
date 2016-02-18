@@ -42,8 +42,22 @@
 #endregion
 namespace LibLSLCC.Settings
 {
+
+    /// <summary>
+    /// Event arguments for when a settings property is changing.  <see cref="SettingsBaseClass{T}"/>
+    /// </summary>
+    /// <typeparam name="TSetting"></typeparam>
     public class SettingsPropertyChangedEventArgs<TSetting>
     {
+
+        /// <summary>
+        /// Construct the settings property changed event args.
+        /// </summary>
+        /// <param name="propertyOwner">The object that contains the property that has changed.</param>
+        /// <param name="subscriber">The subscriber object that is subscribed to receive the changed event.</param>
+        /// <param name="propertyName">The name of the property that has changed.</param>
+        /// <param name="oldValue">The old value of the property.</param>
+        /// <param name="newValue">The new value of the property.</param>
         public SettingsPropertyChangedEventArgs(TSetting propertyOwner, object subscriber, string propertyName, object oldValue, object newValue)
         {
             PropertyOwner = propertyOwner;
@@ -53,14 +67,29 @@ namespace LibLSLCC.Settings
             NewValue = newValue;
         }
 
+        /// <summary>
+        /// The object that contains the property that has changed.
+        /// </summary>
         public TSetting PropertyOwner { get; private set; }
 
+        /// <summary>
+        /// The subscriber object that is subscribed to receive the changed event.
+        /// </summary>
         public object Subscriber { get; private set; }
 
+        /// <summary>
+        /// The name of the property that has changed.
+        /// </summary>
         public string PropertyName { get; private set; }
 
+        /// <summary>
+        /// The old value of the property.
+        /// </summary>
         public object OldValue { get; private set; }
 
+        /// <summary>
+        /// The new value of the property.
+        /// </summary>
         public object NewValue { get; private set; }
     }
 }

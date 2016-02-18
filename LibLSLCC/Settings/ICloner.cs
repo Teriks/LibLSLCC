@@ -42,8 +42,16 @@
 #endregion
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// Interface for an object that can clone another object.
+    /// </summary>
     public interface ICloner
     {
+        /// <summary>
+        /// Create a clone of the object <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance">The object to clone.</param>
+        /// <returns>The cloned object.</returns>
         object Clone(object instance);
     }
 }

@@ -47,16 +47,31 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// An observable hash set collection that is usable as a member in classes deriving from <see cref="SettingsBaseClass{T}"/>
+    /// </summary>
+    /// <typeparam name="T">The type of elements this <see cref="ObservableSettingsHashSet{T}"/> contains.</typeparam>
     public class ObservableSettingsHashSet<T> : ObservableHashSet<T>
     {
+        /// <summary>
+        /// Construct an empty <see cref="ObservableSettingsHashSet{T}"/>
+        /// </summary>
         public ObservableSettingsHashSet()
         {
         }
 
+        /// <summary>
+        /// Construct an <see cref="ObservableSettingsHashSet{T}"/> containing the elements from <paramref name="collection"/>.
+        /// </summary>
+        /// <param name="collection">The <see cref="IEnumerable{T}"/> to fill the <see cref="ObservableSettingsHashSet{T}"/> with.</param>
         public ObservableSettingsHashSet(IEnumerable<T> collection) : base(collection)
         {
         }
 
+        /// <summary>
+        /// Calculates the hash code for this <see cref="ObservableSettingsHashSet{T}"/> by considering the hash code of every element.
+        /// </summary>
+        /// <returns>The generated hash code.</returns>
         public override int GetHashCode()
         {
             unchecked
@@ -65,6 +80,13 @@ namespace LibLSLCC.Settings
             }
         }
 
+
+        /// <summary>
+        /// Determines if every element in this <see cref="ObservableSettingsHashSet{T}"/> is equal to the elements in another, using SequenceEqual.
+        /// If <paramref name="obj"/> is not an <see cref="ObservableSettingsHashSet{T}"/> object, then this function will return <c>false</c>.
+        /// </summary>
+        /// <param name="obj">The object to test for equality with.</param>
+        /// <returns><c>true</c> if <paramref name="obj"/> is an <see cref="ObservableSettingsHashSet{T}"/> where this.SequenceEqual(obj) returns <c>true</c>.</returns>
         public override bool Equals(object obj)
         {
             var other = obj as ObservableSettingsHashSet<T>;
@@ -76,6 +98,9 @@ namespace LibLSLCC.Settings
         }
 
 
+        /// <summary>
+        /// Creates a shallow copy of this ObservableSettingsHashSet.
+        /// </summary>
         public override object Clone()
         {
             return new ObservableSettingsHashSet<T>(this);

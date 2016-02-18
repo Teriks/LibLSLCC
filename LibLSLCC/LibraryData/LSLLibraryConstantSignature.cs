@@ -318,6 +318,13 @@ namespace LibLSLCC.LibraryData
         }
 
 
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to the <see cref="LSLType"/> passed in <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="LSLType"/> <paramref name="valueString"/> must be valid for.</param>
+        /// <param name="valueString">The value string to validate.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for the given <see cref="LSLType"/>.</returns>
         public static bool ValidateValueString(LSLType type, string valueString)
         {
             string discard;
@@ -325,6 +332,14 @@ namespace LibLSLCC.LibraryData
         }
 
 
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to the <see cref="LSLType"/> passed in <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="LSLType"/> <paramref name="valueString"/> must be valid for.</param>
+        /// <param name="valueString">The value string to validate.</param>
+        /// <param name="formated">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for the given <see cref="LSLType"/>.</returns>
         public static bool TryParseValueString(LSLType type, string valueString, out string formated)
         {
             if (type == LSLType.Void)
@@ -357,6 +372,14 @@ namespace LibLSLCC.LibraryData
         }
 
 
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.Float"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Float"/>.</returns>
         public static bool TryParseFloatValueString(string value, out string valueString, out string errMessage)
         {
             valueString = null;
@@ -386,7 +409,13 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.Float"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Float"/>.</returns>
         public static bool TryParseFloatValueString(string value, out string valueString)
         {
             string discard;
@@ -403,7 +432,14 @@ namespace LibLSLCC.LibraryData
             }
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.String"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.String"/>.</returns>
         public static bool TryParseIntegerValueString(string value, out string valueString, out string errMessage)
         {
             valueString = null;
@@ -434,7 +470,13 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.String"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.String"/>.</returns>
         public static bool TryParseIntegerValueString(string value, out string valueString)
         {
             string discard;
@@ -451,7 +493,14 @@ namespace LibLSLCC.LibraryData
             }
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.List"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.List"/>.</returns>
         public static bool TryParseListValueString(string value, out string valueString, out string errMessage)
         {
             valueString = null;
@@ -495,7 +544,13 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.List"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.List"/>.</returns>
         public static bool TryParseListValueString(string value, out string valueString)
         {
             string discard;
@@ -512,7 +567,14 @@ namespace LibLSLCC.LibraryData
             }
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.Rotation"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Rotation"/>.</returns>
         public static bool TryParseRotationValueString(string value, out string valueString, out string errMessage)
         {
             valueString = null;
@@ -559,7 +621,13 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.Rotation"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Rotation"/>.</returns>
         public static bool TryParseRotationValueString(string value, out string valueString)
         {
             string discard;
@@ -576,7 +644,14 @@ namespace LibLSLCC.LibraryData
             }
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.Vector"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Vector"/>.</returns>
         public static bool TryParseVectorValueString(string value, out string valueString, out string errMessage)
         {
             valueString = null;
@@ -624,7 +699,13 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
-
+        /// <summary>
+        /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
+        /// is equal to <see cref="LSLType.Vector"/>.
+        /// </summary>
+        /// <param name="value">The value string to validate.</param>
+        /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
+        /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Vector"/>.</returns>
         public static bool TryParseVectorValueString(string value, out string valueString)
         {
             string discard;

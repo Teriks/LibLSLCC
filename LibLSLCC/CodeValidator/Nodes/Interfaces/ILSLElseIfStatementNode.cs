@@ -61,7 +61,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
         /// <summary>
         /// The condition expression of the else-if statement.
-        /// This may be null if there is an error, ideally you should not handle the syntax tree if there are syntax errors.
         /// </summary>
         ILSLReadOnlyExprNode ConditionExpression { get; }
 

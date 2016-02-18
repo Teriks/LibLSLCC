@@ -56,6 +56,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLFunctionDeclarationNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLFunctionDeclarationNode : ILSLFunctionDeclarationNode, ILSLSyntaxTreeNode
     {
         private readonly GenericArray<LSLFunctionCallNode> _references = new GenericArray<LSLFunctionCallNode>();
@@ -106,17 +109,32 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
+        /// <summary>
+        /// <see cref="ILSLParameterListNode.Parameters"/> taken from <see cref="ParameterListNode"/>
+        /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
             get { return ParameterListNode.Parameters; }
         }
 
+
+        /// <summary>
+        /// A list of function call nodes that reference this function definition, or an empty list.
+        /// </summary>
         public IReadOnlyGenericArray<LSLFunctionCallNode> References
         {
             get { return _references; }
         }
 
+        /// <summary>
+        /// The parameter list node that contains the parameter list definitions for this function.
+        /// It should never be null, even if the function definition contains no parameter definitions.
+        /// </summary>
         public LSLParameterListNode ParameterListNode { get; set; }
+
+        /// <summary>
+        /// The code scope node that represents the code body of the function definition.
+        /// </summary>
         public LSLCodeScopeNode FunctionBodyNode { get; private set; }
 
         IReadOnlyGenericArray<ILSLFunctionCallNode> ILSLFunctionDeclarationNode.References
@@ -173,16 +191,17 @@ namespace LibLSLCC.CodeValidator.Nodes
             _references.Add(reference);
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLFunctionDeclarationNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLFunctionDeclarationNode(sourceRange, Err.Err);
-        }
-
-        public LSLFunctionSignature ToSignature()
-        {
-            return new LSLFunctionSignature(ReturnType, Name,
-                ParameterListNode.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
         }
 
         #region Nested type: Err

@@ -48,20 +48,39 @@ using LibLSLCC.Formatter.Visitor;
 
 namespace LibLSLCC.Formatter
 {
+    /// <summary>
+    /// Implements a code formatter that can format an ILSLCompilationUnitNode
+    /// </summary>
     public sealed class LSLCodeFormatter
     {
         private LSLCodeFormatterSettings _settings;
 
+
+        /// <summary>
+        /// Construct a new LSLCodeFormatter.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="settings"/> is null.</exception>
         public LSLCodeFormatter(LSLCodeFormatterSettings settings)
         {
+            if (_settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
             _settings = settings;
         }
 
+        /// <summary>
+        /// Construct a new LSLCodeFormatter.
+        /// </summary>
         public LSLCodeFormatter()
         {
             _settings = new LSLCodeFormatterSettings();
         }
 
+        /// <summary>
+        /// The code formatter settings.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Thrown if <see cref="Settings"/> is set to <c>null</c>.</exception>
         public LSLCodeFormatterSettings Settings
         {
             get { return _settings; }
@@ -75,11 +94,45 @@ namespace LibLSLCC.Formatter
             }
         }
 
+
+        /// <summary>
+        /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, <paramref name="sourceReference"/> is only required if you want to keep comments.
+        /// </summary>
+        /// <param name="sourceReference">The source code of the script, only necessary if comments exist.  Passing null will cause all comments to be stripped, regardless of formatter settings.</param>
+        /// <param name="node">The top level <see cref="ILSLCompilationUnitNode"/> to format.</param>
+        /// <param name="writer">The writer to write the formated source code to.</param>
+        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings"/> is left <c>null</c>.</exception>
         public void Format(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
-            bool closeStream = true)
+            bool closeStream = false)
         {
+            if (Settings == null)
+            {
+                throw new InvalidOperationException("LSLCodeFormatter.Settings cannot be null.");
+            }
+
             var formatter = new LSLCodeFormatterVisitor(Settings);
             formatter.WriteAndFlush(sourceReference, node, writer, closeStream);
+        }
+
+
+        /// <summary>
+        /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, comments will be ignored/stripped.
+        /// </summary>
+        /// <param name="node">The top level <see cref="ILSLCompilationUnitNode"/> to format.</param>
+        /// <param name="writer">The writer to write the formated source code to.</param>
+        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings"/> is left <c>null</c>.</exception>
+        public void Format(ILSLCompilationUnitNode node, TextWriter writer,
+            bool closeStream = false)
+        {
+            if (Settings == null)
+            {
+                throw new InvalidOperationException("LSLCodeFormatter.Settings cannot be null.");
+            }
+
+            var formatter = new LSLCodeFormatterVisitor(Settings);
+            formatter.WriteAndFlush(null, node, writer, closeStream);
         }
     }
 }

@@ -55,6 +55,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLCompilationUnitNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLCompilationUnitNode : ILSLCompilationUnitNode, ILSLSyntaxTreeNode
     {
         private readonly GenericArray<LSLFunctionDeclarationNode> _functionDeclarations = new GenericArray<LSLFunctionDeclarationNode>();
@@ -76,7 +79,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        public LSLCompilationUnitNode(LSLParser.CompilationUnitContext context)
+
+        internal LSLCompilationUnitNode(LSLParser.CompilationUnitContext context)
         {
             if (context == null)
             {
@@ -88,22 +92,36 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceCodeRangesAvailable = true;
         }
 
-
+        /// <summary>
+        /// Global variable declaration nodes, in order of appearance.
+        /// Returns and empty enumerable if none exist.
+        /// </summary>
         public IReadOnlyGenericArray<LSLVariableDeclarationNode> GlobalVariableDeclarations
         {
             get { return _globalVariableDeclarations; }
         }
 
+        /// <summary>
+        /// User defined function nodes, in order of appearance. 
+        /// Returns and empty enumerable if none exist.
+        /// </summary>
         public IReadOnlyGenericArray<LSLFunctionDeclarationNode> FunctionDeclarations
         {
             get { return _functionDeclarations; }
         }
 
+        /// <summary>
+        /// User defined state nodes, in order of appearance.
+        /// Returns and empty enumerable if none exist.
+        /// </summary>
         public IReadOnlyGenericArray<LSLStateScopeNode> StateDeclarations
         {
             get { return _stateDeclarations; }
         }
 
+        /// <summary>
+        /// The state node for the default script state.
+        /// </summary>
         public LSLStateScopeNode DefaultState
         {
             get { return _defaultState; }
@@ -161,6 +179,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return DefaultState; }
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static
             LSLCompilationUnitNode GetError(LSLSourceCodeRange sourceRange)
         {

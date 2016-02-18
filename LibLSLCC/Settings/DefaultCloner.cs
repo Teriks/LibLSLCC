@@ -45,8 +45,18 @@ using System;
 
 namespace LibLSLCC.Settings
 {
+    /// <summary>
+    /// The default implementation of <see cref="ICloner"/>.
+    /// This implementation clones an object by using its <see cref="ICloneable"/> interface, or searching directly for a method named "Clone" with zero parameters.
+    /// </summary>
     public class DefaultCloner : ICloner
     {
+        /// <summary>
+        /// Create a clone of the object <paramref name="instance"/> using its <see cref="ICloneable"/> interface, or by
+        /// searching directly for a method named "Clone" with zero parameters.
+        /// </summary>
+        /// <param name="instance">The object to clone.</param>
+        /// <returns>The cloned object.</returns>
         public virtual object Clone(object instance)
         {
             var i = instance as ICloneable;

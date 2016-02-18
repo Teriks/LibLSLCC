@@ -91,6 +91,10 @@ namespace LibLSLCC.CodeValidator.Components
 
 
 
+        /// <summary>
+        /// Returns LibLSLCC's default LSLValidatorServiceProvider setup.
+        /// </summary>
+        /// <returns>LibLSLCC's default LSLValidatorServiceProvider setup</returns>
         public static LSLValidatorServiceProvider Default()
         {
             var d = new LSLValidatorServiceProvider

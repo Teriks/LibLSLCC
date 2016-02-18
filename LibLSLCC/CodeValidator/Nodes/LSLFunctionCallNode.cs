@@ -55,6 +55,9 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
+    /// <summary>
+    /// Default <see cref="ILSLFunctionCallNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// </summary>
     public sealed class LSLFunctionCallNode : ILSLFunctionCallNode, ILSLExprNode
     {
         private readonly bool _libraryFunction;
@@ -150,7 +153,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
+        /// <summary>
+        /// Create an <see cref="LSLFunctionCallNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
         public LSLFunctionCallNode(LSLFunctionCallNode other)
         {
             if (other == null)
@@ -275,6 +281,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return DefinitionNode; }
         }
 
+
+        /// <summary>
+        /// Returns a version of this node type that represents its error state;  in case of a syntax error
+        /// in the node that prevents the node from being even partially built.
+        /// </summary>
+        /// <param name="sourceCodeRange">The source code range of the error.</param>
+        /// <returns>A version of this node type in its undefined/error state.</returns>
         public static LSLFunctionCallNode GetError(LSLSourceCodeRange sourceCodeRange)
         {
             return new LSLFunctionCallNode(sourceCodeRange, Err.Err);

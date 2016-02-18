@@ -52,6 +52,9 @@ namespace LibLSLCC.LibraryData.Reflection
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class LSLFunctionAttribute : Attribute
     {
+        /// <summary>
+        /// The <see cref="LSLType"/> returned by the function being attributed.
+        /// </summary>
         public LSLType ReturnType { get; private set; }
 
         /// <summary>

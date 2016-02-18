@@ -243,6 +243,12 @@ namespace LibLSLCC.Collections
             set { _data[index] = value; }
         }
 
+
+        /// <summary>
+        /// Get element at <paramref name="index"/>
+        /// </summary>
+        /// <param name="index">The index to retrieve the element from.</param>
+        /// <returns>The element at index.</returns>
         public T this[int index]
         {
             get { return _data[index]; }
@@ -254,7 +260,10 @@ namespace LibLSLCC.Collections
             get { return _data[index]; }
         }
 
-
+        /// <summary>
+        /// Returns a shallow copy of this array.
+        /// </summary>
+        /// <returns>A shallow copy of this array.</returns>
         public virtual object Clone()
         {
             return new GenericArray<T>(this.AsEnumerable());
