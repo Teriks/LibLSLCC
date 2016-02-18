@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLVariableNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -88,11 +88,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             ExpressionType = other.ExpressionType;
             Declaration = other.Declaration;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
-                SourceCodeRange = other.SourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -169,9 +169,9 @@ namespace LibLSLCC.CodeValidator.Nodes
                 Type = LSLTypeTools.FromLSLTypeString(context.variable_type.Text),
                 ExpressionType = LSLExpressionType.GlobalVariable,
                 IsConstant = false,
-                SourceCodeRange = new LSLSourceCodeRange(context),
+                SourceRange = new LSLSourceCodeRange(context),
                 Declaration = declaration,
-                SourceCodeRangesAvailable = true
+                SourceRangesAvailable = true
             };
         }
 
@@ -185,9 +185,9 @@ namespace LibLSLCC.CodeValidator.Nodes
                 Type = LSLTypeTools.FromLSLTypeString(context.variable_type.Text),
                 ExpressionType = LSLExpressionType.LocalVariable,
                 IsConstant = false,
-                SourceCodeRange = new LSLSourceCodeRange(context),
+                SourceRange = new LSLSourceCodeRange(context),
                 Declaration = declaration,
-                SourceCodeRangesAvailable = true
+                SourceRangesAvailable = true
             };
         }
 
@@ -200,7 +200,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 Type = type,
                 ExpressionType = LSLExpressionType.LibraryConstant,
                 IsConstant = true,
-                SourceCodeRangesAvailable = false
+                SourceRangesAvailable = false
             };
         }
 
@@ -213,8 +213,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 Type = node.Type,
                 ExpressionType = LSLExpressionType.ParameterVariable,
                 IsConstant = false,
-                SourceCodeRange = node.SourceCodeRange.Clone(),
-                SourceCodeRangesAvailable = true
+                SourceRange = node.SourceRange.Clone(),
+                SourceRangesAvailable = true
             };
         }
 
@@ -235,7 +235,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLVariableNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLVariableNode(this);
         }
 
 
@@ -260,14 +260,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; internal set; }
+        public LSLSourceCodeRange SourceRange { get; internal set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

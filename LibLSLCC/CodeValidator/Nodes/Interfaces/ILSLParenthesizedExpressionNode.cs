@@ -40,6 +40,9 @@
 // 
 // 
 #endregion
+
+using LibLSLCC.CodeValidator.Primitives;
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
 
@@ -52,5 +55,15 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The expression node contained within the parenthesis, this should never be null.
         /// </summary>
         ILSLReadOnlyExprNode InnerExpression { get; }
+
+        /// <summary>
+        /// The source code range of the opening parenthesis in the parenthesized expression.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeOpenParenth { get; }
+
+        /// <summary>
+        /// The source code range of the closing parenthesis in the parenthesized expression.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

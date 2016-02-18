@@ -91,16 +91,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the opening parentheses where the parameters of the function start.
         /// </summary>
-        LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
         /// The source code range of the closing parentheses where the parameters of the function end.
         /// </summary>
-        LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCloseParenth { get; }
 
         /// <summary>
         /// The source code range of the function name in the function call expression.
         /// </summary>
-        LSLSourceCodeRange FunctionNameSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeName { get; }
     }
 }

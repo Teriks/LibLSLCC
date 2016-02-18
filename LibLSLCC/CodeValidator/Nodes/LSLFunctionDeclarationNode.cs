@@ -67,7 +67,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLFunctionDeclarationNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -104,10 +104,17 @@ namespace LibLSLCC.CodeValidator.Nodes
             FunctionBodyNode = functionBodyNode;
             FunctionBodyNode.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeName = new LSLSourceCodeRange(context.function_name);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
+
+
+        /// <summary>
+        /// The source code range of the function name.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         /// <summary>
         /// <see cref="ILSLParameterListNode.Parameters"/> taken from <see cref="ParameterListNode"/>
@@ -224,12 +231,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

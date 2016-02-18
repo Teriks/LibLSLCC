@@ -295,7 +295,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!expression.HasErrors && !ExpressionValidator.ValidateListContent(expression))
                 {
-                    GenSyntaxError().InvalidListContent(expression.SourceCodeRange, i, expression);
+                    GenSyntaxError().InvalidListContent(expression.SourceRange, i, expression);
 
                     result.HasErrors = true;
                 }
@@ -646,12 +646,12 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             foreach (var fun in result.FunctionDeclarations.Where(x => x.References.Count == 0))
             {
-                GenSyntaxWarning().FunctionNeverUsed(fun.SourceCodeRange, fun);
+                GenSyntaxWarning().FunctionNeverUsed(fun.SourceRange, fun);
             }
 
             foreach (var gvar in result.GlobalVariableDeclarations.Where(x => x.References.Count == 0))
             {
-                GenSyntaxWarning().GlobalVariableNeverUsed(gvar.SourceCodeRange, gvar);
+                GenSyntaxWarning().GlobalVariableNeverUsed(gvar.SourceRange, gvar);
             }
 
             syntaxMessagePrioritizer.InvokeQueuedActions();
@@ -815,13 +815,13 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (ScopingManager.InsideFunctionBody)
                 {
-                    GenSyntaxWarning().VariableRedeclaredInInnerScope(variable.SourceCodeRange,
+                    GenSyntaxWarning().VariableRedeclaredInInnerScope(variable.SourceRange,
                         ScopingManager.CurrentFunctionBodySignature, variable,
                         ScopingManager.ResolveVariable(variable.Name));
                 }
                 else
                 {
-                    GenSyntaxWarning().VariableRedeclaredInInnerScope(variable.SourceCodeRange,
+                    GenSyntaxWarning().VariableRedeclaredInInnerScope(variable.SourceRange,
                         ScopingManager.CurrentEventHandlerSignature, variable,
                         ScopingManager.ResolveVariable(variable.Name));
                 }
@@ -840,7 +840,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                             x => (x.Name == variable.Name));
 
 
-                    GenSyntaxWarning().LocalVariableHidesParameter(variable.SourceCodeRange,
+                    GenSyntaxWarning().LocalVariableHidesParameter(variable.SourceRange,
                         ScopingManager.CurrentFunctionBodySignature, variable, parameter);
                 }
                 else
@@ -849,7 +849,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                         ScopingManager.CurrentEventHandlerSignature
                             .ParameterListNode.Parameters.Single(x => (x.Name == variable.Name));
 
-                    GenSyntaxWarning().LocalVariableHidesParameter(variable.SourceCodeRange,
+                    GenSyntaxWarning().LocalVariableHidesParameter(variable.SourceRange,
                         ScopingManager.CurrentEventHandlerSignature, variable, parameter);
                 }
             }
@@ -859,13 +859,13 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (ScopingManager.InsideFunctionBody)
                 {
-                    GenSyntaxWarning().LocalVariableHidesGlobalVariable(variable.SourceCodeRange,
+                    GenSyntaxWarning().LocalVariableHidesGlobalVariable(variable.SourceRange,
                         ScopingManager.CurrentFunctionBodySignature, variable,
                         ScopingManager.ResolveGlobalVariable(variable.Name));
                 }
                 else
                 {
-                    GenSyntaxWarning().LocalVariableHidesGlobalVariable(variable.SourceCodeRange,
+                    GenSyntaxWarning().LocalVariableHidesGlobalVariable(variable.SourceRange,
                         ScopingManager.CurrentEventHandlerSignature, variable,
                         ScopingManager.ResolveGlobalVariable(variable.Name));
                 }
@@ -1366,7 +1366,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         {
             foreach (var v in ScopingManager.AllParametersInScope.Where(x => x.References.Count == 0))
             {
-                GenSyntaxWarning().FunctionParameterNeverUsed(v.SourceCodeRange, v,
+                GenSyntaxWarning().FunctionParameterNeverUsed(v.SourceRange, v,
                     ScopingManager.CurrentFunctionBodySignature);
             }
 
@@ -1380,7 +1380,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 foreach (var v in ScopingManager.AllLocalVariablesInScope.Where(x => x.References.Count == 0))
                 {
-                    GenSyntaxWarning().LocalVariableNeverUsed(v.SourceCodeRange, v,
+                    GenSyntaxWarning().LocalVariableNeverUsed(v.SourceRange, v,
                         ScopingManager.CurrentFunctionBodySignature);
                 }
             }
@@ -1388,7 +1388,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 foreach (var v in ScopingManager.AllLocalVariablesInScope.Where(x => x.References.Count == 0))
                 {
-                    GenSyntaxWarning().LocalVariableNeverUsed(v.SourceCodeRange, v,
+                    GenSyntaxWarning().LocalVariableNeverUsed(v.SourceRange, v,
                         ScopingManager.CurrentEventHandlerSignature);
                 }
             }
@@ -1586,7 +1586,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (ScopingManager.GlobalVariableDefined(parameter.Name))
                 {
-                    GenSyntaxWarning().ParameterHidesGlobalVariable(parameter.SourceCodeRange,
+                    GenSyntaxWarning().ParameterHidesGlobalVariable(parameter.SourceRange,
                         eventHandlerSignature,
                         parameter,
                         ScopingManager.ResolveVariable(parameter.Name));
@@ -1660,7 +1660,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (ScopingManager.GlobalVariableDefined(parameter.Name))
                 {
-                    GenSyntaxWarning().ParameterHidesGlobalVariable(parameter.SourceCodeRange,
+                    GenSyntaxWarning().ParameterHidesGlobalVariable(parameter.SourceRange,
                         currentFunctionPredefinition,
                         parameter,
                         ScopingManager.ResolveVariable(parameter.Name));
@@ -1828,7 +1828,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && loopCondition.IsConstant)
                 {
-                    GenSyntaxWarning().ConditionalExpressionIsConstant(loopCondition.SourceCodeRange,
+                    GenSyntaxWarning().ConditionalExpressionIsConstant(loopCondition.SourceRange,
                         LSLConditionalStatementType.DoWhile);
                 }
             }
@@ -1921,7 +1921,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && loopCondition.IsConstant)
                 {
-                    GenSyntaxWarning().ConditionalExpressionIsConstant(loopCondition.SourceCodeRange,
+                    GenSyntaxWarning().ConditionalExpressionIsConstant(loopCondition.SourceRange,
                         LSLConditionalStatementType.While);
                 }
             }
@@ -2034,7 +2034,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (!isError && loopCondition.IsConstant)
                 {
-                    GenSyntaxWarning().ConditionalExpressionIsConstant(loopCondition.SourceCodeRange,
+                    GenSyntaxWarning().ConditionalExpressionIsConstant(loopCondition.SourceRange,
                         LSLConditionalStatementType.For);
                 }
             }
@@ -3185,7 +3185,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (exprRvalue.ExpressionType == LSLExpressionType.LibraryConstant && result.Operation.IsModifying())
             {
                 GenSyntaxError().ModifiedLibraryConstant(
-                    exprRvalue.SourceCodeRange, context.expr_rvalue.GetText());
+                    exprRvalue.SourceRange, context.expr_rvalue.GetText());
 
                 result.HasErrors = true;
                 return ReturnFromVisit(context, result);
@@ -3275,7 +3275,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (exprLvalue.ExpressionType == LSLExpressionType.LibraryConstant && result.Operation.IsModifying())
             {
                 GenSyntaxError().ModifiedLibraryConstant(
-                    exprLvalue.SourceCodeRange, context.expr_lvalue.GetText());
+                    exprLvalue.SourceRange, context.expr_lvalue.GetText());
                 result.HasErrors = true;
                 return ReturnFromVisit(context, result);
             }

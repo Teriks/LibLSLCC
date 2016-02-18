@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         protected LSLConstantLiteralNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -86,11 +86,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             RawText = other.RawText;
             Type = other.Type;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
-                SourceCodeRange = other.SourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
             }
 
             Parent = other.Parent;
@@ -106,8 +106,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             RawText = context.children[0].GetText();
             Type = type;
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            SourceCodeRangesAvailable = true;
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangesAvailable = true;
         }
 
 
@@ -148,13 +148,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

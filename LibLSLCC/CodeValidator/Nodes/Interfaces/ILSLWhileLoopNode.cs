@@ -58,17 +58,17 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'while' keyword in the while loop statement.
         /// </summary>
-        LSLSourceCodeRange WhileKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeWhileKeyword { get; }
 
         /// <summary>
         /// The source code range of the opening parenthesis starting the condition area of a while loop statement.
         /// </summary>
-        LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
 
         /// <summary>
         /// The source code range of the closing parenthesis ending the condition area of a while loop statement.
         /// </summary>
-        LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

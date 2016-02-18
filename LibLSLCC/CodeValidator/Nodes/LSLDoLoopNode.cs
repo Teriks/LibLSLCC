@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLDoLoopNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -89,14 +89,14 @@ namespace LibLSLCC.CodeValidator.Nodes
             ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            DoKeywordSourceCodeRange = new LSLSourceCodeRange(context.loop_keyword);
-            WhileKeywordSourceCodeRange = new LSLSourceCodeRange(context.while_keyword);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeDoKeyword = new LSLSourceCodeRange(context.loop_keyword);
+            SourceRangeWhileKeyword = new LSLSourceCodeRange(context.while_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
-            SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
+            SourceRangeSemiColon = new LSLSourceCodeRange(context.semi_colon);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -166,19 +166,19 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'do' keyword in the statement.
         /// </summary>
-        public LSLSourceCodeRange DoKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeDoKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the 'while' keyword in the statement.
         /// </summary>
-        public LSLSourceCodeRange WhileKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeWhileKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon after the do-while loop statement.
         /// </summary>
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeSemiColon { get; private set; }
 
 
         /// <summary>
@@ -251,12 +251,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

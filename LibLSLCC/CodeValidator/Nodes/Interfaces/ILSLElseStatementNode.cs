@@ -62,6 +62,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'else' keyword in the else statement.
         /// </summary>
-        LSLSourceCodeRange ElseKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeElseKeyword { get; }
     }
 }

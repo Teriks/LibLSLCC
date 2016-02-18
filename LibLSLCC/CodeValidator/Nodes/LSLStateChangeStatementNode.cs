@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLStateChangeStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -73,12 +73,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             StateTargetName = context.state_target.Text;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            StateKeywordSourceCodeRange = new LSLSourceCodeRange(context.state_keyword);
-            SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
-            StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_target);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeStateKeyword = new LSLSourceCodeRange(context.state_keyword);
+            SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
+            SourceRangeStateName = new LSLSourceCodeRange(context.state_target);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -109,19 +109,19 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'state' keyword in the state change statement.
         /// </summary>
-        public LSLSourceCodeRange StateKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeStateKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the target state name in the state change statement.
         /// </summary>
-        public LSLSourceCodeRange StateNameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeStateName { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that ends the state change statement.
         /// </summary>
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
         /// <summary>
@@ -206,14 +206,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

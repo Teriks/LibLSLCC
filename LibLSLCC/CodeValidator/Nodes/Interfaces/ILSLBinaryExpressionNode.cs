@@ -78,6 +78,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range that encompasses the binary expression and its children.
         /// </summary>
-        LSLSourceCodeRange OperationSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOperation { get; }
     }
 }

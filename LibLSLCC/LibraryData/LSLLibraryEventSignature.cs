@@ -169,7 +169,7 @@ namespace LibLSLCC.LibraryData
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
-        XmlSchema IXmlSerializable.GetSchema()
+        public XmlSchema GetSchema()
         {
             return null;
         }
@@ -180,7 +180,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="reader">The XML reader containing the fragment to read.</param>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
-        void IXmlSerializable.ReadXml(XmlReader reader)
+        public void ReadXml(XmlReader reader)
         {
             var parameterNames = new HashSet<string>();
 
@@ -313,7 +313,7 @@ namespace LibLSLCC.LibraryData
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
-        void IXmlSerializable.WriteXml(XmlWriter writer)
+        public void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Name", Name);
             writer.WriteAttributeString("Subsets", string.Join(",", _subsets));

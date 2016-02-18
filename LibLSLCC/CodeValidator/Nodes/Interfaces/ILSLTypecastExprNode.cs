@@ -43,6 +43,7 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Primitives;
 
 #endregion
 
@@ -69,5 +70,20 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The raw type name of the type the expression is being cast to, taken from the source code.
         /// </summary>
         string CastToTypeString { get; }
+
+        /// <summary>
+        /// The source code range of the closing parenthesis of the enclosed cast type.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeCloseParenth { get; }
+
+        /// <summary>
+        /// The source code range of the open parenthesis of the enclosed cast type.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeOpenParenth { get; }
+
+        /// <summary>
+        /// The source code range of the type name used for the cast.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeCastTypeName { get; }
     }
 }

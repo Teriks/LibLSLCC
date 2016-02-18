@@ -68,16 +68,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'do' keyword in the statement.
         /// </summary>
-        LSLSourceCodeRange DoKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeDoKeyword { get; }
 
         /// <summary>
         /// The source code range of the 'while' keyword in the statement.
         /// </summary>
-        LSLSourceCodeRange WhileKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeWhileKeyword { get; }
 
         /// <summary>
         /// The source code range of the semi-colon after the do-while loop statement.
         /// </summary>
-        LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeSemiColon { get; }
     }
 }

@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLControlStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -83,62 +83,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             IsSingleBlockStatement = isSingleBlockStatement;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
-        internal LSLControlStatementNode(
-            LSLParser.ControlStructureContext context, 
-            LSLIfStatementNode ifStatement,
-            IEnumerable<LSLElseIfStatementNode> elseIfStatements,
-            LSLElseStatementNode elseStatement, bool isSingleBlockStatement
-
-            ) : this(context, ifStatement, elseIfStatements, isSingleBlockStatement)
-        {
-            if (elseStatement == null)
-            {
-                throw new ArgumentNullException("elseStatement");
-            }
-
-            ElseStatement = elseStatement;
-            elseStatement.Parent = this;
-        }
-
-        internal LSLControlStatementNode(
-            LSLParser.ControlStructureContext context, 
-            LSLIfStatementNode ifStatement,
-            IEnumerable<LSLElseIfStatementNode> elseIfStatements, 
-            bool isSingleBlockStatement
-            
-            ) : this(context, ifStatement, isSingleBlockStatement)
-        {
-            if (elseIfStatements == null)
-            {
-                throw new ArgumentNullException("elseIfStatements");
-            }
-
-            foreach (var lslElseIfStatementNode in elseIfStatements)
-            {
-                AddElseIfStatement(lslElseIfStatementNode);
-            }
-        }
-
-        internal LSLControlStatementNode(
-            LSLParser.ControlStructureContext context,
-            LSLIfStatementNode ifStatement,
-            bool isSingleBlockStatement
-
-            ) : this(context, isSingleBlockStatement)
-        {
-            if (ifStatement == null)
-            {
-                throw new ArgumentNullException("ifStatement");
-            }
-
-            IfStatement = ifStatement;
-            IfStatement.Parent = this;
-        }
 
         /// <summary>
         /// The else statement child of this control statement node if one exists, otherwise null.
@@ -357,14 +306,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
 

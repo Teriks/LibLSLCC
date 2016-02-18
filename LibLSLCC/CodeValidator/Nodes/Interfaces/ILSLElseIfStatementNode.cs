@@ -67,21 +67,21 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'else' keyword in the else-if statement.
         /// </summary>
-        LSLSourceCodeRange ElseKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeElseKeyword { get; }
 
         /// <summary>
         /// The source code range of the 'if' keyword in the else-if statement.
         /// </summary>
-        LSLSourceCodeRange IfKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeIfKeyword { get; }
 
         /// <summary>
         /// The source code range of the opening parenthesis in the else-if statement where the condition area starts.
         /// </summary>
-        LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
         /// The source code range of the closing parenthesis in the else-if statement where the condition area ends.
         /// </summary>
-        LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

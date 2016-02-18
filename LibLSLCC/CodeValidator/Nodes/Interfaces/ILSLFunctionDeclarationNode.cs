@@ -43,6 +43,7 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
 #endregion
@@ -81,6 +82,11 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// </summary>
         string Name { get; }
 
+
+        /// <summary>
+        /// The source code range of the function name
+        /// </summary>
+        LSLSourceCodeRange SourceRangeName { get; }
 
         /// <summary>
         /// The return type assigned to the function definition, it will be <see cref="LSLType.Void"/> if no return type was given.

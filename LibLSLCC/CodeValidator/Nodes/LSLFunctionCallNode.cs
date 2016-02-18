@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceCodeRange;
+            SourceRange = sourceCodeRange;
             HasErrors = true;
         }
 
@@ -105,12 +105,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             parameterList.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
-            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
-            FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
+            SourceRangeName = new LSLSourceCodeRange(context.function_name);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -144,12 +144,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             ParameterListNode = parameterList;
             parameterList.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
-            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
-            FunctionNameSourceCodeRange = new LSLSourceCodeRange(context.function_name);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
+            SourceRangeName = new LSLSourceCodeRange(context.function_name);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -176,15 +176,15 @@ namespace LibLSLCC.CodeValidator.Nodes
                 ParameterListNode.Parent = this;
             }
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
 
-                SourceCodeRange = other.SourceCodeRange.Clone();
-                OpenParenthSourceCodeRange = other.OpenParenthSourceCodeRange.Clone();
-                CloseParenthSourceCodeRange = other.CloseParenthSourceCodeRange.Clone();
-                FunctionNameSourceCodeRange = other.FunctionNameSourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
+                SourceRangeOpenParenth = other.SourceRangeOpenParenth.Clone();
+                SourceRangeCloseParenth = other.SourceRangeCloseParenth.Clone();
+                SourceRangeName = other.SourceRangeName.Clone();
 
             }
 
@@ -232,18 +232,18 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the opening parentheses where the parameters of the function start.
         /// </summary>
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
         /// <summary>
         /// The source code range of the closing parentheses where the parameters of the function end.
         /// </summary>
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the function name in the function call expression.
         /// </summary>
-        public LSLSourceCodeRange FunctionNameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -310,7 +310,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLFunctionCallNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLFunctionCallNode(this);
         }
 
 
@@ -329,13 +329,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

@@ -334,7 +334,7 @@ namespace LibLSLCC.CodeValidator.Components
             OnWarning(location,
                 string.Format("Parameter \"{0}\" of function \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     parameter.Name, functionSignature.Name, globalVariable.Name,
-                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
+                    MapLineNumber(globalVariable.SourceRange.LineStart)));
         }
 
 
@@ -353,7 +353,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Parameter \"{0}\" of event handler \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     parameter.Name, eventHandlerSignature.Name, globalVariable.Name,
-                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
+                    MapLineNumber(globalVariable.SourceRange.LineStart)));
         }
 
 
@@ -407,7 +407,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Local variable \"{0}\" in function \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     localVariable.Name, functionSignature.Name, globalVariable.Name,
-                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
+                    MapLineNumber(globalVariable.SourceRange.LineStart)));
         }
 
 
@@ -427,7 +427,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Local variable \"{0}\" in event handler \"{1}\" hides global variable \"{2}\" defined on line {3}.",
                     localVariable.Name, eventHandlerSignature.Name, globalVariable.Name,
-                    MapLineNumber(globalVariable.SourceCodeRange.LineStart)));
+                    MapLineNumber(globalVariable.SourceRange.LineStart)));
         }
 
 
@@ -483,7 +483,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Local variable \"{0}\" in function \"{1}\" hides a previous declaration in an outer scope (on line {2}).",
                     newDeclarationNode.Name, currentFunctionBodySignature.Name, 
-                    MapLineNumber(previousDeclarationNode.SourceCodeRange.LineStart)));
+                    MapLineNumber(previousDeclarationNode.SourceRange.LineStart)));
         }
 
 
@@ -502,7 +502,7 @@ namespace LibLSLCC.CodeValidator.Components
                 string.Format(
                     "Local variable \"{0}\" in event handler \"{1}\" hides a previous declaration in an outer scope (on line {2}).",
                     newDeclarationNode.Name, currentEventBodySignature.Name,
-                    MapLineNumber(previousDeclarationNode.SourceCodeRange.LineStart)));
+                    MapLineNumber(previousDeclarationNode.SourceRange.LineStart)));
         }
 
 

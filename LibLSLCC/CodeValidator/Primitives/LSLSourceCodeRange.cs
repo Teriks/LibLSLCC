@@ -159,12 +159,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="node">The syntax tree node to create the <see cref="LSLSourceCodeRange"/> from.</param>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode node)
         {
-            LineStart = node.SourceCodeRange.LineStart;
-            ColumnStart = node.SourceCodeRange.ColumnStart;
-            StartIndex = node.SourceCodeRange.StartIndex;
-            StopIndex = node.SourceCodeRange.StopIndex;
-            LineEnd = node.SourceCodeRange.LineEnd;
-            ColumnEnd = node.SourceCodeRange.ColumnEnd;
+            LineStart = node.SourceRange.LineStart;
+            ColumnStart = node.SourceRange.ColumnStart;
+            StartIndex = node.SourceRange.StartIndex;
+            StopIndex = node.SourceRange.StopIndex;
+            LineEnd = node.SourceRange.LineEnd;
+            ColumnEnd = node.SourceRange.ColumnEnd;
             HasIndexInfo = true;
         }
 
@@ -176,12 +176,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range ends.</param>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode start, ILSLReadOnlySyntaxTreeNode end)
         {
-            LineStart = start.SourceCodeRange.LineStart;
-            ColumnStart = start.SourceCodeRange.ColumnStart;
-            StartIndex = start.SourceCodeRange.StartIndex;
-            StopIndex = end.SourceCodeRange.StopIndex;
-            LineEnd = end.SourceCodeRange.LineEnd;
-            ColumnEnd = end.SourceCodeRange.ColumnEnd;
+            LineStart = start.SourceRange.LineStart;
+            ColumnStart = start.SourceRange.ColumnStart;
+            StartIndex = start.SourceRange.StartIndex;
+            StopIndex = end.SourceRange.StopIndex;
+            LineEnd = end.SourceRange.LineEnd;
+            ColumnEnd = end.SourceRange.ColumnEnd;
             HasIndexInfo = true;
         }
 
@@ -374,9 +374,9 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="statement">The <see cref="ILSLReadOnlySyntaxTreeNode"/> to extend this <see cref="LSLSourceCodeRange"/> to.</param>
         public void ExtendTo(ILSLReadOnlySyntaxTreeNode statement)
         {
-            LineEnd = statement.SourceCodeRange.LineEnd;
-            ColumnEnd = statement.SourceCodeRange.ColumnEnd;
-            StopIndex = statement.SourceCodeRange.StopIndex;
+            LineEnd = statement.SourceRange.LineEnd;
+            ColumnEnd = statement.SourceRange.ColumnEnd;
+            StopIndex = statement.SourceRange.StopIndex;
         }
 
         object ICloneable.Clone()

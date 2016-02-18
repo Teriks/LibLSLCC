@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLIfStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -88,13 +88,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
 
-            IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
-            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
-            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+            SourceRangeIfKeyword = new LSLSourceCodeRange(context.if_keyword);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
 
-            SourceCodeRange = new LSLSourceCodeRange(IfKeywordSourceCodeRange, code.SourceCodeRange);
+            SourceRange = new LSLSourceCodeRange(SourceRangeIfKeyword, code.SourceRange);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -159,19 +159,19 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'if' keyword of the statement.
         /// </summary>
-        public LSLSourceCodeRange IfKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeIfKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the opening parenthesis of the condition area.
         /// </summary>
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing parenthesis of the condition area.
         /// </summary>
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>
@@ -206,12 +206,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

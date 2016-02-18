@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLRotationLiteralNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -103,13 +103,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             ZExpression.Parent = this;
             SExpression.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            CommaOneSourceCodeRange = new LSLSourceCodeRange(context.comma_one);
-            CommaTwoSourceCodeRange = new LSLSourceCodeRange(context.comma_two);
-            CommaThreeSourceCodeRange = new LSLSourceCodeRange(context.comma_three);
+            SourceRangeCommaOne = new LSLSourceCodeRange(context.comma_one);
+            SourceRangeCommaTwo = new LSLSourceCodeRange(context.comma_two);
+            SourceRangeCommaThree = new LSLSourceCodeRange(context.comma_three);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         /// <summary>
@@ -133,15 +133,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             ZExpression.Parent = this;
             SExpression.Parent = this;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (!SourceCodeRangesAvailable) return;
+            if (!SourceRangesAvailable) return;
 
-            SourceCodeRange = other.SourceCodeRange.Clone();
+            SourceRange = other.SourceRange.Clone();
 
-            CommaOneSourceCodeRange = other.CommaOneSourceCodeRange.Clone();
-            CommaTwoSourceCodeRange = other.CommaTwoSourceCodeRange.Clone();
-            CommaThreeSourceCodeRange = other.CommaThreeSourceCodeRange.Clone();
+            SourceRangeCommaOne = other.SourceRangeCommaOne.Clone();
+            SourceRangeCommaTwo = other.SourceRangeCommaTwo.Clone();
+            SourceRangeCommaThree = other.SourceRangeCommaThree.Clone();
 
             HasErrors = other.HasErrors;
             Parent = other.Parent;
@@ -233,7 +233,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLRotationLiteralNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLRotationLiteralNode(this);
         }
 
 
@@ -251,31 +251,31 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
         /// The source code range of the first component separator comma to appear in the rotation literal.
         /// </summary>
-        public LSLSourceCodeRange CommaOneSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCommaOne { get; private set; }
 
         /// <summary>
         /// The source code range of the second component separator comma to appear in the rotation literal.
         /// </summary>
-        public LSLSourceCodeRange CommaTwoSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCommaTwo { get; private set; }
 
 
         /// <summary>
         /// The source code range of the third component separator comma to appear in the rotation literal.
         /// </summary>
-        public LSLSourceCodeRange CommaThreeSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCommaThree { get; private set; }
 
 
         /// <summary>

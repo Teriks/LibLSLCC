@@ -62,7 +62,7 @@ namespace LibLSLCC.CodeValidator.Nodes
     /// </summary>
     public sealed class LSLExpressionListNode : ILSLExpressionListNode
     {
-        private readonly GenericArray<LSLSourceCodeRange> _commaSourceCodeRanges = new GenericArray<LSLSourceCodeRange>();
+        private readonly GenericArray<LSLSourceCodeRange> _sourceRangesCommas = new GenericArray<LSLSourceCodeRange>();
         private readonly GenericArray<ILSLExprNode> _expressionNodes = new GenericArray<ILSLExprNode>();
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -100,11 +100,11 @@ namespace LibLSLCC.CodeValidator.Nodes
                 AddExpression(node);
             }
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
-                SourceCodeRange = other.SourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -116,9 +116,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             LSLExpressionListType listType)
         {
             ListType = listType;
-            SourceCodeRange = new LSLSourceCodeRange(parserContext);
+            SourceRange = new LSLSourceCodeRange(parserContext);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext,
@@ -137,8 +137,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 AddExpression(lslExprNode);
             }
 
-            SourceCodeRange = new LSLSourceCodeRange(parserContext);
-            SourceCodeRangesAvailable = true;
+            SourceRange = new LSLSourceCodeRange(parserContext);
+            SourceRangesAvailable = true;
         }
 
 
@@ -194,9 +194,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
         /// </summary>
-        public IReadOnlyGenericArray<LSLSourceCodeRange> CommaSourceCodeRanges
+        public IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangesCommas
         {
-            get { return _commaSourceCodeRanges; }
+            get { return _sourceRangesCommas; }
         }
 
 
@@ -234,7 +234,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep cloned copy of this expression list node.</returns>
         public LSLExpressionListNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLExpressionListNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLExpressionListNode(this);
         }
 
 
@@ -244,7 +244,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <param name="range">The source code range to add.</param>
         public void AddCommaRange(LSLSourceCodeRange range)
         {
-            _commaSourceCodeRanges.Add(range);
+            _sourceRangesCommas.Add(range);
         }
 
         #region Nested type: Err
@@ -261,14 +261,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

@@ -66,7 +66,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLListLiteralNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -83,9 +83,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             ExpressionListNode = expressionListNode;
             ExpressionListNode.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         /// <summary>
@@ -105,11 +105,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             ExpressionListNode = other.ExpressionListNode.Clone();
             ExpressionListNode.Parent = this;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
-                SourceCodeRange = other.SourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -180,7 +180,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLListLiteralNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLListLiteralNode(this);
         }
 
 
@@ -198,13 +198,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

@@ -120,7 +120,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLFloatLiteralNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLFloatLiteralNode(this);
         }
     }
 }

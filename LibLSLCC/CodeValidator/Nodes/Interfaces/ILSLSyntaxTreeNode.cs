@@ -69,13 +69,13 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        LSLSourceCodeRange SourceCodeRange { get; }
+        LSLSourceCodeRange SourceRange { get; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        bool SourceCodeRangesAvailable { get; }
+        bool SourceRangesAvailable { get; }
 
 
         /// <summary>

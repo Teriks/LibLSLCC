@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLPrefixOperationNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -88,11 +88,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             ParseAndSetOperation(context.operation.Text);
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            OperationSourceCodeRange = new LSLSourceCodeRange(context.operation);
+            SourceRangeOperation = new LSLSourceCodeRange(context.operation);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -114,12 +114,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             Operation = other.Operation;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
-                SourceCodeRange = other.SourceCodeRange.Clone();
-                OperationSourceCodeRange = other.OperationSourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
+                SourceRangeOperation = other.SourceRangeOperation.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -190,7 +190,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLPrefixOperationNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLPrefixOperationNode(this);
         }
 
 
@@ -209,18 +209,18 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
         /// The source code range the prefix operator occupies.
         /// </summary>
-        public LSLSourceCodeRange OperationSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOperation { get; private set; }
 
 
         /// <summary>

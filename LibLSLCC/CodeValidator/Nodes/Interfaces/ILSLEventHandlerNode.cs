@@ -81,5 +81,10 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// </summary>
         ILSLParameterListNode ParameterListNode { get; }
 
+        /// <summary>
+        /// The source code range of the event handler name.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeName { get; }
+
     }
 }

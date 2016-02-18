@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLParenthesizedExpressionNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -84,9 +84,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             InnerExpression = innerExpression;
             InnerExpression.Parent = this;
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -104,11 +106,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             InnerExpression = other.InnerExpression.Clone();
             InnerExpression.Parent = this;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             { 
-                SourceCodeRange = other.SourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
+                SourceRangeCloseParenth = other.SourceRangeCloseParenth.Clone();
+                SourceRangeOpenParenth = other.SourceRangeOpenParenth.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -120,6 +124,16 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// The expression node contained within the parenthesis, this should never be null.
         /// </summary>
         public ILSLExprNode InnerExpression { get; private set; }
+
+        /// <summary>
+        /// The source code range of the opening parenthesis in the parenthesized expression.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
+
+        /// <summary>
+        /// The source code range of the closing parenthesis in the parenthesized expression.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -161,7 +175,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLParenthesizedExpressionNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLParenthesizedExpressionNode(this);
         }
 
 
@@ -179,13 +193,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

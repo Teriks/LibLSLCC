@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the first component separator comma to appear in the vector literal.
         /// </summary>
-        LSLSourceCodeRange CommaOneSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCommaOne { get; }
 
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the second component separator comma to appear in the vector literal.
         /// </summary>
-        LSLSourceCodeRange CommaTwoSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCommaTwo { get; }
 
 
         /// <summary>

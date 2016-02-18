@@ -233,32 +233,32 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Converts LSLLibraryDataAdditions to the corresponding subset string
         /// </summary>
-        /// <param name="flags"></param>
+        /// <param name="dataAdditionFlags"></param>
         /// <returns>a string representation of the subset</returns>
-        public static IEnumerable<string> ToSubsetNames(this LSLLibraryDataAdditions flags)
+        public static IEnumerable<string> ToSubsetNames(this LSLLibraryDataAdditions dataAdditionFlags)
         {
-            if ((flags & LSLLibraryDataAdditions.OpenSimOssl) == LSLLibraryDataAdditions.OpenSimOssl)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimOssl) == LSLLibraryDataAdditions.OpenSimOssl)
             {
                 yield return ("ossl");
             }
 
-            if ((flags & LSLLibraryDataAdditions.OpenSimWindlight) == LSLLibraryDataAdditions.OpenSimWindlight)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimWindlight) == LSLLibraryDataAdditions.OpenSimWindlight)
             {
                 yield return ("os-lightshare");
             }
 
-            if ((flags & LSLLibraryDataAdditions.OpenSimBulletPhysics) == LSLLibraryDataAdditions.OpenSimBulletPhysics)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimBulletPhysics) == LSLLibraryDataAdditions.OpenSimBulletPhysics)
             {
                 yield return ("os-bullet-physics");
             }
 
-            if ((flags & LSLLibraryDataAdditions.OpenSimModInvoke) == LSLLibraryDataAdditions.OpenSimModInvoke)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimModInvoke) == LSLLibraryDataAdditions.OpenSimModInvoke)
             {
                 yield return ("os-mod-api");
             }
 
 
-            if ((flags & LSLLibraryDataAdditions.OpenSimJsonStore) == LSLLibraryDataAdditions.OpenSimJsonStore)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimJsonStore) == LSLLibraryDataAdditions.OpenSimJsonStore)
             {
                 yield return ("os-json-store");
             }
@@ -291,18 +291,18 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Converts LSLLibraryBaseData to the corresponding subset string
         /// </summary>
-        /// <param name="flag"></param>
+        /// <param name="baseDataOption"></param>
         /// <returns>a string representation of the subset</returns>
-        public static string ToSubsetName(this LSLLibraryBaseData flag)
+        public static string ToSubsetName(this LSLLibraryBaseData baseDataOption)
         {
-            switch (flag)
+            switch (baseDataOption)
             {
                 case LSLLibraryBaseData.StandardLsl:
                     return "lsl";
                 case LSLLibraryBaseData.OpensimLsl:
                     return "os-lsl";
                 default:
-                    throw new ArgumentOutOfRangeException("flag", flag, null);
+                    throw new ArgumentOutOfRangeException("baseDataOption", baseDataOption, null);
             }
         }
     }

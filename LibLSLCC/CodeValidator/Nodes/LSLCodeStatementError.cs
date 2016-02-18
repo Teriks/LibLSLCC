@@ -59,9 +59,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             IsSingleBlockStatement = isSingleBlockStatement;
 
-            SourceCodeRange = new LSLSourceCodeRange(parserContext);
+            SourceRange = new LSLSourceCodeRange(parserContext);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -108,13 +108,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set;  }
+        public LSLSourceCodeRange SourceRange { get; private set;  }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

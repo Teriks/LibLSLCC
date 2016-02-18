@@ -66,16 +66,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'if' keyword of the statement.
         /// </summary>
-        LSLSourceCodeRange IfKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeIfKeyword { get; }
 
         /// <summary>
         /// The source code range of the opening parenthesis of the condition area.
         /// </summary>
-        LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
         /// The source code range of the closing parenthesis of the condition area.
         /// </summary>
-        LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

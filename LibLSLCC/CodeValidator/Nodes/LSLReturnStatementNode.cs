@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLReturnStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -87,11 +87,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             ReturnExpression = returnExpression;
             ReturnExpression.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            ReturnKeywordSourceCodeRange = new LSLSourceCodeRange(context.return_keyword);
-            SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeReturnKeyword = new LSLSourceCodeRange(context.return_keyword);
+            SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, bool isSingleBlockStatement)
@@ -100,11 +100,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             ReturnExpression = null;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            ReturnKeywordSourceCodeRange = new LSLSourceCodeRange(context.return_keyword);
-            SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeReturnKeyword = new LSLSourceCodeRange(context.return_keyword);
+            SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         /// <summary>
@@ -152,13 +152,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'return' keyword in the return statement.
         /// </summary>
-        public LSLSourceCodeRange ReturnKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeReturnKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that ends the return statement.
         /// </summary>
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
         /// <summary>
@@ -203,14 +203,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
 

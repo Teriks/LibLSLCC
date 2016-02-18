@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         internal LSLDummyExpr()
         {
-            SourceCodeRangesAvailable = false;
+            SourceRangesAvailable = false;
         }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -88,12 +88,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool HasErrors { get; private set; }
 
-        public LSLSourceCodeRange SourceCodeRange
+        public LSLSourceCodeRange SourceRange
         {
             get { return new LSLSourceCodeRange(); }
         }
 
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)

@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLTypecastExprNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -90,9 +90,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             Type = result;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCastTypeName = new LSLSourceCodeRange(context.cast_type);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -115,12 +118,15 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             Type = other.Type;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
-                SourceCodeRange = other.SourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
+                SourceRangeOpenParenth = other.SourceRangeOpenParenth.Clone();
+                SourceRangeCastTypeName = other.SourceRangeCastTypeName.Clone();
+                SourceRangeCloseParenth = other.SourceRangeCloseParenth.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -155,6 +161,21 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public string CastToTypeString { get; private set; }
 
+        /// <summary>
+        /// The source code range of the closing parenthesis of the enclosed cast type.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
+
+        /// <summary>
+        /// The source code range of the open parenthesis of the enclosed cast type.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
+
+        /// <summary>
+        /// The source code range of the type name used for the cast.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeCastTypeName { get; private set; }
+
 
         /// <summary>
         /// Returns a version of this node type that represents its error state;  in case of a syntax error
@@ -185,7 +206,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
         {
-            return HasErrors ? GetError(SourceCodeRange) : new LSLTypecastExprNode(this);
+            return HasErrors ? GetError(SourceRange) : new LSLTypecastExprNode(this);
         }
 
 
@@ -204,13 +225,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

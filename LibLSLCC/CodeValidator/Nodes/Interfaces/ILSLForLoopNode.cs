@@ -57,12 +57,12 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'for' keyword in the statement.
         /// </summary>
-        LSLSourceCodeRange ForKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeForKeyword { get; }
 
         /// <summary>
         /// The source code range of the opening parenthesis that starts the for-loop clauses area.
         /// </summary>
-        LSLSourceCodeRange OpenParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
         /// The expression list node that contains the expressions used in the initialization clause of the for-loop.
@@ -75,17 +75,17 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the semi-colon that separates the initialization clause from the condition clause of the for-loop;
         /// </summary>
-        LSLSourceCodeRange FirstSemiColonSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeFirstSemicolon { get; }
 
         /// <summary>
         /// The source code range of the semi-colon that separates the condition clause from the afterthought expressions of the for-loop;
         /// </summary>
-        LSLSourceCodeRange SecondSemiColonSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeSecondSemicolon { get; }
 
         /// <summary>
         /// The source code range of the closing parenthesis that ends the for-loop clause section.
         /// </summary>
-        LSLSourceCodeRange CloseParenthSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCloseParenth { get; }
 
         /// <summary>
         /// The expression list node that contains the expressions used in the afterthought area of the for-loop's clauses.

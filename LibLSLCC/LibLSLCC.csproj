@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ExtendedCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>LibLSLCC.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -68,6 +68,7 @@
     <Compile Include="CodeValidator\LSLAntlrErrorHandler.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\LSLLiteralNodeInterfaceExtensions.cs" />
     <Compile Include="CodeValidator\Enums\LSLExpressionListType.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLToken.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
     <Compile Include="Collections\CloneableExtensions.cs" />

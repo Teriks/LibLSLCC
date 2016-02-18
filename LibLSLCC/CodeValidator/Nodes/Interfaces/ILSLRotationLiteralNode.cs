@@ -62,7 +62,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the first component separator comma to appear in the rotation literal.
         /// </summary>
-        LSLSourceCodeRange CommaOneSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCommaOne { get; }
 
         /// <summary>
         /// The expression node used to initialize the Y (second) Component of the rotation literal.  
@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the second component separator comma to appear in the rotation literal.
         /// </summary>
-        LSLSourceCodeRange CommaTwoSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCommaTwo { get; }
 
         /// <summary>
         /// The expression node used to initialize the Z (third) Component of the rotation literal.  
@@ -84,7 +84,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the third component separator comma to appear in the rotation literal.
         /// </summary>
-        LSLSourceCodeRange CommaThreeSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCommaThree { get; }
 
         /// <summary>
         /// The expression node used to initialize the S (fourth) Component of the rotation literal.  

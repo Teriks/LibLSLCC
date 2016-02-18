@@ -73,6 +73,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range the prefix operator occupies.
         /// </summary>
-        LSLSourceCodeRange OperationSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOperation { get; }
     }
 }

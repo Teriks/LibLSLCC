@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLForLoopNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -90,15 +90,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             AfterthoughExpressions = afterthoughExpressions;
             AfterthoughExpressions.Parent = this;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
-            FirstSemiColonSourceCodeRange = new LSLSourceCodeRange(context.first_semi_colon);
-            SecondSemiColonSourceCodeRange = new LSLSourceCodeRange(context.second_semi_colon);
-            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
-            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
-            ForKeywordSourceCodeRange = new LSLSourceCodeRange(context.loop_keyword);
+            SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeFirstSemicolon = new LSLSourceCodeRange(context.first_semi_colon);
+            SourceRangeSecondSemicolon = new LSLSourceCodeRange(context.second_semi_colon);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
+            SourceRangeForKeyword = new LSLSourceCodeRange(context.loop_keyword);
 
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
 
             Code = code;
 
@@ -278,43 +278,43 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
         /// The source code range of the 'for' keyword in the statement.
         /// </summary>
-        public LSLSourceCodeRange ForKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeForKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that separates the initialization clause from the condition clause of the for-loop;
         /// </summary>
-        public LSLSourceCodeRange FirstSemiColonSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeFirstSemicolon { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that separates the condition clause from the afterthought expressions of the for-loop;
         /// </summary>
-        public LSLSourceCodeRange SecondSemiColonSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeSecondSemicolon { get; private set; }
 
 
         /// <summary>
         /// The source code range of the opening parenthesis that starts the for-loop clauses area.
         /// </summary>
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing parenthesis that ends the for-loop clause section.
         /// </summary>
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>

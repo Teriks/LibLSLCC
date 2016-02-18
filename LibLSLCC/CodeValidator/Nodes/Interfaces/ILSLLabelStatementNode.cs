@@ -70,16 +70,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the '@' symbol that prefixes the label name.
         /// </summary>
-        LSLSourceCodeRange LabelPrefixSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeLabelPrefix { get; }
 
         /// <summary>
         /// The source code range of the label's name.
         /// </summary>
-        LSLSourceCodeRange LabelNameSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeLabelName { get; }
 
         /// <summary>
         /// The source code range of the semi-colon that follows the label definition.
         /// </summary>
-        LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

@@ -72,16 +72,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'jump' keyword in the jump statement.
         /// </summary>
-        LSLSourceCodeRange JumpKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeJumpKeyword { get; }
 
         /// <summary>
         /// The source code range of the target label name in the jump statement.
         /// </summary>
-        LSLSourceCodeRange LabelNameSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeLabelName { get; }
 
         /// <summary>
         /// The source code range of the semi-colon that follows the jump statement.
         /// </summary>
-        LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

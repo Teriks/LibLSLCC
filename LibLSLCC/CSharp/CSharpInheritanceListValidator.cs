@@ -376,7 +376,7 @@ namespace LibLSLCC.CSharp
         /// The signature given should be the source content immediately after a classes declared name, without the separating colon if there is one.
         /// </summary>
         /// <param name="input">The inheritance list signature to parse.</param>
-        /// <returns></returns>
+        /// <returns>The parse/validation result.  <see cref="CSharpInheritanceListValidationResult"/></returns>
         public static CSharpInheritanceListValidationResult Validate(string input)
         {
             var result = new CSharpInheritanceListValidationResult();

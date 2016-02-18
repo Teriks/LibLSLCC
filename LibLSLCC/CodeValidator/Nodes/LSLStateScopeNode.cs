@@ -67,7 +67,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLStateScopeNode(LSLSourceCodeRange sourceRange, Err err)
             // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -81,14 +81,14 @@ namespace LibLSLCC.CodeValidator.Nodes
             StateName = "default";
             IsDefaultState = true;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
-            CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
-            StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
-            StateKeywordSourceCodeRange = new LSLSourceCodeRange(context.state_name);
+            SourceRangeOpenBrace = new LSLSourceCodeRange(context.open_brace);
+            SourceRangeCloseBrace = new LSLSourceCodeRange(context.close_brace);
+            SourceRangeStateName = new LSLSourceCodeRange(context.state_name);
+            SourceRangeStateKeyword = new LSLSourceCodeRange(context.state_name);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context)
@@ -101,14 +101,14 @@ namespace LibLSLCC.CodeValidator.Nodes
             StateName = context.state_name.Text;
             IsDefinedState = true;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
-            CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
-            StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
-            StateKeywordSourceCodeRange = new LSLSourceCodeRange(context.state_keyword);
+            SourceRangeOpenBrace = new LSLSourceCodeRange(context.open_brace);
+            SourceRangeCloseBrace = new LSLSourceCodeRange(context.close_brace);
+            SourceRangeStateName = new LSLSourceCodeRange(context.state_name);
+            SourceRangeStateKeyword = new LSLSourceCodeRange(context.state_keyword);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         internal LSLStateScopeNode(LSLParser.DefaultStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
@@ -128,14 +128,14 @@ namespace LibLSLCC.CodeValidator.Nodes
             StateName = "default";
             IsDefaultState = true;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
-            CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
-            StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
-            StateKeywordSourceCodeRange = new LSLSourceCodeRange(context.state_name);
+            SourceRangeOpenBrace = new LSLSourceCodeRange(context.open_brace);
+            SourceRangeCloseBrace = new LSLSourceCodeRange(context.close_brace);
+            SourceRangeStateName = new LSLSourceCodeRange(context.state_name);
+            SourceRangeStateKeyword = new LSLSourceCodeRange(context.state_name);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
@@ -154,14 +154,14 @@ namespace LibLSLCC.CodeValidator.Nodes
                 AddEventHandler(lslEventHandlerNode);
             }
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            OpenBraceSourceCodeRange = new LSLSourceCodeRange(context.open_brace);
-            CloseBraceSourceCodeRange = new LSLSourceCodeRange(context.close_brace);
-            StateNameSourceCodeRange = new LSLSourceCodeRange(context.state_name);
-            StateKeywordSourceCodeRange = new LSLSourceCodeRange(context.state_keyword);
+            SourceRangeOpenBrace = new LSLSourceCodeRange(context.open_brace);
+            SourceRangeCloseBrace = new LSLSourceCodeRange(context.close_brace);
+            SourceRangeStateName = new LSLSourceCodeRange(context.state_name);
+            SourceRangeStateKeyword = new LSLSourceCodeRange(context.state_keyword);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         /// <summary>
@@ -251,38 +251,38 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
         /// The source code range of the opening brace of the state block's scope.
         /// </summary>
-        public LSLSourceCodeRange OpenBraceSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOpenBrace { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing brace of the state block's scope.
         /// </summary>
-        public LSLSourceCodeRange CloseBraceSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCloseBrace { get; private set; }
 
 
         /// <summary>
         /// The source code range where the name of the state is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
-        public LSLSourceCodeRange StateNameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeStateName { get; private set; }
 
         /// <summary>
         /// The source code range where the state keyword is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
-        public LSLSourceCodeRange StateKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeStateKeyword { get; private set; }
 
 
         /// <summary>

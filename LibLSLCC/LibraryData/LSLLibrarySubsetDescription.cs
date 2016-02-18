@@ -125,7 +125,12 @@ namespace LibLSLCC.LibraryData
             return ev;
         }
 
-        void IXmlSerializable.ReadXml(XmlReader reader)
+
+        /// <summary>
+        /// Generates an object from its XML representation.
+        /// </summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized. </param>
+        public void ReadXml(XmlReader reader)
         {
             var lineNumberInfo = (IXmlLineInfo)reader;
 
@@ -190,7 +195,11 @@ namespace LibLSLCC.LibraryData
         }
 
 
-        void IXmlSerializable.WriteXml(XmlWriter writer)
+        /// <summary>
+        /// Converts an object into its XML representation.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized. </param>
+        public void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Subset", Subset);
             writer.WriteAttributeString("FriendlyName", FriendlyName);

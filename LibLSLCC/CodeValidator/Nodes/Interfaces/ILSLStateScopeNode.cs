@@ -80,23 +80,23 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the opening brace of the state block's scope.
         /// </summary>
-        LSLSourceCodeRange OpenBraceSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOpenBrace { get; }
 
         /// <summary>
         /// The source code range of the closing brace of the state block's scope.
         /// </summary>
-        LSLSourceCodeRange CloseBraceSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeCloseBrace { get; }
 
         /// <summary>
         /// The source code range where the name of the state is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
-        LSLSourceCodeRange StateNameSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeStateName { get; }
 
         /// <summary>
         /// The source code range where the state keyword is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
-        LSLSourceCodeRange StateKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeStateKeyword { get; }
     }
 }

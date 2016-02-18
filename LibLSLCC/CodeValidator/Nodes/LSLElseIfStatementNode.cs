@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLElseIfStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -94,15 +94,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
             
-            ElseKeywordSourceCodeRange = new LSLSourceCodeRange(elseKeyword);
-            IfKeywordSourceCodeRange = new LSLSourceCodeRange(context.if_keyword);
-            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
-            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+            SourceRangeElseKeyword = new LSLSourceCodeRange(elseKeyword);
+            SourceRangeIfKeyword = new LSLSourceCodeRange(context.if_keyword);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
 
 
-            SourceCodeRange = new LSLSourceCodeRange(ElseKeywordSourceCodeRange,code.SourceCodeRange);
+            SourceRange = new LSLSourceCodeRange(SourceRangeElseKeyword,code.SourceRange);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         /// <summary>
@@ -165,25 +165,25 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'if' keyword in the else-if statement.
         /// </summary>
-        public LSLSourceCodeRange IfKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeIfKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the 'else' keyword in the else-if statement.
         /// </summary>
-        public LSLSourceCodeRange ElseKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeElseKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the opening parenthesis in the else-if statement where the condition area starts.
         /// </summary>
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing parenthesis in the else-if statement where the condition area ends.
         /// </summary>
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>
@@ -224,14 +224,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

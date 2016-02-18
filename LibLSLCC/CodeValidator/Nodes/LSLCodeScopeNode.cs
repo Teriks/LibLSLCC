@@ -66,7 +66,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLCodeScopeNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -80,11 +80,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             ScopeId = scopeId;
             IsCodeScope = true;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
             CodeScopeType = codeScopeType;
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, int scopeId, LSLCodeScopeType codeScopeType)
@@ -97,11 +97,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             ScopeId = scopeId;
             IsSingleBlockStatement = true;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
             CodeScopeType = codeScopeType;
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -421,7 +421,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                     {
                         if (
                             label.JumpsToHere.Any(
-                                x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
+                                x => (x.SourceRange.StartIndex < label.SourceRange.StartIndex) && !IsJumpDead(x)))
                         {
                             dead = false;
                             _afterLabelJumpDownOverReturn = true;
@@ -468,7 +468,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 {
                     if (
                         label.JumpsToHere.Any(
-                            x => (x.SourceCodeRange.StartIndex < label.SourceCodeRange.StartIndex) && !IsJumpDead(x)))
+                            x => (x.SourceRange.StartIndex < label.SourceRange.StartIndex) && !IsJumpDead(x)))
                     {
                         dead = false;
                         _afterLabelJumpDownOverReturn = true;
@@ -546,14 +546,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     The source code range this statement occupies in the source code
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

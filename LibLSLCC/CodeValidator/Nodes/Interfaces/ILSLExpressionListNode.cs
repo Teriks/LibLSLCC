@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
         /// </summary>
-        IReadOnlyGenericArray<LSLSourceCodeRange> CommaSourceCodeRanges { get; }
+        IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangesCommas { get; }
 
         /// <summary>
         /// True if all expressions in the expression list are considered to be constant expressions.

@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLLabelStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -75,13 +75,13 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             LabelName = context.label_name.Text;
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            LabelNameSourceCodeRange = new LSLSourceCodeRange(context.label_name);
-            LabelPrefixSourceCodeRange = new LSLSourceCodeRange(context.label_prefix);
-            SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
+            SourceRangeLabelName = new LSLSourceCodeRange(context.label_name);
+            SourceRangeLabelPrefix = new LSLSourceCodeRange(context.label_prefix);
+            SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -131,19 +131,19 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the '@' symbol that prefixes the label name.
         /// </summary>
-        public LSLSourceCodeRange LabelPrefixSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeLabelPrefix { get; private set; }
 
 
         /// <summary>
         /// The source code range of the label's name.
         /// </summary>
-        public LSLSourceCodeRange LabelNameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeLabelName { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that follows the label definition.
         /// </summary>
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
 
@@ -233,13 +233,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

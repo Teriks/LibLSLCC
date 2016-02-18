@@ -62,16 +62,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'state' keyword in the state change statement.
         /// </summary>
-        LSLSourceCodeRange StateKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeStateKeyword { get; }
 
         /// <summary>
         /// The source code range of the target state name in the state change statement.
         /// </summary>
-        LSLSourceCodeRange StateNameSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeStateName { get; }
 
         /// <summary>
         /// The source code range of the semi-colon that ends the state change statement.
         /// </summary>
-        LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

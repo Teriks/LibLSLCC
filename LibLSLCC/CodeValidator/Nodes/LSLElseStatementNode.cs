@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLElseStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -89,11 +89,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             Code.Parent = this;
 
 
-            ElseKeywordSourceCodeRange = new LSLSourceCodeRange(context.else_keyword);
+            SourceRangeElseKeyword = new LSLSourceCodeRange(context.else_keyword);
 
-            SourceCodeRange = new LSLSourceCodeRange(ElseKeywordSourceCodeRange, code.SourceCodeRange);
+            SourceRange = new LSLSourceCodeRange(SourceRangeElseKeyword, code.SourceRange);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'else' keyword in the else statement.
         /// </summary>
-        public LSLSourceCodeRange ElseKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeElseKeyword { get; private set; }
 
 
         #region ILSLBranchStatementNode Members
@@ -179,14 +179,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>

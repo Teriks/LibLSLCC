@@ -126,18 +126,18 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the type specifier for the variable declaration.
         /// </summary>
-        LSLSourceCodeRange TypeSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeTypeName { get; }
 
         /// <summary>
         /// The source code range that encompasses the variables name in the declaration.
         /// </summary>
-        LSLSourceCodeRange NameSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeName { get; }
 
 
         /// <summary>
         /// The source code range of the assignment operator in the declaration expression if one was used.
         /// This value is only meaningful if either 'IsLocal' or 'IsGlobal' are true, and 'HasDeclarationExpression' is also true.
         /// </summary>
-        LSLSourceCodeRange OperatorSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeOperator { get; }
     }
 }

@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLBinaryExpressionNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -83,17 +83,17 @@ namespace LibLSLCC.CodeValidator.Nodes
             LeftExpression.Parent = this;
             RightExpression.Parent = this;
 
-            SourceCodeRangesAvailable = other.SourceCodeRangesAvailable;
+            SourceRangesAvailable = other.SourceRangesAvailable;
 
             Operation = other.Operation;
             OperationString = other.OperationString;
 
 
-            if (SourceCodeRangesAvailable)
+            if (SourceRangesAvailable)
             {
-                SourceCodeRange = other.SourceCodeRange.Clone();
+                SourceRange = other.SourceRange.Clone();
 
-                OperationSourceCodeRange = other.OperationSourceCodeRange.Clone();
+                SourceRangeOperation = other.SourceRangeOperation.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -135,11 +135,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             ParseAndSetOperation(operationString);
             
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            OperationSourceCodeRange = new LSLSourceCodeRange(operationToken);
+            SourceRangeOperation = new LSLSourceCodeRange(operationToken);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
 
@@ -160,7 +160,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that encompasses the binary expression and its children.
         /// </summary>
-        public LSLSourceCodeRange OperationSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOperation { get; private set; }
 
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -227,14 +227,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values
         /// for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             if (HasErrors)
             {
-                return GetError(SourceCodeRange);
+                return GetError(SourceRange);
             }
 
             return new LSLBinaryExpressionNode(this);

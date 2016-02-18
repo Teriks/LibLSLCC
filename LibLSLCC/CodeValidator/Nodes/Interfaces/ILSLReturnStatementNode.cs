@@ -68,11 +68,11 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'return' keyword in the return statement.
         /// </summary>
-        LSLSourceCodeRange ReturnKeywordSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeReturnKeyword { get; }
 
         /// <summary>
         /// The source code range of the semi-colon that ends the return statement.
         /// </summary>
-        LSLSourceCodeRange SemiColonSourceCodeRange { get; }
+        LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

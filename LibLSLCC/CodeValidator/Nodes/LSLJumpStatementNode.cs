@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         private LSLJumpStatementNode(LSLSourceCodeRange sourceRange, Err err)
 // ReSharper restore UnusedParameter.Local
         {
-            SourceCodeRange = sourceRange;
+            SourceRange = sourceRange;
             HasErrors = true;
         }
 
@@ -91,13 +91,13 @@ namespace LibLSLCC.CodeValidator.Nodes
             JumpTarget = jumpTarget;
             JumpTarget.AddJumpToHere(this);
 
-            SourceCodeRange = new LSLSourceCodeRange(context);
+            SourceRange = new LSLSourceCodeRange(context);
 
-            LabelNameSourceCodeRange = new LSLSourceCodeRange(context.jump_target);
-            JumpKeywordSourceCodeRange = new LSLSourceCodeRange(context.jump_keyword);
-            SemiColonSourceCodeRange = new LSLSourceCodeRange(context.semi_colon);
+            SourceRangeLabelName = new LSLSourceCodeRange(context.jump_target);
+            SourceRangeJumpKeyword = new LSLSourceCodeRange(context.jump_keyword);
+            SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
 
-            SourceCodeRangesAvailable = true;
+            SourceRangesAvailable = true;
         }
 
         /// <summary>
@@ -171,12 +171,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceCodeRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
@@ -254,18 +254,18 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'jump' keyword in the jump statement.
         /// </summary>
-        public LSLSourceCodeRange JumpKeywordSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeJumpKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the target label name in the jump statement.
         /// </summary>
-        public LSLSourceCodeRange LabelNameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeLabelName { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that follows the jump statement.
         /// </summary>
-        public LSLSourceCodeRange SemiColonSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
     }
 }
