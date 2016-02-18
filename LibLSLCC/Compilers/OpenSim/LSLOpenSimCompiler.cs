@@ -156,14 +156,7 @@ namespace LibLSLCC.Compilers.OpenSim
                 throw new ArgumentNullException("writer");
             }
 
-            try
-            {
-                _visitor.WriteAndFlush(compilationUnit, writer, closeStream);
-            }
-            finally
-            {
-                _visitor.Reset();
-            }
+            _visitor.WriteAndFlush(compilationUnit, writer, closeStream);
         }
     }
 }

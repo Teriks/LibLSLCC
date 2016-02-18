@@ -249,6 +249,8 @@ private static class UTILITIES
                 {
                     Writer.Close();
                 }
+
+                Reset();
             }
         }
 
