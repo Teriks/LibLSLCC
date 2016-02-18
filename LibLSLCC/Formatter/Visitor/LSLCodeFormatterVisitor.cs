@@ -691,9 +691,20 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitTypecastExpression(ILSLTypecastExprNode node)
         {
-            Write("(" + node.CastToTypeString + ")");
+            Write("(");
+
+            WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.SourceRangeCastToType);
+
+            Write(node.CastToTypeString);
+
+            WriteCommentsBetweenRange(node.SourceRangeCastToType.LastCharRange, node.SourceRangeCloseParenth);
+
+            Writer.Write(")");
+
+            WriteCommentsBetweenRange(node.SourceRangeCloseParenth, node.CastedExpression.SourceRange);
 
             Visit(node.CastedExpression);
+
             return true;
         }
 

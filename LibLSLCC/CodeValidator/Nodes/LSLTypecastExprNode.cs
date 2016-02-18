@@ -93,7 +93,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
             SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
-            SourceRangeCastTypeName = new LSLSourceCodeRange(context.cast_type);
+            SourceRangeCastToType = new LSLSourceCodeRange(context.cast_type);
 
             SourceRangesAvailable = true;
         }
@@ -125,7 +125,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 SourceRange = other.SourceRange.Clone();
                 SourceRangeOpenParenth = other.SourceRangeOpenParenth.Clone();
-                SourceRangeCastTypeName = other.SourceRangeCastTypeName.Clone();
+                SourceRangeCastToType = other.SourceRangeCastToType.Clone();
                 SourceRangeCloseParenth = other.SourceRangeCloseParenth.Clone();
             }
 
@@ -174,7 +174,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the type name used for the cast.
         /// </summary>
-        public LSLSourceCodeRange SourceRangeCastTypeName { get; private set; }
+        public LSLSourceCodeRange SourceRangeCastToType { get; private set; }
 
 
         /// <summary>

@@ -84,6 +84,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the type name used for the cast.
         /// </summary>
-        LSLSourceCodeRange SourceRangeCastTypeName { get; }
+        LSLSourceCodeRange SourceRangeCastToType { get; }
     }
 }
