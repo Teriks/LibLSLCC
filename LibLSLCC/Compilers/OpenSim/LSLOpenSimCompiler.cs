@@ -133,23 +133,32 @@ namespace LibLSLCC.Compilers.OpenSim
         /// Compiles a syntax tree into OpenSim compatible CSharp code, writing the output to the specified TextWriter.
         /// </summary>
         /// <param name="compilationUnit">
-        /// The top of the LSL Syntax tree to compile.
+        /// The top node of an LSL Syntax tree to compile.
         /// This is returned from <see cref="LSLCodeValidator.Validate"/> or user implemented Code DOM.</param>
-        /// <param name="textWriter">The text writer to write the generated code to.</param>
-        public void Compile(ILSLCompilationUnitNode compilationUnit, TextWriter textWriter)
+        /// <param name="writer">The text writer to write the generated code to.</param>
+        /// <param name="closeStream">Whether or not to close <paramref name="writer"/> once compilation is done.  The default value is <c>false</c>.</param>
+        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        public void Compile(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = false)
         {
             if (compilationUnit == null)
             {
                 throw new ArgumentNullException("compilationUnit");
             }
-            if (textWriter == null)
+
+            if (compilationUnit.HasErrors)
             {
-                throw new ArgumentNullException("textWriter");
+                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot compile a tree with syntax errors.");
+            }
+
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
             }
 
             try
             {
-                _visitor.WriteAndFlush(compilationUnit, textWriter, false);
+                _visitor.WriteAndFlush(compilationUnit, writer, closeStream);
             }
             finally
             {

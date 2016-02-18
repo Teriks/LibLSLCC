@@ -203,13 +203,28 @@ private static class UTILITIES
                 : Settings.CoOpTerminationFunctionCall.FullSignature;
         }
 
-
-        public void WriteAndFlush(ILSLCompilationUnitNode node, TextWriter writer, bool closeStream = true)
+        /// <summary>
+        /// Compiles a syntax tree into OpenSim compatible CSharp code, writing the output to the specified TextWriter.
+        /// </summary>
+        /// <param name="compilationUnit">
+        /// The top node of an LSL Syntax tree to compile.
+        /// This is returned from <see cref="LSLCodeValidator.Validate"/> or user implemented Code DOM.</param>
+        /// <param name="writer">The text writer to write the generated code to.</param>
+        /// <param name="closeStream">Whether or not to close <paramref name="writer"/> once compilation is done.  The default value is <c>false</c>.</param>
+        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        public void WriteAndFlush(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = true)
         {
-            if (node == null)
+            if (compilationUnit == null)
             {
-                throw new ArgumentNullException("node");
+                throw new ArgumentNullException("compilationUnit");
             }
+
+            if (compilationUnit.HasErrors)
+            {
+                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot compile a tree with syntax errors.");
+            }
+
             if (writer == null)
             {
                 throw new ArgumentNullException("writer");
@@ -224,7 +239,7 @@ private static class UTILITIES
             {
                 Writer = writer;
 
-                Visit(node);
+                Visit(compilationUnit);
 
                 Writer.Flush();
             }

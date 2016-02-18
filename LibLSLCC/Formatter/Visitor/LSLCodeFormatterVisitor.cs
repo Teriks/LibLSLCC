@@ -227,17 +227,24 @@ namespace LibLSLCC.Formatter.Visitor
         /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, <paramref name="sourceReference"/> is only required if you want to keep comments.
         /// </summary>
         /// <param name="sourceReference">The source code of the script, only necessary if comments exist.  Passing <c>null</c> will cause all comments to be stripped, regardless of formatter settings.</param>
-        /// <param name="node">The top level <see cref="ILSLCompilationUnitNode"/> to format.</param>
+        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode"/> syntax tree node to format.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
-        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="node"/> or <paramref name="writer"/> is <c>null</c>.</exception>
-        public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode node, TextWriter writer,
+        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/> when finished.  The default value is <c>false</c>.</param>
+        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
-            if (node == null)
+            if (compilationUnit == null)
             {
-                throw new ArgumentNullException("node");
+                throw new ArgumentNullException("compilationUnit");
             }
+
+            if (compilationUnit.HasErrors)
+            {
+                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot format a tree with syntax errors.");
+            }
+
             if (writer == null)
             {
                 throw new ArgumentNullException("writer");
@@ -249,7 +256,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                 if (_sourceReference != null && !Settings.RemoveComments)
                 {
-                    foreach (var comment in node.Comments)
+                    foreach (var comment in compilationUnit.Comments)
                     {
                         _comments.AddLast(comment);
                     }
@@ -257,7 +264,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                 Writer = writer;
 
-                Visit(node);
+                Visit(compilationUnit);
 
                 Writer.Flush();
             }
