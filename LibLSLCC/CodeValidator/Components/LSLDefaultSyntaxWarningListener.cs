@@ -156,7 +156,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// An un-needed but valid semi-colon was detected in code, such as when a semi-colon is on a line by itself or multiple semi-colons follow an expression statement when only one is needed.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
-        public virtual void UselessSemiColon(LSLSourceCodeRange location)
+        public virtual void UselessSemicolon(LSLSourceCodeRange location)
         {
             OnWarning(location, "Pointless semicolon detected.");
         }

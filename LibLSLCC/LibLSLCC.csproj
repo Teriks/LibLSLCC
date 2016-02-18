@@ -273,7 +273,7 @@
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLParameterListNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLParameterNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLReturnStatementNode.cs" />
-    <Compile Include="CodeValidator\Nodes\Interfaces\ILSLSemiColonStatement.cs" />
+    <Compile Include="CodeValidator\Nodes\Interfaces\ILSLSemicolonStatement.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLStateChangeStatementNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLVariableDeclarationNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLCodeStatementError.cs" />
@@ -287,7 +287,7 @@
     <Compile Include="CodeValidator\Nodes\LSLParameterListNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLParameterNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLReturnStatementNode.cs" />
-    <Compile Include="CodeValidator\Nodes\LSLSemiColonStatement.cs" />
+    <Compile Include="CodeValidator\Nodes\LSLSemicolonStatement.cs" />
     <Compile Include="CodeValidator\Nodes\LSLStateChangeStatementNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLVariableDeclarationNode.cs" />
     <Compile Include="CodeValidator\ValidatorNodeVisitor\LSLDefaultValidatorNodeVisitor.cs" />

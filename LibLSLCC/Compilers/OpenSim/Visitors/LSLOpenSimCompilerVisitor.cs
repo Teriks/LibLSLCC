@@ -1894,7 +1894,7 @@ private static class UTILITIES
         }
 
 
-        public override bool VisitSemiColonStatement(ILSLSemiColonStatement node)
+        public override bool VisitSemicolonStatement(ILSLSemicolonStatement node)
         {
             //stand alone semi colons are not necessary as we transform all single block
             //statements into code scopes with { } around them

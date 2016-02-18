@@ -855,9 +855,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxWarningListener.DeadCodeDetected(location, currentEvent, deadSegment));
         }
 
-        void ILSLSyntaxWarningListener.UselessSemiColon(LSLSourceCodeRange location)
+        void ILSLSyntaxWarningListener.UselessSemicolon(LSLSourceCodeRange location)
         {
-            _warningActionQueue.Enqueue(location.StartIndex, () => SyntaxWarningListener.UselessSemiColon(location));
+            _warningActionQueue.Enqueue(location.StartIndex, () => SyntaxWarningListener.UselessSemicolon(location));
         }
 
         void ILSLSyntaxWarningListener.ExpressionStatementHasNoEffect(LSLSourceCodeRange location)

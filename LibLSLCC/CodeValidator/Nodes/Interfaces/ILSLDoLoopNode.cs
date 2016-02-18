@@ -78,6 +78,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the semi-colon after the do-while loop statement.
         /// </summary>
-        LSLSourceCodeRange SourceRangeSemiColon { get; }
+        LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

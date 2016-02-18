@@ -118,7 +118,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// An un-needed but valid semi-colon was detected in code, such as when a semi-colon is on a line by itself or multiple semi-colons follow an expression statement when only one is needed.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
-        void UselessSemiColon(LSLSourceCodeRange location);
+        void UselessSemicolon(LSLSourceCodeRange location);
 
         /// <summary>
         /// An expression statement has no effect.  This can happen if you simply reference a variable as an expression statement and do nothing to it.

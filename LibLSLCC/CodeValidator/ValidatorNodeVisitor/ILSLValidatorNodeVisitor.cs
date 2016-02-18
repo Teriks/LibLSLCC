@@ -324,7 +324,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
         /// <returns>An object of type (T) from the visitor implementation of this function.</returns>
-        T VisitSemiColonStatement(ILSLSemiColonStatement node);
+        T VisitSemicolonStatement(ILSLSemicolonStatement node);
 
 
         /// <summary>

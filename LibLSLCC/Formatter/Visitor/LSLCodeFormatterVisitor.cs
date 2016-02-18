@@ -800,7 +800,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(")");
 
-            WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.SourceRangeSemiColon);
+            WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.SourceRangeSemicolon);
 
             Write(";");
 
@@ -1718,7 +1718,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
-        public override bool VisitSemiColonStatement(ILSLSemiColonStatement node)
+        public override bool VisitSemicolonStatement(ILSLSemicolonStatement node)
         {
             Write(";");
 
@@ -2035,7 +2035,7 @@ namespace LibLSLCC.Formatter.Visitor
         {
             var statement = node.CodeStatements.First();
 
-            if (statement is ILSLSemiColonStatement)
+            if (statement is ILSLSemicolonStatement)
             {
                 Visit(statement);
             }

@@ -94,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangeWhileKeyword = new LSLSourceCodeRange(context.while_keyword);
             OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
             CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
-            SourceRangeSemiColon = new LSLSourceCodeRange(context.semi_colon);
+            SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
 
             SourceRangesAvailable = true;
         }
@@ -178,7 +178,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the semi-colon after the do-while loop statement.
         /// </summary>
-        public LSLSourceCodeRange SourceRangeSemiColon { get; private set; }
+        public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
         /// <summary>

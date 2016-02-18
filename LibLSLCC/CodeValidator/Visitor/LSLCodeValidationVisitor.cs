@@ -2230,10 +2230,10 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (!ScopingManager.InSingleStatementBlock)
                 {
-                    GenSyntaxWarning().UselessSemiColon(new LSLSourceCodeRange(context.semi_colon));
+                    GenSyntaxWarning().UselessSemicolon(new LSLSourceCodeRange(context.semi_colon));
                 }
 
-                var result = new LSLSemiColonStatement(context, InSingleStatementBlock);
+                var result = new LSLSemicolonStatement(context, InSingleStatementBlock);
                 return ReturnFromVisit(context, result);
             }
 

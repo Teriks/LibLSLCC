@@ -1,6 +1,6 @@
 ﻿#region FileInfo
 // 
-// File: LSLSemiColonStatement.cs
+// File: LSLSemicolonStatement.cs
 // 
 // 
 // ============================================================
@@ -54,11 +54,11 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLSemiColonStatement"/> implementation used by <see cref="LSLCodeValidator"/>
+    /// Default <see cref="ILSLSemicolonStatement"/> implementation used by <see cref="LSLCodeValidator"/>
     /// </summary>
-    public sealed class LSLSemiColonStatement : ILSLSemiColonStatement, ILSLCodeStatement
+    public sealed class LSLSemicolonStatement : ILSLSemicolonStatement, ILSLCodeStatement
     {
-        internal LSLSemiColonStatement(LSLParser.CodeStatementContext context, bool isSingleBlockStatement)
+        internal LSLSemicolonStatement(LSLParser.CodeStatementContext context, bool isSingleBlockStatement)
         {
             if (context == null)
             {
@@ -148,7 +148,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
-            return visitor.VisitSemiColonStatement(this);
+            return visitor.VisitSemicolonStatement(this);
         }
 
         /// <summary>
