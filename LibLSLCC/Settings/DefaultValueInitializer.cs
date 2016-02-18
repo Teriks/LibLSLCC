@@ -96,6 +96,9 @@ namespace LibLSLCC.Settings
         /// Also thrown if the field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
         /// </para>
         /// </exception>
+        /// <seealso cref="IDefaultSettingsValueFactory"/>
+        /// <seealso cref="DefaultValueFactoryAttribute"/>
+        /// <seealso cref="DefaultValueAttribute"/>
         public static object GetDefaultValue<T>(T instance, string memberName)
         {
             var settingsProperty =
@@ -184,6 +187,7 @@ namespace LibLSLCC.Settings
         /// <param name="memberName">The member name of the field/property.</param>
         /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/></typeparam>
         /// <returns><paramref name="instance"/></returns>
+        /// <exception cref="InvalidOperationException"> 
         /// <para>
         /// Thrown if the field/property does not possess a <see cref="DefaultValueFactoryAttribute"/> or <see cref="DefaultValueAttribute"/> and
         /// its declared type possesses no default constructor.
@@ -194,6 +198,10 @@ namespace LibLSLCC.Settings
         /// <para>
         /// Also thrown if <paramref name="memberName"/> is not a field or property.
         /// </para>
+        /// </exception>
+        /// <seealso cref="IDefaultSettingsValueFactory"/>
+        /// <seealso cref="DefaultValueFactoryAttribute"/>
+        /// <seealso cref="DefaultValueAttribute"/>
         public static T SetToDefault<T>(T instance, string memberName)
         {
             var defaultValue = GetDefaultValue(instance, memberName);
@@ -237,6 +245,9 @@ namespace LibLSLCC.Settings
         /// <exception cref="InvalidOperationException">
         /// Thrown if a field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
         /// </exception>
+        /// <seealso cref="IDefaultSettingsValueFactory"/>
+        /// <seealso cref="DefaultValueFactoryAttribute"/>
+        /// <seealso cref="DefaultValueAttribute"/>
         public static T DoNeccessaryResets<T>(T instance)
         {
             var settingsProperties =
@@ -309,6 +320,24 @@ namespace LibLSLCC.Settings
 
 
 
+        /// <summary>
+        /// Initializes all fields/properties in a given object to their default values.
+        /// </summary>
+        /// <param name="instance">The object instance do the field/property reset on.</param>
+        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/>.</typeparam>
+        /// <returns><paramref name="instance"/></returns>
+        /// <exception cref="InvalidOperationException"> 
+        /// <para>
+        /// Thrown if a field/property does not possess a <see cref="DefaultValueFactoryAttribute"/> or <see cref="DefaultValueAttribute"/> and
+        /// its declared type possesses no default constructor.
+        /// </para>
+        /// <para>
+        /// Also thrown if the field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
+        /// </para>
+        /// </exception>
+        /// <seealso cref="IDefaultSettingsValueFactory"/>
+        /// <seealso cref="DefaultValueFactoryAttribute"/>
+        /// <seealso cref="DefaultValueAttribute"/>
         public static T Init<T>(T instance)
         {
             var settingsProperties =
@@ -409,7 +438,5 @@ namespace LibLSLCC.Settings
 
             return instance;
         }
-
-
     }
 }

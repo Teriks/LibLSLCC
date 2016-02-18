@@ -61,7 +61,7 @@ namespace LibLSLCC.Settings
         bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue);
 
         /// <summary>
-        /// Gets the default value of a given field/property of an object.
+        /// Gets the default value of a given field/property in an object.
         /// </summary>
         /// <param name="member">The <see cref="MemberInfo"/> of the field/property.</param>
         /// <param name="objectInstance">The object instance that owns the field/property.</param>
