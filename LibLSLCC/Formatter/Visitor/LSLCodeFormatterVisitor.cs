@@ -300,11 +300,11 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (comments.Count <= 0) return false;
 
-            var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart - left.LineEnd);
+            var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart - left.LineEnd);
 
             if (linesBetweenNodeAndFirstComment == 0)
             {
-                var spacesBetweenNodeAndFirstComment = ((comments[0].SourceCodeRange.StartIndex - left.StopIndex) -
+                var spacesBetweenNodeAndFirstComment = ((comments[0].SourceRange.StartIndex - left.StopIndex) -
                                                         1);
 
                 spacesBetweenNodeAndFirstComment = spacesBetweenNodeAndFirstComment > 0
@@ -323,7 +323,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                 var comment = comments[commentIndex];
 
-                if (comment.SourceCodeRange.LineStart != left.LineEnd)
+                if (comment.SourceRange.LineStart != left.LineEnd)
                 {
                     Write(GenIndent() + comment.Text);
                 }
@@ -336,13 +336,13 @@ namespace LibLSLCC.Formatter.Visitor
                 {
                     var nextComment = comments[commentAheadIndex];
 
-                    var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                comment.SourceCodeRange.LineEnd);
+                    var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                comment.SourceRange.LineEnd);
 
                     if (linesBetweenComments == 0)
                     {
-                        var spacesBetweenComments = (nextComment.SourceCodeRange.StartIndex -
-                                                     comment.SourceCodeRange.StopIndex);
+                        var spacesBetweenComments = (nextComment.SourceRange.StartIndex -
+                                                     comment.SourceRange.StopIndex);
 
                         Write(LSLFormatTools.CreateTabCorrectSpaceString(spacesBetweenComments));
                     }
@@ -351,11 +351,11 @@ namespace LibLSLCC.Formatter.Visitor
                 }
                 else
                 {
-                    var linesBetweenCommentAndNextNode = (right.LineStart - comment.SourceCodeRange.LineEnd);
+                    var linesBetweenCommentAndNextNode = (right.LineStart - comment.SourceRange.LineEnd);
 
                     if (linesBetweenCommentAndNextNode == 0)
                     {
-                        var spacesBetweenCommentAndNextNode = (right.StartIndex - comment.SourceCodeRange.StopIndex);
+                        var spacesBetweenCommentAndNextNode = (right.StartIndex - comment.SourceRange.StopIndex);
 
                         spacesBetweenCommentAndNextNode = spacesBetweenCommentAndNextNode > 0
                             ? spacesBetweenCommentAndNextNode
@@ -808,11 +808,11 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write("while");
 
-            WriteCommentsBetweenRange(node.SourceRangeWhileKeyword, node.OpenParenthSourceCodeRange);
+            WriteCommentsBetweenRange(node.SourceRangeWhileKeyword, node.SourceRangeOpenParenth);
 
             Write("(");
 
-            WriteCommentsBetweenRange(node.OpenParenthSourceCodeRange, node.ConditionExpression.SourceRange);
+            WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.ConditionExpression.SourceRange);
 
 
             var wrappingContext = new ExpressionWrappingContext(node, this)
@@ -826,11 +826,11 @@ namespace LibLSLCC.Formatter.Visitor
             ExpressionWrappingPop();
 
 
-            WriteCommentsBetweenRange(node.ConditionExpression.SourceRange, node.CloseParenthSourceCodeRange);
+            WriteCommentsBetweenRange(node.ConditionExpression.SourceRange, node.SourceRangeCloseParenth);
 
             Write(")");
 
-            WriteCommentsBetweenRange(node.CloseParenthSourceCodeRange, node.SourceRangeSemicolon);
+            WriteCommentsBetweenRange(node.SourceRangeCloseParenth, node.SourceRangeSemicolon);
 
             Write(";");
 
@@ -968,8 +968,8 @@ namespace LibLSLCC.Formatter.Visitor
                 var next = first.Next;
                 var comment = first.Value;
 
-                if (comment.SourceCodeRange.StartIndex >= sourceRangeStart &&
-                    comment.SourceCodeRange.StopIndex <= sourceRangeEnd)
+                if (comment.SourceRange.StartIndex >= sourceRangeStart &&
+                    comment.SourceRange.StopIndex <= sourceRangeEnd)
                 {
                     yield return comment;
 
@@ -1061,7 +1061,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         private void CompilationUnit_NoTreeNodes_WithComments(ILSLCompilationUnitNode unode, IList<LSLComment> comments)
         {
-            var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+            var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                    unode.SourceRange.LineStart);
 
             Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
@@ -1078,15 +1078,15 @@ namespace LibLSLCC.Formatter.Visitor
                 {
                     var nextComment = comments[commentAheadIndex];
 
-                    var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                comment.SourceCodeRange.LineEnd);
+                    var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                comment.SourceRange.LineEnd);
 
                     Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                 }
                 else
                 {
                     var linesBetweenCommentAndEndOfScope = (unode.SourceRange.LineEnd -
-                                                            comment.SourceCodeRange.LineEnd);
+                                                            comment.SourceRange.LineEnd);
 
                     Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndEndOfScope));
                 }
@@ -1105,7 +1105,7 @@ namespace LibLSLCC.Formatter.Visitor
         private void CompilationUnit_AfterLastNode_WithComments(ILSLReadOnlySyntaxTreeNode node,
             IList<LSLComment> comments, ILSLCompilationUnitNode unode)
         {
-            var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+            var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                    node.SourceRange.LineEnd);
 
 
@@ -1118,14 +1118,14 @@ namespace LibLSLCC.Formatter.Visitor
 
                 var comment = comments[commentIndex];
 
-                if (comment.SourceCodeRange.LineStart != node.SourceRange.LineEnd)
+                if (comment.SourceRange.LineStart != node.SourceRange.LineEnd)
                 {
                     Write(FormatComment("", comment));
                 }
                 else
                 {
                     var space = _sourceReference.Substring(node.SourceRange.StopIndex + 1,
-                        (comment.SourceCodeRange.StartIndex - node.SourceRange.StopIndex) - 1);
+                        (comment.SourceRange.StartIndex - node.SourceRange.StopIndex) - 1);
 
                     Write(space + comment.Text);
                 }
@@ -1134,15 +1134,15 @@ namespace LibLSLCC.Formatter.Visitor
                 {
                     var nextComment = comments[commentAheadIndex];
 
-                    var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                comment.SourceCodeRange.LineEnd);
+                    var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                comment.SourceRange.LineEnd);
 
                     Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                 }
                 else
                 {
                     var linesBetweenCommentAndEndOfScope = (unode.SourceRange.LineEnd -
-                                                            comment.SourceCodeRange.LineEnd);
+                                                            comment.SourceRange.LineEnd);
 
                     Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndEndOfScope));
                 }
@@ -1154,7 +1154,7 @@ namespace LibLSLCC.Formatter.Visitor
             IList<LSLComment> comments,
             ILSLReadOnlySyntaxTreeNode nextNode)
         {
-            var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+            var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                    node.SourceRange.LineEnd);
 
             if (linesBetweenNodeAndFirstComment <= 2 && linesBetweenNodeAndFirstComment > 0)
@@ -1174,14 +1174,14 @@ namespace LibLSLCC.Formatter.Visitor
 
                 var comment = comments[commentIndex];
 
-                if (comment.SourceCodeRange.LineStart != node.SourceRange.LineEnd)
+                if (comment.SourceRange.LineStart != node.SourceRange.LineEnd)
                 {
                     Write(FormatComment("", comment));
                 }
                 else
                 {
                     var space = _sourceReference.Substring(node.SourceRange.StopIndex + 1,
-                        (comment.SourceCodeRange.StartIndex - node.SourceRange.StopIndex) - 1);
+                        (comment.SourceRange.StartIndex - node.SourceRange.StopIndex) - 1);
 
                     Write(space + comment.Text);
                 }
@@ -1190,18 +1190,18 @@ namespace LibLSLCC.Formatter.Visitor
                 if (commentAheadIndex < comments.Count)
                 {
                     var nextComment = comments[commentAheadIndex];
-                    var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                comment.SourceCodeRange.LineEnd);
+                    var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                comment.SourceRange.LineEnd);
 
                     Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                 }
                 else
                 {
                     var linesBetweenCommentAndNextNode = (nextNode.SourceRange.LineStart -
-                                                          comment.SourceCodeRange.LineEnd);
+                                                          comment.SourceRange.LineEnd);
 
 
-                    linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                    linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        node.SourceRange.LineEnd);
 
                     if (linesBetweenNodeAndFirstComment == 0 && linesBetweenCommentAndNextNode < Settings.MinimumNewLinesBetweenDistinctGlobalStatements)
@@ -1247,7 +1247,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (comments.Count > 0)
             {
-                var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        unode.SourceRange.LineStart);
 
 
@@ -1266,15 +1266,15 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         var nextComment = comments[commentAheadIndex];
 
-                        var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                    comment.SourceCodeRange.LineEnd);
+                        var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                    comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                     }
                     else
                     {
                         var linesBetweenCommentAndNextNode = (nodes[0].SourceRange.LineStart -
-                                                              comment.SourceCodeRange.LineEnd);
+                                                              comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode));
                     }
@@ -1302,7 +1302,7 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 _wroteCommentAfterEventParameterList = true;
 
-                var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        node.ParameterListNode.SourceRange.LineEnd);
 
 
@@ -1314,7 +1314,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     var comment = comments[commentIndex];
 
-                    if (comment.SourceCodeRange.LineStart != node.ParameterListNode.SourceRange.LineEnd)
+                    if (comment.SourceRange.LineStart != node.ParameterListNode.SourceRange.LineEnd)
                     {
                         Write(GenIndent() + comment.Text);
                     }
@@ -1327,15 +1327,15 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         var nextComment = comments[commentAheadIndex];
 
-                        var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                    comment.SourceCodeRange.LineEnd);
+                        var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                    comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                     }
                     else
                     {
                         var linesBetweenCommentAndNextNode = (node.EventBodyNode.SourceRange.LineStart -
-                                                              comment.SourceCodeRange.LineEnd);
+                                                              comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode - 1));
                     }
@@ -1371,7 +1371,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                 _wroteCommentAfterFunctionDeclarationParameterList = true;
 
-                var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        node.ParameterListNode.SourceRange.LineEnd);
 
 
@@ -1384,7 +1384,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     var comment = comments[commentIndex];
 
-                    if (comment.SourceCodeRange.LineStart != node.ParameterListNode.SourceRange.LineEnd)
+                    if (comment.SourceRange.LineStart != node.ParameterListNode.SourceRange.LineEnd)
                     {
                         Write(GenIndent() + comment.Text);
                     }
@@ -1397,15 +1397,15 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         var nextComment = comments[commentAheadIndex];
 
-                        var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                    comment.SourceCodeRange.LineEnd);
+                        var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                    comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                     }
                     else
                     {
                         var linesBetweenCommentAndNextNode = (node.FunctionBodyNode.SourceRange.LineStart -
-                                                              comment.SourceCodeRange.LineEnd);
+                                                              comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode - 1));
                     }
@@ -1477,7 +1477,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (comments.Count > 0)
             {
-                var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        snode.SourceRangeOpenBrace.LineStart);
 
                 linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment >
@@ -1499,15 +1499,15 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         var nextComment = comments[commentAheadIndex];
 
-                        var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                    comment.SourceCodeRange.LineEnd);
+                        var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                    comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                     }
                     else
                     {
                         var linesBetweenCommentAndNextNode = (nodes[0].SourceRange.LineStart -
-                                                              comment.SourceCodeRange.LineEnd);
+                                                              comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode));
                     }
@@ -1553,7 +1553,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     if (comments.Count > 0)
                     {
-                        var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                        var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                                node.SourceRange.LineEnd);
 
                         if (linesBetweenNodeAndFirstComment < Settings.MinimumNewLinesBetweenEventHandlers)
@@ -1576,15 +1576,15 @@ namespace LibLSLCC.Formatter.Visitor
                             {
                                 var nextComment = comments[commentAheadIndex];
 
-                                var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                            comment.SourceCodeRange.LineEnd);
+                                var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                            comment.SourceRange.LineEnd);
 
                                 Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                             }
                             else
                             {
                                 var linesBetweenCommentAndNextNode = (nextNode.SourceRange.LineStart -
-                                                                      comment.SourceCodeRange.LineEnd);
+                                                                      comment.SourceRange.LineEnd);
 
                                 Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode));
                             }
@@ -1609,7 +1609,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     if (comments.Count > 0)
                     {
-                        var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                        var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                                node.SourceRange.LineEnd);
 
                         if (linesBetweenNodeAndFirstComment == 0) linesBetweenNodeAndFirstComment = 1;
@@ -1630,15 +1630,15 @@ namespace LibLSLCC.Formatter.Visitor
                             {
                                 var nextComment = comments[commentAheadIndex];
 
-                                var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                            comment.SourceCodeRange.LineEnd);
+                                var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                            comment.SourceRange.LineEnd);
 
                                 Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                             }
                             else
                             {
                                 var linesBetweenCommentAndEndOfScope = (snode.SourceRangeCloseBrace.LineEnd -
-                                                                        comment.SourceCodeRange.LineEnd);
+                                                                        comment.SourceRange.LineEnd);
 
                                 linesBetweenCommentAndEndOfScope = 
                                     linesBetweenCommentAndEndOfScope > Settings.MaximumNewLinesAtEndOfStateScope
@@ -2592,7 +2592,7 @@ namespace LibLSLCC.Formatter.Visitor
             ILSLReadOnlySyntaxTreeNode nextNode)
         {
             var indent = GenIndent();
-            var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+            var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                    node.SourceRange.LineEnd);
 
 
@@ -2605,14 +2605,14 @@ namespace LibLSLCC.Formatter.Visitor
 
                 var comment = comments[commentIndex];
 
-                if (comment.SourceCodeRange.LineStart != node.SourceRange.LineEnd)
+                if (comment.SourceRange.LineStart != node.SourceRange.LineEnd)
                 {
                     Write(FormatComment(indent, comment));
                 }
                 else
                 {
                     var space = _sourceReference.Substring(node.SourceRange.StopIndex + 1,
-                        (comment.SourceCodeRange.StartIndex - node.SourceRange.StopIndex) - 1);
+                        (comment.SourceRange.StartIndex - node.SourceRange.StopIndex) - 1);
 
                     Write(space + comment.Text);
                 }
@@ -2621,18 +2621,18 @@ namespace LibLSLCC.Formatter.Visitor
                 {
                     var nextComment = comments[commentAheadIndex];
 
-                    var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                comment.SourceCodeRange.LineEnd);
+                    var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                comment.SourceRange.LineEnd);
 
                     Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                 }
                 else //last comment
                 {
                     var linesBetweenCommentAndNextNode = (nextNode.SourceRange.LineStart -
-                                                          comment.SourceCodeRange.LineEnd +
+                                                          comment.SourceRange.LineEnd +
                                                           singleLineBroken);
                     var linesBetweenCommentAndLastNode = (node.SourceRange.LineEnd -
-                                                          comment.SourceCodeRange.LineStart);
+                                                          comment.SourceRange.LineStart);
 
                     if (linesBetweenCommentAndLastNode == 0 && linesBetweenCommentAndNextNode == 1 &&
                         node is ILSLControlStatementNode)
@@ -2652,7 +2652,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (comments.Count > 0)
             {
-                var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        snode.SourceRange.LineStart);
 
                 linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment >
@@ -2676,15 +2676,15 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         var nextComment = comments[commentAheadIndex];
 
-                        var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                    comment.SourceCodeRange.LineEnd);
+                        var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                    comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                     }
                     else
                     {
                         var linesBetweenCommentAndEndOfScope = (snode.SourceRange.LineEnd -
-                                                                comment.SourceCodeRange.LineEnd);
+                                                                comment.SourceRange.LineEnd);
 
                         linesBetweenCommentAndEndOfScope = linesBetweenCommentAndEndOfScope >
                                                            Settings.MaximumNewLinesAtEndOfCodeScope
@@ -2776,7 +2776,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             var indent = GenIndent();
 
-            var linesBetweenNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+            var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                    snode.SourceRange.LineStart);
 
             linesBetweenNodeAndFirstComment = linesBetweenNodeAndFirstComment >
@@ -2800,15 +2800,15 @@ namespace LibLSLCC.Formatter.Visitor
                 {
                     var nextComment = comments[commentAheadIndex];
 
-                    var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                comment.SourceCodeRange.LineEnd);
+                    var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                comment.SourceRange.LineEnd);
 
                     Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                 }
                 else
                 {
                     var linesBetweenCommentAndNextNode = (firstNode.SourceRange.LineStart -
-                                                          comment.SourceCodeRange.LineEnd);
+                                                          comment.SourceRange.LineEnd);
 
                     if (linesBetweenCommentAndNextNode == 0)
                     {
@@ -2830,7 +2830,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (comments.Count > 0)
             {
-                var linesBetweenLastNodeAndFirstComment = (comments[0].SourceCodeRange.LineStart -
+                var linesBetweenLastNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                            node.SourceRange.LineEnd);
 
 
@@ -2843,14 +2843,14 @@ namespace LibLSLCC.Formatter.Visitor
 
                     var comment = comments[commentIndex];
 
-                    if (comment.SourceCodeRange.LineStart != node.SourceRange.LineEnd)
+                    if (comment.SourceRange.LineStart != node.SourceRange.LineEnd)
                     {
                         Write(FormatComment(indent, comment));
                     }
                     else
                     {
                         var space = _sourceReference.Substring(node.SourceRange.StopIndex + 1,
-                            (comment.SourceCodeRange.StartIndex - node.SourceRange.StopIndex) - 1);
+                            (comment.SourceRange.StartIndex - node.SourceRange.StopIndex) - 1);
 
                         Write(space + comment.Text);
                     }
@@ -2859,15 +2859,15 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         var nextComment = comments[commentAheadIndex];
 
-                        var linesBetweenComments = (nextComment.SourceCodeRange.LineStart -
-                                                    comment.SourceCodeRange.LineEnd);
+                        var linesBetweenComments = (nextComment.SourceRange.LineStart -
+                                                    comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenComments));
                     }
                     else // last comment
                     {
                         var linesBetweenCommentAndEndOfScope = (snode.SourceRange.LineEnd -
-                                                                comment.SourceCodeRange.LineEnd);
+                                                                comment.SourceRange.LineEnd);
 
                         linesBetweenCommentAndEndOfScope = linesBetweenCommentAndEndOfScope >
                                                            Settings.MaximumNewLinesAtEndOfCodeScope

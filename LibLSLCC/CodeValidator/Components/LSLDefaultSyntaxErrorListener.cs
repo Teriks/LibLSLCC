@@ -389,7 +389,7 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void DeadCodeAfterReturnPathDetected(LSLSourceCodeRange location, LSLFunctionSignature inFunction,
             LSLDeadCodeSegment deadSegment)
         {
-            if (deadSegment.SourceCodeRange.IsSingleLine)
+            if (deadSegment.SourceRange.IsSingleLine)
             {
                 OnError(location, "Unreachable code detected after return path in function \"" + inFunction.Name + "\".");
             }
@@ -399,8 +399,8 @@ namespace LibLSLCC.CodeValidator.Components
                     string.Format(
                         "Unreachable code detected after return path in function \"" + inFunction.Name +
                         "\" between lines {0} and {1}.",
-                        MapLineNumber(deadSegment.SourceCodeRange.LineStart),
-                        MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
+                        MapLineNumber(deadSegment.SourceRange.LineStart),
+                        MapLineNumber(deadSegment.SourceRange.LineEnd)));
             }
         }
 

@@ -92,8 +92,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeDoKeyword = new LSLSourceCodeRange(context.loop_keyword);
             SourceRangeWhileKeyword = new LSLSourceCodeRange(context.while_keyword);
-            OpenParenthSourceCodeRange = new LSLSourceCodeRange(context.open_parenth);
-            CloseParenthSourceCodeRange = new LSLSourceCodeRange(context.close_parenth);
+            SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
+            SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
             SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
 
             SourceRangesAvailable = true;
@@ -154,13 +154,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the opening parenthesis of the condition expression area.
         /// </summary>
-        public LSLSourceCodeRange OpenParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing parenthesis of the condition expression area.
         /// </summary>
-        public LSLSourceCodeRange CloseParenthSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>

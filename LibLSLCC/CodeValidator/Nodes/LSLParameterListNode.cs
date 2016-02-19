@@ -69,7 +69,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 // ReSharper restore UnusedParameter.Local
         {
             SourceRange = sourceRange;
-            //this.SourceCodeRange = sourceRange;
             HasErrors = true;
         }
 

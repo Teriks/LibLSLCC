@@ -68,13 +68,13 @@ namespace LibLSLCC.CodeValidator.Primitives
             _statementNodes = new GenericArray<ILSLReadOnlyCodeStatement>();
             StartNode = null;
             EndNode = null;
-            SourceCodeRange = new LSLSourceCodeRange();
+            SourceRange = new LSLSourceCodeRange();
         }
 
         /// <summary>
         /// The source code range that encompasses all <see cref="ILSLReadOnlyCodeStatement"/> objects in the LSLCodeStatement
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// The <see cref="ILSLReadOnlyCodeStatement"/> at the start of the code segment.
@@ -105,13 +105,13 @@ namespace LibLSLCC.CodeValidator.Primitives
             if (StartNode == null)
             {
                 StartNode = statement;
-                SourceCodeRange = new LSLSourceCodeRange(statement);
+                SourceRange = new LSLSourceCodeRange(statement);
                 _statementNodes.Add(statement);
             }
             else
             {
                 _statementNodes.Add(statement);
-                SourceCodeRange.ExtendTo(EndNode);
+                SourceRange.ExtendTo(EndNode);
             }
         }
     }

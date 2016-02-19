@@ -55,12 +55,12 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         /// <param name="text">The text that up the entire comment, including the special comment start/end sequences.</param>
         /// <param name="type">The comment type.  <see cref="LSLCommentType"/></param>
-        /// <param name="sourceCodeRange">The source code range that the comment occupies.</param>
-        public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceCodeRange)
+        /// <param name="sourceRange">The source code range that the comment occupies.</param>
+        public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceRange)
         {
             Text = text;
             Type = type;
-            SourceCodeRange = sourceCodeRange;
+            SourceRange = sourceRange;
         }
 
 
@@ -72,7 +72,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// The source code range which the comment occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// The LSLCommentType type of the comment.

@@ -1273,7 +1273,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 foreach (var deadSegment in codeScope.DeadCodeSegments)
                 {
                     GenSyntaxWarning().DeadCodeDetected(
-                        deadSegment.SourceCodeRange,
+                        deadSegment.SourceRange,
                         ScopingManager.CurrentEventHandlerSignature, deadSegment);
                 }
             }
@@ -1289,7 +1289,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 foreach (var deadSegment in codeScope.DeadCodeSegments)
                 {
                     GenSyntaxWarning().DeadCodeDetected(
-                        deadSegment.SourceCodeRange,
+                        deadSegment.SourceRange,
                         ScopingManager.CurrentEventHandlerSignature, deadSegment);
                 }
             }
@@ -1299,7 +1299,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 foreach (var deadSegment in codeScope.DeadCodeSegments)
                 {
                     GenSyntaxWarning().DeadCodeDetected(
-                        deadSegment.SourceCodeRange,
+                        deadSegment.SourceRange,
                         ScopingManager.CurrentFunctionBodySignature, deadSegment);
                 }
             }
@@ -1334,13 +1334,13 @@ namespace LibLSLCC.CodeValidator.Visitor
                     if (deadSegment.DeadCodeType == LSLDeadCodeType.AfterReturnPath)
                     {
                         GenSyntaxError().DeadCodeAfterReturnPathDetected(
-                            deadSegment.SourceCodeRange, currentFunctionPredefinition, deadSegment);
+                            deadSegment.SourceRange, currentFunctionPredefinition, deadSegment);
                         isError = true;
                     }
                     else
                     {
                         GenSyntaxWarning().DeadCodeDetected(
-                            deadSegment.SourceCodeRange,
+                            deadSegment.SourceRange,
                             currentFunctionPredefinition, deadSegment);
                     }
                 }
@@ -1353,7 +1353,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 foreach (var deadSegment in codeScope.DeadCodeSegments)
                 {
                     GenSyntaxWarning().DeadCodeDetected(
-                        deadSegment.SourceCodeRange,
+                        deadSegment.SourceRange,
                         currentFunctionPredefinition, deadSegment);
                 }
             }

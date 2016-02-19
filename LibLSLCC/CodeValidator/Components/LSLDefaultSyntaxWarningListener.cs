@@ -109,7 +109,7 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLFunctionSignature currentFunction,
             LSLDeadCodeSegment deadSegment)
         {
-            if (deadSegment.SourceCodeRange.IsSingleLine)
+            if (deadSegment.SourceRange.IsSingleLine)
             {
                 OnWarning(location, "Unreachable code detected in function \"" + currentFunction.Name + "\".");
             }
@@ -119,8 +119,8 @@ namespace LibLSLCC.CodeValidator.Components
                     string.Format(
                         "Unreachable code detected in function \"" + currentFunction.Name +
                         "\" between lines {0} and {1}.",
-                        MapLineNumber(deadSegment.SourceCodeRange.LineStart), 
-                        MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
+                        MapLineNumber(deadSegment.SourceRange.LineStart), 
+                        MapLineNumber(deadSegment.SourceRange.LineEnd)));
             }
         }
 
@@ -135,7 +135,7 @@ namespace LibLSLCC.CodeValidator.Components
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLEventSignature currentEvent,
             LSLDeadCodeSegment deadSegment)
         {
-            if (deadSegment.SourceCodeRange.IsSingleLine)
+            if (deadSegment.SourceRange.IsSingleLine)
             {
                 OnWarning(location, "Unreachable code detected in event handler \"" + currentEvent.Name + "\".");
             }
@@ -145,8 +145,8 @@ namespace LibLSLCC.CodeValidator.Components
                     string.Format(
                         "Unreachable code detected in event handler \"" + currentEvent.Name +
                         "\" between lines {0} and {1}.",
-                        MapLineNumber(deadSegment.SourceCodeRange.LineStart),
-                        MapLineNumber(deadSegment.SourceCodeRange.LineEnd)));
+                        MapLineNumber(deadSegment.SourceRange.LineStart),
+                        MapLineNumber(deadSegment.SourceRange.LineEnd)));
             }
         }
 
