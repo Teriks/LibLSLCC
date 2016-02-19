@@ -50,6 +50,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.LibraryData;
 
 #endregion
@@ -141,24 +142,27 @@ namespace lslcc
 
         private static void WriteAbout()
         {
-            Console.WriteLine("=================================");
+            Console.WriteLine("======================================");
             Console.WriteLine();
             Console.WriteLine("Author: Teriks");
             Console.WriteLine("License: Three Clause BSD");
             Console.WriteLine();
-            Console.WriteLine("Compile Date: " + RetrieveLinkerTimestamp());
+            Console.WriteLine("Compile date: " + RetrieveLinkerTimestamp());
 #if DEBUG
             Console.WriteLine();
-            Console.WriteLine("Build Type: Debug");
+            Console.WriteLine("Build type: Debug");
 #else
             Console.WriteLine();
-            Console.WriteLine("Build Type: Release");
+            Console.WriteLine("Build type: Release");
 #endif
             var version = Assembly.GetEntryAssembly().GetName().Version;
+            var liblslccversion = Assembly.GetAssembly(typeof (LSLCodeValidator)).GetName().Version;
             Console.WriteLine();
-            Console.WriteLine("Version: " + version);
+            Console.WriteLine("lslcc command version: " + version);
             Console.WriteLine();
-            Console.WriteLine("=================================");
+            Console.WriteLine("LibLSLCC library version: " + liblslccversion);
+            Console.WriteLine();
+            Console.WriteLine("======================================");
         }
 
 
