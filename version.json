@@ -1,6 +1,8 @@
 {	
 	"LibLSLCC" :
 	{
+		"comment" : "{commits_since_last_tag} is the number of commits that affected the project (LibLSLCC here...), not all commits in general.",
+		
 		"last_tag" : "snapshot_2_11_2016_11-51PM",
 		"version_template" : "1.0.0.{commits_since_last_tag}"
 	},
