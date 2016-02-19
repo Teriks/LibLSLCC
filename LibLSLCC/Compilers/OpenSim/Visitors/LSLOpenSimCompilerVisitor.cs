@@ -1557,6 +1557,10 @@ private static class UTILITIES
                 Writer.WriteLine(GenIndent() + "//===========================");
                 Writer.Write(Environment.NewLine + Environment.NewLine);
             }
+            else
+            {
+                return;
+            }
 
 
             foreach (var binOp in _binOpsUsed)
@@ -1724,7 +1728,10 @@ private static class UTILITIES
             VisitDefaultState(unode.DefaultState);
 
 
-            Writer.Write(Environment.NewLine + Environment.NewLine);
+            if (_binOpsUsed.Count > 0)
+            {
+                Writer.Write(Environment.NewLine + Environment.NewLine);
+            }
 
 
             WriteBinaryOperatorOverloadStubs();
