@@ -1,1 +1,1 @@
-python ./build.py --binary-release-zip
+python ./build.py --binary-release

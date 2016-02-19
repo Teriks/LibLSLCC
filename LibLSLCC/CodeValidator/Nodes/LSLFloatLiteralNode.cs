@@ -77,7 +77,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         internal LSLFloatLiteralNode(LSLParser.Expr_AtomContext context)
-            : base(context, LSLType.Float)
+            : base(context.GetText(), LSLType.Float, new LSLSourceCodeRange(context))
         {
         }
 

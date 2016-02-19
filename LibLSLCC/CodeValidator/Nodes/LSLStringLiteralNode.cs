@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         internal LSLStringLiteralNode(LSLParser.Expr_AtomContext context, string preProccessedText)
-            : base(context, LSLType.String)
+            : base(context.GetText(), LSLType.String, new LSLSourceCodeRange(context))
         {
             PreProccessedText = preProccessedText;
         }

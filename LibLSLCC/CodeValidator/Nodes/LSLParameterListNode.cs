@@ -74,27 +74,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        internal LSLParameterListNode(
-            LSLParser.OptionalParameterListContext context,
-            IEnumerable<LSLParameterNode> parameterNodes)
-        {
-            if (parameterNodes == null)
-            {
-                throw new ArgumentNullException("parameterNodes");
-            }
-
-            foreach (var lslParameterNode in _parameters)
-            {
-                AddParameterNode(lslParameterNode);
-            }
-
-            SourceRange = new LSLSourceCodeRange(context);
-
-            SourceRangesAvailable = true;
-        }
-
-
-        internal LSLParameterListNode(LSLParser.OptionalParameterListContext context)
+        private LSLParameterListNode(LSLParser.OptionalParameterListContext context)
         {
             SourceRange = new LSLSourceCodeRange(context);
 
@@ -176,7 +156,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLParameterListNode(sourceRange, Err.Err);
         }
 
-#pragma warning disable CS3001 // Argument type is not CLS-compliant
         /// <summary>
         ///     Builds a parameter list node directly from a parser context, checking for duplicates and reporting
         ///     duplicate parameter errors via the validatorServices <see cref="ILSLValidatorServiceProvider"/>.
@@ -185,14 +164,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <param name="validatorServices">The validator service provider to use for reporting errors or warnings</param>
         /// <param name="onAdd">an optional action to preform on each parameter when it is added</param>
         /// <returns>the created parameter list node</returns>
-        public static LSLParameterListNode BuildDirectlyFromContext(
+        internal static LSLParameterListNode BuildDirectlyFromContext(
             LSLParser.OptionalParameterListContext context,
             ILSLValidatorServiceProvider validatorServices, Action<LSLParameterNode> onAdd = null)
-#pragma warning restore CS3001 // Argument type is not CLS-compliant
         {
-
-
-
             if (context == null)
             {
                 throw new ArgumentNullException("context");
@@ -260,16 +235,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             return result;
         }
 
-#pragma warning disable CS3001 // Argument type is not CLS-compliant
+
         /// <summary>
         ///     Builds a parameter list node directly from a parser context, without checking for duplicate parameters
         /// </summary>
         /// <param name="context">The context to build from</param>
         /// <param name="onAdd">an optional action to preform on each parameter when it is added</param>
         /// <returns>the created parameter list node</returns>
-        public static LSLParameterListNode BuildDirectlyFromContext(
+        internal static LSLParameterListNode BuildDirectlyFromContext(
             LSLParser.OptionalParameterListContext context, Action<LSLParameterNode> onAdd = null)
-#pragma warning restore CS3001 // Argument type is not CLS-compliant
         {
             if (context == null)
             {

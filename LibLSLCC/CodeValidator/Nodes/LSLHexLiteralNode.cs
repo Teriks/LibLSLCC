@@ -76,7 +76,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         internal LSLHexLiteralNode(LSLParser.Expr_AtomContext context)
-            : base(context, LSLType.Integer)
+            : base(context.GetText(), LSLType.Integer, new LSLSourceCodeRange(context))
         {
         }
 

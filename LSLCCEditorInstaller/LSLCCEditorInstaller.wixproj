@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Version Condition=" '$(Version)' == '' ">1.0.0.0</Version>
     <ProductVersion>3.9</ProductVersion>
     <ProjectGuid>1aaa0d14-0da7-4ece-9f2e-17ef4110394b</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
@@ -14,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\x86\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\x86\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFilesFolder</DefineConstants>
+    <DefineConstants>Debug;SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFilesFolder;ProductVersion=$(Version)</DefineConstants>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <SuppressIces>ICE69;ICE61</SuppressIces>
     <SuppressValidation>False</SuppressValidation>
@@ -22,13 +23,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\x86\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFilesFolder</DefineConstants>
+    <DefineConstants>SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFilesFolder;ProductVersion=$(Version)</DefineConstants>
     <SuppressIces>ICE69;ICE61</SuppressIces>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <OutputPath>bin\x64\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\x64\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFiles64Folder</DefineConstants>
+    <DefineConstants>Debug;SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFiles64Folder;ProductVersion=$(Version)</DefineConstants>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <SuppressSpecificWarnings>
     </SuppressSpecificWarnings>
@@ -38,7 +39,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\x64\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\x64\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFiles64Folder</DefineConstants>
+    <DefineConstants>SourceDir=..\LSLCCEditor\bin\AnyCPU\$(Configuration)\;ProgramFilesFolder=ProgramFiles64Folder;ProductVersion=$(Version)</DefineConstants>
     <SuppressSpecificWarnings>
     </SuppressSpecificWarnings>
     <SuppressIces>ICE69;ICE61</SuppressIces>

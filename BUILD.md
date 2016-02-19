@@ -125,17 +125,9 @@ And to build just LibLSLCC:
 
 	python build.py --only-liblslcc
 
-To build and package up a timestamped release in the BinaryRelease folder:
+To build and package up a version stamped release in the BinaryRelease folder:
 
-	python build.py --binary-release-zip
+	python build.py --binary-release
 
 
 **clean.py** simply cleans all configurations/platforms of the build when you run it.
-
-
-# About Build Warnings
-
-On mono you may get alot of warnings about missing comments.
-
-They are suppressed in the Windows build but not yet in the mono build as the warning numbers are different.
-You will also get warnings about unknown warning numbers being suppressed (XML comment warnings), but this is harmless.
