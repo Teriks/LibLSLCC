@@ -69,14 +69,14 @@ namespace LibLSLCC.AutoComplete
         }
 
 
-        internal LSLAutoCompleteGlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeNameRange,
+        internal LSLAutoCompleteGlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeName,
             IList<LSLAutoCompleteLocalParameter> parameters)
         {
             Parameters = parameters.WrapWithGenericArray();
             Name = name;
             SourceRange = range;
 
-            SourceRangeName = sourceRangeNameRange;
+            SourceRangeName = sourceRangeName;
 
             SourceRangeReturnType = null;
 
