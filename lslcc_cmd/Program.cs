@@ -196,7 +196,7 @@ namespace lslcc
                     e.Writer.WriteLine();
                     e.Writer.WriteLine(
                         argParser.HelpDescriptionIndent +
-                        "lslcc -i \"dir{0}**{0}*.lsl\" \"dir2{0}*\" -o \"{{dir}}{{name}}.cs\"  (built in globing)",
+                        "lslcc -i \"dir{0}**{0}*.lsl\" \"dir2{0}*\" -o \"{{dir}}{{name}}.cs\"  (built in globbing)",
                         Path.DirectorySeparatorChar);
                     e.Writer.WriteLine();
                     e.Writer.WriteLine();

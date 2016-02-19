@@ -365,12 +365,6 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="location">Location in source code.</param>
         void RedefinedDefaultState(LSLSourceCodeRange location);
 
-        /// TODO check necessity
-        /// <summary>
-        /// The given expression was not valid as a statement in a code scope.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        void InvalidStatementExpression(LSLSourceCodeRange location);
 
 
         /// <summary>

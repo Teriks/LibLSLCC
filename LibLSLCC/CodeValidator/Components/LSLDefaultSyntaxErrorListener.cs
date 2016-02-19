@@ -854,17 +854,6 @@ namespace LibLSLCC.CodeValidator.Components
                 "Cannot defined a new state with the name \"default\" as that is the name of LSL's default state.");
         }
 
-        /// TODO check necessity
-        /// <summary>
-        /// The given expression was not valid as a statement in a code scope.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        public virtual void InvalidStatementExpression(LSLSourceCodeRange location)
-        {
-            OnError(location,
-                "Only assignment, call, increment, decrement, and variable declaration expressions can be used as a statement.");
-        }
-
 
         /// <summary>
         /// A modifying prefix operation was applied to an expression that was not a variable.

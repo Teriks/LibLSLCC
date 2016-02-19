@@ -1453,6 +1453,7 @@ namespace LibLSLCC.AutoComplete
                         _parent.InForLoopClausesArea = true;
                     }
                 }
+
                 //TODO separate out the clauses into flags, so that the nested element stack cannot get messed up if syntax errors occur
                 //in the expressions preceding the one the cursor is in 
                 if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&

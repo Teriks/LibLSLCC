@@ -575,16 +575,6 @@ namespace LibLSLCC.CodeValidator.Components
             _errorActionQueue.Enqueue(location.StartIndex, () => SyntaxErrorListener.RedefinedDefaultState(location));
         }
 
-        /// TODO check necessity
-        /// <summary>
-        /// The given expression was not valid as a statement in a code scope.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        void ILSLSyntaxErrorListener.InvalidStatementExpression(LSLSourceCodeRange location)
-        {
-            _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.InvalidStatementExpression(location));
-        }
 
         /// <summary>
         /// Dead code after a return path was detected in a function with a non-void return type.
