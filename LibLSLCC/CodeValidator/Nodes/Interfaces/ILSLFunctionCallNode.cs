@@ -60,10 +60,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// </summary>
         string Name { get; }
 
-        /// <summary>
-        /// A list of parameter expressions used to call the function, or an empty list if no parameters were used.
-        /// </summary>
-        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ParameterExpressions { get; }
 
         /// <summary>
         /// The function signature of the function that was called, as it was defined by either the user or library.
@@ -74,7 +70,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The parameter list node containing the expressions used to call this function, this will never be null even if the parameter list is empty.
         /// </summary>
-        ILSLExpressionListNode ParameterListNode { get; }
+        ILSLExpressionListNode ParamExpressionListNode { get; }
 
 
         /// <summary>

@@ -88,6 +88,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             SourceRange = new LSLSourceCodeRange(context);
 
+            SourceRangeSemicolon = new LSLSourceCodeRange(context.semi_colon);
+
             SourceRangesAvailable = true;
         }
 
@@ -171,6 +173,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         public bool HasPossibleSideEffects {
             get { return Expression != null && Expression.HasPossibleSideEffects; }
         }
+
+        /// <summary>
+        /// The source code range of the semi-colon that ends the expression statement.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
         /// <summary>

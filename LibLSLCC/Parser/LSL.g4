@@ -262,11 +262,11 @@ DOT: '.';
 
 
 vectorLiteral:
-	LESS_THAN vector_x=expression comma_one=COMMA vector_y=expression comma_two=COMMA vector_z=expression GREATER_THAN
+	open_bracket=LESS_THAN vector_x=expression comma_one=COMMA vector_y=expression comma_two=COMMA vector_z=expression close_bracket=GREATER_THAN
 	;
 
 rotationLiteral:
-	LESS_THAN rotation_x=expression comma_one=COMMA rotation_y=expression comma_two=COMMA rotation_z=expression comma_three=COMMA rotation_s=expression GREATER_THAN
+	open_bracket=LESS_THAN rotation_x=expression comma_one=COMMA rotation_y=expression comma_two=COMMA rotation_z=expression comma_three=COMMA rotation_s=expression close_bracket=GREATER_THAN
 	;
 
 

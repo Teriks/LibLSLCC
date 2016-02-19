@@ -98,8 +98,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             SourceRange = new LSLSourceCodeRange(context);
 
+            SourceRangeOpenBracket = new LSLSourceCodeRange(context.open_bracket);
             SourceRangeCommaOne = new LSLSourceCodeRange(context.comma_one);
             SourceRangeCommaTwo = new LSLSourceCodeRange(context.comma_two);
+            SourceRangeCloseBracket = new LSLSourceCodeRange(context.close_bracket);
 
             SourceRangesAvailable = true;
         }
@@ -129,12 +131,25 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             SourceRange = other.SourceRange.Clone();
 
+            SourceRangeOpenBracket = other.SourceRangeOpenBracket.Clone();
             SourceRangeCommaOne = other.SourceRangeCommaOne.Clone();
             SourceRangeCommaTwo = other.SourceRangeCommaTwo.Clone();
+            SourceRangeCloseBracket = other.SourceRangeCloseBracket.Clone();
 
             HasErrors = other.HasErrors;
             Parent = other.Parent;
         }
+
+
+        /// <summary>
+        /// The source code range of the opening '&lt;' bracket of the vector literal.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeOpenBracket { get; private set; }
+
+        /// <summary>
+        /// The source code range of the closing '&gt;' bracket of the vector literal.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeCloseBracket { get; private set; }
 
         /// <summary>
         /// The expression node used to initialize the X Axis Component of the vector literal.  

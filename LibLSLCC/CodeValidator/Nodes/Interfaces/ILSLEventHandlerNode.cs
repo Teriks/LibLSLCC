@@ -60,16 +60,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         string Name { get; }
 
         /// <summary>
-        /// True if the event handler has parameters.
-        /// </summary>
-        bool HasParameterNodes { get; }
-
-        /// <summary>
-        /// An in order list of parameter nodes that belong to the event handler, or an empty enumerable if none exist.
-        /// </summary>
-        IReadOnlyGenericArray<ILSLParameterNode> ParameterNodes { get; }
-
-        /// <summary>
         /// The code scope node that represents the code body of the event handler.
         /// </summary>
         ILSLCodeScopeNode EventBodyNode { get; }
@@ -80,6 +70,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// Ideally you should not be handling a syntax tree with syntax errors in it.
         /// </summary>
         ILSLParameterListNode ParameterListNode { get; }
+
 
         /// <summary>
         /// The source code range of the event handler name.

@@ -484,7 +484,7 @@ private static class UTILITIES
         {
             Visit(node.AccessedExpression);
             Writer.Write(".");
-            Writer.Write(node.AccessedComponentString);
+            Writer.Write(node.MemberString);
 
             return false;
         }
@@ -556,11 +556,11 @@ private static class UTILITIES
         {
             var functionName = FunctionNamePrefix + node.Name;
 
-            if (node.ParameterExpressions.Count > 0)
+            if (node.ParamExpressionListNode.ExpressionNodes.Count > 0)
             {
                 Writer.Write(functionName + "(");
 
-                VisitUserFunctionCallParameters(node.ParameterListNode);
+                VisitUserFunctionCallParameters(node.ParamExpressionListNode);
 
                 Writer.Write(")");
             }
@@ -595,12 +595,12 @@ private static class UTILITIES
             {
                 var modInvokeFunction = "this." + _modInvokeFunctionMap[node.Signature.ReturnType];
 
-                var afterName = node.ParameterExpressions.Count > 0 ? ", " : "";
+                var afterName = node.ParamExpressionListNode.ExpressionNodes.Count > 0 ? ", " : "";
 
                 Writer.Write(modInvokeFunction + "(\"" + node.Name + "\"" + afterName);
 
 
-                VisitLibraryFunctionCallParameters(node.ParameterListNode);
+                VisitLibraryFunctionCallParameters(node.ParamExpressionListNode);
 
                 Writer.Write(")");
             }
@@ -608,11 +608,11 @@ private static class UTILITIES
             {
                 var functionName = "this." + node.Name;
 
-                if (node.ParameterExpressions.Count > 0)
+                if (node.ParamExpressionListNode.ExpressionNodes.Count > 0)
                 {
                     Writer.Write(functionName + "(");
 
-                    VisitLibraryFunctionCallParameters(node.ParameterListNode);
+                    VisitLibraryFunctionCallParameters(node.ParamExpressionListNode);
 
                     Writer.Write(")");
                 }
@@ -1077,7 +1077,7 @@ private static class UTILITIES
                 Writer.Write("new LSL_Types.LSLString(");
             }
 
-            Writer.Write(node.PreProccessedText);
+            Writer.Write(node.PreProcessedText);
 
             if (box)
             {
@@ -1336,7 +1336,7 @@ private static class UTILITIES
                     //slight optimization
                     if (isStringLiteral != null)
                     {
-                        Writer.Write(isStringLiteral.PreProccessedText);
+                        Writer.Write(isStringLiteral.PreProcessedText);
                     }
                     else
                     {
@@ -1765,7 +1765,7 @@ private static class UTILITIES
             var handlerName = _currentLslStateNode.StateName + "_event_" + node.Name;
 
 
-            if (node.HasParameterNodes)
+            if (node.ParameterListNode.HasParameterNodes)
             {
                 Writer.Write("public void " + handlerName + "(");
                 Visit(node.ParameterListNode);
@@ -1811,7 +1811,7 @@ private static class UTILITIES
 
             Writer.Write(functionName + "(");
 
-            if (node.HasParameters)
+            if (node.ParameterListNode.HasParameterNodes)
             {
                 Visit(node.ParameterListNode);
             }

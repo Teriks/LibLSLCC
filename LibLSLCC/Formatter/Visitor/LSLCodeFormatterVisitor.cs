@@ -579,7 +579,7 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitFunctionCall(ILSLFunctionCallNode node)
         {
             Write(node.Name + "(");
-            Visit(node.ParameterListNode);
+            Visit(node.ParamExpressionListNode);
             Write(")");
 
             return true;
@@ -737,7 +737,7 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitVecRotAccessor(ILSLTupleAccessorNode node)
         {
             Visit(node.AccessedExpression);
-            Write("." + node.AccessedComponentString);
+            Write("." + node.MemberString);
 
             return true;
         }
@@ -2012,7 +2012,7 @@ namespace LibLSLCC.Formatter.Visitor
         {
             Write(node.TypeString);
 
-            if (!WriteCommentsBetweenRange(node.SourceRangeTypeName, node.SourceRangeName))
+            if (!WriteCommentsBetweenRange(node.SourceRangeType, node.SourceRangeName))
             {
                 Write(" ");
             }

@@ -279,7 +279,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
                     var listTail = ((LSLParser.ExpressionListTailContext) x);
-                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    result.AddCommaSourceRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
             }
@@ -340,7 +340,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
                     var listTail = ((LSLParser.ExpressionListTailContext) x);
-                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    result.AddCommaSourceRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
             }
@@ -410,7 +410,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
                     var listTail = ((LSLParser.ExpressionListTailContext) x);
-                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    result.AddCommaSourceRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
             }
@@ -490,7 +490,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 subtrees = subtrees.Concat(expressionList.children.Skip(1).Select(x =>
                 {
                     var listTail = ((LSLParser.ExpressionListTailContext) x);
-                    result.AddCommaRange(new LSLSourceCodeRange(listTail.comma));
+                    result.AddCommaSourceRange(new LSLSourceCodeRange(listTail.comma));
                     return listTail.expression();
                 }));
             }
@@ -1532,7 +1532,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var parameterList = LSLParameterListNode.BuildDirectlyFromContext(context.parameters);
+            var parameterList = LSLParameterListNode.BuildFromParserContext(context.parameters, LSLParameterListType.EventParameters, _validatorServices);
 
 
             var isError = parameterList.HasErrors;

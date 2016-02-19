@@ -54,6 +54,17 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     public interface ILSLRotationLiteralNode : ILSLReadOnlyExprNode
     {
         /// <summary>
+        /// The source code range of the opening '&lt;' bracket of the rotation literal.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeOpenBracket { get; }
+
+        /// <summary>
+        /// The source code range of the closing '&gt;' bracket of the rotation literal.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeCloseBracket { get; }
+
+
+        /// <summary>
         /// The expression node used to initialize the X (first) Component of the rotation literal.  
         /// This should never be null.
         /// </summary>

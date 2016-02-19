@@ -293,9 +293,11 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var parameterListNode = LSLParameterListNode.BuildDirectlyFromContext(
-                context.parameters,
+            var parameterListNode = LSLParameterListNode.BuildFromParserContext(
+                context.parameters, 
+                LSLParameterListType.FunctionParameters, 
                 _validatorServiceProvider);
+
 
             if (parameterListNode.HasErrors)
             {

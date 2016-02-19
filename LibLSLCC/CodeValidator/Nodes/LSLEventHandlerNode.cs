@@ -134,18 +134,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public string Name { get; private set; }
 
-        /// <summary>
-        /// True if the event handler has parameters.
-        /// </summary>
-        public bool HasParameterNodes
-        {
-            get { return ParameterListNode.Parameters.Any(); }
-        }
-
-        IReadOnlyGenericArray<ILSLParameterNode> ILSLEventHandlerNode.ParameterNodes
-        {
-            get { return ParameterNodes ?? new GenericArray<LSLParameterNode>(); }
-        }
 
         ILSLCodeScopeNode ILSLEventHandlerNode.EventBodyNode
         {

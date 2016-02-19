@@ -54,6 +54,18 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     /// </summary>
     public interface ILSLVectorLiteralNode : ILSLReadOnlyExprNode
     {
+
+        /// <summary>
+        /// The source code range of the opening '&lt;' bracket of the vector literal.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeOpenBracket { get; }
+
+        /// <summary>
+        /// The source code range of the closing '&gt;' bracket of the vector literal.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeCloseBracket { get; }
+
+
         /// <summary>
         /// The expression node used to initialize the X Axis Component of the vector literal.  
         /// This should never be null.

@@ -126,7 +126,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the type specifier for the variable declaration.
         /// </summary>
-        LSLSourceCodeRange SourceRangeTypeName { get; }
+        LSLSourceCodeRange SourceRangeType { get; }
 
         /// <summary>
         /// The source code range that encompasses the variables name in the declaration.

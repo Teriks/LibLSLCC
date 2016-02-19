@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// the raw text for the string literal and assigning the string it produces to this property.
         /// <see cref="ILSLStringPreProcessor"/>
         /// </summary>
-        string PreProccessedText { get; }
+        string PreProcessedText { get; }
 
         /// <summary>
         /// The raw text for the string literal from the source code, this should include the quote characters that surround the string.

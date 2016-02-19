@@ -155,19 +155,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if the function definition node possesses parameter definitions.
-        /// </summary>
-        public bool HasParameters
-        {
-            get { return ParameterListNode.Parameters.Any(); }
-        }
-
-        IReadOnlyGenericArray<ILSLParameterNode> ILSLFunctionDeclarationNode.ParameterNodes
-        {
-            get { return ParameterListNode.Parameters; }
-        }
-
-        /// <summary>
         /// The string from the source code that represents the return type assigned to the function definition,
         /// or an empty string if no return type was assigned.
         /// </summary>

@@ -71,6 +71,7 @@
     <Compile Include="CodeValidator\Enums\LSLExpressionListType.cs" />
     <Compile Include="CodeValidator\Visitor\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Visitor\LSLLabelCollectorPrePass.cs" />
+    <Compile Include="CodeValidator\Enums\LSLParameterListType.cs" />
     <Compile Include="Collections\CloneableExtensions.cs" />
     <Compile Include="Collections\IObservableHashSetItem.cs" />
     <Compile Include="Collections\ObservableDictionary.cs" />

@@ -138,10 +138,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return Parent; }
         }
 
-        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLListLiteralNode.ListEntryExpressions
-        {
-            get { return ListEntryExpressions; }
-        }
 
         ILSLExpressionListNode ILSLListLiteralNode.ExpressionListNode
         {

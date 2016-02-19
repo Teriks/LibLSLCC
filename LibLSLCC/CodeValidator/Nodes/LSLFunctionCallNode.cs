@@ -255,10 +255,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public string Name { get; private set; }
 
-        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLFunctionCallNode.ParameterExpressions
-        {
-            get { return ParameterExpressions; }
-        }
 
         /// <summary>
         /// The function signature of the function that was called, as it was defined by either the user or library.
@@ -271,7 +267,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
-        ILSLExpressionListNode ILSLFunctionCallNode.ParameterListNode
+        ILSLExpressionListNode ILSLFunctionCallNode.ParamExpressionListNode
         {
             get { return ParameterListNode; }
         }

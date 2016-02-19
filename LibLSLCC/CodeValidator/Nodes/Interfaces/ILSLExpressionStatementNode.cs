@@ -40,6 +40,9 @@
 // 
 // 
 #endregion
+
+using LibLSLCC.CodeValidator.Primitives;
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
 
@@ -58,5 +61,11 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// True if the expression statement has some modifying affect on a local parameter or global/local variable;  or is a function call.  False otherwise.
         /// </summary>
         bool HasPossibleSideEffects { get; }
+
+
+        /// <summary>
+        /// The source code range of the semi-colon that ends the expression statement.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

@@ -137,7 +137,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
         /// <returns>An object of type (T) from the visitor implementation of this function.</returns>
         public virtual T VisitFunctionCall(ILSLFunctionCallNode node)
         {
-            Visit(node.ParameterListNode);
+            Visit(node.ParamExpressionListNode);
 
             return default(T);
         }

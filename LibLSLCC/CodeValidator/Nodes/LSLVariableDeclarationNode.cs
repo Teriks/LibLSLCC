@@ -104,7 +104,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             if (SourceRangesAvailable)
             {
                 SourceRange = other.SourceRange.Clone();
-                SourceRangeTypeName = other.SourceRangeTypeName.Clone();
+                SourceRangeType = other.SourceRangeType.Clone();
                 SourceRangeName = other.SourceRangeName.Clone();
                 SourceRangeOperator = other.SourceRangeOperator.Clone();
             }
@@ -307,7 +307,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             n.SourceRange = new LSLSourceCodeRange(context);
             n.VariableNode.Parent = n;
 
-            n.SourceRangeTypeName = new LSLSourceCodeRange(context.variable_type);
+            n.SourceRangeType = new LSLSourceCodeRange(context.variable_type);
             n.SourceRangeName = new LSLSourceCodeRange(context.variable_name);
 
             n.SourceRangesAvailable = true;
@@ -329,7 +329,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             n.VariableNode.Parent = n;
             n.DeclarationExpression = declarationExpression;
 
-            n.SourceRangeTypeName = new LSLSourceCodeRange(context.variable_type);
+            n.SourceRangeType = new LSLSourceCodeRange(context.variable_type);
             n.SourceRangeName = new LSLSourceCodeRange(context.variable_name);
 
             n.SourceRangesAvailable = true;
@@ -353,7 +353,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             n.VariableNode.Parent = n;
             n.DeclarationExpression = declarationExpression;
 
-            n.SourceRangeTypeName = new LSLSourceCodeRange(context.variable_type);
+            n.SourceRangeType = new LSLSourceCodeRange(context.variable_type);
             n.SourceRangeName = new LSLSourceCodeRange(context.variable_name);
 
             n.SourceRangesAvailable = true;
@@ -375,7 +375,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             n.SourceRange = new LSLSourceCodeRange(context);
             n.VariableNode.Parent = n;
 
-            n.SourceRangeTypeName = new LSLSourceCodeRange(context.variable_type);
+            n.SourceRangeType = new LSLSourceCodeRange(context.variable_type);
             n.SourceRangeName = new LSLSourceCodeRange(context.variable_name);
 
             n.SourceRangesAvailable = true;
@@ -506,7 +506,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the type specifier for the variable declaration.
         /// </summary>
-        public LSLSourceCodeRange SourceRangeTypeName { get; private set; }
+        public LSLSourceCodeRange SourceRangeType { get; private set; }
 
 
         /// <summary>

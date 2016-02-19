@@ -73,14 +73,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <param name="other">The other node to clone from.</param>
         public LSLStringLiteralNode(LSLStringLiteralNode other) : base(other)
         {
-            PreProccessedText = other.PreProccessedText;
+            PreProcessedText = other.PreProcessedText;
         }
 
 
-        internal LSLStringLiteralNode(LSLParser.Expr_AtomContext context, string preProccessedText)
+        internal LSLStringLiteralNode(LSLParser.Expr_AtomContext context, string preProcessedText)
             : base(context.GetText(), LSLType.String, new LSLSourceCodeRange(context))
         {
-            PreProccessedText = preProccessedText;
+            PreProcessedText = preProcessedText;
         }
 
 
@@ -91,7 +91,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <see cref="LSLCodeValidator"/> relies on an implementation of <see cref="ILSLStringPreProcessor"/> to fill this value out by passing <see cref="ILSLStringPreProcessor"/>
         /// the raw text for the string literal and assigning the string it produces to this property.
         /// </remarks>
-        public string PreProccessedText { get; private set; }
+        public string PreProcessedText { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

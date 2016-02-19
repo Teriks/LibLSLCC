@@ -56,20 +56,9 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     public interface ILSLFunctionDeclarationNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// True if the function definition node possesses parameter definitions.
-        /// </summary>
-        bool HasParameters { get; }
-
-
-        /// <summary>
         /// A list of function call nodes that reference this function definition, or an empty list.
         /// </summary>
         IReadOnlyGenericArray<ILSLFunctionCallNode> References { get; }
-
-        /// <summary>
-        /// A list of  parameter definition nodes that belong to this function definition, or an empty list.
-        /// </summary>
-        IReadOnlyGenericArray<ILSLParameterNode> ParameterNodes { get; }
 
         /// <summary>
         /// The string from the source code that represents the return type assigned to the function definition,

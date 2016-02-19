@@ -112,13 +112,14 @@ public partial class LSLParser : Parser {
 		Interpreter = new ParserATNSimulator(this,_ATN);
 	}
 	public partial class VectorLiteralContext : ParserRuleContext {
+		public IToken open_bracket;
 		public ExpressionContext vector_x;
 		public IToken comma_one;
 		public ExpressionContext vector_y;
 		public IToken comma_two;
 		public ExpressionContext vector_z;
+		public IToken close_bracket;
 		public ITerminalNode LESS_THAN() { return GetToken(LSLParser.LESS_THAN, 0); }
-		public ITerminalNode GREATER_THAN() { return GetToken(LSLParser.GREATER_THAN, 0); }
 		public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -129,6 +130,7 @@ public partial class LSLParser : Parser {
 		public ITerminalNode COMMA(int i) {
 			return GetToken(LSLParser.COMMA, i);
 		}
+		public ITerminalNode GREATER_THAN() { return GetToken(LSLParser.GREATER_THAN, 0); }
 		public VectorLiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -156,13 +158,13 @@ public partial class LSLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 64; Match(LESS_THAN);
+			State = 64; _localctx.open_bracket = Match(LESS_THAN);
 			State = 65; _localctx.vector_x = expression(0);
 			State = 66; _localctx.comma_one = Match(COMMA);
 			State = 67; _localctx.vector_y = expression(0);
 			State = 68; _localctx.comma_two = Match(COMMA);
 			State = 69; _localctx.vector_z = expression(0);
-			State = 70; Match(GREATER_THAN);
+			State = 70; _localctx.close_bracket = Match(GREATER_THAN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -177,6 +179,7 @@ public partial class LSLParser : Parser {
 	}
 
 	public partial class RotationLiteralContext : ParserRuleContext {
+		public IToken open_bracket;
 		public ExpressionContext rotation_x;
 		public IToken comma_one;
 		public ExpressionContext rotation_y;
@@ -184,8 +187,8 @@ public partial class LSLParser : Parser {
 		public ExpressionContext rotation_z;
 		public IToken comma_three;
 		public ExpressionContext rotation_s;
+		public IToken close_bracket;
 		public ITerminalNode LESS_THAN() { return GetToken(LSLParser.LESS_THAN, 0); }
-		public ITerminalNode GREATER_THAN() { return GetToken(LSLParser.GREATER_THAN, 0); }
 		public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
@@ -196,6 +199,7 @@ public partial class LSLParser : Parser {
 		public ITerminalNode COMMA(int i) {
 			return GetToken(LSLParser.COMMA, i);
 		}
+		public ITerminalNode GREATER_THAN() { return GetToken(LSLParser.GREATER_THAN, 0); }
 		public RotationLiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -223,7 +227,7 @@ public partial class LSLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 72; Match(LESS_THAN);
+			State = 72; _localctx.open_bracket = Match(LESS_THAN);
 			State = 73; _localctx.rotation_x = expression(0);
 			State = 74; _localctx.comma_one = Match(COMMA);
 			State = 75; _localctx.rotation_y = expression(0);
@@ -231,7 +235,7 @@ public partial class LSLParser : Parser {
 			State = 77; _localctx.rotation_z = expression(0);
 			State = 78; _localctx.comma_three = Match(COMMA);
 			State = 79; _localctx.rotation_s = expression(0);
-			State = 80; Match(GREATER_THAN);
+			State = 80; _localctx.close_bracket = Match(GREATER_THAN);
 			}
 		}
 		catch (RecognitionException re) {

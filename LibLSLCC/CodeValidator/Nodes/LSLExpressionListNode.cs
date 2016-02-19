@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Antlr4.Runtime.Tree;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
@@ -62,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Nodes
     /// </summary>
     public sealed class LSLExpressionListNode : ILSLExpressionListNode
     {
-        private readonly GenericArray<LSLSourceCodeRange> _sourceRangesCommas = new GenericArray<LSLSourceCodeRange>();
+        private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
         private readonly GenericArray<ILSLExprNode> _expressionNodes = new GenericArray<ILSLExprNode>();
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -88,8 +89,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("other");
             }
 
-
             ListType = other.ListType;
+
 
             foreach (var lslExprNode in other.ExpressionNodes)
             {
@@ -105,6 +106,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             if (SourceRangesAvailable)
             {
                 SourceRange = other.SourceRange.Clone();
+
+                foreach (var commaRange in other.SourceRangeCommaList)
+                {
+                    _sourceRangeCommaList.Add(commaRange.Clone());
+                }
             }
 
             HasErrors = other.HasErrors;
@@ -112,32 +118,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext,
-            LSLExpressionListType listType)
+        internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext, LSLExpressionListType listType)
         {
             ListType = listType;
             SourceRange = new LSLSourceCodeRange(parserContext);
 
-            SourceRangesAvailable = true;
-        }
-
-        internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext,
-            IEnumerable<ILSLExprNode> expressions,
-            LSLExpressionListType listType)
-        {
-            if (expressions == null)
-            {
-                throw new ArgumentNullException("expressions");
-            }
-
-            ListType = listType;
-
-            foreach (var lslExprNode in expressions)
-            {
-                AddExpression(lslExprNode);
-            }
-
-            SourceRange = new LSLSourceCodeRange(parserContext);
             SourceRangesAvailable = true;
         }
 
@@ -194,9 +179,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
         /// </summary>
-        public IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangesCommas
+        public IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList
         {
-            get { return _sourceRangesCommas; }
+            get { return _sourceRangeCommaList; }
         }
 
 
@@ -237,15 +222,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             return HasErrors ? GetError(SourceRange) : new LSLExpressionListNode(this);
         }
 
-
-        /// <summary>
-        /// Adds a new source code range for a comma encountered in an expression list.
-        /// </summary>
-        /// <param name="range">The source code range to add.</param>
-        public void AddCommaRange(LSLSourceCodeRange range)
-        {
-            _sourceRangesCommas.Add(range);
-        }
 
         #region Nested type: Err
 
@@ -320,5 +296,15 @@ namespace LibLSLCC.CodeValidator.Nodes
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion
+
+        /// <summary>
+        /// Add an <see cref="LSLSourceCodeRange"/> for a comma in the expression list.
+        /// This method does NOT clone <paramref name="sourceRange"/> for you.
+        /// </summary>
+        /// <param name="sourceRange"></param>
+        internal void AddCommaSourceRange(LSLSourceCodeRange sourceRange)
+        {
+            _sourceRangeCommaList.Add(sourceRange);
+        }
     }
 }

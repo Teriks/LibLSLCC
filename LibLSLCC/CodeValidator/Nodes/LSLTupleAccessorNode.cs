@@ -70,10 +70,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression,
-            LSLType accessedType,
-            LSLTupleComponent accessedComponent)
+            LSLType accessedExpressionType,
+            LSLTupleComponent accessedMember)
         {
-            if (accessedType != LSLType.Vector && accessedType != LSLType.Rotation)
+            if (accessedExpressionType != LSLType.Vector && accessedExpressionType != LSLType.Rotation)
             {
                 throw new ArgumentException("accessedType can only be LSLType.Vector or LSLType.Rotation");
             }
@@ -88,10 +88,10 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            AccessedComponentString = context.member.Text;
-            AccessedComponent = accessedComponent;
+            MemberString = context.member.Text;
+            AccessedMember = accessedMember;
 
-            AccessedType = accessedType;
+            SourceRangeAccessedMember = new LSLSourceCodeRange(context.member);
 
             AccessedExpression = accessedExpression;
             AccessedExpression.Parent = this;
@@ -112,10 +112,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("other");
             }
 
-            AccessedComponentString = other.AccessedComponentString;
-            AccessedComponent = other.AccessedComponent;
-
-            AccessedType = other.AccessedType;
+            MemberString = other.MemberString;
+            AccessedMember = other.AccessedMember;
 
             AccessedExpression = other.AccessedExpression.Clone();
             AccessedExpression.Parent = this;
@@ -125,6 +123,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             if (SourceRangesAvailable)
             {
                 SourceRange = other.SourceRange.Clone();
+                SourceRangeAccessedMember = other.SourceRangeAccessedMember.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -149,20 +148,19 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The raw name of the accessed tuple member, taken from the source code.
         /// </summary>
-        public string AccessedComponentString { get; private set; }
+        public string MemberString { get; private set; }
+
+        /// <summary>
+        /// The source code range of the tuple member that was accessed.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeAccessedMember { get; private set; }
 
         /// <summary>
         /// The tuple component accessed.
         /// <see cref="LSLTupleComponent"/>
         /// </summary>
-        public LSLTupleComponent AccessedComponent { get; private set; }
+        public LSLTupleComponent AccessedMember { get; private set; }
 
-
-        /// <summary>
-        /// The type that the member access was preformed on.
-        /// This should only ever be <see cref="LSLType.Vector"/> or <see cref="LSLType.Rotation"/>.
-        /// </summary>
-        public LSLType AccessedType { get; private set; }
 
 
 
@@ -275,7 +273,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             get
             {
-                return AccessedType == LSLType.Vector
+                if (AccessedExpression == null)
+                {
+                    throw new InvalidOperationException(
+                        typeof(LSLTupleAccessorNode).Name+".AccessedExpression == null.  node is an error node, do not invoke methods on it;  Check 'HasErrors' first.");
+                }
+
+                return AccessedExpression.Type == LSLType.Vector
                     ? LSLExpressionType.VectorComponentAccess
                     : LSLExpressionType.RotationComponentAccess;
             }

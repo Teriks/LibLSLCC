@@ -54,10 +54,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     /// </summary>
     public interface ILSLListLiteralNode : ILSLReadOnlyExprNode
     {
-        /// <summary>
-        /// A list of expressions that were used to initialize the list literal, or an empty list.
-        /// </summary>
-        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ListEntryExpressions { get; }
 
         /// <summary>
         /// The expression list node that contains all of the expressions used to initialize the list literal.

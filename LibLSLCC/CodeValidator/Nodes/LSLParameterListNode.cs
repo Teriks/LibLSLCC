@@ -45,6 +45,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -63,6 +67,9 @@ namespace LibLSLCC.CodeValidator.Nodes
     public sealed class LSLParameterListNode : ILSLParameterListNode
     {
         private readonly GenericArray<LSLParameterNode> _parameters = new GenericArray<LSLParameterNode>();
+
+        private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
+
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLParameterListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -73,11 +80,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        private LSLParameterListNode(LSLParser.OptionalParameterListContext context)
+        private LSLParameterListNode(LSLParser.OptionalParameterListContext context, LSLParameterListType parameterListType)
         {
             SourceRange = new LSLSourceCodeRange(context);
 
             SourceRangesAvailable = true;
+
+            ParameterListType = parameterListType;
         }
 
         /// <summary>
@@ -87,6 +96,20 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             get { return _parameters; }
         }
+
+        /// <summary>
+        /// The source code range for each comma separator that appears in the parameter list in order, or an empty list object.
+        /// </summary>
+        public IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList
+        {
+            get { return _sourceRangeCommaList; }
+        }
+
+        /// <summary>
+        /// The parameter list type;  FunctionParameters or EventParameters.
+        /// </summary>
+        public LSLParameterListType ParameterListType { get; private set; }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -155,17 +178,16 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLParameterListNode(sourceRange, Err.Err);
         }
 
+
         /// <summary>
         ///     Builds a parameter list node directly from a parser context, checking for duplicates and reporting
         ///     duplicate parameter errors via the validatorServices <see cref="ILSLValidatorServiceProvider"/>.
         /// </summary>
         /// <param name="context">The context to build from</param>
         /// <param name="validatorServices">The validator service provider to use for reporting errors or warnings</param>
-        /// <param name="onAdd">an optional action to preform on each parameter when it is added</param>
+        /// <param name="parameterListType">The parameter list type.</param>
         /// <returns>the created parameter list node</returns>
-        internal static LSLParameterListNode BuildDirectlyFromContext(
-            LSLParser.OptionalParameterListContext context,
-            ILSLValidatorServiceProvider validatorServices, Action<LSLParameterNode> onAdd = null)
+        internal static LSLParameterListNode BuildFromParserContext(LSLParser.OptionalParameterListContext context, LSLParameterListType parameterListType, ILSLValidatorServiceProvider validatorServices)
         {
             if (context == null)
             {
@@ -177,8 +199,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("validatorServices");
             }
 
-
-            var result = new LSLParameterListNode(context);
+           
+            var result = new LSLParameterListNode(context, parameterListType);
 
             var parameterList = context.parameterList();
 
@@ -187,98 +209,64 @@ namespace LibLSLCC.CodeValidator.Nodes
                 return result;
             }
 
-
             var parameterNames = new HashSet<string>();
 
-
             var parameterIndex = 0;
-            foreach (var parameter in parameterList.parameterDefinition())
+
+            foreach (var comma in parameterList.children)
             {
-                if (parameterNames.Contains(parameter.ID().GetText()))
+                //'comma' for some reason will be an internal object
+                //that cannot be accessed via cast when a COMMA token is encountered.
+                //
+                //However, Payload contains a CommonToken instance, which implements IToken.
+                var token = comma.Payload as IToken;
+
+                //when a parameter def is found, 'comma' will be the grammar defined
+                //LSLParser.ParameterDefinitionContext type.
+                var parameter = comma as LSLParser.ParameterDefinitionContext;
+
+                if (token != null)
                 {
-                    var paramLocation = new LSLSourceCodeRange(parameter);
-
-                    validatorServices.SyntaxErrorListener.ParameterNameRedefined(
-                        paramLocation,
-                        LSLTypeTools.FromLSLTypeString(parameter.TYPE().GetText()),
-                        parameter.ID().GetText());
-
-                    result.HasErrors = true;
-
-                    result._parameters.Clear();
-
-                    return result;
+                    result._sourceRangeCommaList.Add(new LSLSourceCodeRange(token));
                 }
-
-
-                parameterNames.Add(parameter.ID().GetText());
-
-                var addition = new LSLParameterNode(parameter)
+                else if (parameter != null)
                 {
-                    ParameterIndex = parameterIndex
-                };
 
-                result.AddParameterNode(addition);
+                    if (parameterNames.Contains(parameter.ID().GetText()))
+                    {
+                        var paramLocation = new LSLSourceCodeRange(parameter);
 
-                if (onAdd != null)
-                {
-                    onAdd(addition);
+                        validatorServices.SyntaxErrorListener.ParameterNameRedefined(
+                            paramLocation,
+                            LSLTypeTools.FromLSLTypeString(parameter.TYPE().GetText()),
+                            parameter.ID().GetText());
+
+                        result.HasErrors = true;
+
+                        result._parameters.Clear();
+
+                        return result;
+                    }
+
+
+                    parameterNames.Add(parameter.ID().GetText());
+
+                    var addition = new LSLParameterNode(parameter)
+                    {
+                        ParameterIndex = parameterIndex
+                    };
+
+                    result.AddParameterNode(addition);
+
+                    parameterIndex++;
                 }
-
-                parameterIndex++;
             }
-
 
             parameterNames.Clear();
 
             return result;
         }
 
-
-        /// <summary>
-        ///     Builds a parameter list node directly from a parser context, without checking for duplicate parameters
-        /// </summary>
-        /// <param name="context">The context to build from</param>
-        /// <param name="onAdd">an optional action to preform on each parameter when it is added</param>
-        /// <returns>the created parameter list node</returns>
-        internal static LSLParameterListNode BuildDirectlyFromContext(
-            LSLParser.OptionalParameterListContext context, Action<LSLParameterNode> onAdd = null)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
-
-            var result = new LSLParameterListNode(context);
-
-            var parameterList = context.parameterList();
-
-            if (parameterList == null)
-            {
-                return result;
-            }
-
-            var parameterIndex = 0;
-
-            foreach (var parameter in parameterList.parameterDefinition())
-            {
-                var addition = new LSLParameterNode(parameter)
-                {
-                    ParameterIndex = parameterIndex
-                };
-
-                result.AddParameterNode(addition);
-
-                if (onAdd != null)
-                {
-                    onAdd(addition);
-                }
-
-                parameterIndex++;
-            }
-
-            return result;
-        }
 
         /// <summary>
         /// Add a parameter definition node to this parameter list node.
@@ -296,13 +284,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             _parameters.Add(node);
         }
 
-        /// <summary>
-        /// Clear all parameter definition nodes from this parameter list node.
-        /// </summary>
-        public void ClearParameters()
-        {
-            _parameters.Clear();
-        }
 
         private enum Err
         {
