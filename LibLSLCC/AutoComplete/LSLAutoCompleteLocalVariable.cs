@@ -50,16 +50,16 @@ namespace LibLSLCC.AutoComplete
     /// </summary>
     public sealed class LSLAutoCompleteLocalVariable
     {
-        internal LSLAutoCompleteLocalVariable(string name, string typeString, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
-            LSLSourceCodeRange nameRange, LSLAutoCompleteScopeAddress address)
+        internal LSLAutoCompleteLocalVariable(string name, string typeString, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeType,
+            LSLSourceCodeRange sourceRangeName, LSLAutoCompleteScopeAddress address)
         {
             Name = name;
             TypeString = typeString;
-            SourceCodeRange = range;
+            SourceRange = range;
             ScopeAddress = address;
-            NameSourceCodeRange = nameRange;
+            SourceRangeName = sourceRangeName;
 
-            TypeSourceCodeRange = typeRange;
+            SourceRangeType = sourceRangeType;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// The <see cref="LSLSourceCodeRange"/> that encompasses the local variable name.
         /// </value>
-        public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeName { get; private set; }
 
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// The <see cref="LSLSourceCodeRange"/> that encompasses the local variable type specifier.
         /// </value>
-        public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeType { get; private set; }
 
         /// <summary>
         /// Gets the scope address where this local variable came in to existence.
@@ -109,6 +109,6 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// The <see cref="LSLSourceCodeRange"/> that encompasses the local variable declaration statement.
         /// </value>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
     }
 }

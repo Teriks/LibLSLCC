@@ -50,16 +50,16 @@ namespace LibLSLCC.AutoComplete
     /// </summary>
     public sealed class LSLAutoCompleteGlobalVariable
     {
-        internal LSLAutoCompleteGlobalVariable(string name, string typeString, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
-            LSLSourceCodeRange nameRange)
+        internal LSLAutoCompleteGlobalVariable(string name, string typeString, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeType,
+            LSLSourceCodeRange sourceRangeName)
         {
             Name = name;
             TypeString = typeString;
-            SourceCodeRange = range;
+            SourceRange = range;
 
-            NameSourceCodeRange = nameRange;
+            SourceRangeName = sourceRangeName;
 
-            TypeSourceCodeRange = typeRange;
+            SourceRangeType = sourceRangeType;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         /// Get the <see cref="LSLSourceCodeRange"/> that encompasses the entire variable declaration.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="LSLSourceCodeRange"/> of the global variable name.
@@ -90,7 +90,7 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// The <see cref="LSLSourceCodeRange"/> of the global variable name.
         /// </value>
-        public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeName { get; private set; }
 
 
         /// <summary>
@@ -99,6 +99,6 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// The <see cref="LSLSourceCodeRange"/> of the global variable type specifier.
         /// </value>
-        public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeType { get; private set; }
     }
 }

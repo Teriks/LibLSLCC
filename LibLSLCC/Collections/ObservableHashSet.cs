@@ -170,7 +170,7 @@ namespace LibLSLCC.Collections
             base.SetItem(index, item);
         }
 
-        private void ObservableOnPropertyChanging(object sender, PropertyChangingEventArgs propertyChangingEventArgs)
+        private static void ObservableOnPropertyChanging(object sender, PropertyChangingEventArgs propertyChangingEventArgs)
         {
             var item = sender as IObservableHashSetItem;
 

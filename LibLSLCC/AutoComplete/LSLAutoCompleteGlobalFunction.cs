@@ -53,32 +53,32 @@ namespace LibLSLCC.AutoComplete
     /// </summary>
     public sealed class LSLAutoCompleteGlobalFunction
     {
-        internal LSLAutoCompleteGlobalFunction(string name, string returnTypeString, LSLSourceCodeRange range, LSLSourceCodeRange typeRange,
-            LSLSourceCodeRange nameRange, IList<LSLAutoCompleteLocalParameter> parameters)
+        internal LSLAutoCompleteGlobalFunction(string name, string returnTypeString, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeReturnType,
+            LSLSourceCodeRange sourceRangeName, IList<LSLAutoCompleteLocalParameter> parameters)
         {
             Parameters = parameters.WrapWithGenericArray();
             Name = name;
             ReturnTypeString = returnTypeString;
-            SourceCodeRange = range;
+            SourceRange = range;
 
-            NameSourceCodeRange = nameRange;
+            SourceRangeName = sourceRangeName;
 
-            TypeSourceCodeRange = typeRange;
+            SourceRangeReturnType = sourceRangeReturnType;
 
             HasReturnType = true;
         }
 
 
-        internal LSLAutoCompleteGlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange nameRange,
+        internal LSLAutoCompleteGlobalFunction(string name, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeNameRange,
             IList<LSLAutoCompleteLocalParameter> parameters)
         {
             Parameters = parameters.WrapWithGenericArray();
             Name = name;
-            SourceCodeRange = range;
+            SourceRange = range;
 
-            NameSourceCodeRange = nameRange;
+            SourceRangeName = sourceRangeNameRange;
 
-            TypeSourceCodeRange = null;
+            SourceRangeReturnType = null;
 
             HasReturnType = false;
         }
@@ -94,12 +94,12 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         /// Gets the <see cref="LSLSourceCodeRange"/> of the function name.
         /// </summary>
-        public LSLSourceCodeRange NameSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="LSLSourceCodeRange"/> of the functions return type if it exists, otherwise <c>null</c>.
         /// </summary>
-        public LSLSourceCodeRange TypeSourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRangeReturnType { get; private set; }
 
 
         /// <summary>
@@ -176,6 +176,6 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// The source code range of the entire function declaration.
         /// </value>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
     }
 }

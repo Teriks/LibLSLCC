@@ -3306,27 +3306,27 @@ namespace LSLCCEditor.EditControl
             {
                 if (_contextMenuFunction != null)
                 {
-                    Editor.ScrollTo(_contextMenuFunction.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuFunction.NameSourceCodeRange.StartIndex,
-                        _contextMenuFunction.NameSourceCodeRange.Length);
+                    Editor.ScrollTo(_contextMenuFunction.SourceRange.LineStart, 0);
+                    Editor.Select(_contextMenuFunction.SourceRangeName.StartIndex,
+                        _contextMenuFunction.SourceRangeName.Length);
                 }
                 else if (_contextMenuLocalVar != null)
                 {
-                    Editor.ScrollTo(_contextMenuLocalVar.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuLocalVar.NameSourceCodeRange.StartIndex,
-                        _contextMenuLocalVar.NameSourceCodeRange.Length);
+                    Editor.ScrollTo(_contextMenuLocalVar.SourceRange.LineStart, 0);
+                    Editor.Select(_contextMenuLocalVar.SourceRangeName.StartIndex,
+                        _contextMenuLocalVar.SourceRangeName.Length);
                 }
                 else if (_contextMenuLocalParam != null)
                 {
-                    Editor.ScrollTo(_contextMenuLocalParam.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuLocalParam.NameSourceCodeRange.StartIndex,
-                        _contextMenuLocalParam.NameSourceCodeRange.Length);
+                    Editor.ScrollTo(_contextMenuLocalParam.SourceRange.LineStart, 0);
+                    Editor.Select(_contextMenuLocalParam.SourceRangeName.StartIndex,
+                        _contextMenuLocalParam.SourceRangeName.Length);
                 }
                 else if (_contextMenuVar != null)
                 {
-                    Editor.ScrollTo(_contextMenuVar.SourceCodeRange.LineStart, 0);
-                    Editor.Select(_contextMenuVar.NameSourceCodeRange.StartIndex,
-                        _contextMenuVar.NameSourceCodeRange.Length);
+                    Editor.ScrollTo(_contextMenuVar.SourceRange.LineStart, 0);
+                    Editor.Select(_contextMenuVar.SourceRangeName.StartIndex,
+                        _contextMenuVar.SourceRangeName.Length);
                 }
             }
 

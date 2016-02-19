@@ -58,7 +58,7 @@ namespace LibLSLCC.AutoComplete
         public LSLAutoCompleteStateBlock(string name, LSLSourceCodeRange range)
         {
             Name = name;
-            SourceCodeRange = range;
+            SourceRange = range;
         }
 
 
@@ -71,6 +71,6 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         /// The source code range the state block occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceCodeRange { get; private set; }
+        public LSLSourceCodeRange SourceRange { get; private set; }
     }
 }

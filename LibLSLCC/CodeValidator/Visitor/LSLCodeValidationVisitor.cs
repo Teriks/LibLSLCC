@@ -1266,7 +1266,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         #region CodeScopeVisitors
 
-        private bool ValidateEventHandlerReturnPath(LSLCodeScopeNode codeScope)
+        private bool ValidateEventHandlerReturnPath(ILSLCodeScopeNode codeScope)
         {
             if (codeScope.HasDeadStatementNodes)
             {
@@ -1282,7 +1282,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        private bool ValidateCommonCodeScopeReturnPath(LSLCodeScopeNode codeScope)
+        private bool ValidateCommonCodeScopeReturnPath(ILSLCodeScopeNode codeScope)
         {
             if (codeScope.HasDeadStatementNodes && ScopingManager.InsideEventHandlerBody)
             {
@@ -1308,7 +1308,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        private bool ValidateFunctionReturnPath(LSLCodeScopeNode codeScope)
+        private bool ValidateFunctionReturnPath(ILSLCodeScopeNode codeScope)
         {
             var currentFunctionPredefinition = ScopingManager.CurrentFunctionBodySignature;
 
