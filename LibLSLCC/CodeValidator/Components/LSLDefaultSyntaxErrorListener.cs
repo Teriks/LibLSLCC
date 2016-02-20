@@ -84,16 +84,21 @@ namespace LibLSLCC.CodeValidator.Components
             OnError(location, string.Format("Variable \"{0}\" is undefined.", name));
         }
 
+
         /// <summary>
         /// A parameter name for a function or event handler was used more than once.
         /// </summary>
         /// <param name="location">Location in source code.</param>
+        /// <param name="parameterListType">The type of parameter list the duplicated parameter was found in.</param>
         /// <param name="type">The type of the new parameter who's name was duplicate.</param>
         /// <param name="name">The name of the new parameter, which was duplicate.</param>
-        public virtual void ParameterNameRedefined(LSLSourceCodeRange location, LSLType type, string name)
+        public virtual void ParameterNameRedefined(LSLSourceCodeRange location, LSLParameterListType parameterListType, LSLType type, string name)
         {
-            OnError(location, string.Format("Parameter name \"{0}\" is used more than once.", name));
+            OnError(location, 
+                (parameterListType == LSLParameterListType.EventParameters ? "Event" : "Function") + 
+                string.Format(" parameter name \"{0}\" is used more than once.", name));
         }
+
 
         /// <summary>
         /// A binary operation was encountered that had incorrect expression types on either or both sides.

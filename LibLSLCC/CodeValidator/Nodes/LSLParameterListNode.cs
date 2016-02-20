@@ -238,6 +238,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
                         validatorServices.SyntaxErrorListener.ParameterNameRedefined(
                             paramLocation,
+                            parameterListType,
                             LSLTypeTools.FromLSLTypeString(parameter.TYPE().GetText()),
                             parameter.ID().GetText());
 

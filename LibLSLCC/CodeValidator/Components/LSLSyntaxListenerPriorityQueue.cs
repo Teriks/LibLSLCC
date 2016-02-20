@@ -142,16 +142,18 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.UndefinedVariableReference(location, name));
         }
 
+
         /// <summary>
         /// A parameter name for a function or event handler was used more than once.
         /// </summary>
         /// <param name="location">Location in source code.</param>
+        /// <param name="parameterListType">The type of parameter list the duplicated parameter was found in.</param>
         /// <param name="type">The type of the new parameter who's name was duplicate.</param>
         /// <param name="name">The name of the new parameter, which was duplicate.</param>
-        void ILSLSyntaxErrorListener.ParameterNameRedefined(LSLSourceCodeRange location, LSLType type, string name)
+        void ILSLSyntaxErrorListener.ParameterNameRedefined(LSLSourceCodeRange location, LSLParameterListType parameterListType, LSLType type, string name)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.ParameterNameRedefined(location, type, name));
+                () => SyntaxErrorListener.ParameterNameRedefined(location, parameterListType, type, name));
         }
 
         /// <summary>
