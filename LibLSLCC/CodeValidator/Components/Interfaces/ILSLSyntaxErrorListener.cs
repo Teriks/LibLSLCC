@@ -81,7 +81,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// A parameter name for a function or event handler was used more than once.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="parameterListType">The type of parameter list the duplicated parameter was found in.</param>
+        /// <param name="parameterListType">The type of parameter list the duplicate parameter name was found in.</param>
         /// <param name="type">The type of the new parameter who's name was duplicate.</param>
         /// <param name="name">The name of the new parameter, which was duplicate.</param>
         void ParameterNameRedefined(LSLSourceCodeRange location, LSLParameterListType parameterListType, LSLType type, string name);
