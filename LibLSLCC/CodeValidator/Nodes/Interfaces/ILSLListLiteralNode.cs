@@ -42,6 +42,7 @@
 #endregion
 #region Imports
 
+using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
 #endregion
@@ -60,5 +61,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// This will never be null, even when the list literal was defined as being empty.
         /// </summary>
         ILSLExpressionListNode ExpressionListNode { get; }
+
+
+        /// <summary>
+        /// The source code range of the list literals opening bracket.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeOpenBracket { get; }
+
+        /// <summary>
+        /// The source code range of the list literals closing bracket.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeCloseBracket { get; }
     }
 }

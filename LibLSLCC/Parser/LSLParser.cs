@@ -2584,12 +2584,14 @@ public partial class LSLParser : Parser {
 	}
 
 	public partial class ListLiteralContext : ParserRuleContext {
+		public IToken open_bracket;
 		public OptionalExpressionListContext expression_list;
+		public IToken close_bracket;
 		public ITerminalNode O_BRACKET() { return GetToken(LSLParser.O_BRACKET, 0); }
-		public ITerminalNode C_BRACKET() { return GetToken(LSLParser.C_BRACKET, 0); }
 		public OptionalExpressionListContext optionalExpressionList() {
 			return GetRuleContext<OptionalExpressionListContext>(0);
 		}
+		public ITerminalNode C_BRACKET() { return GetToken(LSLParser.C_BRACKET, 0); }
 		public ListLiteralContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -2617,9 +2619,9 @@ public partial class LSLParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 301; Match(O_BRACKET);
+			State = 301; _localctx.open_bracket = Match(O_BRACKET);
 			State = 302; _localctx.expression_list = optionalExpressionList();
-			State = 303; Match(C_BRACKET);
+			State = 303; _localctx.close_bracket = Match(C_BRACKET);
 			}
 		}
 		catch (RecognitionException re) {

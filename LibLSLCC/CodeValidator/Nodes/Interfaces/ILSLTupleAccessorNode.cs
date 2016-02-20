@@ -56,21 +56,21 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     public interface ILSLTupleAccessorNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The raw name of the accessed tuple member, taken from the source code.
+        /// The raw name of the accessed tuple component, taken from the source code.
         /// </summary>
-        string MemberString { get; }
+        string AccessedComponentString { get; }
 
         /// <summary>
-        /// The source code range of the tuple member that was accessed.
+        /// The source code range of the tuple component that was accessed.
         /// </summary>
-        LSLSourceCodeRange SourceRangeAccessedMember { get; }
+        LSLSourceCodeRange SourceRangeAccessedComponent { get; }
 
 
         /// <summary>
         /// The tuple member accessed.
         /// <see cref="LSLTupleComponent"/>
         /// </summary>
-        LSLTupleComponent AccessedMember { get; }
+        LSLTupleComponent AccessedComponent { get; }
 
 
         /// <summary>

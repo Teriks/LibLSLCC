@@ -71,7 +71,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression,
             LSLType accessedExpressionType,
-            LSLTupleComponent accessedMember)
+            LSLTupleComponent accessedComponent)
         {
             if (accessedExpressionType != LSLType.Vector && accessedExpressionType != LSLType.Rotation)
             {
@@ -88,10 +88,10 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            MemberString = context.member.Text;
-            AccessedMember = accessedMember;
+            AccessedComponentString = context.member.Text;
+            AccessedComponent = accessedComponent;
 
-            SourceRangeAccessedMember = new LSLSourceCodeRange(context.member);
+            SourceRangeAccessedComponent = new LSLSourceCodeRange(context.member);
 
             AccessedExpression = accessedExpression;
             AccessedExpression.Parent = this;
@@ -112,8 +112,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("other");
             }
 
-            MemberString = other.MemberString;
-            AccessedMember = other.AccessedMember;
+            AccessedComponentString = other.AccessedComponentString;
+            AccessedComponent = other.AccessedComponent;
 
             AccessedExpression = other.AccessedExpression.Clone();
             AccessedExpression.Parent = this;
@@ -123,7 +123,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             if (SourceRangesAvailable)
             {
                 SourceRange = other.SourceRange.Clone();
-                SourceRangeAccessedMember = other.SourceRangeAccessedMember.Clone();
+                SourceRangeAccessedComponent = other.SourceRangeAccessedComponent.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -148,18 +148,18 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The raw name of the accessed tuple member, taken from the source code.
         /// </summary>
-        public string MemberString { get; private set; }
+        public string AccessedComponentString { get; private set; }
 
         /// <summary>
         /// The source code range of the tuple member that was accessed.
         /// </summary>
-        public LSLSourceCodeRange SourceRangeAccessedMember { get; private set; }
+        public LSLSourceCodeRange SourceRangeAccessedComponent { get; private set; }
 
         /// <summary>
         /// The tuple component accessed.
         /// <see cref="LSLTupleComponent"/>
         /// </summary>
-        public LSLTupleComponent AccessedMember { get; private set; }
+        public LSLTupleComponent AccessedComponent { get; private set; }
 
 
 

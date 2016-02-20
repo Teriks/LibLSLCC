@@ -48,7 +48,6 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
-using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -84,6 +83,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             ExpressionListNode.Parent = this;
 
             SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeOpenBracket = new LSLSourceCodeRange(context.open_bracket);
+            SourceRangeCloseBracket = new LSLSourceCodeRange(context.close_bracket);
 
             SourceRangesAvailable = true;
         }
@@ -110,6 +111,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             if (SourceRangesAvailable)
             {
                 SourceRange = other.SourceRange.Clone();
+                SourceRangeOpenBracket = other.SourceRangeOpenBracket.Clone();
+                SourceRangeCloseBracket = other.SourceRangeCloseBracket.Clone();
             }
 
             HasErrors = other.HasErrors;
@@ -118,19 +121,20 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// A list of expressions that were used to initialize the list literal, or an empty list.
-        /// </summary>
-        public IReadOnlyGenericArray<ILSLExprNode> ListEntryExpressions
-        {
-            get { return ExpressionListNode.ExpressionNodes; }
-        }
-
-
-        /// <summary>
         /// The expression list node that contains all of the expressions used to initialize the list literal.
         /// This will never be null, even when the list literal was defined as being empty.
         /// </summary>
         public LSLExpressionListNode ExpressionListNode { get; private set; }
+
+        /// <summary>
+        /// The source code range of the list literals opening bracket.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeOpenBracket { get; private set; }
+
+        /// <summary>
+        /// The source code range of the list literals closing bracket.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeCloseBracket { get; private set; }
 
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent

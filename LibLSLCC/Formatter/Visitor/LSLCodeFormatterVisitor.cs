@@ -737,7 +737,7 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitVecRotAccessor(ILSLTupleAccessorNode node)
         {
             Visit(node.AccessedExpression);
-            Write("." + node.MemberString);
+            Write("." + node.AccessedComponentString);
 
             return true;
         }

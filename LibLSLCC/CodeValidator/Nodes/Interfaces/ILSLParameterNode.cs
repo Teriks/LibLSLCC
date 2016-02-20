@@ -42,7 +42,9 @@
 #endregion
 #region Imports
 
+using System.Security.Cryptography.X509Certificates;
 using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator.Primitives;
 
 #endregion
 
@@ -73,5 +75,16 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
         /// </summary>
         int ParameterIndex { get; }
+
+
+        /// <summary>
+        /// The source code range of the parameter name.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeName { get; }
+
+        /// <summary>
+        /// The source code range of the parameter type specifier.
+        /// </summary>
+        LSLSourceCodeRange SourceRangeType { get; }
     }
 }

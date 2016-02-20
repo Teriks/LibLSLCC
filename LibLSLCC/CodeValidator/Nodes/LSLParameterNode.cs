@@ -76,6 +76,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             Type = LSLTypeTools.FromLSLTypeString(TypeString);
 
             SourceRange = new LSLSourceCodeRange(context);
+            SourceRangeType = new LSLSourceCodeRange(context.parameter_type);
+            SourceRangeName = new LSLSourceCodeRange(context.parameter_name);
 
             SourceRangesAvailable = true;
         }
@@ -105,6 +107,16 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
         /// </summary>
         public int ParameterIndex { get; set; }
+
+        /// <summary>
+        /// The source code range of the parameter name.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeName { get; private set; }
+
+        /// <summary>
+        /// The source code range of the parameter type specifier.
+        /// </summary>
+        public LSLSourceCodeRange SourceRangeType { get; private set; }
 
 
         /// <summary>

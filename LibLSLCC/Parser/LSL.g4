@@ -446,7 +446,7 @@ optionalParameterList:
 
 
 listLiteral:
-	O_BRACKET expression_list=optionalExpressionList C_BRACKET
+	open_bracket=O_BRACKET expression_list=optionalExpressionList close_bracket=C_BRACKET
 	;
 
 

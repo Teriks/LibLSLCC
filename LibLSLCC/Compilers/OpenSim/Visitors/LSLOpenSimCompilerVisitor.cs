@@ -484,7 +484,7 @@ private static class UTILITIES
         {
             Visit(node.AccessedExpression);
             Writer.Write(".");
-            Writer.Write(node.MemberString);
+            Writer.Write(node.AccessedComponentString);
 
             return false;
         }
