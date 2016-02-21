@@ -53,12 +53,12 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Whether or not this library signature is marked as deprecated or not.
         /// </summary>
-        bool Deprecated { get; set; }
+        bool Deprecated { get; }
 
         /// <summary>
         /// Returns the documentation string attached to this library signature.
         /// </summary>
-        string DocumentationString { get; set; }
+        string DocumentationString { get;  }
 
         /// <summary>
         /// Additional dynamic property values that can be attached to the constant signature and parsed from XML
@@ -77,7 +77,5 @@ namespace LibLSLCC.LibraryData
         /// The library subsets this signature belongs to/is shared among.
         /// </summary>
         LSLLibraryDataSubsetCollection Subsets { get; }
-
-
     }
 }

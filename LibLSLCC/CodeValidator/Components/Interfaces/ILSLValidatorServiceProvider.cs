@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// The library data provider gives the code validator information about standard library functions,
         /// constants and events that exist in the LSL namespace.
         /// </summary>
-        ILSLLibraryDataProvider LibraryDataProvider { get; }
+        ILSLBasicLibraryDataProvider LibraryDataProvider { get; }
 
         /// <summary>
         /// The string literal pre-processor is in charge of pre-processing string literals

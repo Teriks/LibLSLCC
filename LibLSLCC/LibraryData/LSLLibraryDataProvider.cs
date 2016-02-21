@@ -832,52 +832,6 @@ namespace LibLSLCC.LibraryData
         }
 
 
-        /// <summary>
-        /// Check if a given function signature would be considered an overload to any function given the current <see cref="ActiveSubsets"/>.
-        /// </summary>
-        /// <param name="signatureToTest">The signature to test.</param>
-        /// <returns>True if non-(duplicate/ambiguous) definition of a function signature with the same name as the given signature exist in this library data provider. </returns>
-        public bool IsConsideredOverload(LSLFunctionSignature signatureToTest)
-        {
-            var match =
-               ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
-               .FirstOrDefault(x =>
-               {
-                   var subsetDict = _functionSignaturesBySubsetAndName[x];
-                   //its not an overload its the first definition
-                   if (!subsetDict.ContainsKey(signatureToTest.Name)) return false;
-
-                   //if there is a duplicate this cannot be an overload, otherwise it is an overload
-                   var duplicate = _functionSignaturesBySubsetAndName[x][signatureToTest.Name].FirstOrDefault(f=>f.DefinitionIsDuplicate(signatureToTest));
-                   return duplicate == null;
-               });
-
-            return match != null;
-        }
-
-
-        /// <summary>
-        /// Check if this library data provider contains a function with an exact signature match to the given function signature among the current <see cref="ActiveSubsets"/>.
-        /// </summary>
-        /// <param name="signatureToTest">The function signature to try to find exact match with.</param>
-        /// <returns>True if a function exists in the current active subsets that exactly matches the given signature.</returns>
-        public bool LibraryFunctionExist(LSLFunctionSignature signatureToTest)
-        {
-            var match =
-               ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
-               .FirstOrDefault(x =>
-               {
-                   var subsetDict = _functionSignaturesBySubsetAndName[x];
-                   //its does not exist
-                   if (!subsetDict.ContainsKey(signatureToTest.Name)) return false;
-
-                   //return true if a signature equivalent exists
-                   return _functionSignaturesBySubsetAndName[x][signatureToTest.Name].FirstOrDefault(f => f.SignatureEquivalent(signatureToTest)) != null;
-               });
-
-            return match != null;
-        }
-
 
         /// <summary>
         /// Attempt to return a list of overloads for a function that might be defined in the library data provider given its name.

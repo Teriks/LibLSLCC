@@ -146,7 +146,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             get { return _validatorServices.ExpressionValidator; }
         }
 
-        public ILSLLibraryDataProvider LibraryDataProvider
+        public ILSLBasicLibraryDataProvider LibraryDataProvider
         {
             get { return _validatorServices.LibraryDataProvider; }
         }
