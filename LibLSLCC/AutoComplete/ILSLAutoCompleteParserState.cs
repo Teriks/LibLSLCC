@@ -1,12 +1,61 @@
+#region FileInfo
+
+// 
+// File: ILSLAutoCompleteParserState.cs
+// 
+// 
+// ============================================================
+// ============================================================
+// 
+// 
+// Copyright (c) 2016, Teriks
+// 
+// All rights reserved.
+// 
+// 
+// This file is part of LibLSLCC.
+// 
+// LibLSLCC is distributed under the following BSD 3-Clause License
+// 
+// 
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+//     in the documentation and/or other materials provided with the distribution.
+// 
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived
+//     from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+// ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// 
+// ============================================================
+// ============================================================
+// 
+// 
+
+#endregion
+
+#region Imports
+
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Interface for <see cref="LSLAutoCompleteParser"/>'s parse state.
+    ///     Interface for <see cref="LSLAutoCompleteParser" />'s parse state.
     /// </summary>
     public interface ILSLAutoCompleteParserState
     {
@@ -34,8 +83,7 @@ namespace LibLSLCC.AutoComplete
         string CurrentEvent { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a state block, but outside of an event handler
-        ///     declaration.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a state block, but outside of an event handler declaration.
         /// </summary>
         bool InStateScope { get; }
 
@@ -46,18 +94,14 @@ namespace LibLSLCC.AutoComplete
         bool InEventSourceRange { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside the code body of an event handler.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is  anywhere inside the code body of an event handler.
         /// </summary>
-        bool InEventCodeBody { get;
-            // ReSharper disable once FunctionComplexityOverflow
-        }
+        bool InEventCodeBody { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside the code body of a function declaration.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is  anywhere inside the code body of a function declaration.
         /// </summary>
-        bool InFunctionCodeBody { get;
-            // ReSharper disable once FunctionComplexityOverflow
-        }
+        bool InFunctionCodeBody { get; }
 
         /// <summary>
         ///     <c>true</c> if <see cref="ParseToOffset" /> is in the global scope.
@@ -88,22 +132,19 @@ namespace LibLSLCC.AutoComplete
 
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteGlobalFunction" /> objects representing global function
-        ///     declarations
-        ///     that are accessible at <see cref="ParseToOffset" />.  The functions are keyed in the hash map by name.
+        ///     declarations that are accessible at <see cref="ParseToOffset" />.  The functions are keyed in the hash map by name.
         /// </summary>
         IReadOnlyHashMap<string, LSLAutoCompleteGlobalFunction> GlobalFunctionsDictionary { get; }
 
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteGlobalVariable" /> objects representing global variable
-        ///     declarations
-        ///     that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by name.
+        ///     declarations that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by name.
         /// </summary>
         IReadOnlyHashMap<string, LSLAutoCompleteGlobalVariable> GlobalVariablesDictionary { get; }
 
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteLocalParameter" /> objects representing local parameter
-        ///     declarations
-        ///     that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by name.
+        ///     declarations that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by name.
         /// </summary>
         IReadOnlyHashMap<string, LSLAutoCompleteLocalParameter> LocalParametersDictionary { get; }
 
@@ -131,14 +172,12 @@ namespace LibLSLCC.AutoComplete
         bool InBracelessCodeStatementArea { get; }
 
         /// <summary>
-        ///     Gets an enumerable of <see cref="LSLAutoCompleteGlobalFunction" /> objects representing local parameters
-        ///     that are accessible at <see cref="ParseToOffset" />.
+        ///     Gets an enumerable of <see cref="LSLAutoCompleteGlobalFunction" /> objects representing local parameters that are accessible at <see cref="ParseToOffset" />.
         /// </summary>
         IEnumerable<LSLAutoCompleteLocalParameter> LocalParameters { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a binary expression/prefix expression/postfix expression
-        ///     or parenthesized expression.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a binary expression/prefix expression/postfix expression or parenthesized expression.
         /// </summary>
         bool InBasicExpressionTree { get; }
 
@@ -178,7 +217,7 @@ namespace LibLSLCC.AutoComplete
         bool InElseIfConditionExpression { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a function declaration or event declaration code body.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is anywhere inside of a function declaration or event declaration code body.
         /// </summary>
         bool InCodeBody { get; }
 

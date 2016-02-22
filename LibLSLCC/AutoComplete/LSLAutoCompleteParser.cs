@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -122,7 +123,7 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside the code body of an event handler.
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is anywhere inside the code body of an event handler.
         /// </summary>
         public bool InEventCodeBody
         {
@@ -130,7 +131,7 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside the code body of a function
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is anywhere inside the code body of a function
         ///     declaration.
         /// </summary>
         public bool InFunctionCodeBody
@@ -750,8 +751,21 @@ namespace LibLSLCC.AutoComplete
         /// </summary>
         /// <param name="stream">The input source code stream.</param>
         /// <param name="toOffset">To offset to parse up to (the cursor offset).</param>
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="toOffset"/> is not greater than zero.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <see langword="null" />.</exception>
         public void Parse(TextReader stream, int toOffset)
         {
+            if (stream == null)
+            {
+                throw new ArgumentNullException("stream");
+            }
+
+            if (toOffset <= 0)
+            {
+                throw new ArgumentOutOfRangeException("toOffset", "toOffset must be greater than zero.");
+            }
+
+
             var inputStream = new AntlrInputStream(stream);
 
             var lexer = new LSLLexer(inputStream);
@@ -767,6 +781,7 @@ namespace LibLSLCC.AutoComplete
 
 
             _autocompleteVisitor = new LSLAutoCompleteVisitor(toOffset);
+
 
             _autocompleteVisitor.Parse(parser.compilationUnit());
         }
