@@ -42,7 +42,6 @@
 #endregion
 #region Imports
 
-using System.Security.Cryptography.X509Certificates;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 

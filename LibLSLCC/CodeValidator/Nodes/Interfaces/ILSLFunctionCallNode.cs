@@ -43,7 +43,6 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.Collections;
 
 #endregion
 

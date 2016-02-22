@@ -91,7 +91,7 @@
     <Compile Include="CSharp\MemberAccessibilityLevel.cs" />
     <Compile Include="Formatter\LSLCodeFormatter.cs" />
     <Compile Include="Formatter\LSLCodeFormatterSettings.cs" />
-    <Compile Include="LibraryData\ILSLBasicLibraryDataProvider.cs" />
+    <Compile Include="CodeValidator\Components\Interfaces\ILSLBasicLibraryDataProvider.cs" />
     <Compile Include="LibraryData\LSLEmbeddedLibraryDataProvider.cs" />
     <Compile Include="LibraryData\ILSLLibrarySignature.cs" />
     <Compile Include="LibraryData\LSLLibraryDataSubsetCollection.cs" />

@@ -51,13 +51,13 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
+using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 using LibLSLCC.Collections;
 using LibLSLCC.CSharp;
-using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
 using LibLSLCC.Utility.ListParser;
 
