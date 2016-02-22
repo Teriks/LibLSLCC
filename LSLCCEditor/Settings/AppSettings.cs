@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: AppSettings.cs
 // 
@@ -7,7 +8,7 @@
 // ============================================================
 // 
 // 
-// Copyright (c) 2015, Teriks
+// Copyright (c) 2016, Teriks
 // 
 // All rights reserved.
 // 
@@ -39,12 +40,17 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.IO;
 using System.Windows.Forms;
 using LibLSLCC.Settings;
+
+#endregion
 
 namespace LSLCCEditor.Settings
 {
@@ -59,9 +65,10 @@ namespace LSLCCEditor.Settings
         private static string _settingsFile;
         private static string _settingsVersionFile;
 
-
-        public static AppSettingsNode Settings { get { return SettingsManager.Settings; } }
-
+        public static AppSettingsNode Settings
+        {
+            get { return SettingsManager.Settings; }
+        }
 
         public static string AppDataDir
         {
@@ -85,36 +92,6 @@ namespace LSLCCEditor.Settings
         }
 
 
-        private static void SettingsManagerOnConfigError(object sender, SettingsManagerConfigErrorEventArgs settingsManagerConfigErrorEventArgs)
-        {
-            switch (settingsManagerConfigErrorEventArgs.ErrorType)
-            {
-                case SettingsErrorType.SyntaxError:
-                    MessageBox.Show(
-                        "There was a problem with the application settings, default settings have been re-applied.",
-                        "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-
-                    Save();
-                    break;
-
-                case SettingsErrorType.FileUnreadable:
-
-                    MessageBox.Show(
-                        "There was a problem reading the application settings file, it may be locked by another application.",
-                        "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    Application.Exit();
-                    break;
-
-                case SettingsErrorType.FileMissing:
-
-                    Save();
-                    break;
-            }
-        }
-
-
         public static void Save()
         {
             SettingsManager.Save(SettingsFile);
@@ -123,8 +100,23 @@ namespace LSLCCEditor.Settings
 
         public static void Load()
         {
+            try
+            {
+                Directory.CreateDirectory(AppDataDir);
+            }
+                // ReSharper disable once CatchAllClause
+            catch (Exception e)
+            {
+                MessageBox.Show(
+                    "The application settings directory could not be created." + Environment.NewLine +
+                    "The application will now exit."
+                    + Environment.NewLine
+                    + Environment.NewLine + "Error: " + e.Message,
+                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-            Directory.CreateDirectory(AppDataDir);
+                Environment.Exit(1);
+            }
+
 
             try
             {
@@ -137,21 +129,27 @@ namespace LSLCCEditor.Settings
                     var versionCheck = File.ReadAllText(SettingsVersionFile);
                     if (versionCheck != CurrentSettingsVersion)
                     {
+                        var r = MessageBox.Show(
+                            "A version change in the application settings has been detected, default settings will be applied over your old settings."
+                            + Environment.NewLine +
+                            "Click cancel if you do not want this to happen and would just like to exit for now instead.", "Settings Version Change",
+                            MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+
+                        if (r == DialogResult.Cancel)
+                        {
+                            Environment.Exit(1);
+                        }
+
                         if (File.Exists(SettingsFile))
                         {
                             File.Delete(SettingsFile);
                         }
 
                         File.WriteAllText(SettingsVersionFile, CurrentSettingsVersion);
-
-                        MessageBox.Show(
-                        "A version change in the application settings has been detected, " +
-                        "default settings will be applied.  ", "Settings Version Change",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                     }
                 }
             }
+                // ReSharper disable once CatchAllClause
             catch (Exception e)
             {
                 MessageBox.Show(
@@ -159,17 +157,85 @@ namespace LSLCCEditor.Settings
                     "please make sure they are not locked by another application.  "
                     + "The application will now exit."
                     + Environment.NewLine
-                    + Environment.NewLine + "Error: " + e.Message, "Settings Read Error",
+                    + Environment.NewLine + "Error: " + e.Message, "Settings Read/Write Error",
                     MessageBoxButtons.OK);
 
-                Application.Exit();
-
+                Environment.Exit(1);
             }
 
 
-            SettingsManager.ConfigError += SettingsManagerOnConfigError;
+            try
+            {
+                SettingsManager.Load(SettingsFile);
+            }
 
-            SettingsManager.Load(SettingsFile);
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show(
+                    "There was a problem with the application settings, the application settings file could not be found."
+                    + Environment.NewLine +
+                    "The file will be created and default settings will be applied.",
+                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                SettingsManager.ApplyDefaults();
+                Save();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                MessageBox.Show(
+                    "There was a problem with the application settings, the applications data directory could not be found."
+                    + Environment.NewLine +
+                    "The directory will be created and default settings will be applied.",
+                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                try
+                {
+                    Directory.CreateDirectory(AppDataDir);
+                }
+                    // ReSharper disable once CatchAllClause
+                catch (Exception e)
+                {
+                    MessageBox.Show(
+                        "The application settings directory could not be created." + Environment.NewLine +
+                        "The application will now exit."
+                        + Environment.NewLine
+                        + Environment.NewLine + "Error: " + e.Message,
+                        "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    Environment.Exit(1);
+                }
+
+                SettingsManager.ApplyDefaults();
+                Save();
+            }
+            catch (IOException)
+            {
+                MessageBox.Show(
+                    "There was a problem reading the application settings file, it may be locked by another application." +
+                    Environment.NewLine +
+                    "The application will now exit.",
+                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                Environment.Exit(1);
+            }
+                // ReSharper disable once CatchAllClause
+            catch (Exception)
+            {
+                var r = MessageBox.Show(
+                    "There was a problem/syntax error with the application settings, default settings will be re-applied."
+                    + Environment.NewLine + Environment.NewLine +
+                    "Click cancel if you do not want this to happen and would just like to exit for now instead.",
+                    "Configuration Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+
+
+                if (r == DialogResult.Cancel)
+                {
+                    Environment.Exit(1);
+                }
+
+                SettingsManager.ApplyDefaults();
+                Save();
+            }
         }
     }
 }

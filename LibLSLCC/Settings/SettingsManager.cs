@@ -49,81 +49,38 @@ using System.Xml.Serialization;
 namespace LibLSLCC.Settings
 {
     /// <summary>
-    /// Describes a settings read error type.
-    /// </summary>
-    public enum SettingsErrorType
-    {
-        /// <summary>
-        /// Settings file not found.
-        /// </summary>
-        FileMissing,
-
-        /// <summary>
-        /// Settings file could not be read.
-        /// </summary>
-        FileUnreadable,
-
-        /// <summary>
-        /// Syntax error in the settings file.
-        /// </summary>
-        SyntaxError
-    }
-
-    /// <summary>
-    /// Event arguments for the settings manager ConfigError event.  <see cref="SettingsManager{T}.ConfigError"/>
-    /// </summary>
-    public sealed class SettingsManagerConfigErrorEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Construct the config error event args.
-        /// </summary>
-        /// <param name="errorType">The error type.</param>
-        /// <param name="settingsReset">Whether or not the settings were reset to default.</param>
-        public SettingsManagerConfigErrorEventArgs(SettingsErrorType errorType, bool settingsReset)
-        {
-            ErrorType = errorType;
-            SettingsReset = settingsReset;
-        }
-
-        /// <summary>
-        /// Whether or not the settings were reset to default.
-        /// </summary>
-        public bool SettingsReset { get; private set; }
-
-        /// <summary>
-        /// The error type.
-        /// </summary>
-        public SettingsErrorType ErrorType { get; private set; }
-    }
-
-
-    /// <summary>
     /// Manages loading a serializable settings object to and from disk.  <see cref="SettingsBaseClass{T}"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public sealed class SettingsManager<T> where T : new()
     {
-        private readonly bool _resetOnConfigError;
 
         /// <summary>
         /// The settings object being managed.
         /// </summary>
         public T Settings { get; private set; }
 
-
         /// <summary>
-        /// Occurs when there is an error reading the settings object off disk.
+        /// Create a <see cref="SettingsManager{T}"/> around an initial settings object.
         /// </summary>
-        public event EventHandler<SettingsManagerConfigErrorEventArgs> ConfigError;
-
-
-        /// <summary>
-        /// Construct the settings manager.
-        /// </summary>
-        /// <param name="resetSettingsOnConfigError">Whether or not settings errors reset the settings object to have default property values.</param>
-        public SettingsManager(bool resetSettingsOnConfigError = true)
+        /// <exception cref="ArgumentNullException"><paramref name="settings"/> is <see langword="null" />.</exception>
+        public SettingsManager(T settings)
         {
-            _resetOnConfigError = resetSettingsOnConfigError;
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            Settings = settings;
+        }
+
+
+        /// <summary>
+        /// Create a <see cref="SettingsManager{T}"/> with no initial settings object, one must be loaded with <see cref="Load"/>.
+        /// </summary>
+        public SettingsManager()
+        {
+
         }
 
 
@@ -131,6 +88,14 @@ namespace LibLSLCC.Settings
         /// Save the settings object to disk.
         /// </summary>
         /// <param name="file">The name of the file name to save to.</param>
+        /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission.-or- <paramref name="file" /> specified a file that is read-only. </exception>
+        /// <exception cref="DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive). </exception>
+        /// <exception cref="IOException">An I/O error occurred while creating the file. </exception>
+        /// <exception cref="ArgumentException"><paramref name="file" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="System.IO.Path.InvalidPathChars" />. </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="file" /> is null. </exception>
+        /// <exception cref="PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. </exception>
+        /// <exception cref="NotSupportedException"><paramref name="file" /> is in an invalid path format. </exception>
+        /// <exception cref="InvalidOperationException">An error occurred during serialization. The original exception is available using the <see cref="P:System.Exception.InnerException" /> property. </exception>
         public void Save(string file)
         {
             var serializer = new XmlSerializer(typeof (T));
@@ -159,56 +124,32 @@ namespace LibLSLCC.Settings
             DefaultValueInitializer.Init(Settings);
         }
 
-        private void HandleLoadError(SettingsErrorType type)
-        {
-            if (_resetOnConfigError)
-            {
-                ApplyDefaults();
-            }
-
-            OnConfigError(type);
-        }
 
         /// <summary>
         /// Load the settings object from the specified file.
         /// </summary>
         /// <param name="file">The file to load the managed settings object from.</param>
+        /// <exception cref="ArgumentException"><paramref name="file" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="System.IO.Path.InvalidPathChars" />. </exception>
+        /// <exception cref="NotSupportedException"><paramref name="file" /> is in an invalid path format. </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="file" /> is null. </exception>
+        /// <exception cref="PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. </exception>
+        /// <exception cref="FileNotFoundException">The file specified in <paramref name="file" /> was not found. </exception>
+        /// <exception cref="DirectoryNotFoundException">The specified path is invalid, (for example, it is on an unmapped drive). </exception>
+        /// <exception cref="UnauthorizedAccessException"><paramref name="file" /> specified a directory.-or- The caller does not have the required permission. </exception>
         public void Load(string file)
         {
-            if (File.Exists(file))
-            {
-                var serializer = new XmlSerializer(typeof (T));
 
-                try
-                {
-                    using (var reader = new XmlTextReader(File.OpenRead(file)))
-                    {
-                        reader.WhitespaceHandling = WhitespaceHandling.All;
-                        Settings = (T) serializer.Deserialize(reader);
-                    }
-                }
-                catch (IOException)
-                {
-                    HandleLoadError(SettingsErrorType.FileUnreadable);
-                }
-                catch (Exception)
-                {
-                    HandleLoadError(SettingsErrorType.SyntaxError);
-                }
+            var serializer = new XmlSerializer(typeof (T));
 
-                DefaultValueInitializer.Init(Settings);
-            }
-            else
+
+            using (var reader = new XmlTextReader(File.OpenRead(file)))
             {
-                HandleLoadError(SettingsErrorType.FileMissing);
+                reader.WhitespaceHandling = WhitespaceHandling.All;
+                Settings = (T) serializer.Deserialize(reader);
             }
+
+            DefaultValueInitializer.Init(Settings);
         }
 
-
-        private void OnConfigError(SettingsErrorType type)
-        {
-            var handler = ConfigError;
-            if (handler != null) handler(this, new SettingsManagerConfigErrorEventArgs(type, _resetOnConfigError));
-        }
     }
 }

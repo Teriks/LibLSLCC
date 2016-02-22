@@ -87,6 +87,8 @@ namespace LibLSLCC.AutoComplete
         private readonly GenericArray<LSLAutoCompleteStateBlock> _stateBlocks =
             new GenericArray<LSLAutoCompleteStateBlock>();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
+        [Serializable]
         private class StackImbalanceException : Exception
         {
             //
