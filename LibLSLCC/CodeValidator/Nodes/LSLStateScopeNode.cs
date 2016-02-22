@@ -71,6 +71,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLStateScopeNode(LSLParser.DefaultStateContext context)
         {
             if (context == null)
@@ -91,6 +93,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context)
         {
             if (context == null)
@@ -111,6 +115,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="eventHandlers"/> is <see langword="null" />.</exception>
         internal LSLStateScopeNode(LSLParser.DefaultStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
             : this(context)
 
@@ -138,6 +144,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="eventHandlers"/> is <see langword="null" />.</exception>
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
             : this(context)
         {

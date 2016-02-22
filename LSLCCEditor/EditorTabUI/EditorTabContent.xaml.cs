@@ -148,10 +148,9 @@ namespace LSLCCEditor.EditorTabUI
             Editor.Editor.ScrollToLine(line);
 
 
-            if (message.CodeLocation.HasIndexInfo && message.CodeLocation.IsSingleLine)
+            if (!message.CodeLocation.IsEmpty && message.CodeLocation.IsSingleLine)
             {
-                Editor.Editor.Select(message.CodeLocation.StartIndex,
-                    (message.CodeLocation.StopIndex + 1) - message.CodeLocation.StartIndex);
+                Editor.Editor.Select(message.CodeLocation.StartIndex, (message.CodeLocation.StopIndex + 1) - message.CodeLocation.StartIndex);
 
                 return;
             }

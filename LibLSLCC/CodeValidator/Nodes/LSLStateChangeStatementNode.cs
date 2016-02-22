@@ -42,6 +42,7 @@
 #endregion
 #region Imports
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -67,8 +68,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLStateChangeStatementNode(LSLParser.StateChangeStatementContext context, bool isSingleBlockStatement)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
             IsSingleBlockStatement = isSingleBlockStatement;
 
             StateTargetName = context.state_target.Text;

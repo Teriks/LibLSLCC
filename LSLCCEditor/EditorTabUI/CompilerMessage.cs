@@ -94,7 +94,7 @@ namespace LSLCCEditor.EditorTabUI
         [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CompilerMessage(CompilerMessageType type, string header, string message, bool showLineInfo = true)
         {
-            CodeLocation = new LSLSourceCodeRange(0, 0);
+            CodeLocation = new LSLSourceCodeRange();
             MessageText = message;
             MessageHeader = header;
             if (showLineInfo)

@@ -69,6 +69,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="innerExpression"/> is <see langword="null" />.</exception>
         internal LSLParenthesizedExpressionNode(LSLParser.ParenthesizedExpressionContext context,
             ILSLExprNode innerExpression)
         {
@@ -96,6 +98,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLParenthesizedExpressionNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLParenthesizedExpressionNode(LSLParenthesizedExpressionNode other)
         {
             if (other == null)

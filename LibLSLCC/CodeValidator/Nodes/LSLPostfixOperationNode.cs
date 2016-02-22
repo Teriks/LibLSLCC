@@ -69,6 +69,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="leftExpression"/> is <see langword="null" />.</exception>
         internal LSLPostfixOperationNode(LSLParser.Expr_PostfixOperationContext context, LSLType resultType,
             ILSLExprNode leftExpression)
         {
@@ -95,10 +97,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
         /// <summary>
         /// Create an <see cref="LSLPostfixOperationNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLPostfixOperationNode(LSLPostfixOperationNode other)
         {
             if (other == null)

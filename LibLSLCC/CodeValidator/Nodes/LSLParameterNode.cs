@@ -42,6 +42,7 @@
 #endregion
 #region Imports
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -67,8 +68,16 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLParameterNode(LSLParser.ParameterDefinitionContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
+
             Name = context.parameter_name.Text;
 
             TypeString = context.parameter_type.Text;

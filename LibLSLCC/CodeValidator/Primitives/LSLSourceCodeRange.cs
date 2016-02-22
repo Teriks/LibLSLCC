@@ -64,17 +64,25 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
             LineStart = 0;
             ColumnStart = 0;
-
             LineEnd = 0;
             ColumnEnd = 0;
+            StartIndex = 0;
+            StopIndex = 0;
         }
+
 
         /// <summary>
         /// Internal constructor for creating an <see cref="LSLSourceCodeRange"/> from an ANTLR IToken.
         /// </summary>
         /// <param name="ctx">The ANTLR IToken</param>
+        /// <exception cref="ArgumentNullException"><paramref name="ctx"/> is <see langword="null" />.</exception>
         internal LSLSourceCodeRange(IToken ctx)
         {
+            if (ctx == null)
+            {
+                throw new ArgumentNullException("ctx");
+            }
+
             LineStart = ctx.Line;
             ColumnStart = ctx.Column;
             StartIndex = ctx.StartIndex;
@@ -82,7 +90,6 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             LineEnd = ctx.Line;
             ColumnEnd = ctx.Column + ctx.Text.Length;
-            HasIndexInfo = true;
         }
 
 
@@ -91,18 +98,27 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         /// <param name="start">The first ANTLR IToken</param>
         /// <param name="end">The second ANTLR IToken</param>
+        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
         internal LSLSourceCodeRange(IToken start, IToken end)
         {
+            if (start == null)
+            {
+                throw new ArgumentNullException("start");
+            }
+
+            if (end == null)
+            {
+                throw new ArgumentNullException("end");
+            }
+
+
             LineStart = start.Line;
             ColumnStart = start.Column;
             StartIndex = start.StartIndex;
             StopIndex = end.StopIndex;
-
             
             ColumnEnd = end.Column + end.Text.Length;
             LineEnd = end.Line;
-
-            HasIndexInfo = true;
         }
 
 
@@ -111,8 +127,19 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range starts.</param>
         /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range ends.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
         public LSLSourceCodeRange(LSLSourceCodeRange start, LSLSourceCodeRange end)
         {
+            if (start == null)
+            {
+                throw new ArgumentNullException("start");
+            }
+
+            if (end == null)
+            {
+                throw new ArgumentNullException("end");
+            }
+
             LineStart = start.LineStart;
             ColumnStart = start.LineEnd;
 
@@ -122,8 +149,6 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             ColumnEnd = end.ColumnEnd;
             LineEnd = end.LineEnd;
-
-            HasIndexInfo = true;
         }
 
 
@@ -131,8 +156,14 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Internal function for creating an <see cref="LSLSourceCodeRange"/> from an ANTLR ParserRuleContext.
         /// </summary>
         /// <param name="ctx">The ANTLR ParserRuleContext</param>
+        /// <exception cref="ArgumentNullException"><paramref name="ctx"/> is <see langword="null" />.</exception>
         internal LSLSourceCodeRange(ParserRuleContext ctx)
         {
+            if (ctx == null)
+            {
+                throw new ArgumentNullException("ctx");
+            }
+
             LineStart = ctx.Start.Line;
             ColumnStart = ctx.Start.Column;
             StartIndex = ctx.Start.StartIndex;
@@ -149,7 +180,6 @@ namespace LibLSLCC.CodeValidator.Primitives
                 ColumnEnd = ColumnStart;
                 LineEnd = LineStart;
             }
-            HasIndexInfo = true;
         }
 
 
@@ -157,32 +187,59 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Creates a source code range from an <see cref="ILSLReadOnlySyntaxTreeNode"/>
         /// </summary>
         /// <param name="node">The syntax tree node to create the <see cref="LSLSourceCodeRange"/> from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode node)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+
             LineStart = node.SourceRange.LineStart;
             ColumnStart = node.SourceRange.ColumnStart;
             StartIndex = node.SourceRange.StartIndex;
             StopIndex = node.SourceRange.StopIndex;
             LineEnd = node.SourceRange.LineEnd;
             ColumnEnd = node.SourceRange.ColumnEnd;
-            HasIndexInfo = true;
         }
 
 
         /// <summary>
         /// Creates a source code range that spans two <see cref="ILSLReadOnlySyntaxTreeNode"/> objects.
         /// </summary>
-        /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range starts.</param>
-        /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range ends.</param>
+        /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/>where the source code range starts.</param>
+        /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/>where the source code range ends.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="start"/>.SourceRangesAvailable or <paramref name="end"/>.SourceRangesAvailable are false.</exception>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode start, ILSLReadOnlySyntaxTreeNode end)
         {
+
+            if (start == null)
+            {
+                throw new ArgumentNullException("start");
+            }
+
+            if (end == null)
+            {
+                throw new ArgumentNullException("end");
+            }
+
+            if (!start.SourceRangesAvailable)
+            {
+                throw new ArgumentException("start.SourceRangesAvailable == false", "start");
+            }
+
+            if (!end.SourceRangesAvailable)
+            {
+                throw new ArgumentException("end.SourceRangesAvailable == false", "end");
+            }
+
             LineStart = start.SourceRange.LineStart;
             ColumnStart = start.SourceRange.ColumnStart;
             StartIndex = start.SourceRange.StartIndex;
             StopIndex = end.SourceRange.StopIndex;
             LineEnd = end.SourceRange.LineEnd;
             ColumnEnd = end.SourceRange.ColumnEnd;
-            HasIndexInfo = true;
         }
 
 
@@ -195,73 +252,45 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="columnEnd">Character column where the range ends.</param>
         /// <param name="startIndex">The index in the source code where range starts.</param>
         /// <param name="stopIndex">The index in the source code where the range ends.</param>
+        /// <exception cref="ArgumentException">if <paramref name="lineStart"/> is greater than <paramref name="lineEnd"/> or <paramref name="startIndex"/> is greater than <paramref name="stopIndex"/>.</exception>
         public LSLSourceCodeRange(int lineStart, int columnStart, int lineEnd, int columnEnd, int startIndex,
             int stopIndex)
         {
+            if (lineStart > lineEnd)
+            {
+                throw new ArgumentException("lineStart > lineEnd", "lineStart");
+            }
+
+            if (startIndex > stopIndex)
+            {
+                throw new ArgumentException("startIndex > stopIndex", "startIndex");
+            }
+
             LineStart = lineStart;
             ColumnStart = columnStart;
             LineEnd = lineEnd;
             ColumnEnd = columnEnd;
             StartIndex = startIndex;
             StopIndex = stopIndex;
-            HasIndexInfo = true;
         }
 
 
-        /// <summary>
-        /// Manually create a source code range by providing all of the source code range details.
-        /// 
-        /// StartIndex is set to: 0
-        /// EndIndex is set to: 0;
-        /// HasIndexInfo is set to: false;
-        /// </summary>
-        /// <param name="lineStart">Line where the range starts.</param>
-        /// <param name="columnStart">Character column where the range starts.</param>
-        /// <param name="columnLength">The length of the range in characters.</param>
-        public LSLSourceCodeRange(int lineStart, int columnStart, int columnLength)
-        {
-            LineStart = lineStart;
-            ColumnStart = columnStart;
-            LineEnd = lineStart;
-            ColumnEnd = columnStart + columnLength;
-            StartIndex = 0;
-            StopIndex = 0;
-            HasIndexInfo = false;
-        }
 
         /// <summary>
-        /// Manually create a source code range by providing all of the source code range details.
-        /// LineEnd is set to: lineStart;
-        /// ColumnEnd is set to: columnStart;
-        /// StartIndex is set to: 0
-        /// EndIndex is set to: 0;
-        /// HasIndexInfo is set to: false;
-        /// </summary>
-        /// <param name="lineStart">Line where the range starts.</param>
-        /// <param name="columnStart">Character column where the range starts.</param>
-        public LSLSourceCodeRange(int lineStart, int columnStart)
-        {
-            LineStart = lineStart;
-            ColumnStart = columnStart;
-            LineEnd = lineStart;
-            ColumnEnd = columnStart;
-            StartIndex = 0;
-            StopIndex = 0;
-            HasIndexInfo = false;
-        }
-
-        /// <summary>
-        /// True if both StartIndex and StopIndex have been set to relevant values.
-        /// </summary>
-        public bool HasIndexInfo { get; private set; }
-
-
-        /// <summary>
-        /// True if the source code range exists on a single source code line.
+        /// True if <see cref="LineEnd"/> == <see cref="LineStart"/>.
         /// </summary>
         public bool IsSingleLine
         {
             get { return LineEnd == LineStart; }
+        }
+
+
+        /// <summary>
+        /// True if <see cref="StartIndex"/> == <see cref="StopIndex"/>.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return StartIndex == StopIndex; }
         }
 
         /// <summary>
@@ -329,7 +358,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             var x = obj as LSLSourceCodeRange;
             if (x == null) return false;
 
-            return HasIndexInfo == x.HasIndexInfo && ColumnStart == x.ColumnStart &&
+            return ColumnStart == x.ColumnStart &&
                    ColumnEnd == x.ColumnEnd && LineStart == x.LineStart && StartIndex == x.StartIndex;
         }
 
@@ -340,7 +369,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return (((HasIndexInfo.GetHashCode() * 251) + ColumnStart) * 251 + LineStart) * 251 + StartIndex;
+            return ((ColumnStart * 251) + LineStart) * 251 + StartIndex;
         }
 
 
@@ -394,7 +423,6 @@ namespace LibLSLCC.CodeValidator.Primitives
             {
                 ColumnEnd = ColumnEnd,
                 ColumnStart = ColumnStart,
-                HasIndexInfo = HasIndexInfo,
                 LineEnd = LineEnd,
                 LineStart = LineStart,
                 StartIndex = StartIndex,

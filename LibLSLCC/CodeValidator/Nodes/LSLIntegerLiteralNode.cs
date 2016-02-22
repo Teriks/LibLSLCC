@@ -42,6 +42,7 @@
 #endregion
 #region Imports
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -67,7 +68,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        internal LSLIntegerLiteralNode(LSLIntegerLiteralNode other) : base(other)
+        /// <summary>
+        /// Create an <see cref="LSLIntegerLiteralNode"/> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
+        public LSLIntegerLiteralNode(LSLIntegerLiteralNode other) : base(other)
         {
         }
 

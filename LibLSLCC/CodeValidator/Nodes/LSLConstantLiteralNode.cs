@@ -42,6 +42,7 @@
 #endregion
 #region Imports
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -76,12 +77,19 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
         /// <summary>
         /// Create an <see cref="LSLConstantLiteralNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         protected LSLConstantLiteralNode(LSLConstantLiteralNode other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
             RawText = other.RawText;
             Type = other.Type;
 

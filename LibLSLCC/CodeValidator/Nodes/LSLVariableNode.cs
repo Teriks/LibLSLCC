@@ -49,6 +49,7 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
 using LibLSLCC.Parser;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -73,12 +74,19 @@ namespace LibLSLCC.CodeValidator.Nodes
             IsConstant = false;
         }
 
+
         /// <summary>
         /// Create an <see cref="LSLVariableNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLVariableNode(LSLVariableNode other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
             Name = other.Name;
             Type = other.Type;
 
@@ -159,9 +167,20 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLVariableNode(sourceRange, Err.Err);
         }
 
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declaration"/> is <see langword="null" />.</exception>
         internal static LSLVariableNode CreateVar(LSLParser.GlobalVariableDeclarationContext context,
             ILSLVariableDeclarationNode declaration)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
+            if (declaration == null)
+            {
+                throw new ArgumentNullException("declaration");
+            }
+
             return new LSLVariableNode
             {
                 Name = context.variable_name.Text,
@@ -175,9 +194,21 @@ namespace LibLSLCC.CodeValidator.Nodes
             };
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declaration"/> is <see langword="null" />.</exception>
         internal static LSLVariableNode CreateVar(LSLParser.LocalVariableDeclarationContext context,
             ILSLVariableDeclarationNode declaration)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
+            if (declaration == null)
+            {
+                throw new ArgumentNullException("declaration");
+            }
+
             return new LSLVariableNode
             {
                 Name = context.variable_name.Text,
@@ -191,8 +222,26 @@ namespace LibLSLCC.CodeValidator.Nodes
             };
         }
 
+
+        /// <exception cref="ArgumentException">if <paramref name="name"/> contains invalid ID characters, or <paramref name="type"/> is <see cref="LSLType.Void"/>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
         internal static LSLVariableNode CreateLibraryConstant(LSLType type, string name)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (type == LSLType.Void)
+            {
+                throw new ArgumentException(typeof(LSLVariableNode).Name + ".CreateLibraryConstant:  type cannot be LSLType.Void.", "type");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(name))
+            {
+                throw new ArgumentException(typeof(LSLVariableNode).Name+ ".CreateLibraryConstant:  name contains invalid ID characters.", "name");
+            }
+
             return new LSLVariableNode
             {
                 Name = name,
@@ -204,8 +253,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             };
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
         internal static LSLVariableNode CreateParameter(LSLParameterNode node)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+
             return new LSLVariableNode
             {
                 Name = node.Name,
