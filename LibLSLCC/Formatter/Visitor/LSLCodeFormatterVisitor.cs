@@ -1998,7 +1998,7 @@ namespace LibLSLCC.Formatter.Visitor
             Visit(node.Expression);
 
 
-            WriteCommentsBetweenRange(node.Expression.SourceRange, node.SourceRange);
+            WriteCommentsBetweenRange(node.Expression.SourceRange, node.SourceRangeSemicolon);
 
 
             Write(";");

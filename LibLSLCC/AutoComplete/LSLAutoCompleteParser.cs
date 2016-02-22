@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -1206,6 +1207,7 @@ namespace LibLSLCC.AutoComplete
                         }
                     }
                 }
+
 
                 _parent._lastControlChainElementStack.Peek().IsIfOrElseIf = true;
 

@@ -66,7 +66,7 @@ namespace LibLSLCC.LibraryData
     /// Represents the signature of a constant provided from an <see cref="ILSLLibraryDataProvider"/> implementation
     /// </summary>
     [XmlRoot("LibraryConstant")]
-    public class LSLLibraryConstantSignature : IXmlSerializable, ILSLLibrarySignature
+    public sealed class LSLLibraryConstantSignature : IXmlSerializable, ILSLLibrarySignature
     {
         private Dictionary<string, string> _properties = new Dictionary<string, string>();
         private LSLLibraryDataSubsetCollection _subsets = new LSLLibraryDataSubsetCollection();

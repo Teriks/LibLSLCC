@@ -59,7 +59,7 @@ namespace LibLSLCC.LibraryData
     /// Represents a library event handler returned from an <see cref="ILSLLibraryDataProvider"/> implementation.
     /// </summary>
     [XmlRoot("EventHandler")]
-    public class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable, ILSLLibrarySignature
+    public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable, ILSLLibrarySignature
     {
         private Dictionary<string, string> _properties = new Dictionary<string, string>();
         private LSLLibraryDataSubsetCollection _subsets = new LSLLibraryDataSubsetCollection();
