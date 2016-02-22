@@ -44,13 +44,14 @@
 
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Nodes;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Components.Interfaces
 {
     /// <summary>
-    ///     Represents a character error for the ILSLStringPreProcessor type
+    ///     Represents a character error for the <see cref="ILSLStringPreProcessor"/> type.
     /// </summary>
     public struct LSLStringCharacterError
     {
@@ -144,8 +145,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
     /// <summary>
     ///     An interface use by <see cref="LSLCodeValidator"/> to pre-processes string literals encountered
-    ///     in source code before the text is stored in the <see cref="LSLStringLiteralNode.PreProcessedText"/> property of the <see cref="LSLStringLiteralNode"/>
-    ///     validator node.
+    ///     in source code before the text is stored in the <see cref="LSLStringLiteralNode.PreProcessedText"/> property of the <see cref="ILSLStringLiteralNode"/> node.
     /// </summary>
     public interface ILSLStringPreProcessor
     {
