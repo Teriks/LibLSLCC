@@ -65,7 +65,7 @@
     <Compile Include="AutoComplete\LSLAutoCompleteStateBlock.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteScopeAddress.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteVisitor.cs" />
-    <Compile Include="CodeValidator\Visitor\LSLAntlrTreeIntrospector.cs" />
+    <Compile Include="CodeValidator\Visitor\LSLAntlrTreeTools.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLCodeValidatorStrategiesExtensions.cs" />
     <Compile Include="CodeValidator\Components\LSLCodeValidatorStrategies.cs" />
     <Compile Include="CodeValidator\Components\LSLDefaultExpressionValidator.cs" />
@@ -339,9 +339,7 @@
   <ItemGroup>
     <None Include="Documentation\LibraryData_XML_Syntax_README.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CodeValidator\AntlrTreeUtilitys\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <AntlrInput>Parser\LSL.g4</AntlrInput>

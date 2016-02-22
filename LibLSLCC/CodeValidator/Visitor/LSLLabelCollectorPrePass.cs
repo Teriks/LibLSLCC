@@ -134,7 +134,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                             true);
             }
 
-            if (LSLAntlrTreeIntrospector.IsBracelessCodeScopeStatement(context))
+            if (LSLAntlrTreeTools.IsBracelessCodeScopeStatement(context))
             {
                 _scopingManager.EnterSingleStatementBlock(context);
 

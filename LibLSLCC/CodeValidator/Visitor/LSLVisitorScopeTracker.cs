@@ -335,7 +335,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public void EnterCodeScopeAfterPrePass(LSLParser.CodeScopeContext context)
         {
-            _scopeTypeStack.Push(LSLAntlrTreeIntrospector.ResolveCodeScopeNodeType(context));
+            _scopeTypeStack.Push(LSLAntlrTreeTools.ResolveCodeScopeNodeType(context));
             _singleBlockStatementTrackingStack.Push(false);
             _scopeStack.Push(context);
             EnterLocalVariableScope();
@@ -486,7 +486,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public void EnterCodeScopeDuringPrePass(LSLParser.CodeScopeContext context)
         {
-            _scopeTypeStack.Push(LSLAntlrTreeIntrospector.ResolveCodeScopeNodeType(context));
+            _scopeTypeStack.Push(LSLAntlrTreeTools.ResolveCodeScopeNodeType(context));
             _singleBlockStatementTrackingStack.Push(false);
             _scopeStack.Push(context);
             _labelScopes.Add(context, new Dictionary<string, LSLLabelStatementNode>());
@@ -494,7 +494,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public void EnterSingleStatementBlock(LSLParser.CodeStatementContext statement)
         {
-            _scopeTypeStack.Push(LSLAntlrTreeIntrospector.ResolveCodeScopeNodeType(statement));
+            _scopeTypeStack.Push(LSLAntlrTreeTools.ResolveCodeScopeNodeType(statement));
             _singleBlockStatementTrackingStack.Push(true);
         }
 
