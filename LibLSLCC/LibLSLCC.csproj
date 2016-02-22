@@ -54,6 +54,8 @@
     <Compile Include="..\versions\LibLSLCC\Version.cs">
       <Link>Version.cs</Link>
     </Compile>
+    <Compile Include="AutoComplete\ILSLAutoCompleteParser.cs" />
+    <Compile Include="AutoComplete\ILSLAutoCompleteParserState.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteGlobalFunction.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteGlobalVariable.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteLocalJump.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="AutoComplete\LSLAutoCompleteLocalVariable.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteStateBlock.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteScopeAddress.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteVisitor.cs" />
     <Compile Include="CodeValidator\AntlrTreeUtilitys\LSLAntlrTreeIntrospector.cs" />
     <Compile Include="CodeValidator\Components\Interfaces\ILSLCodeValidatorStrategiesExtensions.cs" />
     <Compile Include="CodeValidator\Components\LSLCodeValidatorStrategies.cs" />

@@ -726,7 +726,6 @@ namespace LSLCCEditor.EditControl
             return text;
         }
 
-
         private void TextEditor_MouseHover(object sender, MouseEventArgs e)
         {
             var pos = Editor.GetPositionFromPoint(e.GetPosition(Editor));
@@ -766,6 +765,7 @@ namespace LSLCCEditor.EditControl
                 }
                 else
                 {
+
                     var parser = new LSLAutoCompleteParser();
                     parser.Parse(new StringReader(Editor.Text), hoveredSegment.EndOffset);
 
