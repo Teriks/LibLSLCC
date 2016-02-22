@@ -47,6 +47,10 @@ using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl
 {
+    /// <summary>
+    /// Autocomplete popup window theme settings.
+    /// <seealso cref="LSLEditorControlTheme"/>
+    /// </summary>
     public class LSLCompletionWindowItemBrushes :  SettingsBaseClass<LSLCompletionWindowItemBrushes>
     {
         private XmlSolidBrush _typeBrush = new SolidColorBrush(Color.FromRgb(50, 52, 138));

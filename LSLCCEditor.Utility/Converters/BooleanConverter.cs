@@ -53,7 +53,7 @@ namespace LSLCCEditor.Utility.Converters
 {
     public class BooleanConverter<T> : IValueConverter
     {
-        public BooleanConverter(T trueValue, T falseValue)
+        protected BooleanConverter(T trueValue, T falseValue)
         {
             True = trueValue;
             False = falseValue;

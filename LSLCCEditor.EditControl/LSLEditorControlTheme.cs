@@ -48,6 +48,9 @@ using LSLCCEditor.Utility.Xml;
 
 namespace LSLCCEditor.EditControl
 {
+    /// <summary>
+    /// Theme settings for <see cref="LSLEditorControl"/>.
+    /// </summary>
     public class LSLEditorControlTheme : SettingsBaseClass<LSLEditorControlTheme>
     {
         private class DefaultsFactory : CloningDefaultValueFactory<LSLEditorControlTheme>

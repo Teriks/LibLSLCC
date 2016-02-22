@@ -45,6 +45,9 @@ using LibLSLCC.Settings;
 
 namespace LSLCCEditor.EditControl
 {
+    /// <summary>
+    /// General settings for <see cref="LSLEditorControl"/>.
+    /// </summary>
     public class LSLEditorControlSettings : SettingsBaseClass<LSLEditorControlSettings>
     {
         private bool _caseInsensitiveAutoCompleteMatching = true;

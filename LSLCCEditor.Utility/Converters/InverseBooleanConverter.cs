@@ -59,12 +59,13 @@ namespace LSLCCEditor.Utility.Converters
             CultureInfo culture)
         {
             if (targetType != typeof (bool))
-                throw new InvalidOperationException("The target must be a boolean");
+                throw new InvalidOperationException("The target must be a boolean.");
 
             return !(bool) value;
         }
 
 
+        /// <exception cref="NotSupportedException">Condition.</exception>
         public object ConvertBack(object value, Type targetType, object parameter,
             CultureInfo culture)
         {

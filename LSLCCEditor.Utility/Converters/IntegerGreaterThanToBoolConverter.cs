@@ -61,6 +61,7 @@ namespace LSLCCEditor.Utility.Converters
         }
 
 
+        /// <exception cref="NotSupportedException">Condition.</exception>
         public object ConvertBack(object value, Type targetType, object parameter,
             CultureInfo culture)
         {

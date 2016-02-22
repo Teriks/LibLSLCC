@@ -50,6 +50,9 @@ namespace LSLCCEditor.Utility.Converters
     {
         private readonly Type _enumType;
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">Argument enumType must derive from type Enum.</exception>
         public EnumValuesExtension(Type enumType)
         {
             if (enumType == null)

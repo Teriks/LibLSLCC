@@ -60,11 +60,8 @@
     <Compile Include="DebugObjectView.xaml.cs">
       <DependentUpon>DebugObjectView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Validation\ClassNameValidationRule.cs" />
     <Compile Include="Validation\DependencyObjectValidationTool.cs" />
-    <Compile Include="Validation\NamespaceValidationRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\RegexValidatorRule.cs" />
     <Compile Include="Binding\RelayCommand.cs" />
     <Compile Include="Wpf\DragAdorner.cs" />
     <Compile Include="Wpf\TextboxHintAdorner.cs" />
