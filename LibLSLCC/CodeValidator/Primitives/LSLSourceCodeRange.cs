@@ -99,6 +99,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="start">The first ANTLR IToken</param>
         /// <param name="end">The second ANTLR IToken</param>
         /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">If start and end overlap.</exception>
         internal LSLSourceCodeRange(IToken start, IToken end)
         {
             if (start == null)
@@ -111,6 +112,10 @@ namespace LibLSLCC.CodeValidator.Primitives
                 throw new ArgumentNullException("end");
             }
 
+            if (start.StartIndex < end.StopIndex && end.StartIndex < start.StopIndex)
+            {
+                throw new ArgumentException(string.Format("{0}({1} start, {1} end): start and end ranges overlap.", typeof(LSLSourceCodeRange).Name, typeof(IToken).Name));
+            }
 
             LineStart = start.Line;
             ColumnStart = start.Column;
@@ -128,6 +133,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range starts.</param>
         /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range ends.</param>
         /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">If start and end overlap.</exception>
         public LSLSourceCodeRange(LSLSourceCodeRange start, LSLSourceCodeRange end)
         {
             if (start == null)
@@ -138,6 +144,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             if (end == null)
             {
                 throw new ArgumentNullException("end");
+            }
+
+            if (start.StartIndex < end.StopIndex && end.StartIndex < start.StopIndex)
+            {
+                throw new ArgumentException(string.Format("{0}({0} start, {0} end): start and end ranges overlap.", typeof(LSLSourceCodeRange).Name));
             }
 
             LineStart = start.LineStart;
@@ -232,6 +243,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             if (!end.SourceRangesAvailable)
             {
                 throw new ArgumentException("end.SourceRangesAvailable == false", "end");
+            }
+
+            if (start.SourceRange.StartIndex < end.SourceRange.StopIndex && end.SourceRange.StartIndex < start.SourceRange.StopIndex)
+            {
+                throw new ArgumentException(string.Format("{0}({1} start, {1} end): start and end ranges overlap.", typeof(LSLSourceCodeRange).Name, typeof(ILSLReadOnlySyntaxTreeNode).Name));
             }
 
             LineStart = start.SourceRange.LineStart;
