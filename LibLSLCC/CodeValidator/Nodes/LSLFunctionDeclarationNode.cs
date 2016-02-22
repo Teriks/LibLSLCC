@@ -71,6 +71,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+        /// <exception cref="ArgumentNullException"><paramref name="parameterListNode"/> or <paramref name="functionBodyNode"/> is <see langword="null" />.</exception>
         internal LSLFunctionDeclarationNode(LSLParser.FunctionDeclarationContext context,
             LSLParameterListNode parameterListNode, LSLCodeScopeNode functionBodyNode)
         {

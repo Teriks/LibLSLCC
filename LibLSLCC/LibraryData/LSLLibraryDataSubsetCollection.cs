@@ -164,13 +164,17 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         public event EventHandler<LibraryDataSubsetsClearedEventArgs> OnSubsetsCleared;
 
+
         /// <summary>
         /// Construct a subsets collection out of an exiting enumerable of strings
         /// </summary>
         /// <param name="subsets">An enumerable of subset names to initialize the subset collection from.</param>
         /// <exception cref="LSLInvalidSubsetNameException">If any of the give subset names contain invalid characters.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="subsets"/> is <see langword="null" />.</exception>
         public LSLLibraryDataSubsetCollection(IEnumerable<string> subsets)
         {
+            if(subsets == null) throw new ArgumentNullException("subsets");
+
             _subsets = new HashSet<string>(LSLLibraryDataSubsetNameParser.ThrowIfInvalid(subsets));
         }
 
@@ -230,9 +234,12 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Removes all elements in the specified collection from the current set.
         /// </summary>
-        /// <param name="other">The collection of items to remove from the set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection of items to remove from the set.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
         public void ExceptWith(IEnumerable<string> other)
         {
+            if(other == null) throw new ArgumentNullException("other");
+
             //need to check here we might be removing stuff
             //have to call events if anything gets removed
             foreach (var subset in other)
@@ -367,6 +374,7 @@ namespace LibLSLCC.LibraryData
         /// true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
         /// </returns>
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+        /// <exception cref="LSLInvalidSubsetNameException">If the given subset name was invalid.</exception>
         public bool Contains(string item)
         {
             LSLLibraryDataSubsetNameParser.ThrowIfInvalid(item);

@@ -69,13 +69,16 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentException">If <paramref name="accessedExpressionType"/> is not <see cref="LSLType.Vector"/> or <see cref="LSLType.Rotation"/>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="accessedExpression"/> is <see langword="null" />.</exception>
         internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression,
             LSLType accessedExpressionType,
             LSLTupleComponent accessedComponent)
         {
             if (accessedExpressionType != LSLType.Vector && accessedExpressionType != LSLType.Rotation)
             {
-                throw new ArgumentException("accessedType can only be LSLType.Vector or LSLType.Rotation");
+                throw new ArgumentException("accessedExpressionType can only be LSLType.Vector or LSLType.Rotation");
             }
 
             if (context == null)
@@ -101,10 +104,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
         /// <summary>
         /// Create an <see cref="LSLTupleAccessorNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLTupleAccessorNode(LSLTupleAccessorNode other)
         {
             if (other == null)
@@ -241,6 +246,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <see langword="null" />.</exception>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (visitor == null)
@@ -262,13 +268,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
         /// <summary>
         /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
         /// The type of the expression.
         /// </value>
+        /// <exception cref="InvalidOperationException" accessor="get">If <see cref="AccessedExpression"/> is <see langword="null"/>.</exception>
         public LSLExpressionType ExpressionType
         {
             get

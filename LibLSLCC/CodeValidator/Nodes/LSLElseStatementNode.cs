@@ -68,6 +68,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="code"/> is <see langword="null" />.</exception>
         internal LSLElseStatementNode(LSLParser.ElseStatementContext context, LSLCodeScopeNode code,
             bool isConstantBranch)
         {

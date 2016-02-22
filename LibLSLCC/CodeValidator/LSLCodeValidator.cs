@@ -61,8 +61,8 @@ namespace LibLSLCC.CodeValidator
     /// <para>
     /// It preforms full front end syntax checking of the source code as the tree is built.
     /// 
-    /// It delegates syntax errors and syntax warning invocations/information to the <see cref="ILSLValidatorServiceProvider.SyntaxErrorListener"/> and <see cref="ILSLValidatorServiceProvider.SyntaxWarningListener"/> instances 
-    /// inside of the <see cref="ILSLValidatorServiceProvider"/> implementation assigned to the <see cref="ValidatorServices"/> property.
+    /// It delegates syntax errors and syntax warning invocations/information to the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener"/> and <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> instances 
+    /// inside of the <see cref="ILSLCodeValidatorStrategies"/> implementation assigned to the <see cref="ValidatorStrategies"/> property.
     /// </para>
     /// </summary>
     public sealed class LSLCodeValidator : ILSLCodeValidator
@@ -70,47 +70,54 @@ namespace LibLSLCC.CodeValidator
         private readonly LSLAntlrErrorHandler _antlrParserErrorHandler;
         private readonly LSLCodeValidationVisitor _validationVisitor;
 
+
         /// <summary>
-        /// Constructs an LSLCodeValidator using the given <see cref="ILSLValidatorServiceProvider"/>.
+        /// Constructs an LSLCodeValidator using the given <see cref="ILSLCodeValidatorStrategies"/>.
         /// </summary>
-        /// <see cref="ILSLValidatorServiceProvider"/>
-        /// <param name="validatorServices">The <see cref="ILSLValidatorServiceProvider"/> to use.</param>
-        public LSLCodeValidator(ILSLValidatorServiceProvider validatorServices)
+        /// <see cref="ILSLCodeValidatorStrategies"/>
+        /// <param name="validatorStrategies">The <see cref="ILSLCodeValidatorStrategies"/> to use.</param>
+        /// <exception cref="ArgumentException">If one or more of <paramref name="validatorStrategies"/> properties are <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <see langword="null" />.</exception>
+        public LSLCodeValidator(ILSLCodeValidatorStrategies validatorStrategies)
         {
-            ValidatorServices = validatorServices;
+            if (validatorStrategies == null)
+            {
+                throw new ArgumentNullException("validatorStrategies");
+            }
+
+
+            ValidatorStrategies = validatorStrategies;
 
             string describeNulls;
-            if (!validatorServices.IsComplete(out describeNulls))
+            if (!validatorStrategies.IsComplete(out describeNulls))
             {
-                throw new ArgumentException("ILSLValidatorServiceProvider is incomplete:"+
+                throw new ArgumentException(typeof(ILSLCodeValidatorStrategies).Name+" is incomplete:"+
                     Environment.NewLine+
                     Environment.NewLine+
                     describeNulls);
             }
 
 
-            _validationVisitor = new LSLCodeValidationVisitor(validatorServices);
-            //_antlrLexerErrorHandler = new LSLAntlrLexerErrorHandler(validatorServices.SyntaxErrorListener);
-            _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorServices.SyntaxErrorListener);
+            _validationVisitor = new LSLCodeValidationVisitor(validatorStrategies);
+            _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
         }
 
         /// <summary>
-        /// Construct an <see cref="LSLCodeValidator"/> using <see cref="LSLValidatorServiceProvider.Default"/> to initialize the <see cref="ValidatorServices"/> property.
-        /// <see cref="LSLValidatorServiceProvider.Default"/>
+        /// Construct an <see cref="LSLCodeValidator"/> using <see cref="LSLCodeValidatorStrategies.Default"/> to initialize the <see cref="ValidatorStrategies"/> property.
+        /// <see cref="LSLCodeValidatorStrategies.Default"/>
         /// </summary>
         public LSLCodeValidator()
         {
-            var validationServices = LSLValidatorServiceProvider.Default();
-            _validationVisitor = new LSLCodeValidationVisitor(validationServices);
-            //_antlrLexerErrorHandler = new LSLAntlrLexerErrorHandler(validationServices.SyntaxErrorListener);
-            _antlrParserErrorHandler = new LSLAntlrErrorHandler(validationServices.SyntaxErrorListener);
+            var validatorStrategies = LSLCodeValidatorStrategies.Default();
+            _validationVisitor = new LSLCodeValidationVisitor(validatorStrategies);
+            _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
         }
 
         /// <summary>
-        /// <see cref="ILSLValidatorServiceProvider"/> that provides several components to the validator.
-        /// Among them are the <see cref="ILSLValidatorServiceProvider.SyntaxErrorListener"/> and <see cref="ILSLValidatorServiceProvider.SyntaxWarningListener"/> implementations.
+        /// <see cref="ILSLCodeValidatorStrategies"/> that provides several components to the validator.
+        /// Among them are the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener"/> and <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> implementations.
         /// </summary>
-        public ILSLValidatorServiceProvider ValidatorServices { get; private set; }
+        public ILSLCodeValidatorStrategies ValidatorStrategies { get; private set; }
 
         /// <summary>
         /// Set to true if the last call to validate revealed syntax errors and returned null
@@ -130,8 +137,14 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="stream">The TextReader to parse code from</param>
         /// <returns>Top level node of an LSL syntax tree</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <see langword="null" />.</exception>
         public ILSLCompilationUnitNode Validate(TextReader stream)
         {
+            if (stream == null)
+            {
+                throw new ArgumentNullException("stream");
+            }
+
             HasSyntaxErrors = false;
             var inputStream = new AntlrInputStream(stream);
 

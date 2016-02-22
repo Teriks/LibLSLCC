@@ -98,10 +98,10 @@ namespace LSLCCEditor.Utility.Validation
         {
             ValidationResult result = ValidationResult.ValidResult;
 
-            if (!String.IsNullOrEmpty(Regex))
+            if (!string.IsNullOrEmpty(Regex))
             {
 
-                string text = value as string ?? String.Empty;
+                string text = value as string ?? string.Empty;
 
                 if (!System.Text.RegularExpressions.Regex.IsMatch(text, Regex, RegexOptions))
                     result = new ValidationResult(false, ErrorMessage);

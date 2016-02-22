@@ -9,7 +9,7 @@ namespace LibLSLCC.LibraryData
     /// A minimal interface for providing data about what exists in the standard LSL library.
     /// Used primarily by <see cref="LSLCodeValidator"/>.
     /// </summary>
-    /// <seealso cref="ILSLValidatorServiceProvider"/>
+    /// <seealso cref="ILSLCodeValidatorStrategies"/>
     public interface ILSLBasicLibraryDataProvider
     {
         /// <summary>

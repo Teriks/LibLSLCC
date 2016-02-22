@@ -105,7 +105,7 @@ namespace LSLCCEditor
         private SettingsWindow _settingsWindow;
         private Timer _tabDragTimer;
         private bool _uncheckingLibraryDataTabItemProgrammatically;
-        private LSLValidatorServiceProvider _validatorServices;
+        private LSLCodeValidatorStrategies _codeValidatorStrategies;
 
 
         public static readonly DependencyProperty ShowEndOfLineProperty = DependencyProperty.Register(
@@ -243,7 +243,7 @@ namespace LSLCCEditor
             }
 
 
-            _validatorServices = new LSLValidatorServiceProvider
+            _codeValidatorStrategies = new LSLCodeValidatorStrategies
             {
                 ExpressionValidator = new LSLDefaultExpressionValidator(),
                 StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
@@ -679,7 +679,7 @@ namespace LSLCCEditor
 
             if (tab.SourceCode == null) tab.SourceCode = "";
 
-            var validator = new LSLCodeValidator(_validatorServices);
+            var validator = new LSLCodeValidator(_codeValidatorStrategies);
 
             ILSLCompilationUnitNode validated;
 

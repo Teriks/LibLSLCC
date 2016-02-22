@@ -46,6 +46,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Security;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -143,6 +144,8 @@ namespace LibLSLCC.LibraryData
             _ReadXml(reader);
         }
 
+
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         private void _ReadXml(XmlReader reader, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             var lineInfo = (IXmlLineInfo) reader;
@@ -189,14 +192,17 @@ namespace LibLSLCC.LibraryData
             //LSLLibraryDataXmlSerializer.Parse() handles XmlSyntaxExceptions by throwing an LSLLibraryDataXmlSyntaxException.
             catch (LSLMissingSubsetDescriptionException e)
             {
+                //thrown by AddSubsetDescription
                 throw new LSLLibraryDataXmlSyntaxException(lineInfo.LineNumber, e.Message, e);
             }
             catch (LSLDuplicateSubsetDescriptionException e)
             {
+                //thrown by DefineFunction, DefineEventHandler and DefineConstant
                 throw new LSLLibraryDataXmlSyntaxException(lineInfo.LineNumber, e.Message, e);
             }
             catch (LSLDuplicateSignatureException e)
             {
+                //thrown by DefineFunction, DefineEventHandler and DefineConstant
                 throw new LSLLibraryDataXmlSyntaxException(lineInfo.LineNumber, e.Message, e);
             }
         }
@@ -316,6 +322,10 @@ namespace LibLSLCC.LibraryData
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
+        /// <exception cref="SecurityException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
+        /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
+        /// <exception cref="XmlException">If incorrect XML was encountered in the input stream of a file.</exception>
+        /// <exception cref="PathTooLongException">A path, file name, or combined exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters and file names must be less than 260 characters.</exception>
         public void AddFromXmlDirectory(string path, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (path == null)
@@ -352,6 +362,10 @@ namespace LibLSLCC.LibraryData
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
+        /// <exception cref="SecurityException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
+        /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
+        /// <exception cref="XmlException">If incorrect XML was encountered in the input stream of a file.</exception>
+        /// <exception cref="PathTooLongException">A path, file name, or combined exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters and file names must be less than 260 characters.</exception>
         public void FillFromXmlDirectory(string path, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (path == null)
@@ -416,7 +430,5 @@ namespace LibLSLCC.LibraryData
                 reader.ReadEndElement();
             }
         }
-
-
     }
 }

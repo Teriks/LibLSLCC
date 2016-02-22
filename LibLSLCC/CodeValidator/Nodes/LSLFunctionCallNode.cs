@@ -74,7 +74,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="preDefinition"/> or <paramref name="parameterList"/> is <see langword="null" />.</exception>
         internal LSLFunctionCallNode(
             LSLParser.Expr_FunctionCallContext context,
             LSLPreDefinedFunctionSignature preDefinition,
@@ -114,7 +114,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="signature"/> or <paramref name="parameterList"/> is <see langword="null" />.</exception>
         internal LSLFunctionCallNode(
             LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature signature,
@@ -157,6 +157,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLFunctionCallNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLFunctionCallNode(LSLFunctionCallNode other)
         {
             if (other == null)

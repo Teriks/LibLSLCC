@@ -80,6 +80,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLCompilationUnitNode(LSLParser.CompilationUnitContext context)
         {
             if (context == null)
@@ -122,6 +123,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The state node for the default script state.
         /// </summary>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value"/> is <see langword="null" />.</exception>
         public LSLStateScopeNode DefaultState
         {
             get { return _defaultState; }

@@ -76,12 +76,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
-
         /// <summary>
         /// Create an <see cref="LSLExpressionListNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLExpressionListNode(LSLExpressionListNode other)
         {
             if (other == null)

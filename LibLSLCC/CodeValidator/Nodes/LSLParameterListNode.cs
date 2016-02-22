@@ -181,22 +181,23 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         /// <summary>
         ///     Builds a parameter list node directly from a parser context, checking for duplicates and reporting
-        ///     duplicate parameter errors via the validatorServices <see cref="ILSLValidatorServiceProvider"/>.
+        ///     duplicate parameter errors via a validator strategies object. <see cref="ILSLCodeValidatorStrategies"/>.
         /// </summary>
         /// <param name="context">The context to build from</param>
-        /// <param name="validatorServices">The validator service provider to use for reporting errors or warnings</param>
+        /// <param name="validatorStrategies">The validator strategies object to use for reporting errors or warnings</param>
         /// <param name="parameterListType">The parameter list type.</param>
         /// <returns>the created parameter list node</returns>
-        internal static LSLParameterListNode BuildFromParserContext(LSLParser.OptionalParameterListContext context, LSLParameterListType parameterListType, ILSLValidatorServiceProvider validatorServices)
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="validatorStrategies"/> is <see langword="null" />.</exception>
+        internal static LSLParameterListNode BuildFromParserContext(LSLParser.OptionalParameterListContext context, LSLParameterListType parameterListType, ILSLCodeValidatorStrategies validatorStrategies)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
 
-            if (validatorServices == null)
+            if (validatorStrategies == null)
             {
-                throw new ArgumentNullException("validatorServices");
+                throw new ArgumentNullException("validatorStrategies");
             }
 
            
@@ -236,7 +237,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                     {
                         var paramLocation = new LSLSourceCodeRange(parameter);
 
-                        validatorServices.SyntaxErrorListener.ParameterNameRedefined(
+                        validatorStrategies.SyntaxErrorListener.ParameterNameRedefined(
                             paramLocation,
                             parameterListType,
                             LSLTypeTools.FromLSLTypeString(parameter.TYPE().GetText()),

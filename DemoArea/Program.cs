@@ -434,22 +434,22 @@ namespace DemoArea
 
 
             //Set up the implementations LSLCodeValidator relies on's
-            var validatorServices = new LSLValidatorServiceProvider();
+            var validatorStrategies = new LSLCodeValidatorStrategies();
 
-            validatorServices.ExpressionValidator = new LSLDefaultExpressionValidator();
-            validatorServices.StringLiteralPreProcessor = new LSLDefaultStringPreProcessor();
+            validatorStrategies.ExpressionValidator = new LSLDefaultExpressionValidator();
+            validatorStrategies.StringLiteralPreProcessor = new LSLDefaultStringPreProcessor();
 
             //These both print to stdout by default.
-            validatorServices.SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
-            validatorServices.SyntaxWarningListener = new LSLDefaultSyntaxWarningListener();
+            validatorStrategies.SyntaxErrorListener = new LSLDefaultSyntaxErrorListener();
+            validatorStrategies.SyntaxWarningListener = new LSLDefaultSyntaxWarningListener();
 
             //Use ours, we only defined a few things
-            validatorServices.LibraryDataProvider = myProvider;
+            validatorStrategies.LibraryDataProvider = myProvider;
 
 
             Console.WriteLine("\n\nSyntax Checking Demo Code...\n\n");
 
-            LSLCodeValidator validator = new LSLCodeValidator(validatorServices);
+            LSLCodeValidator validator = new LSLCodeValidator(validatorStrategies);
 
 
 

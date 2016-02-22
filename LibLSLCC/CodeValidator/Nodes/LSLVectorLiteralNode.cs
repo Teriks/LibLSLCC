@@ -69,6 +69,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="context"/> or
+        /// <paramref name="x"/> or
+        /// <paramref name="y"/> or
+        /// <paramref name="z"/> is <see langword="null" />.</exception>
         internal LSLVectorLiteralNode(LSLParser.VectorLiteralContext context, ILSLExprNode x, ILSLExprNode y, ILSLExprNode z)
         {
             if (context == null)
@@ -106,10 +112,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
         /// <summary>
         /// Create an <see cref="LSLVectorLiteralNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLVectorLiteralNode(LSLVectorLiteralNode other)
         {
             if (other == null)

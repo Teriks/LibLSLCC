@@ -70,6 +70,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLCodeScopeNode(LSLParser.CodeScopeContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
@@ -87,6 +89,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
@@ -274,6 +278,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             return false;
         }
 
+
         /// <summary>
         ///     Add a code statement to the code scope, the dead code detection algorithm is encapsulated inside
         ///     of this object, the algorithm is on-line and most of its logic occurs in this function
@@ -288,6 +293,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     the jump statements that jump to to them.
         /// </remarks>
         /// <param name="statement">The statement to add to the code scope</param>
+        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <see langword="null" />.</exception>
         public void AddCodeStatement(ILSLCodeStatement statement)
         {
             if (statement == null)

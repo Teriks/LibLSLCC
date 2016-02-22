@@ -71,12 +71,19 @@ namespace LibLSLCC.CodeValidator.Primitives
             VariadicParameterIndex = -1;
         }
 
+
         /// <summary>
         /// Construct an <see cref="LSLFunctionSignature"/> by cloning another <see cref="LSLFunctionSignature"/> object.
         /// </summary>
         /// <param name="other">The <see cref="LSLFunctionSignature"/> object to copy construct from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLFunctionSignature(LSLFunctionSignature other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
             Name = other.Name;
             _parameters = new GenericArray<LSLParameter>(other._parameters);
             ReturnType = other.ReturnType;
@@ -84,12 +91,14 @@ namespace LibLSLCC.CodeValidator.Primitives
             VariadicParameterIndex = other.VariadicParameterIndex;
         }
 
+
         /// <summary>
         /// Construct a function signature by providing an associated <see cref="LSLType"/> for the return type, a function Name and an optional enumerable of <see cref="LSLParameter"/> objects.
         /// </summary>
         /// <param name="returnType"></param>
         /// <param name="name"></param>
         /// <param name="parameters"></param>
+        /// <exception cref="ArgumentException">Thrown if more than one variadic parameter is added to the function signature.</exception>
         public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null)
         {
             ReturnType = returnType;
@@ -138,7 +147,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         ///     The functions name, must follow LSL symbol naming conventions
         /// </summary>
-        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the function does not follow LSL symbol naming conventions for functions.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException" accessor="set">Thrown if the function does not follow LSL symbol naming conventions for functions.</exception>
         public string Name
         {
             get { return _name; }

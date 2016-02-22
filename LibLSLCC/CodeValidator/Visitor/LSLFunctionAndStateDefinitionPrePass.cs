@@ -54,13 +54,13 @@ namespace LibLSLCC.CodeValidator.Visitor
     internal sealed class LSLFunctionAndStateDefinitionPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {
         private readonly LSLVisitorScopeTracker _scopingManager;
-        private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
+        private readonly ILSLCodeValidatorStrategies _validatorStrategies;
 
         public LSLFunctionAndStateDefinitionPrePass(LSLVisitorScopeTracker scopingManager,
-            ILSLValidatorServiceProvider validatorServiceProvider)
+            ILSLCodeValidatorStrategies validatorStrategies)
         {
             _scopingManager = scopingManager;
-            _validatorServiceProvider = validatorServiceProvider;
+            _validatorStrategies = validatorStrategies;
         }
 
         public bool HasSyntaxErrors { get; private set; }
@@ -77,7 +77,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         /// </value>
         private ILSLSyntaxWarningListener SyntaxWarningListener
         {
-            get { return _validatorServiceProvider.SyntaxWarningListener; }
+            get { return _validatorStrategies.SyntaxWarningListener; }
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         /// </value>
         private ILSLSyntaxErrorListener SyntaxErrorListener
         {
-            get { return _validatorServiceProvider.SyntaxErrorListener; }
+            get { return _validatorStrategies.SyntaxErrorListener; }
         }
 
         /// <summary>
@@ -272,11 +272,11 @@ namespace LibLSLCC.CodeValidator.Visitor
                 throw LSLCodeValidatorInternalException.VisitContextInvalidState("VisitFunctionDeclaration", true);
             }
 
-            if (_validatorServiceProvider.LibraryDataProvider.LibraryFunctionExist(context.function_name.Text))
+            if (_validatorStrategies.LibraryDataProvider.LibraryFunctionExist(context.function_name.Text))
             {
                 GenSyntaxError().RedefinedStandardLibraryFunction(
                     new LSLSourceCodeRange(context.function_name), context.function_name.Text,
-                    _validatorServiceProvider.LibraryDataProvider.GetLibraryFunctionSignatures(
+                    _validatorStrategies.LibraryDataProvider.GetLibraryFunctionSignatures(
                         context.function_name.Text));
 
                 return false;
@@ -296,7 +296,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var parameterListNode = LSLParameterListNode.BuildFromParserContext(
                 context.parameters, 
                 LSLParameterListType.FunctionParameters, 
-                _validatorServiceProvider);
+                _validatorStrategies);
 
 
             if (parameterListNode.HasErrors)

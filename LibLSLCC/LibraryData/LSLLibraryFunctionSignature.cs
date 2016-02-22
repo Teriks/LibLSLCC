@@ -82,14 +82,20 @@ namespace LibLSLCC.LibraryData
         }
 
 
-
         /// <summary>
         /// Construct a library function signature by cloning another LSLLibraryFunctionSignature object.
         /// </summary>
         /// <param name="other">The LSLLibraryFunctionSignature to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLLibraryFunctionSignature(LSLLibraryFunctionSignature other)
             : base(other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
+
             DocumentationString = other.DocumentationString;
             _subsets = new LSLLibraryDataSubsetCollection(other.Subsets);
             _properties = other._properties.ToDictionary(x=>x.Key,y=>y.Value);
@@ -161,18 +167,35 @@ namespace LibLSLCC.LibraryData
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
-        public XmlSchema GetSchema()
+        XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
         }
+
 
         /// <summary>
         /// Fills a function signature object from an XML fragment.
         /// </summary>
         /// <param name="reader">The XML reader containing the fragment to read.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        /// On missing or unknown attributes.  
+        /// If a parameter 'Name' is used more than once.  
+        /// If a parameter 'Name' is whitespace.
+        /// If a parameter 'Type' is <see cref="LSLType.Void"/> and not Variadic.   
+        /// If a parameter 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
+        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is used more than once.
+        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// </exception>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the function signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
-        public void ReadXml(XmlReader reader)
+        /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
+        /// <exception cref="LSLInvalidSubsetNameException">Thrown if any of the given subset names in the 'Subsets' CSV string do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        void IXmlSerializable.ReadXml(XmlReader reader)
         {
+            if(reader == null) throw new ArgumentNullException("reader");
+
+
             var parameterNames = new HashSet<string>();
 
             var lineNumberInfo = (IXmlLineInfo) reader;
@@ -247,12 +270,6 @@ namespace LibLSLCC.LibraryData
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                             string.Format("LibraryFunction '{0}': More than one variadic parameter was defined.", Name));
                     }
-
-
-                    
-
-      
-
 
                     var pName = reader.GetAttribute("Name");
 
@@ -347,12 +364,18 @@ namespace LibLSLCC.LibraryData
             }
         }
 
+
         /// <summary>
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
+        /// <exception cref="InvalidOperationException">The <paramref name="writer"/> is closed. </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <see langword="null" />.</exception>
         public void WriteXml(XmlWriter writer)
         {
+            if (writer == null) throw new ArgumentNullException("writer");
+
+
             writer.WriteAttributeString("Name", Name);
             writer.WriteAttributeString("ReturnType", ReturnType.ToString());
             writer.WriteAttributeString("Subsets", string.Join(",", _subsets));
@@ -392,8 +415,11 @@ namespace LibLSLCC.LibraryData
         /// <param name="str">The string containing the formated function signature.</param>
         /// <returns>The LSLLibraryFunctionSignature that was parsed from the string, or null.</returns>
         /// <exception cref="ArgumentException">If there was a syntax error while parsing the function signature.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <see langword="null" />.</exception>
         public new static LSLLibraryFunctionSignature Parse(string str)
         {
+            if(str == null) throw new ArgumentNullException("str");
+
             return new LSLLibraryFunctionSignature(LSLFunctionSignature.Parse(str));
         }
 
@@ -401,14 +427,29 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Reads a function signature object from an XML fragment.
         /// </summary>
-        /// <param name="fragment">The XML reader containing the fragment to read.</param>
+        /// <param name="reader">The XML reader containing the fragment to read.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        /// On missing or unknown attributes.  
+        /// If a parameter 'Name' is used more than once.  
+        /// If a parameter 'Name' is whitespace.
+        /// If a parameter 'Type' is <see cref="LSLType.Void"/> and not Variadic.   
+        /// If a parameter 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
+        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is used more than once.
+        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// </exception>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the function signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
-        /// <returns>The parsed LSLLibraryFunctionSignature object.</returns>
-        public static LSLLibraryFunctionSignature FromXmlFragment(XmlReader fragment)
+        /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
+        /// <exception cref="LSLInvalidSubsetNameException">Thrown if any of the given subset names in the 'Subsets' CSV string do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        /// <returns>The parsed <see cref="LSLLibraryFunctionSignature"/> object.</returns>
+        public static LSLLibraryFunctionSignature FromXmlFragment(XmlReader reader)
         {
+            if (reader == null) throw new ArgumentNullException("reader");
+
             var func = new LSLLibraryFunctionSignature();
             IXmlSerializable x = func;
-            x.ReadXml(fragment);
+            x.ReadXml(reader);
             return func;
         }
 

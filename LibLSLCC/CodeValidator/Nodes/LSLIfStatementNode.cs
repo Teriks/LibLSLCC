@@ -68,9 +68,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="code"/> or <paramref name="conditionExpression"/> is <see langword="null" />.</exception>
         internal LSLIfStatementNode(LSLParser.ControlStructureContext context, LSLCodeScopeNode code,
             ILSLExprNode conditionExpression)
         {
+
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
 
             if (code == null)
             {

@@ -241,15 +241,15 @@ namespace lslcc
 
         public int Compile(string outputFile)
         {
-            LSLValidatorServiceProvider validatorServices = new LSLValidatorServiceProvider
+            LSLCodeValidatorStrategies codeValidatorStrategies = new LSLCodeValidatorStrategies
             {
                 ExpressionValidator = ExpressionValidator,
                 StringLiteralPreProcessor = StringLiteralPreProcessor
             };
 
 
-            validatorServices.SyntaxErrorListener = new SyntaxErrorListener(this);
-            validatorServices.SyntaxWarningListener = new SyntaxWarningListener(this);
+            codeValidatorStrategies.SyntaxErrorListener = new SyntaxErrorListener(this);
+            codeValidatorStrategies.SyntaxWarningListener = new SyntaxWarningListener(this);
 
 
             var defaultProvider = new LSLEmbeddedLibraryDataProvider();
@@ -266,10 +266,10 @@ namespace lslcc
                 }
             }
 
-            validatorServices.LibraryDataProvider = defaultProvider;
+            codeValidatorStrategies.LibraryDataProvider = defaultProvider;
 
 
-            var validator = new LSLCodeValidator(validatorServices);
+            var validator = new LSLCodeValidator(codeValidatorStrategies);
 
 
             ILSLCompilationUnitNode validated;

@@ -57,16 +57,16 @@ namespace LibLSLCC.CodeValidator.Visitor
         private readonly Stack<StatementIndexContainer> _statementIndexStack =
             new Stack<StatementIndexContainer>();
 
-        private readonly ILSLValidatorServiceProvider _validatorServiceProvider;
+        private readonly ILSLCodeValidatorStrategies _validatorStrategies;
 
         private int _currentScopeId;
 
 
         public LSLLabelCollectorPrePass(LSLVisitorScopeTracker scopingManager,
-            ILSLValidatorServiceProvider validatorServiceProvider)
+            ILSLCodeValidatorStrategies validatorStrategies)
         {
             _scopingManager = scopingManager;
-            _validatorServiceProvider = validatorServiceProvider;
+            _validatorStrategies = validatorStrategies;
 
             _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = 0});
         }
@@ -87,7 +87,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         /// </value>
         private ILSLSyntaxWarningListener SyntaxWarningListener
         {
-            get { return _validatorServiceProvider.SyntaxWarningListener; }
+            get { return _validatorStrategies.SyntaxWarningListener; }
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         /// </value>
         private ILSLSyntaxErrorListener SyntaxErrorListener
         {
-            get { return _validatorServiceProvider.SyntaxErrorListener; }
+            get { return _validatorStrategies.SyntaxErrorListener; }
         }
 
         /// <summary>

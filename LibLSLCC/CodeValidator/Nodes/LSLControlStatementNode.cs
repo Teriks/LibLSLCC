@@ -74,6 +74,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLControlStatementNode(LSLParser.ControlStructureContext context, bool isSingleBlockStatement)
         {
             if (context == null)
@@ -109,6 +111,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The if statement child of this control statement node if one exists, otherwise null.
         /// </summary>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value"/> is <see langword="null" />.</exception>
         public LSLIfStatementNode IfStatement
         {
             get { return _ifStatement; }

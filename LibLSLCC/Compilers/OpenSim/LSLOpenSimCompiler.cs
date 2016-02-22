@@ -66,9 +66,9 @@ namespace LibLSLCC.Compilers.OpenSim
         /// Construct an <see cref="LSLOpenSimCompiler"/> using the specified settings object.
         /// </summary>
         /// <param name="settings"><see cref="LSLOpenSimCompilerSettings"/> to use.</param>
-        /// <param name="libraryDataProvider">An <see cref="ILSLLibraryDataProvider"/> implementation.</param>
+        /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider"/> implementation.</param>
         /// <exception cref="ArgumentNullException">If 'settings' is null.</exception>
-        public LSLOpenSimCompiler(ILSLLibraryDataProvider libraryDataProvider, LSLOpenSimCompilerSettings settings)
+        public LSLOpenSimCompiler(ILSLBasicLibraryDataProvider libraryDataProvider, LSLOpenSimCompilerSettings settings)
         {
             if (libraryDataProvider == null)
             {
@@ -88,8 +88,9 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <summary>
         /// Construct an <see cref="LSLOpenSimCompiler"/> using the default settings and the provided <see cref="ILSLLibraryDataProvider"/> object.
         /// </summary>
-        /// <param name="libraryDataProvider">An <see cref="ILSLLibraryDataProvider"/> implementation.</param>
-        public LSLOpenSimCompiler(ILSLLibraryDataProvider libraryDataProvider)
+        /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider"/> implementation.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="libraryDataProvider"/> is <see langword="null" />.</exception>
+        public LSLOpenSimCompiler(ILSLBasicLibraryDataProvider libraryDataProvider)
         {
             if (libraryDataProvider == null)
             {
@@ -104,7 +105,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <summary>
         /// The library data provider the compiler is using to provide modInvoke information.
         /// </summary>
-        public ILSLLibraryDataProvider LibraryDataProvider
+        public ILSLBasicLibraryDataProvider LibraryDataProvider
         {
             get { return _visitor.LibraryDataProvider; }
         }
@@ -139,6 +140,9 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <param name="closeStream">Whether or not to close <paramref name="writer"/> once compilation is done.  The default value is <c>false</c>.</param>
         /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer"/>.</exception>
+        /// <exception cref="ObjectDisposedException">If <paramref name="writer"/> is already disposed.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Settings"/> is <see langword="null"/>.</exception>
         public void Compile(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = false)
         {
             if (compilationUnit == null)

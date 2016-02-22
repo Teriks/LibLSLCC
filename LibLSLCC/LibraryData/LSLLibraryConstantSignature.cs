@@ -84,11 +84,17 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct the LSLLibraryConstantSingature by cloning another one.
+        /// Construct the <see cref="LSLLibraryConstantSignature"/> by cloning another one.
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">The other <see cref="LSLLibraryConstantSignature"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLLibraryConstantSignature(LSLLibraryConstantSignature other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
             DocumentationString = other.DocumentationString;
             _subsets = new LSLLibraryDataSubsetCollection(other._subsets);
             _properties = other._properties.ToDictionary(x => x.Key, y => y.Value);
@@ -101,8 +107,10 @@ namespace LibLSLCC.LibraryData
         /// Construct the LSLLibraryConstantSignature from a given <see cref="LSLType"/> and constant name. <see cref="ValueString"/> is given the default
         /// value for the given <see cref="LSLType"/> passed in <paramref name="type"/>
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="name"></param>
+        /// <param name="type">The constant type.</param>
+        /// <param name="name">The constant name.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">If <paramref name="name"/> is an invalid LSL ID token.</exception>
+        /// <exception cref="LSLLibraryDataInvalidConstantTypeException"> if <paramref name="type"/> is <see cref="LSLType.Void"/>.</exception>
         public LSLLibraryConstantSignature(LSLType type, string name)
         {
             DocumentationString = "";
@@ -143,9 +151,19 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Construct the LSLLibraryConstantSignature from a given <see cref="LSLType"/>, constant name, and Value string.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="name"></param>
-        /// <param name="valueString"></param>
+        /// <param name="type">The constant type.</param>
+        /// <param name="name">The constant name.</param>
+        /// <param name="valueString">The string value that represents the constant.  Must be appropriate for <paramref name="type"/>.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">If <paramref name="name"/> is an invalid LSL ID token.</exception>
+        /// <exception cref="LSLLibraryDataInvalidConstantTypeException"> if <paramref name="type"/> is <see cref="LSLType.Void"/>.</exception>
+        /// <exception cref="LSLInvalidConstantValueStringException">
+        /// If <paramref name="valueString"/> is an invalid value for a float and <paramref name="type"/> is set to <see cref="LSLType.Float" />
+        /// or
+        /// If <paramref name="valueString"/> is an invalid value for an integer and <paramref name="type"/> is set to <see cref="LSLType.Integer" />
+        /// or
+        /// If <paramref name="valueString"/> is an invalid value for a vector and <paramref name="type"/> is set to <see cref="LSLType.Vector" />
+        /// or
+        /// If <paramref name="valueString"/> is an invalid value for a rotation and <paramref name="type"/> is set to <see cref="LSLType.Rotation" /></exception>
         public LSLLibraryConstantSignature(LSLType type, string name, string valueString)
         {
             DocumentationString = "";
@@ -209,6 +227,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// The <see cref="LSLType"/> that the library constant is defined with.
         /// </summary>
+        /// <exception cref="LSLLibraryDataInvalidConstantTypeException" accessor="set"> if <paramref name="value"/> is <see cref="LSLType.Void"/>.</exception>
         public LSLType Type
         {
             get { return _type; }
@@ -226,6 +245,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// The name of the library constant, must abide by LSL symbol naming rules or an exception will be thrown.
         /// </summary>
+        /// <exception cref="LSLInvalidSymbolNameException" accessor="set">If <paramref name="value"/> is an invalid LSL ID token.</exception>
         public string Name
         {
             get { return _name; }
@@ -265,8 +285,7 @@ namespace LibLSLCC.LibraryData
         /// <value>
         /// The value string.
         /// </value>
-        /// <exception cref="System.ArgumentNullException">If you attempt to set the value to <c>null</c>.</exception>
-        /// <exception cref="LSLInvalidConstantValueStringException">
+        /// <exception cref="LSLInvalidConstantValueStringException" accessor="set">
         /// If the Value is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
         /// or
         /// If the Value is an invalid value for an integer and <see cref="Type" /> is set to <see cref="LSLType.Integer" />
@@ -274,13 +293,13 @@ namespace LibLSLCC.LibraryData
         /// If the Value is an invalid value for a vector and <see cref="Type" /> is set to <see cref="LSLType.Vector" />
         /// or
         /// If the Value is an invalid value for a rotation and <see cref="Type" /> is set to <see cref="LSLType.Rotation" /></exception>
-        /// <exception cref="LSLLibraryDataInvalidConstantTypeException">If you try to set this value and <see cref="Type" /> is equal to <see cref="LSLType.Void" />.</exception>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="LSLLibraryDataInvalidConstantTypeException" accessor="set">If you try to set this value and <see cref="Type" /> is equal to <see cref="LSLType.Void" />.</exception>
         /// <remarks>
         /// Only integral or hexadecimal values are allowed when <see cref="Type" /> is set to <see cref="LSLType.Integer" />
         /// Only floating point or hexadecimal values are allowed when <see cref="Type" /> is set to <see cref="LSLType.Float" />
         /// The enclosing less than and greater than symbols will be removed when <see cref="Type" /> is set to <see cref="LSLType.Vector" /> or <see cref="LSLType.Rotation" />.
         /// </remarks>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value"/> is <see langword="null" />.</exception>
         public string ValueString
         {
             get { return _valueString; }
@@ -325,6 +344,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="type">The <see cref="LSLType"/> <paramref name="valueString"/> must be valid for.</param>
         /// <param name="valueString">The value string to validate.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for the given <see cref="LSLType"/>.</returns>
+        /// <exception cref="ArgumentException">if <paramref name="type"/> is <see cref="LSLType.Void"/>.</exception>
         public static bool ValidateValueString(LSLType type, string valueString)
         {
             string discard;
@@ -340,6 +360,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="valueString">The value string to validate.</param>
         /// <param name="formated">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for the given <see cref="LSLType"/>.</returns>
+        /// <exception cref="ArgumentException">if <paramref name="type"/> is <see cref="LSLType.Void"/>.</exception>
         public static bool TryParseValueString(LSLType type, string valueString, out string formated)
         {
             if (type == LSLType.Void)
@@ -380,8 +401,14 @@ namespace LibLSLCC.LibraryData
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Float"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseFloatValueString(string value, out string valueString, out string errMessage)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value", "value cannot be null.");
+            }
+
             valueString = null;
 
             string stripSpecifiers = value.TrimEnd('f', 'F', 'd', 'D');
@@ -409,6 +436,7 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.Float"/>.
@@ -416,6 +444,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="value">The value string to validate.</param>
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Float"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseFloatValueString(string value, out string valueString)
         {
             string discard;
@@ -432,6 +461,7 @@ namespace LibLSLCC.LibraryData
             }
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.String"/>.
@@ -440,8 +470,14 @@ namespace LibLSLCC.LibraryData
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.String"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseIntegerValueString(string value, out string valueString, out string errMessage)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value", "value cannot be null.");
+            }
+
             valueString = null;
 
             bool b;
@@ -470,6 +506,7 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.String"/>.
@@ -477,6 +514,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="value">The value string to validate.</param>
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.String"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseIntegerValueString(string value, out string valueString)
         {
             string discard;
@@ -493,6 +531,7 @@ namespace LibLSLCC.LibraryData
             }
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.List"/>.
@@ -501,8 +540,14 @@ namespace LibLSLCC.LibraryData
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.List"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseListValueString(string value, out string valueString, out string errMessage)
-        {
+        { 
+            if (value == null)
+            {
+                throw new ArgumentNullException("value", "value cannot be null.");
+            }
+
             valueString = null;
 
             try
@@ -512,7 +557,7 @@ namespace LibLSLCC.LibraryData
                 if (string.IsNullOrWhiteSpace(s))
                 {
                     errMessage =
-                        "List Constant ValueString Invalid: May not be null or whitespace.";
+                        "List Constant ValueString Invalid: May not be whitespace.";
                     return false;
                 }
 
@@ -544,6 +589,7 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.List"/>.
@@ -551,6 +597,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="value">The value string to validate.</param>
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.List"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseListValueString(string value, out string valueString)
         {
             string discard;
@@ -567,6 +614,7 @@ namespace LibLSLCC.LibraryData
             }
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.Rotation"/>.
@@ -575,8 +623,14 @@ namespace LibLSLCC.LibraryData
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Rotation"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseRotationValueString(string value, out string valueString, out string errMessage)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value", "value cannot be null.");
+            }
+
             valueString = null;
 
             string s = value.Trim(' ');
@@ -585,7 +639,7 @@ namespace LibLSLCC.LibraryData
             if (string.IsNullOrWhiteSpace(s))
             {
                 errMessage =
-                    "Rotation Constant ValueString Invalid: May not be null or whitespace.";
+                    "Rotation Constant ValueString Invalid: May not be whitespace.";
                 return false;
             }
 
@@ -621,6 +675,7 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.Rotation"/>.
@@ -628,6 +683,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="value">The value string to validate.</param>
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Rotation"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseRotationValueString(string value, out string valueString)
         {
             string discard;
@@ -644,6 +700,7 @@ namespace LibLSLCC.LibraryData
             }
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.Vector"/>.
@@ -652,8 +709,14 @@ namespace LibLSLCC.LibraryData
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <param name="errMessage">An error message describing why the parse failed if this function returns <c>false</c>.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Vector"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseVectorValueString(string value, out string valueString, out string errMessage)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value", "value cannot be null.");
+            }
+
             valueString = null;
 
             string s = value.Trim(' ');
@@ -699,6 +762,7 @@ namespace LibLSLCC.LibraryData
             return true;
         }
 
+
         /// <summary>
         /// Validates the format of a string is acceptable for assigning to <see cref="ValueString"/> when <see cref="Type"/>
         /// is equal to <see cref="LSLType.Vector"/>.
@@ -706,6 +770,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="value">The value string to validate.</param>
         /// <param name="valueString">The re-formated version of <paramref name="valueString"/> if the parse was successful.</param>
         /// <returns><c>true</c> if <paramref name="valueString"/> can successfully be parsed for <see cref="LSLType.Vector"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null" />.</exception>
         public static bool TryParseVectorValueString(string value, out string valueString)
         {
             string discard;
@@ -761,7 +826,7 @@ namespace LibLSLCC.LibraryData
         ///     and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
         ///     method.
         /// </returns>
-        public XmlSchema GetSchema()
+        XmlSchema IXmlSerializable.GetSchema()
         {
             return null;
         }
@@ -772,8 +837,30 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="reader">The XML reader containing the fragment to read.</param>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the constants name does not abide by LSL symbol naming conventions.</exception>
-        public void ReadXml(XmlReader reader)
+        /// <exception cref="LSLInvalidSubsetNameException">Thrown if any of the given subset names in the CSV 'Subsets' string do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        /// <exception cref="LSLLibraryDataInvalidConstantTypeException">if 'Type' is <see cref="LSLType.Void"/>.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        /// On missing or unknown attributes.  
+        /// If the constant 'Type' is <see cref="LSLType.Void"/>.   
+        /// If the constant 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
+        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is used more than once.
+        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// </exception>
+        /// <exception cref="LSLInvalidConstantValueStringException">
+        /// If 'Value' is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
+        /// or
+        /// If 'Value' is an invalid value for an integer and <see cref="Type" /> is set to <see cref="LSLType.Integer" />
+        /// or
+        /// If 'Value' is an invalid value for a vector and <see cref="Type" /> is set to <see cref="LSLType.Vector" />
+        /// or
+        /// If 'Value' is an invalid value for a rotation and <see cref="Type" /> is set to <see cref="LSLType.Rotation" /></exception>
+        /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <see langword="null" />.</exception>
+        void IXmlSerializable.ReadXml(XmlReader reader)
         {
+            if (reader == null) throw new ArgumentNullException("reader");
+
             reader.MoveToContent();
 
             var hasSubsets = false;
@@ -920,8 +1007,12 @@ namespace LibLSLCC.LibraryData
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
+        /// <exception cref="InvalidOperationException"><paramref name="writer"/> is closed.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <see langword="null" />.</exception>
         public void WriteXml(XmlWriter writer)
         {
+            if (writer == null) throw new ArgumentNullException("writer");
+
             writer.WriteAttributeString("Name", Name);
             writer.WriteAttributeString("Type", Type.ToString());
             writer.WriteAttributeString("Value", ValueString);
@@ -954,13 +1045,35 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Reads a constant signature object from an XML fragment.
+        /// Creates a constant signature object from an XML fragment.
         /// </summary>
         /// <param name="reader">The XML reader containing the fragment to read.</param>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the constants name does not abide by LSL symbol naming conventions.</exception>
-        /// <returns>The parsed LSLLibraryConstantSignature object.</returns>
+        /// <exception cref="LSLInvalidSubsetNameException">Thrown if any of the given subset names in the CSV 'Subsets' string do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        /// <exception cref="LSLLibraryDataInvalidConstantTypeException">if 'Type' is <see cref="LSLType.Void"/>.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        /// On missing or unknown attributes.  
+        /// If the constant 'Type' is <see cref="LSLType.Void"/>.   
+        /// If the constant 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
+        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is used more than once.
+        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// </exception>
+        /// <exception cref="LSLInvalidConstantValueStringException">
+        /// If 'Value' is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
+        /// or
+        /// If 'Value' is an invalid value for an integer and <see cref="Type" /> is set to <see cref="LSLType.Integer" />
+        /// or
+        /// If 'Value' is an invalid value for a vector and <see cref="Type" /> is set to <see cref="LSLType.Vector" />
+        /// or
+        /// If 'Value' is an invalid value for a rotation and <see cref="Type" /> is set to <see cref="LSLType.Rotation" /></exception>
+        /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <see langword="null" />.</exception>
+        /// <returns>The parsed <see cref="LSLLibraryConstantSignature"/> object.</returns>
         public static LSLLibraryConstantSignature FromXmlFragment(XmlReader reader)
         {
+            if (reader == null) throw new ArgumentNullException("reader");
+
             var con = new LSLLibraryConstantSignature();
             IXmlSerializable x = con;
             x.ReadXml(reader);

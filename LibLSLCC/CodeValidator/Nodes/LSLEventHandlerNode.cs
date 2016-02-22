@@ -69,6 +69,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="parameterListNode"/> or <paramref name="eventBodyNode"/> is <see langword="null" />.</exception>
         internal LSLEventHandlerNode(LSLParser.EventHandlerContext context, LSLParameterListNode parameterListNode,
             LSLCodeScopeNode eventBodyNode)
         {

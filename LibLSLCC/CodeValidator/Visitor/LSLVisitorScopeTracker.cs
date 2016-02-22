@@ -91,14 +91,14 @@ namespace LibLSLCC.CodeValidator.Visitor
             new HashMap<string, LSLVariableDeclarationNode>();
 
 
-        public LSLVisitorScopeTracker(ILSLValidatorServiceProvider validatorServiceProvider)
+        public LSLVisitorScopeTracker(ILSLCodeValidatorStrategies validatorStrategies)
         {
-            ValidatorServiceProvider = validatorServiceProvider;
+            ValidatorStrategies = validatorStrategies;
         }
 
         public int CurrentScopeId { get; private set; }
 
-        public ILSLValidatorServiceProvider ValidatorServiceProvider { get; private set; }
+        public ILSLCodeValidatorStrategies ValidatorStrategies { get; private set; }
 
         public bool InSingleStatementBlock
         {
@@ -146,6 +146,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public LSLParsedEventHandlerSignature CurrentEventHandlerSignature { get; private set; }
 
+        /// <exception cref="LSLCodeValidatorInternalException" accessor="get">if not inside a scope.</exception>
         public LSLCodeScopeType CurrentCodeScopeType
         {
             get
@@ -160,6 +161,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
+        /// <exception cref="LSLCodeValidatorInternalException" accessor="get">if not inside a scope.</exception>
         public LSLParser.CodeScopeContext CurrentCodeScopeContext
         {
             get
@@ -528,7 +530,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         private LSLFunctionAndStateDefinitionPrePass DoFunctionAndStateDefinitionPrePass(
             LSLParser.CompilationUnitContext context)
         {
-            var r = new LSLFunctionAndStateDefinitionPrePass(this, ValidatorServiceProvider);
+            var r = new LSLFunctionAndStateDefinitionPrePass(this, ValidatorStrategies);
             r.Visit(context);
             return r;
         }
@@ -536,7 +538,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         private LSLLabelCollectorPrePass DoLabelCollectorPrePass(
             LSLParser.EventHandlerContext context)
         {
-            var r = new LSLLabelCollectorPrePass(this, ValidatorServiceProvider);
+            var r = new LSLLabelCollectorPrePass(this, ValidatorStrategies);
             r.Visit(context);
             return r;
         }
@@ -544,7 +546,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         private LSLLabelCollectorPrePass DoLabelCollectorPrePass(
             LSLParser.FunctionDeclarationContext context)
         {
-            var r = new LSLLabelCollectorPrePass(this, ValidatorServiceProvider);
+            var r = new LSLLabelCollectorPrePass(this, ValidatorStrategies);
             r.Visit(context);
             return r;
         }

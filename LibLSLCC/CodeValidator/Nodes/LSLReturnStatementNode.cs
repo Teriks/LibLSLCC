@@ -69,6 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="returnExpression"/> is <see langword="null" />.</exception>
         internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, ILSLExprNode returnExpression,
             bool isSingleBlockStatement)
         {
@@ -94,8 +95,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
         internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, bool isSingleBlockStatement)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
             IsSingleBlockStatement = isSingleBlockStatement;
 
             ReturnExpression = null;

@@ -191,7 +191,7 @@ private static class UTILITIES
         /// </value>
         public LSLOpenSimCompilerSettings Settings { get; set; }
 
-        public ILSLLibraryDataProvider LibraryDataProvider { get; set; }
+        public ILSLBasicLibraryDataProvider LibraryDataProvider { get; set; }
 
         public TextWriter Writer { get; private set; }
 
@@ -203,6 +203,7 @@ private static class UTILITIES
                 : Settings.CoOpTerminationFunctionCall.FullSignature;
         }
 
+
         /// <summary>
         /// Compiles a syntax tree into OpenSim compatible CSharp code, writing the output to the specified TextWriter.
         /// </summary>
@@ -213,6 +214,9 @@ private static class UTILITIES
         /// <param name="closeStream">Whether or not to close <paramref name="writer"/> once compilation is done.  The default value is <c>false</c>.</param>
         /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
         /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Settings"/> is <see langword="null"/>.</exception>
+        /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer"/>.</exception>
+        /// <exception cref="ObjectDisposedException">If <paramref name="writer"/> is already disposed.</exception>
         public void WriteAndFlush(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = true)
         {
             if (compilationUnit == null)

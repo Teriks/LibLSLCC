@@ -69,8 +69,15 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="expressionListNode"/> is <see langword="null" />.</exception>
         internal LSLListLiteralNode(LSLParser.ListLiteralContext context, LSLExpressionListNode expressionListNode)
         {
+
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
             if (expressionListNode == null)
             {
                 throw new ArgumentNullException("expressionListNode");

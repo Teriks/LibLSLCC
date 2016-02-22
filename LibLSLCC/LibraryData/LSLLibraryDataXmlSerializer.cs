@@ -223,6 +223,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="reader">The XmlReader object to read XML from.</param>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
+        /// <exception cref="XmlException">An error occurred while parsing the XML. </exception>
         public void Parse(XmlReader reader)
         {
             CurrentLineInfo = (IXmlLineInfo) reader;
@@ -308,6 +309,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="dataProvider">The data provider to serialize.</param>
         /// <param name="writer">The XmlWriter object to serialize to.</param>
         /// <param name="writeRootElement">Boolean defining whether or not to write a root element to the stream that houses the signatures, or to just write the signatures without putting them in a root element.</param>
+        /// <exception cref="InvalidOperationException"><paramref name="writer"/> is closed.</exception>
         public static void WriteXml(ILSLLibraryDataProvider dataProvider,
             XmlWriter writer,
             bool writeRootElement = true)

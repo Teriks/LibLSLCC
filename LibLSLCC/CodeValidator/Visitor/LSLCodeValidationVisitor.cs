@@ -67,21 +67,25 @@ namespace LibLSLCC.CodeValidator.Visitor
 {
     internal sealed partial class LSLCodeValidationVisitor : LSLBaseVisitor<ILSLSyntaxTreeNode>
     {
-        private readonly ILSLValidatorServiceProvider _validatorServices;
+        private readonly ILSLCodeValidatorStrategies _validatorStrategies;
         private ILSLSyntaxErrorListener _syntaxErrorListenerOveride;
         private ILSLSyntaxWarningListener _syntaxWarningListenerOveride;
 
 
-        public LSLCodeValidationVisitor(ILSLValidatorServiceProvider validatorServices)
+        /// <exception cref="ArgumentException">An <see cref="LSLCodeValidatorStrategies"/> property was null</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <see langword="null" />.</exception>
+        public LSLCodeValidationVisitor(ILSLCodeValidatorStrategies validatorStrategies)
         {
-            if (!validatorServices.IsComplete())
+            if(validatorStrategies == null) throw new ArgumentNullException("validatorStrategies");
+
+            if (!validatorStrategies.IsComplete())
             {
-                throw new ArgumentException("An ILSLValidatorServiceProvider property was null", "validatorServices");
+                throw new ArgumentException("An "+typeof(ILSLCodeValidatorStrategies).Name+" property was null", "validatorStrategies");
             }
 
-            _validatorServices = validatorServices;
+            _validatorStrategies = validatorStrategies;
 
-            ScopingManager = new LSLVisitorScopeTracker(_validatorServices);
+            ScopingManager = new LSLVisitorScopeTracker(_validatorStrategies);
         }
 
 
@@ -116,7 +120,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (_syntaxWarningListenerOveride == null)
                 {
-                    return _validatorServices.SyntaxWarningListener;
+                    return _validatorStrategies.SyntaxWarningListener;
                 }
                 return _syntaxWarningListenerOveride;
             }
@@ -135,7 +139,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 if (_syntaxErrorListenerOveride == null)
                 {
-                    return _validatorServices.SyntaxErrorListener;
+                    return _validatorStrategies.SyntaxErrorListener;
                 }
                 return _syntaxErrorListenerOveride;
             }
@@ -143,17 +147,17 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public ILSLExpressionValidator ExpressionValidator
         {
-            get { return _validatorServices.ExpressionValidator; }
+            get { return _validatorStrategies.ExpressionValidator; }
         }
 
         public ILSLBasicLibraryDataProvider LibraryDataProvider
         {
-            get { return _validatorServices.LibraryDataProvider; }
+            get { return _validatorStrategies.LibraryDataProvider; }
         }
 
         public ILSLStringPreProcessor StringLiteralPreProcessor
         {
-            get { return _validatorServices.StringLiteralPreProcessor; }
+            get { return _validatorStrategies.StringLiteralPreProcessor; }
         }
 
         private bool InSingleStatementBlock
@@ -1532,7 +1536,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var parameterList = LSLParameterListNode.BuildFromParserContext(context.parameters, LSLParameterListType.EventParameters, _validatorServices);
+            var parameterList = LSLParameterListNode.BuildFromParserContext(context.parameters, LSLParameterListType.EventParameters, _validatorStrategies);
 
 
             var isError = parameterList.HasErrors;
