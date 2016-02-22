@@ -42,7 +42,6 @@
 #endregion
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.AntlrTreeUtilitys;
 using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;

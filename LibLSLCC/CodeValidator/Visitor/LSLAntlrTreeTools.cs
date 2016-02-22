@@ -48,9 +48,9 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
+namespace LibLSLCC.CodeValidator.Visitor
 {
-    internal static class LSLAntlrTreeIntrospector
+    internal static class LSLAntlrTreeTools
     {
         public static bool IsBracelessCodeScopeStatement(LSLParser.CodeStatementContext context)
         {
@@ -105,7 +105,7 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
 
             //bugcheck assert
             throw new InvalidOperationException(
-                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof(LSLAntlrTreeIntrospector).FullName + ".ResolveCodeScopeNodeType");
+                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof(LSLAntlrTreeTools).FullName + ".ResolveCodeScopeNodeType");
         }
 
 
@@ -154,7 +154,7 @@ namespace LibLSLCC.CodeValidator.AntlrTreeUtilitys
 
             //bugcheck assert
             throw new InvalidOperationException(
-                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof(LSLAntlrTreeIntrospector).FullName + ".ResolveCodeScopeNodeType");
+                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof(LSLAntlrTreeTools).FullName + ".ResolveCodeScopeNodeType");
         }
     }
 }
