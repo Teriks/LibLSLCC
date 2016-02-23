@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator
     /// <para>
     /// <see cref="LSLCodeValidator"/> preforms full front end syntax checking of the source code as the tree is built.
     /// It delegates syntax errors and syntax warning invocations/information to the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener"/> and
-    /// <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> instances inside of the <see cref="ILSLCodeValidatorStrategies"/> implementation 
+    /// <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> instances of the <see cref="ILSLCodeValidatorStrategies"/> object
     /// assigned to the <see cref="ValidatorStrategies"/> property.
     /// </para>
     /// </summary>
