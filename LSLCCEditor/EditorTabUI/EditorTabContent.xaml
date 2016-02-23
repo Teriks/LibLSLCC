@@ -24,7 +24,7 @@
                       HorizontalAlignment="Stretch" />
         <DockPanel Grid.Row="2" Margin="5" LastChildFill="True" Dock="Bottom">
         <Border DockPanel.Dock="Top" Height="17" Margin="0,0,0,3">
-            <TextBlock VerticalAlignment="Center">Compiler Messages</TextBlock>
+            <TextBlock VerticalAlignment="Center" Background="Transparent">Compiler Messages</TextBlock>
         </Border>
         <ListView Name="CompilerMessagesView" DockPanel.Dock="Bottom"
                       SelectionMode="Single" VerticalAlignment="Stretch"

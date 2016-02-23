@@ -255,6 +255,7 @@ namespace LSLCCEditor
 
             foreach (var dataMenuItem in _libraryDataProvider.SubsetDescriptions.Select(subset => new MenuItem
             {
+                StaysOpenOnClick = true,
                 IsCheckable = true,
                 Header = subset.Value.FriendlyName,
                 Tag = subset.Value.Subset,
@@ -305,6 +306,7 @@ namespace LSLCCEditor
             FindDialogManager.CurrentEditor = initialTab.Content.Editor.Editor;
 
             _selectingStartupTabDuringWindowLoad = false;
+
         }
 
 

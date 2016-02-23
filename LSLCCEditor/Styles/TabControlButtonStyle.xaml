@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style x:Key="FocusVisual">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:LSLCCEditor.Styles">
+    <Style x:Key="TabFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -30,19 +31,19 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <SolidColorBrush x:Key="Button.Static.Background" Color="#00DDDDDD" />
-    <SolidColorBrush x:Key="Button.Static.Border" Color="#00707070" />
-    <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFFF8888" />
-    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FFAE9C9C" />
-    <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6" />
-    <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B" />
-    <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4" />
-    <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5" />
-    <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383" />
+    <SolidColorBrush x:Key="TabCloseButton.Static.Background" Color="#00DDDDDD" />
+    <SolidColorBrush x:Key="TabCloseButton.Static.Border" Color="#00707070" />
+    <SolidColorBrush x:Key="TabCloseButton.MouseOver.Background" Color="#FFFF8888" />
+    <SolidColorBrush x:Key="TabCloseButton.MouseOver.Border" Color="#FFAE9C9C" />
+    <SolidColorBrush x:Key="TabCloseButton.Pressed.Background" Color="#FFC4E5F6" />
+    <SolidColorBrush x:Key="TabCloseButton.Pressed.Border" Color="#FF2C628B" />
+    <SolidColorBrush x:Key="TabCloseButton.Disabled.Background" Color="#FFF4F4F4" />
+    <SolidColorBrush x:Key="TabCloseButton.Disabled.Border" Color="#FFADB2B5" />
+    <SolidColorBrush x:Key="TabCloseButton.Disabled.Foreground" Color="#FF838383" />
     <Style x:Key="TabCloseButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
-        <Setter Property="Background" Value="{StaticResource Button.Static.Background}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource TabFocusVisual}" />
+        <Setter Property="Background" Value="{StaticResource TabCloseButton.Static.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource TabCloseButton.Static.Border}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -84,21 +85,21 @@
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Background" TargetName="border"
-                                    Value="{StaticResource Button.MouseOver.Background}" />
+                                    Value="{StaticResource TabCloseButton.MouseOver.Background}" />
                             <Setter Property="BorderBrush" TargetName="border"
-                                    Value="{StaticResource Button.MouseOver.Border}" />
+                                    Value="{StaticResource TabCloseButton.MouseOver.Border}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
                             <Setter Property="Background" TargetName="border"
-                                    Value="{StaticResource Button.Pressed.Background}" />
+                                    Value="{StaticResource TabCloseButton.Pressed.Background}" />
                             <Setter Property="BorderBrush" TargetName="border"
-                                    Value="{StaticResource Button.Pressed.Border}" />
+                                    Value="{StaticResource TabCloseButton.Pressed.Border}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Background" TargetName="border"
-                                    Value="{StaticResource Button.Disabled.Background}" />
+                                    Value="{StaticResource TabCloseButton.Disabled.Background}" />
                             <Setter Property="BorderBrush" TargetName="border"
-                                    Value="{StaticResource Button.Disabled.Border}" />
+                                    Value="{StaticResource TabCloseButton.Disabled.Border}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

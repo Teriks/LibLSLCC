@@ -22,7 +22,7 @@
         <Grid Grid.Column="0">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
                 <StackPanel.Resources>
-                    <Style TargetType="{x:Type Button}">
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Setter Property="Width" Value="Auto" />
                         <Setter Property="Height" Value="27" />
                         <Setter Property="Margin" Value="10,0,10,7" />
@@ -44,10 +44,10 @@
         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0,0,0,15">
 
             <StackPanel.Resources>
-                <Style TargetType="{x:Type CheckBox}">
+                <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
                     <Setter Property="Margin" Value="9,5,0,5" />
                 </Style>
-                <Style TargetType="{x:Type Grid}">
+                <Style TargetType="{x:Type Grid}" >
                     <Setter Property="Margin" Value="2" />
                 </Style>
                 <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource ExpanderStyle}" />
@@ -79,17 +79,17 @@
                         <RowDefinition Height="50" />
                     </Grid.RowDefinitions>
                     <Grid.Resources>
-                        <Style TargetType="{x:Type TextBox}">
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
                             <Setter Property="Height" Value="29" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />
                         </Style>
-                        <Style TargetType="{x:Type ComboBox}">
+                        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
                             <Setter Property="Height" Value="29" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />
                         </Style>
-                        <Style TargetType="{x:Type Label}">
+                        <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                             <Setter Property="HorizontalAlignment" Value="Right" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />
                         </Style>
@@ -134,17 +134,17 @@
                         <RowDefinition Height="50" />
                     </Grid.RowDefinitions>
                     <Grid.Resources>
-                        <Style TargetType="{x:Type TextBox}">
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
                             <Setter Property="Height" Value="29" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />
                         </Style>
-                        <Style TargetType="{x:Type ComboBox}">
+                        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}" >
                             <Setter Property="Height" Value="29" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />
                         </Style>
-                        <Style TargetType="{x:Type Label}">
+                        <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                             <Setter Property="HorizontalAlignment" Value="Right" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />
 

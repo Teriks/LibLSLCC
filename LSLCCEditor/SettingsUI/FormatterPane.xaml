@@ -18,7 +18,7 @@
         <Grid Grid.Column="0">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
                 <StackPanel.Resources>
-                    <Style TargetType="{x:Type Button}">
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Setter Property="Width" Value="Auto" />
                         <Setter Property="Height" Value="27" />
                         <Setter Property="Margin" Value="10,0,10,7" />

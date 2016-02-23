@@ -29,7 +29,7 @@
                 BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
         <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" >
             <StackPanel.Resources>
-                <Style TargetType="{x:Type Button}">
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                     <Setter Property="Padding" Value="15,0,15,0" />
                     <Setter Property="Height" Value="22"/>
                     <Setter Property="Margin" Value="0,0,15,0" />

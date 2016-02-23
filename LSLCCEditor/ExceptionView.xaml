@@ -38,8 +38,8 @@
         <Border Grid.Row="5" Padding="20,15,20,15" Margin="0,20,0,0"
                 Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Margin="0,0,10,0" Padding="5,0,5,0" Click="Save_Click" Content="Save Report" Name="SaveButton" />
-                <Button Margin="0,0,0,0" Width="70" Click="Okay_Click" Content="Okay" Name="OkayButton" />
+                <Button Margin="0,0,10,0" Height="27" Padding="15,0,15,0" Click="Save_Click" Content="Save Report" Name="SaveButton" />
+                <Button Margin="0,0,0,0" Padding="15,0,15,0" Click="Okay_Click" Content="Okay" Name="OkayButton" />
             </StackPanel>
         </Border>
     </Grid>
