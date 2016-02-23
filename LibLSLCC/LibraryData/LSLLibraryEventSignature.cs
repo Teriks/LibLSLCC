@@ -333,9 +333,10 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Converts an object into its XML representation.
+        ///     Converts this <see cref="LSLLibraryEventSignature"/> into its XML representation.
+        ///     The root element name is not written, this is due to <see cref="IXmlSerializable"/> implementation requirements.
         /// </summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
+        /// <param name="writer">The <see cref="XmlWriter" /> stream to which the object is serialized. </param>
         /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <see langword="null" />.</exception>
         public void WriteXml(XmlWriter writer)
         {
