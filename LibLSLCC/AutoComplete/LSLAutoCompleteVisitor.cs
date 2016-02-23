@@ -152,9 +152,9 @@ namespace LibLSLCC.AutoComplete
         /// <exception cref="ArgumentOutOfRangeException">parseToOffset</exception>
         public LSLAutoCompleteVisitor(int parseToOffset)
         {
-            if (parseToOffset <= 0)
+            if (parseToOffset < 0)
             {
-                throw new ArgumentOutOfRangeException("parseToOffset", "toOffset must be greater than zero.");
+                throw new ArgumentOutOfRangeException("parseToOffset", "toOffset must not be less than zero.");
             }
 
             _parseToOffset = parseToOffset;

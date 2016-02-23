@@ -110,8 +110,9 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// A constant value was used for the conditional expression in a control or loop statement.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
+        /// <param name="expression">The offending expression.</param>
         /// <param name="conditionalStatementType">The type of conditional statement the expression was used in.</param>
-        void ConditionalExpressionIsConstant(LSLSourceCodeRange location,
+        void ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLExprNode expression,
             LSLConditionalStatementType conditionalStatementType);
 
         /// <summary>
@@ -134,6 +135,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// This can happen if you forget to add an increment or decrement operator to a loop counter.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
+        /// <param name="expression">The offending expression.</param>
         /// <param name="expressionIndex">
         /// For loop afterthoughts can be a list of expressions to be executed, separated by commas.  
         /// This is the index of the expression in the possible list of expressions.
@@ -142,7 +144,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="expressionCountTotal">
         /// The number of expressions used in the for loop afterthought expression list.
         /// </param>
-        void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, int expressionIndex, int expressionCountTotal);
+        void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex, int expressionCountTotal);
 
 
         /// <summary>
@@ -150,6 +152,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// This can happen if you forget to assign a starting value to a loop counter.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
+        /// <param name="expression">The offending expression.</param>
         /// <param name="expressionIndex">
         /// For loop init expressions can be a list of expressions to be executed, separated by commas.  
         /// This is the index of the expression in the possible list of expressions.
@@ -158,7 +161,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="expressionCountTotal">
         /// The number of expressions used in the for loop init expression list.
         /// </param>
-        void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex, int expressionCountTotal);
+        void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex, int expressionCountTotal);
 
         /// <summary>
         /// A cast is considered redundant because the expression the user is attempting to cast is already

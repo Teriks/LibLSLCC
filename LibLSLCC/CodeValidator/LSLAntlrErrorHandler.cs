@@ -82,7 +82,7 @@ namespace LibLSLCC.CodeValidator
                 || expected.Contains("QUOTED_STRING")
                 ))
             {
-                _errorListener.AssignmentToUnassignableExpression(new LSLSourceCodeRange(offendingSymbol), offendingSymbol.Text);
+                _errorListener.AssignmentToNonassignableExpression(new LSLSourceCodeRange(offendingSymbol), offendingSymbol.Text);
             }
             else
             {

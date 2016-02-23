@@ -191,7 +191,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
-        void ReturnedVoidFromANonVoidFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature);
+        void ReturnedVoidFromNonVoidFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature);
 
         /// <summary>
         /// A jump statement to an undefined label name was encountered.
@@ -245,7 +245,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void InvalidTupleComponentAccessorOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
+        void InvalidTupleComponentAccessOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
             string memberAccessed);
 
 
@@ -375,7 +375,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="location">Location in source code.</param>
         /// <param name="inFunction">The signature of the function the dead code was detected in.</param>
         /// <param name="deadSegment">An object describing the location an span of the dead code segment.</param>
-        void DeadCodeAfterReturnPathDetected(LSLSourceCodeRange location, LSLFunctionSignature inFunction,
+        void DeadCodeAfterReturnPath(LSLSourceCodeRange location, LSLFunctionSignature inFunction,
             LSLDeadCodeSegment deadSegment);
 
         /// <summary>
@@ -458,10 +458,10 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
-        /// <param name="ambigiousMatches">All of the function overloads the call to the library function matched up with.</param>
+        /// <param name="ambiguousMatches">All of the function overloads the call to the library function matched up with.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
-        void CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambigiousMatches,
+        void CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location, string functionName,
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches,
             IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions);
 
 
@@ -472,7 +472,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
         /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
         /// <param name="accessedMember">The member the user attempted to access.</param>
-        void TupleAccessorOnLibraryConstant(LSLSourceCodeRange location,
+        void TupleComponentAccessOnLibraryConstant(LSLSourceCodeRange location,
             ILSLVariableNode libraryConstantReferenceNode,
             LSLLibraryConstantSignature libraryConstantSignature,
             string accessedMember);
@@ -482,20 +482,21 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// A binary operator was used in a static context (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
-        void BinaryOperatorUsedInStaticContext(LSLSourceCodeRange location);
+        void BinaryOperatorInStaticContext(LSLSourceCodeRange location);
+
 
         /// <summary>
         /// A parenthesized expression was used in a static context (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
-        void ParenthesizedExpressionUsedInStaticContext(LSLSourceCodeRange location);
+        void ParenthesizedExpressionInStaticContext(LSLSourceCodeRange location);
 
 
         /// <summary>
         /// A postfix expression was used in a static context (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
-        void PostfixOperationUsedInStaticContext(LSLSourceCodeRange location);
+        void PostfixOperationInStaticContext(LSLSourceCodeRange location);
 
 
         /// <summary>
@@ -505,12 +506,13 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="type">The operation type.</param>
         void InvalidPrefixOperationUsedInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type);
 
+
         /// <summary>
         /// A prefix expression with a global variable on the right was used in a static context. (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         /// <param name="type">The operation type.</param>
-        void InvalidPrefixOperationUsedGlobalVariableInStaticContext(LSLSourceCodeRange location,
+        void PrefixOperationOnGlobalVariableInStaticContext(LSLSourceCodeRange location,
             LSLPrefixOperationType type);
 
 
@@ -550,7 +552,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// A cast expression was used inside of a static context, IE during the declaration of a global variable.
         /// </summary>
         /// <param name="location">The location of the error.</param>
-        void CastExpressionUsedInStaticContext(LSLSourceCodeRange location);
+        void CastExpressionInStaticContext(LSLSourceCodeRange location);
 
         /// <summary>
         /// Occurs with an expression that is left of an assignment type operator is not assignable.
@@ -561,7 +563,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="location">The source code range of the assignment operator used.</param>
         /// <param name="assignmentOperatorUsed">The assignment operator used.</param>
-        void AssignmentToUnassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed);
+        void AssignmentToNonassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed);
 
     }
 }

@@ -313,11 +313,11 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
-        void ILSLSyntaxErrorListener.ReturnedVoidFromANonVoidFunction(LSLSourceCodeRange location,
+        void ILSLSyntaxErrorListener.ReturnedVoidFromNonVoidFunction(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.ReturnedVoidFromANonVoidFunction(location, functionSignature));
+                () => SyntaxErrorListener.ReturnedVoidFromNonVoidFunction(location, functionSignature));
         }
 
         /// <summary>
@@ -390,12 +390,12 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void ILSLSyntaxErrorListener.InvalidTupleComponentAccessorOperation(LSLSourceCodeRange location,
+        void ILSLSyntaxErrorListener.InvalidTupleComponentAccessOperation(LSLSourceCodeRange location,
             ILSLExprNode exprLvalue,
             string memberAccessed)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.InvalidTupleComponentAccessorOperation(location, exprLvalue, memberAccessed));
+                () => SyntaxErrorListener.InvalidTupleComponentAccessOperation(location, exprLvalue, memberAccessed));
         }
 
         /// <summary>
@@ -584,11 +584,11 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="location">Location in source code.</param>
         /// <param name="inFunction">The signature of the function the dead code was detected in.</param>
         /// <param name="deadSegment">An object describing the location an span of the dead code segment.</param>
-        void ILSLSyntaxErrorListener.DeadCodeAfterReturnPathDetected(LSLSourceCodeRange location,
+        void ILSLSyntaxErrorListener.DeadCodeAfterReturnPath(LSLSourceCodeRange location,
             LSLFunctionSignature inFunction, LSLDeadCodeSegment deadSegment)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.DeadCodeAfterReturnPathDetected(location, inFunction, deadSegment));
+                () => SyntaxErrorListener.DeadCodeAfterReturnPath(location, inFunction, deadSegment));
         }
 
         /// <summary>
@@ -712,14 +712,14 @@ namespace LibLSLCC.CodeValidator.Components
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
-        /// <param name="ambigiousMatches">All of the function overloads the call to the library function matched up with.</param>
+        /// <param name="ambiguousMatches">All of the function overloads the call to the library function matched up with.</param>
         /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
-        void ILSLSyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbigious(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambigiousMatches, IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
+        void ILSLSyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location, string functionName,
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches, IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbigious(location, functionName, ambigiousMatches, givenParameterExpressions));
+                    SyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(location, functionName, ambiguousMatches, givenParameterExpressions));
         }
 
         /// <summary>
@@ -729,37 +729,37 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
         /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
         /// <param name="accessedMember">The member the user attempted to access.</param>
-        void ILSLSyntaxErrorListener.TupleAccessorOnLibraryConstant(LSLSourceCodeRange location, ILSLVariableNode libraryConstantReferenceNode,
+        void ILSLSyntaxErrorListener.TupleComponentAccessOnLibraryConstant(LSLSourceCodeRange location, ILSLVariableNode libraryConstantReferenceNode,
             LSLLibraryConstantSignature libraryConstantSignature, string accessedMember)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.TupleAccessorOnLibraryConstant(location, libraryConstantReferenceNode, libraryConstantSignature, accessedMember));
+                    SyntaxErrorListener.TupleComponentAccessOnLibraryConstant(location, libraryConstantReferenceNode, libraryConstantSignature, accessedMember));
         }
 
-        void ILSLSyntaxErrorListener.BinaryOperatorUsedInStaticContext(LSLSourceCodeRange location)
+        void ILSLSyntaxErrorListener.BinaryOperatorInStaticContext(LSLSourceCodeRange location)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.BinaryOperatorUsedInStaticContext(location));
+                    SyntaxErrorListener.BinaryOperatorInStaticContext(location));
         }
 
-        void ILSLSyntaxErrorListener.ParenthesizedExpressionUsedInStaticContext(LSLSourceCodeRange location)
+        void ILSLSyntaxErrorListener.ParenthesizedExpressionInStaticContext(LSLSourceCodeRange location)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.ParenthesizedExpressionUsedInStaticContext(location));
+                    SyntaxErrorListener.ParenthesizedExpressionInStaticContext(location));
         }
 
         /// <summary>
         /// A postfix expression was used in a static context (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
-        void ILSLSyntaxErrorListener.PostfixOperationUsedInStaticContext(LSLSourceCodeRange location)
+        void ILSLSyntaxErrorListener.PostfixOperationInStaticContext(LSLSourceCodeRange location)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.PostfixOperationUsedInStaticContext(location));
+                    SyntaxErrorListener.PostfixOperationInStaticContext(location));
         }
 
         /// <summary>
@@ -774,11 +774,11 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxErrorListener.InvalidPrefixOperationUsedInStaticContext(location, type));
         }
 
-        void ILSLSyntaxErrorListener.InvalidPrefixOperationUsedGlobalVariableInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type)
+        void ILSLSyntaxErrorListener.PrefixOperationOnGlobalVariableInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.InvalidPrefixOperationUsedGlobalVariableInStaticContext(location, type));
+                    SyntaxErrorListener.PrefixOperationOnGlobalVariableInStaticContext(location, type));
         }
 
         void ILSLSyntaxErrorListener.ModifyingPrefixOperationOnNonVariable(LSLSourceCodeRange location, LSLPrefixOperationType type)
@@ -799,17 +799,17 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.NegateOperationOnRotationLiteralInStaticContext(location));
         }
 
-        void ILSLSyntaxErrorListener.CastExpressionUsedInStaticContext(LSLSourceCodeRange location)
+        void ILSLSyntaxErrorListener.CastExpressionInStaticContext(LSLSourceCodeRange location)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.CastExpressionUsedInStaticContext(location));
+                () => SyntaxErrorListener.CastExpressionInStaticContext(location));
         }
 
 
-        void ILSLSyntaxErrorListener.AssignmentToUnassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed)
+        void ILSLSyntaxErrorListener.AssignmentToNonassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.AssignmentToUnassignableExpression(location, assignmentOperatorUsed));
+                () => SyntaxErrorListener.AssignmentToNonassignableExpression(location, assignmentOperatorUsed));
         }
 
 
@@ -858,21 +858,21 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxWarningListener.ExpressionStatementHasNoEffect(location));
         }
 
-        void ILSLSyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
+        void ILSLSyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(location, expressionIndex,
+                    SyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(location, expression, expressionIndex,
                         expressionCountTotal));
         }
 
-        void ILSLSyntaxWarningListener.ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
+        void ILSLSyntaxWarningListener.ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxWarningListener.ForLoopInitExpressionHasNoEffect(location, expressionIndex,
+                    SyntaxWarningListener.ForLoopInitExpressionHasNoEffect(location, expression, expressionIndex,
                         expressionCountTotal));
         }
 
@@ -1038,11 +1038,11 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange expression,
+        void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLExprNode expression,
             LSLConditionalStatementType conditionalStatementType)
         {
-            _warningActionQueue.Enqueue(expression.StartIndex,
-                () => SyntaxWarningListener.ConditionalExpressionIsConstant(expression, conditionalStatementType));
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () => SyntaxWarningListener.ConditionalExpressionIsConstant(location, expression, conditionalStatementType));
         }
 
 

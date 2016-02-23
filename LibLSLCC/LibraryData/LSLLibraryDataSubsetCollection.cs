@@ -166,7 +166,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct a subsets collection out of an exiting enumerable of strings
+        /// Construct a subsets collection out of an existing enumerable of strings
         /// </summary>
         /// <param name="subsets">An enumerable of subset names to initialize the subset collection from.</param>
         /// <exception cref="LSLInvalidSubsetNameException">If any of the give subset names contain invalid characters.</exception>

@@ -175,12 +175,12 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
         /// <summary>
         /// The expression in the 'after thought' of a for loop has no affect, for example: If its just a variable reference.
         /// This can happen if you forget to add an increment or decrement operator to a loop counter.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
+        /// <param name="expression">The offending expression.</param>
         /// <param name="expressionIndex">
         /// For loop afterthoughts can be a list of expressions to be executed, separated by commas.  
         /// This is the index of the expression in the possible list of expressions.
@@ -189,7 +189,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="expressionCountTotal">
         /// The number of expressions used in the for loop afterthought expression list.
         /// </param>
-        public virtual void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
+        public virtual void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             if (expressionCountTotal == 1)
@@ -204,12 +204,12 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
         /// <summary>
         /// The expression in the 'init section' of a for loop has no affect, for example: If its just a variable reference.
         /// This can happen if you forget to assign a starting value to a loop counter.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
+        /// <param name="expression">The offending expression.</param>
         /// <param name="expressionIndex">
         /// For loop init expressions can be a list of expressions to be executed, separated by commas.  
         /// This is the index of the expression in the possible list of expressions.
@@ -218,7 +218,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="expressionCountTotal">
         /// The number of expressions used in the for loop init expression list.
         /// </param>
-        public virtual void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, int expressionIndex,
+        public virtual void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             if (expressionCountTotal == 1)
@@ -553,8 +553,9 @@ namespace LibLSLCC.CodeValidator.Components
         /// A constant value was used for the conditional expression in a control or loop statement.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
+        /// <param name="expression">The offending expression.</param>
         /// <param name="conditionalStatementType">The type of conditional statement the expression was used in.</param>
-        public virtual void ConditionalExpressionIsConstant(LSLSourceCodeRange location,
+        public virtual void ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLExprNode expression,
             LSLConditionalStatementType conditionalStatementType)
         {
             if (conditionalStatementType == LSLConditionalStatementType.If)

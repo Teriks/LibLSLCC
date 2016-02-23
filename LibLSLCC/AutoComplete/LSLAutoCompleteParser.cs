@@ -73,9 +73,9 @@ namespace LibLSLCC.AutoComplete
                 throw new ArgumentNullException("stream");
             }
 
-            if (toOffset <= 0)
+            if (toOffset < 0)
             {
-                throw new ArgumentOutOfRangeException("toOffset", "toOffset must be greater than zero.");
+                throw new ArgumentOutOfRangeException("toOffset", "toOffset cannot be less than zero.");
             }
 
 

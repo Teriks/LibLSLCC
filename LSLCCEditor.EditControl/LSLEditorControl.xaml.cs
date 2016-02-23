@@ -1087,7 +1087,8 @@ namespace LSLCCEditor.EditControl
                     return;
                 }
 
-                _autoCompleteParser.Parse(new StringReader(Editor.Text), caretOffset - 1);
+
+                _autoCompleteParser.Parse(new StringReader(Editor.Text), caretOffset == 0 ? 0 : caretOffset - 1);
 
 #if DEBUG_AUTOCOMPLETE_PARSER
     _debugObjectView.ViewObject("", _autoCompleteParser);
