@@ -1,3 +1,50 @@
+#region FileInfo
+
+// 
+// File: LSLAutoCompleteParserBase.cs
+// 
+// 
+// ============================================================
+// ============================================================
+// 
+// 
+// Copyright (c) 2016, Teriks
+// 
+// All rights reserved.
+// 
+// 
+// This file is part of LibLSLCC.
+// 
+// LibLSLCC is distributed under the following BSD 3-Clause License
+// 
+// 
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+//     in the documentation and/or other materials provided with the distribution.
+// 
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived
+//     from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+// ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// 
+// ============================================================
+// ============================================================
+// 
+// 
+
+#endregion
+
+#region Imports
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,10 +54,12 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
+#endregion
+
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// An abstract base class with common functionality for auto complete parsers.
+    ///     An abstract base class with common functionality for auto complete parsers.
     /// </summary>
     public abstract class LSLAutoCompleteParserBase : ILSLAutoCompleteParser
     {
@@ -18,7 +67,7 @@ namespace LibLSLCC.AutoComplete
         private static readonly Regex LabelRegex = new Regex("@\\s*(" + LSLTokenTools.IDRegexString + ")");
 
         /// <summary>
-        /// Sets the <see cref="ILSLAutoCompleteParserState"/> implementation.
+        ///     Sets the <see cref="ILSLAutoCompleteParserState" /> implementation.
         /// </summary>
         protected ILSLAutoCompleteParserState ParserState { get; set; }
 
@@ -49,7 +98,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     The name of the event handler declaration <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> offset resides in.
+        ///     The name of the event handler declaration <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> offset resides
+        ///     in.
         ///     <c>null</c> if the parse to offset is outside of an event body.
         /// </summary>
         public string CurrentEvent
@@ -58,7 +108,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a state block, but outside of an
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a state block, but outside of
+        ///     an
         ///     event handler declaration.
         /// </summary>
         public bool InStateScope
@@ -67,7 +118,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the source code range of an event handler.
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the source code range of an event
+        ///     handler.
         ///     This includes being within the name or parameter definitions.
         /// </summary>
         public bool InEventSourceRange
@@ -76,7 +128,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is anywhere inside the code body of an event handler.
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is anywhere inside the code body of an
+        ///     event handler.
         /// </summary>
         public bool InEventCodeBody
         {
@@ -84,7 +137,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is anywhere inside the code body of a function
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is anywhere inside the code body of a
+        ///     function
         ///     declaration.
         /// </summary>
         public bool InFunctionCodeBody
@@ -137,7 +191,8 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteGlobalFunction" /> objects representing global function
         ///     declarations
-        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.  The functions are keyed in the hash
+        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.  The functions are keyed in the
+        ///     hash
         ///     map by name.
         /// </summary>
         public IReadOnlyHashMap<string, LSLAutoCompleteGlobalFunction> GlobalFunctionsDictionary
@@ -148,7 +203,8 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteGlobalVariable" /> objects representing global variable
         ///     declarations
-        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.  The declarations are keyed in the hash
+        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.  The declarations are keyed in the
+        ///     hash
         ///     map by name.
         /// </summary>
         public IReadOnlyHashMap<string, LSLAutoCompleteGlobalVariable> GlobalVariablesDictionary
@@ -159,7 +215,8 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteLocalParameter" /> objects representing local parameter
         ///     declarations
-        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.  The declarations are keyed in the hash
+        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.  The declarations are keyed in the
+        ///     hash
         ///     map by name.
         /// </summary>
         public IReadOnlyHashMap<string, LSLAutoCompleteLocalParameter> LocalParametersDictionary
@@ -177,7 +234,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where a code statement can exist.
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where a code statement can
+        ///     exist.
         ///     (<see cref="ILSLAutoCompleteParserState.InMultiCodeStatementArea" /> ||
         ///     <see cref="ILSLAutoCompleteParserState.InBracelessCodeStatementArea" />)
         /// </summary>
@@ -232,7 +290,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of the expression used to declare a
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of the expression used to declare
+        ///     a
         ///     local variable.
         /// </summary>
         public bool InLocalVariableDeclarationExpression
@@ -241,7 +300,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of the expression used to declare a
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of the expression used to declare
+        ///     a
         ///     global variable.
         /// </summary>
         public bool InGlobalVariableDeclarationExpression
@@ -250,7 +310,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a function declarations parameter
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a function declarations
+        ///     parameter
         ///     declaration list.
         /// </summary>
         public bool InFunctionDeclarationParameterList
@@ -259,7 +320,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of an event declarations parameter
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of an event declarations
+        ///     parameter
         ///     declaration list.
         /// </summary>
         public bool InEventDeclarationParameterList
@@ -277,7 +339,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of an 'else if' statements condition
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of an 'else if' statements
+        ///     condition
         ///     expression area.
         /// </summary>
         public bool InElseIfConditionExpression
@@ -286,7 +349,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a function declaration or event
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a function declaration or
+        ///     event
         ///     declaration code body.
         /// </summary>
         public bool InCodeBody
@@ -325,7 +389,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area of a return statement
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area of a return
+        ///     statement
         ///     inside of a function.
         /// </summary>
         public bool InFunctionReturnExpression
@@ -334,7 +399,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of a compound
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of a
+        ///     compound
         ///     operation/assignment to a variable, such as after var += (here).
         /// </summary>
         public bool InModifyingVariableAssignmentExpression
@@ -343,7 +409,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of a compound
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of a
+        ///     compound
         ///     operation/assignment to a member of a variable, such as after var.x += (here).
         /// </summary>
         public bool InModifyingComponentAssignmentExpression
@@ -352,7 +419,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of an assignment
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of an
+        ///     assignment
         ///     to a variable, such as after var = (here).
         /// </summary>
         public bool InPlainVariableAssignmentExpression
@@ -361,7 +429,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of an assignment
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in the expression area right of an
+        ///     assignment
         ///     to a member of a variable, such as after var.x = (here).
         /// </summary>
         public bool InPlainComponentAssignmentExpression
@@ -388,7 +457,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where you could start typing the
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where you could start typing
+        ///     the
         ///     name of the state in a state change statement.
         /// </summary>
         public bool InStateChangeStatementStateNameArea
@@ -397,7 +467,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where you could start typing the
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where you could start typing
+        ///     the
         ///     name of the label in a jump statement.
         /// </summary>
         public bool InJumpStatementLabelNameArea
@@ -406,7 +477,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where you could start typing the
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is in an area where you could start typing
+        ///     the
         ///     name of a label.
         /// </summary>
         public bool InLabelDefinitionNameArea
@@ -475,7 +547,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a rotation literals initializer
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a rotation literals
+        ///     initializer
         ///     expression list.
         /// </summary>
         public bool InRotationLiteralInitializer
@@ -552,7 +625,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if a label definitions name can be suggested at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
+        ///     <c>true</c> if a label definitions name can be suggested at
+        ///     <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
         ///     <see cref="ILSLAutoCompleteParserState.InLabelDefinitionNameArea" />
         /// </summary>
         public bool CanSuggestLabelNameDefinition
@@ -577,7 +651,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     Gets the source code range of the code body <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> exists inside of.
+        ///     Gets the source code range of the code body <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> exists inside
+        ///     of.
         /// </summary>
         public LSLSourceCodeRange CurrentCodeAreaRange
         {
@@ -585,7 +660,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is after an 'if' or 'else if' statements code
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is after an 'if' or 'else if' statements
+        ///     code
         ///     body.
         /// </summary>
         public bool AfterIfOrElseIfStatement
@@ -594,7 +670,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if a control statement chain can be suggested at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
+        ///     <c>true</c> if a control statement chain can be suggested at
+        ///     <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
         ///     <see cref="ILSLAutoCompleteParserState.InCodeStatementArea" />
         /// </summary>
         public bool CanSuggestControlStatement
@@ -603,7 +680,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        ///     <c>true</c> if a state change statement can be suggested at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
+        ///     <c>true</c> if a state change statement can be suggested at
+        ///     <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
         ///     <see cref="ILSLAutoCompleteParserState.InCodeStatementArea" />
         /// </summary>
         public bool CanSuggestStateChangeStatement
@@ -644,8 +722,8 @@ namespace LibLSLCC.AutoComplete
         ///     that are currently accessible at <see cref="ParseToOffset" />.
         ///     <param name="sourceCode">The source code of the entire script.</param>
         /// </summary>
-        /// <exception cref="InvalidOperationException">If <see cref="Parse"/> has not been called first.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="sourceCode"/> is <see langword="null" />.</exception>
+        /// <exception cref="InvalidOperationException">If <see cref="Parse" /> has not been called first.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <see langword="null" />.</exception>
         public IEnumerable<LSLAutoCompleteLocalLabel> GetLocalLabels(string sourceCode)
         {
             if (sourceCode == null)
@@ -686,8 +764,8 @@ namespace LibLSLCC.AutoComplete
         ///     that are currently accessible at <see cref="ParseToOffset" />.
         ///     <param name="sourceCode">The source code of the entire script.</param>
         /// </summary>
-        /// <exception cref="InvalidOperationException">If <see cref="Parse"/> has not been called first.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="sourceCode"/> is <see langword="null" />.</exception>
+        /// <exception cref="InvalidOperationException">If <see cref="Parse" /> has not been called first.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <see langword="null" />.</exception>
         public IEnumerable<LSLAutoCompleteLocalJump> GetLocalJumps(string sourceCode)
         {
             if (sourceCode == null)
