@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal LSLParameterNode(LSLParser.ParameterDefinitionContext context)
         {
             if (context == null)

@@ -72,7 +72,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal LSLStateScopeNode(LSLParser.DefaultStateContext context)
         {
             if (context == null)
@@ -94,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context)
         {
             if (context == null)
@@ -116,7 +116,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="eventHandlers"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="eventHandlers"/> is <c>null</c>.</exception>
         internal LSLStateScopeNode(LSLParser.DefaultStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
             : this(context)
 
@@ -145,7 +145,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="eventHandlers"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="eventHandlers"/> is <c>null</c>.</exception>
         internal LSLStateScopeNode(LSLParser.DefinedStateContext context, IEnumerable<LSLEventHandlerNode> eventHandlers)
             : this(context)
         {

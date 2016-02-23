@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="rightExpression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="rightExpression"/> is <c>null</c>.</exception>
         internal LSLPrefixOperationNode(LSLParser.Expr_PrefixOperationContext context, LSLType resultType,
             ILSLExprNode rightExpression)
         {
@@ -102,7 +102,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLPrefixOperationNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLPrefixOperationNode(LSLPrefixOperationNode other)
         {
             if (other == null)

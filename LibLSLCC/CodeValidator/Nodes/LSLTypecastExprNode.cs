@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="castedExpression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="castedExpression"/> is <c>null</c>.</exception>
         internal LSLTypecastExprNode(LSLParser.Expr_TypeCastContext context, LSLType result,
             ILSLExprNode castedExpression)
         {
@@ -105,7 +105,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLTypecastExprNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLTypecastExprNode(LSLTypecastExprNode other)
         {
             if (other == null)

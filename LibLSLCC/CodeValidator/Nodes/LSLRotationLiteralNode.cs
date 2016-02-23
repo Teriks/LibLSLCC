@@ -75,7 +75,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <paramref name="x"/> or
         /// <paramref name="y"/> or
         /// <paramref name="z"/> or
-        /// <paramref name="s"/> is <see langword="null" />.</exception>
+        /// <paramref name="s"/> is <c>null</c>.</exception>
         internal LSLRotationLiteralNode(LSLParser.RotationLiteralContext context, ILSLExprNode x, ILSLExprNode y,
             ILSLExprNode z, ILSLExprNode s)
         {
@@ -126,7 +126,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLRotationLiteralNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLRotationLiteralNode(LSLRotationLiteralNode other)
         {
             if (other == null)

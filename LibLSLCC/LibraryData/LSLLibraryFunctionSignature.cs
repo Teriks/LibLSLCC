@@ -86,7 +86,7 @@ namespace LibLSLCC.LibraryData
         /// Construct a library function signature by cloning another LSLLibraryFunctionSignature object.
         /// </summary>
         /// <param name="other">The LSLLibraryFunctionSignature to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLLibraryFunctionSignature(LSLLibraryFunctionSignature other)
             : base(other)
         {
@@ -371,7 +371,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="writer">The <see cref="XmlWriter" /> stream to which the object is serialized. </param>
         /// <exception cref="InvalidOperationException">The <paramref name="writer"/> is closed. </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <c>null</c>.</exception>
         public void WriteXml(XmlWriter writer)
         {
             if (writer == null) throw new ArgumentNullException("writer");
@@ -416,7 +416,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="str">The string containing the formated function signature.</param>
         /// <returns>The LSLLibraryFunctionSignature that was parsed from the string, or null.</returns>
         /// <exception cref="ArgumentException">If there was a syntax error while parsing the function signature.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <c>null</c>.</exception>
         public new static LSLLibraryFunctionSignature Parse(string str)
         {
             if(str == null) throw new ArgumentNullException("str");

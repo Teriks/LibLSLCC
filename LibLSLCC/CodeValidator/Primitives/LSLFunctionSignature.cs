@@ -76,7 +76,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Construct an <see cref="LSLFunctionSignature"/> by cloning another <see cref="LSLFunctionSignature"/> object.
         /// </summary>
         /// <param name="other">The <see cref="LSLFunctionSignature"/> object to copy construct from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLFunctionSignature(LSLFunctionSignature other)
         {
             if (other == null)

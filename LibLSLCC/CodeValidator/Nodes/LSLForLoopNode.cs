@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="afterthoughExpressions"/> or <paramref name="initExpressions"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="afterthoughExpressions"/> or <paramref name="initExpressions"/> is <c>null</c>.</exception>
         internal LSLForLoopNode(LSLParser.ForLoopContext context, ILSLExpressionListNode initExpressions,
             ILSLExprNode conditionExpression,
             LSLExpressionListNode afterthoughExpressions, LSLCodeScopeNode code, bool inSingleBlockStatementScope)

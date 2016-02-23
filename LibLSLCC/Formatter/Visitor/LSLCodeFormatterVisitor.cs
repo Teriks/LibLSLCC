@@ -102,7 +102,7 @@ namespace LibLSLCC.Formatter.Visitor
         /// <summary>
         /// Default constructor for the formatting visitor.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="settings"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="settings"/> is <c>null</c>.</exception>
         public LSLCodeFormatterVisitor(LSLCodeFormatterSettings settings)
         {
             if (settings == null)

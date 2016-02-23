@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="conditionExpression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="conditionExpression"/> is <c>null</c>.</exception>
         internal LSLWhileLoopNode(LSLParser.WhileLoopContext context, ILSLExprNode conditionExpression,
             LSLCodeScopeNode code, bool inSingleBlockStatementScope)
         {

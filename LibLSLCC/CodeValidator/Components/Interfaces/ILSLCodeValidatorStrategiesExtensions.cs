@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// </summary>
         /// <param name="strategies">The <see cref="ILSLCodeValidatorStrategies"/> to check.</param>
         /// <returns>True if all properties are initialized.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="strategies"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="strategies"/> is <c>null</c>.</exception>
         public static bool IsComplete(this ILSLCodeValidatorStrategies strategies)
         {
             if (strategies == null)
@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
         /// <param name="strategies">The <see cref="ILSLCodeValidatorStrategies"/> to check.</param>
         /// <param name="describeNulls">A string describing which properties are null if <see cref="IsComplete(ILSLCodeValidatorStrategies, out string)"/> returns <c>false</c></param>
         /// <returns>True if all properties are initialized.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="strategies"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="strategies"/> is <c>null</c>.</exception>
         public static bool IsComplete(this ILSLCodeValidatorStrategies strategies, out string describeNulls)
         {
             if (strategies == null)

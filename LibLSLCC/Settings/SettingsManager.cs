@@ -63,7 +63,7 @@ namespace LibLSLCC.Settings
         /// <summary>
         /// Create a <see cref="SettingsManager{T}"/> around an initial settings object.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="settings"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="settings"/> is <c>null</c>.</exception>
         public SettingsManager(T settings)
         {
             if (settings == null)

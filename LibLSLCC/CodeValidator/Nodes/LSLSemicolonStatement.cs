@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator.Nodes
     /// </summary>
     public sealed class LSLSemicolonStatement : ILSLSemicolonStatement, ILSLCodeStatement
     {
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal LSLSemicolonStatement(LSLParser.CodeStatementContext context, bool isSingleBlockStatement)
         {
             if (context == null)

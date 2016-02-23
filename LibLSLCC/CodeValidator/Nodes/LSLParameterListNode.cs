@@ -184,7 +184,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <param name="validatorStrategies">The validator strategies object to use for reporting errors or warnings</param>
         /// <param name="parameterListType">The parameter list type.</param>
         /// <returns>the created parameter list node</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="validatorStrategies"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="validatorStrategies"/> is <c>null</c>.</exception>
         internal static LSLParameterListNode BuildFromParserContext(LSLParser.OptionalParameterListContext context, LSLParameterListType parameterListType, ILSLCodeValidatorStrategies validatorStrategies)
         {
             if (context == null)

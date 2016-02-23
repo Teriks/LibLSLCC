@@ -105,7 +105,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <exception cref="ArgumentNullException">
         /// <paramref name="context"/> or 
         /// <paramref name="leftExpression"/> or 
-        /// <paramref name="rightExpression"/> is <see langword="null" />.
+        /// <paramref name="rightExpression"/> is <c>null</c>.
         /// </exception>
         internal LSLBinaryExpressionNode(
             LSLParser.ExpressionContext context,

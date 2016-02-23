@@ -723,7 +723,7 @@ namespace LibLSLCC.AutoComplete
         ///     <param name="sourceCode">The source code of the entire script.</param>
         /// </summary>
         /// <exception cref="InvalidOperationException">If <see cref="Parse" /> has not been called first.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <c>null</c>.</exception>
         public IEnumerable<LSLAutoCompleteLocalLabel> GetLocalLabels(string sourceCode)
         {
             if (sourceCode == null)
@@ -765,7 +765,7 @@ namespace LibLSLCC.AutoComplete
         ///     <param name="sourceCode">The source code of the entire script.</param>
         /// </summary>
         /// <exception cref="InvalidOperationException">If <see cref="Parse" /> has not been called first.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <c>null</c>.</exception>
         public IEnumerable<LSLAutoCompleteLocalJump> GetLocalJumps(string sourceCode)
         {
             if (sourceCode == null)

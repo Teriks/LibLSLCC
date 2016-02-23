@@ -82,7 +82,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLConstantLiteralNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         protected LSLConstantLiteralNode(LSLConstantLiteralNode other)
         {
             if (other == null)

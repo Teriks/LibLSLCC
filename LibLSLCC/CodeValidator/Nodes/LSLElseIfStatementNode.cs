@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="conditionExpression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="conditionExpression"/> is <c>null</c>.</exception>
         internal LSLElseIfStatementNode(
             IToken elseKeyword,
             LSLParser.ControlStructureContext context,

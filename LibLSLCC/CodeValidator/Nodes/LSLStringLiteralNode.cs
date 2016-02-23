@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLStringLiteralNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLStringLiteralNode(LSLStringLiteralNode other) : base(other)
         {
             PreProcessedText = other.PreProcessedText;

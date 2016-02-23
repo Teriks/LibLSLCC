@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="jumpTarget"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="jumpTarget"/> is <c>null</c>.</exception>
         internal LSLJumpStatementNode(
             LSLParser.JumpStatementContext context, 
             LSLLabelStatementNode jumpTarget,

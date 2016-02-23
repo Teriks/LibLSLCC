@@ -824,7 +824,7 @@ namespace LibLSLCC.AutoComplete
 
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         public void Parse(LSLParser.CompilationUnitContext context)
         {
             if(context == null) throw new ArgumentNullException("context");

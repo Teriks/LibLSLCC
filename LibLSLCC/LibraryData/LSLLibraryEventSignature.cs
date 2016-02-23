@@ -85,7 +85,7 @@ namespace LibLSLCC.LibraryData
         /// Construct an LSLLibraryEventSignature by cloning another LSLLibraryEventSignature object.
         /// </summary>
         /// <param name="other">The LSLLibraryEventSignature to copy construct from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLLibraryEventSignature(LSLLibraryEventSignature other)
             : base(other)
         {
@@ -337,7 +337,7 @@ namespace LibLSLCC.LibraryData
         ///     The root element name is not written, this is due to <see cref="IXmlSerializable"/> implementation requirements.
         /// </summary>
         /// <param name="writer">The <see cref="XmlWriter" /> stream to which the object is serialized. </param>
-        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <c>null</c>.</exception>
         public void WriteXml(XmlWriter writer)
         {
             if (writer == null) throw new ArgumentNullException("writer");
@@ -400,7 +400,7 @@ namespace LibLSLCC.LibraryData
         /// </exception>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
         /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <c>null</c>.</exception>
         /// <exception cref="LSLInvalidSubsetNameException">Thrown if any of the given subset names in the 'Subsets' CSV string do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
         /// <returns>The parsed <see cref="LSLLibraryEventSignature"/> object.</returns>
         public static LSLLibraryEventSignature FromXmlFragment(XmlReader reader)

@@ -75,7 +75,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Internal constructor for creating an <see cref="LSLSourceCodeRange"/> from an ANTLR IToken.
         /// </summary>
         /// <param name="ctx">The ANTLR IToken</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ctx"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="ctx"/> is <c>null</c>.</exception>
         internal LSLSourceCodeRange(IToken ctx)
         {
             if (ctx == null)
@@ -98,7 +98,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         /// <param name="start">The first ANTLR IToken</param>
         /// <param name="end">The second ANTLR IToken</param>
-        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">If start and end overlap.</exception>
         internal LSLSourceCodeRange(IToken start, IToken end)
         {
@@ -132,7 +132,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range starts.</param>
         /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/> where the source code range ends.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">If start and end overlap.</exception>
         public LSLSourceCodeRange(LSLSourceCodeRange start, LSLSourceCodeRange end)
         {
@@ -167,7 +167,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Internal function for creating an <see cref="LSLSourceCodeRange"/> from an ANTLR ParserRuleContext.
         /// </summary>
         /// <param name="ctx">The ANTLR ParserRuleContext</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ctx"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="ctx"/> is <c>null</c>.</exception>
         internal LSLSourceCodeRange(ParserRuleContext ctx)
         {
             if (ctx == null)
@@ -198,7 +198,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// Creates a source code range from an <see cref="ILSLReadOnlySyntaxTreeNode"/>
         /// </summary>
         /// <param name="node">The syntax tree node to create the <see cref="LSLSourceCodeRange"/> from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode node)
         {
             if (node == null)
@@ -220,7 +220,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// </summary>
         /// <param name="start">The <see cref="ILSLReadOnlySyntaxTreeNode"/>where the source code range starts.</param>
         /// <param name="end">The <see cref="ILSLReadOnlySyntaxTreeNode"/>where the source code range ends.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="start"/> or <paramref name="end"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">If <paramref name="start"/>.SourceRangesAvailable or <paramref name="end"/>.SourceRangesAvailable are false.</exception>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode start, ILSLReadOnlySyntaxTreeNode end)
         {

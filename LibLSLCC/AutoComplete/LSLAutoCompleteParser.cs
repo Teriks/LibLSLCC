@@ -65,7 +65,7 @@ namespace LibLSLCC.AutoComplete
         /// <param name="stream">The input source code stream.</param>
         /// <param name="toOffset">To offset to parse up to (the cursor offset).</param>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="toOffset"/> is not greater than zero.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <c>null</c>.</exception>
         public override void Parse(TextReader stream, int toOffset)
         {
             if (stream == null)

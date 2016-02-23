@@ -170,7 +170,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="subsets">An enumerable of subset names to initialize the subset collection from.</param>
         /// <exception cref="LSLInvalidSubsetNameException">If any of the give subset names contain invalid characters.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="subsets"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="subsets"/> is <c>null</c>.</exception>
         public LSLLibraryDataSubsetCollection(IEnumerable<string> subsets)
         {
             if(subsets == null) throw new ArgumentNullException("subsets");

@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="expression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="expression"/> is <c>null</c>.</exception>
         internal LSLExpressionStatementNode(LSLParser.ExpressionStatementContext context, ILSLExprNode expression, bool isSingleBlockStatement)
         {
             if (context == null)

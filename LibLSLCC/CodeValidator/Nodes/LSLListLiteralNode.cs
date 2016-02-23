@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="expressionListNode"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="expressionListNode"/> is <c>null</c>.</exception>
         internal LSLListLiteralNode(LSLParser.ListLiteralContext context, LSLExpressionListNode expressionListNode)
         {
 
@@ -101,7 +101,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLListLiteralNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLListLiteralNode(LSLListLiteralNode other)
         {
             if (other == null)

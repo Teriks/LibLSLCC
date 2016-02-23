@@ -71,7 +71,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal LSLCodeScopeNode(LSLParser.CodeScopeContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
@@ -90,7 +90,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
@@ -293,7 +293,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     the jump statements that jump to to them.
         /// </remarks>
         /// <param name="statement">The statement to add to the code scope</param>
-        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <c>null</c>.</exception>
         public void AddCodeStatement(ILSLCodeStatement statement)
         {
             if (statement == null)

@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
         /// <exception cref="ArgumentException">An <see cref="LSLCodeValidatorStrategies"/> property was null</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <c>null</c>.</exception>
         public LSLCodeValidationVisitor(ILSLCodeValidatorStrategies validatorStrategies)
         {
             if(validatorStrategies == null) throw new ArgumentNullException("validatorStrategies");

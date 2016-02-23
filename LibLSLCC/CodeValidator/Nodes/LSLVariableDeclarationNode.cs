@@ -82,7 +82,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Create an <see cref="LSLVariableDeclarationNode"/> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLVariableDeclarationNode(LSLVariableDeclarationNode other)
         {
             if (other == null)
@@ -278,7 +278,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         /// <param name="referenceToken">The variable reference token from the parser</param>
         /// <returns>VariableNode cloned, with its <see cref="LSLVariableNode.SourceRange"/> set</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="referenceToken"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="referenceToken"/> is <c>null</c>.</exception>
         internal LSLVariableNode CreateReference(IToken referenceToken)
         {
             if (referenceToken == null)
@@ -302,7 +302,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         /// <param name="range">The source-code range of the variable token from the parser</param>
         /// <returns>VariableNode cloned, with its <see cref="LSLVariableNode.SourceRange"/> set</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="range"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="range"/> is <c>null</c>.</exception>
         internal LSLVariableNode CreateReference(LSLSourceCodeRange range)
         {
             if (range == null)
@@ -320,7 +320,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.GlobalVariableDeclarationContext context)
         {
             if (context == null)
@@ -347,7 +347,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declarationExpression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declarationExpression"/> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.GlobalVariableDeclarationContext context,
             ILSLExprNode declarationExpression)
         {
@@ -384,7 +384,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declarationExpression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declarationExpression"/> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.LocalVariableDeclarationContext context,
             ILSLExprNode declarationExpression)
         {
@@ -421,7 +421,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.LocalVariableDeclarationContext context)
         {
             if (context == null)
@@ -449,7 +449,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <exception cref="ArgumentException">if <paramref name="name"/> contains invalid ID characters, or <paramref name="type"/> is <see cref="LSLType.Void"/>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateLibraryConstant(LSLType type, string name)
         {
             var n = new LSLVariableDeclarationNode
@@ -463,7 +463,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateParameter(LSLParameterNode node)
         {
             var n = new LSLVariableDeclarationNode
