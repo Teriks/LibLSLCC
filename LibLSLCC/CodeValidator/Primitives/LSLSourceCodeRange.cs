@@ -54,9 +54,8 @@ namespace LibLSLCC.CodeValidator.Primitives
     /// <summary>
     /// Represents a range in LSL source code.
     /// </summary>
-    public class LSLSourceCodeRange : ICloneable
+    public class LSLSourceCodeRange
     {
-
         /// <summary>
         /// Construct an empty source code range.
         /// </summary>
@@ -68,6 +67,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             ColumnEnd = 0;
             StartIndex = 0;
             StopIndex = 0;
+            IsEmpty = true;
         }
 
 
@@ -302,12 +302,9 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// True if <see cref="StartIndex"/> == <see cref="StopIndex"/>.
+        /// <c>true</c> if this <see cref="LSLSourceCodeRange"/> was constructed without parameters and represents an empty source range.
         /// </summary>
-        public bool IsEmpty
-        {
-            get { return StartIndex == StopIndex; }
-        }
+        public bool IsEmpty { get; private set; }
 
         /// <summary>
         /// Line where the source code range starts.
@@ -408,42 +405,6 @@ namespace LibLSLCC.CodeValidator.Primitives
         public LSLSourceCodeRange LastCharRange
         {
             get { return new LSLSourceCodeRange(LineEnd, ColumnEnd, LineEnd, ColumnEnd, StopIndex, StopIndex); }
-        }
-
-
-        /// <summary>
-        /// Extends this <see cref="LSLSourceCodeRange"/> to encompass another <see cref="ILSLReadOnlySyntaxTreeNode"/>.
-        /// This operation is only meaningful if <see cref="ILSLReadOnlySyntaxTreeNode"/> exists farther along in the source
-        /// code than the area that this <see cref="LSLSourceCodeRange"/> represents.
-        /// </summary>
-        /// <param name="statement">The <see cref="ILSLReadOnlySyntaxTreeNode"/> to extend this <see cref="LSLSourceCodeRange"/> to.</param>
-        public void ExtendTo(ILSLReadOnlySyntaxTreeNode statement)
-        {
-            LineEnd = statement.SourceRange.LineEnd;
-            ColumnEnd = statement.SourceRange.ColumnEnd;
-            StopIndex = statement.SourceRange.StopIndex;
-        }
-
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
-
-        /// <summary>
-        /// Creates a clone of this source code range.
-        /// </summary>
-        /// <returns>A clone of the source code range.</returns>
-        public LSLSourceCodeRange Clone()
-        {
-            return new LSLSourceCodeRange
-            {
-                ColumnEnd = ColumnEnd,
-                ColumnStart = ColumnStart,
-                LineEnd = LineEnd,
-                LineStart = LineStart,
-                StartIndex = StartIndex,
-                StopIndex = StopIndex
-            };
         }
     }
 }

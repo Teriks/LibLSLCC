@@ -97,7 +97,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (SourceRangesAvailable)
             {
-                SourceRange = other.SourceRange.Clone();
+                SourceRange = other.SourceRange;
             }
 
             Parent = other.Parent;
@@ -115,7 +115,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             RawText = rawText;
             Type = type;
-            SourceRange = sourceRange == null ? null : sourceRange.Clone();
+            SourceRange = sourceRange == null ? null : sourceRange;
             SourceRangesAvailable = sourceRange != null;
         }
 

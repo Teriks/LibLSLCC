@@ -111,7 +111,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             else
             {
                 _statementNodes.Add(statement);
-                SourceRange.ExtendTo(EndNode);
+                SourceRange = new LSLSourceCodeRange(SourceRange, EndNode.SourceRange);
             }
         }
     }

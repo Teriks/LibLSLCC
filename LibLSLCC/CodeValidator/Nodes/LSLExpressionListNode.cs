@@ -102,11 +102,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (SourceRangesAvailable)
             {
-                SourceRange = other.SourceRange.Clone();
+                SourceRange = other.SourceRange;
 
                 foreach (var commaRange in other.SourceRangeCommaList)
                 {
-                    _sourceRangeCommaList.Add(commaRange.Clone());
+                    _sourceRangeCommaList.Add(commaRange);
                 }
             }
 

@@ -137,12 +137,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (!SourceRangesAvailable) return;
 
-            SourceRange = other.SourceRange.Clone();
+            SourceRange = other.SourceRange;
 
-            SourceRangeOpenBracket = other.SourceRangeOpenBracket.Clone();
-            SourceRangeCommaOne = other.SourceRangeCommaOne.Clone();
-            SourceRangeCommaTwo = other.SourceRangeCommaTwo.Clone();
-            SourceRangeCloseBracket = other.SourceRangeCloseBracket.Clone();
+            SourceRangeOpenBracket = other.SourceRangeOpenBracket;
+            SourceRangeCommaOne = other.SourceRangeCommaOne;
+            SourceRangeCommaTwo = other.SourceRangeCommaTwo;
+            SourceRangeCloseBracket = other.SourceRangeCloseBracket;
 
             HasErrors = other.HasErrors;
             Parent = other.Parent;

@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator.Components
         /// <param name="offendingTokenRange">The source code range of the offending symbol.</param>
         public virtual void GrammarLevelParserSyntaxError(int line, int column, LSLSourceCodeRange offendingTokenRange, string offendingTokenText, string message)
         {
-            OnError(offendingTokenRange.Clone(), message);
+            OnError(offendingTokenRange, message);
         }
 
 

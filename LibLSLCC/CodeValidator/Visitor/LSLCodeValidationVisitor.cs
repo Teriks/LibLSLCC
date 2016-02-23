@@ -2568,7 +2568,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
                 if (declaration != null) return declaration.CreateReference(variableCodeRange);
 
-                GenSyntaxError().UndefinedVariableReference(variableCodeRange.Clone(), idText);
+                GenSyntaxError().UndefinedVariableReference(variableCodeRange, idText);
 
                 return LSLVariableNode.GetError(variableCodeRange);
             }
@@ -3042,7 +3042,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             if (ScopingManager.InGlobalScope)
             {
-                GenSyntaxError().CallToFunctionInStaticContext(location.Clone());
+                GenSyntaxError().CallToFunctionInStaticContext(location);
 
                 return ReturnFromVisit(context, LSLFunctionCallNode.GetError(location));
             }
@@ -3090,7 +3090,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     if (functionSignature.Deprecated)
                     {
                         GenSyntaxWarning()
-                            .UseOfDeprecatedLibraryFunction(location.Clone(), functionSignature);
+                            .UseOfDeprecatedLibraryFunction(location, functionSignature);
                     }
                 }
 
@@ -3141,7 +3141,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
             else
             {
-                GenSyntaxError().CallToUndefinedFunction(location.Clone(), functionName);
+                GenSyntaxError().CallToUndefinedFunction(location, functionName);
 
                 return ReturnFromVisit(context, LSLFunctionCallNode.GetError(location));
             }

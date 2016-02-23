@@ -126,10 +126,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (SourceRangesAvailable)
             {
-                SourceRange = other.SourceRange.Clone();
-                SourceRangeOpenParenth = other.SourceRangeOpenParenth.Clone();
-                SourceRangeCastToType = other.SourceRangeCastToType.Clone();
-                SourceRangeCloseParenth = other.SourceRangeCloseParenth.Clone();
+                SourceRange = other.SourceRange;
+                SourceRangeOpenParenth = other.SourceRangeOpenParenth;
+                SourceRangeCastToType = other.SourceRangeCastToType;
+                SourceRangeCloseParenth = other.SourceRangeCloseParenth;
             }
 
             HasErrors = other.HasErrors;

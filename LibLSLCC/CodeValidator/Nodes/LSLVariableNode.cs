@@ -100,7 +100,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (SourceRangesAvailable)
             {
-                SourceRange = other.SourceRange.Clone();
+                SourceRange = other.SourceRange;
             }
 
             HasErrors = other.HasErrors;
@@ -269,7 +269,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 Type = node.Type,
                 ExpressionType = LSLExpressionType.ParameterVariable,
                 IsConstant = false,
-                SourceRange = node.SourceRange.Clone(),
+                SourceRange = node.SourceRange,
                 SourceRangesAvailable = true
             };
         }

@@ -127,8 +127,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (SourceRangesAvailable)
             {
-                SourceRange = other.SourceRange.Clone();
-                SourceRangeAccessedComponent = other.SourceRangeAccessedComponent.Clone();
+                SourceRange = other.SourceRange;
+                SourceRangeAccessedComponent = other.SourceRangeAccessedComponent;
             }
 
             HasErrors = other.HasErrors;

@@ -110,10 +110,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (SourceRangesAvailable)
             {
-                SourceRange = other.SourceRange.Clone();
-                SourceRangeType = other.SourceRangeType.Clone();
-                SourceRangeName = other.SourceRangeName.Clone();
-                SourceRangeOperator = other.SourceRangeOperator.Clone();
+                SourceRange = other.SourceRange;
+                SourceRangeType = other.SourceRangeType;
+                SourceRangeName = other.SourceRangeName;
+                SourceRangeOperator = other.SourceRangeOperator;
             }
 
             if (other.HasDeclarationExpression)
@@ -312,7 +312,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             var v = (LSLVariableNode)VariableNode.Clone();
 
-            v.SourceRange = range.Clone();
+            v.SourceRange = range;
             SourceRangesAvailable = true;
             _references.Add(v);
 
@@ -469,7 +469,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             var n = new LSLVariableDeclarationNode
             {
                 VariableNode = LSLVariableNode.CreateParameter(node),
-                SourceRange = node.SourceRange.Clone(),
+                SourceRange = node.SourceRange,
                 SourceRangesAvailable = true
             };
 
