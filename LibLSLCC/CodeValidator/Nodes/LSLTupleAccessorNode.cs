@@ -275,7 +275,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <value>
         /// The type of the expression.
         /// </value>
-        /// <exception cref="InvalidOperationException" accessor="get">If <see cref="AccessedExpression"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException" accessor="get">If <see cref="AccessedExpression"/> is <c>null</c>.</exception>
         public LSLExpressionType ExpressionType
         {
             get

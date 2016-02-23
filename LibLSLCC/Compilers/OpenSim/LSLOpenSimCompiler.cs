@@ -143,7 +143,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
         /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer"/>.</exception>
         /// <exception cref="ObjectDisposedException">If <paramref name="writer"/> is already disposed.</exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Settings"/> is <c>null</c>.</exception>
         public void Compile(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = false)
         {
             if (compilationUnit == null)

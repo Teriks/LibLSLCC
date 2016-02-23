@@ -76,7 +76,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <see cref="ILSLCodeValidatorStrategies"/>
         /// <param name="validatorStrategies">The <see cref="ILSLCodeValidatorStrategies"/> to use.</param>
-        /// <exception cref="ArgumentException">If one or more of <paramref name="validatorStrategies"/> properties are <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">If one or more of <paramref name="validatorStrategies"/> properties are <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <c>null</c>.</exception>
         public LSLCodeValidator(ILSLCodeValidatorStrategies validatorStrategies)
         {

@@ -186,7 +186,7 @@ namespace LibLSLCC.LibraryData
         /// Fills an event signature object from an XML fragment.
         /// </summary>
         /// <param name="reader">The XML reader containing the fragment to read.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="reader"/> is <c>null</c>.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">
         /// On missing or unknown attributes.  
         /// If a parameter 'Name' is used more than once.  
