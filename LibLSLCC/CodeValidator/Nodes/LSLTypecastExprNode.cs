@@ -204,7 +204,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLExprNode Members
 
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
+        /// When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()

@@ -88,10 +88,10 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         string DescribeType();
 
         /// <summary>
-        /// Deep clone the expression node into a new node.
-        /// This should deep clone all of the node's children as well.
+        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
+        /// When cloned, the parent node reference should still point to the same node.
         /// </summary>
-        /// <returns>Cloned <see cref="ILSLReadOnlyExprNode"/></returns>
+        /// <returns>A deep clone of this expression node.</returns>
         ILSLReadOnlyExprNode Clone();
     }
 }
