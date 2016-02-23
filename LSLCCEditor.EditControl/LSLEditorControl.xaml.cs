@@ -1152,10 +1152,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLibraryFunction(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForLibraryFunction(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestFunction) return false;
+            if (!autoCompleteState.CanSuggestFunction) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleLibraryFunction = false;
@@ -1178,7 +1178,7 @@ namespace LSLCCEditor.EditControl
                 }
 
 
-                var completionData = CreateCompletionData_LibraryFunction(func, fastVarParser);
+                var completionData = CreateCompletionData_LibraryFunction(func, autoCompleteState);
                 completionData.Priority = -data.Count;
                 data.Add(completionData);
             }
@@ -1187,9 +1187,9 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLibraryFunction(ILSLAutoCompleteParserState fastVarParser)
+        private bool TryCompletionForLibraryFunction(ILSLAutoCompleteParserState autoCompleteState)
         {
-            if (!fastVarParser.CanSuggestFunction) return false;
+            if (!autoCompleteState.CanSuggestFunction) return false;
 
             var possibleGlobalFunctions = false;
 
@@ -1204,7 +1204,7 @@ namespace LSLCCEditor.EditControl
                     possibleGlobalFunctions = true;
                 }
 
-                var cdata = CreateCompletionData_LibraryFunction(func, fastVarParser);
+                var cdata = CreateCompletionData_LibraryFunction(func, autoCompleteState);
 
                 cdata.Priority = -_currentCompletionWindow.CompletionList.CompletionData.Count;
                 data.Add(cdata);
@@ -1213,10 +1213,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLibraryConstant(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForLibraryConstant(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestLibraryConstant) return false;
+            if (!autoCompleteState.CanSuggestLibraryConstant) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleConstant = false;
@@ -1255,10 +1255,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLocalVariableOrParameter(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForLocalVariableOrParameter(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestLocalVariableOrParameter) return false;
+            if (!autoCompleteState.CanSuggestLocalVariableOrParameter) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleUserDefinedItem = false;
@@ -1266,7 +1266,7 @@ namespace LSLCCEditor.EditControl
 
             insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
 
-            var parameters = fastVarParser
+            var parameters = autoCompleteState
                 .LocalParameters
                 .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
                 .OrderBy(x => x.Name.Length);
@@ -1281,12 +1281,12 @@ namespace LSLCCEditor.EditControl
                 }
 
 
-                var cdata = CreateCompletionData_LocalParameter(v, fastVarParser);
+                var cdata = CreateCompletionData_LocalParameter(v, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
 
-            var variables = fastVarParser
+            var variables = autoCompleteState
                 .LocalVariables
                 .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
                 .OrderBy(x => x.Name.Length);
@@ -1300,7 +1300,7 @@ namespace LSLCCEditor.EditControl
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateCompletionData_LocalVariable(v, fastVarParser);
+                var cdata = CreateCompletionData_LocalVariable(v, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1310,17 +1310,17 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForUserDefinedFunction(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForUserDefinedFunction(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestFunction) return false;
+            if (!autoCompleteState.CanSuggestFunction) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleUserDefinedItem = false;
 
             insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
 
-            var functions = fastVarParser
+            var functions = autoCompleteState
                 .GlobalFunctions
                 .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
                 .OrderBy(x => x.Name.Length);
@@ -1334,7 +1334,7 @@ namespace LSLCCEditor.EditControl
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateCompletionData_GlobalUserFunction(func, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserFunction(func, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1342,10 +1342,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForUserGlobalVariable(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForUserGlobalVariable(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestGlobalVariable) return false;
+            if (!autoCompleteState.CanSuggestGlobalVariable) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
             var possibleUserDefinedItem = false;
@@ -1353,7 +1353,7 @@ namespace LSLCCEditor.EditControl
 
             insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
 
-            var variables = fastVarParser
+            var variables = autoCompleteState
                 .GlobalVariables
                 .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
                 .OrderBy(x => x.Name.Length);
@@ -1367,7 +1367,7 @@ namespace LSLCCEditor.EditControl
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateCompletionData_GlobalUserVariable(v, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserVariable(v, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1376,30 +1376,30 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForControlStatement(string insertedText, ILSLAutoCompleteParser fastVarParser,
+        private bool TryCompletionForControlStatement(string insertedText, ILSLAutoCompleteParser autoCompleter,
             ref IList<ICompletionData> data)
         {
             var possibleControlStruct = false;
-            if (fastVarParser.CanSuggestControlStatement)
+            if (autoCompleter.CanSuggestControlStatement)
             {
                 if (insertedText.StartsWith("i"))
                 {
                     _currentCompletionWindow = LazyInitCompletionWindow();
                     data = _currentCompletionWindow.CompletionList.CompletionData;
 
-                    data.Add(CreateCompletionData_IfStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
-                        fastVarParser));
+                    data.Add(CreateCompletionData_IfStatement(autoCompleter.ScopeAddressAtOffset.ScopeLevel,
+                        autoCompleter));
                     possibleControlStruct = true;
                 }
-                else if (insertedText.StartsWith("e") && fastVarParser.AfterIfOrElseIfStatement)
+                else if (insertedText.StartsWith("e") && autoCompleter.AfterIfOrElseIfStatement)
                 {
                     _currentCompletionWindow = LazyInitCompletionWindow();
                     data = _currentCompletionWindow.CompletionList.CompletionData;
 
-                    data.Add(CreateCompletionData_ElseStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
-                        fastVarParser));
-                    data.Add(CreateCompletionData_ElseIfStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
-                        fastVarParser));
+                    data.Add(CreateCompletionData_ElseStatement(autoCompleter.ScopeAddressAtOffset.ScopeLevel,
+                        autoCompleter));
+                    data.Add(CreateCompletionData_ElseIfStatement(autoCompleter.ScopeAddressAtOffset.ScopeLevel,
+                        autoCompleter));
                     possibleControlStruct = true;
                 }
                 else if (insertedText.StartsWith("w"))
@@ -1407,8 +1407,8 @@ namespace LSLCCEditor.EditControl
                     _currentCompletionWindow = LazyInitCompletionWindow();
                     data = _currentCompletionWindow.CompletionList.CompletionData;
 
-                    data.Add(CreateCompletionData_WhileStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
-                        fastVarParser));
+                    data.Add(CreateCompletionData_WhileStatement(autoCompleter.ScopeAddressAtOffset.ScopeLevel,
+                        autoCompleter));
                     possibleControlStruct = true;
                 }
                 else if (insertedText.StartsWith("d"))
@@ -1416,8 +1416,8 @@ namespace LSLCCEditor.EditControl
                     _currentCompletionWindow = LazyInitCompletionWindow();
                     data = _currentCompletionWindow.CompletionList.CompletionData;
 
-                    data.Add(CreateCompletionData_DoStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
-                        fastVarParser));
+                    data.Add(CreateCompletionData_DoStatement(autoCompleter.ScopeAddressAtOffset.ScopeLevel,
+                        autoCompleter));
                     possibleControlStruct = true;
                 }
                 else if (insertedText.StartsWith("f"))
@@ -1425,33 +1425,33 @@ namespace LSLCCEditor.EditControl
                     _currentCompletionWindow = LazyInitCompletionWindow();
                     data = _currentCompletionWindow.CompletionList.CompletionData;
 
-                    data.Add(CreateCompletionData_ForStatement(fastVarParser.ScopeAddressAtOffset.ScopeLevel,
-                        fastVarParser));
+                    data.Add(CreateCompletionData_ForStatement(autoCompleter.ScopeAddressAtOffset.ScopeLevel,
+                        autoCompleter));
                     possibleControlStruct = true;
                 }
             }
 
 
-            if (fastVarParser.CanSuggestJumpStatement && insertedText.StartsWith("j"))
+            if (autoCompleter.CanSuggestJumpStatement && insertedText.StartsWith("j"))
             {
                 _currentCompletionWindow = LazyInitCompletionWindow();
                 data = _currentCompletionWindow.CompletionList.CompletionData;
 
-                data.Add(CreateCompletionData_JumpStatement(fastVarParser));
+                data.Add(CreateCompletionData_JumpStatement(autoCompleter));
                 possibleControlStruct = true;
             }
-            else if (fastVarParser.CanSuggestReturnStatement && insertedText.StartsWith("r"))
+            else if (autoCompleter.CanSuggestReturnStatement && insertedText.StartsWith("r"))
             {
                 _currentCompletionWindow = LazyInitCompletionWindow();
                 data = _currentCompletionWindow.CompletionList.CompletionData;
-                data.Add(CreateCompletionData_ReturnStatement(fastVarParser));
+                data.Add(CreateCompletionData_ReturnStatement(autoCompleter));
                 possibleControlStruct = true;
             }
-            else if (fastVarParser.CanSuggestStateChangeStatement && insertedText.StartsWith("s"))
+            else if (autoCompleter.CanSuggestStateChangeStatement && insertedText.StartsWith("s"))
             {
                 _currentCompletionWindow = LazyInitCompletionWindow();
                 data = _currentCompletionWindow.CompletionList.CompletionData;
-                data.Add(CreateCompletionData_StateChangeStatement(fastVarParser));
+                data.Add(CreateCompletionData_StateChangeStatement(autoCompleter));
                 possibleControlStruct = true;
             }
 
@@ -1459,10 +1459,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForTypeName(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForTypeName(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestTypeName) return false;
+            if (!autoCompleteState.CanSuggestTypeName) return false;
 
             var possibleType = false;
 
@@ -1535,10 +1535,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLabelNameDefinition(string insertedText, ILSLAutoCompleteParser fastVarParser,
+        private bool TryCompletionForLabelNameDefinition(string insertedText, ILSLAutoCompleteParser autoCompleter,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestLabelNameDefinition) return false;
+            if (!autoCompleter.CanSuggestLabelNameDefinition) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
@@ -1546,7 +1546,7 @@ namespace LSLCCEditor.EditControl
 
             insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
 
-            var localJumps = fastVarParser
+            var localJumps = autoCompleter
                 .GetLocalJumps(Editor.Text)
                 .Where(x => ToLowerIfCaseInsensitiveComplete(x.TargetName).StartsWith(insertedText))
                 .OrderBy(x => x.TargetName.Length);
@@ -1560,7 +1560,7 @@ namespace LSLCCEditor.EditControl
                     possibleLabelName = true;
                 }
 
-                var cdata = CreateCompletionData_LabelDefinition(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelDefinition(label, autoCompleter);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1576,10 +1576,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLabelNameJumpTarget(string insertedText, ILSLAutoCompleteParser fastVarParser,
+        private bool TryCompletionForLabelNameJumpTarget(string insertedText, ILSLAutoCompleteParser autoCompleter,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestLabelNameJumpTarget) return false;
+            if (!autoCompleter.CanSuggestLabelNameJumpTarget) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
@@ -1587,7 +1587,7 @@ namespace LSLCCEditor.EditControl
 
             insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
 
-            var localLabels = fastVarParser
+            var localLabels = autoCompleter
                 .GetLocalLabels(Editor.Text)
                 .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
                 .OrderBy(x => x.Name.Length);
@@ -1602,7 +1602,7 @@ namespace LSLCCEditor.EditControl
                     possibleLabelName = true;
                 }
 
-                var cdata = CreateCompletionData_LabelJumpTarget(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelJumpTarget(label, autoCompleter);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1619,33 +1619,33 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForStateName(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForStateName(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestStateName) return false;
+            if (!autoCompleteState.CanSuggestStateName) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
-            if (fastVarParser.StateBlocks.Count == 0 && !insertedText.StartsWith("d")) return false;
+            if (autoCompleteState.StateBlocks.Count == 0 && !insertedText.StartsWith("d")) return false;
 
 
             _currentCompletionWindow = LazyInitCompletionWindow();
             data = _currentCompletionWindow.CompletionList.CompletionData;
 
 
-            data.Add(CreateCompletionData_DefaultStateName(fastVarParser));
+            data.Add(CreateCompletionData_DefaultStateName(autoCompleteState));
 
 
             insertedText = ToLowerIfCaseInsensitiveComplete(insertedText);
 
-            var states = fastVarParser
+            var states = autoCompleteState
                 .StateBlocks
                 .Where(x => ToLowerIfCaseInsensitiveComplete(x.Name).StartsWith(insertedText))
                 .OrderBy(x => x.Name.Length);
 
             foreach (var state in states)
             {
-                var cdata = CreateCompletionData_StateName(state, fastVarParser);
+                var cdata = CreateCompletionData_StateName(state, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -1655,10 +1655,10 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForEventHandler(string insertedText, ILSLAutoCompleteParserState fastVarParser,
+        private bool TryCompletionForEventHandler(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
-            if (!fastVarParser.CanSuggestEventHandler) return false;
+            if (!autoCompleteState.CanSuggestEventHandler) return false;
             if (insertedText.Length == 1 && !LSLTokenTools.IDStartCharRegex.IsMatch(insertedText)) return false;
 
 
@@ -2767,16 +2767,16 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLocalVariableOrParameter(ILSLAutoCompleteParserState fastVarParser)
+        private bool TryCompletionForLocalVariableOrParameter(ILSLAutoCompleteParserState autoCompleteState)
         {
-            if (!fastVarParser.CanSuggestLocalVariableOrParameter) return false;
+            if (!autoCompleteState.CanSuggestLocalVariableOrParameter) return false;
 
             var possibleUserDefinedItem = false;
 
             IList<ICompletionData> data = null;
 
 
-            foreach (var i in fastVarParser.LocalParameters.OrderBy(x => x.Name.Length))
+            foreach (var i in autoCompleteState.LocalParameters.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -2785,12 +2785,12 @@ namespace LSLCCEditor.EditControl
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateCompletionData_LocalParameter(i, fastVarParser);
+                var cdata = CreateCompletionData_LocalParameter(i, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
 
-            foreach (var i in fastVarParser.LocalVariables.OrderBy(x => x.Name.Length))
+            foreach (var i in autoCompleteState.LocalVariables.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -2799,7 +2799,7 @@ namespace LSLCCEditor.EditControl
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateCompletionData_LocalVariable(i, fastVarParser);
+                var cdata = CreateCompletionData_LocalVariable(i, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -2808,16 +2808,16 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForUserDefinedFunction(ILSLAutoCompleteParserState fastVarParser)
+        private bool TryCompletionForUserDefinedFunction(ILSLAutoCompleteParserState autoCompleteState)
         {
-            if (!fastVarParser.CanSuggestFunction) return false;
+            if (!autoCompleteState.CanSuggestFunction) return false;
 
             var possibleUserDefinedItem = false;
 
             IList<ICompletionData> data = null;
 
 
-            foreach (var i in fastVarParser.GlobalFunctions.OrderBy(x => x.Name.Length))
+            foreach (var i in autoCompleteState.GlobalFunctions.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -2826,7 +2826,7 @@ namespace LSLCCEditor.EditControl
                     possibleUserDefinedItem = true;
                 }
 
-                var cdata = CreateCompletionData_GlobalUserFunction(i, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserFunction(i, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -2835,15 +2835,15 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForUserGlobalVariable(ILSLAutoCompleteParserState fastVarParser)
+        private bool TryCompletionForUserGlobalVariable(ILSLAutoCompleteParserState autoCompleteState)
         {
-            if (!fastVarParser.CanSuggestGlobalVariable) return false;
+            if (!autoCompleteState.CanSuggestGlobalVariable) return false;
 
             var possibleUserDefinedItem = false;
 
             IList<ICompletionData> data = null;
 
-            foreach (var i in fastVarParser.GlobalVariables.OrderBy(x => x.Name.Length))
+            foreach (var i in autoCompleteState.GlobalVariables.OrderBy(x => x.Name.Length))
             {
                 if (!possibleUserDefinedItem)
                 {
@@ -2853,7 +2853,7 @@ namespace LSLCCEditor.EditControl
                 }
 
 
-                var cdata = CreateCompletionData_GlobalUserVariable(i, fastVarParser);
+                var cdata = CreateCompletionData_GlobalUserVariable(i, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -2861,16 +2861,16 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLabelNameDefinition(ILSLAutoCompleteParser fastVarParser)
+        private bool TryCompletionForLabelNameDefinition(ILSLAutoCompleteParser autoCompleter)
         {
-            if (!fastVarParser.CanSuggestLabelNameDefinition) return false;
+            if (!autoCompleter.CanSuggestLabelNameDefinition) return false;
 
 
             IList<ICompletionData> data = null;
 
             var possibleLabelName = false;
 
-            foreach (var label in fastVarParser.GetLocalJumps(Editor.Text).OrderBy(x => x.TargetName.Length))
+            foreach (var label in autoCompleter.GetLocalJumps(Editor.Text).OrderBy(x => x.TargetName.Length))
             {
                 if (!possibleLabelName)
                 {
@@ -2880,7 +2880,7 @@ namespace LSLCCEditor.EditControl
                 }
 
 
-                var cdata = CreateCompletionData_LabelDefinition(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelDefinition(label, autoCompleter);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -2896,15 +2896,15 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLabelNameJumpTarget(ILSLAutoCompleteParser fastVarParser)
+        private bool TryCompletionForLabelNameJumpTarget(ILSLAutoCompleteParser autoCompleter)
         {
-            if (!fastVarParser.CanSuggestLabelNameJumpTarget) return false;
+            if (!autoCompleter.CanSuggestLabelNameJumpTarget) return false;
 
             IList<ICompletionData> data = null;
 
             var possibleLabelName = false;
 
-            foreach (var label in fastVarParser.GetLocalLabels(Editor.Text).OrderBy(x => x.Name.Length))
+            foreach (var label in autoCompleter.GetLocalLabels(Editor.Text).OrderBy(x => x.Name.Length))
             {
                 if (!possibleLabelName)
                 {
@@ -2913,7 +2913,7 @@ namespace LSLCCEditor.EditControl
                     possibleLabelName = true;
                 }
 
-                var cdata = CreateCompletionData_LabelJumpTarget(label, fastVarParser);
+                var cdata = CreateCompletionData_LabelJumpTarget(label, autoCompleter);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
             }
@@ -2929,23 +2929,23 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForStateName(ILSLAutoCompleteParserState fastVarParser)
+        private bool TryCompletionForStateName(ILSLAutoCompleteParserState autoCompleteState)
         {
-            if (!fastVarParser.CanSuggestStateName) return false;
+            if (!autoCompleteState.CanSuggestStateName) return false;
 
 
             _currentCompletionWindow = LazyInitCompletionWindow();
             var data = _currentCompletionWindow.CompletionList.CompletionData;
 
-            data.Add(CreateCompletionData_DefaultStateName(fastVarParser));
+            data.Add(CreateCompletionData_DefaultStateName(autoCompleteState));
 
-            foreach (var state in fastVarParser.StateBlocks.OrderBy(x => x.Name.Length))
+            foreach (var state in autoCompleteState.StateBlocks.OrderBy(x => x.Name.Length))
             {
-                var cdata = CreateCompletionData_StateName(state, fastVarParser);
+                var cdata = CreateCompletionData_StateName(state, autoCompleteState);
                 cdata.Priority = -data.Count;
                 data.Add(cdata);
 
-                data.Add(CreateCompletionData_StateName(state, fastVarParser));
+                data.Add(CreateCompletionData_StateName(state, autoCompleteState));
             }
 
             _currentCompletionWindow.Show();
@@ -2953,9 +2953,9 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForEventHandler(ILSLAutoCompleteParserState fastVarParser)
+        private bool TryCompletionForEventHandler(ILSLAutoCompleteParserState autoCompleteState)
         {
-            if (!fastVarParser.CanSuggestEventHandler) return false;
+            if (!autoCompleteState.CanSuggestEventHandler) return false;
 
             IList<ICompletionData> data = null;
 
@@ -3118,9 +3118,9 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLibraryConstant(ILSLAutoCompleteParserState fastVarParser)
+        private bool TryCompletionForLibraryConstant(ILSLAutoCompleteParserState autoCompleteState)
         {
-            if (!fastVarParser.CanSuggestLibraryConstant) return false;
+            if (!autoCompleteState.CanSuggestLibraryConstant) return false;
             var possibleLibraryConstants = false;
 
 
