@@ -114,7 +114,7 @@ namespace LibLSLCC.CodeValidator.Enums
         /// Parses a <see cref="LSLPostfixOperationType"/> from its source code string representation.
         /// </summary>
         /// <param name="operationString">The string to attempt to parse an <see cref="LSLPostfixOperationType"/> from.</param>
-        /// <exception cref="ArgumentNullException">Thrown if 'operationString' is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if 'operationString' is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if 'operationString' was not a valid source code string representation of an LSL postfix operator.</exception>
         /// <returns>The parsed <see cref="LSLPostfixOperationType"/>.</returns>
         public static LSLPostfixOperationType ParseFromOperator(string operationString)

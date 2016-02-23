@@ -68,7 +68,7 @@ namespace LibLSLCC.Compilers.OpenSim
         /// </summary>
         /// <param name="settings"><see cref="LSLOpenSimCompilerSettings"/> to use.</param>
         /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider"/> implementation.</param>
-        /// <exception cref="ArgumentNullException">If 'settings' is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="libraryDataProvider"/> or <paramref name="settings"/> is <c>null</c>.</exception>
         public LSLOpenSimCompiler(ILSLBasicLibraryDataProvider libraryDataProvider, LSLOpenSimCompilerSettings settings)
         {
             if (libraryDataProvider == null)

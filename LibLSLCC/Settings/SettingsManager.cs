@@ -92,7 +92,7 @@ namespace LibLSLCC.Settings
         /// <exception cref="DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive). </exception>
         /// <exception cref="IOException">An I/O error occurred while creating the file. </exception>
         /// <exception cref="ArgumentException"><paramref name="file" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="System.IO.Path.InvalidPathChars" />. </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="file" /> is null. </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="file" /> is <c>null</c>. </exception>
         /// <exception cref="PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. </exception>
         /// <exception cref="NotSupportedException"><paramref name="file" /> is in an invalid path format. </exception>
         /// <exception cref="InvalidOperationException">An error occurred during serialization. The original exception is available using the <see cref="P:System.Exception.InnerException" /> property. </exception>
@@ -131,7 +131,7 @@ namespace LibLSLCC.Settings
         /// <param name="file">The file to load the managed settings object from.</param>
         /// <exception cref="ArgumentException"><paramref name="file" /> is a zero-length string, contains only white space, or contains one or more invalid characters as defined by <see cref="System.IO.Path.InvalidPathChars" />. </exception>
         /// <exception cref="NotSupportedException"><paramref name="file" /> is in an invalid path format. </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="file" /> is null. </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="file" /> is <c>null</c>. </exception>
         /// <exception cref="PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. </exception>
         /// <exception cref="FileNotFoundException">The file specified in <paramref name="file" /> was not found. </exception>
         /// <exception cref="DirectoryNotFoundException">The specified path is invalid, (for example, it is on an unmapped drive). </exception>

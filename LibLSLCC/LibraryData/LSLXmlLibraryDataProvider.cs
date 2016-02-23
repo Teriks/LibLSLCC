@@ -234,7 +234,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="data">The XML reader to read from.</param>
         /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
-        /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">When the 'data' parameter is <c>null</c>.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void FillFromXml(XmlReader data, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
@@ -257,7 +257,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="data">The XML reader to read from.</param>
         /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
-        /// <exception cref="ArgumentNullException">When the 'data' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">When the 'data' parameter is <c>null</c>.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void AddFromXml(XmlReader data, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
@@ -282,7 +282,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="filename">The XML file to read library data from.</param>
         /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
-        /// <exception cref="ArgumentNullException">When the 'filename' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">When the 'filename' parameter is <c>null</c>.</exception>
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
@@ -400,7 +400,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="filename">The XML file to read library data from.</param>
         /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
         /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
-        /// <exception cref="ArgumentNullException">When the 'filename' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">When the 'filename' parameter is <c>null</c>.</exception>
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
         /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
         /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>

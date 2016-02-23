@@ -95,7 +95,7 @@ namespace LibLSLCC.CodeValidator.Enums
         /// </summary>
         /// <param name="name">The component name to parse, without the dot operator in front.</param>
         /// <exception cref="ArgumentException">Thrown if 'name' was not: "x", "y", "z" or "s"</exception>
-        /// <exception cref="ArgumentNullException">Thrown if 'name' is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
         /// <returns>The corresponding <see cref="LSLRotationComponent"/>.</returns>
         public static LSLRotationComponent ParseComponentName(string name)
         {

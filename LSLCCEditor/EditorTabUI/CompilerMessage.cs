@@ -47,7 +47,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using LibLSLCC.CodeValidator.Primitives;
-using LSLCCEditor.Annotations;
 
 #endregion
 
@@ -221,7 +220,6 @@ namespace LSLCCEditor.EditorTabUI
             }
         }
 
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (PropertyChanged != null) PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));

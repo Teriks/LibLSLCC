@@ -200,7 +200,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Add a global variable declaration node to this compilation unit node.
         /// </summary>
         /// <param name="declaration">The global variable declaration node to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
         public void AddVariableDeclaration(LSLVariableDeclarationNode declaration)
         {
             if (declaration == null)
@@ -226,7 +226,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Add a function declaration node to this compilation unit node.
         /// </summary>
         /// <param name="declaration">The function declaration node to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
         public void AddFunctionDeclaration(LSLFunctionDeclarationNode declaration)
         {
             if (declaration == null)
@@ -249,7 +249,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Add a state declaration node to this compilation unit node.
         /// </summary>
         /// <param name="declaration">The state declaration node to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
         public void AddStateDeclaration(LSLStateScopeNode declaration)
         {
             if (declaration == null)

@@ -90,7 +90,7 @@ namespace LibLSLCC.Utility
         /// <returns>
         /// A hash code for the specified object.
         /// </returns>
-        /// <param name="obj">The <see cref="T:System.Object"/> for which a hash code is to be returned.</param><exception cref="T:System.ArgumentNullException">The type of <paramref name="obj"/> is a reference type and <paramref name="obj"/> is null.</exception>
+        /// <param name="obj">The <see cref="T:System.Object"/> for which a hash code is to be returned.</param><exception cref="T:System.ArgumentNullException">The type of <paramref name="obj"/> is a reference type and <paramref name="obj"/> is <c>null</c>.</exception>
         public int GetHashCode(T obj)
         {
             return HashFunc != null ? HashFunc(obj) : obj.GetHashCode();

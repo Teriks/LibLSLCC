@@ -843,9 +843,9 @@ namespace LibLSLCC.LibraryData
         /// On missing or unknown attributes.  
         /// If the constant 'Type' is <see cref="LSLType.Void"/>.   
         /// If the constant 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
-        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is <c>null</c> or whitespace.
         /// If a 'Properties' node 'Name' is used more than once.
-        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// If a 'Properties' node 'Value' is <c>null</c> or whitespace.
         /// </exception>
         /// <exception cref="LSLInvalidConstantValueStringException">
         /// If 'Value' is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />
@@ -1056,9 +1056,9 @@ namespace LibLSLCC.LibraryData
         /// On missing or unknown attributes.  
         /// If the constant 'Type' is <see cref="LSLType.Void"/>.   
         /// If the constant 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
-        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is <c>null</c> or whitespace.
         /// If a 'Properties' node 'Name' is used more than once.
-        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// If a 'Properties' node 'Value' is <c>null</c> or whitespace.
         /// </exception>
         /// <exception cref="LSLInvalidConstantValueStringException">
         /// If 'Value' is an invalid value for a float and <see cref="Type" /> is set to <see cref="LSLType.Float" />

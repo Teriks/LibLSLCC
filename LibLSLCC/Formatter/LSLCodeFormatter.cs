@@ -59,7 +59,7 @@ namespace LibLSLCC.Formatter
         /// <summary>
         /// Construct a new LSLCodeFormatter.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="settings"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="settings"/> is <c>null</c>.</exception>
         public LSLCodeFormatter(LSLCodeFormatterSettings settings)
         {
             if (settings == null)

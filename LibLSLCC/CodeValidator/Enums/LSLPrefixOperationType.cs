@@ -144,7 +144,7 @@ namespace LibLSLCC.CodeValidator.Enums
         /// Parses a <see cref="LSLPrefixOperationType"/> from its source code string representation.
         /// </summary>
         /// <param name="operationString">The string to attempt to parse an <see cref="LSLPrefixOperationType"/> from.</param>
-        /// <exception cref="ArgumentNullException">Thrown if 'operationString' is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if 'operationString' is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if 'operationString' was not a valid source code string representation of an LSL prefix operator.</exception>
         /// <returns>The parsed <see cref="LSLPrefixOperationType"/>.</returns>
         public static LSLPrefixOperationType ParseFromOperator(string operationString)

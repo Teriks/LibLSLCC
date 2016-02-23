@@ -202,7 +202,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Modifies the current set so that it contains all elements that are present in both the current set and in the specified collection.
         /// </summary>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         /// <exception cref="LSLInvalidSubsetNameException">
         /// Thrown if the UnionWith operation causes a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) to be added to the subset collection.
         /// </exception>
@@ -219,7 +219,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Modifies the current set so that it contains only elements that are also in a specified collection.
         /// </summary>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public void IntersectWith(IEnumerable<string> other)
         {
             var o = new HashSet<string>(other);
@@ -235,7 +235,7 @@ namespace LibLSLCC.LibraryData
         /// Removes all elements in the specified collection from the current set.
         /// </summary>
         /// <param name="other">The collection of items to remove from the set.</param>
-        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public void ExceptWith(IEnumerable<string> other)
         {
             if(other == null) throw new ArgumentNullException("other");
@@ -252,7 +252,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Modifies the current set so that it contains only elements that are present either in the current set or in the specified collection, but not both. 
         /// </summary>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public void SymmetricExceptWith(IEnumerable<string> other)
         {
             //need to check here we might be removing stuff
@@ -270,7 +270,7 @@ namespace LibLSLCC.LibraryData
         /// <returns>
         /// true if the current set is a subset of <paramref name="other"/>; otherwise, false.
         /// </returns>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public bool IsSubsetOf(IEnumerable<string> other)
         {
             return _subsets.IsSubsetOf(other);
@@ -282,7 +282,7 @@ namespace LibLSLCC.LibraryData
         /// <returns>
         /// true if the current set is a superset of <paramref name="other"/>; otherwise, false.
         /// </returns>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public bool IsSupersetOf(IEnumerable<string> other)
         {
             return _subsets.IsSupersetOf(other);
@@ -294,7 +294,7 @@ namespace LibLSLCC.LibraryData
         /// <returns>
         /// true if the current set is a proper superset of <paramref name="other"/>; otherwise, false.
         /// </returns>
-        /// <param name="other">The collection to compare to the current set. </param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set. </param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public bool IsProperSupersetOf(IEnumerable<string> other)
         {
             return _subsets.IsProperSupersetOf(other);
@@ -306,7 +306,7 @@ namespace LibLSLCC.LibraryData
         /// <returns>
         /// true if the current set is a proper subset of <paramref name="other"/>; otherwise, false.
         /// </returns>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public bool IsProperSubsetOf(IEnumerable<string> other)
         {
             return _subsets.IsProperSubsetOf(other);
@@ -318,7 +318,7 @@ namespace LibLSLCC.LibraryData
         /// <returns>
         /// true if the current set and <paramref name="other"/> share at least one common element; otherwise, false.
         /// </returns>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public bool Overlaps(IEnumerable<string> other)
         {
             return _subsets.Overlaps(other);
@@ -330,7 +330,7 @@ namespace LibLSLCC.LibraryData
         /// <returns>
         /// true if the current set is equal to <paramref name="other"/>; otherwise, false.
         /// </returns>
-        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is null.</exception>
+        /// <param name="other">The collection to compare to the current set.</param><exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public bool SetEquals(IEnumerable<string> other)
         {
             return _subsets.SetEquals(other);
@@ -385,7 +385,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
         /// </summary>
-        /// <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1"/>. The <see cref="T:System.Array"/> must have zero-based indexing.</param><param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param><exception cref="T:System.ArgumentNullException"><paramref name="array"/> is null.</exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="arrayIndex"/> is less than 0.</exception><exception cref="T:System.ArgumentException">The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1"/> is greater than the available space from <paramref name="arrayIndex"/> to the end of the destination <paramref name="array"/>.</exception>
+        /// <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1"/>. The <see cref="T:System.Array"/> must have zero-based indexing.</param><param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param><exception cref="T:System.ArgumentNullException"><paramref name="array"/> is <c>null</c>.</exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="arrayIndex"/> is less than 0.</exception><exception cref="T:System.ArgumentException">The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1"/> is greater than the available space from <paramref name="arrayIndex"/> to the end of the destination <paramref name="array"/>.</exception>
         public void CopyTo(string[] array, int arrayIndex)
         {
             _subsets.CopyTo(array, arrayIndex);

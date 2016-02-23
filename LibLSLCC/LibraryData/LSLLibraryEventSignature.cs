@@ -193,9 +193,9 @@ namespace LibLSLCC.LibraryData
         /// If a parameter 'Name' is whitespace.
         /// If a parameter 'Type' is <see cref="LSLType.Void"/>.   
         /// If a parameter 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
-        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is <c>null</c> or whitespace.
         /// If a 'Properties' node 'Name' is used more than once.
-        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// If a 'Properties' node 'Value' is <c>null</c> or whitespace.
         /// </exception>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
         /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
@@ -394,9 +394,9 @@ namespace LibLSLCC.LibraryData
         /// If a parameter 'Name' is whitespace.
         /// If a parameter 'Type' is <see cref="LSLType.Void"/>.   
         /// If a parameter 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
-        /// If a 'Properties' node 'Name' is null or whitespace.
+        /// If a 'Properties' node 'Name' is <c>null</c> or whitespace.
         /// If a 'Properties' node 'Name' is used more than once.
-        /// If a 'Properties' node 'Value' is null or whitespace.
+        /// If a 'Properties' node 'Value' is <c>null</c> or whitespace.
         /// </exception>
         /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
         /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>

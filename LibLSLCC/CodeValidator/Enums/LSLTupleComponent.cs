@@ -99,7 +99,7 @@ namespace LibLSLCC.CodeValidator.Enums
         /// Parses and <see cref="LSLTupleComponent"/> from its source code string equivalent.
         /// </summary>
         /// <param name="name">The string to parse the <see cref="LSLTupleComponent"/> from.</param>
-        /// <exception cref="ArgumentNullException">Thrown if 'name' is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if 'name' is not a valid source code string equivalent to any <see cref="LSLTupleComponent"/>.</exception>
         /// <returns>The parsed <see cref="LSLTupleComponent"/>.</returns>
         public static LSLTupleComponent ParseComponentName(string name)

@@ -197,7 +197,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Adds a new expression to the expression list node.
         /// </summary>
         /// <param name="node">The expression node to add to the expression list.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is <c>null</c>.</exception>
         public void AddExpression(ILSLExprNode node)
         {
             if (node == null)

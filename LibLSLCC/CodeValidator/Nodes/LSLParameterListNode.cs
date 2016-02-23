@@ -271,7 +271,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// Add a parameter definition node to this parameter list node.
         /// </summary>
         /// <param name="node">The parameter definition node to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is <c>null</c>.</exception>
         public void AddParameterNode(LSLParameterNode node)
         {
             if (node == null)

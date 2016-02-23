@@ -90,7 +90,7 @@ namespace LibLSLCC.CodeValidator.Enums
         /// Converts a string into an <see cref="LSLVectorComponent"/>.
         /// </summary>
         /// <param name="name"></param>
-        /// <exception cref="ArgumentNullException">Thrown if 'name' is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if 'name' is not one of: "x", "y" or "z".  (Case Sensitive)</exception>
         /// <returns></returns>
         public static LSLVectorComponent ParseComponentName(string name)
