@@ -43,6 +43,7 @@
 #region Imports
 
 using LibLSLCC.CodeValidator.Nodes;
+using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 #endregion
 
@@ -55,8 +56,8 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
     {
         /// <summary>
         /// The expression validator is in charge of determining if two types are valid
-        /// in a binary expression.  Among other things, like checking if an expression
-        /// of some type can be passed into a function parameter.
+        /// in a binary expression.  It also does several other things, one being checking if an expression
+        /// with a certain return type can be passed into a function parameter.
         /// </summary>
         ILSLExpressionValidator ExpressionValidator { get; }
 
@@ -68,7 +69,7 @@ namespace LibLSLCC.CodeValidator.Components.Interfaces
 
         /// <summary>
         /// The string literal pre-processor is in charge of pre-processing string literals
-        /// from source code before the value is assigned to a <see cref="LSLStringLiteralNode"/> object
+        /// from source code before the value is assigned to an <see cref="ILSLStringLiteralNode.PreProcessedText"/>.
         /// </summary>
         ILSLStringPreProcessor StringLiteralPreProcessor { get; }
 
