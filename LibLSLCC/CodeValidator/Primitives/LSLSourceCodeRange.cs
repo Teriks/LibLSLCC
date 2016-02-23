@@ -293,11 +293,11 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// True if <see cref="LineEnd"/> == <see cref="LineStart"/>.
+        /// <c>true</c> <see cref="IsEmpty"/> is <c>false</c> and <see cref="LineEnd"/> == <see cref="LineStart"/>.
         /// </summary>
         public bool IsSingleLine
         {
-            get { return LineEnd == LineStart; }
+            get { return !IsEmpty && LineEnd == LineStart; }
         }
 
 
