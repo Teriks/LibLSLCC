@@ -57,12 +57,12 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    /// LSLCodeValidator is responsible for building a rich syntax tree with <see cref="ILSLCompilationUnitNode"/> as the top node.
+    /// <see cref="LSLCodeValidator"/> is responsible for building an abstracted LSL syntax tree with <see cref="ILSLCompilationUnitNode"/> as the top node.
     /// <para>
-    /// It preforms full front end syntax checking of the source code as the tree is built.
-    /// 
-    /// It delegates syntax errors and syntax warning invocations/information to the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener"/> and <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> instances 
-    /// inside of the <see cref="ILSLCodeValidatorStrategies"/> implementation assigned to the <see cref="ValidatorStrategies"/> property.
+    /// <see cref="LSLCodeValidator"/> preforms full front end syntax checking of the source code as the tree is built.
+    /// It delegates syntax errors and syntax warning invocations/information to the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener"/> and
+    /// <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> instances inside of the <see cref="ILSLCodeValidatorStrategies"/> implementation 
+    /// assigned to the <see cref="ValidatorStrategies"/> property.
     /// </para>
     /// </summary>
     public sealed class LSLCodeValidator : ILSLCodeValidator
