@@ -603,7 +603,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
 
                 //function definitions are guaranteed not to have duplicate definitions in a pre-pass
-                //also guaranteed to have syntacticly correct parameter definitions
+                //also guaranteed to have syntactically correct parameter definitions
                 result.AddFunctionDeclaration(child);
             }
 
