@@ -64,7 +64,7 @@ namespace LibLSLCC.Compilers.OpenSim
 
 
         /// <summary>
-        /// Construct an <see cref="LSLOpenSimCompiler"/> using the specified settings object.
+        /// Construct an <see cref="LSLOpenSimCompiler"/> using the provided <see cref="ILSLBasicLibraryDataProvider"/> and <see cref="LSLOpenSimCompilerSettings"/> object.
         /// </summary>
         /// <param name="settings"><see cref="LSLOpenSimCompilerSettings"/> to use.</param>
         /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider"/> implementation.</param>

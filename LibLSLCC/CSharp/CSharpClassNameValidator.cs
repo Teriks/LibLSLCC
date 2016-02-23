@@ -224,7 +224,7 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        /// Validates that the specified input string is syntacticly valid C# class definition signature, including generic definition.
+        /// Validates that the specified input string is syntactically valid C# class definition signature, including generic definition.
         /// </summary>
         /// <remarks>
         /// This function will detect misuse of keywords and built in type names the class definition signature used to define a type, even generic types.
@@ -238,7 +238,7 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        /// Validates that the specified input string is syntacticly valid C# type initialization signature, including generic types.
+        /// Validates that the specified input string is syntactically valid C# type initialization signature, including generic types.
         /// </summary>
         /// <param name="input">The input string containing the proposed type value.</param>
         /// <param name="validateTypeCallback">A call back to allow you to verify the existence of the types in the type signature as they are parsed.</param>

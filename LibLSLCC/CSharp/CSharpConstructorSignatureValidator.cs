@@ -113,7 +113,7 @@ namespace LibLSLCC.CSharp
         /// </value>
         public IReadOnlyGenericArray<string> ParameterNames { get; internal set; }
 
-        /// <summary>
+        /// <summary >
         /// Gets the parameter forwarding type, if any.  IE, what the constructor signature forwarded its parameter's to (base, this or none)
         /// </summary>
         /// <value>
