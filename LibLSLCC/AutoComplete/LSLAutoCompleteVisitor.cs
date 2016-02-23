@@ -154,7 +154,7 @@ namespace LibLSLCC.AutoComplete
         {
             if (parseToOffset < 0)
             {
-                throw new ArgumentOutOfRangeException("parseToOffset", "toOffset must not be less than zero.");
+                throw new ArgumentOutOfRangeException("parseToOffset", "toOffset cannot be less than zero.");
             }
 
             _parseToOffset = parseToOffset;

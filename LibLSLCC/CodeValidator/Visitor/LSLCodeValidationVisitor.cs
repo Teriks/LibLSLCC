@@ -650,7 +650,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             foreach (var fun in result.FunctionDeclarations.Where(x => x.References.Count == 0))
             {
-                GenSyntaxWarning().FunctionNeverUsed(fun.SourceRange, fun);
+                GenSyntaxWarning().FunctionNeverUsed(fun.SourceRangeName, fun);
             }
 
             foreach (var gvar in result.GlobalVariableDeclarations.Where(x => x.References.Count == 0))
@@ -1325,7 +1325,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             {
                 //if the function is not a void function and it has no return path, then its an error
                 GenSyntaxError().NotAllCodePathsReturnAValue(
-                    new LSLSourceCodeRange(context),
+                    new LSLSourceCodeRange(context.function_name),
                     currentFunctionPredefinition);
 
                 isError = true;
