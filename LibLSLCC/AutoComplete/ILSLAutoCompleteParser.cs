@@ -59,7 +59,7 @@ namespace LibLSLCC.AutoComplete
     {
         /// <summary>
         ///     Get an enumerable of <see cref="LSLAutoCompleteLocalLabel" /> objects representing local labels
-        ///     that are currently accessible at <see cref="LSLAutoCompleteParser.ParseToOffset" />.
+        ///     that are currently accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
         ///     <param name="sourceCode">The source code of the entire script.</param>
         /// </summary>
         IEnumerable<LSLAutoCompleteLocalLabel> GetLocalLabels(string sourceCode);
@@ -67,7 +67,7 @@ namespace LibLSLCC.AutoComplete
 
         /// <summary>
         ///     Get an enumerable of <see cref="LSLAutoCompleteLocalJump" /> objects representing local jump statements
-        ///     that are currently accessible at <see cref="LSLAutoCompleteParser.ParseToOffset" />.
+        ///     that are currently accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
         ///     <param name="sourceCode">The source code of the entire script.</param>
         /// </summary>
         IEnumerable<LSLAutoCompleteLocalJump> GetLocalJumps(string sourceCode);

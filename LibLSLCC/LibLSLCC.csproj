@@ -62,6 +62,7 @@
     <Compile Include="AutoComplete\LSLAutoCompleteLocalLabel.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteLocalParameter.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteLocalVariable.cs" />
+    <Compile Include="AutoComplete\LSLAutoCompleteParserBase.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteStateBlock.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteScopeAddress.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteVisitor.cs" />
