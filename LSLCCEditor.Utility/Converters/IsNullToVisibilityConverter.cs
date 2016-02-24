@@ -63,8 +63,8 @@ namespace LSLCCEditor.Utility.Converters
         }
 
 
-        private Visibility WhenNull { get; }
-        private Visibility WhenNonNull { get; }
+        public Visibility WhenNull { get; private set; }
+        public Visibility WhenNonNull { get; private set; }
 
 
         /// <summary>

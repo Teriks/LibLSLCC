@@ -84,6 +84,8 @@ namespace LSLCCEditor.SettingsUI
             get { return (string) GetValue(ChosenNameProperty); }
             set { SetValue(ChosenNameProperty, value); }
         }
+
+
         public UniqueNamerWindow(IEnumerable<string> takenNames, string startingName, bool generateNumericSuffix = true)
         {
             _startingName = startingName;
