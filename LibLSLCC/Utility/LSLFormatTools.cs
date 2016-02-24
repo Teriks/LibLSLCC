@@ -167,7 +167,7 @@ namespace LibLSLCC.Utility
 
         /// <summary>
         /// If a string has control codes in it, this will return a string with those control codes 
-        /// replaced with their symbolic representation, IE: \n \t ect..
+        /// replaced with their symbolic representation, IE: &#92;n &#92;t ect..
         /// 
         /// Supports every escape code supported by C# itself
         /// </summary>
