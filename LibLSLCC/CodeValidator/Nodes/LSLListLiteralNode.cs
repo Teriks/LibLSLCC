@@ -83,7 +83,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("expressionListNode");
             }
 
-            HasPossibleSideEffects = expressionListNode.AnyExpressionHasPossibleSideEffects;
+            HasPossibleSideEffects = expressionListNode.HasExpressionWithPossibleSideEffects;
             IsConstant = expressionListNode.AllExpressionsConstant;
 
             ExpressionListNode = expressionListNode;

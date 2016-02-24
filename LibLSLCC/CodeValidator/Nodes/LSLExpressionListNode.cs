@@ -158,9 +158,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if any expressions in the expression list are considered to possibly have side effects on the state of the program.
+        /// True if any expression in the expression list can possibly have side effects on the state of the program.
         /// </summary>
-        public bool AnyExpressionHasPossibleSideEffects
+        public bool HasExpressionWithPossibleSideEffects
         {
             get { return ExpressionNodes.Any(lslExprNode => lslExprNode.HasPossibleSideEffects); }
         }
