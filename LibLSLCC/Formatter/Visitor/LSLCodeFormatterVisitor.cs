@@ -892,19 +892,19 @@ namespace LibLSLCC.Formatter.Visitor
                 var commentsBetween =
                     CommentsBetweenRange(
                         node.SourceRangeSecondSemicolon,
-                        node.AfterthoughExpressions.SourceRange);
+                        node.AfterthoughExpressionsList.SourceRange);
 
                 Write(commentsBetween.Count > 0 ? ";" : "; ");
 
 
                 WriteCommentsBetweenRange(commentsBetween, node.SourceRangeSecondSemicolon,
-                    node.AfterthoughExpressions.SourceRange);
+                    node.AfterthoughExpressionsList.SourceRange);
 
                 ExpressionWrappingPush(false, null);
-                Visit(node.AfterthoughExpressions);
+                Visit(node.AfterthoughExpressionsList);
                 ExpressionWrappingPop();
 
-                WriteCommentsBetweenRange(node.AfterthoughExpressions.SourceRange, node.SourceRangeCloseParenth);
+                WriteCommentsBetweenRange(node.AfterthoughExpressionsList.SourceRange, node.SourceRangeCloseParenth);
             }
             else
             {

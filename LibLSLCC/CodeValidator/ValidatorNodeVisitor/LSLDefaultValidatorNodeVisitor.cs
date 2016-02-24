@@ -325,7 +325,7 @@ namespace LibLSLCC.CodeValidator.ValidatorNodeVisitor
 
             if (node.HasAfterthoughtExpressions)
             {
-                Visit(node.AfterthoughExpressions);
+                Visit(node.AfterthoughExpressionsList);
             }
 
             return default(T);

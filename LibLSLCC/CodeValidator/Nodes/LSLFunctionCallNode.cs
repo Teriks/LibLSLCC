@@ -195,14 +195,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// A list of parameter expressions used to call the function, or an empty list if no parameters were used.
-        /// </summary>
-        public IReadOnlyGenericArray<ILSLExprNode> ParameterExpressions
-        {
-            get { return ParameterListNode.ExpressionNodes; }
-        }
-
-        /// <summary>
         /// The parameter list node containing the expressions used to call this function, this will never be null even if the parameter list is empty.
         /// </summary>
         public LSLExpressionListNode ParameterListNode { get; private set; }

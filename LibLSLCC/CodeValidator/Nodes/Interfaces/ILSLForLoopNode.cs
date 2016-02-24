@@ -92,7 +92,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// This property should never be null unless the for loop node is an erroneous node.
         /// Ideally you should not be handling a syntax tree containing syntax errors.
         /// </summary>
-        ILSLExpressionListNode AfterthoughExpressions { get; }
+        ILSLExpressionListNode AfterthoughExpressionsList { get; }
 
 
         /// <summary>

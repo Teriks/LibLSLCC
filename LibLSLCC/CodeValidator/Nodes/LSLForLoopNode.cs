@@ -167,7 +167,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return ConditionExpression; }
         }
 
-        ILSLExpressionListNode ILSLForLoopNode.AfterthoughExpressions
+        ILSLExpressionListNode ILSLForLoopNode.AfterthoughExpressionsList
         {
             get { return AfterthoughExpressions; }
         }

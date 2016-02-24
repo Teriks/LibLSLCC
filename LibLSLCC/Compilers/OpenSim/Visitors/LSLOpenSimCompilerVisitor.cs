@@ -1432,7 +1432,7 @@ private static class UTILITIES
 
             if (node.HasAfterthoughtExpressions)
             {
-                Visit(node.AfterthoughExpressions);
+                Visit(node.AfterthoughExpressionsList);
             }
 
             Writer.WriteLine(")");
