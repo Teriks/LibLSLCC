@@ -44,6 +44,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using LSLCCEditor.Styles;
 
 namespace LSLCCEditor.SettingsUI
 {
@@ -88,7 +89,10 @@ namespace LSLCCEditor.SettingsUI
             _startingName = startingName;
             _generateNumericSuffix = generateNumericSuffix;
             _takenNames = new HashSet<string>(takenNames);
+
             InitializeComponent();
+            MetroWindowStyleInit.Init(this);
+
             Canceled = true;
 
             if (_generateNumericSuffix)
