@@ -44,6 +44,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using LSLCCEditor.Styles;
 
 namespace LSLCCEditor
 {
@@ -75,6 +76,11 @@ namespace LSLCCEditor
 
 
             InitializeComponent();
+
+
+            MetroWindowStyleInit.Init(this);
+
+
             NameAndVersion = "LSLCCEditor v" + callingAssembly.GetName().Version;
 
 

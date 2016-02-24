@@ -7,7 +7,7 @@
         KeyDown="Window_KeyDown" WindowStyle="ToolWindow" ShowInTaskbar="False" Topmost="False"
         WindowStartupLocation="CenterOwner"
         FocusManager.IsFocusScope="True"
-
+        Style="{StaticResource MetroWindowStyle}"
         Left="{Binding WindowLeft, Mode=TwoWay}"
         Top="{Binding WindowTop, Mode=TwoWay}">
     <Window.Resources>

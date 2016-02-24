@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Unhandled Exception" Height="420" Width="600" MinHeight="350" MinWidth="450" x:Name="This" WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip" Icon="lsl_script_icon.ico" Style="{StaticResource MetroWindowStyle}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

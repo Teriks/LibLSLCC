@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="LSLCCEditor" Height="640.358" Width="897.987" Closing="TabbedMainWindow_OnClosing"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip"  AllowDrop="True" Name="_this">
+        Icon="lsl_script_icon.ico" MinHeight="100" MinWidth="325" ResizeMode="CanResizeWithGrip"  AllowDrop="True" Name="_this" WindowStyle="None" Style="{StaticResource MetroWindowStyle}">
     <Window.Resources>
         
     </Window.Resources>

@@ -70,6 +70,7 @@ using LSLCCEditor.EditorTabUI;
 using LSLCCEditor.FindReplaceUI;
 using LSLCCEditor.Settings;
 using LSLCCEditor.SettingsUI;
+using LSLCCEditor.Styles;
 using LSLCCEditor.Utility.Wpf;
 using Microsoft.Win32;
 
@@ -187,8 +188,43 @@ namespace LSLCCEditor
         public MainWindow()
         {
             InitializeComponent();
+
+            MetroWindowStyleInit.Init(this);
+
+
             Initialize();
         }
+
+        private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        private void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        private void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
+        }
+
+        private void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
+        }
+
 
 
         public ObservableCollection<EditorTab> EditorTabs

@@ -1,6 +1,7 @@
 ﻿<Application x:Class="LSLCCEditor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
              StartupUri="MainWindow.xaml" Startup="App_OnStartup" Exit="App_OnExit">
     <Application.Resources>
      <ResourceDictionary>
@@ -8,7 +9,10 @@
                 <ResourceDictionary Source="Styles/ScrollViewerStyle.xaml"/>
                 <ResourceDictionary Source="Styles/FlatButtonStyle.xaml"/>
                 <ResourceDictionary Source="Styles/MenuStyle.xaml"/>
+                <ResourceDictionary Source="Styles/MetroWindowStyle.xaml"/>
+                <ResourceDictionary Source="Styles/ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="Styles/DefaultTabControlStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-     </ResourceDictionary>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

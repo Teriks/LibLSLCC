@@ -48,6 +48,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using LSLCCEditor.Styles;
 using Microsoft.Win32;
 
 #endregion
@@ -71,6 +72,9 @@ namespace LSLCCEditor
         public ExceptionView(Exception error)
         {
             InitializeComponent();
+
+            MetroWindowStyleInit.Init(this);
+
             Exception = error;
             Message = error.Message;
             StackTrace = error.StackTrace;

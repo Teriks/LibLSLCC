@@ -1,13 +1,14 @@
 ﻿#region FileInfo
+
 // 
-// File: FindReplaceDialog.xaml.cs
+// File: IsNullToVisibilityConverter.cs
 // 
 // 
 // ============================================================
 // ============================================================
 // 
 // 
-// Copyright (c) 2015, Teriks
+// Copyright (c) 2016, Teriks
 // 
 // All rights reserved.
 // 
@@ -39,51 +40,63 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
+using System;
+using System.Globalization;
 using System.Windows;
-using System.Windows.Input;
-using LSLCCEditor.Styles;
+using System.Windows.Data;
 
 #endregion
 
-namespace LSLCCEditor.FindReplaceUI
+namespace LSLCCEditor.Utility.Converters
 {
-    /// <summary>
-    ///     Interaction logic for FindReplaceDialog.xaml
-    /// </summary>
-    public partial class FindReplaceDialog : Window
+    public class IsNullToVisibilityConverter : IValueConverter
     {
-        private readonly FindReplaceMgr _theVm;
-
-        public FindReplaceDialog(FindReplaceMgr theVm)
+        public IsNullToVisibilityConverter()
         {
-            DataContext = _theVm = theVm;
-            InitializeComponent();
-
-            MetroWindowStyleInit.Init(this);
+            WhenNonNull = Visibility.Visible;
+            WhenNull = Visibility.Collapsed;
         }
 
-        private void FindNextClick(object sender, RoutedEventArgs e)
+
+        private Visibility WhenNull { get; }
+        private Visibility WhenNonNull { get; }
+
+
+        /// <summary>
+        ///     Converts a value.
+        /// </summary>
+        /// <returns>
+        ///     A converted value. If the method returns null, the valid null value is used.
+        /// </returns>
+        /// <param name="value">The value produced by the binding source.</param>
+        /// <param name="targetType">The type of the binding target property.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            _theVm.FindNext();
+            if (value == null) return WhenNull;
+            return WhenNonNull;
         }
 
-        private void ReplaceClick(object sender, RoutedEventArgs e)
-        {
-            _theVm.Replace();
-        }
 
-        private void ReplaceAllClick(object sender, RoutedEventArgs e)
+        /// <summary>
+        ///     Converts a value.
+        /// </summary>
+        /// <returns>
+        ///     A converted value. If the method returns null, the valid null value is used.
+        /// </returns>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            _theVm.ReplaceAll();
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                Close();
+            throw new NotImplementedException();
         }
     }
 }

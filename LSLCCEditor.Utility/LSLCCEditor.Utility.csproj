@@ -56,10 +56,12 @@
     <Compile Include="Converters\IntegerGreaterThanToBoolConverter.cs" />
     <Compile Include="Converters\IntegerGreaterThanToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
     <Compile Include="Converters\MultiBooleanVisibilityConverter.cs" />
     <Compile Include="DebugObjectView.xaml.cs">
       <DependentUpon>DebugObjectView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\IconConverter.cs" />
     <Compile Include="Validation\DependencyObjectValidationTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Binding\RelayCommand.cs" />
@@ -83,6 +85,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

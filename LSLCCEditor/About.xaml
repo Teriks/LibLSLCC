@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="About" Height="350" MinHeight="250" MinWidth="500" Width="550" Icon="lsl_script_icon.ico" Topmost="True" Name="_this"
-        WindowStartupLocation="CenterOwner" >
+        Title="About" Height="350" MinHeight="250" MinWidth="500" Width="550" Topmost="True" Name="_this"
+        WindowStartupLocation="CenterOwner" Icon="lsl_script_icon.ico" Style="{StaticResource MetroWindowStyle}">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Grid DockPanel.Dock="Top">

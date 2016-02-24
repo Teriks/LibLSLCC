@@ -43,6 +43,7 @@
 
 using System.Collections.ObjectModel;
 using System.Windows;
+using LSLCCEditor.Styles;
 
 namespace LSLCCEditor.SettingsUI
 {
@@ -58,6 +59,7 @@ namespace LSLCCEditor.SettingsUI
 
             InitializeComponent();
 
+            MetroWindowStyleInit.Init(this);
 
             var compilerPane = new CompilerPane {OwnerSettingsWindow = this};
             _settingPanes.Add(compilerPane);

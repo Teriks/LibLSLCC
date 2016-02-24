@@ -6,9 +6,8 @@
         mc:Ignorable="d"
         Title="Settings" Height="467" Width="824" Name="_this"
         DataContext="{Binding ElementName=_this}"
-        ResizeMode="CanResizeWithGrip"
         SizeToContent="WidthAndHeight" 
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterOwner" Icon="../lsl_script_icon.ico" Style="{StaticResource MetroWindowStyle}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

@@ -1,13 +1,14 @@
 ﻿#region FileInfo
+
 // 
-// File: FindReplaceDialog.xaml.cs
+// File: MetroWindowStyleInit.cs
 // 
 // 
 // ============================================================
 // ============================================================
 // 
 // 
-// Copyright (c) 2015, Teriks
+// Copyright (c) 2016, Teriks
 // 
 // All rights reserved.
 // 
@@ -39,51 +40,71 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Windows;
 using System.Windows.Input;
-using LSLCCEditor.Styles;
 
 #endregion
 
-namespace LSLCCEditor.FindReplaceUI
+namespace LSLCCEditor.Styles
 {
-    /// <summary>
-    ///     Interaction logic for FindReplaceDialog.xaml
-    /// </summary>
-    public partial class FindReplaceDialog : Window
+    public static class MetroWindowStyleInit
     {
-        private readonly FindReplaceMgr _theVm;
-
-        public FindReplaceDialog(FindReplaceMgr theVm)
+        public static void Init(Window window)
         {
-            DataContext = _theVm = theVm;
-            InitializeComponent();
-
-            MetroWindowStyleInit.Init(this);
+            window.CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, OnCloseWindow));
+            window.CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, OnMaximizeWindow,
+                OnCanResizeWindow));
+            window.CommandBindings.Add(new CommandBinding(SystemCommands.MinimizeWindowCommand, OnMinimizeWindow,
+                OnCanMinimizeWindow));
+            window.CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, OnRestoreWindow,
+                OnCanResizeWindow));
         }
 
-        private void FindNextClick(object sender, RoutedEventArgs e)
+
+        private static void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
         {
-            _theVm.FindNext();
+            var t = sender as Window;
+            e.CanExecute = t.ResizeMode == ResizeMode.CanResize || t.ResizeMode == ResizeMode.CanResizeWithGrip;
         }
 
-        private void ReplaceClick(object sender, RoutedEventArgs e)
+
+        private static void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
         {
-            _theVm.Replace();
+            var t = sender as Window;
+            e.CanExecute = t.ResizeMode != ResizeMode.NoResize;
         }
 
-        private void ReplaceAllClick(object sender, RoutedEventArgs e)
+
+        private static void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
         {
-            _theVm.ReplaceAll();
+            var t = target as Window;
+            SystemCommands.CloseWindow(t);
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+
+        private static void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
         {
-            if (e.Key == Key.Escape)
-                Close();
+            var t = target as Window;
+            SystemCommands.MaximizeWindow(t);
+        }
+
+
+        private static void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            var t = target as Window;
+            SystemCommands.MinimizeWindow(t);
+        }
+
+
+        private static void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            var t = target as Window;
+            SystemCommands.RestoreWindow(t);
         }
     }
 }
