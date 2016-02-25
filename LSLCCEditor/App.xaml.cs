@@ -79,14 +79,5 @@ namespace LSLCCEditor
             AppSettings.Load();
 
         }
-
-        private void Handler(SettingsPropertyChangedEventArgs<object> settingsPropertyChangedEventArgs)
-        {
-        }
-
-        private void App_OnExit(object sender, ExitEventArgs e)
-        {
-            AppSettings.Save();
-        }
     }
 }

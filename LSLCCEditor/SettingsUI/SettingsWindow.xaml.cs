@@ -41,8 +41,10 @@
 // 
 #endregion
 
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using LSLCCEditor.Settings;
 using LSLCCEditor.Styles;
 
 namespace LSLCCEditor.SettingsUI
@@ -79,6 +81,12 @@ namespace LSLCCEditor.SettingsUI
         public ObservableCollection<ISettingsPane> SettingPanes
         {
             get { return _settingPanes; }
+        }
+
+
+        private void SettingsWindow_OnClosed(object sender, EventArgs e)
+        {
+            AppSettings.Save();
         }
     }
 }

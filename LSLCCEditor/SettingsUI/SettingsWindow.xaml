@@ -7,7 +7,7 @@
         Title="Settings" Height="467" Width="824" Name="_this"
         DataContext="{Binding ElementName=_this}"
         SizeToContent="WidthAndHeight" 
-        WindowStartupLocation="CenterOwner" Icon="../lsl_script_icon.ico" Style="{StaticResource MetroWindowStyle}">
+        WindowStartupLocation="CenterOwner" Icon="../lsl_script_icon.ico" Style="{StaticResource MetroWindowStyle}" Closed="SettingsWindow_OnClosed">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
