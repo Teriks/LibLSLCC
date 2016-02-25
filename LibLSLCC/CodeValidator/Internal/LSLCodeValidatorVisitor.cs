@@ -53,7 +53,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
-using LibLSLCC.Parser;
+using LibLSLCC.AntlrParser;
 
 #endregion
 

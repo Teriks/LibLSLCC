@@ -46,7 +46,7 @@
 #region Imports
 
 using System.Collections.Generic;
-using LibLSLCC.Parser;
+using LibLSLCC.AntlrParser;
 
 #endregion
 

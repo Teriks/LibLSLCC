@@ -47,7 +47,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.Parser;
+using LibLSLCC.AntlrParser;
 
 #endregion
 

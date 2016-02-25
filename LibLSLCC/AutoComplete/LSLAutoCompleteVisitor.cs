@@ -52,7 +52,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
-using LibLSLCC.Parser;
+using LibLSLCC.AntlrParser;
 
 #endregion
 

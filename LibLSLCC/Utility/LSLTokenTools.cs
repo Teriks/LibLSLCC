@@ -46,7 +46,7 @@
 #region Imports
 
 using System.Text.RegularExpressions;
-using LibLSLCC.Parser;
+using LibLSLCC.AntlrParser;
 
 #endregion
 
