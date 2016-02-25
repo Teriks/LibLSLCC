@@ -49,7 +49,7 @@ using LibLSLCC.CodeValidator.Strategies;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST token interface for string literal nodes.

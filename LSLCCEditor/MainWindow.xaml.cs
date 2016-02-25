@@ -58,6 +58,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using LibLSLCC.CodeValidator;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;

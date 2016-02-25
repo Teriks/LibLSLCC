@@ -49,7 +49,7 @@ using LibLSLCC.Collections;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST node interface for the top level node in an LSL syntax tree.

@@ -48,6 +48,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;

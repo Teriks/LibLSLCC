@@ -47,6 +47,7 @@
 
 using System;
 using Antlr4.Runtime;
+using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 

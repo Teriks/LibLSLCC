@@ -51,7 +51,7 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     internal sealed class LSLCodeStatementError : ILSLCodeStatement
     {

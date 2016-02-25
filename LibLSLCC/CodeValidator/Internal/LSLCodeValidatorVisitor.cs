@@ -51,6 +51,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;

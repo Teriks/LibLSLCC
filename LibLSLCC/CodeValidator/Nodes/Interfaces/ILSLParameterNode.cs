@@ -45,11 +45,9 @@
 
 #region Imports
 
-
-
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST node interface for parameter function and event handler parameter definitions.

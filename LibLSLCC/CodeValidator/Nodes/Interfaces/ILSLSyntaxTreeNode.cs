@@ -49,7 +49,7 @@ using LibLSLCC.CodeValidator.Visitor;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     Base read only interface for syntax tree nodes.

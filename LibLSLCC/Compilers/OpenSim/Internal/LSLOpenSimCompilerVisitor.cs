@@ -52,6 +52,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Internal;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;

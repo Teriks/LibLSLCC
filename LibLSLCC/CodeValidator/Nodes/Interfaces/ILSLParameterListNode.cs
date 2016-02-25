@@ -49,7 +49,7 @@ using LibLSLCC.Collections;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST node interface for parameter list.  Used for function definition and event handler parameters.

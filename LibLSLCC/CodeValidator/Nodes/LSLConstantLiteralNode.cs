@@ -51,7 +51,7 @@ using LibLSLCC.CodeValidator.Visitor;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     Base class for constant literal nodes.

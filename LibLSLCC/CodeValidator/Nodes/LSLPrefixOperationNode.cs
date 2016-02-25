@@ -52,7 +52,7 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     Default <see cref="ILSLPrefixOperationNode" /> implementation used by <see cref="LSLCodeValidator" />

@@ -46,6 +46,7 @@
 #region Imports
 
 using System.Collections.Generic;
+using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 

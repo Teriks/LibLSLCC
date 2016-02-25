@@ -45,11 +45,9 @@
 
 #region Imports
 
-
-
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST Node interface for else-if statements.

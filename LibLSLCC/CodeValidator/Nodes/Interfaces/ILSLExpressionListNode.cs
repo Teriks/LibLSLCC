@@ -49,7 +49,7 @@ using LibLSLCC.Collections;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST node interface for expression list, such as function call parameters, for loop init sections/afterthoughts,

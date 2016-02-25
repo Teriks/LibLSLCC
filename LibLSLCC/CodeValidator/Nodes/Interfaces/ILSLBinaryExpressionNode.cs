@@ -45,11 +45,9 @@
 
 #region Imports
 
-
-
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST interface for binary expression nodes.

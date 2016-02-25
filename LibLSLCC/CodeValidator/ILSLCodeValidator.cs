@@ -46,6 +46,7 @@
 #region Imports
 
 using System.IO;
+using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 

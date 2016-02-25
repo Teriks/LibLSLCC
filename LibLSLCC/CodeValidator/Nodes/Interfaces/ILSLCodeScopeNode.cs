@@ -49,7 +49,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     AST node interface for code scopes.

@@ -45,8 +45,6 @@
 
 #region Imports
 
-
-
 #endregion
 
 namespace LibLSLCC.CodeValidator

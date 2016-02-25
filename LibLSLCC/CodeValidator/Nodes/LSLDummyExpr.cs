@@ -51,7 +51,7 @@ using LibLSLCC.CodeValidator.Visitor;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     internal sealed class LSLDummyExpr : ILSLExprNode
     {

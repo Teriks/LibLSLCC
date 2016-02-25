@@ -51,6 +51,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using LibLSLCC.CodeValidator;
+using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;

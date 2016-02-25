@@ -53,7 +53,7 @@ using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
     ///     Default <see cref="ILSLVariableNode" /> implementation used by <see cref="LSLCodeValidator" />
