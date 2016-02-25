@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -70,14 +70,14 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
-        internal LSLStateChangeStatementNode(LSLParser.StateChangeStatementContext context, bool isSingleBlockStatement)
+        internal LSLStateChangeStatementNode(LSLParser.StateChangeStatementContext context, bool insideSingleStatementScope)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
 
-            IsSingleBlockStatement = isSingleBlockStatement;
+            InsideSingleStatementScope = insideSingleStatementScope;
 
             StateTargetName = context.state_target.Text;
 
@@ -117,18 +117,21 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'state' keyword in the state change statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeStateKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the target state name in the state change statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeStateName { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that ends the state change statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
@@ -157,10 +160,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if this statement belongs to a single statement code scope.
-        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        ///     True if this statement belongs to a single statement code scope.
+        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        public bool IsSingleBlockStatement { get; private set; }
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        public bool InsideSingleStatementScope { get; private set; }
 
 
         /// <summary>
@@ -214,6 +218,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

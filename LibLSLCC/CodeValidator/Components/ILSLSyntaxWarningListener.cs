@@ -50,7 +50,7 @@ using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components.Interfaces
+namespace LibLSLCC.CodeValidator.Components
 {
 
     /// <summary>

@@ -41,7 +41,7 @@
 // 
 #endregion
 
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {

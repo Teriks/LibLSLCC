@@ -136,7 +136,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
                     if (!string.IsNullOrWhiteSpace(returnType) && returnType.ToLower() != "void")
                     {
-                        returnTypeParam = LSLTypeTools.FromLSLTypeString(returnType);
+                        returnTypeParam = LSLTypeTools.FromLSLTypeName(returnType);
                     }
 
 
@@ -153,7 +153,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                         foreach (var p in ps)
                         {
                             var prm = p.Trim().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-                            sig.AddParameter(new LSLParameter(LSLTypeTools.FromLSLTypeString(prm[0]), prm[1], false));
+                            sig.AddParameter(new LSLParameter(LSLTypeTools.FromLSLTypeName(prm[0]), prm[1], false));
                         }
                         yield return sig;
                     }

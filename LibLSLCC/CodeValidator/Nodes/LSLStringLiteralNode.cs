@@ -44,11 +44,11 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion

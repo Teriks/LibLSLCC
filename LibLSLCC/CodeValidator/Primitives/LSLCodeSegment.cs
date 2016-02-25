@@ -74,6 +74,7 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <summary>
         /// The source code range that encompasses all <see cref="ILSLReadOnlyCodeStatement"/> objects in the LSLCodeStatement
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>

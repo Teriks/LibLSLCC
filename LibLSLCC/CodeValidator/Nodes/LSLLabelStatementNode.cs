@@ -46,7 +46,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -69,9 +69,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        internal LSLLabelStatementNode(LSLParser.LabelStatementContext context, bool isSingleBlockStatement)
+        internal LSLLabelStatementNode(LSLParser.LabelStatementContext context, bool insideSingleStatementScope)
         {
-            IsSingleBlockStatement = isSingleBlockStatement;
+            InsideSingleStatementScope = insideSingleStatementScope;
 
             LabelName = context.label_name.Text;
 
@@ -131,18 +131,21 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the '@' symbol that prefixes the label name.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeLabelPrefix { get; private set; }
 
 
         /// <summary>
         /// The source code range of the label's name.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeLabelName { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that follows the label definition.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
@@ -182,10 +185,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if this statement belongs to a single statement code scope.
-        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        ///     True if this statement belongs to a single statement code scope.
+        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        public bool IsSingleBlockStatement { get; private set; }
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        public bool InsideSingleStatementScope { get; private set; }
 
         /// <summary>
         /// The parent node of this syntax tree node.
@@ -233,12 +237,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
         /// Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public bool SourceRangesAvailable { get; private set; }
 
 

@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -84,8 +84,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("castedExpression");
             }
 
-            CastToTypeString = context.cast_type.Text;
-            CastToType = LSLTypeTools.FromLSLTypeString(CastToTypeString);
+            CastToTypeName = context.cast_type.Text;
+            CastToType = LSLTypeTools.FromLSLTypeName(CastToTypeName);
 
             CastedExpression = castedExpression;
             CastedExpression.Parent = this;
@@ -113,7 +113,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("other");
             }
 
-            CastToTypeString = other.CastToTypeString;
+            CastToTypeName = other.CastToTypeName;
             CastToType = other.CastToType;
 
             CastedExpression = other.CastedExpression.Clone();
@@ -162,21 +162,24 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The raw type name of the type the expression is being cast to, taken from the source code.
         /// </summary>
-        public string CastToTypeString { get; private set; }
+        public string CastToTypeName { get; private set; }
 
         /// <summary>
         /// The source code range of the closing parenthesis of the enclosed cast type.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
         /// <summary>
         /// The source code range of the open parenthesis of the enclosed cast type.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
         /// <summary>
         /// The source code range of the type name used for the cast.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeCastToType { get; private set; }
 
 
@@ -229,6 +232,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 using LibLSLCC.Utility;
 
@@ -90,7 +90,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             Name = other.Name;
             Type = other.Type;
 
-            TypeString = other.TypeString;
+            TypeName = other.TypeName;
             IsConstant = other.IsConstant;
 
             ExpressionType = other.ExpressionType;
@@ -153,7 +153,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The raw type string describing the type of the variable referenced.
         /// </summary>
-        public string TypeString { get; private set; }
+        public string TypeName { get; private set; }
 
         /// <summary>
         /// Returns a version of this node type that represents its error state;  in case of a syntax error
@@ -184,8 +184,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLVariableNode
             {
                 Name = context.variable_name.Text,
-                TypeString = context.variable_type.Text,
-                Type = LSLTypeTools.FromLSLTypeString(context.variable_type.Text),
+                TypeName = context.variable_type.Text,
+                Type = LSLTypeTools.FromLSLTypeName(context.variable_type.Text),
                 ExpressionType = LSLExpressionType.GlobalVariable,
                 IsConstant = false,
                 SourceRange = new LSLSourceCodeRange(context),
@@ -212,8 +212,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLVariableNode
             {
                 Name = context.variable_name.Text,
-                TypeString = context.variable_type.Text,
-                Type = LSLTypeTools.FromLSLTypeString(context.variable_type.Text),
+                TypeName = context.variable_type.Text,
+                Type = LSLTypeTools.FromLSLTypeName(context.variable_type.Text),
                 ExpressionType = LSLExpressionType.LocalVariable,
                 IsConstant = false,
                 SourceRange = new LSLSourceCodeRange(context),
@@ -245,7 +245,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLVariableNode
             {
                 Name = name,
-                TypeString = type.ToLSLTypeString(),
+                TypeName = type.ToLSLTypeName(),
                 Type = type,
                 ExpressionType = LSLExpressionType.LibraryConstant,
                 IsConstant = true,
@@ -265,7 +265,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLVariableNode
             {
                 Name = node.Name,
-                TypeString = node.Type.ToLSLTypeString(),
+                TypeName = node.Type.ToLSLTypeName(),
                 Type = node.Type,
                 ExpressionType = LSLExpressionType.ParameterVariable,
                 IsConstant = false,
@@ -317,6 +317,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; internal set; }
 
 

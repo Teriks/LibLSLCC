@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -176,7 +176,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return _stateDeclarations ?? new GenericArray<LSLStateScopeNode>(); }
         }
 
-        ILSLStateScopeNode ILSLCompilationUnitNode.DefaultState
+        ILSLStateScopeNode ILSLCompilationUnitNode.DefaultStateNode
         {
             get { return DefaultState; }
         }
@@ -287,6 +287,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

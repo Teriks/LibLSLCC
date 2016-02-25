@@ -43,20 +43,20 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Parser;
 
-namespace LibLSLCC.CodeValidator.Visitor
+namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLFunctionAndStateDefinitionPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {
-        private readonly LSLVisitorScopeTracker _scopingManager;
+        private readonly LSLCodeValidatorVisitorScopeTracker _scopingManager;
         private readonly ILSLCodeValidatorStrategies _validatorStrategies;
 
-        public LSLFunctionAndStateDefinitionPrePass(LSLVisitorScopeTracker scopingManager,
+        public LSLFunctionAndStateDefinitionPrePass(LSLCodeValidatorVisitorScopeTracker scopingManager,
             ILSLCodeValidatorStrategies validatorStrategies)
         {
             _scopingManager = scopingManager;
@@ -309,7 +309,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (context.return_type != null)
             {
                 returnType =
-                    LSLTypeTools.FromLSLTypeString(context.return_type.Text);
+                    LSLTypeTools.FromLSLTypeName(context.return_type.Text);
             }
 
 

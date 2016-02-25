@@ -82,6 +82,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The state node for the default script state.
         /// </summary>
-        ILSLStateScopeNode DefaultState { get; }
+        ILSLStateScopeNode DefaultStateNode { get; }
     }
 }

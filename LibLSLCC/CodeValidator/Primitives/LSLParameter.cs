@@ -119,11 +119,11 @@ namespace LibLSLCC.CodeValidator.Primitives
             {
                 if (Variadic)
                 {
-                    return "params " + (Type == LSLType.Void ? "any" : Type.ToLSLTypeString()) + "[] " + Name;
+                    return "params " + (Type == LSLType.Void ? "any" : Type.ToLSLTypeName()) + "[] " + Name;
                 }
 
                 //the any part is just for future proofing at the moment
-                return (Type == LSLType.Void ? "any" : Type.ToLSLTypeString())  +" "+ Name;
+                return (Type == LSLType.Void ? "any" : Type.ToLSLTypeName())  +" "+ Name;
             }
         }
 

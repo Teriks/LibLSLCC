@@ -67,21 +67,25 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'else' keyword in the else-if statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeElseKeyword { get; }
 
         /// <summary>
         /// The source code range of the 'if' keyword in the else-if statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeIfKeyword { get; }
 
         /// <summary>
         /// The source code range of the opening parenthesis in the else-if statement where the condition area starts.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
         /// The source code range of the closing parenthesis in the else-if statement where the condition area ends.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

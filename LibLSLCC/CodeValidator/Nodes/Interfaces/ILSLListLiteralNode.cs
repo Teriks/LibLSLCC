@@ -59,17 +59,19 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The expression list node that contains all of the expressions used to initialize the list literal.
         /// This will never be null, even when the list literal was defined as being empty.
         /// </summary>
-        ILSLExpressionListNode ExpressionListNode { get; }
+        ILSLExpressionListNode ExpressionList { get; }
 
 
         /// <summary>
         /// The source code range of the list literals opening bracket.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOpenBracket { get; }
 
         /// <summary>
         /// The source code range of the list literals closing bracket.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCloseBracket { get; }
     }
 }

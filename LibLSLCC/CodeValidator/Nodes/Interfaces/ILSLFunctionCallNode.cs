@@ -69,13 +69,13 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The parameter list node containing the expressions used to call this function, this will never be null even if the parameter list is empty.
         /// </summary>
-        ILSLExpressionListNode ParamExpressionListNode { get; }
+        ILSLExpressionListNode ArgumentExpressionList { get; }
 
 
         /// <summary>
         /// The syntax tree node where the function was defined if it is a user defined function.  If the function call is to a library function this will be null.
         /// </summary>
-        ILSLFunctionDeclarationNode DefinitionNode { get; }
+        ILSLFunctionDeclarationNode Definition { get; }
 
 
         /// <summary>
@@ -86,16 +86,19 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the opening parentheses where the parameters of the function start.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
         /// The source code range of the closing parentheses where the parameters of the function end.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
 
         /// <summary>
         /// The source code range of the function name in the function call expression.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeName { get; }
     }
 }

@@ -43,7 +43,6 @@
 #region Imports
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;

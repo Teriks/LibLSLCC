@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
         /// </summary>
-        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ExpressionNodes { get; }
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> Expressions { get; }
 
         /// <summary>
         /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
@@ -75,6 +75,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// True if this expression list node actually has expression children, False if it is empty.
         /// </summary>
-        bool HasExpressionNodes { get; }
+        bool HasExpressions { get; }
     }
 }

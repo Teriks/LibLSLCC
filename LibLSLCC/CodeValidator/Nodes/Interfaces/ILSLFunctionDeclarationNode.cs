@@ -64,7 +64,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The string from the source code that represents the return type assigned to the function definition,
         /// or an empty string if no return type was assigned.
         /// </summary>
-        string ReturnTypeString { get; }
+        string ReturnTypeName { get; }
 
         /// <summary>
         /// The name of the function.
@@ -75,7 +75,15 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the function name
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeName { get; }
+
+
+        /// <summary>
+        /// The source code range of the function return type, or <c>null</c> if no return type was specified.
+        /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        LSLSourceCodeRange SourceRangeReturnType { get; }
 
         /// <summary>
         /// The return type assigned to the function definition, it will be <see cref="LSLType.Void"/> if no return type was given.
@@ -86,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The parameter list node that contains the parameter list definitions for this function.
         /// It should never be null, even if the function definition contains no parameter definitions.
         /// </summary>
-        ILSLParameterListNode ParameterListNode { get; }
+        ILSLParameterListNode ParameterList { get; }
 
 
         /// <summary>

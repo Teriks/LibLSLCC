@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -138,11 +138,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the list literals opening bracket.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeOpenBracket { get; private set; }
 
         /// <summary>
         /// The source code range of the list literals closing bracket.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeCloseBracket { get; private set; }
 
 
@@ -152,7 +154,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        ILSLExpressionListNode ILSLListLiteralNode.ExpressionListNode
+        ILSLExpressionListNode ILSLListLiteralNode.ExpressionList
         {
             get { return ExpressionListNode; }
         }
@@ -208,6 +210,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

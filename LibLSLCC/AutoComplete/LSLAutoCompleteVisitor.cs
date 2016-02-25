@@ -1688,7 +1688,7 @@ namespace LibLSLCC.AutoComplete
 
             CurrentFunctionReturnType = string.IsNullOrEmpty(returnTypeText)
                 ? LSLType.Void
-                : LSLTypeTools.FromLSLTypeString(returnTypeText);
+                : LSLTypeTools.FromLSLTypeName(returnTypeText);
 
 
             base.VisitFunctionDeclaration(context);

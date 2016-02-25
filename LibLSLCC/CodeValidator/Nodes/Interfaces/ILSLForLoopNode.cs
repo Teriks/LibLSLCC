@@ -57,11 +57,13 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the 'for' keyword in the statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeForKeyword { get; }
 
         /// <summary>
         /// The source code range of the opening parenthesis that starts the for-loop clauses area.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
@@ -69,22 +71,25 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// This property should never be null unless the for loop node is an erroneous node.
         /// Ideally you should not be handling a syntax tree containing syntax errors.
         /// </summary>
-        ILSLExpressionListNode InitExpressionsList { get; }
+        ILSLExpressionListNode InitExpressionList { get; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that separates the initialization clause from the condition clause of the for-loop;
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeFirstSemicolon { get; }
 
         /// <summary>
         /// The source code range of the semi-colon that separates the condition clause from the afterthought expressions of the for-loop;
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks> 
         LSLSourceCodeRange SourceRangeSecondSemicolon { get; }
 
         /// <summary>
         /// The source code range of the closing parenthesis that ends the for-loop clause section.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
 
         /// <summary>
@@ -92,7 +97,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// This property should never be null unless the for loop node is an erroneous node.
         /// Ideally you should not be handling a syntax tree containing syntax errors.
         /// </summary>
-        ILSLExpressionListNode AfterthoughExpressionsList { get; }
+        ILSLExpressionListNode AfterthoughExpressionList { get; }
 
 
         /// <summary>

@@ -69,21 +69,24 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The raw type name of the type the expression is being cast to, taken from the source code.
         /// </summary>
-        string CastToTypeString { get; }
+        string CastToTypeName { get; }
 
         /// <summary>
         /// The source code range of the closing parenthesis of the enclosed cast type.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
 
         /// <summary>
         /// The source code range of the open parenthesis of the enclosed cast type.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
         /// The source code range of the type name used for the cast.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCastToType { get; }
     }
 }

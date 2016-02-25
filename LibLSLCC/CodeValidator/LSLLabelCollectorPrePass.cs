@@ -42,16 +42,16 @@
 #endregion
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Parser;
 
-namespace LibLSLCC.CodeValidator.Visitor
+namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLLabelCollectorPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {
-        private readonly LSLVisitorScopeTracker _scopingManager;
+        private readonly LSLCodeValidatorVisitorScopeTracker _scopingManager;
 
         private readonly Stack<StatementIndexContainer> _statementIndexStack =
             new Stack<StatementIndexContainer>();
@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         private int _currentScopeId;
 
 
-        public LSLLabelCollectorPrePass(LSLVisitorScopeTracker scopingManager,
+        public LSLLabelCollectorPrePass(LSLCodeValidatorVisitorScopeTracker scopingManager,
             ILSLCodeValidatorStrategies validatorStrategies)
         {
             _scopingManager = scopingManager;
@@ -136,14 +136,14 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             if (LSLAntlrTreeTools.IsBracelessCodeScopeStatement(context))
             {
-                _scopingManager.EnterSingleStatementBlock(context);
+                _scopingManager.EnterSingleStatementScope(context);
 
                 _currentScopeId++;
                 _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = _currentScopeId});
                 base.VisitCodeStatement(context);
                 _statementIndexStack.Pop();
 
-                _scopingManager.ExitSingleStatementBlock();
+                _scopingManager.ExitSingleStatementScope();
             }
             else
             {
@@ -195,7 +195,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var ctx = new LSLLabelStatementNode(context, _scopingManager.InSingleStatementBlock);
+            var ctx = new LSLLabelStatementNode(context, _scopingManager.InSingleStatementScope);
 
             var statementIndexInfo = _statementIndexStack.Peek();
 

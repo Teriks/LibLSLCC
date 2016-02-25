@@ -49,7 +49,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     public interface ILSLBranchStatementNode : ILSLReadOnlyBranchStatementNode, ILSLSyntaxTreeNode
     {
 
-
+        //here for expandability later
     }
 
     /// <summary>

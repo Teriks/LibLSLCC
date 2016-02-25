@@ -2,7 +2,7 @@
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 
-namespace LibLSLCC.CodeValidator.Components.Interfaces
+namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
     /// A minimal interface for providing data about what exists in the standard LSL library.

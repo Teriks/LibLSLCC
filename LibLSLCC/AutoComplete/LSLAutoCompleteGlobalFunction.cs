@@ -53,12 +53,12 @@ namespace LibLSLCC.AutoComplete
     /// </summary>
     public sealed class LSLAutoCompleteGlobalFunction
     {
-        internal LSLAutoCompleteGlobalFunction(string name, string returnTypeString, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeReturnType,
+        internal LSLAutoCompleteGlobalFunction(string name, string returnTypeName, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeReturnType,
             LSLSourceCodeRange sourceRangeName, IList<LSLAutoCompleteLocalParameter> parameters)
         {
             Parameters = parameters.WrapWithGenericArray();
             Name = name;
-            ReturnTypeString = returnTypeString;
+            ReturnTypeName = returnTypeName;
             SourceRange = range;
 
             SourceRangeName = sourceRangeName;
@@ -117,12 +117,12 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// The return type string if a return type is specified, otherwise <c>null</c>
         /// </value>
-        public string ReturnTypeString { get; private set; }
+        public string ReturnTypeName { get; private set; }
 
         /// <summary>
         /// The full signature of the global function declaration.
         /// 
-        /// Defined as: <c>ReturnTypeString+" "+Name+ParameterSignature</c> if there is a return type specified.
+        /// Defined as: <c>ReturnTypeName+" "+Name+ParameterSignature</c> if there is a return type specified.
         /// If there is no return type then it's: <c>Name+ParameterSignature</c>
         /// </summary>
         public string FullSignature
@@ -130,9 +130,9 @@ namespace LibLSLCC.AutoComplete
             get
             {
                 var sig = "";
-                if (!string.IsNullOrEmpty(ReturnTypeString))
+                if (!string.IsNullOrEmpty(ReturnTypeName))
                 {
-                    sig += ReturnTypeString + " ";
+                    sig += ReturnTypeName + " ";
                 }
 
                 
@@ -155,7 +155,7 @@ namespace LibLSLCC.AutoComplete
 
                 if (Parameters.Count > 0)
                 {
-                    sig = string.Join(", ", Parameters.Select(x => x.TypeString + " " + x.Name));
+                    sig = string.Join(", ", Parameters.Select(x => x.TypeName + " " + x.Name));
                 }
 
                 return sig;

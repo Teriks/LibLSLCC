@@ -50,7 +50,7 @@ using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components.Interfaces
+namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
     /// Interface for a syntax error listener, this called into by the code validator

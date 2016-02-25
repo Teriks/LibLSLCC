@@ -49,7 +49,7 @@ using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -62,7 +62,7 @@ namespace LibLSLCC.CodeValidator.Nodes
     /// </summary>
     public sealed class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
     {
-        private readonly List<LSLElseIfStatementNode> _elseIfStatements = new List<LSLElseIfStatementNode>();
+        private readonly List<LSLElseIfStatementNode> _elseIfStatement = new List<LSLElseIfStatementNode>();
         private LSLElseStatementNode _elseStatement;
         private LSLIfStatementNode _ifStatement;
 // ReSharper disable UnusedParameter.Local
@@ -76,14 +76,14 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
-        internal LSLControlStatementNode(LSLParser.ControlStructureContext context, bool isSingleBlockStatement)
+        internal LSLControlStatementNode(LSLParser.ControlStructureContext context, bool insideSingleStatementScope)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
 
-            IsSingleBlockStatement = isSingleBlockStatement;
+            InsideSingleStatementScope = insideSingleStatementScope;
 
             SourceRange = new LSLSourceCodeRange(context);
 
@@ -132,7 +132,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public IEnumerable<LSLElseIfStatementNode> ElseIfStatements
         {
-            get { return _elseIfStatements ?? new List<LSLElseIfStatementNode>(); }
+            get { return _elseIfStatement ?? new List<LSLElseIfStatementNode>(); }
         }
 
 
@@ -164,7 +164,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if the control statement node has an if statement child.
         /// This can only really be false if the node contains errors.
-        /// It should always be checked before using the IfStatement child property.
         /// </summary>
         public bool HasIfStatement
         {
@@ -189,9 +188,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return IfStatement; }
         }
 
-        IEnumerable<ILSLElseIfStatementNode> ILSLControlStatementNode.ElseIfStatements
+        IEnumerable<ILSLElseIfStatementNode> ILSLControlStatementNode.ElseIfStatement
         {
-            get { return _elseIfStatements; }
+            get { return _elseIfStatement; }
         }
 
         /// <summary>
@@ -227,7 +226,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
             node.Parent = this;
-            _elseIfStatements.Add(node);
+            _elseIfStatement.Add(node);
         }
 
         private bool HaveReturnPath()
@@ -255,10 +254,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if this statement belongs to a single statement code scope.
-        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        ///     True if this statement belongs to a single statement code scope.
+        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        public bool IsSingleBlockStatement { get; private set; }
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        public bool InsideSingleStatementScope { get; private set; }
 
 
         /// <summary>
@@ -309,6 +309,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

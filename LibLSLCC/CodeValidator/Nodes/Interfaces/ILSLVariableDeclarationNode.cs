@@ -71,7 +71,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The raw type string representing the variable type, taken from the source code.
         /// </summary>
-        string TypeString { get; }
+        string TypeName { get; }
 
 
         /// <summary>
@@ -126,11 +126,13 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the type specifier for the variable declaration.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeType { get; }
 
         /// <summary>
         /// The source code range that encompasses the variables name in the declaration.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeName { get; }
 
 
@@ -138,6 +140,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The source code range of the assignment operator in the declaration expression if one was used.
         /// This value is only meaningful if either 'IsLocal' or 'IsGlobal' are true, and 'HasDeclarationExpression' is also true.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOperator { get; }
     }
 }

@@ -50,7 +50,7 @@ using System.Text;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
@@ -457,7 +457,7 @@ namespace LibLSLCC.Formatter.Visitor
         {
             ExpressionWrappingPush(false, null);
 
-            var nodeCount = node.ExpressionNodes.Count;
+            var nodeCount = node.Expressions.Count;
 
 
             int sourceStart, sourceLen;
@@ -465,7 +465,7 @@ namespace LibLSLCC.Formatter.Visitor
             if (nodeCount > 0)
             {
                 sourceStart = node.Parent.SourceRange.StartIndex + 1;
-                sourceLen = node.ExpressionNodes[0].SourceRange.StartIndex - sourceStart;
+                sourceLen = node.Expressions[0].SourceRange.StartIndex - sourceStart;
 
                 Write(_sourceReference.Substring(sourceStart, sourceLen));
             }
@@ -483,13 +483,13 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 var nodeAheadIndex = nodeIndex + 1;
 
-                Visit(node.ExpressionNodes[nodeIndex]);
+                Visit(node.Expressions[nodeIndex]);
 
                 if ((nodeIndex + 1) < nodeCount)
                 {
-                    sourceStart = node.ExpressionNodes[nodeIndex].SourceRange.StopIndex + 1;
+                    sourceStart = node.Expressions[nodeIndex].SourceRange.StopIndex + 1;
 
-                    sourceLen = node.ExpressionNodes[nodeAheadIndex].SourceRange.StartIndex - sourceStart;
+                    sourceLen = node.Expressions[nodeAheadIndex].SourceRange.StartIndex - sourceStart;
 
                     Write(_sourceReference.Substring(sourceStart, sourceLen));
                 }
@@ -498,7 +498,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (nodeCount > 0)
             {
-                sourceStart = node.ExpressionNodes.Last().SourceRange.StopIndex + 1;
+                sourceStart = node.Expressions.Last().SourceRange.StopIndex + 1;
                 sourceLen = node.Parent.SourceRange.StopIndex - sourceStart;
 
                 Write(_sourceReference.Substring(sourceStart, sourceLen));
@@ -512,7 +512,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitFunctionCallParameters(ILSLExpressionListNode node)
         {
-            var nodeCount = node.ExpressionNodes.Count;
+            var nodeCount = node.Expressions.Count;
 
 
             ExpressionWrappingPush(false, null);
@@ -523,7 +523,7 @@ namespace LibLSLCC.Formatter.Visitor
             if (nodeCount > 0)
             {
                 sourceStart = parent.SourceRangeOpenParenth.StartIndex + 1;
-                sourceLen = node.ExpressionNodes[0].SourceRange.StartIndex - sourceStart;
+                sourceLen = node.Expressions[0].SourceRange.StartIndex - sourceStart;
 
                 Write(_sourceReference.Substring(sourceStart, sourceLen));
             }
@@ -542,13 +542,13 @@ namespace LibLSLCC.Formatter.Visitor
             {
                 var nodeAheadIndex = nodeIndex + 1;
 
-                Visit(node.ExpressionNodes[nodeIndex]);
+                Visit(node.Expressions[nodeIndex]);
 
                 if (nodeAheadIndex < nodeCount)
                 {
-                    sourceStart = node.ExpressionNodes[nodeIndex].SourceRange.StopIndex + 1;
+                    sourceStart = node.Expressions[nodeIndex].SourceRange.StopIndex + 1;
 
-                    sourceLen = node.ExpressionNodes[nodeAheadIndex].SourceRange.StartIndex - sourceStart;
+                    sourceLen = node.Expressions[nodeAheadIndex].SourceRange.StartIndex - sourceStart;
                     Write(_sourceReference.Substring(sourceStart, sourceLen));
                 }
 
@@ -557,7 +557,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (nodeCount > 0)
             {
-                sourceStart = node.ExpressionNodes.Last().SourceRange.StopIndex + 1;
+                sourceStart = node.Expressions.Last().SourceRange.StopIndex + 1;
                 sourceLen = parent.SourceRangeCloseParenth.StopIndex - sourceStart;
 
                 Write(_sourceReference.Substring(sourceStart, sourceLen));
@@ -579,7 +579,7 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitFunctionCall(ILSLFunctionCallNode node)
         {
             Write(node.Name + "(");
-            Visit(node.ParamExpressionListNode);
+            Visit(node.ArgumentExpressionList);
             Write(")");
 
             return true;
@@ -596,7 +596,7 @@ namespace LibLSLCC.Formatter.Visitor
         {
             Write("[");
 
-            Visit(node.ExpressionListNode);
+            Visit(node.ExpressionList);
 
             Write("]");
 
@@ -714,7 +714,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.SourceRangeCastToType);
 
-            Write(node.CastToTypeString);
+            Write(node.CastToTypeName);
 
             WriteCommentsBetweenRange(node.SourceRangeCastToType.LastCharRange, node.SourceRangeCloseParenth);
 
@@ -849,13 +849,13 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (node.HasInitExpressions)
             {
-                WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.InitExpressionsList.SourceRange);
+                WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.InitExpressionList.SourceRange);
 
                 ExpressionWrappingPush(false, null);
-                Visit(node.InitExpressionsList);
+                Visit(node.InitExpressionList);
                 ExpressionWrappingPop();
 
-                WriteCommentsBetweenRange(node.InitExpressionsList.SourceRange, node.SourceRangeFirstSemicolon);
+                WriteCommentsBetweenRange(node.InitExpressionList.SourceRange, node.SourceRangeFirstSemicolon);
             }
             else
             {
@@ -892,19 +892,19 @@ namespace LibLSLCC.Formatter.Visitor
                 var commentsBetween =
                     CommentsBetweenRange(
                         node.SourceRangeSecondSemicolon,
-                        node.AfterthoughExpressionsList.SourceRange);
+                        node.AfterthoughExpressionList.SourceRange);
 
                 Write(commentsBetween.Count > 0 ? ";" : "; ");
 
 
                 WriteCommentsBetweenRange(commentsBetween, node.SourceRangeSecondSemicolon,
-                    node.AfterthoughExpressionsList.SourceRange);
+                    node.AfterthoughExpressionList.SourceRange);
 
                 ExpressionWrappingPush(false, null);
-                Visit(node.AfterthoughExpressionsList);
+                Visit(node.AfterthoughExpressionList);
                 ExpressionWrappingPop();
 
-                WriteCommentsBetweenRange(node.AfterthoughExpressionsList.SourceRange, node.SourceRangeCloseParenth);
+                WriteCommentsBetweenRange(node.AfterthoughExpressionList.SourceRange, node.SourceRangeCloseParenth);
             }
             else
             {
@@ -982,7 +982,7 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitCompilationUnit(ILSLCompilationUnitNode unode)
         {
             var nodes = unode.GlobalVariableDeclarations.Concat<ILSLReadOnlySyntaxTreeNode>(unode.FunctionDeclarations)
-                .Concat(new[] {unode.DefaultState})
+                .Concat(new[] {unode.DefaultStateNode})
                 .Concat(unode.StateDeclarations).ToList();
 
             nodes.Sort((a, b) => a.SourceRange.StartIndex.CompareTo(b.SourceRange.StartIndex));
@@ -1291,19 +1291,19 @@ namespace LibLSLCC.Formatter.Visitor
         public override bool VisitEventHandler(ILSLEventHandlerNode node)
         {
             Write(node.Name + "(");
-            Visit(node.ParameterListNode);
+            Visit(node.ParameterList);
             Write(")");
 
             var comments =
-                GetComments(node.ParameterListNode.SourceRange.StopIndex,
-                    node.EventBodyNode.SourceRange.StartIndex).ToList();
+                GetComments(node.ParameterList.SourceRange.StopIndex,
+                    node.Code.SourceRange.StartIndex).ToList();
 
             if (comments.Count > 0)
             {
                 _wroteCommentAfterEventParameterList = true;
 
                 var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
-                                                       node.ParameterListNode.SourceRange.LineEnd);
+                                                       node.ParameterList.SourceRange.LineEnd);
 
 
                 Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
@@ -1314,7 +1314,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     var comment = comments[commentIndex];
 
-                    if (comment.SourceRange.LineStart != node.ParameterListNode.SourceRange.LineEnd)
+                    if (comment.SourceRange.LineStart != node.ParameterList.SourceRange.LineEnd)
                     {
                         Write(GenIndent() + comment.Text);
                     }
@@ -1334,7 +1334,7 @@ namespace LibLSLCC.Formatter.Visitor
                     }
                     else
                     {
-                        var linesBetweenCommentAndNextNode = (node.EventBodyNode.SourceRange.LineStart -
+                        var linesBetweenCommentAndNextNode = (node.Code.SourceRange.LineStart -
                                                               comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode - 1));
@@ -1342,7 +1342,7 @@ namespace LibLSLCC.Formatter.Visitor
                 }
             }
 
-            Visit(node.EventBodyNode);
+            Visit(node.Code);
 
             return true;
         }
@@ -1351,19 +1351,19 @@ namespace LibLSLCC.Formatter.Visitor
         {
             if (node.ReturnType != LSLType.Void)
             {
-                Write(node.ReturnTypeString + " " + node.Name + "(");
+                Write(node.ReturnTypeName + " " + node.Name + "(");
             }
             else
             {
                 Write(node.Name + "(");
             }
 
-            Visit(node.ParameterListNode);
+            Visit(node.ParameterList);
             Write(")");
 
 
             var comments =
-                GetComments(node.ParameterListNode.SourceRange.StopIndex,
+                GetComments(node.ParameterList.SourceRange.StopIndex,
                     node.FunctionBodyNode.SourceRange.StartIndex).ToList();
 
             if (comments.Count > 0)
@@ -1372,7 +1372,7 @@ namespace LibLSLCC.Formatter.Visitor
                 _wroteCommentAfterFunctionDeclarationParameterList = true;
 
                 var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
-                                                       node.ParameterListNode.SourceRange.LineEnd);
+                                                       node.ParameterList.SourceRange.LineEnd);
 
 
                 Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment));
@@ -1384,7 +1384,7 @@ namespace LibLSLCC.Formatter.Visitor
 
                     var comment = comments[commentIndex];
 
-                    if (comment.SourceRange.LineStart != node.ParameterListNode.SourceRange.LineEnd)
+                    if (comment.SourceRange.LineStart != node.ParameterList.SourceRange.LineEnd)
                     {
                         Write(GenIndent() + comment.Text);
                     }
@@ -1686,14 +1686,14 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitParameterDefinition(ILSLParameterNode node)
         {
-            Write(node.TypeString + " " + node.Name);
+            Write(node.TypeName + " " + node.Name);
 
             return true;
         }
 
         public override bool VisitParameterDefinitionList(ILSLParameterListNode node)
         {
-            if (!node.HasParameterNodes)
+            if (!node.HasParameters)
             {
                 return true;
             }
@@ -1812,7 +1812,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (snode.HasElseIfStatements)
             {
-                nodese = nodese.Concat(snode.ElseIfStatements);
+                nodese = nodese.Concat(snode.ElseIfStatement);
             }
 
             if (snode.HasElseStatement)
@@ -1873,7 +1873,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(")");
 
-            if (node.Code.IsSingleBlockStatement)
+            if (((ILSLReadOnlyCodeStatement) node.Code).InsideSingleStatementScope)
             {
                 _indentLevel++;
 
@@ -1937,7 +1937,7 @@ namespace LibLSLCC.Formatter.Visitor
             Write(")");
 
 
-            if (node.Code.IsSingleBlockStatement)
+            if (((ILSLReadOnlyCodeStatement) node.Code).InsideSingleStatementScope)
             {
                 _indentLevel++;
 
@@ -1971,7 +1971,7 @@ namespace LibLSLCC.Formatter.Visitor
             }
 
 
-            if (node.Code.IsSingleBlockStatement)
+            if (((ILSLReadOnlyCodeStatement) node.Code).InsideSingleStatementScope)
             {
                 _indentLevel++;
 
@@ -2010,7 +2010,7 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitVariableDeclaration(ILSLVariableDeclarationNode node)
         {
-            Write(node.TypeString);
+            Write(node.TypeName);
 
             if (!WriteCommentsBetweenRange(node.SourceRangeType, node.SourceRangeName))
             {
@@ -2915,19 +2915,19 @@ namespace LibLSLCC.Formatter.Visitor
 
         public override bool VisitExpressionList(ILSLExpressionListNode node)
         {
-            var expressionCount = node.ExpressionNodes.Count;
+            var expressionCount = node.Expressions.Count;
 
             for (var expressionIndex = 0; expressionIndex < expressionCount; expressionIndex++)
             {
                 var expressionAheadIndex = expressionIndex + 1;
 
-                Visit(node.ExpressionNodes[expressionIndex]);
+                Visit(node.Expressions[expressionIndex]);
 
                 if (expressionAheadIndex < expressionCount)
                 {
-                    var start = node.ExpressionNodes[expressionIndex].SourceRange.StopIndex + 1;
+                    var start = node.Expressions[expressionIndex].SourceRange.StopIndex + 1;
 
-                    var len = node.ExpressionNodes[expressionAheadIndex].SourceRange.StartIndex - start;
+                    var len = node.Expressions[expressionAheadIndex].SourceRange.StartIndex - start;
 
                     Write(_sourceReference.Substring(start, len));
                 }

@@ -61,12 +61,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         string StateName { get; }
 
         /// <summary>
-        /// True if this state scope node represents a user defined state,  False if it is the 'default' state.
-        /// </summary>
-        bool IsDefinedState { get; }
-
-
-        /// <summary>
         /// True if this state scope node represents the 'default' state,  False if it is a user defined state.
         /// </summary>
         bool IsDefaultState { get; }
@@ -80,23 +74,27 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the opening brace of the state block's scope.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOpenBrace { get; }
 
         /// <summary>
         /// The source code range of the closing brace of the state block's scope.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCloseBrace { get; }
 
         /// <summary>
         /// The source code range where the name of the state is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeStateName { get; }
 
         /// <summary>
         /// The source code range where the state keyword is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeStateKeyword { get; }
     }
 }

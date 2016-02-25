@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// True if this parameter list node contains parameter definition nodes.
         /// </summary>
-        bool HasParameterNodes { get; }
+        bool HasParameters { get; }
 
         /// <summary>
         /// A list of parameter definition nodes that this parameter list node contains, or an empty list.

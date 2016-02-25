@@ -66,20 +66,21 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
+        /// True if this variable node references a function or event handler parameter.
+        /// </summary>
+        bool IsParameter { get; }
+
+
+        /// <summary>
         /// A reference to the <see cref="ILSLVariableDeclarationNode"/> in the syntax tree where this variable was initially declared.
         /// </summary>
         ILSLVariableDeclarationNode Declaration { get; }
 
 
         /// <summary>
-        /// True if this variable node references a function or event handler parameter.
-        /// </summary>
-        bool IsParameter { get; }
-
-        /// <summary>
         /// The raw type string describing the type of the variable referenced.
         /// </summary>
-        string TypeString { get; }
+        string TypeName { get; }
 
         /// <summary>
         /// The name of the referenced variable.

@@ -46,11 +46,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -116,7 +116,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// True if this parameter list node contains parameter definition nodes.
         /// </summary>
-        public bool HasParameterNodes
+        public bool HasParameters
         {
             get { return _parameters.Count > 0; }
         }
@@ -141,6 +141,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
@@ -237,7 +238,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                         validatorStrategies.SyntaxErrorListener.ParameterNameRedefined(
                             paramLocation,
                             parameterListType,
-                            LSLTypeTools.FromLSLTypeString(parameter.TYPE().GetText()),
+                            LSLTypeTools.FromLSLTypeName(parameter.TYPE().GetText()),
                             parameter.ID().GetText());
 
                         result.HasErrors = true;

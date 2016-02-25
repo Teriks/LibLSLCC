@@ -200,7 +200,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var value = map["return"].AsString();
                 if (value != "void")
                 {
-                    returnType = LSLTypeTools.FromLSLTypeString(value);
+                    returnType = LSLTypeTools.FromLSLTypeName(value);
                 }
 
             }
@@ -247,7 +247,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
 
                 func.AddParameter(new LSLParameter(
-                    LSLTypeTools.FromLSLTypeString(paramDetails["type"].AsString()), argName, false));
+                    LSLTypeTools.FromLSLTypeName(paramDetails["type"].AsString()), argName, false));
             }
 
             return new GenericArray<LSLLibraryFunctionSignature> {func};
@@ -261,7 +261,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
             if (!map.ContainsKey("type")) return null;
 
-            LSLType type = LSLTypeTools.FromLSLTypeString(map["type"].AsString());
+            LSLType type = LSLTypeTools.FromLSLTypeName(map["type"].AsString());
 
             if (!map.ContainsKey("value")) return null;
 
@@ -349,7 +349,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
 
                     ev.AddParameter(new LSLParameter(
-                        LSLTypeTools.FromLSLTypeString(paramDetails["type"].AsString()), argName, false));
+                        LSLTypeTools.FromLSLTypeName(paramDetails["type"].AsString()), argName, false));
                 }
             }
 

@@ -58,11 +58,13 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the opening '&lt;' bracket of the vector literal.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeOpenBracket { get; }
 
         /// <summary>
         /// The source code range of the closing '&gt;' bracket of the vector literal.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCloseBracket { get; }
 
 
@@ -76,6 +78,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the first component separator comma to appear in the vector literal.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCommaOne { get; }
 
 
@@ -83,12 +86,14 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// The expression node used to initialize the Y Axis Component of the vector literal.  
         /// This should never be null.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         ILSLReadOnlyExprNode YExpression { get; }
 
 
         /// <summary>
         /// The source code range of the second component separator comma to appear in the vector literal.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeCommaTwo { get; }
 
 

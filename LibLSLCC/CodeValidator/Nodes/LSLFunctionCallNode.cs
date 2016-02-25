@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -225,17 +225,20 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the opening parentheses where the parameters of the function start.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
         /// <summary>
         /// The source code range of the closing parentheses where the parameters of the function end.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the function name in the function call expression.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -260,12 +263,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
-        ILSLExpressionListNode ILSLFunctionCallNode.ParamExpressionListNode
+        ILSLExpressionListNode ILSLFunctionCallNode.ArgumentExpressionList
         {
             get { return ParameterListNode; }
         }
 
-        ILSLFunctionDeclarationNode ILSLFunctionCallNode.DefinitionNode
+        ILSLFunctionDeclarationNode ILSLFunctionCallNode.Definition
         {
             get { return DefinitionNode; }
         }
@@ -319,6 +322,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

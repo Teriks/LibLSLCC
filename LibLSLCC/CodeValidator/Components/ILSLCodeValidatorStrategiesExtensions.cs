@@ -43,7 +43,7 @@
 
 using System;
 
-namespace LibLSLCC.CodeValidator.Components.Interfaces
+namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
     /// Extensions for <see cref="ILSLCodeValidatorStrategies"/>

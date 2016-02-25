@@ -44,7 +44,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;
@@ -53,7 +53,7 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Visitor
+namespace LibLSLCC.CodeValidator
 {
     internal interface ILSLTreePreePass
     {
@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeValidator.Visitor
     }
 
 
-    internal sealed class LSLVisitorScopeTracker
+    internal sealed class LSLCodeValidatorVisitorScopeTracker
     {
         private readonly Stack<LSLControlStatementNode> _controlStatementStack = new Stack<LSLControlStatementNode>();
 
@@ -79,7 +79,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         private readonly Stack<Dictionary<string, LSLVariableDeclarationNode>> _scopeVariables =
             new Stack<Dictionary<string, LSLVariableDeclarationNode>>();
 
-        private readonly Stack<bool> _singleBlockStatementTrackingStack = new Stack<bool>();
+        private readonly Stack<bool> _singleStatementScopeTrackingStack = new Stack<bool>();
 
         private readonly HashMap<string, LSLStateScopeNode> _definedStates = new HashMap<string, LSLStateScopeNode>();
 
@@ -90,7 +90,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             new HashMap<string, LSLVariableDeclarationNode>();
 
 
-        public LSLVisitorScopeTracker(ILSLCodeValidatorStrategies validatorStrategies)
+        public LSLCodeValidatorVisitorScopeTracker(ILSLCodeValidatorStrategies validatorStrategies)
         {
             ValidatorStrategies = validatorStrategies;
         }
@@ -99,13 +99,13 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         public ILSLCodeValidatorStrategies ValidatorStrategies { get; private set; }
 
-        public bool InSingleStatementBlock
+        public bool InSingleStatementScope
         {
             get
             {
-                if (_singleBlockStatementTrackingStack.Count != 0)
+                if (_singleStatementScopeTrackingStack.Count != 0)
                 {
-                    return _singleBlockStatementTrackingStack.Peek();
+                    return _singleStatementScopeTrackingStack.Peek();
                 }
 
                 return false;
@@ -336,7 +336,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         public void EnterCodeScopeAfterPrePass(LSLParser.CodeScopeContext context)
         {
             _scopeTypeStack.Push(LSLAntlrTreeTools.ResolveCodeScopeNodeType(context));
-            _singleBlockStatementTrackingStack.Push(false);
+            _singleStatementScopeTrackingStack.Push(false);
             _scopeStack.Push(context);
             EnterLocalVariableScope();
         }
@@ -344,7 +344,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         public void ExitCodeScopeAfterPrePass()
         {
             _scopeTypeStack.Pop();
-            _singleBlockStatementTrackingStack.Pop();
+            _singleStatementScopeTrackingStack.Pop();
             _scopeStack.Pop();
             ExitLocalVariableScope();
         }
@@ -471,7 +471,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             _parameterScopeVariables.Clear();
             _scopeStack.Clear();
             _scopeTypeStack.Clear();
-            _singleBlockStatementTrackingStack.Clear();
+            _singleStatementScopeTrackingStack.Clear();
         }
 
         public void PreDefineState(string name)
@@ -487,27 +487,27 @@ namespace LibLSLCC.CodeValidator.Visitor
         public void EnterCodeScopeDuringPrePass(LSLParser.CodeScopeContext context)
         {
             _scopeTypeStack.Push(LSLAntlrTreeTools.ResolveCodeScopeNodeType(context));
-            _singleBlockStatementTrackingStack.Push(false);
+            _singleStatementScopeTrackingStack.Push(false);
             _scopeStack.Push(context);
             _labelScopes.Add(context, new Dictionary<string, LSLLabelStatementNode>());
         }
 
-        public void EnterSingleStatementBlock(LSLParser.CodeStatementContext statement)
+        public void EnterSingleStatementScope(LSLParser.CodeStatementContext statement)
         {
             _scopeTypeStack.Push(LSLAntlrTreeTools.ResolveCodeScopeNodeType(statement));
-            _singleBlockStatementTrackingStack.Push(true);
+            _singleStatementScopeTrackingStack.Push(true);
         }
 
-        public void ExitSingleStatementBlock()
+        public void ExitSingleStatementScope()
         {
             _scopeTypeStack.Pop();
-            _singleBlockStatementTrackingStack.Pop();
+            _singleStatementScopeTrackingStack.Pop();
         }
 
         public void ExitCodeScopeDuringPrePass()
         {
             _scopeTypeStack.Pop();
-            _singleBlockStatementTrackingStack.Pop();
+            _singleStatementScopeTrackingStack.Pop();
             _scopeStack.Pop();
         }
 

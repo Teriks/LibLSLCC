@@ -48,7 +48,7 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components.Interfaces
+namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
     ///     Represents a character error for the <see cref="ILSLStringPreProcessor"/> type.

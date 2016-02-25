@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -72,7 +72,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="afterthoughExpressions"/> or <paramref name="initExpressions"/> is <c>null</c>.</exception>
         internal LSLForLoopNode(LSLParser.ForLoopContext context, ILSLExpressionListNode initExpressions,
             ILSLExprNode conditionExpression,
-            LSLExpressionListNode afterthoughExpressions, LSLCodeScopeNode code, bool inSingleBlockStatementScope)
+            LSLExpressionListNode afterthoughExpressions, LSLCodeScopeNode code, bool inInSingleStatementScope)
         {
 
             if (context == null)
@@ -90,7 +90,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("initExpressions");
             }
 
-            IsSingleBlockStatement = inSingleBlockStatementScope;
+            InsideSingleStatementScope = inInSingleStatementScope;
 
             InitExpressionsList = initExpressions;
             InitExpressionsList.Parent = this;
@@ -167,7 +167,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return ConditionExpression; }
         }
 
-        ILSLExpressionListNode ILSLForLoopNode.AfterthoughExpressionsList
+        ILSLExpressionListNode ILSLForLoopNode.AfterthoughExpressionList
         {
             get { return AfterthoughExpressions; }
         }
@@ -177,7 +177,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return Code; }
         }
 
-        ILSLExpressionListNode ILSLForLoopNode.InitExpressionsList
+        ILSLExpressionListNode ILSLForLoopNode.InitExpressionList
         {
             get { return InitExpressionsList; }
         }
@@ -187,7 +187,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool HasInitExpressions
         {
-            get { return InitExpressionsList != null && InitExpressionsList.HasExpressionNodes; }
+            get { return InitExpressionsList != null && InitExpressionsList.HasExpressions; }
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool HasAfterthoughtExpressions
         {
-            get { return AfterthoughExpressions != null && AfterthoughExpressions.HasExpressionNodes; }
+            get { return AfterthoughExpressions != null && AfterthoughExpressions.HasExpressions; }
         }
 
         /// <summary>
@@ -247,10 +247,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if this statement belongs to a single statement code scope.
-        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        ///     True if this statement belongs to a single statement code scope.
+        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        public bool IsSingleBlockStatement { get; private set; }
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        public bool InsideSingleStatementScope { get; private set; }
 
 
         /// <summary>
@@ -286,6 +287,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
@@ -298,30 +300,35 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'for' keyword in the statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeForKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that separates the initialization clause from the condition clause of the for-loop;
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeFirstSemicolon { get; private set; }
 
 
         /// <summary>
         /// The source code range of the semi-colon that separates the condition clause from the afterthought expressions of the for-loop;
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeSecondSemicolon { get; private set; }
 
 
         /// <summary>
         /// The source code range of the opening parenthesis that starts the for-loop clauses area.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing parenthesis that ends the for-loop clause section.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 

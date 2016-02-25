@@ -46,7 +46,6 @@ using System;
 using System.IO;
 using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Visitor;
@@ -68,7 +67,7 @@ namespace LibLSLCC.CodeValidator
     public sealed class LSLCodeValidator : ILSLCodeValidator
     {
         private readonly LSLAntlrErrorHandler _antlrParserErrorHandler;
-        private readonly LSLCodeValidationVisitor _validationVisitor;
+        private readonly LSLCodeValidatorVisitor _validatorVisitor;
 
 
         /// <summary>
@@ -98,7 +97,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            _validationVisitor = new LSLCodeValidationVisitor(validatorStrategies);
+            _validatorVisitor = new LSLCodeValidatorVisitor(validatorStrategies);
             _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
         }
 
@@ -109,7 +108,7 @@ namespace LibLSLCC.CodeValidator
         public LSLCodeValidator()
         {
             var validatorStrategies = LSLCodeValidatorStrategies.Default();
-            _validationVisitor = new LSLCodeValidationVisitor(validatorStrategies);
+            _validatorVisitor = new LSLCodeValidatorVisitor(validatorStrategies);
             _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
         }
 
@@ -171,9 +170,9 @@ namespace LibLSLCC.CodeValidator
 
             try
             {
-                var tree = _validationVisitor.ValidateAndBuildTree(parseTree);
+                var tree = _validatorVisitor.ValidateAndBuildTree(parseTree);
 
-                if (_validationVisitor.HasSyntaxWarnings)
+                if (_validatorVisitor.HasSyntaxWarnings)
                 {
                     HasSyntaxWarnings = true;
                 }
@@ -191,7 +190,7 @@ namespace LibLSLCC.CodeValidator
             }
             finally
             {
-                _validationVisitor.Reset();
+                _validatorVisitor.Reset();
             }
         }
     }

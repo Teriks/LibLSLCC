@@ -52,8 +52,9 @@ namespace LibLSLCC.CodeValidator
 {
 
     /// <summary>
-    /// A simple interface for code validator's.
+    /// An interface for code validators.
     /// </summary>
+    /// <seealso cref="LSLCodeValidator"/>
     public interface ILSLCodeValidator
     {
         /// <summary>

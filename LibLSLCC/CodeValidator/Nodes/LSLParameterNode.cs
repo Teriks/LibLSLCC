@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -80,9 +80,9 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             Name = context.parameter_name.Text;
 
-            TypeString = context.parameter_type.Text;
+            TypeName = context.parameter_type.Text;
 
-            Type = LSLTypeTools.FromLSLTypeString(TypeString);
+            Type = LSLTypeTools.FromLSLTypeName(TypeName);
 
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeType = new LSLSourceCodeRange(context.parameter_type);
@@ -110,7 +110,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The string representation of the <see cref="LSLType"/> for the parameter, taken from the source code.
         /// </summary>
-        public string TypeString { get; private set; }
+        public string TypeName { get; private set; }
 
         /// <summary>
         /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
@@ -120,11 +120,13 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the parameter name.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         /// <summary>
         /// The source code range of the parameter type specifier.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeType { get; private set; }
 
 

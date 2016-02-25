@@ -44,8 +44,8 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
 
     /// <summary>
-    /// AST node interface for semi-colon statements.
-    /// There really is not an interface, its mostly just so you can do: (node is <see cref="ILSLSemicolonStatement"/>)
+    /// AST node interface for pointless semi-colon statements.
+    /// There is just so you can do: (node is <see cref="ILSLSemicolonStatement"/>)
     /// </summary>
     public interface ILSLSemicolonStatement : ILSLReadOnlyCodeStatement
     {

@@ -50,11 +50,11 @@ namespace LibLSLCC.AutoComplete
     /// </summary>
     public sealed class LSLAutoCompleteLocalParameter
     {
-        internal LSLAutoCompleteLocalParameter(string name, string typeString, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeType,
+        internal LSLAutoCompleteLocalParameter(string name, string TypeName, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeType,
             LSLSourceCodeRange sourceRangeName, LSLAutoCompleteScopeAddress address)
         {
             Name = name;
-            TypeString = typeString;
+            this.TypeName = TypeName;
             SourceRange = range;
             ScopeAddress = address;
 
@@ -96,7 +96,7 @@ namespace LibLSLCC.AutoComplete
         /// <value>
         /// A string representing the type specifier used the declare the local parameter.
         /// </value>
-        public string TypeString { get; private set; }
+        public string TypeName { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="LSLSourceCodeRange"/> that encompasses the type specifier and name of the local parameter declaration.

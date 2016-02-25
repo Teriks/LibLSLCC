@@ -48,9 +48,9 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Visitor
+namespace LibLSLCC.CodeValidator
 {
-    internal sealed partial class LSLCodeValidationVisitor
+    internal sealed partial class LSLCodeValidatorVisitor
     {
         #region InternalClasses
 

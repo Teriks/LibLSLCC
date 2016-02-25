@@ -57,53 +57,28 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
     public interface ILSLCodeScopeNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
-        ///     Constant jump descriptors for constant jumps that occur in this scope
-        ///     used only with JumpStatementAnalysis is turned on and dead code caused by
-        ///     jump statements is being detected
+        ///     Code statements that are children of this code scope, this will never be <c>null</c> but it may be empty.
         /// </summary>
-        IEnumerable<LSLConstantJumpDescription> ConstantJumps { get; }
-
-
-        /// <summary>
-        ///     Is this a normal braced code scope.
-        ///     true if IsSingleBlockStatement is false
-        /// </summary>
-        bool IsCodeScope { get; }
-
-        /// <summary>
-        ///     Code statements that are children of this code scope
-        /// </summary>
+        /// <seealso cref="HasCodeStatements"/>
         IEnumerable<ILSLReadOnlyCodeStatement> CodeStatements { get; }
 
+
         /// <summary>
-        ///     ReturnStatementNode != null
+        ///     True if this code scope contains any code statements.
         /// </summary>
-        bool HasReturnStatementNode { get; }
+        bool HasCodeStatements { get; }
+
 
         /// <summary>
-        ///     FirstDeadStatementNode != null
+        ///     True if this code scope is an implicit braceless code scope.
+        ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements.
         /// </summary>
-        bool HasDeadStatementNodes { get; }
-
-        /// <summary>
-        ///     The first statement node to be considered dead, when dead code is detected
-        /// </summary>
-        ILSLReadOnlyCodeStatement FirstDeadStatementNode { get; }
-
-        /// <summary>
-        ///     Returns descriptions of all dead code segments in the top level of this scope,
-        ///     if there are any
-        /// </summary>
-        IEnumerable<LSLDeadCodeSegment> DeadCodeSegments { get; }
-
-        /// <summary>
-        ///     The top level return statement for a code scope, if one exists
-        /// </summary>
-        ILSLReturnStatementNode ReturnStatementNode { get; }
+        /// <seealso cref="ILSLReadOnlyCodeStatement.InsideSingleStatementScope"/>
+        bool IsSingleStatementScope { get; }
 
 
         /// <summary>
-        /// The type of code scope this node represents.
+        ///     The type of code scope this node represents.
         /// </summary>
         LSLCodeScopeType CodeScopeType { get; }
     }

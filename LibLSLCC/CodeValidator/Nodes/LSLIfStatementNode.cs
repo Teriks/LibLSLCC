@@ -47,7 +47,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -105,7 +105,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// <see cref="ILSLCodeScopeNode.ConstantJumps"/> returned from <see cref="Code"/>
+        /// <see cref="LSLCodeScopeNode.ConstantJumps"/> returned from <see cref="Code"/>
         /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
@@ -122,6 +122,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// The expression inside the condition clause of the if statement.
         /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -165,18 +166,21 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the 'if' keyword of the statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeIfKeyword { get; private set; }
 
 
         /// <summary>
         /// The source code range of the opening parenthesis of the condition area.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing parenthesis of the condition area.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
@@ -212,6 +216,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>

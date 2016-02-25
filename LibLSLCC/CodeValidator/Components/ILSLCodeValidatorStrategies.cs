@@ -42,12 +42,11 @@
 #endregion
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components.Interfaces
+namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
     ///     Represents various sub strategies and listeners that are used in the <see cref="LSLCodeValidator"/> implementation of <see cref="ILSLCodeValidator"/>.

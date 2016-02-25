@@ -293,7 +293,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             string strValue;
 
 
-            var type = LSLTypeTools.FromLSLTypeString(match.Groups[1].ToString());
+            var type = LSLTypeTools.FromLSLTypeName(match.Groups[1].ToString());
 
 
             if (type == LSLType.Integer || type == LSLType.Float)
@@ -582,7 +582,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var groupString = group.ToString();
                 foreach (Match constantMatch in _constantInKeywordsAll.Matches(groupString))
                 {
-                    var type = LSLTypeTools.FromLSLTypeString(constantMatch.Groups[1].ToString());
+                    var type = LSLTypeTools.FromLSLTypeName(constantMatch.Groups[1].ToString());
                     var webVal = constantMatch.Groups[3].ToString();
                     var strVal = "";
 
@@ -608,14 +608,14 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     {
                         result =
                             new LSLLibraryConstantSignature(
-                                LSLTypeTools.FromLSLTypeString(constantMatch.Groups[1].ToString()),
+                                LSLTypeTools.FromLSLTypeName(constantMatch.Groups[1].ToString()),
                                 constantMatch.Groups[2].ToString());
                     }
                     else
                     {
                         result =
                             new LSLLibraryConstantSignature(
-                                LSLTypeTools.FromLSLTypeString(constantMatch.Groups[1].ToString()),
+                                LSLTypeTools.FromLSLTypeName(constantMatch.Groups[1].ToString()),
                                 constantMatch.Groups[2].ToString(), strVal);
                     }
 

@@ -47,7 +47,7 @@ using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -86,12 +86,13 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (context.return_type != null)
             {
-                ReturnTypeString = context.return_type.Text;
-                ReturnType = LSLTypeTools.FromLSLTypeString(ReturnTypeString);
+                ReturnTypeName = context.return_type.Text;
+                ReturnType = LSLTypeTools.FromLSLTypeName(ReturnTypeName);
+                SourceRangeReturnType = new LSLSourceCodeRange(context.return_type);
             }
             else
             {
-                ReturnTypeString = "";
+                ReturnTypeName = "";
                 ReturnType = LSLType.Void;
             }
 
@@ -114,7 +115,16 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the function name.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
+
+
+        /// <summary>
+        /// The source code range of the function return type, or <c>null</c> if no return type was specified.
+        /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        public LSLSourceCodeRange SourceRangeReturnType { get; private set; }
+
 
         /// <summary>
         /// <see cref="ILSLParameterListNode.Parameters"/> taken from <see cref="ParameterListNode"/>
@@ -158,7 +168,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// The string from the source code that represents the return type assigned to the function definition,
         /// or an empty string if no return type was assigned.
         /// </summary>
-        public string ReturnTypeString { get; private set; }
+        public string ReturnTypeName { get; private set; }
 
         /// <summary>
         /// The name of the function.
@@ -170,7 +180,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public LSLType ReturnType { get; private set; }
 
-        ILSLParameterListNode ILSLFunctionDeclarationNode.ParameterListNode
+        ILSLParameterListNode ILSLFunctionDeclarationNode.ParameterList
         {
             get { return ParameterListNode; }
         }
@@ -218,6 +228,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>

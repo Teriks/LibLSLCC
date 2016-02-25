@@ -196,7 +196,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         public string SignatureString
         {
-            get { return Type.ToLSLTypeString() + " " + Name + " = " + ValueStringAsCodeLiteral; }
+            get { return Type.ToLSLTypeName() + " " + Name + " = " + ValueStringAsCodeLiteral; }
         }
 
         /// <summary>

@@ -88,9 +88,10 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
         /// <summary>
         /// True if this statement belongs to a single statement code scope.
-        /// A single statement code scope is a brace-less code scope that can be used in control or loop statements.
+        /// A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        bool IsSingleBlockStatement { get; }
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        bool InsideSingleStatementScope { get; }
     }
 
 

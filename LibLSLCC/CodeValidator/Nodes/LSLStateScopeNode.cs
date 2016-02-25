@@ -47,7 +47,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -103,7 +103,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             StateName = context.state_name.Text;
-            IsDefinedState = true;
 
             SourceRange = new LSLSourceCodeRange(context);
 
@@ -155,7 +154,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             StateName = context.state_name.Text;
-            IsDefinedState = true;
 
             foreach (var lslEventHandlerNode in eventHandlers)
             {
@@ -192,11 +190,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public string StateName { get; private set; }
 
-
-        /// <summary>
-        /// True if this state scope node represents a user defined state,  False if it is the 'default' state.
-        /// </summary>
-        public bool IsDefinedState { get; private set; }
 
 
         /// <summary>
@@ -259,6 +252,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
@@ -271,12 +265,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the opening brace of the state block's scope.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeOpenBrace { get; private set; }
 
 
         /// <summary>
         /// The source code range of the closing brace of the state block's scope.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeCloseBrace { get; private set; }
 
 
@@ -284,12 +280,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// The source code range where the name of the state is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeStateName { get; private set; }
 
         /// <summary>
         /// The source code range where the state keyword is located.
         /// For the default state, this will be the location of the 'default' keyword.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeStateKeyword { get; private set; }
 
 

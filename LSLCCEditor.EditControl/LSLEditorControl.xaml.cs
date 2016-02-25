@@ -319,7 +319,7 @@ namespace LSLCCEditor.EditControl
             "}"
         };
 
-        private readonly HashSet<string> _singleBlockControlStatementIndentBreakTriggers = new HashSet<string>
+        private readonly HashSet<string> _singleStatementScopeIndentBreakTriggers = new HashSet<string>
         {
             "do",
             "else",
@@ -1893,7 +1893,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -1910,7 +1910,7 @@ namespace LSLCCEditor.EditControl
                 FontWeight = FontWeights.Bold
             });
 
-            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.TypeString));
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.TypeName));
             description.Inlines.Add(" " + v.Name);
             return description;
         }
@@ -1940,7 +1940,7 @@ namespace LSLCCEditor.EditControl
                 FontWeight = FontWeights.Bold
             });
 
-            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", sig.Type.ToLSLTypeString() + " "));
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", sig.Type.ToLSLTypeName() + " "));
             description.Inlines.Add(CreateHighlightedRunFromXshd("Constant", sig.Name));
             description.Inlines.Add(" = ");
             description.Inlines.Add(sig.ValueStringAsCodeLiteral + ";");
@@ -1968,7 +1968,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -1985,7 +1985,7 @@ namespace LSLCCEditor.EditControl
                 FontWeight = FontWeights.Bold
             });
 
-            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.TypeString));
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.TypeName));
             description.Inlines.Add(" " + v.Name);
             return description;
         }
@@ -2007,7 +2007,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2024,7 +2024,7 @@ namespace LSLCCEditor.EditControl
                 FontWeight = FontWeights.Bold
             });
 
-            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.TypeString));
+            description.Inlines.Add(CreateHighlightedRunFromXshd("Type", v.TypeName));
             description.Inlines.Add(" " + v.Name);
             return description;
         }
@@ -2056,7 +2056,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2081,7 +2081,7 @@ namespace LSLCCEditor.EditControl
 
             if (func.HasReturnType)
             {
-                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", func.ReturnTypeString + " "));
+                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", func.ReturnTypeName + " "));
             }
 
             description.Inlines.Add(nameRun);
@@ -2090,7 +2090,7 @@ namespace LSLCCEditor.EditControl
             var pIndex = 1;
             foreach (var param in func.Parameters)
             {
-                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.TypeString + " "));
+                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.TypeName + " "));
                 description.Inlines.Add(param.Name);
                 if (pIndex < func.Parameters.Count)
                 {
@@ -2141,7 +2141,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2187,7 +2187,7 @@ namespace LSLCCEditor.EditControl
 
                 if (func.ReturnType != LSLType.Void)
                 {
-                    description.Inlines.Add(CreateHighlightedRunFromXshd("Type", func.ReturnType.ToLSLTypeString() + " "));
+                    description.Inlines.Add(CreateHighlightedRunFromXshd("Type", func.ReturnType.ToLSLTypeName() + " "));
                 }
 
                 description.Inlines.Add(nameRun);
@@ -2196,7 +2196,7 @@ namespace LSLCCEditor.EditControl
 
                 foreach (var param in func.ConcreteParameters)
                 {
-                    description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.Type.ToLSLTypeString() + " "));
+                    description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.Type.ToLSLTypeName() + " "));
                     description.Inlines.Add(param.Name);
                     if (param.ParameterIndex < func.ConcreteParameterCount - 1)
                     {
@@ -2217,7 +2217,7 @@ namespace LSLCCEditor.EditControl
                     var variadicParameterTypeName =
                         variadicParameterType == LSLType.Void
                             ? "any"
-                            : variadicParameterType.ToLSLTypeString();
+                            : variadicParameterType.ToLSLTypeName();
 
 
                     description.Inlines.Add(new Run("params ") {FontWeight = FontWeights.Bold});
@@ -2264,7 +2264,7 @@ namespace LSLCCEditor.EditControl
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InBracelessCodeStatementArea
-                ? _singleBlockControlStatementIndentBreakTriggers
+                ? _singleStatementScopeIndentBreakTriggers
                 : _controlStatementIndentBreakTriggers;
 
             return data;
@@ -2300,7 +2300,7 @@ namespace LSLCCEditor.EditControl
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InBracelessCodeStatementArea
-                ? _singleBlockControlStatementIndentBreakTriggers
+                ? _singleStatementScopeIndentBreakTriggers
                 : _controlStatementIndentBreakTriggers;
 
             return data;
@@ -2335,7 +2335,7 @@ namespace LSLCCEditor.EditControl
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InBracelessCodeStatementArea
-                ? _singleBlockControlStatementIndentBreakTriggers
+                ? _singleStatementScopeIndentBreakTriggers
                 : _controlStatementIndentBreakTriggers;
 
             return data;
@@ -2371,7 +2371,7 @@ namespace LSLCCEditor.EditControl
             };
 
             data.IndentBreakCharacters = autoCompleteParser.InBracelessCodeStatementArea
-                ? _singleBlockControlStatementIndentBreakTriggers
+                ? _singleStatementScopeIndentBreakTriggers
                 : _controlStatementIndentBreakTriggers;
 
             return data;
@@ -2478,7 +2478,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2515,7 +2515,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2552,7 +2552,7 @@ namespace LSLCCEditor.EditControl
 
             data.ForceIndent = true;
 
-            data.IndentBreakCharacters = _singleBlockControlStatementIndentBreakTriggers;
+            data.IndentBreakCharacters = _singleStatementScopeIndentBreakTriggers;
 
             data.IndentLevel = autoCompleteParser.ScopeAddressAtOffset.ScopeLevel;
 
@@ -2575,7 +2575,7 @@ namespace LSLCCEditor.EditControl
 
         private LSLCompletionData CreateCompletionData_Type(LSLType type)
         {
-            return CreateCompletionData_Type(type.ToLSLTypeString());
+            return CreateCompletionData_Type(type.ToLSLTypeName());
         }
 
 
@@ -2672,7 +2672,7 @@ namespace LSLCCEditor.EditControl
             var pIndex = 1;
             foreach (var param in eventHandler.Parameters)
             {
-                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.Type.ToLSLTypeString() + " "));
+                description.Inlines.Add(CreateHighlightedRunFromXshd("Type", param.Type.ToLSLTypeName() + " "));
                 description.Inlines.Add(param.Name);
                 if (pIndex < eventHandler.ParameterCount)
                 {

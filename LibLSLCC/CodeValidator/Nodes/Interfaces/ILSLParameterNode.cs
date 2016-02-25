@@ -68,7 +68,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The string representation of the <see cref="LSLType"/> for the parameter, taken from the source code.
         /// </summary>
-        string TypeString { get; }
+        string TypeName { get; }
 
         /// <summary>
         /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
@@ -79,11 +79,13 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// The source code range of the parameter name.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeName { get; }
 
         /// <summary>
         /// The source code range of the parameter type specifier.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeType { get; }
     }
 }

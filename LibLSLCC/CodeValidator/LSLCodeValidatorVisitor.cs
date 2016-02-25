@@ -52,7 +52,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Components.Interfaces;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -63,9 +62,9 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Visitor
+namespace LibLSLCC.CodeValidator
 {
-    internal sealed partial class LSLCodeValidationVisitor : LSLBaseVisitor<ILSLSyntaxTreeNode>
+    internal sealed partial class LSLCodeValidatorVisitor : LSLBaseVisitor<ILSLSyntaxTreeNode>
     {
         private readonly ILSLCodeValidatorStrategies _validatorStrategies;
         private ILSLSyntaxErrorListener _syntaxErrorListenerOveride;
@@ -74,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         /// <exception cref="ArgumentException">An <see cref="LSLCodeValidatorStrategies"/> property was null</exception>
         /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <c>null</c>.</exception>
-        public LSLCodeValidationVisitor(ILSLCodeValidatorStrategies validatorStrategies)
+        public LSLCodeValidatorVisitor(ILSLCodeValidatorStrategies validatorStrategies)
         {
             if(validatorStrategies == null) throw new ArgumentNullException("validatorStrategies");
 
@@ -85,7 +84,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             _validatorStrategies = validatorStrategies;
 
-            ScopingManager = new LSLVisitorScopeTracker(_validatorStrategies);
+            ScopingManager = new LSLCodeValidatorVisitorScopeTracker(_validatorStrategies);
         }
 
 
@@ -105,7 +104,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         /// </value>
         public bool HasSyntaxErrors { get; private set; }
 
-        private LSLVisitorScopeTracker ScopingManager { get; set; }
+        private LSLCodeValidatorVisitorScopeTracker ScopingManager { get; set; }
 
         /// <summary>
         ///     Gets the syntax warning listener.  this property should NOT be used to generate warning events,
@@ -160,9 +159,9 @@ namespace LibLSLCC.CodeValidator.Visitor
             get { return _validatorStrategies.StringLiteralPreProcessor; }
         }
 
-        private bool InSingleStatementBlock
+        private bool InSingleStatementScope
         {
-            get { return ScopingManager.InSingleStatementBlock; }
+            get { return ScopingManager.InSingleStatementScope; }
         }
 
 
@@ -718,7 +717,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             IToken nameToken,
             LSLParser.ExpressionContext declarationExpression, LSLVariableScope declarationScope)
         {
-            var variableType = LSLTypeTools.FromLSLTypeString(typeToken.Text);
+            var variableType = LSLTypeTools.FromLSLTypeName(typeToken.Text);
 
 
             if (LibraryDataProvider.LibraryConstantExist(nameToken.Text))
@@ -1038,13 +1037,13 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             var code =
-                VisitCodeScopeOrSingleBlockStatement(context.code.control_structure.code) as LSLCodeScopeNode;
+                VisitCodeScopeOrSingleStatementScope(context.code.control_structure.code) as LSLCodeScopeNode;
 
 
             if (code == null)
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleStatementScope",
                         typeof (LSLCodeScopeNode));
             }
 
@@ -1083,12 +1082,12 @@ namespace LibLSLCC.CodeValidator.Visitor
                 currentControlStatement.ElseIfStatements.All(x => x.IsConstantBranch);
 
 
-            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
+            var code = VisitCodeScopeOrSingleStatementScope(context.code) as LSLCodeScopeNode;
 
             if (code == null)
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleStatementScope",
                         typeof (LSLCodeScopeNode));
             }
 
@@ -1111,7 +1110,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var result = new LSLControlStatementNode(context, InSingleStatementBlock);
+            var result = new LSLControlStatementNode(context, InSingleStatementScope);
 
             ScopingManager.EnterControlStatement(result);
 
@@ -1180,13 +1179,13 @@ namespace LibLSLCC.CodeValidator.Visitor
                 }
             }
 
-            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
+            var code = VisitCodeScopeOrSingleStatementScope(context.code) as LSLCodeScopeNode;
 
 
             if (code == null)
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleStatementScope",
                         typeof (LSLCodeScopeNode));
             }
 
@@ -1271,7 +1270,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         #region CodeScopeVisitors
 
-        private bool ValidateEventHandlerReturnPath(ILSLCodeScopeNode codeScope)
+        private bool ValidateEventHandlerReturnPath(LSLCodeScopeNode codeScope)
         {
             if (codeScope.HasDeadStatementNodes)
             {
@@ -1287,7 +1286,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        private bool ValidateCommonCodeScopeReturnPath(ILSLCodeScopeNode codeScope)
+        private bool ValidateCommonCodeScopeReturnPath(LSLCodeScopeNode codeScope)
         {
             if (codeScope.HasDeadStatementNodes && ScopingManager.InsideEventHandlerBody)
             {
@@ -1313,7 +1312,7 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        private bool ValidateFunctionReturnPath(ILSLCodeScopeNode codeScope)
+        private bool ValidateFunctionReturnPath(LSLCodeScopeNode codeScope)
         {
             var currentFunctionPredefinition = ScopingManager.CurrentFunctionBodySignature;
 
@@ -1467,13 +1466,13 @@ namespace LibLSLCC.CodeValidator.Visitor
         }
 
 
-        public ILSLSyntaxTreeNode VisitCodeScopeOrSingleBlockStatement(
+        private ILSLSyntaxTreeNode VisitCodeScopeOrSingleStatementScope(
             LSLParser.CodeStatementContext context)
         {
             if (context == null)
             {
                 throw
-                    LSLCodeValidatorInternalException.VisitContextInvalidState("VisitCodeScopeOrSingleBlockStatement");
+                    LSLCodeValidatorInternalException.VisitContextInvalidState("VisitCodeScopeOrSingleStatementScope");
             }
 
 
@@ -1491,7 +1490,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            ScopingManager.EnterSingleStatementBlock(context);
+            ScopingManager.EnterSingleStatementScope(context);
 
 
             var codeStatement = VisitCodeStatement(context) as ILSLCodeStatement;
@@ -1516,7 +1515,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            ScopingManager.ExitSingleStatementBlock();
+            ScopingManager.ExitSingleStatementScope();
 
             result.AddCodeStatement(codeStatement);
             result.EndScope();
@@ -1871,7 +1870,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             //if (!loopCondition.HasErrors)
             //    EnterLoopStatement(loopCondition.IsConstant);
 
-            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
+            var code = VisitCodeScopeOrSingleStatementScope(context.code) as LSLCodeScopeNode;
 
             //if (!loopCondition.HasErrors)
             //    ExitLoopStatement();
@@ -1879,14 +1878,14 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (code == null)
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement", typeof (LSLCodeScopeNode));
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleStatementScope", typeof (LSLCodeScopeNode));
             }
 
 
             var result = new LSLDoLoopNode(
                 context,
                 code,
-                loopCondition, InSingleStatementBlock)
+                loopCondition, InSingleStatementScope)
             {
                 HasErrors = (isError || code.HasErrors)
             };
@@ -1965,7 +1964,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             //if (!isError)
             //    EnterLoopStatement(loopCondition.IsConstant);
 
-            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
+            var code = VisitCodeScopeOrSingleStatementScope(context.code) as LSLCodeScopeNode;
 
             //if (!isError)
             //    ExitLoopStatement();
@@ -1974,7 +1973,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (code == null)
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleStatementScope",
                         typeof (LSLCodeScopeNode));
             }
 
@@ -1982,7 +1981,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var result = new LSLWhileLoopNode(
                 context,
                 loopCondition,
-                code, InSingleStatementBlock)
+                code, InSingleStatementScope)
             {
                 HasErrors = (code.HasErrors || isError)
             };
@@ -2069,7 +2068,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             //if (!isError)
             //    EnterLoopStatement(false);
 
-            var code = VisitCodeScopeOrSingleBlockStatement(context.code) as LSLCodeScopeNode;
+            var code = VisitCodeScopeOrSingleStatementScope(context.code) as LSLCodeScopeNode;
 
             //if (!isError)
             //    ExitLoopStatement();
@@ -2078,7 +2077,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             if (code == null)
             {
                 throw LSLCodeValidatorInternalException
-                    .VisitReturnTypeException("VisitCodeScopeOrSingleBlockStatement",
+                    .VisitReturnTypeException("VisitCodeScopeOrSingleStatementScope",
                         typeof (LSLCodeScopeNode));
             }
 
@@ -2088,7 +2087,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 loopInit,
                 loopCondition,
                 expressionList,
-                code, InSingleStatementBlock)
+                code, InSingleStatementScope)
             {
                 HasErrors = (isError || code.HasErrors)
             };
@@ -2117,7 +2116,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             }
 
 
-            var result = new LSLExpressionStatementNode(context, expression, InSingleStatementBlock)
+            var result = new LSLExpressionStatementNode(context, expression, InSingleStatementScope)
             {
                 HasErrors = expression.HasErrors
             };
@@ -2185,7 +2184,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                         .GetError(new LSLSourceCodeRange(context)));
                 }
 
-                result = new LSLReturnStatementNode(context, returnExpression, InSingleStatementBlock);
+                result = new LSLReturnStatementNode(context, returnExpression, InSingleStatementScope);
 
                 return ReturnFromVisit(context, result);
             }
@@ -2202,7 +2201,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     .GetError(new LSLSourceCodeRange(context)));
             }
 
-            result = new LSLReturnStatementNode(context, InSingleStatementBlock);
+            result = new LSLReturnStatementNode(context, InSingleStatementScope);
 
             return ReturnFromVisit(context, result);
         }
@@ -2210,7 +2209,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
         private bool ValidateCodeStatementTypeValidInScope(LSLParser.CodeStatementContext context)
         {
-            if (InSingleStatementBlock && context.children[0] is LSLParser.LocalVariableDeclarationContext)
+            if (InSingleStatementScope && context.children[0] is LSLParser.LocalVariableDeclarationContext)
             {
                 var ctx = (LSLParser.LocalVariableDeclarationContext) context.children[0];
 
@@ -2236,19 +2235,19 @@ namespace LibLSLCC.CodeValidator.Visitor
 
             if (context.semi_colon != null)
             {
-                if (!ScopingManager.InSingleStatementBlock)
+                if (!ScopingManager.InSingleStatementScope)
                 {
                     GenSyntaxWarning().UselessSemicolon(new LSLSourceCodeRange(context.semi_colon));
                 }
 
-                var result = new LSLSemicolonStatement(context, InSingleStatementBlock);
+                var result = new LSLSemicolonStatement(context, InSingleStatementScope);
                 return ReturnFromVisit(context, result);
             }
 
 
             if (!ValidateCodeStatementTypeValidInScope(context))
             {
-                var result = new LSLCodeStatementError(context, InSingleStatementBlock);
+                var result = new LSLCodeStatementError(context, InSingleStatementScope);
 
                 return ReturnFromVisit(context, result);
             }
@@ -2286,7 +2285,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                     LSLStateChangeStatementNode.GetError(new LSLSourceCodeRange(context)));
             }
 
-            var result = new LSLStateChangeStatementNode(context, InSingleStatementBlock);
+            var result = new LSLStateChangeStatementNode(context, InSingleStatementScope);
 
 
             return ReturnFromVisit(context, result);
@@ -2315,7 +2314,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var result = new LSLJumpStatementNode(
                 context,
                 ScopingManager.ResolvePreDefinedLabelNode(context.jump_target.Text),
-                InSingleStatementBlock);
+                InSingleStatementScope);
 
 
             return ReturnFromVisit(context, result);
@@ -2357,7 +2356,7 @@ namespace LibLSLCC.CodeValidator.Visitor
 
 
             throw new InvalidOperationException(
-                "Internal error VisitExpressionContent in "+typeof(LSLCodeValidationVisitor).Name+" returned a non " + typeof(ILSLExprNode).Name);
+                "Internal error VisitExpressionContent in "+typeof(LSLCodeValidatorVisitor).Name+" returned a non " + typeof(ILSLExprNode).Name);
         }
 
 
@@ -2921,7 +2920,7 @@ namespace LibLSLCC.CodeValidator.Visitor
             var exprRvalue = VisitExpressionContent(context.expr_rvalue);
 
 
-            var castType = LSLTypeTools.FromLSLTypeString(context.cast_type.Text);
+            var castType = LSLTypeTools.FromLSLTypeName(context.cast_type.Text);
 
 
             var validate = ValidateCastOperation(castType, exprRvalue, new LSLSourceCodeRange(context.cast_type));
@@ -3074,7 +3073,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (!expressionList.HasErrors)
                 {
                     functionSignature = ValidateLibraryFunctionCallSignatureMatch(context, functionSignatures,
-                        expressionList.ExpressionNodes);
+                        expressionList.Expressions);
 
                     if (functionSignature == null)
                     {
@@ -3128,7 +3127,7 @@ namespace LibLSLCC.CodeValidator.Visitor
                 if (!expressionList.HasErrors)
                 {
                     match = ValidateFunctionCallSignatureMatch(context, functionSignature,
-                        expressionList.ExpressionNodes);
+                        expressionList.Expressions);
                 }
 
                 result = new LSLFunctionCallNode(context, functionSignature, expressionList)

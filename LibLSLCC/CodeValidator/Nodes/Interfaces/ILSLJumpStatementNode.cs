@@ -64,24 +64,21 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         ILSLLabelStatementNode JumpTarget { get; }
 
         /// <summary>
-        /// True if this jump is guaranteed to occur in a constant manner.  
-        /// IE, the jump is always encountered regardless of program control flow.
-        /// </summary>
-        bool ConstantJump { get; }
-
-        /// <summary>
         /// The source code range of the 'jump' keyword in the jump statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeJumpKeyword { get; }
 
         /// <summary>
         /// The source code range of the target label name in the jump statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeLabelName { get; }
 
         /// <summary>
         /// The source code range of the semi-colon that follows the jump statement.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

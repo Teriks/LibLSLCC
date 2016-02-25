@@ -63,7 +63,6 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         /// <summary>
         /// True if the control statement node has an if statement child.
         /// This can only really be false if the node contains errors.
-        /// It should always be checked before using the IfStatement child property.
         /// </summary>
         bool HasIfStatement { get; }
 
@@ -73,18 +72,18 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
         bool HasElseIfStatements { get; }
 
         /// <summary>
-        /// The else statement child of this control statement node if one exists, otherwise null.
+        /// The else statement child of this control statement node if one exists, otherwise <c>null</c>.
         /// </summary>
         ILSLElseStatementNode ElseStatement { get; }
 
         /// <summary>
-        /// The if statement child of this control statement node if one exists, otherwise null.
+        /// The if statement child of this control statement node if one exists, otherwise <c>null</c>.
         /// </summary>
         ILSLIfStatementNode IfStatement { get; }
 
         /// <summary>
         /// The else-if statement children of this control statement node if one exists, otherwise an empty enumerable.
         /// </summary>
-        IEnumerable<ILSLElseIfStatementNode> ElseIfStatements { get; }
+        IEnumerable<ILSLElseIfStatementNode> ElseIfStatement { get; }
     }
 }

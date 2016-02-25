@@ -48,7 +48,7 @@ using System.Linq;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -62,7 +62,7 @@ namespace LibLSLCC.CodeValidator.Nodes
     public sealed class LSLExpressionListNode : ILSLExpressionListNode
     {
         private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
-        private readonly GenericArray<ILSLExprNode> _expressionNodes = new GenericArray<ILSLExprNode>();
+        private readonly GenericArray<ILSLExprNode> _expressions = new GenericArray<ILSLExprNode>();
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLExpressionListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -89,7 +89,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             ListType = other.ListType;
 
 
-            foreach (var lslExprNode in other.ExpressionNodes)
+            foreach (var lslExprNode in other.Expressions)
             {
                 var node = lslExprNode.Clone();
 
@@ -127,9 +127,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
         /// </summary>
-        public IReadOnlyGenericArray<ILSLExprNode> ExpressionNodes
+        public IReadOnlyGenericArray<ILSLExprNode> Expressions
         {
-            get { return _expressionNodes; }
+            get { return _expressions; }
         }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -144,9 +144,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         public LSLExpressionListType ListType { get; private set; }
 
 
-        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLExpressionListNode.ExpressionNodes
+        IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLExpressionListNode.Expressions
         {
-            get { return _expressionNodes; }
+            get { return _expressions; }
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool AllExpressionsConstant
         {
-            get { return ExpressionNodes.Count == 0 || ExpressionNodes.All(lslExprNode => lslExprNode.IsConstant); }
+            get { return Expressions.Count == 0 || Expressions.All(lslExprNode => lslExprNode.IsConstant); }
         }
 
         /// <summary>
@@ -162,15 +162,15 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public bool HasExpressionWithPossibleSideEffects
         {
-            get { return ExpressionNodes.Any(lslExprNode => lslExprNode.HasPossibleSideEffects); }
+            get { return Expressions.Any(lslExprNode => lslExprNode.HasPossibleSideEffects); }
         }
 
         /// <summary>
         /// True if this expression list node actually has expression children, False if it is empty.
         /// </summary>
-        public bool HasExpressionNodes
+        public bool HasExpressions
         {
-            get { return ExpressionNodes.Count > 0; }
+            get { return Expressions.Count > 0; }
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             node.Parent = this;
 
-            _expressionNodes.Add(node);
+            _expressions.Add(node);
         }
 
         /// <summary>
@@ -234,6 +234,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

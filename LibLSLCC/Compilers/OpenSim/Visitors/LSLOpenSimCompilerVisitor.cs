@@ -51,11 +51,11 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.CSharp;
 using LibLSLCC.Utility;
@@ -560,11 +560,11 @@ private static class UTILITIES
         {
             var functionName = FunctionNamePrefix + node.Name;
 
-            if (node.ParamExpressionListNode.ExpressionNodes.Count > 0)
+            if (node.ArgumentExpressionList.Expressions.Count > 0)
             {
                 Writer.Write(functionName + "(");
 
-                VisitUserFunctionCallParameters(node.ParamExpressionListNode);
+                VisitUserFunctionCallParameters(node.ArgumentExpressionList);
 
                 Writer.Write(")");
             }
@@ -599,12 +599,12 @@ private static class UTILITIES
             {
                 var modInvokeFunction = "this." + _modInvokeFunctionMap[node.Signature.ReturnType];
 
-                var afterName = node.ParamExpressionListNode.ExpressionNodes.Count > 0 ? ", " : "";
+                var afterName = node.ArgumentExpressionList.Expressions.Count > 0 ? ", " : "";
 
                 Writer.Write(modInvokeFunction + "(\"" + node.Name + "\"" + afterName);
 
 
-                VisitLibraryFunctionCallParameters(node.ParamExpressionListNode);
+                VisitLibraryFunctionCallParameters(node.ArgumentExpressionList);
 
                 Writer.Write(")");
             }
@@ -612,11 +612,11 @@ private static class UTILITIES
             {
                 var functionName = "this." + node.Name;
 
-                if (node.ParamExpressionListNode.ExpressionNodes.Count > 0)
+                if (node.ArgumentExpressionList.Expressions.Count > 0)
                 {
                     Writer.Write(functionName + "(");
 
-                    VisitLibraryFunctionCallParameters(node.ParamExpressionListNode);
+                    VisitLibraryFunctionCallParameters(node.ArgumentExpressionList);
 
                     Writer.Write(")");
                 }
@@ -761,11 +761,11 @@ private static class UTILITIES
 
         public override bool VisitExpressionList(ILSLExpressionListNode node)
         {
-            if (node.HasExpressionNodes)
+            if (node.HasExpressions)
             {
-                if (node.ExpressionNodes.Count == 1)
+                if (node.Expressions.Count == 1)
                 {
-                    var expression = node.ExpressionNodes[0];
+                    var expression = node.Expressions[0];
                     Visit(expression);
                     return false;
                 }
@@ -773,14 +773,14 @@ private static class UTILITIES
 
                 var i = 0;
 
-                for (; i < node.ExpressionNodes.Count - 1; i++)
+                for (; i < node.Expressions.Count - 1; i++)
                 {
-                    var expression = node.ExpressionNodes[i];
+                    var expression = node.Expressions[i];
                     Visit(expression);
                     Writer.Write(",");
                 }
 
-                var lastExpression = node.ExpressionNodes[i];
+                var lastExpression = node.Expressions[i];
 
                 Visit(lastExpression);
             }
@@ -1001,10 +1001,10 @@ private static class UTILITIES
 
         public override bool VisitListLiteral(ILSLListLiteralNode node)
         {
-            if (node.ExpressionListNode.HasExpressionNodes)
+            if (node.ExpressionList.HasExpressions)
             {
                 Writer.Write("(new LSL_Types.list(");
-                Visit(node.ExpressionListNode);
+                Visit(node.ExpressionList);
                 Writer.Write("))");
             }
             else
@@ -1111,7 +1111,7 @@ private static class UTILITIES
 
         private static string LSLType_To_CSharpDefaultInitializer(string name)
         {
-            var type = LSLTypeTools.FromLSLTypeString(name);
+            var type = LSLTypeTools.FromLSLTypeName(name);
 
             if (type == LSLType.String || type == LSLType.Key)
             {
@@ -1222,7 +1222,7 @@ private static class UTILITIES
                 }
                 else
                 {
-                    Writer.Write(LSLType_To_CSharpDefaultInitializer(gvar.TypeString));
+                    Writer.Write(LSLType_To_CSharpDefaultInitializer(gvar.TypeName));
                     Writer.WriteLine(";");
                 }
             }
@@ -1294,7 +1294,7 @@ private static class UTILITIES
                 }
                 else
                 {
-                    Writer.Write(LSLType_To_CSharpDefaultInitializer(gvar.TypeString));
+                    Writer.Write(LSLType_To_CSharpDefaultInitializer(gvar.TypeName));
                     Writer.WriteLine(";");
                 }
             }
@@ -1417,7 +1417,7 @@ private static class UTILITIES
 
             if (node.HasInitExpressions)
             {
-                Visit(node.InitExpressionsList);
+                Visit(node.InitExpressionList);
             }
 
             Writer.Write(";");
@@ -1432,7 +1432,7 @@ private static class UTILITIES
 
             if (node.HasAfterthoughtExpressions)
             {
-                Visit(node.AfterthoughExpressionsList);
+                Visit(node.AfterthoughExpressionList);
             }
 
             Writer.WriteLine(")");
@@ -1524,7 +1524,7 @@ private static class UTILITIES
                 Writer.Write(" ");
                 Writer.Write(variableName);
                 Writer.Write(" = ");
-                Writer.Write(LSLType_To_CSharpDefaultInitializer(deadVariableDeclarationNode.TypeString));
+                Writer.Write(LSLType_To_CSharpDefaultInitializer(deadVariableDeclarationNode.TypeName));
                 Writer.WriteLine(";");
             }
 
@@ -1729,7 +1729,7 @@ private static class UTILITIES
             Writer.Write(Environment.NewLine + Environment.NewLine);
 
 
-            VisitDefaultState(unode.DefaultState);
+            VisitDefaultState(unode.DefaultStateNode);
 
 
             if (_binOpsUsed.Count > 0)
@@ -1769,10 +1769,10 @@ private static class UTILITIES
             var handlerName = _currentLslStateNode.StateName + "_event_" + node.Name;
 
 
-            if (node.ParameterListNode.HasParameterNodes)
+            if (node.ParameterList.HasParameters)
             {
                 Writer.Write("public void " + handlerName + "(");
-                Visit(node.ParameterListNode);
+                Visit(node.ParameterList);
                 Writer.WriteLine(")");
             }
             else
@@ -1780,7 +1780,7 @@ private static class UTILITIES
                 Writer.WriteLine("public void " + handlerName + "()");
             }
 
-            Visit(node.EventBodyNode);
+            Visit(node.Code);
 
             _currentLslEventHandlerNode = null;
 
@@ -1815,9 +1815,9 @@ private static class UTILITIES
 
             Writer.Write(functionName + "(");
 
-            if (node.ParameterListNode.HasParameterNodes)
+            if (node.ParameterList.HasParameters)
             {
-                Visit(node.ParameterListNode);
+                Visit(node.ParameterList);
             }
 
             Writer.WriteLine(")");
@@ -2060,7 +2060,7 @@ private static class UTILITIES
                 Writer.Write(" ");
                 Writer.Write(variableName);
                 Writer.Write(" = ");
-                Writer.Write(LSLType_To_CSharpDefaultInitializer(node.TypeString));
+                Writer.Write(LSLType_To_CSharpDefaultInitializer(node.TypeName));
                 Writer.WriteLine(";");
             }
             else

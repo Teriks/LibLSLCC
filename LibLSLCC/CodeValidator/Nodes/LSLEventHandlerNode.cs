@@ -46,7 +46,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
-using LibLSLCC.CodeValidator.ValidatorNodeVisitor;
+using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -122,6 +122,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range of the event handler name.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
 
@@ -136,12 +137,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         public string Name { get; private set; }
 
 
-        ILSLCodeScopeNode ILSLEventHandlerNode.EventBodyNode
+        ILSLCodeScopeNode ILSLEventHandlerNode.Code
         {
             get { return EventBodyNode; }
         }
 
-        ILSLParameterListNode ILSLEventHandlerNode.ParameterListNode
+        ILSLParameterListNode ILSLEventHandlerNode.ParameterList
         {
             get { return ParameterListNode; }
         }
@@ -174,6 +175,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         /// The source code range that this syntax tree node occupies.
         /// </summary>
+        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 

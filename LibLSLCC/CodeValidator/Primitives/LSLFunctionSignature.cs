@@ -199,7 +199,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 var returnString = "";
                 if (ReturnType != LSLType.Void)
                 {
-                    returnString = ReturnType.ToLSLTypeString() + " ";
+                    returnString = ReturnType.ToLSLTypeName() + " ";
                 }
 
                 var paramNames = Parameters.Select(x => x.SignatureString);

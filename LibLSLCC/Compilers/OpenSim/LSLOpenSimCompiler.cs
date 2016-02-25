@@ -45,7 +45,7 @@
 using System;
 using System.IO;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Components.Interfaces;
+using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Compilers.OpenSim.Visitors;
 using LibLSLCC.LibraryData;
