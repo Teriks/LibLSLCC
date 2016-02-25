@@ -600,7 +600,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void ImportsCopyToClipboard_OnClick(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetData(DataFormats.Text, string.Join(Environment.NewLine, NamespaceNameListBox.SelectedItems));
+            Clipboard.SetData(DataFormats.Text, string.Join(Environment.NewLine, NamespaceNameListBox.SelectedItems.Cast<object>().Select(x=>x.ToString())));
         }
 
         private void Rename_OnClick(object sender, RoutedEventArgs e)
