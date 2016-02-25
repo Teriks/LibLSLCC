@@ -192,14 +192,6 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #endregion
 
-        #region AccessType enum
-
-        #endregion
-
-        #region Component enum
-
-        #endregion
-
         #region ILSLExprNode Members
 
         /// <summary>
