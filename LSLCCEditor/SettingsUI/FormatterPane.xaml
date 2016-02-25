@@ -59,7 +59,7 @@
                 <ResourceDictionary x:Key="ItemsControlStyles">
                     <Style TargetType="StackPanel" BasedOn="{StaticResource StackPanelStyle}" />
                     <Style TargetType="xctk:IntegerUpDown" BasedOn="{StaticResource IntegerUpDownStyle}" />
-                    <Style TargetType="CheckBox">
+                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
                         <Setter Property="FlowDirection" Value="RightToLeft" />
                         <Setter Property="VerticalContentAlignment" Value="Center" />
                         <Setter Property="VerticalAlignment" Value="Center"/>

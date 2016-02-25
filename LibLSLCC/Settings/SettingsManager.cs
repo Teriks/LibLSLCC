@@ -47,6 +47,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -76,8 +77,7 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        ///     Create a <see cref="SettingsManager{T}" /> with no initial settings object, one must be loaded with
-        ///     <see cref="Load" />.
+        ///     Create a <see cref="SettingsManager{T}" /> with no initial settings object.
         /// </summary>
         public SettingsManager()
         {
@@ -122,11 +122,42 @@ namespace LibLSLCC.Settings
             var writerSettings = new XmlWriterSettings
             {
                 Indent = true,
+                Encoding = Encoding.Unicode,
                 NewLineHandling = NewLineHandling.Entitize,
-                CloseOutput = true
+                CloseOutput = false,
             };
 
-            using (var writer = XmlWriter.Create(File.Create(file), writerSettings))
+            using (var f = File.Create(file))
+            {
+                using (var writer = XmlWriter.Create(f, writerSettings))
+                {
+                    serializer.Serialize(writer, Settings);
+                }
+
+                f.Flush(true);
+            }
+        }
+
+
+        /// <summary>
+        ///     Save the settings object to a stream.
+        /// </summary>
+        /// <param name="stream">The stream to save the settings to.</param>
+        /// <param name="closeOutput"><c>true</c> if <paramref name="stream"/> should be closed by this function, default is <c>false</c>.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="stream" /> value is null.</exception>
+        public void Save(Stream stream, bool closeOutput = false)
+        {
+            var serializer = new XmlSerializer(typeof(T));
+
+            var writerSettings = new XmlWriterSettings
+            {
+                Indent = true,
+                Encoding = Encoding.Unicode,
+                NewLineHandling = NewLineHandling.Entitize,
+                CloseOutput = closeOutput
+            };
+
+            using (var writer = XmlWriter.Create(stream, writerSettings))
             {
                 serializer.Serialize(writer, Settings);
             }
@@ -165,15 +196,47 @@ namespace LibLSLCC.Settings
         ///     <paramref name="file" /> specified a directory.-or- The caller does not
         ///     have the required permission.
         /// </exception>
+        /// <exception cref="InvalidOperationException">An error occurred during deserialization. The original exception is available using the <see cref="P:System.Exception.InnerException" /> property. </exception>
         public void Load(string file)
         {
             var serializer = new XmlSerializer(typeof (T));
 
-
-            using (var reader = new XmlTextReader(File.OpenRead(file)))
+            var settings = new XmlReaderSettings()
             {
-                reader.WhitespaceHandling = WhitespaceHandling.All;
+                IgnoreWhitespace = false,
+                CloseInput = false
+            };
+
+            using (var f = File.OpenRead(file))
+            using (var reader = XmlReader.Create(f, settings))
+            {
                 Settings = (T) serializer.Deserialize(reader);
+            }
+
+            DefaultValueInitializer.Init(Settings);
+        }
+
+
+        /// <summary>
+        ///     Load the settings object from the specified file.
+        /// </summary>
+        /// <param name="input">The stream to read the managed settings object from.</param>
+        /// <param name="closeInput">whether or not this function should close <paramref name="input"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="input" /> is null. </exception>
+        /// <exception cref="InvalidOperationException">An error occurred during deserialization. The original exception is available using the <see cref="P:System.Exception.InnerException" /> property. </exception>
+        public void Load(Stream input, bool closeInput = false)
+        {
+            var serializer = new XmlSerializer(typeof(T));
+
+            var settings = new XmlReaderSettings()
+            {
+                IgnoreWhitespace = false,
+                CloseInput = closeInput
+            };
+
+            using (var reader = XmlReader.Create(input, settings))
+            {
+                Settings = (T)serializer.Deserialize(reader);
             }
 
             DefaultValueInitializer.Init(Settings);

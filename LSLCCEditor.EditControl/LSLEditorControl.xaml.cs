@@ -3205,8 +3205,8 @@ namespace LSLCCEditor.EditControl
         private IHighlightingDefinition LoadXSHD()
         {
             using (var strm = GetType().Assembly.GetManifestResourceStream(GetType().Namespace + ".LSL.xshd"))
+            using (var reader = XmlReader.Create(strm))
             {
-                var reader = new XmlTextReader(strm);
                 return HighlightingLoader.Load(reader, HighlightingManager.Instance);
             }
         }

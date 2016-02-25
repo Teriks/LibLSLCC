@@ -173,7 +173,7 @@ namespace LSLCCEditor.Settings
             {
                 MessageBox.Show(
                     "There was a problem with the application settings, the application settings file could not be found."
-                    + Environment.NewLine +
+                    + Environment.NewLine + Environment.NewLine +
                     "The file will be created and default settings will be applied.",
                     "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -184,7 +184,7 @@ namespace LSLCCEditor.Settings
             {
                 MessageBox.Show(
                     "There was a problem with the application settings, the applications data directory could not be found."
-                    + Environment.NewLine +
+                    + Environment.NewLine + Environment.NewLine +
                     "The directory will be created and default settings will be applied.",
                     "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -197,9 +197,8 @@ namespace LSLCCEditor.Settings
                 {
                     MessageBox.Show(
                         "The application settings directory could not be created." + Environment.NewLine +
-                        "The application will now exit."
-                        + Environment.NewLine
-                        + Environment.NewLine + "Error: " + e.Message,
+                        "The application will now exit." + Environment.NewLine + Environment.NewLine +
+                        "Error: " + e.Message,
                         "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     Environment.Exit(1);

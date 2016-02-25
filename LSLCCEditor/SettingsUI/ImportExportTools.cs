@@ -52,7 +52,7 @@ namespace LSLCCEditor.SettingsUI
 {
     internal static class ImportExportTools
     {
-        public static void DoImportSettingsWindow(Window owner, string fileFilter, string fileExt, Action<XmlTextReader> serialize)
+        public static void DoImportSettingsWindow(Window owner, string fileFilter, string fileExt, Action<XmlReader> serialize)
         {
             var openDialog = new OpenFileDialog
             {
@@ -66,9 +66,16 @@ namespace LSLCCEditor.SettingsUI
                 return;
             }
 
+            var settings = new XmlReaderSettings()
+            {
+                CloseInput = false,
+                IgnoreWhitespace = false
+            };
+
             try
             {
-                using (var file = new XmlTextReader(openDialog.OpenFile()))
+                using (var f = openDialog.OpenFile())
+                using (var file = XmlReader.Create(f, settings))
                 {
                     serialize(file);
                 }
@@ -86,7 +93,7 @@ namespace LSLCCEditor.SettingsUI
         }
 
 
-        public static void DoExportSettingsWindow(Window owner, string fileFilter, string fileName, Action<XmlTextWriter> serialize)
+        public static void DoExportSettingsWindow(Window owner, string fileFilter, string fileName, Action<XmlWriter> serialize)
         {
             var saveDialog = new SaveFileDialog
             {
@@ -100,12 +107,24 @@ namespace LSLCCEditor.SettingsUI
                 return;
             }
 
+            var settings = new XmlWriterSettings()
+            {
+                CloseOutput = false,
+                Encoding = Encoding.Unicode,
+                Indent = true,
+                NewLineHandling = NewLineHandling.Entitize
+            };
+
             try
             {
-                using (var file = new XmlTextWriter(saveDialog.OpenFile(), Encoding.Unicode))
+                using (var f = saveDialog.OpenFile())
                 {
-                    file.Formatting = Formatting.Indented;
-                    serialize(file);
+                    using (var file = XmlWriter.Create(f, settings))
+                    {
+                        serialize(file);
+                    }
+
+                    f.Flush();
                 }
             }
             catch (Exception ex)

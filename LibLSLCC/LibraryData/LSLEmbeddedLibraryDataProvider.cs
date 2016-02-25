@@ -120,9 +120,10 @@ namespace LibLSLCC.LibraryData
                         "Could not locate manifest resource LibLSLCC.LibraryData.default.xml");
                 }
 
-                var reader = new XmlTextReader(libraryData);
-
-                FillFromXml(reader, loadOptions);
+                using (var reader = XmlReader.Create(libraryData))
+                {
+                    FillFromXml(reader, loadOptions);
+                }
             }
         }
 

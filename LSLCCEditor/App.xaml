@@ -12,6 +12,8 @@
                 <ResourceDictionary Source="Styles/MetroWindowStyle.xaml"/>
                 <ResourceDictionary Source="Styles/ComboBoxStyle.xaml"/>
                 <ResourceDictionary Source="Styles/DefaultTabControlStyle.xaml"/>
+                <ResourceDictionary Source="Styles/CheckBoxStyle.xaml"/>
+                <ResourceDictionary Source="Styles/TextBoxStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

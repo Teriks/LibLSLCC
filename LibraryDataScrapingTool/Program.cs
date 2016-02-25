@@ -133,7 +133,8 @@ namespace LibraryDataScrapingTools
 
                 foreach (var filename in dialog.FileNames)
                 {
-                    using (var reader = new XmlTextReader(File.OpenRead(filename)))
+                    using (var f = File.OpenRead(filename))
+                    using (var reader = XmlReader.Create(f))
                     {
                         firestormScriptLibraries.Add(ScriptLibrary.Read(reader));
                     }
@@ -518,14 +519,16 @@ namespace LibraryDataScrapingTools
             {
                 libraryDataOutputFilePath = saveGeneratedLibraryDataDialog.FileName;
 
-                using (
-                    var writer = new XmlTextWriter(saveGeneratedLibraryDataDialog.OpenFile(), Encoding.Unicode)
-                    {
-                        Formatting = Formatting.Indented
-                    })
+                var writerSettings = new XmlWriterSettings()
                 {
+                    Indent = true,
+                    Encoding = Encoding.Unicode
+                };
 
-                    provider.WriteXml(writer, true);
+                using (var strm = saveGeneratedLibraryDataDialog.OpenFile())
+                using (var file = XmlWriter.Create(strm, writerSettings))
+                {
+                    provider.WriteXml(file, true);
                 }
             }
 
@@ -614,7 +617,8 @@ namespace LibraryDataScrapingTools
             var rightDiffLibraryDataProvider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
             rightDiffLibraryDataProvider.AddSubsetDescriptions(SubsetDescriptions);
 
-            using (var file = new XmlTextReader(selectRightDialog.OpenFile()))
+            using (var f = selectRightDialog.OpenFile())
+            using (var file = XmlReader.Create(f))
             {
                 rightDiffLibraryDataProvider.FillFromXml(file);
             }
@@ -672,9 +676,15 @@ namespace LibraryDataScrapingTools
                 }
                 else
                 {
-                    using (var file = new XmlTextWriter(saveFileLibraryData.OpenFile(), Encoding.Unicode))
+                    var writerSettings = new XmlWriterSettings()
                     {
-                        file.Formatting = Formatting.Indented;
+                        Indent = true,
+                        Encoding = Encoding.Unicode
+                    };
+
+                    using (var strm = saveFileLibraryData.OpenFile())
+                    using (var file = XmlWriter.Create(strm, writerSettings))
+                    {
                         diff.NotInRight.WriteXml(file, true);
                     }
                 }
@@ -731,9 +741,15 @@ namespace LibraryDataScrapingTools
                 }
                 else
                 {
-                    using (var file = new XmlTextWriter(saveFileLibraryData.OpenFile(), Encoding.Unicode))
+                    var writerSettings = new XmlWriterSettings()
                     {
-                        file.Formatting = Formatting.Indented;
+                        Indent = true,
+                        Encoding = Encoding.Unicode
+                    };
+
+                    using (var strm = saveFileLibraryData.OpenFile())
+                    using (var file = XmlWriter.Create(strm, writerSettings))
+                    {
                         diff.NotInLeft.WriteXml(file, true);
                     }
                 }

@@ -332,7 +332,13 @@ namespace LibLSLCC.LibraryData
                 throw new ArgumentException("Filename cannot be whitespace", "filename");
             }
 
-            using (var reader = new XmlTextReader(new StreamReader(filename, true)))
+            var settings = new XmlReaderSettings()
+            {
+                IgnoreWhitespace = false
+            };
+
+            using (var streamReader = new StreamReader(filename, true))
+            using (var reader = XmlReader.Create(streamReader, settings))
             {
                 reader.ReadStartElement(RootElementName);
 
@@ -508,7 +514,14 @@ namespace LibLSLCC.LibraryData
 
             ClearLibraryData();
 
-            using (var reader = new XmlTextReader(new StreamReader(filename, true)))
+
+            var settings = new XmlReaderSettings()
+            {
+                IgnoreWhitespace = false
+            };
+
+            using (var streamReader = new StreamReader(filename, true))
+            using (var reader = XmlReader.Create(streamReader, settings))
             {
                 reader.ReadStartElement(RootElementName);
 
