@@ -58,12 +58,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using LibLSLCC.CodeValidator;
-#if !DEBUG
-//Prevent resharper from removing this import when cleaning up in debug mode.
-//It's not used in debug mode because the debug mode editor does not catch compiler internal exceptions.
-//LibLSLCC.Compilers.LSLCompilerInternalException happens to be the only thing referenced in this file from the following namespace.
 using LibLSLCC.Compilers;
-#endif
 using LibLSLCC.Formatter;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
