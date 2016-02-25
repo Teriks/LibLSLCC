@@ -178,7 +178,7 @@ namespace LSLCCEditor.SettingsUI
         {
 
             var dialogResult = MessageBox.Show(OwnerSettingsWindow,
-            "Are you sure you want to overwrite the currently selected configuration by importing one over it?", "Overwrite Selected Configuration?",
+            "Are you sure you want to overwrite the currently selected formatter configuration by importing another over it?", "Overwrite Selected Configuration?",
             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (dialogResult != MessageBoxResult.Yes) return;

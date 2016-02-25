@@ -634,7 +634,7 @@ namespace LSLCCEditor.SettingsUI
         private void Import_OnClick(object sender, RoutedEventArgs e)
         {
             var dialogResult = MessageBox.Show(OwnerSettingsWindow,
-                "Are you sure you want to overwrite the currently selected compiler configuration by importing one over it?",
+                "Are you sure you want to overwrite the currently selected compiler configuration by importing another over it?",
                 "Overwrite Selected Compiler Configuration?",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
 
