@@ -47,6 +47,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using LibLSLCC.AntlrParser;
 
 #endregion
@@ -74,6 +75,21 @@ namespace LibLSLCC.CodeValidator
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLFloatLiteralNode(LSLFloatLiteralNode other) : base(other)
         {
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLFloatLiteralNode"/> with a positive floating point value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="value"/> is not positive; add to a prefix negate node instead.</exception>
+        /// <exception cref="ArithmeticException"><paramref name="value" /> is equal to <see cref="F:System.Single.NaN" />. </exception>
+        public LSLFloatLiteralNode(float value) : base(value.ToString(CultureInfo.InvariantCulture), LSLType.Float, null)
+        {
+            if (Math.Sign(value) < 0)
+            {
+                throw new ArgumentOutOfRangeException("value", "value must positive, add to a prefix negate node instead.");
+            }
         }
 
 

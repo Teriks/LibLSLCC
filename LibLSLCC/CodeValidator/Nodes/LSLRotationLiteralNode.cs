@@ -68,20 +68,24 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
+        /// <summary>
+        ///  Construct an <see cref="LSLRotationLiteralNode"/> with the given component expressions.
+        /// </summary>
+        /// <param name="x">The 'x' rotation component expression.</param>
+        /// <param name="y">The 'y' rotation component expression.</param>
+        /// <param name="z">The 'z' rotation component expression.</param>
+        /// <param name="s">The 's' rotation component expression.</param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="context" /> or
         ///     <paramref name="x" /> or
         ///     <paramref name="y" /> or
         ///     <paramref name="z" /> or
         ///     <paramref name="s" /> is <c>null</c>.
         /// </exception>
-        internal LSLRotationLiteralNode(LSLParser.RotationLiteralContext context, ILSLExprNode x, ILSLExprNode y,
+        public LSLRotationLiteralNode(ILSLExprNode x, ILSLExprNode y,
             ILSLExprNode z, ILSLExprNode s)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
+
             if (x == null)
             {
                 throw new ArgumentNullException("x");
@@ -108,6 +112,23 @@ namespace LibLSLCC.CodeValidator
             YExpression.Parent = this;
             ZExpression.Parent = this;
             SExpression.Parent = this;
+        }
+
+
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or
+        ///     <paramref name="x" /> or
+        ///     <paramref name="y" /> or
+        ///     <paramref name="z" /> or
+        ///     <paramref name="s" /> is <c>null</c>.
+        /// </exception>
+        internal LSLRotationLiteralNode(LSLParser.RotationLiteralContext context, ILSLExprNode x, ILSLExprNode y,
+            ILSLExprNode z, ILSLExprNode s) : this(x,y,z,s)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
 
             SourceRange = new LSLSourceCodeRange(context);
 

@@ -77,6 +77,15 @@ namespace LibLSLCC.CodeValidator
         {
         }
 
+        /// <summary>
+        /// Construct an <see cref="LSLHexLiteralNode"/> from an integer value.
+        /// </summary>
+        /// <param name="value">The integer value, it will be converted to a hex string representation.</param>
+        public LSLHexLiteralNode(int value) : base("0x" + value.ToString("X"), LSLType.Integer, null)
+        {
+            
+        }
+
 
         internal LSLHexLiteralNode(LSLParser.Expr_AtomContext context)
             : base(context.GetText(), LSLType.Integer, new LSLSourceCodeRange(context))

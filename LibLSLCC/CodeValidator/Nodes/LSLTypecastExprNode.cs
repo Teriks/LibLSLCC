@@ -68,6 +68,34 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLTypecastExprNode"/> with the given 'cast-to' type and casted expression node.
+        /// </summary>
+        /// <param name="castToType">The <see cref="LSLType"/> to cast to.</param>
+        /// <param name="castedExpression">The expression the cast operator acts on.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="castedExpression"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="castToType"/> is <see cref="LSLType.Void"/>.</exception>
+        public LSLTypecastExprNode(LSLType castToType, ILSLExprNode castedExpression)
+        {
+            if (castedExpression == null)
+            {
+                throw new ArgumentNullException("castedExpression");
+            }
+
+            if (castToType == LSLType.Void)
+            {
+                throw new ArgumentException("castToType cannot be LSLType.Void.");
+            }
+
+            CastToTypeName = castToType.ToLSLTypeName();
+            CastToType = castToType;
+
+            CastedExpression = castedExpression;
+            CastedExpression.Parent = this;
+
+            Type = castToType;
+        }
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="castedExpression" /> is
         ///     <c>null</c>.

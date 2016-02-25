@@ -101,6 +101,35 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
+        /// Construct an <see cref="LSLPostfixOperationNode"/> from a given <see cref="ILSLExprNode"/> and <see cref="LSLPostfixOperationType"/>.
+        /// </summary>
+        /// <param name="resultType">The return type of the postfix operation on the given expression.</param>
+        /// <param name="rightExpression">The expression the postfix operation occurs on.</param>
+        /// <param name="operationType">The postfix operation type.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="rightExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="operationType"/> is <see cref="LSLPrefixOperationType.Error"/>.</exception>
+        public LSLPrefixOperationNode(LSLType resultType, LSLPrefixOperationType operationType, ILSLExprNode rightExpression)
+        {
+            if (rightExpression == null)
+            {
+                throw new ArgumentNullException("rightExpression");
+            }
+
+            if (operationType == LSLPrefixOperationType.Error)
+            {
+                throw new ArgumentException("operationType cannot be LSLPrefixOperationType.Error.");
+            }
+
+            Type = resultType;
+            RightExpression = rightExpression;
+            RightExpression.Parent = this;
+
+            Operation = operationType;
+            OperationString = Operation.ToOperatorString();
+        }
+
+
+        /// <summary>
         ///     Create an <see cref="LSLPrefixOperationNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>

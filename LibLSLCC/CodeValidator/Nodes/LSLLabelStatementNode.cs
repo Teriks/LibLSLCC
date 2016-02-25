@@ -45,9 +45,11 @@
 
 #region Imports
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -69,10 +71,43 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        internal LSLLabelStatementNode(LSLParser.LabelStatementContext context, bool insideSingleStatementScope)
+        /// <summary>
+        /// Creates a <see cref="LSLLabelStatementNode"/> with a <see cref="ScopeId"/> of zero and the given <see cref="LabelName"/>.
+        /// </summary>
+        /// <param name="labelName">The <see cref="LabelName"/></param>
+        /// <exception cref="ArgumentNullException"><paramref name="labelName"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="labelName"/> contained characters not allowed in an LSL ID token.</exception>
+        public LSLLabelStatementNode(string labelName) : this(0, labelName)
         {
-            InsideSingleStatementScope = insideSingleStatementScope;
+        }
 
+
+        /// <summary>
+        /// Creates a <see cref="LSLLabelStatementNode"/> with the given <see cref="ScopeId"/> and <see cref="LabelName"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="labelName">The <see cref="LabelName"/></param>
+        /// <exception cref="ArgumentNullException"><paramref name="labelName"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="labelName"/> contained characters not allowed in an LSL ID token.</exception>
+        public LSLLabelStatementNode(int scopeId, string labelName)
+        {
+            if (labelName == null)
+            {
+                throw new ArgumentNullException("labelName");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(labelName))
+            {
+                throw new ArgumentException("labelName provided contained characters not allowed in an LSL ID token.", "labelName");
+            }
+
+            LabelName = labelName;
+            ScopeId = scopeId;
+        }
+
+
+        internal LSLLabelStatementNode(LSLParser.LabelStatementContext context)
+        {
             LabelName = context.label_name.Text;
 
             SourceRange = new LSLSourceCodeRange(context);
@@ -181,12 +216,15 @@ namespace LibLSLCC.CodeValidator
 
         #region ILSLCodeStatement Members
 
+
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
+        /// <remarks>label statements can be inside of braceless code scopes in LSL.  It is pointless, but they can be.</remarks>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
+
 
         /// <summary>
         ///     The parent node of this syntax tree node.

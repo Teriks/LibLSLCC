@@ -48,6 +48,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -66,6 +67,39 @@ namespace LibLSLCC.CodeValidator
             SourceRange = sourceRange;
             HasErrors = true;
         }
+
+
+        /// <summary>
+        /// Construct a <see cref="LSLParameterNode"/> with the given <see cref="Type"/> and <see cref="Name"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/>.</param>
+        /// <param name="parameterName">The <see cref="Name"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="parameterName"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">if <paramref name="type"/> is <see cref="LSLType.Void"/> or <paramref name="parameterName"/> contains characters that are invalid in an LSL ID token.</exception>
+        public LSLParameterNode(LSLType type, string parameterName)
+        {
+            if (parameterName == null)
+            {
+                throw new ArgumentNullException("parameterName");
+            }
+
+            if (type == LSLType.Void)
+            {
+                throw new ArgumentException("parameter type cannot be LSLType.Void.", "type");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(parameterName))
+            {
+                throw new ArgumentException("parameterName provided contained characters not allowed in an LSL ID token.", "parameterName");
+            }
+
+            Name = parameterName;
+
+            Type = type;
+
+            TypeName = Type.ToLSLTypeName();
+        }
+
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>

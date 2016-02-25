@@ -68,16 +68,50 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLStateChangeStatementNode"/> with the given <see cref="ScopeId"/> that changes state to the state node specified by <paramref name="state"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="state">The state node representing the state to change to.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="state"/> is <c>null</c>.</exception>
+        public LSLStateChangeStatementNode(int scopeId, LSLStateScopeNode state)
+        {
+            if (state == null)
+            {
+                throw new ArgumentNullException("state");
+            }
+
+            ScopeId = scopeId;
+            StateTargetName = state.StateName;
+        }
+
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLStateChangeStatementNode"/> that changes state to the state node specified by <paramref name="state"/>.
+        /// <see cref="ScopeId"/> will be set to zero.
+        /// </summary>
+        /// <param name="state">The state node representing the state to change to.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="state"/> is <c>null</c>.</exception>
+        public LSLStateChangeStatementNode(LSLStateScopeNode state)
+        {
+            if (state == null)
+            {
+                throw new ArgumentNullException("state");
+            }
+
+            ScopeId = 0;
+            StateTargetName = state.StateName;
+        }
+
+
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
-        internal LSLStateChangeStatementNode(LSLParser.StateChangeStatementContext context,
-            bool insideSingleStatementScope)
+        internal LSLStateChangeStatementNode(LSLParser.StateChangeStatementContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
-
-            InsideSingleStatementScope = insideSingleStatementScope;
 
             StateTargetName = context.state_target.Text;
 
@@ -162,7 +196,7 @@ namespace LibLSLCC.CodeValidator
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
 
 
         /// <summary>

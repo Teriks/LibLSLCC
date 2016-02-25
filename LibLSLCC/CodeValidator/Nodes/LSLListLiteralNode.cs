@@ -68,6 +68,37 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Create a <see cref="LSLListLiteralNode"/> with an empty <see cref="LSLExpressionListNode"/> as content.
+        /// </summary>
+        public LSLListLiteralNode() : this(new LSLExpressionListNode())
+        {
+        }
+
+
+        /// <summary>
+        /// Create a <see cref="LSLListLiteralNode"/> with the given <see cref="LSLExpressionListNode"/> as content.
+        /// </summary>
+        /// <param name="expressionListNode">The expression list node.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="expressionListNode"/> is <c>null</c>.</exception>
+        public LSLListLiteralNode(LSLExpressionListNode expressionListNode)
+        {
+            if (expressionListNode == null)
+            {
+                throw new ArgumentNullException("expressionListNode");
+            }
+
+            HasPossibleSideEffects = expressionListNode.HasExpressionWithPossibleSideEffects;
+            IsConstant = expressionListNode.AllExpressionsConstant;
+
+            ExpressionListNode = expressionListNode;
+            ExpressionListNode.Parent = this;
+
+            SourceRangesAvailable = true;
+        }
+
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="expressionListNode" /> is
         ///     <c>null</c>.

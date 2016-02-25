@@ -313,7 +313,7 @@ namespace LibLSLCC.CodeFormatter
             LSLSourceCodeRange right,
             int existingNewLinesBetweenNextNode = 0)
         {
-            if (comments.Count <= 0) return false;
+            if (comments.Count == 0) return false;
 
             var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart - left.LineEnd);
 
@@ -820,8 +820,21 @@ namespace LibLSLCC.CodeFormatter
             Write("do");
 
 
-            _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeDoKeyword,
-                node.Code.SourceRange, 1);
+            if (node.Code.IsSingleStatementScope)
+            {
+                _indentLevel++;
+
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeDoKeyword,
+                    node.Code.SourceRange, 1);
+
+                _indentLevel--;
+            }
+            else
+            {
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeDoKeyword,
+                    node.Code.SourceRange, 1);
+            }
+
 
             Visit(node.Code);
 
@@ -944,8 +957,20 @@ namespace LibLSLCC.CodeFormatter
 
             Write(")");
 
-            _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth,
-                node.Code.SourceRange, 1);
+            if (node.Code.IsSingleStatementScope)
+            {
+                _indentLevel++;
+
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth,
+                    node.Code.SourceRange, 1);
+
+                _indentLevel--;
+            }
+            else
+            {
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth,
+                    node.Code.SourceRange, 1);
+            }
 
             Visit(node.Code);
 
@@ -979,8 +1004,20 @@ namespace LibLSLCC.CodeFormatter
 
             Write(")");
 
-            _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth,
-                node.Code.SourceRange, 1);
+            if (node.Code.IsSingleStatementScope)
+            {
+                _indentLevel++;
+
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth,
+                    node.Code.SourceRange, 1);
+
+                _indentLevel--;
+            }
+            else
+            {
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth,
+                    node.Code.SourceRange, 1);
+            }
 
             Visit(node.Code);
 
@@ -1406,7 +1443,7 @@ namespace LibLSLCC.CodeFormatter
 
             var comments =
                 GetComments(node.ParameterList.SourceRange.StopIndex,
-                    node.FunctionBodyNode.SourceRange.StartIndex).ToList();
+                    node.Code.SourceRange.StartIndex).ToList();
 
             if (comments.Count > 0)
             {
@@ -1445,7 +1482,7 @@ namespace LibLSLCC.CodeFormatter
                     }
                     else
                     {
-                        var linesBetweenCommentAndNextNode = (node.FunctionBodyNode.SourceRange.LineStart -
+                        var linesBetweenCommentAndNextNode = (node.Code.SourceRange.LineStart -
                                                               comment.SourceRange.LineEnd);
 
                         Write(LSLFormatTools.CreateNewLinesString(linesBetweenCommentAndNextNode - 1));
@@ -1454,7 +1491,7 @@ namespace LibLSLCC.CodeFormatter
             }
 
 
-            Visit(node.FunctionBodyNode);
+            Visit(node.Code);
 
             return true;
         }
@@ -1925,7 +1962,7 @@ namespace LibLSLCC.CodeFormatter
 
             Write(")");
 
-            if (((ILSLReadOnlyCodeStatement) node.Code).InsideSingleStatementScope)
+            if (node.Code.IsSingleStatementScope)
             {
                 _indentLevel++;
 
@@ -1991,7 +2028,7 @@ namespace LibLSLCC.CodeFormatter
             Write(")");
 
 
-            if (((ILSLReadOnlyCodeStatement) node.Code).InsideSingleStatementScope)
+            if (node.Code.IsSingleStatementScope)
             {
                 _indentLevel++;
 
@@ -2026,7 +2063,7 @@ namespace LibLSLCC.CodeFormatter
             }
 
 
-            if (((ILSLReadOnlyCodeStatement) node.Code).InsideSingleStatementScope)
+            if (node.Code.IsSingleStatementScope)
             {
                 _indentLevel++;
 

@@ -47,6 +47,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using LibLSLCC.AntlrParser;
 
 #endregion
@@ -59,8 +60,7 @@ namespace LibLSLCC.CodeValidator
     public sealed class LSLFunctionCallNode : ILSLFunctionCallNode, ILSLExprNode
     {
         private readonly bool _libraryFunction;
-        private readonly LSLFunctionSignature _librarySignature;
-        private readonly LSLPreDefinedFunctionSignature _preDefinition;
+
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
@@ -71,14 +71,66 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        ///  Construct an <see cref="LSLFunctionCallNode"/> with an arguments list and definition reference.
+        ///  This represents a call to a user defined function.  <paramref name="definition"/> receives this node
+        ///  as a new reference via <see cref="LSLFunctionDeclarationNode.AddReference"/>.
+        /// </summary>
+        /// <param name="argumentList">The argument list node.</param>
+        /// <param name="definition">The function definition node.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="definition"/> or <paramref name="argumentList"/> is <c>null</c>.</exception>
+        public LSLFunctionCallNode(LSLFunctionDeclarationNode definition, LSLExpressionListNode argumentList)
+        {
+            if (definition == null) throw new ArgumentNullException("definition");
+            if (argumentList == null) throw new ArgumentNullException("argumentList");
+
+
+            Name = DefinitionNode.Name;
+
+            ArgumentExpressionList = argumentList;
+            ArgumentExpressionList.Parent = this;
+
+            DefinitionNode = definition;
+            DefinitionNode.AddReference(this);
+
+            Signature = definition.CreateSignature();
+
+        }
+
+
+        /// <summary>
+        ///  Construct an <see cref="LSLFunctionCallNode"/> with an arguments list.
+        ///  This represents a call to a library function, since it has no definition node.
+        /// </summary>
+        /// <param name="functionSignature">The signature of the library function.</param>
+        /// <param name="argumentList">The argument list node.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="functionSignature"/> or <paramref name="argumentList"/> is <c>null</c>.</exception>
+        public LSLFunctionCallNode(LSLFunctionSignature functionSignature, LSLExpressionListNode argumentList)
+        {
+            if (functionSignature == null) throw new ArgumentNullException("functionSignature");
+            if (argumentList == null) throw new ArgumentNullException("argumentList");
+
+
+            Signature = new LSLFunctionSignature(functionSignature);
+
+            Name = functionSignature.Name;
+
+            ArgumentExpressionList = argumentList;
+            ArgumentExpressionList.Parent = this;
+
+            _libraryFunction = true;
+        }
+
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="preDefinition" /> or
-        ///     <paramref name="parameterList" /> is <c>null</c>.
+        ///     <paramref name="argumentExpressionList" /> is <c>null</c>.
         /// </exception>
         internal LSLFunctionCallNode(
             LSLParser.Expr_FunctionCallContext context,
             LSLPreDefinedFunctionSignature preDefinition,
-            LSLExpressionListNode parameterList)
+            LSLExpressionListNode argumentExpressionList)
         {
             if (context == null)
             {
@@ -90,20 +142,19 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("preDefinition");
             }
 
-            if (parameterList == null)
+            if (argumentExpressionList == null)
             {
-                throw new ArgumentNullException("parameterList");
+                throw new ArgumentNullException("argumentExpressionList");
             }
 
+            DefinitionNode =  preDefinition.DefinitionNode;
+            Signature =  preDefinition;
 
             Name = context.function_name.Text;
 
-            _preDefinition = preDefinition;
-            _libraryFunction = false;
+            ArgumentExpressionList = argumentExpressionList;
 
-            ParameterListNode = parameterList;
-
-            parameterList.Parent = this;
+            argumentExpressionList.Parent = this;
 
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
@@ -116,12 +167,12 @@ namespace LibLSLCC.CodeValidator
 
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="signature" /> or
-        ///     <paramref name="parameterList" /> is <c>null</c>.
+        ///     <paramref name="argumentExpressionList" /> is <c>null</c>.
         /// </exception>
         internal LSLFunctionCallNode(
             LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature signature,
-            LSLExpressionListNode parameterList)
+            LSLExpressionListNode argumentExpressionList)
         {
             if (context == null)
             {
@@ -133,19 +184,19 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("signature");
             }
 
-            if (parameterList == null)
+            if (argumentExpressionList == null)
             {
-                throw new ArgumentNullException("parameterList");
+                throw new ArgumentNullException("argumentExpressionList");
             }
 
 
+            Signature = signature;
+
             Name = context.function_name.Text;
 
-            _librarySignature = signature;
-            _preDefinition = null;
             _libraryFunction = true;
-            ParameterListNode = parameterList;
-            parameterList.Parent = this;
+            ArgumentExpressionList = argumentExpressionList;
+            argumentExpressionList.Parent = this;
 
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
@@ -170,15 +221,14 @@ namespace LibLSLCC.CodeValidator
 
             Name = other.Name;
 
-            _preDefinition = other._preDefinition;
-            _libraryFunction = other._libraryFunction;
-            _librarySignature = other._librarySignature;
+            DefinitionNode = other.DefinitionNode;
+            Signature = new LSLFunctionSignature(other.Signature);
 
-            if (other.ParameterListNode != null)
-            {
-                ParameterListNode = other.ParameterListNode.Clone();
-                ParameterListNode.Parent = this;
-            }
+            _libraryFunction = other._libraryFunction;
+
+
+            ArgumentExpressionList = other.ArgumentExpressionList.Clone();
+            ArgumentExpressionList.Parent = this;
 
             SourceRangesAvailable = other.SourceRangesAvailable;
 
@@ -199,16 +249,13 @@ namespace LibLSLCC.CodeValidator
         ///     The parameter list node containing the expressions used to call this function, this will never be null even if the
         ///     parameter list is empty.
         /// </summary>
-        public LSLExpressionListNode ParameterListNode { get; private set; }
+        public LSLExpressionListNode ArgumentExpressionList { get; private set; }
 
         /// <summary>
         ///     The syntax tree node where the function was defined if it is a user defined function.  If the function call is to a
         ///     library function this will be null.
         /// </summary>
-        public LSLFunctionDeclarationNode DefinitionNode
-        {
-            get { return !_libraryFunction ? _preDefinition.DefinitionNode : null; }
-        }
+        public LSLFunctionDeclarationNode DefinitionNode { get; private set; }
 
         /// <summary>
         ///     True if the function that was called is a library function call, false if it was a call to a user defined function.
@@ -258,14 +305,11 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The function signature of the function that was called, as it was defined by either the user or library.
         /// </summary>
-        public LSLFunctionSignature Signature
-        {
-            get { return _libraryFunction ? _librarySignature : _preDefinition; }
-        }
+        public LSLFunctionSignature Signature { get; private set; }
 
         ILSLExpressionListNode ILSLFunctionCallNode.ArgumentExpressionList
         {
-            get { return ParameterListNode; }
+            get { return ArgumentExpressionList; }
         }
 
         ILSLFunctionDeclarationNode ILSLFunctionCallNode.Definition

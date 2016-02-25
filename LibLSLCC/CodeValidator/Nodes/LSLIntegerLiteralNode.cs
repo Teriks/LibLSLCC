@@ -47,6 +47,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using LibLSLCC.AntlrParser;
 
 #endregion
@@ -64,6 +65,19 @@ namespace LibLSLCC.CodeValidator
             : base(sourceRange, Err.Err)
             // ReSharper restore UnusedParameter.Local
         {
+        }
+
+        /// <summary>
+        /// Construct an <see cref="LSLIntegerLiteralNode"/> from a positive integer value.
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="value"/> is not positive; add to a prefix negate node instead.</exception>
+        /// </summary>
+        /// <param name="value">The integer value.</param>
+        public LSLIntegerLiteralNode(int value) : base(value.ToString(CultureInfo.InvariantCulture), LSLType.Integer, null)
+        {
+            if (Math.Sign(value) < 0)
+            {
+                throw new ArgumentOutOfRangeException("value", "value must positive, add to a prefix negate node instead.");
+            }
         }
 
 

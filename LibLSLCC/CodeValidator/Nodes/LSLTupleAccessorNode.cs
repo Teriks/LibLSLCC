@@ -68,21 +68,66 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLTupleAccessorNode"/> from the accessed expression and component accessed.
+        /// </summary>
+        /// <param name="accessedExpression">The expression the '.' tuple access operator was used on.</param>
+        /// <param name="accessedComponent">The tuple component accessed: "x", "y", "z" or "s".</param>
+        /// <exception cref="ArgumentNullException"><paramref name="accessedExpression"/> or <paramref name="accessedComponent"/> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
-        ///     If <paramref name="accessedExpressionType" /> is not <see cref="LSLType.Vector" />
-        ///     or <see cref="LSLType.Rotation" />.
+        /// <para>
+        ///     <paramref name="accessedExpression"/>.Type is not <see cref="LSLType.Vector"/> or <see cref="LSLType.Rotation"/>.
+        /// </para>
+        /// <para>
+        ///     Or <paramref name="accessedComponent"/> is not one of: "x", "y", "z" or "s".
+        /// </para>
+        /// </exception>
+        public LSLTupleAccessorNode(ILSLExprNode accessedExpression, string accessedComponent)
+        {
+            if (accessedExpression == null)
+            {
+                throw new ArgumentNullException("accessedExpression");
+            }
+
+            if (accessedComponent == null)
+            {
+                throw new ArgumentNullException("accessedComponent");
+            }
+
+
+            if (accessedExpression.Type != LSLType.Vector && accessedExpression.Type != LSLType.Rotation)
+            {
+                throw new ArgumentException("accessedExpression.Type can only be LSLType.Vector or LSLType.Rotation");
+            }
+
+
+            if (!Utility.EqualsOneOf(accessedComponent, "x", "y", "z", "s"))
+            {
+                throw new ArgumentException("accessedComponent is not x, y, z or s.", "accessedComponent");
+            }
+
+            AccessedComponent = accessedComponent;
+            AccessedExpression = accessedExpression;
+
+            AccessedExpression.Parent = this;
+        }
+
+
+
+        /// <exception cref="ArgumentException">
+        ///     <para>
+        ///     If <paramref name="accessedExpression" />.Type is not <see cref="LSLType.Vector" /> or <see cref="LSLType.Rotation" />.
+        ///     </para>
+        ///     <para>
+        ///     Or <paramref name="context"/>.member.Text is not one of: "x", "y", "z" or "s".
+        ///     </para>
         /// </exception>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="accessedExpression" /> is
         ///     <c>null</c>.
         /// </exception>
-        internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression, LSLType accessedExpressionType)
+        internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression)
         {
-            if (accessedExpressionType != LSLType.Vector && accessedExpressionType != LSLType.Rotation)
-            {
-                throw new ArgumentException("accessedExpressionType can only be LSLType.Vector or LSLType.Rotation");
-            }
-
             if (context == null)
             {
                 throw new ArgumentNullException("context");
@@ -91,6 +136,16 @@ namespace LibLSLCC.CodeValidator
             if (accessedExpression == null)
             {
                 throw new ArgumentNullException("context");
+            }
+
+            if (accessedExpression.Type != LSLType.Vector && accessedExpression.Type != LSLType.Rotation)
+            {
+                throw new ArgumentException("accessedExpression.Type can only be LSLType.Vector or LSLType.Rotation");
+            }
+
+            if (!Utility.EqualsOneOf(context.member.Text, "x", "y", "z", "s"))
+            {
+                throw new ArgumentException("context.member.Text is not x, y, z or s.", "context");
             }
 
             AccessedComponent = context.member.Text;

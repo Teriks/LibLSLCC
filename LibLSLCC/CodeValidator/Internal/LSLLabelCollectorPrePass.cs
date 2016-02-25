@@ -197,7 +197,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            var ctx = new LSLLabelStatementNode(context, _scopingManager.InSingleStatementScope);
+            var ctx = new LSLLabelStatementNode(context);
 
             var statementIndexInfo = _statementIndexStack.Peek();
 

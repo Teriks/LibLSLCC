@@ -67,6 +67,128 @@ namespace LibLSLCC.CodeValidator
             HasErrors = true;
         }
 
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> without init expressions or afterthought expressions, and a <see cref="ScopeId"/> of zero.
+        /// </summary>
+        /// <param name="condition">The for loop condition expression.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="condition"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(ILSLExprNode condition) : this(new LSLExpressionListNode(), condition, new LSLExpressionListNode())
+        {
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> without init expressions, and a <see cref="ScopeId"/> of zero.
+        /// </summary>
+        /// <param name="condition">The for loop condition expression.</param>
+        /// <param name="afterthoughtExpressions">The afterthought expression list.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="afterthoughtExpressions"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(ILSLExprNode condition,
+            LSLExpressionListNode afterthoughtExpressions) : this(new LSLExpressionListNode(), condition, afterthoughtExpressions)
+        {
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> without afterthought expressions,  and a <see cref="ScopeId"/> of zero.
+        /// </summary>
+        /// <param name="initExpressions">The init expression list.</param>
+        /// <param name="condition">The for loop condition expression.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="initExpressions"/> or <paramref name="condition"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(LSLExpressionListNode initExpressions, ILSLExprNode condition) : this(initExpressions, condition, new LSLExpressionListNode())
+        {
+        }
+
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> with all possible children and a <see cref="ScopeId"/> of zero.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="initExpressions"/> or <paramref name="condition"/> or <paramref name="afterthoughtExpressions"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(LSLExpressionListNode initExpressions, ILSLExprNode condition,
+            LSLExpressionListNode afterthoughtExpressions)
+        {
+            if (initExpressions == null) throw new ArgumentNullException("initExpressions");
+            if (condition == null) throw new ArgumentNullException("condition");
+            if (afterthoughtExpressions == null) throw new ArgumentNullException("afterthoughtExpressions");
+
+            ScopeId = 0;
+
+            InitExpressionsList = initExpressions;
+            InitExpressionsList.Parent = this;
+
+            ConditionExpression = condition;
+            ConditionExpression.Parent = this;
+
+            AfterthoughExpressions = afterthoughtExpressions;
+            AfterthoughExpressions.Parent = this;
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> without init expressions or afterthought expressions, and the given <see cref="ScopeId"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="condition">The for loop condition expression.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="condition"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(int scopeId, ILSLExprNode condition) : this(scopeId, new LSLExpressionListNode(), condition, new LSLExpressionListNode())
+        {
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> without init expressions, and the given <see cref="ScopeId"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="condition">The for loop condition expression.</param>
+        /// <param name="afterthoughtExpressions">The afterthought expression list.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="afterthoughtExpressions"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(int scopeId, ILSLExprNode condition,
+            LSLExpressionListNode afterthoughtExpressions) : this(scopeId, new LSLExpressionListNode(), condition, afterthoughtExpressions)
+        {
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> without afterthought expressions, and the given <see cref="ScopeId"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="initExpressions">The init expression list.</param>
+        /// <param name="condition">The for loop condition expression.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="initExpressions"/> or <paramref name="condition"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(int scopeId, LSLExpressionListNode initExpressions, ILSLExprNode condition) : this(scopeId, initExpressions, condition, new LSLExpressionListNode())
+        {
+        }
+
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLForLoopNode"/> with all possible children and the given <see cref="ScopeId"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="initExpressions">The init expression list.</param>
+        /// <param name="condition">The for loop condition expression.</param>
+        /// <param name="afterthoughtExpressions">The afterthought expression list.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="initExpressions"/> or <paramref name="condition"/> or <paramref name="afterthoughtExpressions"/> is <c>null</c>.</exception>
+        public LSLForLoopNode(int scopeId, LSLExpressionListNode initExpressions, ILSLExprNode condition,
+            LSLExpressionListNode afterthoughtExpressions)
+        {
+            if (initExpressions == null) throw new ArgumentNullException("initExpressions");
+            if (condition == null) throw new ArgumentNullException("condition");
+            if (afterthoughtExpressions == null) throw new ArgumentNullException("afterthoughtExpressions");
+
+            ScopeId = scopeId;
+
+            InitExpressionsList = initExpressions;
+            InitExpressionsList.Parent = this;
+
+            ConditionExpression = condition;
+            ConditionExpression.Parent = this;
+
+            AfterthoughExpressions = afterthoughtExpressions;
+            AfterthoughExpressions.Parent = this;
+        }
+
 
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="afterthoughExpressions" /> or
@@ -74,7 +196,7 @@ namespace LibLSLCC.CodeValidator
         /// </exception>
         internal LSLForLoopNode(LSLParser.ForLoopContext context, ILSLExpressionListNode initExpressions,
             ILSLExprNode conditionExpression,
-            LSLExpressionListNode afterthoughExpressions, LSLCodeScopeNode code, bool inInSingleStatementScope)
+            LSLExpressionListNode afterthoughExpressions, LSLCodeScopeNode code)
         {
             if (context == null)
             {
@@ -91,7 +213,6 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("initExpressions");
             }
 
-            InsideSingleStatementScope = inInSingleStatementScope;
 
             InitExpressionsList = initExpressions;
             InitExpressionsList.Parent = this;
@@ -239,7 +360,7 @@ namespace LibLSLCC.CodeValidator
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
 
 
         /// <summary>

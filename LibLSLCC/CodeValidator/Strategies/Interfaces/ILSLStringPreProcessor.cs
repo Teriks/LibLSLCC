@@ -172,6 +172,18 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         bool HasErrors { get; }
 
+
+        /// <summary>
+        ///    True if the string that was just pre-processed contains invalid escape sequences
+        /// </summary>
+        bool HasInvalidEscapeSequences { get; }
+
+
+        /// <summary>
+        ///    True if the string that was just pre-processed contains illegal characters.
+        /// </summary>
+        bool HasInvalidCharacters { get; }
+
         /// <summary>
         ///     An enumerable of all invalid escape sequences found in the string.
         /// </summary>

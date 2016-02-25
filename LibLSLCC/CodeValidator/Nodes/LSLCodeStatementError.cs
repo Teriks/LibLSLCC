@@ -54,10 +54,8 @@ namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLCodeStatementError : ILSLCodeStatement
     {
-        internal LSLCodeStatementError(LSLParser.CodeStatementContext parserContext, bool insideSingleStatementScope)
+        internal LSLCodeStatementError(LSLParser.CodeStatementContext parserContext)
         {
-            InsideSingleStatementScope = insideSingleStatementScope;
-
             SourceRange = new LSLSourceCodeRange(parserContext);
 
             SourceRangesAvailable = true;

@@ -69,6 +69,26 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
+        /// <summary>
+        /// Construct an <see cref="LSLIfStatementNode"/> with the given condition expression and code.
+        /// </summary>
+        /// <param name="condition">The branch condition.</param>
+        /// <param name="code">The code.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="code"/> is <c>null</c>.</exception>
+        public LSLIfStatementNode(ILSLExprNode condition, LSLCodeScopeNode code)
+        {
+            if (condition == null) throw new ArgumentNullException("condition");
+            if (code == null) throw new ArgumentNullException("code");
+
+            ConditionExpression = condition;
+            ConditionExpression.Parent = this;
+
+            Code = code;
+            Code.Parent = this;
+        }
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="code" /> or
         ///     <paramref name="conditionExpression" /> is <c>null</c>.

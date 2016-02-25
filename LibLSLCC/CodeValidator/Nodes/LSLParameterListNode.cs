@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLParameterListNode : ILSLParameterListNode
     {
-        private readonly GenericArray<LSLParameterNode> _parameters = new GenericArray<LSLParameterNode>();
+        private readonly HashMap<string, LSLParameterNode> _parameters = new HashMap<string, LSLParameterNode>();
         private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -83,13 +83,56 @@ namespace LibLSLCC.CodeValidator
             ParameterListType = parameterListType;
         }
 
+        /// <summary>
+        /// Construct an empty <see cref="LSLParameterListNode"/>.
+        /// </summary>
+        public LSLParameterListNode()
+        {
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLParameterListNode"/> with the parameter nodes in <paramref name="parameters"/>.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     If two parameters with the same name exist in <paramref name="parameters"/>.
+        /// </exception>
+        public LSLParameterListNode(IEnumerable<LSLParameterNode> parameters)
+        {
+            if(parameters == null) throw new ArgumentNullException("parameters");
+
+            foreach (var v in parameters)
+            {
+                AddParameterNode(v);
+            }
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLParameterListNode"/> with the parameter nodes in <paramref name="parameters"/>.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     If two parameters with the same name exist in <paramref name="parameters"/>.
+        /// </exception>
+        public LSLParameterListNode(params LSLParameterNode[] parameters)
+        {
+            if (parameters == null) throw new ArgumentNullException("parameters");
+
+            foreach (var v in parameters)
+            {
+                AddParameterNode(v);
+            }
+        }
+
 
         /// <summary>
         ///     The <see cref="LSLParameterNode" /> objects that are children of this node, or an empty list.
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> Parameters
         {
-            get { return _parameters; }
+            get { return _parameters.Values.ToGenericArray(); }
         }
 
         /// <summary>
@@ -121,7 +164,7 @@ namespace LibLSLCC.CodeValidator
 
         IReadOnlyGenericArray<ILSLParameterNode> ILSLParameterListNode.Parameters
         {
-            get { return _parameters; }
+            get { return _parameters.Values.ToGenericArray(); }
         }
 
         /// <summary>
@@ -270,9 +313,13 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Add a parameter definition node to this parameter list node.
+        ///     This method does not check for duplicate parameter names.
         /// </summary>
         /// <param name="node">The parameter definition node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     If a parameter with the same name already exists.
+        /// </exception>
         public void AddParameterNode(LSLParameterNode node)
         {
             if (node == null)
@@ -280,8 +327,13 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("node");
             }
 
+            if (_parameters.ContainsKey(node.Name))
+            {
+                throw new ArgumentException("Parameter with the name \"{0}\" has already been added to the parameter list.");
+            }
+
             node.Parent = this;
-            _parameters.Add(node);
+            _parameters.Add(node.Name, node);
         }
 
 

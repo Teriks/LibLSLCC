@@ -68,12 +68,66 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLReturnStatementNode"/> with a given return expression and <see cref="ScopeId"/> of zero.
+        /// </summary>
+        /// <param name="returnExpression">The <see cref="ReturnExpression"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="returnExpression"/> is <c>null</c>.</exception>
+        public LSLReturnStatementNode(ILSLExprNode returnExpression)
+        {
+            if (returnExpression == null)
+            {
+                throw new ArgumentNullException("returnExpression");
+            }
+
+            ReturnExpression = returnExpression;
+            ReturnExpression.Parent = this;
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLReturnStatementNode"/> with a <see cref="ScopeId"/> of zero and no return expression.
+        /// </summary>
+        public LSLReturnStatementNode()
+        {
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLReturnStatementNode"/> with the given <see cref="ScopeId"/> and return expression.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/></param>
+        /// <param name="returnExpression">The <see cref="ReturnExpression"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="returnExpression"/> is <c>null</c>.</exception>
+        public LSLReturnStatementNode(int scopeId, ILSLExprNode returnExpression)
+        {
+            if (returnExpression == null)
+            {
+                throw new ArgumentNullException("returnExpression");
+            }
+
+            ScopeId = scopeId;
+
+            ReturnExpression = returnExpression;
+            ReturnExpression.Parent = this;
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLReturnStatementNode"/> with the given <see cref="ScopeId"/>, without a return expression.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/></param>
+        public LSLReturnStatementNode(int scopeId)
+        {
+            ScopeId = scopeId;
+        }
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="returnExpression" /> is
         ///     <c>null</c>.
         /// </exception>
-        internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, ILSLExprNode returnExpression,
-            bool insideSingleStatementScope)
+        internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, ILSLExprNode returnExpression)
         {
             if (context == null)
             {
@@ -84,8 +138,6 @@ namespace LibLSLCC.CodeValidator
             {
                 throw new ArgumentNullException("returnExpression");
             }
-
-            InsideSingleStatementScope = insideSingleStatementScope;
 
             ReturnExpression = returnExpression;
             ReturnExpression.Parent = this;
@@ -99,14 +151,12 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
-        internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, bool insideSingleStatementScope)
+        internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
-
-            InsideSingleStatementScope = insideSingleStatementScope;
 
             ReturnExpression = null;
 
@@ -198,7 +248,7 @@ namespace LibLSLCC.CodeValidator
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
 
 
         /// <summary>

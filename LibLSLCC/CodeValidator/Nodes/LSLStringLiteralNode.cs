@@ -77,6 +77,47 @@ namespace LibLSLCC.CodeValidator
             PreProcessedText = other.PreProcessedText;
         }
 
+        /// <summary>
+        /// Create an <see cref="LSLStringLiteralNode"/> from the given raw and preprocessed source code text.
+        /// <paramref name="preProccessedText"/> should contain the preprocessed text, with raw control characters entitized into escape sequences, 
+        /// and existing escape sequences double escaped with an extra backslash.
+        /// </summary>
+        /// <param name="rawText">The raw source code text, including quotes.</param>
+        /// <param name="preProccessedText">The preprocessed string literal text, including quotes.</param>
+        /// <seealso cref="LSLDefaultStringPreProcessor"/>
+        public LSLStringLiteralNode(string rawText, string preProccessedText)
+            : base(rawText, LSLType.String, null)
+        {
+            PreProcessedText = preProccessedText;
+        }
+
+
+        /// <summary>
+        /// Create an <see cref="LSLStringLiteralNode"/> from the given raw and preprocessed source code text.
+        /// <see cref="PreProcessedText"/> is generated using <see cref="LSLDefaultStringPreProcessor"/>.
+        /// </summary>
+        /// <param name="rawText">The raw source code text, including quotes.</param>
+        /// <exception cref="ArgumentException"><paramref name="rawText"/> contains invalid characters or invalid escape sequences.</exception>
+        public LSLStringLiteralNode(string rawText)
+            : base(rawText, LSLType.String, null)
+        {
+            var preprocessor = new LSLDefaultStringPreProcessor();
+
+            preprocessor.ProcessString(rawText);
+
+            if (preprocessor.HasInvalidEscapeSequences)
+            {
+                throw new ArgumentException("rawText contains invalid escape sequences.");
+            }
+
+            if (preprocessor.HasInvalidCharacters)
+            {
+                throw new ArgumentException("rawText contains invalid characters.");
+            }
+
+            PreProcessedText = preprocessor.Result;
+        }
+
 
         internal LSLStringLiteralNode(LSLParser.Expr_AtomContext context, string preProcessedText)
             : base(context.GetText(), LSLType.String, new LSLSourceCodeRange(context))

@@ -63,7 +63,8 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public LSLDefaultStringPreProcessor()
         {
-            HasErrors = false;
+            HasInvalidCharacters = false;
+            HasInvalidEscapeSequences = false;
             Result = "";
         }
 
@@ -71,7 +72,19 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     True if the string that was just pre-processed contains invalid escape sequences or illegal character errors.
         /// </summary>
-        public bool HasErrors { get; private set; }
+        public bool HasErrors { get { return HasInvalidCharacters || HasInvalidEscapeSequences; } }
+
+
+        /// <summary>
+        ///    True if the string that was just pre-processed contains invalid escape sequences
+        /// </summary>
+        public bool HasInvalidEscapeSequences { get; private set; }
+
+
+        /// <summary>
+        ///    True if the string that was just pre-processed contains illegal characters.
+        /// </summary>
+        public bool HasInvalidCharacters { get; private set; }
 
         /// <summary>
         ///     An enumerable of all invalid escape sequences found in the string.
@@ -129,7 +142,8 @@ namespace LibLSLCC.CodeValidator
         {
             //_invalidEscapeCodes.Clear();
             //_illegalCharacters.Clear();
-            HasErrors = false;
+            HasInvalidCharacters = false;
+            HasInvalidEscapeSequences = false;
             Result = "";
         }
 

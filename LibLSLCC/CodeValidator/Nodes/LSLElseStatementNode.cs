@@ -69,6 +69,20 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLElseStatementNode"/> with the given code body.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="code"/> is <c>null</c>.</exception>
+        public LSLElseStatementNode(LSLCodeScopeNode code)
+        {
+            if (code == null) throw new ArgumentNullException("code");
+
+            Code = code;
+            Code.Parent = this;
+        }
+
+
         /// <exception cref="ArgumentNullException"><paramref name="code" /> or <paramref name="code" /> is <c>null</c>.</exception>
         internal LSLElseStatementNode(LSLParser.ElseStatementContext context, LSLCodeScopeNode code,
             bool isConstantBranch)

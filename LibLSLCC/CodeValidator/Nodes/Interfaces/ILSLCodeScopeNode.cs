@@ -75,6 +75,7 @@ namespace LibLSLCC.CodeValidator
         /// <seealso cref="ILSLReadOnlyCodeStatement.InsideSingleStatementScope" />
         bool IsSingleStatementScope { get; }
 
+
         /// <summary>
         ///     The type of code scope this node represents.
         /// </summary>

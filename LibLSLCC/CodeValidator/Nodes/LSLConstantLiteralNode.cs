@@ -109,12 +109,12 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="rawText">The raw text of the constant literal.</param>
         /// <param name="type">The <see cref="LSLType" /> that the source code literal represents.</param>
-        /// <param name="sourceRange">The source code range of the constant literal.</param>
+        /// <param name="sourceRange">The source code range of the constant literal, or <c>null</c> if source code ranges are not available.</param>
         protected internal LSLConstantLiteralNode(string rawText, LSLType type, LSLSourceCodeRange sourceRange)
         {
             RawText = rawText;
             Type = type;
-            SourceRange = sourceRange == null ? null : sourceRange;
+            SourceRange = sourceRange;
             SourceRangesAvailable = sourceRange != null;
         }
 

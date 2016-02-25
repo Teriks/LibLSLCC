@@ -68,12 +68,55 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLWhileLoopNode"/> with the given <see cref="ScopeId"/>, condition and code body.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="condition">The <see cref="ConditionExpression"/>.</param>
+        /// <param name="code">The <see cref="Code"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="code"/> is <c>null</c>.</exception>
+        public LSLWhileLoopNode(int scopeId, ILSLExprNode condition, LSLCodeScopeNode code)
+        {
+            if (condition == null) throw new ArgumentNullException("condition");
+            if (code == null) throw new ArgumentNullException("code");
+
+            ScopeId = scopeId;
+
+            ConditionExpression = condition;
+            ConditionExpression.Parent = this;
+
+            Code = code;
+            Code.Parent = this;
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLWhileLoopNode"/> with a <see cref="ScopeId"/> of zero, condition and code body.
+        /// </summary>
+        /// <param name="condition">The <see cref="ConditionExpression"/>.</param>
+        /// <param name="code">The <see cref="Code"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="code"/> is <c>null</c>.</exception>
+        public LSLWhileLoopNode(ILSLExprNode condition, LSLCodeScopeNode code)
+        {
+            if (condition == null) throw new ArgumentNullException("condition");
+            if (code == null) throw new ArgumentNullException("code");
+
+            ScopeId = 0;
+
+            ConditionExpression = condition;
+            ConditionExpression.Parent = this;
+
+            Code = code;
+            Code.Parent = this;
+        }
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="code" /> or <paramref name="conditionExpression" /> is
         ///     <c>null</c>.
         /// </exception>
         internal LSLWhileLoopNode(LSLParser.WhileLoopContext context, ILSLExprNode conditionExpression,
-            LSLCodeScopeNode code, bool inInSingleStatementScope)
+            LSLCodeScopeNode code)
         {
             if (code == null)
             {
@@ -84,8 +127,6 @@ namespace LibLSLCC.CodeValidator
             {
                 throw new ArgumentNullException("conditionExpression");
             }
-
-            InsideSingleStatementScope = inInSingleStatementScope;
 
             ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
@@ -118,7 +159,7 @@ namespace LibLSLCC.CodeValidator
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

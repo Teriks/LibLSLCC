@@ -438,7 +438,7 @@ namespace LibLSLCC.CodeValidator
         public virtual T VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
             Visit(node.ParameterList);
-            Visit(node.FunctionBodyNode);
+            Visit(node.Code);
 
             return default(T);
         }

@@ -68,6 +68,25 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Create a <see cref="LSLParenthesizedExpressionNode"/> around a given <see cref="ILSLExprNode"/>.
+        /// </summary>
+        /// <param name="innerExpression"></param>
+        /// <exception cref="ArgumentNullException"><paramref name="innerExpression"/> is <c>null</c>.</exception>
+        public LSLParenthesizedExpressionNode(ILSLExprNode innerExpression)
+        {
+            if (innerExpression == null)
+            {
+                throw new ArgumentNullException("innerExpression");
+            }
+
+            InnerExpression = innerExpression;
+            InnerExpression.Parent = this;
+        }
+
+
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="innerExpression" /> is
         ///     <c>null</c>.

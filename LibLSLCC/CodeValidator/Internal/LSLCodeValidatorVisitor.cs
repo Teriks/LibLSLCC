@@ -1106,7 +1106,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            var result = new LSLControlStatementNode(context, InSingleStatementScope);
+            var result = new LSLControlStatementNode(context);
 
             ScopingManager.EnterControlStatement(result);
 
@@ -1880,7 +1880,7 @@ namespace LibLSLCC.CodeValidator
             var result = new LSLDoLoopNode(
                 context,
                 code,
-                loopCondition, InSingleStatementScope)
+                loopCondition)
             {
                 HasErrors = (isError || code.HasErrors)
             };
@@ -1975,7 +1975,7 @@ namespace LibLSLCC.CodeValidator
             var result = new LSLWhileLoopNode(
                 context,
                 loopCondition,
-                code, InSingleStatementScope)
+                code)
             {
                 HasErrors = (code.HasErrors || isError)
             };
@@ -2081,7 +2081,7 @@ namespace LibLSLCC.CodeValidator
                 loopInit,
                 loopCondition,
                 expressionList,
-                code, InSingleStatementScope)
+                code)
             {
                 HasErrors = (isError || code.HasErrors)
             };
@@ -2110,7 +2110,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            var result = new LSLExpressionStatementNode(context, expression, InSingleStatementScope)
+            var result = new LSLExpressionStatementNode(context, expression)
             {
                 HasErrors = expression.HasErrors
             };
@@ -2178,7 +2178,7 @@ namespace LibLSLCC.CodeValidator
                         .GetError(new LSLSourceCodeRange(context)));
                 }
 
-                result = new LSLReturnStatementNode(context, returnExpression, InSingleStatementScope);
+                result = new LSLReturnStatementNode(context, returnExpression);
 
                 return ReturnFromVisit(context, result);
             }
@@ -2195,7 +2195,7 @@ namespace LibLSLCC.CodeValidator
                     .GetError(new LSLSourceCodeRange(context)));
             }
 
-            result = new LSLReturnStatementNode(context, InSingleStatementScope);
+            result = new LSLReturnStatementNode(context);
 
             return ReturnFromVisit(context, result);
         }
@@ -2234,14 +2234,14 @@ namespace LibLSLCC.CodeValidator
                     GenSyntaxWarning().UselessSemicolon(new LSLSourceCodeRange(context.semi_colon));
                 }
 
-                var result = new LSLSemicolonStatement(context, InSingleStatementScope);
+                var result = new LSLSemicolonStatement(context);
                 return ReturnFromVisit(context, result);
             }
 
 
             if (!ValidateCodeStatementTypeValidInScope(context))
             {
-                var result = new LSLCodeStatementError(context, InSingleStatementScope);
+                var result = new LSLCodeStatementError(context);
 
                 return ReturnFromVisit(context, result);
             }
@@ -2279,7 +2279,7 @@ namespace LibLSLCC.CodeValidator
                     LSLStateChangeStatementNode.GetError(new LSLSourceCodeRange(context)));
             }
 
-            var result = new LSLStateChangeStatementNode(context, InSingleStatementScope);
+            var result = new LSLStateChangeStatementNode(context);
 
 
             return ReturnFromVisit(context, result);
@@ -2307,8 +2307,7 @@ namespace LibLSLCC.CodeValidator
 
             var result = new LSLJumpStatementNode(
                 context,
-                ScopingManager.ResolvePreDefinedLabelNode(context.jump_target.Text),
-                InSingleStatementScope);
+                ScopingManager.ResolvePreDefinedLabelNode(context.jump_target.Text));
 
 
             return ReturnFromVisit(context, result);
@@ -2737,7 +2736,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            var result = new LSLTupleAccessorNode(context, variableReferenceOnLeft, variableReferenceOnLeft.Type);
+            var result = new LSLTupleAccessorNode(context, variableReferenceOnLeft);
 
 
             return ReturnFromVisit(context, result);

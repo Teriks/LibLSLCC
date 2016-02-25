@@ -68,11 +68,56 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Creates an <see cref="LSLJumpStatementNode"/> that jumps to a specified <see cref="LSLLabelStatementNode"/>, with a <see cref="ScopeId"/> of zero.
+        /// <paramref name="jumpTarget"/> receives a <see cref="LSLLabelStatementNode.JumpsToHere"/> reference via  <see cref="LSLLabelStatementNode.AddJumpToHere"/>.
+        /// </summary>
+        /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode"/> to jump to.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="jumpTarget"/> is <c>null</c>.</exception>
+        public LSLJumpStatementNode(LSLLabelStatementNode jumpTarget)
+        {
+            if (jumpTarget == null)
+            {
+                throw new ArgumentNullException("jumpTarget");
+            }
+
+            LabelName = jumpTarget.LabelName;
+
+            JumpTarget = jumpTarget;
+
+            JumpTarget.AddJumpToHere(this);
+        }
+
+
+        /// <summary>
+        /// Creates an <see cref="LSLJumpStatementNode"/> with a the specified <see cref="ScopeId"/> that jumps to a <see cref="LSLLabelStatementNode"/>.
+        /// <paramref name="jumpTarget"/> receives a <see cref="LSLLabelStatementNode.JumpsToHere"/> reference via  <see cref="LSLLabelStatementNode.AddJumpToHere"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode"/> to jump to.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="jumpTarget"/> is <c>null</c>.</exception>
+        public LSLJumpStatementNode(int scopeId, LSLLabelStatementNode jumpTarget)
+        {
+            if (jumpTarget == null)
+            {
+                throw new ArgumentNullException("jumpTarget");
+            }
+
+            ScopeId = scopeId;
+
+            LabelName = jumpTarget.LabelName;
+
+            JumpTarget = jumpTarget;
+
+            JumpTarget.AddJumpToHere(this);
+        }
+
+
+
         /// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="jumpTarget" /> is <c>null</c>.</exception>
         internal LSLJumpStatementNode(
             LSLParser.JumpStatementContext context,
-            LSLLabelStatementNode jumpTarget,
-            bool insideSingleStatementScope
+            LSLLabelStatementNode jumpTarget
             )
         {
             if (context == null)
@@ -84,8 +129,6 @@ namespace LibLSLCC.CodeValidator
             {
                 throw new ArgumentNullException("jumpTarget");
             }
-
-            InsideSingleStatementScope = insideSingleStatementScope;
 
             LabelName = context.jump_target.Text;
 
@@ -114,7 +157,7 @@ namespace LibLSLCC.CodeValidator
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
 
 
         /// <summary>

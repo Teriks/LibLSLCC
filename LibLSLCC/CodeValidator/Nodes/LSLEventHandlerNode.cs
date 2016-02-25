@@ -47,6 +47,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
 
@@ -69,30 +71,69 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
+        /// <summary>
+        /// Construct an <see cref="LSLEventHandlerNode"/> with the given parameter list and code body.
+        /// </summary>
+        /// <param name="parameterList">The parameter list.</param>
+        /// <param name="code">The code body.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="parameterList"/> or <paramref name="code"/> is <c>null</c>.</exception>
+        public LSLEventHandlerNode(LSLParameterListNode parameterList, LSLCodeScopeNode code)
+        {
+            if(parameterList == null) throw new ArgumentNullException("parameterList");
+            if(code == null) throw new ArgumentNullException("code");
+
+            ParameterList = parameterList;
+            ParameterList.Parent = this;
+
+            Code = code;
+            Code.Parent = this;
+        }
+
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLEventHandlerNode"/> with the given code body and no parameters.
+        /// </summary>
+        /// <param name="code">The code body.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="code"/> is <c>null</c>.</exception>
+        public LSLEventHandlerNode(LSLCodeScopeNode code)
+        {
+            if (code == null) throw new ArgumentNullException("code");
+
+            ParameterList = new LSLParameterListNode();
+            ParameterList.Parent = this;
+
+            Code = code;
+            Code.Parent = this;
+        }
+
+
+
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="parameterListNode" /> or <paramref name="eventBodyNode" /> is
+        ///     <paramref name="parameterList" /> or <paramref name="code" /> is
         ///     <c>null</c>.
         /// </exception>
-        internal LSLEventHandlerNode(LSLParser.EventHandlerContext context, LSLParameterListNode parameterListNode,
-            LSLCodeScopeNode eventBodyNode)
+        internal LSLEventHandlerNode(LSLParser.EventHandlerContext context, LSLParameterListNode parameterList,
+            LSLCodeScopeNode code)
         {
-            if (parameterListNode == null)
+            if (parameterList == null)
             {
-                throw new ArgumentNullException("parameterListNode");
+                throw new ArgumentNullException("parameterList");
             }
 
-            if (eventBodyNode == null)
+            if (code == null)
             {
-                throw new ArgumentNullException("eventBodyNode");
+                throw new ArgumentNullException("code");
             }
 
             Name = context.handler_name.Text;
 
-            EventBodyNode = eventBodyNode;
-            EventBodyNode.Parent = this;
+            Code = code;
+            Code.Parent = this;
 
-            ParameterListNode = parameterListNode;
-            ParameterListNode.Parent = this;
+            ParameterList = parameterList;
+            ParameterList.Parent = this;
 
 
             SourceRange = new LSLSourceCodeRange(context);
@@ -107,20 +148,20 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
-            get { return ParameterListNode.Parameters; }
+            get { return ParameterList.Parameters; }
         }
 
         /// <summary>
         ///     The code scope node that represents the code body of the event handler.
         /// </summary>
-        public LSLCodeScopeNode EventBodyNode { get; private set; }
+        public LSLCodeScopeNode Code { get; private set; }
 
         /// <summary>
         ///     The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
         ///     It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
         ///     Ideally you should not be handling a syntax tree with syntax errors in it.
         /// </summary>
-        public LSLParameterListNode ParameterListNode { get; private set; }
+        public LSLParameterListNode ParameterList { get; private set; }
 
         /// <summary>
         ///     The source code range of the event handler name.
@@ -143,12 +184,12 @@ namespace LibLSLCC.CodeValidator
 
         ILSLCodeScopeNode ILSLEventHandlerNode.Code
         {
-            get { return EventBodyNode; }
+            get { return Code; }
         }
 
         ILSLParameterListNode ILSLEventHandlerNode.ParameterList
         {
-            get { return ParameterListNode; }
+            get { return ParameterList; }
         }
 
 
@@ -215,5 +256,15 @@ namespace LibLSLCC.CodeValidator
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion
+
+
+        /// <summary>
+        /// Build a <see cref="LSLEventSignature"/> object based off the signature of this function declaration node.
+        /// </summary>
+        /// <returns>The created <see cref="LSLEventSignature"/>.</returns>
+        public LSLEventSignature CreateSignature()
+        {
+            return new LSLEventSignature(Name, ParameterList.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
+        }
     }
 }

@@ -1830,7 +1830,7 @@ private static class UTILITIES
 
             Writer.WriteLine(")");
 
-            Visit(node.FunctionBodyNode);
+            Visit(node.Code);
 
             //_currentLslFunctionDeclarationNode = null;
 

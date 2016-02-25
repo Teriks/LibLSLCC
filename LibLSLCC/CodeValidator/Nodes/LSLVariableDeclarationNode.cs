@@ -50,6 +50,7 @@ using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
 using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -73,7 +74,7 @@ namespace LibLSLCC.CodeValidator
 
         private LSLVariableDeclarationNode()
         {
-            InsideSingleStatementScope = false;
+
         }
 
 
@@ -285,7 +286,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Creates a reference to VariableNode by cloning and setting its <see cref="LSLVariableNode.SourceRange" />
+        ///     Creates a reference to <see cref="VariableNode"/> by cloning and setting its <see cref="LSLVariableNode.SourceRange" />
         ///     to that of <paramref name="range" />
         /// </summary>
         /// <param name="range">The source-code range of the variable token from the parser</param>
@@ -305,6 +306,64 @@ namespace LibLSLCC.CodeValidator
             _references.Add(v);
 
             return v;
+        }
+
+
+        /// <summary>
+        /// Creates a reference to this variable declaration by cloning <see cref="VariableNode"/>.
+        /// </summary>
+        /// <returns>A clone of <see cref="VariableNode"/>.</returns>
+        public LSLVariableNode CreateReference()
+        {
+            return (LSLVariableNode)VariableNode.Clone();
+        }
+
+        /// <summary>
+        /// Creates a global variable declaration node with the given <see cref="LSLType"/> and name.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="variableName"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="variableName"/> contained characters not allowed in an LSL ID token.</exception>
+        public static LSLVariableDeclarationNode CreateGlobalVar(LSLType type, string variableName)
+        {
+            if (variableName == null)
+            {
+                throw new ArgumentNullException("variableName");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            {
+                throw new ArgumentException("variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+            }
+
+            var n = new LSLVariableDeclarationNode();
+            n.VariableNode = LSLVariableNode.CreateGlobalVar(type, variableName, n);
+            n.VariableNode.Parent = n;
+
+            return n;
+        }
+
+        /// <summary>
+        /// Creates a local variable declaration node with the given <see cref="LSLType"/> and name.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="variableName"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="variableName"/> contained characters not allowed in an LSL ID token.</exception>
+        public static LSLVariableDeclarationNode CreateLocalVar(LSLType type, string variableName)
+        {
+            if (variableName == null)
+            {
+                throw new ArgumentNullException("variableName");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            {
+                throw new ArgumentException("variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+            }
+
+            var n = new LSLVariableDeclarationNode();
+            n.VariableNode = LSLVariableNode.CreateLocalVar(type, variableName, n);
+            n.VariableNode.Parent = n;
+
+            return n;
         }
 
 
@@ -497,11 +556,21 @@ namespace LibLSLCC.CodeValidator
         #region ILSLCodeStatement Members
 
         /// <summary>
-        ///     True if this statement belongs to a single statement code scope.
-        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
+        /// Always <c>false</c> for <see cref="LSLVariableDeclarationNode"/>.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        /// <exception cref="NotSupportedException" accessor="set">if <c>value</c> is <c>true</c>.</exception>
+        public bool InsideSingleStatementScope
+        {
+            get { return false; }
+            set
+            {
+                if (value)
+                {
+                    throw new NotSupportedException(GetType().Name+" cannot exist in a single statement scope.");
+                }
+            }
+        }
 
 
         /// <summary>

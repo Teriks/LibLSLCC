@@ -188,7 +188,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="stream">The TextReader to parse code from.</param>
         /// <returns>Top level node of an LSL syntax tree.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <c>null</c>.</exception>
         public ILSLCompilationUnitNode Validate(TextReader stream)
         {
             if (stream == null)

@@ -105,6 +105,6 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The code scope node that represents the code body of the function definition.
         /// </summary>
-        ILSLCodeScopeNode FunctionBodyNode { get; }
+        ILSLCodeScopeNode Code { get; }
     }
 }

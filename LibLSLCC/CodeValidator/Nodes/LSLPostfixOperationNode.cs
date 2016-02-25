@@ -68,6 +68,35 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLPostfixOperationNode"/> from a given <see cref="ILSLExprNode"/> and <see cref="LSLPostfixOperationType"/>.
+        /// </summary>
+        /// <param name="resultType">The return type of the postfix operation on the given expression.</param>
+        /// <param name="leftExpression">The expression the postfix operation occurs on.</param>
+        /// <param name="operationType">The postfix operation type.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="leftExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="operationType"/> is <see cref="LSLPostfixOperationType.Error"/>.</exception>
+        public LSLPostfixOperationNode(LSLType resultType, ILSLExprNode leftExpression, LSLPostfixOperationType operationType)
+        {
+            if (leftExpression == null)
+            {
+                throw new ArgumentNullException("leftExpression");
+            }
+
+            if (operationType == LSLPostfixOperationType.Error)
+            {
+                throw new ArgumentException("operationType cannot be LSLPostfixOperationType.Error.");
+            }
+
+            Type = resultType;
+            LeftExpression = leftExpression;
+            LeftExpression.Parent = this;
+
+            Operation = operationType;
+            OperationString = Operation.ToOperatorString();
+        }
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="leftExpression" /> is
         ///     <c>null</c>.

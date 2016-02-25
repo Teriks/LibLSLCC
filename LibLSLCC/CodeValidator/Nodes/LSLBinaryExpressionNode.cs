@@ -100,6 +100,50 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Create a <see cref="LSLBinaryExpressionNode"/> from two <see cref="ILSLExprNode"/>'s and an operator description.
+        /// </summary>
+        /// <param name="resultType">The resulting type of the binary operation between <paramref name="leftExpression"/> and <paramref name="rightExpression"/>.</param>
+        /// <param name="leftExpression">The left expression.</param>
+        /// <param name="operation">The operator.</param>
+        /// <param name="rightExpression">The right expression.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="leftExpression"/> or <paramref name="rightExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="resultType"/> is equal to <see cref="LSLType.Void"/> or
+        ///     <paramref name="operation"/> is equal to <see cref="LSLBinaryOperationType.Error" />
+        /// </exception>
+        public LSLBinaryExpressionNode(LSLType resultType, ILSLExprNode leftExpression, LSLBinaryOperationType operation, ILSLExprNode rightExpression)
+        {
+
+            if (leftExpression == null)
+            {
+                throw new ArgumentNullException("leftExpression");
+            }
+
+            if (rightExpression == null)
+            {
+                throw new ArgumentNullException("rightExpression");
+            }
+
+            if (resultType == LSLType.Void)
+            {
+                throw new ArgumentException("Binary operation resultType cannot be LSLType.Void.", "resultType");
+            }
+
+
+            Type = resultType;
+
+            LeftExpression = leftExpression;
+            LeftExpression.Parent = this;
+
+            Operation = operation;
+            OperationString = operation.ToOperatorString();
+
+            RightExpression = rightExpression;
+            RightExpression.Parent = this;
+        }
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or
         ///     <paramref name="leftExpression" /> or

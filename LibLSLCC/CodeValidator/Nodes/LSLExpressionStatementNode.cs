@@ -68,9 +68,42 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Construct an <see cref="LSLExpressionStatementNode"/> with the given expression and a <see cref="ScopeId"/> of zero.
+        /// </summary>
+        /// <param name="expression">The expression to appear as a statement.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <c>null</c>.</exception>
+        public LSLExpressionStatementNode(ILSLExprNode expression)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+            ScopeId = 0;
+
+            Expression = expression;
+            Expression.Parent = this;
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLExpressionStatementNode"/> with the given expression and <see cref="ScopeId"/>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="expression">The expression to appear as a statement.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <c>null</c>.</exception>
+        public LSLExpressionStatementNode(int scopeId, ILSLExprNode expression)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+            ScopeId = scopeId;
+
+            Expression = expression;
+            Expression.Parent = this;
+        }
+
+
+
         /// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="expression" /> is <c>null</c>.</exception>
-        internal LSLExpressionStatementNode(LSLParser.ExpressionStatementContext context, ILSLExprNode expression,
-            bool insideSingleStatementScope)
+        internal LSLExpressionStatementNode(LSLParser.ExpressionStatementContext context, ILSLExprNode expression)
         {
             if (context == null)
             {
@@ -81,8 +114,6 @@ namespace LibLSLCC.CodeValidator
             {
                 throw new ArgumentNullException("expression");
             }
-
-            InsideSingleStatementScope = insideSingleStatementScope;
 
             Expression = expression;
 
@@ -152,7 +183,7 @@ namespace LibLSLCC.CodeValidator
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
 
 
         /// <summary>

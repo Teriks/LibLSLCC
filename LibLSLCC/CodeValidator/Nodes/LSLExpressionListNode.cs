@@ -46,6 +46,7 @@
 #region Imports
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.Collections;
@@ -70,6 +71,45 @@ namespace LibLSLCC.CodeValidator
         {
             SourceRange = sourceRange;
             HasErrors = true;
+        }
+
+
+        /// <summary>
+        /// Create an empty <see cref="LSLExpressionListNode"/>.
+        /// </summary>
+        public LSLExpressionListNode()
+        {
+            
+        }
+
+
+        /// <summary>
+        /// Create an <see cref="LSLExpressionListNode"/> with the given expressions.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="expressions"/> is <c>null</c>.</exception>
+        public LSLExpressionListNode(IEnumerable<ILSLExprNode> expressions)
+        {
+            if(expressions == null) throw new ArgumentNullException("expressions");
+
+            foreach (var expression in expressions)
+            {
+                AddExpression(expression);
+            }
+        }
+
+
+        /// <summary>
+        /// Create an <see cref="LSLExpressionListNode"/> with the given expressions.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="expressions"/> is <c>null</c>.</exception>
+        public LSLExpressionListNode(params ILSLExprNode[] expressions)
+        {
+            if (expressions == null) throw new ArgumentNullException("expressions");
+
+            foreach (var expression in expressions)
+            {
+                AddExpression(expression);
+            }
         }
 
 

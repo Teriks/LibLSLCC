@@ -47,8 +47,10 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -70,21 +72,77 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        ///     Construct an <see cref="LSLFunctionDeclarationNode"/> with the given return type, and code body.
+        ///     The function declaration will have an empty parameter list node.
+        /// </summary>
+        /// <exception cref="ArgumentException">if <paramref name="functionName"/> contains invalid characters for an LSL ID token.</exception>
+        public LSLFunctionDeclarationNode(LSLType returnType, string functionName, LSLCodeScopeNode code) : this(returnType, functionName, new LSLParameterListNode(), code)
+        {
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLFunctionDeclarationNode"/> with the given return type, parameter list, and code body.
+        /// </summary>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="parameterListNode" /> or <paramref name="functionBodyNode" />
+        ///    <paramref name="functionName"/> or <paramref name="parameterList" /> or <paramref name="code" /> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException">if <paramref name="functionName"/> contains invalid characters for an LSL ID token.</exception>
+        public LSLFunctionDeclarationNode(LSLType returnType, string functionName,
+            LSLParameterListNode parameterList, LSLCodeScopeNode code)
+        {
+            if (parameterList == null)
+            {
+                throw new ArgumentNullException("parameterList");
+            }
+            if (code == null)
+            {
+                throw new ArgumentNullException("code");
+            }
+            if (functionName == null)
+            {
+                throw new ArgumentNullException("functionName");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(functionName))
+            {
+                throw new ArgumentException("functionName provided contained characters not allowed in an LSL ID token.", "functionName");
+            }
+
+            Name = functionName;
+
+
+            ReturnTypeName = returnType == LSLType.Void ? "" : LSLTypeTools.ToLSLTypeName(returnType);
+            ReturnType = returnType;
+
+
+            ParameterList = parameterList;
+            ParameterList.Parent = this;
+
+            Code = code;
+            Code.Parent = this;
+        }
+
+
+
+
+
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="parameterList" /> or <paramref name="code" />
         ///     is <c>null</c>.
         /// </exception>
         internal LSLFunctionDeclarationNode(LSLParser.FunctionDeclarationContext context,
-            LSLParameterListNode parameterListNode, LSLCodeScopeNode functionBodyNode)
+            LSLParameterListNode parameterList, LSLCodeScopeNode code)
         {
-            if (parameterListNode == null)
+            if (parameterList == null)
             {
-                throw new ArgumentNullException("parameterListNode");
+                throw new ArgumentNullException("parameterList");
             }
 
-            if (functionBodyNode == null)
+            if (code == null)
             {
-                throw new ArgumentNullException("functionBodyNode");
+                throw new ArgumentNullException("code");
             }
 
             if (context.return_type != null)
@@ -102,11 +160,11 @@ namespace LibLSLCC.CodeValidator
             Name = context.function_name.Text;
 
 
-            ParameterListNode = parameterListNode;
-            ParameterListNode.Parent = this;
+            ParameterList = parameterList;
+            ParameterList.Parent = this;
 
-            FunctionBodyNode = functionBodyNode;
-            FunctionBodyNode.Parent = this;
+            Code = code;
+            Code.Parent = this;
 
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeName = new LSLSourceCodeRange(context.function_name);
@@ -116,11 +174,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     <see cref="ILSLParameterListNode.Parameters" /> taken from <see cref="ParameterListNode" />
+        ///     <see cref="ILSLParameterListNode.Parameters" /> taken from <see cref="ParameterList" />
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
-            get { return ParameterListNode.Parameters; }
+            get { return ParameterList.Parameters; }
         }
 
         /// <summary>
@@ -135,12 +193,12 @@ namespace LibLSLCC.CodeValidator
         ///     The parameter list node that contains the parameter list definitions for this function.
         ///     It should never be null, even if the function definition contains no parameter definitions.
         /// </summary>
-        public LSLParameterListNode ParameterListNode { get; set; }
+        public LSLParameterListNode ParameterList { get; set; }
 
         /// <summary>
         ///     The code scope node that represents the code body of the function definition.
         /// </summary>
-        public LSLCodeScopeNode FunctionBodyNode { get; private set; }
+        public LSLCodeScopeNode Code { get; private set; }
 
         /// <summary>
         ///     The source code range of the function name.
@@ -189,12 +247,12 @@ namespace LibLSLCC.CodeValidator
 
         ILSLParameterListNode ILSLFunctionDeclarationNode.ParameterList
         {
-            get { return ParameterListNode; }
+            get { return ParameterList; }
         }
 
-        ILSLCodeScopeNode ILSLFunctionDeclarationNode.FunctionBodyNode
+        ILSLCodeScopeNode ILSLFunctionDeclarationNode.Code
         {
-            get { return FunctionBodyNode; }
+            get { return Code; }
         }
 
 
@@ -266,5 +324,14 @@ namespace LibLSLCC.CodeValidator
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion
+
+        /// <summary>
+        /// Build a <see cref="LSLFunctionSignature"/> object based off the signature of this function declaration node.
+        /// </summary>
+        /// <returns>The created <see cref="LSLFunctionSignature"/>.</returns>
+        public LSLFunctionSignature CreateSignature()
+        {
+            return new LSLFunctionSignature(ReturnType, Name, ParameterList.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
+        }
     }
 }

@@ -68,19 +68,21 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        ///  Construct an <see cref="LSLVectorLiteralNode"/> with the given component expressions.
+        /// </summary>
+        /// <param name="x">The 'x' vector component expression.</param>
+        /// <param name="y">The 'y' vector component expression.</param>
+        /// <param name="z">The 'z' vector component expression.</param>
         /// <exception cref="ArgumentNullException">
-        ///     <paramref name="context" /> or
         ///     <paramref name="x" /> or
         ///     <paramref name="y" /> or
         ///     <paramref name="z" /> is <c>null</c>.
         /// </exception>
-        internal LSLVectorLiteralNode(LSLParser.VectorLiteralContext context, ILSLExprNode x, ILSLExprNode y,
+        public LSLVectorLiteralNode(ILSLExprNode x, ILSLExprNode y,
             ILSLExprNode z)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
+
             if (x == null)
             {
                 throw new ArgumentNullException("x");
@@ -101,6 +103,23 @@ namespace LibLSLCC.CodeValidator
             XExpression.Parent = this;
             YExpression.Parent = this;
             ZExpression.Parent = this;
+        }
+
+
+
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or
+        ///     <paramref name="x" /> or
+        ///     <paramref name="y" /> or
+        ///     <paramref name="z" /> is <c>null</c>.
+        /// </exception>
+        internal LSLVectorLiteralNode(LSLParser.VectorLiteralContext context, ILSLExprNode x, ILSLExprNode y,
+            ILSLExprNode z) : this(x, y, z)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
 
             SourceRange = new LSLSourceCodeRange(context);
 

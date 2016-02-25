@@ -58,24 +58,25 @@ namespace LibLSLCC.CodeValidator
     {
         /// <summary>
         ///     A list of objects describing the comments found in the source code and their position/range.
+        ///     Will always be non null, even if there are no comments.
         /// </summary>
         IReadOnlyGenericArray<LSLComment> Comments { get; }
 
         /// <summary>
         ///     Global variable declaration nodes, in order of appearance.
-        ///     Returns and empty enumerable if none exist.
+        ///     Returns an empty list if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLVariableDeclarationNode> GlobalVariableDeclarations { get; }
 
         /// <summary>
         ///     User defined function nodes, in order of appearance.
-        ///     Returns and empty enumerable if none exist.
+        ///     Returns an empty list if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLFunctionDeclarationNode> FunctionDeclarations { get; }
 
         /// <summary>
         ///     User defined state nodes, in order of appearance.
-        ///     Returns and empty enumerable if none exist.
+        ///     Returns an empty list if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLStateScopeNode> StateDeclarations { get; }
 

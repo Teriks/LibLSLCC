@@ -66,7 +66,10 @@ namespace LibLSLCC.CodeValidator
         private readonly GenericArray<LSLVariableDeclarationNode> _globalVariableDeclarations =
             new GenericArray<LSLVariableDeclarationNode>();
 
-        private readonly GenericArray<LSLStateScopeNode> _stateDeclarations = new GenericArray<LSLStateScopeNode>();
+        private readonly GenericArray<LSLStateScopeNode> _stateDeclarations 
+            = new GenericArray<LSLStateScopeNode>();
+
+
         private int _addCounter;
         private LSLStateScopeNode _defaultState;
 // ReSharper disable UnusedParameter.Local
@@ -77,6 +80,34 @@ namespace LibLSLCC.CodeValidator
             SourceRange = sourceRange;
             HasErrors = true;
         }
+
+        /// <summary>
+        /// Construct an <see cref="LSLCompilationUnitNode"/> with an empty default state node.
+        /// </summary>
+        public LSLCompilationUnitNode()
+        {
+            DefaultState = new LSLStateScopeNode("default");
+        }
+
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLCompilationUnitNode"/> with the provided default state node.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="defaultState"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="defaultState"/>.IsDefaultState is <c>false</c>.</exception>
+        public LSLCompilationUnitNode(LSLStateScopeNode defaultState)
+        {
+            if (defaultState == null) throw new ArgumentNullException("defaultState");
+
+            if (!defaultState.IsDefaultState)
+            {
+                throw new ArgumentException("defaultState.IsDefaultState is false", "defaultState");
+            }
+
+            DefaultState = defaultState;
+        }
+
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
@@ -95,7 +126,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Global variable declaration nodes, in order of appearance.
-        ///     Returns and empty enumerable if none exist.
+        ///     Returns an empty list if none exist.
         /// </summary>
         public IReadOnlyGenericArray<LSLVariableDeclarationNode> GlobalVariableDeclarations
         {
@@ -104,7 +135,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     User defined function nodes, in order of appearance.
-        ///     Returns and empty enumerable if none exist.
+        ///     Returns an empty list if none exist.
         /// </summary>
         public IReadOnlyGenericArray<LSLFunctionDeclarationNode> FunctionDeclarations
         {
@@ -113,7 +144,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     User defined state nodes, in order of appearance.
-        ///     Returns and empty enumerable if none exist.
+        ///     Returns an empty list if none exist.
         /// </summary>
         public IReadOnlyGenericArray<LSLStateScopeNode> StateDeclarations
         {
@@ -134,16 +165,6 @@ namespace LibLSLCC.CodeValidator
                     throw new ArgumentNullException("value");
                 }
 
-                if (_defaultState == null)
-                {
-                    if (_globalVariableDeclarations.Count > 0)
-                    {
-                        _globalVariableDeclarations.Last().IsLastStatementInScope = false;
-                    }
-
-                    _addCounter++;
-                }
-
                 _defaultState = value;
                 _defaultState.Parent = this;
             }
@@ -151,6 +172,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     A list of objects describing the comments found in the source code and their position/range.
+        ///     Will always be non null, even if there are no comments.
         /// </summary>
         public IReadOnlyGenericArray<LSLComment> Comments { get; set; }
 
@@ -161,17 +183,17 @@ namespace LibLSLCC.CodeValidator
 
         IReadOnlyGenericArray<ILSLVariableDeclarationNode> ILSLCompilationUnitNode.GlobalVariableDeclarations
         {
-            get { return _globalVariableDeclarations ?? new GenericArray<LSLVariableDeclarationNode>(); }
+            get { return _globalVariableDeclarations; }
         }
 
         IReadOnlyGenericArray<ILSLFunctionDeclarationNode> ILSLCompilationUnitNode.FunctionDeclarations
         {
-            get { return _functionDeclarations ?? new GenericArray<LSLFunctionDeclarationNode>(); }
+            get { return _functionDeclarations; }
         }
 
         IReadOnlyGenericArray<ILSLStateScopeNode> ILSLCompilationUnitNode.StateDeclarations
         {
-            get { return _stateDeclarations ?? new GenericArray<LSLStateScopeNode>(); }
+            get { return _stateDeclarations; }
         }
 
         ILSLStateScopeNode ILSLCompilationUnitNode.DefaultStateNode
@@ -231,12 +253,14 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("declaration");
             }
 
+
             declaration.Parent = this;
 
             if (_globalVariableDeclarations.Count > 0)
             {
                 _globalVariableDeclarations.Last().IsLastStatementInScope = false;
             }
+
             _addCounter++;
             _functionDeclarations.Add(declaration);
         }
@@ -255,11 +279,6 @@ namespace LibLSLCC.CodeValidator
             }
 
             declaration.Parent = this;
-
-            if (_globalVariableDeclarations.Count > 0)
-            {
-                _globalVariableDeclarations.Last().IsLastStatementInScope = false;
-            }
 
             _addCounter++;
             _stateDeclarations.Add(declaration);

@@ -70,6 +70,66 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        /// Create a <see cref="LSLCodeScopeNode"/> with the given <see cref="ILSLReadOnlyCodeStatement.ScopeId"/> and <see cref="LSLCodeScopeType"/>.
+        /// </summary>
+        /// <param name="scopeId">The ScopeId.</param>
+        /// <param name="codeScopeType">The scope type.</param>
+        public LSLCodeScopeNode(int scopeId, LSLCodeScopeType codeScopeType)
+        {
+            ScopeId = scopeId;
+            CodeScopeType = codeScopeType;
+        }
+
+
+        /// <summary>
+        /// Create a <see cref="LSLCodeScopeNode"/> with the given <see cref="LSLCodeScopeType"/> and a <see cref="ScopeId"/> of zero.
+        /// </summary>
+        /// <param name="codeScopeType">The scope type.</param>
+        public LSLCodeScopeNode(LSLCodeScopeType codeScopeType)
+        {
+            ScopeId = 0;
+            CodeScopeType = codeScopeType;
+        }
+
+
+        /// <summary>
+        /// Create a single statement <see cref="LSLCodeScopeNode"/> with the given <see cref="ILSLReadOnlyCodeStatement.ScopeId"/> and <see cref="LSLCodeScopeType"/>.
+        /// <see cref="IsSingleStatementScope"/> will be <c>true</c>, you will not be able to add more statements with <see cref="AddCodeStatement"/>.
+        /// </summary>
+        /// <param name="scopeId">The ScopeId.</param>
+        /// <param name="statement">The statement in the single statement code scope.</param>
+        /// <param name="codeScopeType">The scope type.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <c>null</c>.</exception>
+        public LSLCodeScopeNode(int scopeId, ILSLCodeStatement statement, LSLCodeScopeType codeScopeType)
+        {
+            if (statement == null) throw new ArgumentNullException("statement");
+
+            ScopeId = scopeId;
+            CodeScopeType = codeScopeType;
+            AddCodeStatement(statement);
+            IsSingleStatementScope = true;
+        }
+
+
+        /// <summary>
+        /// Create a single statement <see cref="LSLCodeScopeNode"/> with the given <see cref="LSLCodeScopeType"/> and a <see cref="ScopeId"/> of zero.
+        /// <see cref="IsSingleStatementScope"/> will be <c>true</c>, you will not be able to add more statements with <see cref="AddCodeStatement"/>.
+        /// </summary>
+        /// <param name="statement">The statement in the single statement code scope.</param>
+        /// <param name="codeScopeType">The scope type.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <c>null</c>.</exception>
+        public LSLCodeScopeNode(ILSLCodeStatement statement, LSLCodeScopeType codeScopeType)
+        {
+            if (statement == null) throw new ArgumentNullException("statement");
+
+            ScopeId = 0;
+            CodeScopeType = codeScopeType;
+            AddCodeStatement(statement);
+            IsSingleStatementScope = true;
+        }
+
+
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal LSLCodeScopeNode(LSLParser.CodeScopeContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
@@ -114,7 +174,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return _constantJumps ?? new List<LSLConstantJumpDescription>(); }
+            get { return _constantJumps; }
         }
 
         /// <summary>
@@ -152,15 +212,24 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public ILSLReturnStatementNode ReturnStatementNode { get; private set; }
 
+
         /// <summary>
-        ///     True if this statement belongs to a single statement code scope.
-        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
+        /// Always <c>false</c> for <see cref="LSLVariableDeclarationNode"/>.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
+        /// <exception cref="NotSupportedException" accessor="set">if <c>value</c> is <c>true</c>.</exception>
         public bool InsideSingleStatementScope
         {
             get { return false; }
+            set
+            {
+                if (value)
+                {
+                    throw new NotSupportedException(GetType().Name + " cannot exist in a single statement scope.");
+                }
+            }
         }
+
 
         /// <summary>
         ///     True if this code scope is an implicit braceless scope.
@@ -200,7 +269,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public bool HasCodeStatements
         {
-            get { return _codeStatements != null && _codeStatements.Any(); }
+            get { return _codeStatements.Any(); }
         }
 
         /// <summary>
@@ -303,6 +372,8 @@ namespace LibLSLCC.CodeValidator
         /// </remarks>
         /// <param name="statement">The statement to add to the code scope</param>
         /// <exception cref="ArgumentNullException"><paramref name="statement" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException">When <see cref="IsSingleStatementScope"/> is <c>true</c> and the code scope already contains a statement.</exception>
+        /// <seealso cref="EndScope"/>
         public void AddCodeStatement(ILSLCodeStatement statement)
         {
             if (statement == null)
@@ -310,8 +381,15 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("statement");
             }
 
+            if (IsSingleStatementScope && _codeStatements.Count == 1)
+            {
+                throw new InvalidOperationException("Cannot add more than one code statement when IsSingleStatementScope is true.");
+            }
+
 
             statement.Parent = this;
+
+            statement.InsideSingleStatementScope = IsSingleStatementScope;
 
             statement.StatementIndex = _codeStatements.Count;
             statement.IsLastStatementInScope = true;
@@ -526,7 +604,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Must be called after all statements have been added to the code scope, in order to
-        ///     tell the on-line dead code detection algorithm that the end of the scope has been reached
+        ///     tell the on-line dead code detection algorithm that the end of the scope has been reached.
         /// </summary>
         public void EndScope()
         {
@@ -592,6 +670,8 @@ namespace LibLSLCC.CodeValidator
         ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
+
+
 
         #endregion // ReSharper disable UnusedParameter.Local
 

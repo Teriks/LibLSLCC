@@ -57,15 +57,32 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLSemicolonStatement : ILSLSemicolonStatement, ILSLCodeStatement
     {
+
+        /// <summary>
+        /// Construct an <see cref="LSLSemicolonStatement"/> with the given <see cref="ScopeId"/>.
+        /// </summary>
+        /// <param name="scopeId">the <see cref="ScopeId"/>.</param>
+        public LSLSemicolonStatement(int scopeId)
+        {
+            ScopeId = scopeId;
+        }
+
+
+        /// <summary>
+        /// Construct an <see cref="LSLSemicolonStatement"/> with a <see cref="ScopeId"/> of zero.
+        /// </summary>
+        public LSLSemicolonStatement()
+        {
+        }
+
+
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
-        internal LSLSemicolonStatement(LSLParser.CodeStatementContext context, bool insideSingleStatementScope)
+        internal LSLSemicolonStatement(LSLParser.CodeStatementContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
-
-            InsideSingleStatementScope = insideSingleStatementScope;
 
             SourceRangesAvailable = true;
 
@@ -83,7 +100,7 @@ namespace LibLSLCC.CodeValidator
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
-        public bool InsideSingleStatementScope { get; private set; }
+        public bool InsideSingleStatementScope { get; set; }
 
         /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
