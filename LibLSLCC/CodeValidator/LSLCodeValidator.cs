@@ -109,13 +109,55 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default" /> to initialize
+        ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default()" /> to initialize
         ///     the <see cref="ValidatorStrategies" /> property.
         /// </summary>
-        /// <seealso cref="LSLCodeValidatorStrategies.Default"/>
+        /// <seealso cref="LSLCodeValidatorStrategies.Default()"/>
         public LSLCodeValidator()
         {
             var validatorStrategies = LSLCodeValidatorStrategies.Default();
+            _validatorVisitor = new LSLCodeValidatorVisitor(validatorStrategies);
+            _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default(ILSLBasicLibraryDataProvider)" /> to initialize
+        ///     the <see cref="ValidatorStrategies" /> property.
+        /// </summary>
+        /// <seealso cref="LSLCodeValidatorStrategies.Default()"/>
+        public LSLCodeValidator(ILSLBasicLibraryDataProvider libraryDataProvider)
+        {
+            var validatorStrategies = LSLCodeValidatorStrategies.Default(libraryDataProvider);
+            _validatorVisitor = new LSLCodeValidatorVisitor(validatorStrategies);
+            _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
+        }
+
+
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default(ILSLBasicLibraryDataProvider, ILSLSyntaxErrorListener, ILSLSyntaxWarningListener)" /> to initialize
+        ///     the <see cref="ValidatorStrategies" /> property.
+        /// </summary>
+        /// <seealso cref="LSLCodeValidatorStrategies.Default()"/>
+        public LSLCodeValidator(ILSLBasicLibraryDataProvider libraryDataProvider, ILSLSyntaxErrorListener errorListener, ILSLSyntaxWarningListener warningListener)
+        {
+            var validatorStrategies = LSLCodeValidatorStrategies.Default(libraryDataProvider, errorListener, warningListener);
+            _validatorVisitor = new LSLCodeValidatorVisitor(validatorStrategies);
+            _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
+        }
+
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default(ILSLSyntaxErrorListener, ILSLSyntaxWarningListener)" /> to initialize
+        ///     the <see cref="ValidatorStrategies" /> property.
+        /// </summary>
+        /// <seealso cref="LSLCodeValidatorStrategies.Default()"/>
+        public LSLCodeValidator(ILSLSyntaxErrorListener errorListener, ILSLSyntaxWarningListener warningListener)
+        {
+            var validatorStrategies = LSLCodeValidatorStrategies.Default(errorListener, warningListener);
             _validatorVisitor = new LSLCodeValidatorVisitor(validatorStrategies);
             _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
         }
