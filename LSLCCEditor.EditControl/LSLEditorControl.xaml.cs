@@ -73,6 +73,10 @@ using LSLCCEditor.Utility.Binding;
 using LSLCCEditor.Utility.Xml;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
 
+#if DEBUG_AUTO_COMPLETE
+using LSLCCEditor.Utility;
+#endif
+
 #endregion
 
 namespace LSLCCEditor.EditControl
@@ -82,7 +86,7 @@ namespace LSLCCEditor.EditControl
     /// </summary>
     public sealed partial class LSLEditorControl : UserControl
     {
-#if DEBUG_AUTOCOMPLETE_PARSER
+#if DEBUG_AUTO_COMPLETE
         private readonly DebugObjectView _debugObjectView = new DebugObjectView();
 #endif
 
