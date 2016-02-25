@@ -603,6 +603,14 @@ namespace LSLCCEditor.SettingsUI
             Clipboard.SetData(DataFormats.Text, string.Join(Environment.NewLine, NamespaceNameListBox.SelectedItems.Cast<object>().Select(x=>x.ToString())));
         }
 
+
+        private void ImportsContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            ((MenuItem)ImportsContextMenu.Items[0]).IsEnabled = CanEditCurrentConfiguration;
+
+            ((MenuItem)ImportsContextMenu.Items[1]).IsEnabled = NamespaceNameListBox.SelectedItems.Count > 0;
+        }
+
         private void Rename_OnClick(object sender, RoutedEventArgs e)
         {
             var x = new UniqueNamerWindow(AppSettings.Settings.CompilerConfigurations.Keys, SelectedCompilerConfigurationName, false);
@@ -655,19 +663,10 @@ namespace LSLCCEditor.SettingsUI
                 "LSLCCEditor_CompilerConfig.xml",
                 writer =>
                 {
-                    var x = new XmlSerializer(typeof(CompilerConfigurationNode));
+                    var x = new XmlSerializer(typeof (CompilerConfigurationNode));
 
                     x.Serialize(writer, CurrentCompilerConfiguration);
                 });
         }
-
-
-        private void ImportsContextMenu_Opened(object sender, RoutedEventArgs e)
-        {
-            ((MenuItem)ImportsContextMenu.Items[0]).IsEnabled = CanEditCurrentConfiguration;
-        }
-
-
-
     }
 }
