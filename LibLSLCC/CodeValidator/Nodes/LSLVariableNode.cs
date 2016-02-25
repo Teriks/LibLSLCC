@@ -47,13 +47,12 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Default <see cref="ILSLVariableNode" /> implementation used by <see cref="LSLCodeValidator" />

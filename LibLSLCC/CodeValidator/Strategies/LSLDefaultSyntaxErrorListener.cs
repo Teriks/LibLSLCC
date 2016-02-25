@@ -46,13 +46,12 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     The default implementation of <see cref="ILSLSyntaxErrorListener" /> for the library.

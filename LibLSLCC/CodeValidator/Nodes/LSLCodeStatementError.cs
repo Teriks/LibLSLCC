@@ -46,12 +46,11 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLCodeStatementError : ILSLCodeStatement
     {

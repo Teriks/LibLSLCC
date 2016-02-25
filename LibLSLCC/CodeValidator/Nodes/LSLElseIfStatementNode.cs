@@ -49,12 +49,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Default <see cref="ILSLElseIfStatementNode" /> implementation used by <see cref="LSLCodeValidator" />

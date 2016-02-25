@@ -47,7 +47,7 @@
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST node interface for expression statements, expression statements are the statements that occur line by line

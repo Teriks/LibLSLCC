@@ -46,12 +46,11 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     The default library implementation of <see cref="ILSLSyntaxWarningListener" /> that can write warning

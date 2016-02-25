@@ -47,9 +47,7 @@
 
 #endregion
 
-using LibLSLCC.CodeValidator.Nodes;
-
-namespace LibLSLCC.CodeValidator.Visitor
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Default visitor base class for LSL Syntax tree visitors.

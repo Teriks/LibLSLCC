@@ -46,13 +46,12 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     A proxy object for <see cref="ILSLSyntaxErrorListener" /> and <see cref="ILSLSyntaxWarningListener" /> that

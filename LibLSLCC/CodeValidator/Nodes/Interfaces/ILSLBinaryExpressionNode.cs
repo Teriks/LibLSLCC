@@ -47,7 +47,7 @@
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST interface for binary expression nodes.

@@ -47,9 +47,7 @@
 
 #endregion
 
-using LibLSLCC.CodeValidator.Nodes;
-
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents the result of an expression/type validation preformed by an ILSLExpressionValidator object

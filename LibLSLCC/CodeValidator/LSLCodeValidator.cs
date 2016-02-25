@@ -48,8 +48,6 @@
 using System;
 using System.IO;
 using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Parser;
 
 #endregion

@@ -46,7 +46,6 @@
 #region Imports
 
 using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.Parser;
 
 #endregion

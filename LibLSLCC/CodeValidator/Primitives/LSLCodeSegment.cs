@@ -45,7 +45,6 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.Collections;
 
 #endregion

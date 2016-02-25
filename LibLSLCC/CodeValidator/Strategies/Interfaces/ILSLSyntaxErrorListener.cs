@@ -45,13 +45,12 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Interface for a syntax error listener, this called into by the code validator

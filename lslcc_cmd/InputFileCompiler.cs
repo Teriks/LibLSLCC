@@ -45,8 +45,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.LibraryData;

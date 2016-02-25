@@ -51,7 +51,7 @@ using System.Text;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     The default implementation of <see cref="ILSLStringPreProcessor" /> for the library

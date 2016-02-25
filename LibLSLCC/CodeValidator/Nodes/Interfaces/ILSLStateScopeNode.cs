@@ -49,7 +49,7 @@ using LibLSLCC.Collections;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST node interface for code state blocks.

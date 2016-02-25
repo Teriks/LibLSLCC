@@ -49,7 +49,7 @@ using System;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Extensions for LSL literal nodes.

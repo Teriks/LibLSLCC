@@ -46,11 +46,10 @@
 #region Imports
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     The default expression validator can validate and return results for all possible binary operations, unary

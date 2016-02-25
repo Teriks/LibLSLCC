@@ -47,9 +47,7 @@
 
 #endregion
 
-using LibLSLCC.CodeValidator.Nodes;
-
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents various sub strategies and listeners that are used in the <see cref="LSLCodeValidator" /> implementation

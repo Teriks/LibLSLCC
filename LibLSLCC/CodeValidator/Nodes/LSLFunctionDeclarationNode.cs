@@ -47,13 +47,12 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Default <see cref="ILSLFunctionDeclarationNode" /> implementation used by <see cref="LSLCodeValidator" />

@@ -58,9 +58,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Strategies;
-
 #if !DEBUG
 //Prevent resharper from removing this import when cleaning up in debug mode.
 //It's not used in debug mode because the debug mode editor does not catch compiler internal exceptions.

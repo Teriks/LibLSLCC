@@ -5,7 +5,7 @@ using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Strategies
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     A minimal interface for providing data about what exists in the standard LSL library.

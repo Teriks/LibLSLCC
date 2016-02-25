@@ -47,8 +47,6 @@
 
 #endregion
 
-using LibLSLCC.CodeValidator.Nodes;
-
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>

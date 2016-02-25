@@ -48,7 +48,6 @@
 using System;
 using System.IO;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 
