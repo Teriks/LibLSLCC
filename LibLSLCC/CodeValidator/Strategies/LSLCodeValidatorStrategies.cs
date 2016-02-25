@@ -52,10 +52,8 @@ using LibLSLCC.LibraryData;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     A basic <see cref="ILSLCodeValidatorStrategies" /> implementation that allows you to assign values
-    ///     to members which will be used directly as part of <see cref="LSLCodeValidator" />'s implementation.
-    ///     <see cref="Default" /> will return a copy of this object with all the default implementations assigned to its
-    ///     properties.
+    ///     A basic <see cref="ILSLCodeValidatorStrategies" /> implementation that allows you to assign values to its properties.
+    ///     <see cref="Default()" /> will return a copy of this object with all the default strategy implementations assigned.
     /// </summary>
     public sealed class LSLCodeValidatorStrategies : ILSLCodeValidatorStrategies
     {
@@ -104,6 +102,69 @@ namespace LibLSLCC.CodeValidator
                 LibraryDataProvider =
                     new LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData.StandardLsl, LSLLibraryDataAdditions.None,
                         false),
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                SyntaxWarningListener = new LSLDefaultSyntaxWarningListener()
+            };
+        }
+
+
+        /// <summary>
+        ///     Returns LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup.
+        ///     Allows the use of custom <see cref="ILSLSyntaxErrorListener"/> and <see cref="ILSLSyntaxWarningListener"/>.
+        /// </summary>
+        /// <param name="errorListener">The syntax error listener to use.</param>
+        /// <param name="warningListener">The syntax warning listener to use.</param>
+        /// <returns>LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup</returns>
+        public static LSLCodeValidatorStrategies Default(ILSLSyntaxErrorListener errorListener, ILSLSyntaxWarningListener warningListener)
+        {
+            return new LSLCodeValidatorStrategies
+            {
+                SyntaxErrorListener = errorListener,
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+                LibraryDataProvider =
+                    new LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData.StandardLsl, LSLLibraryDataAdditions.None,
+                        false),
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                SyntaxWarningListener = warningListener
+            };
+        }
+
+
+        /// <summary>
+        ///     Returns LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup.
+        ///     Allows the use of custom <see cref="ILSLBasicLibraryDataProvider"/>, <see cref="ILSLSyntaxErrorListener"/> and <see cref="ILSLSyntaxWarningListener"/>.
+        /// </summary>
+        /// <param name="libraryDataProvider">The library data provider to use.</param>
+        /// <param name="errorListener">The syntax error listener to use.</param>
+        /// <param name="warningListener">The syntax warning listener to use.</param>
+        /// <returns>LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup</returns>
+        public static LSLCodeValidatorStrategies Default(ILSLBasicLibraryDataProvider libraryDataProvider, ILSLSyntaxErrorListener errorListener, ILSLSyntaxWarningListener warningListener)
+        {
+            return new LSLCodeValidatorStrategies
+            {
+                SyntaxErrorListener = errorListener,
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+                LibraryDataProvider = libraryDataProvider,
+                StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
+                SyntaxWarningListener = warningListener
+            };
+        }
+
+
+
+        /// <summary>
+        ///     Returns LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup.
+        ///     Allows the use of custom <see cref="ILSLBasicLibraryDataProvider"/>.
+        /// </summary>
+        /// <param name="libraryDataProvider">The library data provider to use.</param>
+        /// <returns>LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup</returns>
+        public static LSLCodeValidatorStrategies Default(ILSLBasicLibraryDataProvider libraryDataProvider)
+        {
+            return new LSLCodeValidatorStrategies
+            {
+                SyntaxErrorListener = new LSLDefaultSyntaxErrorListener(),
+                ExpressionValidator = new LSLDefaultExpressionValidator(),
+                LibraryDataProvider = libraryDataProvider,
                 StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
                 SyntaxWarningListener = new LSLDefaultSyntaxWarningListener()
             };
