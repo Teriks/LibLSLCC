@@ -44,7 +44,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using LibLSLCC.Compilers.OpenSim;
+using LibLSLCC.Compilers;
 using LibLSLCC.Settings;
 using LSLCCEditor.EditControl;
 using LSLCCEditor.Utility.Xml;

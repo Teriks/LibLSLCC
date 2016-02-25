@@ -52,7 +52,7 @@ using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.Compilers.OpenSim
+namespace LibLSLCC.Compilers
 {
     /// <summary>
     ///     A compiler that converts LSL Syntax trees into CSharp code that is compatible with OpenSim's CSharp LSL runtime.

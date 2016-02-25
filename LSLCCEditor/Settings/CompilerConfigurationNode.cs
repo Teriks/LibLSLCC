@@ -42,7 +42,7 @@
 #endregion
 
 using System.Reflection;
-using LibLSLCC.Compilers.OpenSim;
+using LibLSLCC.Compilers;
 using LibLSLCC.Settings;
 
 namespace LSLCCEditor.Settings

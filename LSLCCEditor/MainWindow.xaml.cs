@@ -64,8 +64,6 @@ using LibLSLCC.CodeValidator;
 //LibLSLCC.Compilers.LSLCompilerInternalException happens to be the only thing referenced in this file from the following namespace.
 using LibLSLCC.Compilers;
 #endif
-
-using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Formatter;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;

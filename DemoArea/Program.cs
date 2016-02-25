@@ -47,7 +47,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.Compilers.OpenSim;
+using LibLSLCC.Compilers;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
 

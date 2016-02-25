@@ -52,7 +52,7 @@ using LibLSLCC.Settings;
 
 #endregion
 
-namespace LibLSLCC.Compilers.OpenSim
+namespace LibLSLCC.Compilers
 {
     /// <summary>
     ///     Settings for the <see cref="LSLOpenSimCompiler" /> class.

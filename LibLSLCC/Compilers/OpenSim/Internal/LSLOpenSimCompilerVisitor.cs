@@ -58,7 +58,7 @@ using LibLSLCC.Utility.ListParser;
 
 #endregion
 
-namespace LibLSLCC.Compilers.OpenSim
+namespace LibLSLCC.Compilers
 {
     // ReSharper disable InconsistentNaming
     internal sealed class LSLOpenSimCompilerVisitor : LSLValidatorNodeVisitor<bool>

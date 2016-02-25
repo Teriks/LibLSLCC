@@ -46,7 +46,6 @@ using System.IO;
 using System.Text;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Compilers;
-using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.LibraryData;
 
 namespace lslcc
