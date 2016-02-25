@@ -112,11 +112,6 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
 
-        /// <summary>
-        ///     If the scope has a return path, this is set to the node that causes the function to return.
-        ///     it may be a return statement, or a control chain node.
-        /// </summary>
-        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
@@ -145,10 +140,6 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
-        ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
-        {
-            get { return ReturnPath; }
-        }
 
         /// <summary>
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.

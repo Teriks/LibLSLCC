@@ -114,11 +114,6 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
 
-        /// <summary>
-        ///     If the scope has a return path, this is set to the node that causes the function to return.
-        ///     it may be a return statement, or a control chain node.
-        /// </summary>
-        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -136,11 +131,6 @@ namespace LibLSLCC.CodeValidator
         ILSLReadOnlyExprNode ILSLLoopNode.ConditionExpression
         {
             get { return ConditionExpression; }
-        }
-
-        ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
-        {
-            get { return ReturnPath; }
         }
 
         /// <summary>

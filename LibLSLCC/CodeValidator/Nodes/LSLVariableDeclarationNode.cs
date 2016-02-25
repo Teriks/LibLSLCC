@@ -101,7 +101,6 @@ namespace LibLSLCC.CodeValidator
             DeadCodeType = other.DeadCodeType;
 
             IsDeadCode = other.IsDeadCode;
-            ReturnPath = other.ReturnPath;
 
             ScopeId = other.ScopeId;
 
@@ -152,11 +151,6 @@ namespace LibLSLCC.CodeValidator
             get { return _references; }
         }
 
-        /// <summary>
-        ///     If the scope has a return path, this is set to the node that causes the function to return.
-        ///     it may be a return statement, or a control chain node.
-        /// </summary>
-        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
         /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
@@ -239,11 +233,6 @@ namespace LibLSLCC.CodeValidator
         ILSLReadOnlyExprNode ILSLVariableDeclarationNode.DeclarationExpression
         {
             get { return DeclarationExpression; }
-        }
-
-        ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
-        {
-            get { return ReturnPath; }
         }
 
         /// <summary>

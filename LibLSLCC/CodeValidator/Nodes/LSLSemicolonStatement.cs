@@ -74,12 +74,6 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     If the scope has a return path, this is set to the node that causes the function to return.
-        ///     it may be a return statement, or a control chain node.
-        /// </summary>
-        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
-
-        /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
@@ -99,11 +93,6 @@ namespace LibLSLCC.CodeValidator
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
             get { return Parent; }
-        }
-
-        ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
-        {
-            get { return ReturnPath; }
         }
 
         /// <summary>

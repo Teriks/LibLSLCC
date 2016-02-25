@@ -141,11 +141,6 @@ namespace LibLSLCC.CodeValidator
         public bool IsDeadCode { get; set; }
 
 
-        ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
-        {
-            get { return ReturnPath; }
-        }
-
         /// <summary>
         ///     The index of this statement in its scope
         /// </summary>
@@ -206,11 +201,6 @@ namespace LibLSLCC.CodeValidator
 
         #endregion
 
-        /// <summary>
-        ///     If the scope has a return path, this is set to the node that causes the function to return.
-        ///     it may be a return statement, or a control chain node.
-        /// </summary>
-        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent

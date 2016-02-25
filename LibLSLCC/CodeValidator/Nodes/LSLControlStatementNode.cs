@@ -134,12 +134,6 @@ namespace LibLSLCC.CodeValidator
         }
 
         /// <summary>
-        ///     If the scope has a return path, this is set to the node that causes the function to return.
-        ///     it may be a return statement, or a control chain node.
-        /// </summary>
-        public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
-
-        /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
@@ -279,12 +273,6 @@ namespace LibLSLCC.CodeValidator
         ///     Is this statement dead code
         /// </summary>
         public bool IsDeadCode { get; set; }
-
-
-        ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
-        {
-            get { return ReturnPath; }
-        }
 
 
         /// <summary>
