@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLParameterListNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -51,28 +54,28 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for parameter list.  Used for function definition and event handler parameters.
+    ///     AST node interface for parameter list.  Used for function definition and event handler parameters.
     /// </summary>
     public interface ILSLParameterListNode : ILSLSyntaxTreeNode
     {
         /// <summary>
-        /// True if this parameter list node contains parameter definition nodes.
+        ///     True if this parameter list node contains parameter definition nodes.
         /// </summary>
         bool HasParameters { get; }
 
         /// <summary>
-        /// A list of parameter definition nodes that this parameter list node contains, or an empty list.
+        ///     A list of parameter definition nodes that this parameter list node contains, or an empty list.
         /// </summary>
         IReadOnlyGenericArray<ILSLParameterNode> Parameters { get; }
 
         /// <summary>
-        /// The source code range for each comma separator that appears in the parameter list in order, or an empty list object.
+        ///     The source code range for each comma separator that appears in the parameter list in order, or an empty list
+        ///     object.
         /// </summary>
         IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList { get; }
 
-
         /// <summary>
-        /// The parameter list type;  FunctionParameters or EventParameters.
+        ///     The parameter list type;  FunctionParameters or EventParameters.
         /// </summary>
         LSLParameterListType ParameterListType { get; }
     }

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLAutoCompleteStateBlock.cs
 // 
@@ -39,19 +40,24 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Primitives;
+
+#endregion
 
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a state block parsed by the auto complete parser.
+    ///     Represents a state block parsed by the auto complete parser.
     /// </summary>
     public sealed class LSLAutoCompleteStateBlock
     {
         /// <summary>
-        /// Construct an auto complete state block given a state name and source code range.
+        ///     Construct an auto complete state block given a state name and source code range.
         /// </summary>
         /// <param name="name">The name of the state.</param>
         /// <param name="range">The source code range the state block occupies.</param>
@@ -63,13 +69,12 @@ namespace LibLSLCC.AutoComplete
 
 
         /// <summary>
-        /// The name of the state.
+        ///     The name of the state.
         /// </summary>
         public string Name { get; private set; }
 
-
         /// <summary>
-        /// The source code range the state block occupies.
+        ///     The source code range the state block occupies.
         /// </summary>
         public LSLSourceCodeRange SourceRange { get; private set; }
     }

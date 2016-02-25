@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLFunctionDeclarationNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,7 +59,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLFunctionDeclarationNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLFunctionDeclarationNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLFunctionDeclarationNode : ILSLFunctionDeclarationNode, ILSLSyntaxTreeNode
     {
@@ -70,7 +73,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        /// <exception cref="ArgumentNullException"><paramref name="parameterListNode"/> or <paramref name="functionBodyNode"/> is <c>null</c>.</exception>
+
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="parameterListNode" /> or <paramref name="functionBodyNode" />
+        ///     is <c>null</c>.
+        /// </exception>
         internal LSLFunctionDeclarationNode(LSLParser.FunctionDeclarationContext context,
             LSLParameterListNode parameterListNode, LSLCodeScopeNode functionBodyNode)
         {
@@ -113,30 +120,15 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The source code range of the function name.
-        /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
-        public LSLSourceCodeRange SourceRangeName { get; private set; }
-
-
-        /// <summary>
-        /// The source code range of the function return type, or <c>null</c> if no return type was specified.
-        /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
-        public LSLSourceCodeRange SourceRangeReturnType { get; private set; }
-
-
-        /// <summary>
-        /// <see cref="ILSLParameterListNode.Parameters"/> taken from <see cref="ParameterListNode"/>
+        ///     <see cref="ILSLParameterListNode.Parameters" /> taken from <see cref="ParameterListNode" />
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
             get { return ParameterListNode.Parameters; }
         }
 
-
         /// <summary>
-        /// A list of function call nodes that reference this function definition, or an empty list.
+        ///     A list of function call nodes that reference this function definition, or an empty list.
         /// </summary>
         public IReadOnlyGenericArray<LSLFunctionCallNode> References
         {
@@ -144,15 +136,33 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The parameter list node that contains the parameter list definitions for this function.
-        /// It should never be null, even if the function definition contains no parameter definitions.
+        ///     The parameter list node that contains the parameter list definitions for this function.
+        ///     It should never be null, even if the function definition contains no parameter definitions.
         /// </summary>
         public LSLParameterListNode ParameterListNode { get; set; }
 
         /// <summary>
-        /// The code scope node that represents the code body of the function definition.
+        ///     The code scope node that represents the code body of the function definition.
         /// </summary>
         public LSLCodeScopeNode FunctionBodyNode { get; private set; }
+
+        /// <summary>
+        ///     The source code range of the function name.
+        /// </summary>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
+        public LSLSourceCodeRange SourceRangeName { get; private set; }
+
+        /// <summary>
+        ///     The source code range of the function return type, or <c>null</c> if no return type was specified.
+        /// </summary>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
+        public LSLSourceCodeRange SourceRangeReturnType { get; private set; }
 
         IReadOnlyGenericArray<ILSLFunctionCallNode> ILSLFunctionDeclarationNode.References
         {
@@ -165,18 +175,19 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The string from the source code that represents the return type assigned to the function definition,
-        /// or an empty string if no return type was assigned.
+        ///     The string from the source code that represents the return type assigned to the function definition,
+        ///     or an empty string if no return type was assigned.
         /// </summary>
         public string ReturnTypeName { get; private set; }
 
         /// <summary>
-        /// The name of the function.
+        ///     The name of the function.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// The return type assigned to the function definition, it will be <see cref="LSLType.Void"/> if no return type was given.
+        ///     The return type assigned to the function definition, it will be <see cref="LSLType.Void" /> if no return type was
+        ///     given.
         /// </summary>
         public LSLType ReturnType { get; private set; }
 
@@ -190,6 +201,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return FunctionBodyNode; }
         }
 
+
         internal void AddReference(LSLFunctionCallNode reference)
         {
             _references.Add(reference);
@@ -197,8 +209,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -220,25 +232,28 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLTreeNode Members
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -250,7 +265,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 

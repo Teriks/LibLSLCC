@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLTypecastExprNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -49,44 +52,51 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for typecast expressions.
+    ///     AST node interface for typecast expressions.
     /// </summary>
     public interface ILSLTypecastExprNode : ILSLReadOnlyExprNode
     {
-
         /// <summary>
-        /// The expression node that represents the expression being casted.  This should never be null.
+        ///     The expression node that represents the expression being casted.  This should never be null.
         /// </summary>
         ILSLReadOnlyExprNode CastedExpression { get; }
 
         /// <summary>
-        /// The <see cref="LSLType"/> that represents the type the expression is being cast to.
+        ///     The <see cref="LSLType" /> that represents the type the expression is being cast to.
         /// </summary>
         LSLType CastToType { get; }
 
         /// <summary>
-        /// The raw type name of the type the expression is being cast to, taken from the source code.
+        ///     The raw type name of the type the expression is being cast to, taken from the source code.
         /// </summary>
         string CastToTypeName { get; }
 
         /// <summary>
-        /// The source code range of the closing parenthesis of the enclosed cast type.
+        ///     The source code range of the closing parenthesis of the enclosed cast type.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
 
         /// <summary>
-        /// The source code range of the open parenthesis of the enclosed cast type.
+        ///     The source code range of the open parenthesis of the enclosed cast type.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
-        /// The source code range of the type name used for the cast.
+        ///     The source code range of the type name used for the cast.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCastToType { get; }
     }
 }

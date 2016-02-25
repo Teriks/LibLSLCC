@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLElseIfStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,7 +59,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLElseIfStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLElseIfStatementNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLElseIfStatementNode : ILSLElseIfStatementNode, ILSLBranchStatementNode
     {
@@ -69,15 +72,17 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="conditionExpression"/> is <c>null</c>.</exception>
+
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="code" /> or <paramref name="conditionExpression" /> is
+        ///     <c>null</c>.
+        /// </exception>
         internal LSLElseIfStatementNode(
             IToken elseKeyword,
             LSLParser.ControlStructureContext context,
             LSLCodeScopeNode code,
             ILSLExprNode conditionExpression)
         {
-
-
             if (conditionExpression == null)
             {
                 throw new ArgumentNullException("conditionExpression");
@@ -94,33 +99,34 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
-            
+
             SourceRangeElseKeyword = new LSLSourceCodeRange(elseKeyword);
             SourceRangeIfKeyword = new LSLSourceCodeRange(context.if_keyword);
             SourceRangeOpenParenth = new LSLSourceCodeRange(context.open_parenth);
             SourceRangeCloseParenth = new LSLSourceCodeRange(context.close_parenth);
 
 
-            SourceRange = new LSLSourceCodeRange(SourceRangeElseKeyword,code.SourceRange);
+            SourceRange = new LSLSourceCodeRange(SourceRangeElseKeyword, code.SourceRange);
 
             SourceRangesAvailable = true;
         }
 
+
         /// <summary>
-        /// <see cref="LSLCodeScopeNode.ConstantJumps"/> returned from <see cref="Code"/>
+        ///     <see cref="LSLCodeScopeNode.ConstantJumps" /> returned from <see cref="Code" />
         /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
-            get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps ; }
+            get { return Code == null ? new List<LSLConstantJumpDescription>() : Code.ConstantJumps; }
         }
 
         /// <summary>
-        /// The code scope associated with the else-if branch.
+        ///     The code scope associated with the else-if branch.
         /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
 
         /// <summary>
-        /// The condition expression of the else-if statement.
+        ///     The condition expression of the else-if statement.
         /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
 
@@ -142,7 +148,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLBranchStatementNode Members
 
         /// <summary>
-        /// Determines if the condition controlling the branch is a constant expression.
+        ///     Determines if the condition controlling the branch is a constant expression.
         /// </summary>
         public bool IsConstantBranch
         {
@@ -154,7 +160,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLReturnPathNode Members
 
         /// <summary>
-        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
         /// </summary>
         public bool HasReturnPath
         {
@@ -164,36 +170,45 @@ namespace LibLSLCC.CodeValidator.Nodes
         #endregion
 
         /// <summary>
-        /// The source code range of the 'if' keyword in the else-if statement.
+        ///     The source code range of the 'if' keyword in the else-if statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeIfKeyword { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the 'else' keyword in the else-if statement.
+        ///     The source code range of the 'else' keyword in the else-if statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeElseKeyword { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the opening parenthesis in the else-if statement where the condition area starts.
+        ///     The source code range of the opening parenthesis in the else-if statement where the condition area starts.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the closing parenthesis in the else-if statement where the condition area ends.
+        ///     The source code range of the closing parenthesis in the else-if statement where the condition area ends.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -215,33 +230,35 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLTreeNode Members
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

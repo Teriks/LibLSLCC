@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLCodeValidatorInternalException.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -50,9 +53,8 @@ using System.Runtime.Serialization;
 
 namespace LibLSLCC.CodeValidator
 {
-
     /// <summary>
-    /// Thrown when <see cref="LSLCodeValidator"/> experiences an un-expected exception.
+    ///     Thrown when <see cref="LSLCodeValidator" /> experiences an un-expected exception.
     /// </summary>
     [Serializable]
     public class LSLCodeValidatorInternalException : Exception
@@ -66,7 +68,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public LSLCodeValidatorInternalException()
         {
@@ -74,7 +76,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct with message.
+        ///     Construct with message.
         /// </summary>
         /// <param name="message">Exception message.</param>
         public LSLCodeValidatorInternalException(string message) : base(message)
@@ -83,7 +85,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct with message and inner exception.
+        ///     Construct with message and inner exception.
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="inner">Inner exception.</param>
@@ -93,7 +95,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Serializable constructor.
+        ///     Serializable constructor.
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>
@@ -105,7 +107,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Constructs a typical exception for an invalid ANTLR parser context state during an ANTLR tree visit.
+        ///     Constructs a typical exception for an invalid ANTLR parser context state during an ANTLR tree visit.
         /// </summary>
         /// <param name="visitFunctionName">The name of the function the exception is going to be thrown from.</param>
         /// <param name="prePass">Whether or not this exception was thrown in the pre-compile pass over the source code.</param>
@@ -116,17 +118,17 @@ namespace LibLSLCC.CodeValidator
             if (prePass)
             {
                 return new LSLCodeValidatorInternalException("In visitor function: " + visitFunctionName +
-                                                         ", context did not meet pre-requisites.");
+                                                             ", context did not meet pre-requisites.");
             }
 
             return
                 new LSLCodeValidatorInternalException("In visitor function: " + visitFunctionName +
-                                                  ", visited context did not meet pre-requisites in pre-pass.");
+                                                      ", visited context did not meet pre-requisites in pre-pass.");
         }
 
 
         /// <summary>
-        /// Constructs a typical exception for an invalid ANTLR parser context state during an ANTLR tree visit.
+        ///     Constructs a typical exception for an invalid ANTLR parser context state during an ANTLR tree visit.
         /// </summary>
         /// <param name="visitFunctionName">The name of the function the exception is going to be thrown from.</param>
         /// <param name="contextType">The type of the ANTLR context being visited.</param>
@@ -138,21 +140,25 @@ namespace LibLSLCC.CodeValidator
         {
             if (prePass)
             {
-                return new LSLCodeValidatorInternalException("In function: " + visitFunctionName + ", " + contextType.Name +
-                                                         " type context did not meet pre-requisites.");
+                return
+                    new LSLCodeValidatorInternalException("In function: " + visitFunctionName + ", " + contextType.Name +
+                                                          " type context did not meet pre-requisites.");
             }
 
             return
                 new LSLCodeValidatorInternalException("In function: " + visitFunctionName + ", " + contextType.Name +
-                                                  " type context did not meet pre-requisites in pre-pass.");
+                                                      " type context did not meet pre-requisites in pre-pass.");
         }
 
 
         /// <summary>
-        /// Constructs a typical exception for an invalid return type from an ANTLR parser visitor function.
+        ///     Constructs a typical exception for an invalid return type from an ANTLR parser visitor function.
         /// </summary>
         /// <param name="visitFunctionName">The visitor function the exception is going to be thrown from.</param>
-        /// <param name="expectedReturnType">The expected return type of the visitor function which did not meet the return type expectation.</param>
+        /// <param name="expectedReturnType">
+        ///     The expected return type of the visitor function which did not meet the return type
+        ///     expectation.
+        /// </param>
         /// <returns></returns>
         public static LSLCodeValidatorInternalException VisitReturnTypeException(string visitFunctionName,
             MemberInfo expectedReturnType)

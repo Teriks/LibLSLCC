@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLBinaryOperationType.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -48,158 +51,159 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Enums
 {
-
     /// <summary>
-    /// Describes different types of binary operations.
+    ///     Describes different types of binary operations.
     /// </summary>
     public enum LSLBinaryOperationType
     {
         /// <summary>
-        /// Addition.
+        ///     Addition.
         /// </summary>
         Add = 24,
 
         /// <summary>
-        /// Compound Add and assign.
+        ///     Compound Add and assign.
         /// </summary>
         AddAssign = 23,
 
         /// <summary>
-        /// Subtraction.
+        ///     Subtraction.
         /// </summary>
         Subtract = 22,
 
 
         /// <summary>
-        /// Compound Subtract and assign.
+        ///     Compound Subtract and assign.
         /// </summary>
         SubtractAssign = 21,
 
         /// <summary>
-        /// Multiplication.
+        ///     Multiplication.
         /// </summary>
         Multiply = 20,
 
         /// <summary>
-        /// Compound Multiply and assign.
+        ///     Compound Multiply and assign.
         /// </summary>
         MultiplyAssign = 19,
 
         /// <summary>
-        /// Division.
+        ///     Division.
         /// </summary>
         Divide = 18,
 
         /// <summary>
-        /// Compound Divide and assign.
+        ///     Compound Divide and assign.
         /// </summary>
         DivideAssign = 17,
 
 
         /// <summary>
-        /// Modulus.
+        ///     Modulus.
         /// </summary>
         Modulus = 16,
 
         /// <summary>
-        /// Compound Modulus and assign.
+        ///     Compound Modulus and assign.
         /// </summary>
         ModulusAssign = 15,
 
         /// <summary>
-        /// Direct assignment.
+        ///     Direct assignment.
         /// </summary>
         Assign = 14,
 
         /// <summary>
-        /// Bitwise XOR operator.
+        ///     Bitwise XOR operator.
         /// </summary>
         BitwiseXor = 13,
 
         /// <summary>
-        /// Bitwise AND operator.
+        ///     Bitwise AND operator.
         /// </summary>
         BitwiseAnd = 12,
 
         /// <summary>
-        /// Bitwise OR operator.
+        ///     Bitwise OR operator.
         /// </summary>
         BitwiseOr = 11,
 
         /// <summary>
-        /// Logical OR operator.
+        ///     Logical OR operator.
         /// </summary>
         LogicalOr = 10,
 
         /// <summary>
-        /// Logical AND operator.
+        ///     Logical AND operator.
         /// </summary>
         LogicalAnd = 9,
 
 
         /// <summary>
-        /// Less than comparison operator.
+        ///     Less than comparison operator.
         /// </summary>
         LessThan = 8,
 
         /// <summary>
-        /// Less than or equal to comparison operator.
+        ///     Less than or equal to comparison operator.
         /// </summary>
         LessThanEqual = 7,
 
         /// <summary>
-        /// Greater than comparison operator.
+        ///     Greater than comparison operator.
         /// </summary>
         GreaterThan = 6,
 
 
         /// <summary>
-        /// Greater than or equal to comparison operator.
+        ///     Greater than or equal to comparison operator.
         /// </summary>
         GreaterThanEqual = 5,
 
 
         /// <summary>
-        /// Bitwise left shift operator.
+        ///     Bitwise left shift operator.
         /// </summary>
         LeftShift = 4,
 
         /// <summary>
-        /// Bitwise right shift operator.
+        ///     Bitwise right shift operator.
         /// </summary>
         RightShift = 3,
 
         /// <summary>
-        /// Equality comparison operator.
+        ///     Equality comparison operator.
         /// </summary>
         Equals = 2,
 
         /// <summary>
-        /// In-Equality comparison operator.
+        ///     In-Equality comparison operator.
         /// </summary>
         NotEquals = 1,
 
         /// <summary>
-        /// Undefined operator.
+        ///     Undefined operator.
         /// </summary>
         Error = 0
     }
 
     /// <summary>
-    /// <see cref="LSLBinaryOperationType"/> extensions for parsing <see cref="LSLBinaryOperationType"/>'s from strings.
-    /// As well as converting them into strings.
-    /// 
-    /// This class also contains some methods for group classifications of <see cref="LSLBinaryOperationType"/>.
-    /// Such as IsModifyAssign();
+    ///     <see cref="LSLBinaryOperationType" /> extensions for parsing <see cref="LSLBinaryOperationType" />'s from strings.
+    ///     As well as converting them into strings.
+    ///     This class also contains some methods for group classifications of <see cref="LSLBinaryOperationType" />.
+    ///     Such as IsModifyAssign();
     /// </summary>
     public static class LSLBinaryOperationTypeTools
     {
-
         /// <summary>
-        /// Determines if the <see cref="LSLBinaryOperationType"/> is a form of modifying assignment that is not just a plain assign operation.
+        ///     Determines if the <see cref="LSLBinaryOperationType" /> is a form of modifying assignment that is not just a plain
+        ///     assign operation.
         /// </summary>
-        /// <param name="type">The <see cref="LSLBinaryOperationType"/> to test.</param>
-        /// <returns>True if the provided <see cref="LSLBinaryOperationType"/> is a ModifyAssignOperation such as (+=).  False if it is a plain assignment operator, or other type of operator.</returns>
+        /// <param name="type">The <see cref="LSLBinaryOperationType" /> to test.</param>
+        /// <returns>
+        ///     True if the provided <see cref="LSLBinaryOperationType" /> is a ModifyAssignOperation such as (+=).  False if
+        ///     it is a plain assignment operator, or other type of operator.
+        /// </returns>
         public static bool IsModifyAssign(this LSLBinaryOperationType type)
         {
             return type == LSLBinaryOperationType.AddAssign ||
@@ -211,11 +215,16 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Determines if the <see cref="LSLBinaryOperationType"/> is a direct assignment, or a modifying assignment operation.
-        /// Effectively: (type == <see cref="LSLBinaryOperationType.Assign"/> || <see cref="IsModifyAssign(LSLBinaryOperationType)"/>)
+        ///     Determines if the <see cref="LSLBinaryOperationType" /> is a direct assignment, or a modifying assignment
+        ///     operation.
+        ///     Effectively: (type == <see cref="LSLBinaryOperationType.Assign" /> ||
+        ///     <see cref="IsModifyAssign(LSLBinaryOperationType)" />)
         /// </summary>
-        /// <param name="type">The <see cref="LSLBinaryOperationType"/> to test.</param>
-        /// <returns>True if the provided <see cref="LSLBinaryOperationType"/> is either a direct assignment operation, or is a modifying assignment operation.  False if otherwise.</returns>
+        /// <param name="type">The <see cref="LSLBinaryOperationType" /> to test.</param>
+        /// <returns>
+        ///     True if the provided <see cref="LSLBinaryOperationType" /> is either a direct assignment operation, or is a
+        ///     modifying assignment operation.  False if otherwise.
+        /// </returns>
         public static bool IsAssignOrModifyAssign(this LSLBinaryOperationType type)
         {
             return type == LSLBinaryOperationType.Assign || IsModifyAssign(type);
@@ -223,11 +232,15 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Parses an <see cref="LSLBinaryOperationType"/> from a given string.  Accepted strings are any of LSL's binary operators, without any whitespace characters added.
+        ///     Parses an <see cref="LSLBinaryOperationType" /> from a given string.  Accepted strings are any of LSL's binary
+        ///     operators, without any whitespace characters added.
         /// </summary>
-        /// <param name="operationString">The operation string to turn into an <see cref="LSLBinaryOperationType"/>.</param>
-        /// <exception cref="ArgumentException">Thrown when 'operationString' does not contain a valid string representation of a binary operator that exist's in LSL.</exception>
-        /// <returns>The parsed <see cref="LSLBinaryOperationType"/>.</returns>
+        /// <param name="operationString">The operation string to turn into an <see cref="LSLBinaryOperationType" />.</param>
+        /// <exception cref="ArgumentException">
+        ///     Thrown when 'operationString' does not contain a valid string representation of a
+        ///     binary operator that exist's in LSL.
+        /// </exception>
+        /// <returns>The parsed <see cref="LSLBinaryOperationType" />.</returns>
         public static LSLBinaryOperationType ParseFromOperator(string operationString)
         {
             if (operationString == "=")
@@ -331,12 +344,16 @@ namespace LibLSLCC.CodeValidator.Enums
                     operationString), "operationString");
         }
 
+
         /// <summary>
-        /// Converts an <see cref="LSLBinaryOperationType"/> into is source code equivalent string.
+        ///     Converts an <see cref="LSLBinaryOperationType" /> into is source code equivalent string.
         /// </summary>
-        /// <param name="type">The <see cref="LSLBinaryOperationType"/> to convert to a string.</param>
-        /// <returns>The source code equivalent string representation of the provided <see cref="LSLBinaryOperationType"/>.</returns>
-        /// <exception cref="ArgumentException">Thrown if the <see cref="LSLBinaryOperationType"/> provided is equal to <see cref="LSLBinaryOperationType.Error"/></exception>
+        /// <param name="type">The <see cref="LSLBinaryOperationType" /> to convert to a string.</param>
+        /// <returns>The source code equivalent string representation of the provided <see cref="LSLBinaryOperationType" />.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if the <see cref="LSLBinaryOperationType" /> provided is equal to
+        ///     <see cref="LSLBinaryOperationType.Error" />
+        /// </exception>
         public static string ToOperatorString(this LSLBinaryOperationType type)
         {
             switch (type)

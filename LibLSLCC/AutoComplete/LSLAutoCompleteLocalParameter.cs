@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLAutoCompleteLocalParameter.cs
 // 
@@ -39,18 +40,24 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Primitives;
+
+#endregion
 
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a local parameter parsed by the auto complete parser.
+    ///     Represents a local parameter parsed by the auto complete parser.
     /// </summary>
     public sealed class LSLAutoCompleteLocalParameter
     {
-        internal LSLAutoCompleteLocalParameter(string name, string TypeName, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeType,
+        internal LSLAutoCompleteLocalParameter(string name, string TypeName, LSLSourceCodeRange range,
+            LSLSourceCodeRange sourceRangeType,
             LSLSourceCodeRange sourceRangeName, LSLAutoCompleteScopeAddress address)
         {
             Name = name;
@@ -64,45 +71,46 @@ namespace LibLSLCC.AutoComplete
 
 
         /// <summary>
-        /// The <see cref="LSLSourceCodeRange"/> that encompasses the name of the local parameter.
+        ///     The <see cref="LSLSourceCodeRange" /> that encompasses the name of the local parameter.
         /// </summary>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         /// <summary>
-        /// The <see cref="LSLSourceCodeRange"/> that encompasses the type specifier of the local parameter.
+        ///     The <see cref="LSLSourceCodeRange" /> that encompasses the type specifier of the local parameter.
         /// </summary>
         public LSLSourceCodeRange SourceRangeType { get; private set; }
 
-
         /// <summary>
-        /// Gets the scope address where the local parameter declaration began to be visible to child scopes.
+        ///     Gets the scope address where the local parameter declaration began to be visible to child scopes.
         /// </summary>
         /// <value>
-        /// The scope address where the local parameter declaration began to be visible to child scopes.
+        ///     The scope address where the local parameter declaration began to be visible to child scopes.
         /// </value>
         public LSLAutoCompleteScopeAddress ScopeAddress { get; private set; }
 
         /// <summary>
-        /// Gets the name of the local parameter.
+        ///     Gets the name of the local parameter.
         /// </summary>
         /// <value>
-        /// The name of the local parameter.
+        ///     The name of the local parameter.
         /// </value>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets a string representing the type specifier used the declare the local parameter.
+        ///     Gets a string representing the type specifier used the declare the local parameter.
         /// </summary>
         /// <value>
-        /// A string representing the type specifier used the declare the local parameter.
+        ///     A string representing the type specifier used the declare the local parameter.
         /// </value>
         public string TypeName { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> that encompasses the type specifier and name of the local parameter declaration.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> that encompasses the type specifier and name of the local parameter
+        ///     declaration.
         /// </summary>
         /// <value>
-        /// The <see cref="LSLSourceCodeRange"/> that encompasses the type specifier and name of the local parameter declaration.
+        ///     The <see cref="LSLSourceCodeRange" /> that encompasses the type specifier and name of the local parameter
+        ///     declaration.
         /// </value>
         public LSLSourceCodeRange SourceRange { get; private set; }
     }

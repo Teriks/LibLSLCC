@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLControlStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,9 +59,8 @@ using LibLSLCC.Parser;
 
 namespace LibLSLCC.CodeValidator.Nodes
 {
-
     /// <summary>
-    /// Default <see cref="ILSLControlStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLControlStatementNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLControlStatementNode : ILSLControlStatementNode, ILSLCodeStatement
     {
@@ -75,7 +77,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal LSLControlStatementNode(LSLParser.ControlStructureContext context, bool insideSingleStatementScope)
         {
             if (context == null)
@@ -92,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The else statement child of this control statement node if one exists, otherwise null.
+        ///     The else statement child of this control statement node if one exists, otherwise null.
         /// </summary>
         public LSLElseStatementNode ElseStatement
         {
@@ -109,9 +111,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The if statement child of this control statement node if one exists, otherwise null.
+        ///     The if statement child of this control statement node if one exists, otherwise null.
         /// </summary>
-        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <c>null</c>.</exception>
         public LSLIfStatementNode IfStatement
         {
             get { return _ifStatement; }
@@ -128,20 +130,18 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The else-if statement children of this control statement node if one exists, otherwise an empty enumerable.
+        ///     The else-if statement children of this control statement node if one exists, otherwise an empty enumerable.
         /// </summary>
         public IEnumerable<LSLElseIfStatementNode> ElseIfStatements
         {
             get { return _elseIfStatement ?? new List<LSLElseIfStatementNode>(); }
         }
 
-
         /// <summary>
         ///     If the scope has a return path, this is set to the node that causes the function to return.
         ///     it may be a return statement, or a control chain node.
         /// </summary>
         public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
-
 
         /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
@@ -154,7 +154,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if the control statement node has an else statement child.
+        ///     True if the control statement node has an else statement child.
         /// </summary>
         public bool HasElseStatement
         {
@@ -162,8 +162,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if the control statement node has an if statement child.
-        /// This can only really be false if the node contains errors.
+        ///     True if the control statement node has an if statement child.
+        ///     This can only really be false if the node contains errors.
         /// </summary>
         public bool HasIfStatement
         {
@@ -171,7 +171,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if the control statement node has any if-else statement children.
+        ///     True if the control statement node has any if-else statement children.
         /// </summary>
         public bool HasElseIfStatements
         {
@@ -201,8 +201,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -212,11 +212,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLControlStatementNode(sourceRange, Err.Err);
         }
 
+
         /// <summary>
-        /// Add an <see cref="LSLElseIfStatementNode"/> to this control statement chain.
+        ///     Add an <see cref="LSLElseIfStatementNode" /> to this control statement chain.
         /// </summary>
-        /// <param name="node">The <see cref="LSLElseIfStatementNode"/> to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="node"/> is <c>null</c>.</exception>
+        /// <param name="node">The <see cref="LSLElseIfStatementNode" /> to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="node" /> is <c>null</c>.</exception>
         public void AddElseIfStatement(LSLElseIfStatementNode node)
         {
             if (node == null)
@@ -228,6 +229,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             node.Parent = this;
             _elseIfStatement.Add(node);
         }
+
 
         private bool HaveReturnPath()
         {
@@ -251,18 +253,16 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLCodeStatement Members
 
-
-
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
         public bool InsideSingleStatementScope { get; private set; }
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
@@ -292,7 +292,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
         /// </summary>
         public bool HasReturnPath
         {
@@ -301,28 +301,29 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
-
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -338,15 +339,15 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     otherwise null.  A constant jump is a singular jump to the same label
         ///     from every possible branch of the control chain. meaning the jump
         ///     happens in a constant manner regardless of which branch is taken.
-        ///     DeterminingJump will point to the <see cref="LSLJumpStatementNode"/> in the 'if' code scope.
+        ///     DeterminingJump will point to the <see cref="LSLJumpStatementNode" /> in the 'if' code scope.
         ///     EffectiveJumpStatement will point to the control statement, because it can effectively
         ///     be considered a jump statement since it will always cause a jump to a known label to occur.
         ///     The label that this control statement jumps to can be found with DeterminingJump.JumpTarget.
         ///     EffectiveJumpStatement is mostly useful for its statement index information
         /// </summary>
-        /// <seealso cref="LSLConstantJumpDescription.DeterminingJump"/>
-        /// <seealso cref="LSLConstantJumpDescription.EffectiveJumpStatement"/>
-        /// <seealso cref="LSLConstantJumpDescription.JumpTarget"/>
+        /// <seealso cref="LSLConstantJumpDescription.DeterminingJump" />
+        /// <seealso cref="LSLConstantJumpDescription.EffectiveJumpStatement" />
+        /// <seealso cref="LSLConstantJumpDescription.JumpTarget" />
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public LSLConstantJumpDescription GetConstantJump()
         {
@@ -390,6 +391,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 return x.DeterminingJump.JumpTarget == y.DeterminingJump.JumpTarget &&
                        x.DeterminingJump.JumpTarget.ScopeId == y.DeterminingJump.JumpTarget.ScopeId;
             }
+
 
             public int GetHashCode(LSLConstantJumpDescription obj)
             {

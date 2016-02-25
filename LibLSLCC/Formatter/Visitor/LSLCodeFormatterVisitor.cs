@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCodeFormatterVisitor.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -59,34 +62,65 @@ using LibLSLCC.Utility;
 namespace LibLSLCC.Formatter.Visitor
 {
     /// <summary>
-    /// An LSL Syntax tree visitor that formats code.
+    ///     An LSL Syntax tree visitor that formats code.
     /// </summary>
     internal sealed class LSLCodeFormatterVisitor : LSLValidatorNodeVisitor<bool>
     {
-        public LSLCodeFormatterSettings Settings { get; private set; }
+        private readonly LinkedList<LSLComment> _comments = new LinkedList<LSLComment>();
 
         private readonly Stack<Tuple<bool, ExpressionWrappingContext>> _expressionContextStack =
             new Stack<Tuple<bool, ExpressionWrappingContext>>();
 
-        private readonly LinkedList<LSLComment> _comments = new LinkedList<LSLComment>();
+        private int _binaryExpressionsSinceNewLine;
         private int _indentLevel;
+        private int _nonTabsWrittenSinceLastLine;
         private string _sourceReference;
+        private int _tabsWrittenSinceLastLine;
         private int _writeColumn;
         private int _writeLine;
-        private int _tabsWrittenSinceLastLine;
-        private int _nonTabsWrittenSinceLastLine;
-        private int _binaryExpressionsSinceNewLine;
-        private bool _wroteCommentBeforeControlStatementCode;
         private bool _wroteCommentAfterControlChainMember;
         private bool _wroteCommentAfterEventParameterList;
         private bool _wroteCommentAfterFunctionDeclarationParameterList;
+        private bool _wroteCommentBeforeControlStatementCode;
+
+
+        /// <summary>
+        ///     Default constructor for the formatting visitor.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="settings" /> is <c>null</c>.</exception>
+        public LSLCodeFormatterVisitor(LSLCodeFormatterSettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+            Settings = settings;
+        }
+
+
+        public LSLCodeFormatterSettings Settings { get; private set; }
+
+        /// <summary>
+        ///     The TextWriter that was passed to the WriteAndFlush function.
+        /// </summary>
+        public TextWriter Writer { get; private set; }
+
+        private ExpressionWrappingContext CurrentExpressionWrappingContext
+        {
+            get { return _expressionContextStack.Count > 0 ? _expressionContextStack.Peek().Item2 : null; }
+        }
+
+        private bool ExpressionWrappingCurrentlyEnabled
+        {
+            get { return _expressionContextStack.Count > 0 && _expressionContextStack.Peek().Item1; }
+        }
 
 
         private void Reset()
         {
             _expressionContextStack.Clear();
             _comments.Clear();
-            
+
 
             _indentLevel = 0;
             _sourceReference = "";
@@ -99,48 +133,17 @@ namespace LibLSLCC.Formatter.Visitor
         }
 
 
-        /// <summary>
-        /// Default constructor for the formatting visitor.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="settings"/> is <c>null</c>.</exception>
-        public LSLCodeFormatterVisitor(LSLCodeFormatterSettings settings)
-        {
-            if (settings == null)
-            {
-                throw new ArgumentNullException("settings");
-            }
-            Settings = settings;
-        }
-
-        /// <summary>
-        /// The TextWriter that was passed to the WriteAndFlush function.
-        /// </summary>
-        public TextWriter Writer { get; private set; }
-
-
-        private ExpressionWrappingContext CurrentExpressionWrappingContext
-        {
-            get
-            {
-                return _expressionContextStack.Count > 0 ? _expressionContextStack.Peek().Item2 : null;
-            }
-        }
-
-        private bool ExpressionWrappingCurrentlyEnabled
-        {
-            get { return _expressionContextStack.Count > 0 && _expressionContextStack.Peek().Item1; }
-        }
-
-
         private void ExpressionWrappingPush(bool enabled, ExpressionWrappingContext context)
         {
             if (enabled && context == null)
             {
-                throw new ArgumentNullException("context", "ExpressionWrappingContext cannot be null if 'enabled' is true!.");
+                throw new ArgumentNullException("context",
+                    "ExpressionWrappingContext cannot be null if 'enabled' is true!.");
             }
 
             _expressionContextStack.Push(Tuple.Create(enabled, context));
         }
+
 
         private Tuple<bool, ExpressionWrappingContext> ExpressionWrappingPop()
         {
@@ -152,6 +155,7 @@ namespace LibLSLCC.Formatter.Visitor
         {
             return LSLFormatTools.CreateTabsString(_indentLevel + add);
         }
+
 
         private void Write(string str)
         {
@@ -176,7 +180,6 @@ namespace LibLSLCC.Formatter.Visitor
                 }
                 else if (c == '\t')
                 {
-                    
                     _tabsWrittenSinceLastLine++;
                     //OnTabWritten();
 
@@ -184,7 +187,6 @@ namespace LibLSLCC.Formatter.Visitor
                 }
                 else
                 {
-                    
                     _nonTabsWrittenSinceLastLine++;
                     //OnNonTabWritten();
 
@@ -224,14 +226,27 @@ namespace LibLSLCC.Formatter.Visitor
 
 
         /// <summary>
-        /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, <paramref name="sourceReference"/> is only required if you want to keep comments.
+        ///     Formats an <see cref="ILSLCompilationUnitNode" /> to an output writer, <paramref name="sourceReference" /> is only
+        ///     required if you want to keep comments.
         /// </summary>
-        /// <param name="sourceReference">The source code of the script, only necessary if comments exist.  Passing <c>null</c> will cause all comments to be stripped, regardless of formatter settings.</param>
-        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode"/> syntax tree node to format.</param>
+        /// <param name="sourceReference">
+        ///     The source code of the script, only necessary if comments exist.  Passing <c>null</c>
+        ///     will cause all comments to be stripped, regardless of formatter settings.
+        /// </param>
+        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode" /> syntax tree node to format.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
-        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/> when finished.  The default value is <c>false</c>.</param>
-        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
-        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        /// <param name="closeStream">
+        ///     <c>true</c> if this method should close <paramref name="writer" /> when finished.  The
+        ///     default value is <c>false</c>.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
+        ///     <paramref name="compilationUnit" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
@@ -242,7 +257,8 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (compilationUnit.HasErrors)
             {
-                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot format a tree with syntax errors.");
+                throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
+                                            ".HasErrors is true, cannot format a tree with syntax errors.");
             }
 
             if (writer == null)
@@ -279,10 +295,12 @@ namespace LibLSLCC.Formatter.Visitor
             }
         }
 
+
         private IList<LSLComment> CommentsBetweenRange(LSLSourceCodeRange left, LSLSourceCodeRange right)
         {
             return GetComments(left.StopIndex, right.StartIndex).ToList();
         }
+
 
         private bool WriteCommentsBetweenRange(LSLSourceCodeRange left, LSLSourceCodeRange right,
             int existingNewLinesBetweenNextNode = 0)
@@ -291,13 +309,13 @@ namespace LibLSLCC.Formatter.Visitor
             return WriteCommentsBetweenRange(comments, left, right, existingNewLinesBetweenNextNode);
         }
 
+
         private bool WriteCommentsBetweenRange(
             IList<LSLComment> comments,
             LSLSourceCodeRange left,
             LSLSourceCodeRange right,
             int existingNewLinesBetweenNextNode = 0)
         {
-
             if (comments.Count <= 0) return false;
 
             var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart - left.LineEnd);
@@ -369,7 +387,8 @@ namespace LibLSLCC.Formatter.Visitor
 
                         var newLines = LSLFormatTools.CreateNewLinesString(newLinesCnt);
 
-                        if (newLinesCnt > 0){
+                        if (newLinesCnt > 0)
+                        {
                             newLines += GenIndent();
                         }
 
@@ -453,6 +472,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitListLiteralInitializerList(ILSLExpressionListNode node)
         {
             ExpressionWrappingPush(false, null);
@@ -493,7 +513,6 @@ namespace LibLSLCC.Formatter.Visitor
 
                     Write(_sourceReference.Substring(sourceStart, sourceLen));
                 }
-
             }
 
             if (nodeCount > 0)
@@ -551,7 +570,6 @@ namespace LibLSLCC.Formatter.Visitor
                     sourceLen = node.Expressions[nodeAheadIndex].SourceRange.StartIndex - sourceStart;
                     Write(_sourceReference.Substring(sourceStart, sourceLen));
                 }
-
             }
 
 
@@ -576,6 +594,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitFunctionCall(ILSLFunctionCallNode node)
         {
             Write(node.Name + "(");
@@ -585,12 +604,14 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitIntegerLiteral(ILSLIntegerLiteralNode node)
         {
             Write(node.RawText);
 
             return true;
         }
+
 
         public override bool VisitListLiteral(ILSLListLiteralNode node)
         {
@@ -602,6 +623,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitParenthesizedExpression(ILSLParenthesizedExpressionNode node)
         {
@@ -622,6 +644,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitPostfixOperation(ILSLPostfixOperationNode node)
         {
             Visit(node.LeftExpression);
@@ -634,6 +657,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitPrefixOperation(ILSLPrefixOperationNode node)
         {
             Write(node.OperationString);
@@ -643,6 +667,7 @@ namespace LibLSLCC.Formatter.Visitor
             Visit(node.RightExpression);
             return true;
         }
+
 
         public override bool VisitRotationLiteral(ILSLRotationLiteralNode node)
         {
@@ -702,11 +727,13 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitStringLiteral(ILSLStringLiteralNode node)
         {
             Write(node.RawText);
             return true;
         }
+
 
         public override bool VisitTypecastExpression(ILSLTypecastExprNode node)
         {
@@ -727,12 +754,14 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitVariableReference(ILSLVariableNode node)
         {
             Write(node.Name);
 
             return true;
         }
+
 
         public override bool VisitVecRotAccessor(ILSLTupleAccessorNode node)
         {
@@ -741,6 +770,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitVectorLiteral(ILSLVectorLiteralNode node)
         {
@@ -786,6 +816,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitDoLoop(ILSLDoLoopNode node)
         {
@@ -836,6 +867,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitForLoop(ILSLForLoopNode node)
         {
@@ -925,6 +957,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitWhileLoop(ILSLWhileLoopNode node)
         {
             Write("while");
@@ -959,6 +992,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         private IEnumerable<LSLComment> GetComments(int sourceRangeStart, int sourceRangeEnd)
         {
             var first = _comments.First;
@@ -978,6 +1012,7 @@ namespace LibLSLCC.Formatter.Visitor
                 first = next;
             }
         }
+
 
         public override bool VisitCompilationUnit(ILSLCompilationUnitNode unode)
         {
@@ -1052,12 +1087,14 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         private void CompilationUnit_NoTreeNodes_WithoutComments(ILSLCompilationUnitNode unode)
         {
             var linesBetweenNodeAndEndOfScope = (unode.SourceRange.LineEnd - unode.SourceRange.LineStart);
 
             Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndEndOfScope - 1));
         }
+
 
         private void CompilationUnit_NoTreeNodes_WithComments(ILSLCompilationUnitNode unode, IList<LSLComment> comments)
         {
@@ -1093,6 +1130,7 @@ namespace LibLSLCC.Formatter.Visitor
             }
         }
 
+
         private void CompilationUnit_AfterLastNode_NoComments(ILSLReadOnlySyntaxTreeNode node,
             ILSLCompilationUnitNode unode)
         {
@@ -1101,6 +1139,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndEndOfScope));
         }
+
 
         private void CompilationUnit_AfterLastNode_WithComments(ILSLReadOnlySyntaxTreeNode node,
             IList<LSLComment> comments, ILSLCompilationUnitNode unode)
@@ -1148,6 +1187,7 @@ namespace LibLSLCC.Formatter.Visitor
                 }
             }
         }
+
 
         private void CompilationUnit_BetweenTopLevelNodes_WithCommentsBetween(
             ILSLReadOnlySyntaxTreeNode node,
@@ -1204,7 +1244,8 @@ namespace LibLSLCC.Formatter.Visitor
                     linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        node.SourceRange.LineEnd);
 
-                    if (linesBetweenNodeAndFirstComment == 0 && linesBetweenCommentAndNextNode < Settings.MinimumNewLinesBetweenDistinctGlobalStatements)
+                    if (linesBetweenNodeAndFirstComment == 0 &&
+                        linesBetweenCommentAndNextNode < Settings.MinimumNewLinesBetweenDistinctGlobalStatements)
                     {
                         if ((nextNode is ILSLFunctionDeclarationNode || nextNode is ILSLStateScopeNode) &&
                             (node is ILSLFunctionDeclarationNode || node is ILSLVariableDeclarationNode))
@@ -1217,6 +1258,7 @@ namespace LibLSLCC.Formatter.Visitor
                 }
             }
         }
+
 
         private void CompilationUnit_BetweenTopLevelNodes_NoCommentsBetween(ILSLReadOnlySyntaxTreeNode node,
             ILSLReadOnlySyntaxTreeNode nextNode)
@@ -1238,6 +1280,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes));
         }
+
 
         private void CompilationUnit_WriteCommentsAtTopOfSource_WithNodes(
             IList<ILSLReadOnlySyntaxTreeNode> nodes,
@@ -1287,6 +1330,7 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes - 1));
             }
         }
+
 
         public override bool VisitEventHandler(ILSLEventHandlerNode node)
         {
@@ -1347,6 +1391,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
             if (node.ReturnType != LSLType.Void)
@@ -1368,7 +1413,6 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (comments.Count > 0)
             {
-
                 _wroteCommentAfterFunctionDeclarationParameterList = true;
 
                 var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
@@ -1418,6 +1462,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitState(ILSLStateScopeNode snode)
         {
             if (snode.IsDefaultState)
@@ -1436,7 +1481,8 @@ namespace LibLSLCC.Formatter.Visitor
                 Write(snode.StateName);
             }
 
-            var wroteCommentBetweenStateNameAndOpenBrace = WriteCommentsBetweenRange(snode.SourceRangeStateName, snode.SourceRangeOpenBrace);
+            var wroteCommentBetweenStateNameAndOpenBrace = WriteCommentsBetweenRange(snode.SourceRangeStateName,
+                snode.SourceRangeOpenBrace);
 
             string spaceBeforeOpeningBrace = "";
 
@@ -1457,7 +1503,6 @@ namespace LibLSLCC.Formatter.Visitor
 
             if (Settings.StateBracesOnNewLine)
             {
-                
                 Write("\n" + spaceBeforeOpeningBrace + "{\n");
             }
             else
@@ -1640,10 +1685,10 @@ namespace LibLSLCC.Formatter.Visitor
                                 var linesBetweenCommentAndEndOfScope = (snode.SourceRangeCloseBrace.LineEnd -
                                                                         comment.SourceRange.LineEnd);
 
-                                linesBetweenCommentAndEndOfScope = 
+                                linesBetweenCommentAndEndOfScope =
                                     linesBetweenCommentAndEndOfScope > Settings.MaximumNewLinesAtEndOfStateScope
-                                    ? Settings.MaximumNewLinesAtEndOfStateScope
-                                    : linesBetweenCommentAndEndOfScope;
+                                        ? Settings.MaximumNewLinesAtEndOfStateScope
+                                        : linesBetweenCommentAndEndOfScope;
 
                                 if (linesBetweenCommentAndEndOfScope == 0)
                                 {
@@ -1684,12 +1729,14 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitParameterDefinition(ILSLParameterNode node)
         {
             Write(node.TypeName + " " + node.Name);
 
             return true;
         }
+
 
         public override bool VisitParameterDefinitionList(ILSLParameterListNode node)
         {
@@ -1713,6 +1760,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitReturnStatement(ILSLReturnStatementNode node)
         {
@@ -1748,12 +1796,14 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitSemicolonStatement(ILSLSemicolonStatement node)
         {
             Write(";");
 
             return true;
         }
+
 
         public override bool VisitStateChangeStatement(ILSLStateChangeStatementNode node)
         {
@@ -1773,6 +1823,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitJumpStatement(ILSLJumpStatementNode node)
         {
             Write("jump");
@@ -1791,6 +1842,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         public override bool VisitLabelStatement(ILSLLabelStatementNode node)
         {
             Write("@");
@@ -1805,6 +1857,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitControlStatement(ILSLControlStatementNode snode)
         {
@@ -1839,13 +1892,15 @@ namespace LibLSLCC.Formatter.Visitor
 
                 var nextNode = nodes[nodeAheadIndex];
 
-                _wroteCommentAfterControlChainMember = WriteCommentsBetweenRange(node.SourceRange, nextNode.SourceRange, 1);
+                _wroteCommentAfterControlChainMember = WriteCommentsBetweenRange(node.SourceRange, nextNode.SourceRange,
+                    1);
             }
 
             _wroteCommentAfterControlChainMember = false;
 
             return true;
         }
+
 
         public override bool VisitIfStatement(ILSLIfStatementNode node)
         {
@@ -1884,7 +1939,8 @@ namespace LibLSLCC.Formatter.Visitor
             }
             else
             {
-                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth, node.Code.SourceRange, 1);
+                _wroteCommentBeforeControlStatementCode = WriteCommentsBetweenRange(node.SourceRangeCloseParenth,
+                    node.Code.SourceRange, 1);
             }
 
             Visit(node.Code);
@@ -1893,6 +1949,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitElseIfStatement(ILSLElseIfStatementNode node)
         {
@@ -1948,7 +2005,7 @@ namespace LibLSLCC.Formatter.Visitor
             }
             else
             {
-                _wroteCommentBeforeControlStatementCode = 
+                _wroteCommentBeforeControlStatementCode =
                     WriteCommentsBetweenRange(node.SourceRangeCloseParenth, node.Code.SourceRange, 1);
             }
 
@@ -1958,6 +2015,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitElseStatement(ILSLElseStatementNode node)
         {
@@ -1982,7 +2040,7 @@ namespace LibLSLCC.Formatter.Visitor
             }
             else
             {
-                _wroteCommentBeforeControlStatementCode = 
+                _wroteCommentBeforeControlStatementCode =
                     WriteCommentsBetweenRange(node.SourceRangeElseKeyword, node.Code.SourceRange, 1);
             }
 
@@ -1992,6 +2050,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitExpressionStatement(ILSLExpressionStatementNode node)
         {
@@ -2005,7 +2064,6 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
-
 
 
         public override bool VisitVariableDeclaration(ILSLVariableDeclarationNode node)
@@ -2060,6 +2118,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         public override bool VisitSingleStatementCodeScope(ILSLCodeScopeNode node)
         {
@@ -2168,7 +2227,7 @@ namespace LibLSLCC.Formatter.Visitor
                     {
                         newLine = Settings.DoLoopBracesOnNewLine;
 
-                        spaceBeforeClosingBrace = 
+                        spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingDoLoopBrace);
 
                         if (_wroteCommentAfterControlChainMember)
@@ -2185,13 +2244,12 @@ namespace LibLSLCC.Formatter.Visitor
                             spaceBeforeOpeningBrace =
                                 LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
                         }
-
                     }
                     else if (node.CodeScopeType == LSLCodeScopeType.WhileLoop)
                     {
                         newLine = Settings.WhileLoopBracesOnNewLine;
 
-                        spaceBeforeClosingBrace = 
+                        spaceBeforeClosingBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeClosingWhileLoopBrace);
 
                         if (_wroteCommentAfterControlChainMember)
@@ -2232,10 +2290,8 @@ namespace LibLSLCC.Formatter.Visitor
 
                     if (Settings.IndentBracelessControlStatements || _wroteCommentBeforeControlStatementCode)
                     {
-                        
                         Write("\n" + GenIndent());
                         _wroteCommentBeforeControlStatementCode = false;
-                        
                     }
                     else
                     {
@@ -2250,6 +2306,7 @@ namespace LibLSLCC.Formatter.Visitor
 
             return true;
         }
+
 
         private static string FormatComment(string indent, LSLComment comment)
         {
@@ -2422,7 +2479,6 @@ namespace LibLSLCC.Formatter.Visitor
                         spaceBeforeOpeningBrace =
                             LSLFormatTools.CreateTabCorrectSpaceString(Settings.SpacesBeforeOpeningDoLoopBrace);
                     }
-
                 }
                 else if (snode.CodeScopeType == LSLCodeScopeType.WhileLoop)
                 {
@@ -2492,8 +2548,8 @@ namespace LibLSLCC.Formatter.Visitor
                     }
                 }
 
-                if (newLine || 
-                    _wroteCommentBeforeControlStatementCode || 
+                if (newLine ||
+                    _wroteCommentBeforeControlStatementCode ||
                     _wroteCommentAfterEventParameterList ||
                     _wroteCommentAfterFunctionDeclarationParameterList)
                 {
@@ -2585,6 +2641,7 @@ namespace LibLSLCC.Formatter.Visitor
             return true;
         }
 
+
         private void MultiStatement_BetweenTwoNodes_WithComments(
             int singleLineBroken,
             ILSLReadOnlyCodeStatement node,
@@ -2644,6 +2701,7 @@ namespace LibLSLCC.Formatter.Visitor
                 }
             }
         }
+
 
         private void MultiStatement_NoNodesInCodeScope(ILSLCodeScopeNode snode)
         {
@@ -2714,7 +2772,6 @@ namespace LibLSLCC.Formatter.Visitor
         }
 
 
-
         private void MultiStatement_BetweenTwoNodes_NoComments(int singleLineBroken, ILSLReadOnlyCodeStatement node,
             ILSLReadOnlyCodeStatement nextNode)
         {
@@ -2754,7 +2811,6 @@ namespace LibLSLCC.Formatter.Visitor
         }
 
 
-
         private void MultiStatement_BeforeFirstNode_NoPrecedingComments(ILSLReadOnlyCodeStatement firstNode,
             ILSLCodeScopeNode snode)
         {
@@ -2766,7 +2822,6 @@ namespace LibLSLCC.Formatter.Visitor
 
             Write(LSLFormatTools.CreateNewLinesString(linesBetweenTwoNodes - 1));
         }
-
 
 
         private void MultiStatement_BeforeFirstNode_CommentsBefore(IList<LSLComment> commentsBetweenOpenBraceAndNode,
@@ -2820,7 +2875,6 @@ namespace LibLSLCC.Formatter.Visitor
                 }
             }
         }
-
 
 
         private void MultiStatementLastNodeInScope(ILSLReadOnlyCodeStatement node, ILSLCodeScopeNode snode)
@@ -2903,14 +2957,12 @@ namespace LibLSLCC.Formatter.Visitor
         }
 
 
-
         public override bool VisitHexLiteral(ILSLHexLiteralNode lslHexLiteralNode)
         {
             Write(lslHexLiteralNode.RawText);
 
             return true;
         }
-
 
 
         public override bool VisitExpressionList(ILSLExpressionListNode node)
@@ -2931,7 +2983,6 @@ namespace LibLSLCC.Formatter.Visitor
 
                     Write(_sourceReference.Substring(start, len));
                 }
-
             }
             return true;
         }
@@ -2948,10 +2999,10 @@ namespace LibLSLCC.Formatter.Visitor
                 NonTabsWrittenSinceLastLine = parent._nonTabsWrittenSinceLastLine;
             }
 
+
             public ILSLReadOnlySyntaxTreeNode Statement { get; private set; }
             public int WriteColumn { get; private set; }
             public int WriteLine { get; private set; }
-
             public int TabsWrittenSinceLastLine { get; private set; }
             public int NonTabsWrittenSinceLastLine { get; private set; }
             public int ColumnsBeforeExpressionWrap { get; set; }

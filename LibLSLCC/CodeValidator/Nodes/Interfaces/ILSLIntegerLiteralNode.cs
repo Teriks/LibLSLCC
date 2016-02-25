@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLIntegerLiteralNode.cs
 // 
@@ -39,17 +40,18 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST token interface for integer literal nodes.
+    ///     AST token interface for integer literal nodes.
     /// </summary>
     public interface ILSLIntegerLiteralNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The raw source code text that defines the integer literal.
+        ///     The raw source code text that defines the integer literal.
         /// </summary>
         string RawText { get; }
     }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLWhileLoopNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,7 +58,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLWhileLoopNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLWhileLoopNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLWhileLoopNode : ILSLWhileLoopNode, ILSLCodeStatement
     {
@@ -69,7 +72,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="conditionExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="code" /> or <paramref name="conditionExpression" /> is
+        ///     <c>null</c>.
+        /// </exception>
         internal LSLWhileLoopNode(LSLParser.WhileLoopContext context, ILSLExprNode conditionExpression,
             LSLCodeScopeNode code, bool inInSingleStatementScope)
         {
@@ -101,30 +107,27 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        ///     True if this statement belongs to a single statement code scope.
-        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
-        /// </summary>
-        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
-        public bool InsideSingleStatementScope { get; private set; }
-
-
-        /// <summary>
-        /// The condition expression that controls the loop.
+        ///     The condition expression that controls the loop.
         /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
 
-
         /// <summary>
-        /// The code scope node that represents the code scope of the loop body.
+        ///     The code scope node that represents the code scope of the loop body.
         /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
-
 
         /// <summary>
         ///     If the scope has a return path, this is set to the node that causes the function to return.
         ///     it may be a return statement, or a control chain node.
         /// </summary>
         public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
+
+        /// <summary>
+        ///     True if this statement belongs to a single statement code scope.
+        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
+        /// </summary>
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
+        public bool InsideSingleStatementScope { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -148,10 +151,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         ILSLReadOnlyCodeStatement ILSLReadOnlyCodeStatement.ReturnPath
         {
-            get
-            { 
-                return ReturnPath;
-            }
+            get { return ReturnPath; }
         }
 
         /// <summary>
@@ -160,9 +160,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public int ScopeId { get; set; }
 
-
         /// <summary>
-        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
         /// </summary>
         public bool HasReturnPath
         {
@@ -174,43 +173,47 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public int StatementIndex { get; set; }
 
-
         /// <summary>
         ///     Is this statement the last statement in its scope
         /// </summary>
         public bool IsLastStatementInScope { get; set; }
-
 
         /// <summary>
         ///     Is this statement dead code
         /// </summary>
         public bool IsDeadCode { get; set; }
 
-
         /// <summary>
-        /// The source code range of the 'while' keyword in the while loop statement.
+        ///     The source code range of the 'while' keyword in the while loop statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeWhileKeyword { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the opening parenthesis starting the condition area of a while loop statement.
+        ///     The source code range of the opening parenthesis starting the condition area of a while loop statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the closing parenthesis ending the condition area of a while loop statement.
+        ///     The source code range of the closing parenthesis ending the condition area of a while loop statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -218,7 +221,6 @@ namespace LibLSLCC.CodeValidator.Nodes
             LSLWhileLoopNode GetError(LSLSourceCodeRange sourceRange)
         {
             return new LSLWhileLoopNode(sourceRange, Err.Err);
-
         }
 
         #region Nested type: Err
@@ -233,33 +235,35 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLTreeNode Members
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLExpressionListNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -51,29 +54,30 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for expression list, such as function call parameters, for loop init sections/afterthoughts, list initializers ect.
+    ///     AST node interface for expression list, such as function call parameters, for loop init sections/afterthoughts,
+    ///     list initializers ect.
     /// </summary>
     public interface ILSLExpressionListNode : ILSLSyntaxTreeNode
     {
         /// <summary>
-        /// The type of expression list this node represents.
-        /// <see cref="LSLExpressionListType"/>
+        ///     The type of expression list this node represents.
+        ///     <see cref="LSLExpressionListType" />
         /// </summary>
         LSLExpressionListType ListType { get; }
 
-
         /// <summary>
-        /// A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
+        ///     A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
         /// </summary>
         IReadOnlyGenericArray<ILSLReadOnlyExprNode> Expressions { get; }
 
         /// <summary>
-        /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
+        ///     The source code range for each comma separator that appears in the expression list in order, or an empty list
+        ///     object.
         /// </summary>
         IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList { get; }
 
         /// <summary>
-        /// True if this expression list node actually has expression children, False if it is empty.
+        ///     True if this expression list node actually has expression children, False if it is empty.
         /// </summary>
         bool HasExpressions { get; }
     }

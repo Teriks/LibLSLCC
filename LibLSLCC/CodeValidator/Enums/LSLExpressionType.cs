@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLExpressionType.cs
 // 
@@ -39,85 +40,90 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Enums
 {
     /// <summary>
-    ///     Represents the expression type of an <see cref="ILSLReadOnlyExprNode"/> object
+    ///     Represents the expression type of an <see cref="ILSLReadOnlyExprNode" /> object
     /// </summary>
     public enum LSLExpressionType
     {
         /// <summary>
-        /// A literal node, such as a string literal, vector literal, rotation literal or list literal
+        ///     A literal node, such as a string literal, vector literal, rotation literal or list literal
         /// </summary>
         Literal,
 
         /// <summary>
-        /// A node that is a call to a library function.
+        ///     A node that is a call to a library function.
         /// </summary>
         LibraryFunction,
 
         /// <summary>
-        /// A node that is a reference to a library constant.
+        ///     A node that is a reference to a library constant.
         /// </summary>
         LibraryConstant,
 
         /// <summary>
-        /// A node that is a reference to a user defined function.
+        ///     A node that is a reference to a user defined function.
         /// </summary>
         UserFunction,
 
         /// <summary>
-        /// A node that is a reference to a local variable.
+        ///     A node that is a reference to a local variable.
         /// </summary>
         LocalVariable,
 
         /// <summary>
-        /// A node that is a reference to a function or event handler parameter.
+        ///     A node that is a reference to a function or event handler parameter.
         /// </summary>
         ParameterVariable,
 
         /// <summary>
-        /// A node that is a reference to a global variable.
+        ///     A node that is a reference to a global variable.
         /// </summary>
         GlobalVariable,
 
 
         /// <summary>
-        /// A node that represents a vector component access expression on a vector variable.
+        ///     A node that represents a vector component access expression on a vector variable.
         /// </summary>
         VectorComponentAccess,
 
         /// <summary>
-        /// A node that represents a rotation component access expression on a rotation variable.
+        ///     A node that represents a rotation component access expression on a rotation variable.
         /// </summary>
         RotationComponentAccess,
 
         /// <summary>
-        /// A node that represents a binary expression.
+        ///     A node that represents a binary expression.
         /// </summary>
         BinaryExpression,
 
         /// <summary>
-        /// A node that represents a postfix expression such as a postfix increment or decrement.
+        ///     A node that represents a postfix expression such as a postfix increment or decrement.
         /// </summary>
         PostfixExpression,
 
         /// <summary>
-        /// A node that represents a prefix expression such as a prefix increment or decrement.
+        ///     A node that represents a prefix expression such as a prefix increment or decrement.
         /// </summary>
         PrefixExpression,
 
         /// <summary>
-        /// A node that represents a typecast expression.
+        ///     A node that represents a typecast expression.
         /// </summary>
         TypecastExpression,
 
         /// <summary>
-        /// A node that represents a parenthesized expression containing sub expressions.
+        ///     A node that represents a parenthesized expression containing sub expressions.
         /// </summary>
         ParenthesizedExpression
     }

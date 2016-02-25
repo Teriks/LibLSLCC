@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLReturnPathNode.cs
 // 
@@ -39,19 +40,21 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// Interface for AST nodes that can have a return path.
-    /// This interface is used for any node that can appear as a decedent of an ILSLCodeScopeNode, including ILSLCodeScopeNode nodes themselves.
-    /// This interface is used in the Dead Code detection and Return Path validation algorithm.
+    ///     Interface for AST nodes that can have a return path.
+    ///     This interface is used for any node that can appear as a decedent of an ILSLCodeScopeNode, including
+    ///     ILSLCodeScopeNode nodes themselves.
+    ///     This interface is used in the Dead Code detection and Return Path validation algorithm.
     /// </summary>
     public interface ILSLReturnPathNode
     {
         /// <summary>
-        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
         /// </summary>
         bool HasReturnPath { get; }
     }

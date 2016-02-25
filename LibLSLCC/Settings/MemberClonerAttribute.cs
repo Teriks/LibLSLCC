@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: MemberClonerAttribute.cs
 // 
@@ -39,35 +40,43 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System;
+
+#endregion
 
 namespace LibLSLCC.Settings
 {
     /// <summary>
-    /// An attribute to specify a specific <see cref="ICloner"/> implementation for a field/property in an object derived from <see cref="SettingsBaseClass{TSetting}"/>.
+    ///     An attribute to specify a specific <see cref="ICloner" /> implementation for a field/property in an object derived
+    ///     from <see cref="SettingsBaseClass{TSetting}" />.
     /// </summary>
-    /// <seealso cref="SettingsBaseClass{TSetting}"/>
-    /// <seealso cref="SettingsBaseClass{TSetting}.Clone"/>
+    /// <seealso cref="SettingsBaseClass{TSetting}" />
+    /// <seealso cref="SettingsBaseClass{TSetting}.Clone" />
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public sealed class MemberClonerAttribute : Attribute
     {
         /// <summary>
-        /// The <see cref="Type"/> which implements <see cref="ICloner"/>
+        ///     Construct an <see cref="MemberClonerAttribute" /> with a given <see cref="Type" />.
+        ///     The <see cref="Type" /> should implement <see cref="ICloner" />.
         /// </summary>
-        public Type ClonerType { get; private set; }
-
-
-        /// <summary>
-        /// Construct an <see cref="MemberClonerAttribute"/> with a given <see cref="Type"/>.
-        /// The <see cref="Type"/> should implement <see cref="ICloner"/>.
-        /// </summary>
-        /// <param name="clonerType">The <see cref="Type"/> which implements <see cref="ICloner"/> and will preform the clone operation for a given field/property.</param>
+        /// <param name="clonerType">
+        ///     The <see cref="Type" /> which implements <see cref="ICloner" /> and will preform the clone
+        ///     operation for a given field/property.
+        /// </param>
         public MemberClonerAttribute(Type clonerType)
         {
             ClonerType = clonerType;
         }
 
+
+        /// <summary>
+        ///     The <see cref="Type" /> which implements <see cref="ICloner" />
+        /// </summary>
+        public Type ClonerType { get; private set; }
     }
 }

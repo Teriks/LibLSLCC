@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLEventHandlerNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -49,33 +52,34 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for library event handler references.
+    ///     AST node interface for library event handler references.
     /// </summary>
     public interface ILSLEventHandlerNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// The name of the event handler.
+        ///     The name of the event handler.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// The code scope node that represents the code body of the event handler.
+        ///     The code scope node that represents the code body of the event handler.
         /// </summary>
         ILSLCodeScopeNode Code { get; }
 
         /// <summary>
-        /// The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
-        /// It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
-        /// Ideally you should not be handling a syntax tree with syntax errors in it.
+        ///     The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
+        ///     It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
+        ///     Ideally you should not be handling a syntax tree with syntax errors in it.
         /// </summary>
         ILSLParameterListNode ParameterList { get; }
 
-
         /// <summary>
-        /// The source code range of the event handler name.
+        ///     The source code range of the event handler name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeName { get; }
-
     }
 }

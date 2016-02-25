@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLCodeValidator.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.IO;
@@ -50,11 +53,10 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 namespace LibLSLCC.CodeValidator
 {
-
     /// <summary>
-    /// An interface for code validators.
+    ///     An interface for code validators.
     /// </summary>
-    /// <seealso cref="LSLCodeValidator"/>
+    /// <seealso cref="LSLCodeValidator" />
     public interface ILSLCodeValidator
     {
         /// <summary>
@@ -62,9 +64,10 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         bool HasSyntaxErrors { get; }
 
+
         /// <summary>
         ///     Validates the code content of a stream and returns the top of the compilation unit syntax tree as a
-        ///     <see cref="LSLCompilationUnitNode"/> object, if parsing resulted in syntax errors the result will be null
+        ///     <see cref="LSLCompilationUnitNode" /> object, if parsing resulted in syntax errors the result will be null
         /// </summary>
         /// <param name="stream">The TextReader to parse code from</param>
         /// <returns>Top level node of an LSL syntax tree</returns>

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLLibraryDataReflectionException.cs
 // 
@@ -39,15 +40,21 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
 
+#endregion
+
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Base class for exceptions thrown by the de-serialization methods in <see cref="LSLLibraryDataReflectionSerializer"/> 
+    ///     Base class for exceptions thrown by the de-serialization methods in
+    ///     <see cref="LSLLibraryDataReflectionSerializer" />
     /// </summary>
     [Serializable]
     public class LSLLibraryDataReflectionException : Exception
@@ -60,22 +67,24 @@ namespace LibLSLCC.LibraryData.Reflection
         //
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataReflectionException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataReflectionException" /> class.
         /// </summary>
         public LSLLibraryDataReflectionException()
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataReflectionException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataReflectionException" /> class.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         public LSLLibraryDataReflectionException(string message) : base(message)
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataReflectionException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataReflectionException" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="inner">The inner.</param>
@@ -83,11 +92,18 @@ namespace LibLSLCC.LibraryData.Reflection
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataReflectionException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataReflectionException" /> class.
         /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+        /// <param name="info">
+        ///     The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object
+        ///     data about the exception being thrown.
+        /// </param>
+        /// <param name="context">
+        ///     The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual
+        ///     information about the source or destination.
+        /// </param>
         protected LSLLibraryDataReflectionException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)

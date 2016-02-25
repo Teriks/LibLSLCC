@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLListVectorExpr.cs
 // 
@@ -39,10 +40,15 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.Utility.ListParser
 {
@@ -85,6 +91,7 @@ namespace LibLSLCC.Utility.ListParser
             Y = y;
             Z = z;
         }
+
 
         /// <summary>
         ///     The X component.

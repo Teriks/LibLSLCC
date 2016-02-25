@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLDeadCodeType.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Enums
 {
     /// <summary>
@@ -48,30 +51,30 @@ namespace LibLSLCC.CodeValidator.Enums
     public enum LSLDeadCodeType
     {
         /// <summary>
-        /// No dead code.
+        ///     No dead code.
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// Dead code was found after a jump out of the current code scope.
-        /// Such as an anonymous code scope, or a code scope that belongs to a control statement.
+        ///     Dead code was found after a jump out of the current code scope.
+        ///     Such as an anonymous code scope, or a code scope that belongs to a control statement.
         /// </summary>
         AfterJumpOutOfScope = 1,
 
         /// <summary>
-        /// Dead code was found after a constant jump that always results in an infinite loop.
-        /// A constant jump is a jump that will always occur no matter what.
+        ///     Dead code was found after a constant jump that always results in an infinite loop.
+        ///     A constant jump is a jump that will always occur no matter what.
         /// </summary>
         AfterJumpLoopForever = 2,
 
         /// <summary>
-        /// A constant jump jumps over the dead code.
-        /// A constant jump is a jump that will always occur no matter what.
+        ///     A constant jump jumps over the dead code.
+        ///     A constant jump is a jump that will always occur no matter what.
         /// </summary>
         JumpOverCode = 3,
 
         /// <summary>
-        /// Dead code was found after a constant return path.
+        ///     Dead code was found after a constant return path.
         /// </summary>
         AfterReturnPath = 4
     }

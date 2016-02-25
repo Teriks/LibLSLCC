@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLAntlrTreeIntrospection.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -61,9 +64,9 @@ namespace LibLSLCC.CodeValidator
             //because that constitutes an 'if else' statement combo that is possibly followed by a single statement, 
             //or a code scope.
 
-            return context.code_scope == null &&  
-                    !(context.Parent is LSLParser.CodeScopeContext) && 
-                    !(context.Parent is LSLParser.ElseStatementContext && context.control_structure != null);
+            return context.code_scope == null &&
+                   !(context.Parent is LSLParser.CodeScopeContext) &&
+                   !(context.Parent is LSLParser.ElseStatementContext && context.control_structure != null);
         }
 
 
@@ -76,7 +79,7 @@ namespace LibLSLCC.CodeValidator
                     //This is statement is after 'else if'
                     return LSLCodeScopeType.ElseIf;
                 }
-                
+
                 //This statement is after just 'if'
                 return LSLCodeScopeType.If;
             }
@@ -105,9 +108,9 @@ namespace LibLSLCC.CodeValidator
 
             //bugcheck assert
             throw new InvalidOperationException(
-                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof(LSLAntlrTreeTools).FullName + ".ResolveCodeScopeNodeType");
+                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof (LSLAntlrTreeTools).FullName +
+                ".ResolveCodeScopeNodeType");
         }
-
 
 
         public static LSLCodeScopeType ResolveCodeScopeNodeType(LSLParser.CodeScopeContext context)
@@ -119,7 +122,6 @@ namespace LibLSLCC.CodeValidator
             if (context.Parent is LSLParser.EventHandlerContext)
             {
                 return LSLCodeScopeType.EventHandler;
-
             }
 
 
@@ -154,7 +156,8 @@ namespace LibLSLCC.CodeValidator
 
             //bugcheck assert
             throw new InvalidOperationException(
-                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof(LSLAntlrTreeTools).FullName + ".ResolveCodeScopeNodeType");
+                "BUGCHECK: Unexpected ANTLR syntax tree structure in " + typeof (LSLAntlrTreeTools).FullName +
+                ".ResolveCodeScopeNodeType");
         }
     }
 }

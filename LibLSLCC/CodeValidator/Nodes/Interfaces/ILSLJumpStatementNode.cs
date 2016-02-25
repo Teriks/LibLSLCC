@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLJumpStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -49,36 +52,45 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for jump statements.
+    ///     AST node interface for jump statements.
     /// </summary>
     public interface ILSLJumpStatementNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
-        /// The name of the label that the jump statement jumps to.
+        ///     The name of the label that the jump statement jumps to.
         /// </summary>
         string LabelName { get; }
 
         /// <summary>
-        /// The label statement node in the syntax tree that this jump statement jumps to.
+        ///     The label statement node in the syntax tree that this jump statement jumps to.
         /// </summary>
         ILSLLabelStatementNode JumpTarget { get; }
 
         /// <summary>
-        /// The source code range of the 'jump' keyword in the jump statement.
+        ///     The source code range of the 'jump' keyword in the jump statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeJumpKeyword { get; }
 
         /// <summary>
-        /// The source code range of the target label name in the jump statement.
+        ///     The source code range of the target label name in the jump statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeLabelName { get; }
 
         /// <summary>
-        /// The source code range of the semi-colon that follows the jump statement.
+        ///     The source code range of the semi-colon that follows the jump statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

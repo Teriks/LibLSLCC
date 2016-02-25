@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLAutoCompleteLocalLabel.cs
 // 
@@ -39,11 +40,13 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a local label statement parsed by the auto complete parser.
+    ///     Represents a local label statement parsed by the auto complete parser.
     /// </summary>
     public sealed class LSLAutoCompleteLocalLabel
     {
@@ -52,11 +55,12 @@ namespace LibLSLCC.AutoComplete
             Name = name;
         }
 
+
         /// <summary>
-        /// Gets the name used in the label statement.
+        ///     Gets the name used in the label statement.
         /// </summary>
         /// <value>
-        /// The name used in the label statement.
+        ///     The name used in the label statement.
         /// </value>
         public string Name { get; private set; }
     }

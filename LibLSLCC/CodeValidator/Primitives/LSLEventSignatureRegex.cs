@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLEventSignatureRegex.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -53,15 +56,14 @@ using LibLSLCC.LibraryData;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
-
     /// <summary>
-    /// Regex tools for parsing <see cref="LSLEventSignature "/> objects from strings.
+    ///     Regex tools for parsing <see cref="LSLEventSignature " /> objects from strings.
     /// </summary>
     public sealed class LSLEventSignatureRegex
     {
-
         /// <summary>
-        /// Construct an event signature regex, given an enumerable of acceptable LSL types, a string 'before' that is prefixed to the regex, and a string 'after' that is appended to the regex.
+        ///     Construct an event signature regex, given an enumerable of acceptable LSL types, a string 'before' that is prefixed
+        ///     to the regex, and a string 'after' that is appended to the regex.
         /// </summary>
         /// <param name="dataTypes">Acceptable LSL types, or other types that can appear as parameter types in the event signature.</param>
         /// <param name="before">The string pre-pended to the regex.</param>
@@ -77,7 +79,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Construct a event signature regex that accepts the standard LSL types for the parameter types.
+        ///     Construct a event signature regex that accepts the standard LSL types for the parameter types.
         /// </summary>
         /// <param name="before">The string pre-pended to the regex.</param>
         /// <param name="after">The string appended to the regex.</param>
@@ -92,7 +94,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Construct a event signature regex that accepts the standard LSL types for the parameter types.
+        ///     Construct a event signature regex that accepts the standard LSL types for the parameter types.
         /// </summary>
         public LSLEventSignatureRegex()
             : this(new[]
@@ -103,17 +105,18 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
+
         /// <summary>
-        /// The event signature regex that was created upon the construction of this object
+        ///     The event signature regex that was created upon the construction of this object
         /// </summary>
         public Regex Regex { get; private set; }
 
 
         /// <summary>
-        /// Parse an <see cref="LSLEventSignature "/> signature from a string.
+        ///     Parse an <see cref="LSLEventSignature " /> signature from a string.
         /// </summary>
-        /// <param name="inString">The string to parse the <see cref="LSLEventSignature "/> from.</param>
-        /// <returns>The parsed <see cref="LSLEventSignature "/>.</returns>
+        /// <param name="inString">The string to parse the <see cref="LSLEventSignature " /> from.</param>
+        /// <returns>The parsed <see cref="LSLEventSignature " />.</returns>
         public LSLEventSignature GetSignature(string inString)
         {
             return GetSignatures(inString).FirstOrDefault();
@@ -121,10 +124,10 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Returns all <see cref="LSLEventSignature "/> that could be parsed out of a given string.
+        ///     Returns all <see cref="LSLEventSignature " /> that could be parsed out of a given string.
         /// </summary>
-        /// <param name="inString">The string to parse <see cref="LSLEventSignature "/> objects from.</param>
-        /// <returns>An enumerable of <see cref="LSLEventSignature "/> objects that were successfully parsed from the string.</returns>
+        /// <param name="inString">The string to parse <see cref="LSLEventSignature " /> objects from.</param>
+        /// <returns>An enumerable of <see cref="LSLEventSignature " /> objects that were successfully parsed from the string.</returns>
         public IEnumerable<LSLEventSignature> GetSignatures(string inString)
         {
             var matches = Regex.Matches(inString);

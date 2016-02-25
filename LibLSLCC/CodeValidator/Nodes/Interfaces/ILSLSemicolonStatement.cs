@@ -1,6 +1,7 @@
 ﻿#region FileInfo
+
 // 
-// File: ILSLSemicolonStatement.cs
+// File: ILSLSemiColonStatement.cs
 // 
 // 
 // ============================================================
@@ -39,13 +40,14 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for pointless semi-colon statements.
-    /// There is just so you can do: (node is <see cref="ILSLSemicolonStatement"/>)
+    ///     AST node interface for pointless semi-colon statements.
+    ///     There is just so you can do: (node is <see cref="ILSLSemicolonStatement" />)
     /// </summary>
     public interface ILSLSemicolonStatement : ILSLReadOnlyCodeStatement
     {

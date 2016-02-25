@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLAutoCompleteGlobalVariable.cs
 // 
@@ -39,18 +40,24 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Primitives;
+
+#endregion
 
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a global variable parsed by the auto complete parser
+    ///     Represents a global variable parsed by the auto complete parser
     /// </summary>
     public sealed class LSLAutoCompleteGlobalVariable
     {
-        internal LSLAutoCompleteGlobalVariable(string name, string typeName, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeType,
+        internal LSLAutoCompleteGlobalVariable(string name, string typeName, LSLSourceCodeRange range,
+            LSLSourceCodeRange sourceRangeType,
             LSLSourceCodeRange sourceRangeName)
         {
             Name = name;
@@ -62,42 +69,41 @@ namespace LibLSLCC.AutoComplete
             SourceRangeType = sourceRangeType;
         }
 
+
         /// <summary>
-        /// Gets the name of the global variable.
+        ///     Gets the name of the global variable.
         /// </summary>
         /// <value>
-        /// The name of the global variable.
+        ///     The name of the global variable.
         /// </value>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets a string representing the type that the global variable was defined as.
+        ///     Gets a string representing the type that the global variable was defined as.
         /// </summary>
         /// <value>
-        /// The type string representing the type the global variable was defined as.
+        ///     The type string representing the type the global variable was defined as.
         /// </value>
         public string TypeName { get; private set; }
 
-
         /// <summary>
-        /// Get the <see cref="LSLSourceCodeRange"/> that encompasses the entire variable declaration.
+        ///     Get the <see cref="LSLSourceCodeRange" /> that encompasses the entire variable declaration.
         /// </summary>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> of the global variable name.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> of the global variable name.
         /// </summary>
         /// <value>
-        /// The <see cref="LSLSourceCodeRange"/> of the global variable name.
+        ///     The <see cref="LSLSourceCodeRange" /> of the global variable name.
         /// </value>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
-
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> of the global variable type specifier.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> of the global variable type specifier.
         /// </summary>
         /// <value>
-        /// The <see cref="LSLSourceCodeRange"/> of the global variable type specifier.
+        ///     The <see cref="LSLSourceCodeRange" /> of the global variable type specifier.
         /// </value>
         public LSLSourceCodeRange SourceRangeType { get; private set; }
     }

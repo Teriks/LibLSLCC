@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLCodeValidatorStrategies.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
@@ -49,38 +52,39 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    ///     Represents various sub strategies and listeners that are used in the <see cref="LSLCodeValidator"/> implementation of <see cref="ILSLCodeValidator"/>.
+    ///     Represents various sub strategies and listeners that are used in the <see cref="LSLCodeValidator" /> implementation
+    ///     of <see cref="ILSLCodeValidator" />.
     /// </summary>
     public interface ILSLCodeValidatorStrategies
     {
         /// <summary>
-        /// The expression validator is in charge of determining if two types are valid
-        /// in a binary expression.  It also does several other things, one being checking if an expression
-        /// with a certain return type can be passed into a function parameter.
+        ///     The expression validator is in charge of determining if two types are valid
+        ///     in a binary expression.  It also does several other things, one being checking if an expression
+        ///     with a certain return type can be passed into a function parameter.
         /// </summary>
         ILSLExpressionValidator ExpressionValidator { get; }
 
         /// <summary>
-        /// The library data provider gives the code validator information about standard library functions,
-        /// constants and events that exist in the LSL namespace.
+        ///     The library data provider gives the code validator information about standard library functions,
+        ///     constants and events that exist in the LSL namespace.
         /// </summary>
         ILSLBasicLibraryDataProvider LibraryDataProvider { get; }
 
         /// <summary>
-        /// The string literal pre-processor is in charge of pre-processing string literals
-        /// from source code before the value is assigned to an <see cref="ILSLStringLiteralNode.PreProcessedText"/>.
+        ///     The string literal pre-processor is in charge of pre-processing string literals
+        ///     from source code before the value is assigned to an <see cref="ILSLStringLiteralNode.PreProcessedText" />.
         /// </summary>
         ILSLStringPreProcessor StringLiteralPreProcessor { get; }
 
         /// <summary>
-        /// The syntax error listener is an interface that listens for syntax
-        /// errors from the code validator
+        ///     The syntax error listener is an interface that listens for syntax
+        ///     errors from the code validator
         /// </summary>
         ILSLSyntaxErrorListener SyntaxErrorListener { get; }
 
         /// <summary>
-        /// The syntax error listener is an interface that listens for syntax
-        /// warnings from the code validator
+        ///     The syntax error listener is an interface that listens for syntax
+        ///     warnings from the code validator
         /// </summary>
         ILSLSyntaxWarningListener SyntaxWarningListener { get; }
     }

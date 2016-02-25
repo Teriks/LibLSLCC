@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLRotationComponent.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -54,34 +57,35 @@ namespace LibLSLCC.CodeValidator.Enums
     public enum LSLRotationComponent
     {
         /// <summary>
-        /// X Quaternion Component.
+        ///     X Quaternion Component.
         /// </summary>
         X,
 
         /// <summary>
-        /// Y Quaternion Component.
+        ///     Y Quaternion Component.
         /// </summary>
         Y,
 
         /// <summary>
-        /// Z Quaternion Component.
+        ///     Z Quaternion Component.
         /// </summary>
         Z,
 
         /// <summary>
-        /// S Quaternion Component.
+        ///     S Quaternion Component.
         /// </summary>
         S
     }
 
 
     /// <summary>
-    /// Extensions for <see cref="LSLRotationComponent"/>. Used to convert the component enum into a name, or parse it from a string.
+    ///     Extensions for <see cref="LSLRotationComponent" />. Used to convert the component enum into a name, or parse it
+    ///     from a string.
     /// </summary>
     public static class LSLRotationComponentTools
     {
         /// <summary>
-        /// Convert the component into a string that would be valid to use as a component reference in actual LSL code.
+        ///     Convert the component into a string that would be valid to use as a component reference in actual LSL code.
         /// </summary>
         /// <param name="component">The component to convert to a string.</param>
         /// <returns>The lowercase name of the component from the enum.</returns>
@@ -90,13 +94,14 @@ namespace LibLSLCC.CodeValidator.Enums
             return component.ToString().ToLower();
         }
 
+
         /// <summary>
-        /// Converts a string into an <see cref="LSLRotationComponent"/>.
+        ///     Converts a string into an <see cref="LSLRotationComponent" />.
         /// </summary>
         /// <param name="name">The component name to parse, without the dot operator in front.</param>
         /// <exception cref="ArgumentException">Thrown if 'name' was not: "x", "y", "z" or "s"</exception>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
-        /// <returns>The corresponding <see cref="LSLRotationComponent"/>.</returns>
+        /// <returns>The corresponding <see cref="LSLRotationComponent" />.</returns>
         public static LSLRotationComponent ParseComponentName(string name)
         {
             if (string.IsNullOrEmpty(name))

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLAutoCompleteGlobalFunction.cs
 // 
@@ -39,21 +40,27 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a global function declaration that was parsed by the auto complete parser
+    ///     Represents a global function declaration that was parsed by the auto complete parser
     /// </summary>
     public sealed class LSLAutoCompleteGlobalFunction
     {
-        internal LSLAutoCompleteGlobalFunction(string name, string returnTypeName, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeReturnType,
+        internal LSLAutoCompleteGlobalFunction(string name, string returnTypeName, LSLSourceCodeRange range,
+            LSLSourceCodeRange sourceRangeReturnType,
             LSLSourceCodeRange sourceRangeName, IList<LSLAutoCompleteLocalParameter> parameters)
         {
             Parameters = parameters.WrapWithGenericArray();
@@ -83,47 +90,46 @@ namespace LibLSLCC.AutoComplete
             HasReturnType = false;
         }
 
+
         /// <summary>
-        /// Gets a value indicating whether the function declaration has a return type.
+        ///     Gets a value indicating whether the function declaration has a return type.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the declaration has a return type; otherwise, <c>false</c>.
+        ///     <c>true</c> if the declaration has a return type; otherwise, <c>false</c>.
         /// </value>
         public bool HasReturnType { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> of the function name.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> of the function name.
         /// </summary>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> of the functions return type if it exists, otherwise <c>null</c>.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> of the functions return type if it exists, otherwise <c>null</c>.
         /// </summary>
         public LSLSourceCodeRange SourceRangeReturnType { get; private set; }
 
-
         /// <summary>
-        /// Gets the name used in the function declaration.
+        ///     Gets the name used in the function declaration.
         /// </summary>
         /// <value>
-        /// The name of the function.
+        ///     The name of the function.
         /// </value>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets the string representing the return type used in the function declaration.  
-        /// If none exists (<see cref="HasReturnType"/> if <c>false</c>), then it will be <c>null</c>.
+        ///     Gets the string representing the return type used in the function declaration.
+        ///     If none exists (<see cref="HasReturnType" /> if <c>false</c>), then it will be <c>null</c>.
         /// </summary>
         /// <value>
-        /// The return type string if a return type is specified, otherwise <c>null</c>
+        ///     The return type string if a return type is specified, otherwise <c>null</c>
         /// </value>
         public string ReturnTypeName { get; private set; }
 
         /// <summary>
-        /// The full signature of the global function declaration.
-        /// 
-        /// Defined as: <c>ReturnTypeName+" "+Name+ParameterSignature</c> if there is a return type specified.
-        /// If there is no return type then it's: <c>Name+ParameterSignature</c>
+        ///     The full signature of the global function declaration.
+        ///     Defined as: <c>ReturnTypeName+" "+Name+ParameterSignature</c> if there is a return type specified.
+        ///     If there is no return type then it's: <c>Name+ParameterSignature</c>
         /// </summary>
         public string FullSignature
         {
@@ -135,7 +141,6 @@ namespace LibLSLCC.AutoComplete
                     sig += ReturnTypeName + " ";
                 }
 
-                
 
                 sig += Name + ParametersSignature + ";";
 
@@ -144,7 +149,8 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        /// Returns a string representing the parameter signature used in the function declaration, this includes the parentheses.
+        ///     Returns a string representing the parameter signature used in the function declaration, this includes the
+        ///     parentheses.
         /// </summary>
         public string ParametersSignature
         {
@@ -163,18 +169,19 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
-        /// Gets a read only array of <see cref="LSLAutoCompleteLocalParameter"/> objects representing the parameters used in the function declaration.
+        ///     Gets a read only array of <see cref="LSLAutoCompleteLocalParameter" /> objects representing the parameters used in
+        ///     the function declaration.
         /// </summary>
         /// <value>
-        /// The parameters used in the function declaration.
+        ///     The parameters used in the function declaration.
         /// </value>
         public IReadOnlyGenericArray<LSLAutoCompleteLocalParameter> Parameters { get; private set; }
 
         /// <summary>
-        /// Gets the source code range that encompasses the entire function declaration.
+        ///     Gets the source code range that encompasses the entire function declaration.
         /// </summary>
         /// <value>
-        /// The source code range of the entire function declaration.
+        ///     The source code range of the entire function declaration.
         /// </value>
         public LSLSourceCodeRange SourceRange { get; private set; }
     }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLFloatLiteralNode.cs
 // 
@@ -39,17 +40,18 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST token interface for float literals.
+    ///     AST token interface for float literals.
     /// </summary>
     public interface ILSLFloatLiteralNode : ILSLReadOnlyExprNode
     {
-
         /// <summary>
-        /// The raw text from the source code representing the float literal token.
+        ///     The raw text from the source code representing the float literal token.
         /// </summary>
         string RawText { get; }
     }

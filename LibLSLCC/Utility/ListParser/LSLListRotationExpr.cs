@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLListRotationExpr.cs
 // 
@@ -39,10 +40,15 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.Utility.ListParser
 {
@@ -96,6 +102,7 @@ namespace LibLSLCC.Utility.ListParser
             S = s;
         }
 
+
         /// <summary>
         ///     The X component.
         /// </summary>
@@ -140,7 +147,10 @@ namespace LibLSLCC.Utility.ListParser
         /// </value>
         public string ValueString
         {
-            get { return "<" + X.ValueString + ", " + Y.ValueString + ", " + Z.ValueString + ", " + S.ValueString + ">"; }
+            get
+            {
+                return "<" + X.ValueString + ", " + Y.ValueString + ", " + Z.ValueString + ", " + S.ValueString + ">";
+            }
         }
     }
 }

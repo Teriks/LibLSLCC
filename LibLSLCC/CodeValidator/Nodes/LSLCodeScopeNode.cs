@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCodeScopeNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -57,7 +60,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLCodeScopeNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLCodeScopeNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLCodeScopeNode : ILSLCodeScopeNode, ILSLCodeStatement
     {
@@ -71,7 +74,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal LSLCodeScopeNode(LSLParser.CodeScopeContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
@@ -89,8 +92,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, int scopeId, LSLCodeScopeType codeScopeType)
         {
             if (context == null)
@@ -110,66 +112,13 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        ///     True if this statement belongs to a single statement code scope.
-        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
-        /// </summary>
-        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
-        public bool InsideSingleStatementScope { get { return false; } }
-
-
-        /// <summary>
-        ///     True if this code scope is an implicit braceless scope.
-        ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements.
-        /// </summary>
-        public bool IsSingleStatementScope { get; private set; }
-
-
-
-        /// <summary>
-        ///     The type of code scope this node represents.
-        /// </summary>
-        public LSLCodeScopeType CodeScopeType { get; private set; }
-
-
-        #region ILSLReturnPathNode Members
-
-        /// <summary>
-        ///     True if this code scope has a valid return path
-        /// </summary>
-        public bool HasReturnPath { get; private set; }
-
-        #endregion
-
-
-        ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
-        {
-            get { return Parent; }
-        }
-
-        /// <summary>
-        /// Constant jump descriptors for constant jumps that occur in this scope
-        /// used only with JumpStatementAnalysis is turned on and dead code caused by
-        /// jump statements is being detected.
+        ///     Constant jump descriptors for constant jumps that occur in this scope
+        ///     used only with JumpStatementAnalysis is turned on and dead code caused by
+        ///     jump statements is being detected.
         /// </summary>
         public IEnumerable<LSLConstantJumpDescription> ConstantJumps
         {
             get { return _constantJumps ?? new List<LSLConstantJumpDescription>(); }
-        }
-
-        /// <summary>
-        ///     Code statements that are children of this code scope
-        /// </summary>
-        public IEnumerable<ILSLReadOnlyCodeStatement> CodeStatements
-        {
-            get { return _codeStatements; }
-        }
-
-        /// <summary>
-        /// True if this code scope contains any child statements
-        /// </summary>
-        public bool HasCodeStatements
-        {
-            get { return _codeStatements != null && _codeStatements.Any(); }
         }
 
         /// <summary>
@@ -207,14 +156,61 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public ILSLReturnStatementNode ReturnStatementNode { get; private set; }
 
+        /// <summary>
+        ///     True if this statement belongs to a single statement code scope.
+        ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
+        /// </summary>
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
+        public bool InsideSingleStatementScope
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        ///     True if this code scope is an implicit braceless scope.
+        ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements.
+        /// </summary>
+        public bool IsSingleStatementScope { get; private set; }
+
+        /// <summary>
+        ///     The type of code scope this node represents.
+        /// </summary>
+        public LSLCodeScopeType CodeScopeType { get; private set; }
+
+        #region ILSLReturnPathNode Members
+
+        /// <summary>
+        ///     True if this code scope has a valid return path
+        /// </summary>
+        public bool HasReturnPath { get; private set; }
+
+        #endregion
+
+        ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
+        {
+            get { return Parent; }
+        }
+
+        /// <summary>
+        ///     Code statements that are children of this code scope
+        /// </summary>
+        public IEnumerable<ILSLReadOnlyCodeStatement> CodeStatements
+        {
+            get { return _codeStatements; }
+        }
+
+        /// <summary>
+        ///     True if this code scope contains any child statements
+        /// </summary>
+        public bool HasCodeStatements
+        {
+            get { return _codeStatements != null && _codeStatements.Any(); }
+        }
 
         /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
-
-
-
 
         /// <summary>
         ///     A unique identifier for this scope, all direct descendants
@@ -243,7 +239,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     The statement that acts as the return path for this scope, if there is one
         /// </summary>
         /// <remarks>
-        ///     This can be a <see cref="LSLReturnStatementNode"/> or an <see cref="LSLControlStatementNode"/>
+        ///     This can be a <see cref="LSLReturnStatementNode" /> or an <see cref="LSLControlStatementNode" />
         ///     as of the current implementation,  loop statements cannot currently
         ///     act as a sole return path; there is no constant evaluation in condition
         ///     statements so they are equivalent to a singular if statement
@@ -252,8 +248,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -262,6 +258,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             return new LSLCodeScopeNode(sourceRange, Err.Err);
         }
+
 
         private static bool IsJumpDead(LSLJumpStatementNode jump)
         {
@@ -277,7 +274,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 jumpParent = jumpParent.Parent;
 
-                if (jumpParent == null || jumpParent is ILSLEventHandlerNode || jumpParent is ILSLFunctionDeclarationNode)
+                if (jumpParent == null || jumpParent is ILSLEventHandlerNode ||
+                    jumpParent is ILSLFunctionDeclarationNode)
                 {
                     break;
                 }
@@ -300,7 +298,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         /// <remarks>
         ///     if JumpStatementAnalysis is enabled, this function expects the JumpTarget of every
-        ///     <see cref="LSLJumpStatementNode"/> object (the <see cref="LSLLabelStatementNode"/> reference) to have a correct
+        ///     <see cref="LSLJumpStatementNode" /> object (the <see cref="LSLLabelStatementNode" /> reference) to have a correct
         ///     StatementIndex and ScopeId already. this includes JumpTarget's that are jumps forward in code
         ///     and have not been added to the code scope yet.  this prerequisite should be accomplished
         ///     with a pre-pass that creates the jump graph ahead of time. so that all Jump statement objects
@@ -308,7 +306,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     the jump statements that jump to to them.
         /// </remarks>
         /// <param name="statement">The statement to add to the code scope</param>
-        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="statement" /> is <c>null</c>.</exception>
         public void AddCodeStatement(ILSLCodeStatement statement)
         {
             if (statement == null)
@@ -559,7 +557,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLTreeNode Members
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
@@ -567,34 +565,37 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     The source code range this statement occupies in the source code
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
-            return IsSingleStatementScope ? visitor.VisitSingleStatementCodeScope(this) : visitor.VisitMultiStatementCodeScope(this);
+            return IsSingleStatementScope
+                ? visitor.VisitSingleStatementCodeScope(this)
+                : visitor.VisitMultiStatementCodeScope(this);
         }
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
-
 
         #endregion // ReSharper disable UnusedParameter.Local
 

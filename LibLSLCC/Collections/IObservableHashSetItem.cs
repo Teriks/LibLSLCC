@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: IObservableHashSetItem.cs
 // 
@@ -39,20 +40,25 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System.ComponentModel;
+
+#endregion
 
 namespace LibLSLCC.Collections
 {
     /// <summary>
-    /// Interface that allows IObservableHashSet to check if an item has had a property that is
-    /// important to the generation of the items hash code change, and throw an exception when that happens.
+    ///     Interface that allows IObservableHashSet to check if an item has had a property that is
+    ///     important to the generation of the items hash code change, and throw an exception when that happens.
     /// </summary>
     public interface IObservableHashSetItem : INotifyPropertyChanging
     {
         /// <summary>
-        /// The set of property names that are involved with generating the hash code for an object.
+        ///     The set of property names that are involved with generating the hash code for an object.
         /// </summary>
         IReadOnlyHashedSet<string> HashEqualityPropertyNames { get; }
     }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpNamespaceNameValidator.cs
 // 
@@ -39,42 +40,48 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System.Text.RegularExpressions;
+
+#endregion
 
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Validation result created by <see cref="CSharpNamespaceNameValidator.Validate"/>
+    ///     Validation result created by <see cref="CSharpNamespaceNameValidator.Validate" />
     /// </summary>
     public sealed class CSharpNamespaceValidatorResult
     {
-        /// <summary>
-        /// Gets a value indicating whether the namespace was successfully parsed.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if success; otherwise, <c>false</c>.
-        /// </value>
-        public bool Success { get; private set; }
-
-        /// <summary>
-        /// Gets a user friendly parsing error description when <see cref="Success"/> is false, otherwise <c>null</c>.
-        /// </summary>
-        /// <value>
-        /// The parsing error description, if <see cref="Success"/> is <c>false</c>; otherwise, <c>null</c>.
-        /// </value>
-        public string ErrorDescription { get; private set; }
-
         internal CSharpNamespaceValidatorResult(bool success, string errorDescription = null)
         {
             Success = success;
             ErrorDescription = errorDescription;
         }
+
+
+        /// <summary>
+        ///     Gets a value indicating whether the namespace was successfully parsed.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if success; otherwise, <c>false</c>.
+        /// </value>
+        public bool Success { get; private set; }
+
+        /// <summary>
+        ///     Gets a user friendly parsing error description when <see cref="Success" /> is false, otherwise <c>null</c>.
+        /// </summary>
+        /// <value>
+        ///     The parsing error description, if <see cref="Success" /> is <c>false</c>; otherwise, <c>null</c>.
+        /// </value>
+        public string ErrorDescription { get; private set; }
     }
 
     /// <summary>
-    /// Tools to check the syntax validity of raw namespace name string
+    ///     Tools to check the syntax validity of raw namespace name string
     /// </summary>
     public static class CSharpNamespaceNameValidator
     {
@@ -82,7 +89,7 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        /// Parses and validates a given CSharp namespace string.
+        ///     Parses and validates a given CSharp namespace string.
         /// </summary>
         /// <param name="namespaceName">A string representing the namespace.</param>
         /// <returns></returns>

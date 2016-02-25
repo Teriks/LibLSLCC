@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLReadOnlyExprNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -49,47 +52,48 @@ using LibLSLCC.CodeValidator.Enums;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node read only interface for expression nodes.
+    ///     AST node read only interface for expression nodes.
     /// </summary>
     public interface ILSLReadOnlyExprNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// The return type of the expression. see: <see cref="LSLType"/>
+        ///     The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         LSLType Type { get; }
 
-
         /// <summary>
-        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        ///     The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
-        /// The type of the expression.
+        ///     The type of the expression.
         /// </value>
         LSLExpressionType ExpressionType { get; }
 
         /// <summary>
-        /// True if the expression is constant and can be calculated at compile time.
+        ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
         bool IsConstant { get; }
 
-
         /// <summary>
-        /// True if the expression has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression has some modifying effect on a local parameter or global/local variable;  or is a function
+        ///     call.  False otherwise.
         /// </summary>
         bool HasPossibleSideEffects { get; }
 
 
         /// <summary>
-        /// Should produce a user friendly description of the expressions return type.
-        /// This is used in some syntax error messages, Ideally you should enclose your description in
-        /// parenthesis or something that will make it stand out in a string.
+        ///     Should produce a user friendly description of the expressions return type.
+        ///     This is used in some syntax error messages, Ideally you should enclose your description in
+        ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
         /// <returns></returns>
         string DescribeType();
 
+
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         ILSLReadOnlyExprNode Clone();

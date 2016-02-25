@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLListParserSyntaxException.cs
 // 
@@ -39,10 +40,15 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
+
+#endregion
 
 namespace LibLSLCC.Utility.ListParser
 {
@@ -66,6 +72,7 @@ namespace LibLSLCC.Utility.ListParser
         {
         }
 
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListParserSyntaxException" /> class.
         /// </summary>
@@ -73,6 +80,7 @@ namespace LibLSLCC.Utility.ListParser
         public LSLListParserSyntaxException(string message) : base(message)
         {
         }
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListParserSyntaxException" /> class.
@@ -82,6 +90,7 @@ namespace LibLSLCC.Utility.ListParser
         public LSLListParserSyntaxException(string message, Exception inner) : base(message, inner)
         {
         }
+
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLListParserSyntaxException" /> class.

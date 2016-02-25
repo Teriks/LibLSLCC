@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLPostfixOperationNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -50,32 +53,37 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for postfix operations on an expression.
+    ///     AST node interface for postfix operations on an expression.
     /// </summary>
     public interface ILSLPostfixOperationNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The postfix operation type preformed on the expression.
-        /// <see cref="LSLPostfixOperationType"/>
+        ///     The postfix operation type preformed on the expression.
+        ///     <see cref="LSLPostfixOperationType" />
         /// </summary>
         LSLPostfixOperationType Operation { get; }
 
         /// <summary>
-        /// The postfix operation string taken from the source code.
+        ///     The postfix operation string taken from the source code.
         /// </summary>
         string OperationString { get; }
 
-
         /// <summary>
-        /// The expression that is left of the postfix operator, this should never be null.
+        ///     The expression that is left of the postfix operator, this should never be null.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         ILSLReadOnlyExprNode LeftExpression { get; }
 
         /// <summary>
-        /// The source code range the postfix operator occupies.
+        ///     The source code range the postfix operator occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOperation { get; }
     }
 }

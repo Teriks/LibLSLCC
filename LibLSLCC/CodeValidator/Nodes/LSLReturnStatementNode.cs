@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLReturnStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,11 +58,10 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLReturnStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLReturnStatementNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLReturnStatementNode : ILSLReturnStatementNode, ILSLCodeStatement
     {
-
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLReturnStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,7 +71,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="returnExpression"/> is <c>null</c>.</exception>
+
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or <paramref name="returnExpression" /> is
+        ///     <c>null</c>.
+        /// </exception>
         internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, ILSLExprNode returnExpression,
             bool insideSingleStatementScope)
         {
@@ -96,7 +102,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal LSLReturnStatementNode(LSLParser.ReturnStatementContext context, bool insideSingleStatementScope)
         {
             if (context == null)
@@ -115,11 +121,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
         /// <summary>
-        /// The expression node that represents the returned expression, or null if no expression was used with the return statement.
+        ///     The expression node that represents the returned expression, or null if no expression was used with the return
+        ///     statement.
         /// </summary>
         public ILSLExprNode ReturnExpression { get; private set; }
-
 
         /// <summary>
         ///     If the scope has a return path, this is set to the node that causes the function to return.
@@ -143,7 +150,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if the return statement uses a return expression.
+        ///     True if the return statement uses a return expression.
         /// </summary>
         public bool HasReturnExpression
         {
@@ -156,24 +163,28 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public int ScopeId { get; set; }
 
-
         /// <summary>
-        /// The source code range of the 'return' keyword in the return statement.
+        ///     The source code range of the 'return' keyword in the return statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeReturnKeyword { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the semi-colon that ends the return statement.
+        ///     The source code range of the semi-colon that ends the return statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -183,6 +194,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLReturnStatementNode(sourceRange, Err.Err);
         }
 
+
         private enum Err
         {
             Err
@@ -190,44 +202,44 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLCodeStatement Members
 
-
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
         public bool InsideSingleStatementScope { get; private set; }
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
-
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -239,17 +251,17 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The index of this statement in its scope
+        ///     The index of this statement in its scope
         /// </summary>
         public int StatementIndex { get; set; }
 
         /// <summary>
-        /// Is this statement the last statement in its scope
+        ///     Is this statement the last statement in its scope
         /// </summary>
         public bool IsLastStatementInScope { get; set; }
 
         /// <summary>
-        /// Is this statement dead code
+        ///     Is this statement dead code
         /// </summary>
         public bool IsDeadCode { get; set; }
 
@@ -260,7 +272,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
         /// </summary>
         public bool HasReturnPath
         {

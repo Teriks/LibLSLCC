@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLVectorLiteralNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,11 +58,10 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLVectorLiteralNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLVectorLiteralNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLVectorLiteralNode : ILSLVectorLiteralNode, ILSLExprNode
     {
-
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLVectorLiteralNode(LSLSourceCodeRange sourceRange, Err err)
@@ -71,11 +73,13 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="context"/> or
-        /// <paramref name="x"/> or
-        /// <paramref name="y"/> or
-        /// <paramref name="z"/> is <c>null</c>.</exception>
-        internal LSLVectorLiteralNode(LSLParser.VectorLiteralContext context, ILSLExprNode x, ILSLExprNode y, ILSLExprNode z)
+        ///     <paramref name="context" /> or
+        ///     <paramref name="x" /> or
+        ///     <paramref name="y" /> or
+        ///     <paramref name="z" /> is <c>null</c>.
+        /// </exception>
+        internal LSLVectorLiteralNode(LSLParser.VectorLiteralContext context, ILSLExprNode x, ILSLExprNode y,
+            ILSLExprNode z)
         {
             if (context == null)
             {
@@ -114,10 +118,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLVectorLiteralNode"/> by cloning from another.
+        ///     Create an <see cref="LSLVectorLiteralNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLVectorLiteralNode(LSLVectorLiteralNode other)
         {
             if (other == null)
@@ -150,37 +154,40 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The source code range of the opening '&lt;' bracket of the vector literal.
-        /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
-        public LSLSourceCodeRange SourceRangeOpenBracket { get; private set; }
-
-        /// <summary>
-        /// The source code range of the closing '&gt;' bracket of the vector literal.
-        /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
-        public LSLSourceCodeRange SourceRangeCloseBracket { get; private set; }
-
-        /// <summary>
-        /// The expression node used to initialize the X Axis Component of the vector literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the X Axis Component of the vector literal.
+        ///     This should never be null.
         /// </summary>
         public ILSLExprNode XExpression { get; private set; }
 
-
         /// <summary>
-        /// The expression node used to initialize the Y Axis Component of the vector literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the Y Axis Component of the vector literal.
+        ///     This should never be null.
         /// </summary>
         public ILSLExprNode YExpression { get; private set; }
 
-
         /// <summary>
-        /// The expression node used to initialize the Z Axis Component of the vector literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the Z Axis Component of the vector literal.
+        ///     This should never be null.
         /// </summary>
         public ILSLExprNode ZExpression { get; private set; }
 
+        /// <summary>
+        ///     The source code range of the opening '&lt;' bracket of the vector literal.
+        /// </summary>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
+        public LSLSourceCodeRange SourceRangeOpenBracket { get; private set; }
+
+        /// <summary>
+        ///     The source code range of the closing '&gt;' bracket of the vector literal.
+        /// </summary>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
+        public LSLSourceCodeRange SourceRangeCloseBracket { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -202,9 +209,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return ZExpression; }
         }
 
+
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -226,8 +234,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLExprNode Members
 
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
@@ -237,46 +246,55 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// The source code range of the first component separator comma to appear in the vector literal.
+        ///     The source code range of the first component separator comma to appear in the vector literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeCommaOne { get; private set; }
 
 
         /// <summary>
-        /// The source code range of the second component separator comma to appear in the vector literal.
+        ///     The source code range of the second component separator comma to appear in the vector literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeCommaTwo { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -287,9 +305,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
         /// <summary>
-        /// The return type of the expression. see: <see cref="LSLType" />
+        ///     The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type
         {
@@ -297,12 +314,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
         /// <summary>
-        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        ///     The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
-        /// The type of the expression.
+        ///     The type of the expression.
         /// </value>
         public LSLExpressionType ExpressionType
         {
@@ -311,7 +327,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the expression is constant and can be calculated at compile time.
+        ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
         public bool IsConstant
         {
@@ -325,22 +341,25 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a
+        ///     function call.  False otherwise.
         /// </summary>
         public bool HasPossibleSideEffects
         {
             get
             {
                 var precondition = XExpression != null && YExpression != null && ZExpression != null;
-                return precondition && (XExpression.HasPossibleSideEffects || YExpression.HasPossibleSideEffects || ZExpression.HasPossibleSideEffects);
+                return precondition &&
+                       (XExpression.HasPossibleSideEffects || YExpression.HasPossibleSideEffects ||
+                        ZExpression.HasPossibleSideEffects);
             }
         }
 
 
         /// <summary>
-        /// Should produce a user friendly description of the expressions return type.
-        /// This is used in some syntax error messages, Ideally you should enclose your description in
-        /// parenthesis or something that will make it stand out in a string.
+        ///     Should produce a user friendly description of the expressions return type.
+        ///     This is used in some syntax error messages, Ideally you should enclose your description in
+        ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
         /// <returns></returns>
         public string DescribeType()

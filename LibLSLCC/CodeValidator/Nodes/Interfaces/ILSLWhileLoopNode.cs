@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLWhileLoopNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -48,30 +51,36 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for while-loop statements.
+    ///     AST node interface for while-loop statements.
     /// </summary>
     public interface ILSLWhileLoopNode : ILSLReadOnlyCodeStatement, ILSLLoopNode
     {
-
         /// <summary>
-        /// The source code range of the 'while' keyword in the while loop statement.
+        ///     The source code range of the 'while' keyword in the while loop statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeWhileKeyword { get; }
 
         /// <summary>
-        /// The source code range of the opening parenthesis starting the condition area of a while loop statement.
+        ///     The source code range of the opening parenthesis starting the condition area of a while loop statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
-
         /// <summary>
-        /// The source code range of the closing parenthesis ending the condition area of a while loop statement.
+        ///     The source code range of the closing parenthesis ending the condition area of a while loop statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

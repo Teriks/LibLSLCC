@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLLibraryDataSubsetNameParser.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
@@ -51,22 +54,24 @@ using System.Text.RegularExpressions;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// Regex utility for parsing subset lists from the XML attributes in LSL library data documents
-    /// and elsewhere in the library.
+    ///     Regex utility for parsing subset lists from the XML attributes in LSL library data documents
+    ///     and elsewhere in the library.
     /// </summary>
-
-    public static class LSLLibraryDataSubsetNameParser 
+    public static class LSLLibraryDataSubsetNameParser
     {
         private static readonly Regex SubsetName = new Regex(@"^([a-zA-Z]+[a-zA-Z_0-9\-]*)$");
 
 
         /// <summary>
-        /// Parse a subset list from a string and return all the subset names in an enumerable.
-        /// Subset names start with characters [a-zA-Z] followed by zero or more of the characters [a-zA-Z_0-9\-]
-        /// and can be separated into a list of multiple subset names using commas.
+        ///     Parse a subset list from a string and return all the subset names in an enumerable.
+        ///     Subset names start with characters [a-zA-Z] followed by zero or more of the characters [a-zA-Z_0-9\-]
+        ///     and can be separated into a list of multiple subset names using commas.
         /// </summary>
         /// <param name="parse">The comma separated subset list to parse, or a single subset name.</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If a subset name that does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.</exception>
+        /// <exception cref="LSLInvalidSubsetNameException">
+        ///     If a subset name that does not match the pattern
+        ///     ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.
+        /// </exception>
         /// <returns></returns>
         public static IEnumerable<string> ParseSubsets(string parse)
         {
@@ -75,7 +80,8 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Throws an LSLInvalidSubsetNameException if any of the subset names in the given collection do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*)
+        ///     Throws an LSLInvalidSubsetNameException if any of the subset names in the given collection do not match the pattern
+        ///     ([a-zA-Z]+[a-zA-Z_0-9\\-]*)
         /// </summary>
         /// <param name="names">An enumerable containing subset names to check.</param>
         /// <exception cref="LSLInvalidSubsetNameException">If an invalid subset name is encountered in the enumerable.</exception>
@@ -90,7 +96,8 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Throws an LSLInvalidSubsetNameException if a given subset name does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*)
+        ///     Throws an LSLInvalidSubsetNameException if a given subset name does not match the pattern
+        ///     ([a-zA-Z]+[a-zA-Z_0-9\\-]*)
         /// </summary>
         /// <param name="name">A subset name to check.</param>
         /// <exception cref="LSLInvalidSubsetNameException">If the given subset name was invalid.</exception>
@@ -98,18 +105,22 @@ namespace LibLSLCC.LibraryData
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new LSLInvalidSubsetNameException("Subset name is null or whitespace, subset names must match the pattern: ([a-zA-Z]+[a-zA-Z_0-9\\-]*)");
+                throw new LSLInvalidSubsetNameException(
+                    "Subset name is null or whitespace, subset names must match the pattern: ([a-zA-Z]+[a-zA-Z_0-9\\-]*)");
             }
 
             if (!ValidateSubsetName(name))
             {
-                throw new LSLInvalidSubsetNameException(string.Format("Subset name '{0}' is invalid, subset names must match the pattern: ([a-zA-Z]+[a-zA-Z_0-9\\-]*)", name));
+                throw new LSLInvalidSubsetNameException(
+                    string.Format(
+                        "Subset name '{0}' is invalid, subset names must match the pattern: ([a-zA-Z]+[a-zA-Z_0-9\\-]*)",
+                        name));
             }
-
         }
 
+
         /// <summary>
-        /// Validates that a single subset name matches the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*)
+        ///     Validates that a single subset name matches the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*)
         /// </summary>
         /// <param name="name">The string to check for a correct subset name.</param>
         /// <returns>True if the string is a properly formated subset name.</returns>

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLFunctionAndStateDefinitionPrePass.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.Collections.Generic;
 using System.Linq;
@@ -49,12 +53,15 @@ using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Parser;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLFunctionAndStateDefinitionPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {
         private readonly LSLCodeValidatorVisitorScopeTracker _scopingManager;
         private readonly ILSLCodeValidatorStrategies _validatorStrategies;
+
 
         public LSLFunctionAndStateDefinitionPrePass(LSLCodeValidatorVisitorScopeTracker scopingManager,
             ILSLCodeValidatorStrategies validatorStrategies)
@@ -63,17 +70,13 @@ namespace LibLSLCC.CodeValidator
             _validatorStrategies = validatorStrategies;
         }
 
-        public bool HasSyntaxErrors { get; private set; }
-
-        public bool HasSyntaxWarnings { get; private set; }
-
 
         /// <summary>
-        /// Gets the syntax warning listener.  this property should NOT be used to generate warning events,
-        /// use <see cref="GenSyntaxWarning"/> for that instead.
+        ///     Gets the syntax warning listener.  this property should NOT be used to generate warning events,
+        ///     use <see cref="GenSyntaxWarning" /> for that instead.
         /// </summary>
         /// <value>
-        /// The syntax warning listener.
+        ///     The syntax warning listener.
         /// </value>
         private ILSLSyntaxWarningListener SyntaxWarningListener
         {
@@ -81,21 +84,28 @@ namespace LibLSLCC.CodeValidator
         }
 
         /// <summary>
-        /// Gets the syntax error listener.  this property should NOT be used to generate error events,
-        /// use <see cref="GenSyntaxError"/> for that instead.
+        ///     Gets the syntax error listener.  this property should NOT be used to generate error events,
+        ///     use <see cref="GenSyntaxError" /> for that instead.
         /// </summary>
         /// <value>
-        /// The syntax error listener.
+        ///     The syntax error listener.
         /// </value>
         private ILSLSyntaxErrorListener SyntaxErrorListener
         {
             get { return _validatorStrategies.SyntaxErrorListener; }
         }
 
+        public bool HasSyntaxErrors { get; private set; }
+        public bool HasSyntaxWarnings { get; private set; }
+
+
         /// <summary>
-        /// Returns a reference to <see cref="SyntaxWarningListener"/> and sets <see cref="HasSyntaxWarnings"/> to <c>true</c>.
+        ///     Returns a reference to <see cref="SyntaxWarningListener" /> and sets <see cref="HasSyntaxWarnings" /> to
+        ///     <c>true</c>.
         /// </summary>
-        /// <returns><see cref="SyntaxWarningListener"/></returns>
+        /// <returns>
+        ///     <see cref="SyntaxWarningListener" />
+        /// </returns>
         private ILSLSyntaxWarningListener GenSyntaxWarning()
         {
             HasSyntaxWarnings = true;
@@ -104,9 +114,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Returns a reference to <see cref="SyntaxErrorListener"/> and sets <see cref="HasSyntaxErrors"/> to <c>true</c>.
+        ///     Returns a reference to <see cref="SyntaxErrorListener" /> and sets <see cref="HasSyntaxErrors" /> to <c>true</c>.
         /// </summary>
-        /// <returns><see cref="SyntaxErrorListener"/></returns>
+        /// <returns>
+        ///     <see cref="SyntaxErrorListener" />
+        /// </returns>
         private ILSLSyntaxErrorListener GenSyntaxError()
         {
             HasSyntaxErrors = true;
@@ -145,8 +157,6 @@ namespace LibLSLCC.CodeValidator
 
             return true;
         }
-
-
 
 
         public override bool VisitDefaultState(LSLParser.DefaultStateContext context)
@@ -192,7 +202,6 @@ namespace LibLSLCC.CodeValidator
 
             return true;
         }
-
 
 
         public override bool VisitDefinedState(LSLParser.DefinedStateContext context)
@@ -264,7 +273,6 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
         {
             if (context == null || Utility.AnyNull(context.function_name, context.code))
@@ -294,8 +302,8 @@ namespace LibLSLCC.CodeValidator
 
 
             var parameterListNode = LSLParameterListNode.BuildFromParserContext(
-                context.parameters, 
-                LSLParameterListType.FunctionParameters, 
+                context.parameters,
+                LSLParameterListType.FunctionParameters,
                 _validatorStrategies);
 
 

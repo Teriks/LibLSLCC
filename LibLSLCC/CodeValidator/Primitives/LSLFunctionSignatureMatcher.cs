@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLFunctionSignatureMatcher.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -50,118 +54,73 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    /// Represents the status of an attempted function signature match against parameter expressions
+    ///     Represents the status of an attempted function signature match against parameter expressions
     /// </summary>
     public sealed class LSLFunctionSignatureMatch
     {
-        /// <summary>
-        /// True if not enough parameter expressions were supplied to the function signature.
-        /// </summary>
-        public bool NotEnoughParameters { get; private set; }
-
-
-        /// <summary>
-        /// True if to many parameter expressions were supplied to the function signature.
-        /// </summary>
-        public bool ToManyParameters { get; private set; }
-
-        /// <summary>
-        /// The index where there was a parameter mismatch if TypeMismatch is true, otherwise -1.
-        /// </summary>
-        public int TypeMismatchIndex { get; private set; }
-
-
-        /// <summary>
-        /// True if a type mismatch between a passed expression and a defined parameter type occurred.
-        /// </summary>
-        public bool TypeMismatch { get; private set; }
-
-
-        /// <summary>
-        /// True if the function can successfully be compiled with the given parameter expressions.
-        /// Equivalent to !NotEnoughParameters &amp;&amp; !ToManyParameters &amp;&amp; !TypeMismatch
-        /// </summary>
-        public bool Success
-        {
-            get
-            {
-                return !NotEnoughParameters && !ToManyParameters && !TypeMismatch;
-            }
-        }
-
-        /// <summary>
-        /// True if either ToManyParameters or NotEnoughParameters are true
-        /// </summary>
-        public bool ImproperParameterCount
-        {
-            get { return NotEnoughParameters || ToManyParameters; }
-        }
-
-        internal LSLFunctionSignatureMatch(bool notEnoughParameters, bool toManyParameters, bool typeMismatch, int typeMismatchIndex)
+        internal LSLFunctionSignatureMatch(bool notEnoughParameters, bool toManyParameters, bool typeMismatch,
+            int typeMismatchIndex)
         {
             NotEnoughParameters = notEnoughParameters;
             ToManyParameters = toManyParameters;
             TypeMismatch = typeMismatch;
             TypeMismatchIndex = typeMismatchIndex;
         }
+
+
+        /// <summary>
+        ///     True if not enough parameter expressions were supplied to the function signature.
+        /// </summary>
+        public bool NotEnoughParameters { get; private set; }
+
+        /// <summary>
+        ///     True if to many parameter expressions were supplied to the function signature.
+        /// </summary>
+        public bool ToManyParameters { get; private set; }
+
+        /// <summary>
+        ///     The index where there was a parameter mismatch if TypeMismatch is true, otherwise -1.
+        /// </summary>
+        public int TypeMismatchIndex { get; private set; }
+
+        /// <summary>
+        ///     True if a type mismatch between a passed expression and a defined parameter type occurred.
+        /// </summary>
+        public bool TypeMismatch { get; private set; }
+
+        /// <summary>
+        ///     True if the function can successfully be compiled with the given parameter expressions.
+        ///     Equivalent to !NotEnoughParameters &amp;&amp; !ToManyParameters &amp;&amp; !TypeMismatch
+        /// </summary>
+        public bool Success
+        {
+            get { return !NotEnoughParameters && !ToManyParameters && !TypeMismatch; }
+        }
+
+        /// <summary>
+        ///     True if either ToManyParameters or NotEnoughParameters are true
+        /// </summary>
+        public bool ImproperParameterCount
+        {
+            get { return NotEnoughParameters || ToManyParameters; }
+        }
     }
 
 
     /// <summary>
-    /// Represents the status of an attempted overload resolution match against parameter expressions.
+    ///     Represents the status of an attempted overload resolution match against parameter expressions.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class LSLFunctionOverloadMatches<T> where T : LSLFunctionSignature
     {
         /// <summary>
-        /// This is set to true if multiple overload matches were found given the expressions passed into the function
-        /// </summary>
-        public bool Ambiguous
-        {
-            get
-            {
-                return Matches.Count > 1;
-            }
-        }
-
-
-        /// <summary>
-        /// This is a list of all possible overload matches.  This will have more
-        /// than one element when Ambiguous is set to true
-        /// </summary>
-        public IReadOnlyGenericArray<T> Matches { get; private set; }
-
-        /// <summary>
-        /// If multiple matches were found (Ambiguous is set to true) then this will be null
-        /// This will also be null if no matches were found at all
-        /// </summary>
-        public T MatchingOverload
-        {
-            get
-            {
-                return Ambiguous ? null : Matches.FirstOrDefault();
-            }
-        }
-
-
-
-        /// <summary>
-        /// This returns true if there are no ambiguous matches, and a single overload match was found
-        /// it is equivalent to: (!Ambiguous &amp;&amp; Matches.Count != 0)
-        /// </summary>
-        public bool Success
-        {
-            get
-            {
-                return !Ambiguous && Matches.Count != 0;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}"/> class with an <see cref="IReadOnlyGenericArray{T}"/> containing signature matches.
+        ///     Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}" /> class with an
+        ///     <see cref="IReadOnlyGenericArray{T}" /> containing signature matches.
         /// </summary>
         /// <param name="matches">The matches.</param>
         internal LSLFunctionOverloadMatches(IReadOnlyGenericArray<T> matches)
@@ -169,8 +128,10 @@ namespace LibLSLCC.CodeValidator.Primitives
             Matches = matches;
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}"/> class with an <see cref="List{T}"/> containing signature matches, a wrapper is created around the list.
+        ///     Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}" /> class with an <see cref="List{T}" />
+        ///     containing signature matches, a wrapper is created around the list.
         /// </summary>
         /// <param name="matches">The matches.</param>
         internal LSLFunctionOverloadMatches(List<T> matches)
@@ -178,55 +139,102 @@ namespace LibLSLCC.CodeValidator.Primitives
             Matches = matches.WrapWithGenericArray();
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}"/> class with no signature matches at all.
+        ///     Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}" /> class with no signature matches at
+        ///     all.
         /// </summary>
         internal LSLFunctionOverloadMatches()
         {
             Matches = new GenericArray<T>();
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}"/> class with a single un-ambiguous signature match.
+        ///     Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}" /> class with a single un-ambiguous
+        ///     signature match.
         /// </summary>
         /// <param name="match">The match.</param>
         internal LSLFunctionOverloadMatches(T match)
         {
-            Matches = new GenericArray<T> { match };
+            Matches = new GenericArray<T> {match};
+        }
+
+
+        /// <summary>
+        ///     This is set to true if multiple overload matches were found given the expressions passed into the function
+        /// </summary>
+        public bool Ambiguous
+        {
+            get { return Matches.Count > 1; }
+        }
+
+        /// <summary>
+        ///     This is a list of all possible overload matches.  This will have more
+        ///     than one element when Ambiguous is set to true
+        /// </summary>
+        public IReadOnlyGenericArray<T> Matches { get; private set; }
+
+        /// <summary>
+        ///     If multiple matches were found (Ambiguous is set to true) then this will be null
+        ///     This will also be null if no matches were found at all
+        /// </summary>
+        public T MatchingOverload
+        {
+            get { return Ambiguous ? null : Matches.FirstOrDefault(); }
+        }
+
+        /// <summary>
+        ///     This returns true if there are no ambiguous matches, and a single overload match was found
+        ///     it is equivalent to: (!Ambiguous &amp;&amp; Matches.Count != 0)
+        /// </summary>
+        public bool Success
+        {
+            get { return !Ambiguous && Matches.Count != 0; }
         }
     }
 
 
-
     /// <summary>
-    /// A tool for matching comparing <see cref="LSLFunctionSignature"/> objects and preforming overload resolution across multiple <see cref="LSLFunctionSignature"/> objects.
+    ///     A tool for matching comparing <see cref="LSLFunctionSignature" /> objects and preforming overload resolution across
+    ///     multiple <see cref="LSLFunctionSignature" /> objects.
     /// </summary>
     public static class LSLFunctionSignatureMatcher
     {
-
         /// <summary>
-        /// Find a matching overload from a list of function signatures, given the parameter expressions. return null if none is found.
+        ///     Find a matching overload from a list of function signatures, given the parameter expressions. return null if none
+        ///     is found.
         /// </summary>
-        /// <param name="expressionValidator">The expression validator, which is used to determine if an expression can be passed into a parameter of a certain type.</param>
-        /// <param name="functionSignatures">The function signatures to search through.</param>
-        /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
-        /// <returns>A matching <see cref="LSLFunctionSignature"/> overload or null.</returns>
-        public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator) where T : LSLFunctionSignature
-        {
-            return MatchOverloads(functionSignatures, expressionNodes,(expressionValidator.ValidateFunctionParameter));
-        }
-
-        /// <summary>
-        /// Find a matching overload from a list of function signatures, given the parameter expressions. return null if none is found.
-        /// </summary>
-        /// <param name="typeComparer">
-        /// A function used to compare an <see cref="LSLParameter"/> to another <see cref="ILSLExprNode"/> to check for a match.
-        /// Should return true if the <see cref="ILSLExprNode"/> can be passed into the <see cref="LSLParameter"/>.
+        /// <param name="expressionValidator">
+        ///     The expression validator, which is used to determine if an expression can be passed
+        ///     into a parameter of a certain type.
         /// </param>
         /// <param name="functionSignatures">The function signatures to search through.</param>
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
-        /// <returns>A matching <see cref="LSLFunctionSignature"/> overload or null.</returns>
-        public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures, IReadOnlyGenericArray<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer) where T : LSLFunctionSignature
+        /// <returns>A matching <see cref="LSLFunctionSignature" /> overload or null.</returns>
+        public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures,
+            IReadOnlyGenericArray<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator)
+            where T : LSLFunctionSignature
+        {
+            return MatchOverloads(functionSignatures, expressionNodes, (expressionValidator.ValidateFunctionParameter));
+        }
+
+
+        /// <summary>
+        ///     Find a matching overload from a list of function signatures, given the parameter expressions. return null if none
+        ///     is found.
+        /// </summary>
+        /// <param name="typeComparer">
+        ///     A function used to compare an <see cref="LSLParameter" /> to another <see cref="ILSLExprNode" /> to check for a
+        ///     match.
+        ///     Should return true if the <see cref="ILSLExprNode" /> can be passed into the <see cref="LSLParameter" />.
+        /// </param>
+        /// <param name="functionSignatures">The function signatures to search through.</param>
+        /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
+        /// <returns>A matching <see cref="LSLFunctionSignature" /> overload or null.</returns>
+        public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures,
+            IReadOnlyGenericArray<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer)
+            where T : LSLFunctionSignature
         {
             //discover candidates 'applicable' functions, using a typeComparer function/lambda to compare the signature parameters to the passed expression nodes.
             //anything that could possibly match the signature as an individual non-overloaded function is considered an overload match candidate. (see the TryMatch function of this class)
@@ -237,8 +245,6 @@ namespace LibLSLCC.CodeValidator.Primitives
                 functionSignatures.Where(
                     functionSignature => TryMatch(functionSignature, expressionNodes, typeComparer).Success).ToList();
 
-            
-
 
             //More than one matching signature, we need to tie break.
             if (matches.Count <= 1) return new LSLFunctionOverloadMatches<T>(matches);
@@ -247,7 +253,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             //Prefer function declarations that have no parameters, over function declarations with one variadic parameter.
             if (expressionNodes.Count == 0)
             {
-                return new LSLFunctionOverloadMatches<T>(matches.First(x=>x.ParameterCount == 0));
+                return new LSLFunctionOverloadMatches<T>(matches.First(x => x.ParameterCount == 0));
             }
 
 
@@ -255,7 +261,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             //Implicit conversion is the only real match quality degradation that can occur in LSL.
             var rankingToSignatureGroup = new Dictionary<int, List<T>>();
 
-        
+
             foreach (var match in matches)
             {
                 //the higher the match ranking, the worse it is.
@@ -268,11 +274,14 @@ namespace LibLSLCC.CodeValidator.Primitives
                     //Select the signature parameter to compare, if the expression index 'idx' is greater than a matches parameter count;
                     //Then that match is a variadic function, with the parameters overflowing the parameter count because multiple parameters were passed into the variadic parameter slot.
                     //If this happens, we want to continue comparing the rest of the passed variadic parameters to the type of the last parameter in the match signature, IE. The one that is variadic. 
-                    var signatureParameterToCompare = idx > (match.ParameterCount-1) ? match.Parameters.Last() : match.Parameters[idx];
+                    var signatureParameterToCompare = idx > (match.ParameterCount - 1)
+                        ? match.Parameters.Last()
+                        : match.Parameters[idx];
 
                     //If a type of the passed expression does not exactly equal the signature parameter, but the type comparer says that the expression can actually be passed in anyway.
                     //Then the type that the expression is must be implicitly convertible to the type that the parameter is, an implicit conversion has occurred.  The match quality of the signature has degraded.
-                    if (signatureParameterToCompare.Type != parameter.Type && typeComparer(signatureParameterToCompare, parameter))
+                    if (signatureParameterToCompare.Type != parameter.Type &&
+                        typeComparer(signatureParameterToCompare, parameter))
                     {
                         matchRank++;
                     }
@@ -286,7 +295,7 @@ namespace LibLSLCC.CodeValidator.Primitives
 
                 //get a reference to a group with the same rank, if one exists
                 if (rankingToSignatureGroup.TryGetValue(matchRank, out signaturesWithTheSameRank))
-                { 
+                {
                     signaturesWithTheSameRank.Add(match);
                 }
                 else
@@ -306,7 +315,7 @@ namespace LibLSLCC.CodeValidator.Primitives
             }
 
             //Find the grouping with the smallest ranking number, this is the best group to look in.
-            KeyValuePair<int, List<T>> ?groupingWithTheBestRank = null;
+            KeyValuePair<int, List<T>>? groupingWithTheBestRank = null;
 
             foreach (var groupPair in rankingToSignatureGroup)
             {
@@ -317,7 +326,6 @@ namespace LibLSLCC.CodeValidator.Primitives
                     groupingWithTheBestRank = groupPair;
                 }
             }
-            
 
 
             //no groupings were created, no matches at all.  This is not expected to happen.
@@ -341,11 +349,12 @@ namespace LibLSLCC.CodeValidator.Primitives
                     return new LSLFunctionOverloadMatches<T>(selectedGroup);
                 }
 
-                
+
                 //Otherwise find the signature in the grouping with a concrete (non-variadic) parameter count closest to the amount of parameter expressions given to call the function.
 
                 var minDistance = selectedGroup.Min(n => Math.Abs(expressionNodes.Count - n.ConcreteParameterCount));
-                var closest = selectedGroup.First(n => Math.Abs(expressionNodes.Count - n.ConcreteParameterCount) == minDistance);
+                var closest =
+                    selectedGroup.First(n => Math.Abs(expressionNodes.Count - n.ConcreteParameterCount) == minDistance);
 
                 //The one with the closest amount of concrete parameters wins.
                 return new LSLFunctionOverloadMatches<T>(closest);
@@ -353,7 +362,8 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             if (selectedGroup.Count > 1)
             {
-                throw new InvalidOperationException(typeof(LSLFunctionSignatureMatcher).Name+".MatchOverloads: Algorithm bug check assertion.");
+                throw new InvalidOperationException(typeof (LSLFunctionSignatureMatcher).Name +
+                                                    ".MatchOverloads: Algorithm bug check assertion.");
             }
 
             //There was only one signature match in the grouping, it had the lowest rank so its the best.
@@ -361,24 +371,29 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
 
-
         /// <summary>
-        /// Check if a given function signature can be called with the given expressions as parameters
+        ///     Check if a given function signature can be called with the given expressions as parameters
         /// </summary>
-        /// <param name="expressionValidator">The expression validator, which is used to determine if an expression can be passed into a parameter of a certain type.</param>
+        /// <param name="expressionValidator">
+        ///     The expression validator, which is used to determine if an expression can be passed
+        ///     into a parameter of a certain type.
+        /// </param>
         /// <param name="functionSignature">The function signature of the functions your passing the parameter expressions to.</param>
         /// <param name="expressions">The expressions we want to test against this function signatures defined parameters.</param>
-        /// <returns>A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched or did not match the call signature.</returns>
-        public static LSLFunctionSignatureMatch TryMatch( LSLFunctionSignature functionSignature, IReadOnlyGenericArray<ILSLExprNode> expressions, ILSLExpressionValidator expressionValidator)
+        /// <returns>
+        ///     A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched
+        ///     or did not match the call signature.
+        /// </returns>
+        public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
+            IReadOnlyGenericArray<ILSLExprNode> expressions, ILSLExpressionValidator expressionValidator)
         {
-
-            return TryMatch(functionSignature,expressions,(expressionValidator.ValidateFunctionParameter));
+            return TryMatch(functionSignature, expressions, (expressionValidator.ValidateFunctionParameter));
         }
 
 
-
         /// <summary>
-        /// Determines if two function signatures match exactly (including return type), parameter names do not matter but parameter types and variadic parameter status do.
+        ///     Determines if two function signatures match exactly (including return type), parameter names do not matter but
+        ///     parameter types and variadic parameter status do.
         /// </summary>
         /// <param name="left">The first function signature in the comparison.</param>
         /// <param name="right">The other function signature in the comparison.</param>
@@ -412,19 +427,22 @@ namespace LibLSLCC.CodeValidator.Primitives
 
         /// <summary>
         ///     Determines if a two LSLFunctionSignatures are duplicate definitions of each other.
-        /// <para>
-        ///     The logic behind this is a bit different than <see cref="SignaturesEquivalent"/>.
-        ///     
-        ///     If the given function signatures have the same name, differing return types and no parameters; than this function will return true
-        ///     and <see cref="SignaturesEquivalent"/> will not. 
-        /// 
-        ///     If the given function signatures have differing return types, and the exact same parameter types/count; than this function will return true
-        ///     and <see cref="SignaturesEquivalent"/> will not.
-        /// </para>
+        ///     <para>
+        ///         The logic behind this is a bit different than <see cref="SignaturesEquivalent" />.
+        ///         If the given function signatures have the same name, differing return types and no parameters; than this
+        ///         function will return true
+        ///         and <see cref="SignaturesEquivalent" /> will not.
+        ///         If the given function signatures have differing return types, and the exact same parameter types/count; than
+        ///         this function will return true
+        ///         and <see cref="SignaturesEquivalent" /> will not.
+        ///     </para>
         /// </summary>
         /// <param name="left">The first function signature in the comparison.</param>
         /// <param name="right">The other function signature in the comparison.</param>
-        /// <returns>True if the two signatures are duplicate definitions of each other, taking static overloading ambiguities into account.</returns>
+        /// <returns>
+        ///     True if the two signatures are duplicate definitions of each other, taking static overloading ambiguities into
+        ///     account.
+        /// </returns>
         public static bool DefinitionIsDuplicate(LSLFunctionSignature left, LSLFunctionSignature right)
         {
             //Cannot be duplicates of each other if the name is different
@@ -461,18 +479,19 @@ namespace LibLSLCC.CodeValidator.Primitives
         }
 
 
-
-
         /// <summary>
-        /// Check if a given function signature can be called with the given expressions as parameters
+        ///     Check if a given function signature can be called with the given expressions as parameters
         /// </summary>
         /// <param name="typeComparer">A function which should return true if two types match</param>
         /// <param name="functionSignature">The function signature of the functions your passing the parameter expressions to.</param>
         /// <param name="expressions">The expressions we want to test against this function signatures defined parameters.</param>
-        /// <returns>A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched or did not match the call signature.</returns>
-        public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature, IReadOnlyGenericArray<ILSLExprNode> expressions, Func<LSLParameter,ILSLExprNode,bool> typeComparer)
+        /// <returns>
+        ///     A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched
+        ///     or did not match the call signature.
+        /// </returns>
+        public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
+            IReadOnlyGenericArray<ILSLExprNode> expressions, Func<LSLParameter, ILSLExprNode, bool> typeComparer)
         {
-
             int parameterNumber = 0;
             bool parameterTypeMismatch = false;
 
@@ -484,7 +503,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                 return new LSLFunctionSignatureMatch(false, true, false, -1);
             }
 
- 
+
             //not enough parameters to fill all of the concrete (non variadic) parameters in
             //we do not have enough expressions to call this function signature
             if (expressions.Count < functionSignature.ConcreteParameterCount)
@@ -499,11 +518,12 @@ namespace LibLSLCC.CodeValidator.Primitives
             {
                 LSLParameter compareWithThisSignatureParameter;
 
-                if (parameterNumber > (functionSignature.ParameterCount-1))
+                if (parameterNumber > (functionSignature.ParameterCount - 1))
                 {
                     //If this happens it means we are in a continuation of a variadic parameter, we want to continue comparing the rest of the passed
                     //expressions to the last parameter in the function signature, IE. the variadic parameter.
-                    compareWithThisSignatureParameter = functionSignature.Parameters[functionSignature.ParameterCount - 1];
+                    compareWithThisSignatureParameter =
+                        functionSignature.Parameters[functionSignature.ParameterCount - 1];
                 }
                 else
                 {
@@ -511,7 +531,7 @@ namespace LibLSLCC.CodeValidator.Primitives
                     //of an out of bounds index on the parameters array in the signature.
                     compareWithThisSignatureParameter = functionSignature.Parameters[parameterNumber];
                 }
-                
+
 
                 //no type check required, the variadic parameter allows everything in because its type is Void, anything you put in is a match
                 //from here on out.  So its safe to return from the loop now and stop checking parameters.

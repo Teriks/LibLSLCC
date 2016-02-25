@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLAutoCompleteLocalJump.cs
 // 
@@ -39,11 +40,13 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a local jump statement parsed by the auto complete parser.
+    ///     Represents a local jump statement parsed by the auto complete parser.
     /// </summary>
     public sealed class LSLAutoCompleteLocalJump
     {
@@ -52,11 +55,12 @@ namespace LibLSLCC.AutoComplete
             TargetName = targetName;
         }
 
+
         /// <summary>
-        /// Gets a string representing the name of the label this jump statement jumps to.
+        ///     Gets a string representing the name of the label this jump statement jumps to.
         /// </summary>
         /// <value>
-        /// The string representing the name of the label this jump statement jumps to.
+        ///     The string representing the name of the label this jump statement jumps to.
         /// </value>
         public string TargetName { get; private set; }
     }

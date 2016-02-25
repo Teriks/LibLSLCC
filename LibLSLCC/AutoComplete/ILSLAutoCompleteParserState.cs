@@ -83,7 +83,8 @@ namespace LibLSLCC.AutoComplete
         string CurrentEvent { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a state block, but outside of an event handler declaration.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a state block, but outside of an event handler
+        ///     declaration.
         /// </summary>
         bool InStateScope { get; }
 
@@ -138,13 +139,15 @@ namespace LibLSLCC.AutoComplete
 
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteGlobalVariable" /> objects representing global variable
-        ///     declarations that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by name.
+        ///     declarations that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by
+        ///     name.
         /// </summary>
         IReadOnlyHashMap<string, LSLAutoCompleteGlobalVariable> GlobalVariablesDictionary { get; }
 
         /// <summary>
         ///     Gets a read only hash map of <see cref="LSLAutoCompleteLocalParameter" /> objects representing local parameter
-        ///     declarations that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by name.
+        ///     declarations that are accessible at <see cref="ParseToOffset" />.  The declarations are keyed in the hash map by
+        ///     name.
         /// </summary>
         IReadOnlyHashMap<string, LSLAutoCompleteLocalParameter> LocalParametersDictionary { get; }
 
@@ -172,12 +175,14 @@ namespace LibLSLCC.AutoComplete
         bool InBracelessCodeStatementArea { get; }
 
         /// <summary>
-        ///     Gets an enumerable of <see cref="LSLAutoCompleteGlobalFunction" /> objects representing local parameters that are accessible at <see cref="ParseToOffset" />.
+        ///     Gets an enumerable of <see cref="LSLAutoCompleteGlobalFunction" /> objects representing local parameters that are
+        ///     accessible at <see cref="ParseToOffset" />.
         /// </summary>
         IEnumerable<LSLAutoCompleteLocalParameter> LocalParameters { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a binary expression/prefix expression/postfix expression or parenthesized expression.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a binary expression/prefix expression/postfix expression
+        ///     or parenthesized expression.
         /// </summary>
         bool InBasicExpressionTree { get; }
 
@@ -217,7 +222,8 @@ namespace LibLSLCC.AutoComplete
         bool InElseIfConditionExpression { get; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is anywhere inside of a function declaration or event declaration code body.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is anywhere inside of a function declaration or event declaration code
+        ///     body.
         /// </summary>
         bool InCodeBody { get; }
 

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLDefaultStringPreProcessor.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
@@ -51,13 +54,12 @@ using System.Text;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// The default implementation of <see cref="ILSLStringPreProcessor"/> for the library
+    ///     The default implementation of <see cref="ILSLStringPreProcessor" /> for the library
     /// </summary>
     public sealed class LSLDefaultStringPreProcessor : ILSLStringPreProcessor
     {
-
         /// <summary>
-        /// Construct the default implementation of <see cref="ILSLStringPreProcessor"/>
+        ///     Construct the default implementation of <see cref="ILSLStringPreProcessor" />
         /// </summary>
         public LSLDefaultStringPreProcessor()
         {
@@ -65,14 +67,14 @@ namespace LibLSLCC.CodeValidator.Components
             Result = "";
         }
 
+
         /// <summary>
-        /// True if the string that was just pre-processed contains invalid escape sequences or illegal character errors.
+        ///     True if the string that was just pre-processed contains invalid escape sequences or illegal character errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
-
         /// <summary>
-        /// An enumerable of all invalid escape sequences found in the string.
+        ///     An enumerable of all invalid escape sequences found in the string.
         /// </summary>
         public IEnumerable<LSLStringCharacterError> InvalidEscapeCodes
         {
@@ -80,7 +82,7 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        /// An enumerable of all illegal characters found in the string.
+        ///     An enumerable of all illegal characters found in the string.
         /// </summary>
         public IEnumerable<LSLStringCharacterError> IllegalCharacters
         {
@@ -89,17 +91,19 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
         /// <summary>
-        /// The resulting string after the input string has been pre-processed.
+        ///     The resulting string after the input string has been pre-processed.
         /// </summary>
         public string Result { get; private set; }
 
 
-
         /// <summary>
-        /// Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,
-        /// Place illegal character errors in the IllegalCharacters enumerable.
+        ///     Process the string and place descriptions of invalid escape codes in the InvalidEscapeCodes enumerable,
+        ///     Place illegal character errors in the IllegalCharacters enumerable.
         /// </summary>
-        /// <param name="stringLiteral">The string literal to be processed, the string is expected to be wrapped in double quote characters still.</param>
+        /// <param name="stringLiteral">
+        ///     The string literal to be processed, the string is expected to be wrapped in double quote
+        ///     characters still.
+        /// </param>
         public void ProcessString(string stringLiteral)
         {
             var result = new StringBuilder();
@@ -117,8 +121,9 @@ namespace LibLSLCC.CodeValidator.Components
             Result = HasErrors ? "" : result.ToString();
         }
 
+
         /// <summary>
-        /// Reset the pre-processor so it can process another string
+        ///     Reset the pre-processor so it can process another string
         /// </summary>
         public void Reset()
         {
@@ -127,6 +132,7 @@ namespace LibLSLCC.CodeValidator.Components
             HasErrors = false;
             Result = "";
         }
+
 
         private IEnumerable<string> CStringUnescape(string str)
         {
@@ -188,7 +194,6 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
         private static string ReplaceEscapeCode(char code)
         {
             if (code == 't')
@@ -201,7 +206,7 @@ namespace LibLSLCC.CodeValidator.Components
                 return "\\" + code;
             }
 
-            
+
             return code.ToString();
         }
     }

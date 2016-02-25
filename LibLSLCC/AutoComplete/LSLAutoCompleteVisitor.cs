@@ -8,7 +8,7 @@
 // ============================================================
 // 
 // 
-// Copyright (c) 2016, Teriks
+// Copyright (c) 2015, Teriks
 // 
 // All rights reserved.
 // 
@@ -84,65 +84,11 @@ namespace LibLSLCC.AutoComplete
         private readonly HashMap<string, LSLAutoCompleteLocalParameter> _parameters =
             new HashMap<string, LSLAutoCompleteLocalParameter>();
 
+        private readonly int _parseToOffset;
+
         private readonly GenericArray<LSLAutoCompleteStateBlock> _stateBlocks =
             new GenericArray<LSLAutoCompleteStateBlock>();
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
-        [Serializable]
-        private class StackImbalanceException : Exception
-        {
-            //
-            // For guidelines regarding the creation of new exception types, see
-            //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-            // and
-            //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-            //
-
-            public StackImbalanceException()
-            {
-            }
-
-
-            public StackImbalanceException(string message) : base(message)
-            {
-            }
-
-
-            public StackImbalanceException(string message, Exception inner) : base(message, inner)
-            {
-            }
-
-
-            protected StackImbalanceException(
-                SerializationInfo info,
-                StreamingContext context) : base(info, context)
-            {
-            }
-        }
-
-
-
-        private static T SafeStackPeek<T>(Stack<T> stack)
-        {
-            if (stack.Count == 0)
-            {
-                throw new StackImbalanceException();
-            }
-            return stack.Peek();
-        }
-
-        private static T SafeStackPop<T>(Stack<T> stack)
-        {
-            if (stack.Count == 0)
-            {
-                throw new StackImbalanceException();
-            }
-            return stack.Pop();
-        }
-
-
-
-        private readonly int _parseToOffset;
         private bool _inEventCodeBody;
         private bool _inFunctionCodeBody;
         private bool _inGlobalScope = true;
@@ -496,7 +442,8 @@ namespace LibLSLCC.AutoComplete
         public bool InElseIfConditionExpression { get; private set; }
 
         /// <summary>
-        ///     <c>true</c> if <see cref="ParseToOffset" /> is anywhere inside of a function declaration or event declaration code body.
+        ///     <c>true</c> if <see cref="ParseToOffset" /> is anywhere inside of a function declaration or event declaration code
+        ///     body.
         /// </summary>
         public bool InCodeBody
         {
@@ -823,17 +770,38 @@ namespace LibLSLCC.AutoComplete
         public LSLType CurrentFunctionReturnType { get; private set; }
 
 
+        private static T SafeStackPeek<T>(Stack<T> stack)
+        {
+            if (stack.Count == 0)
+            {
+                throw new StackImbalanceException();
+            }
+            return stack.Peek();
+        }
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+
+        private static T SafeStackPop<T>(Stack<T> stack)
+        {
+            if (stack.Count == 0)
+            {
+                throw new StackImbalanceException();
+            }
+            return stack.Pop();
+        }
+
+
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         public void Parse(LSLParser.CompilationUnitContext context)
         {
-            if(context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException("context");
 
             try
             {
                 VisitCompilationUnit(context);
             }
-            catch (StackImbalanceException) { }
+            catch (StackImbalanceException)
+            {
+            }
 
             ScopeAddressAtOffset = new LSLAutoCompleteScopeAddress(CodeAreaId, ScopeId, ScopeLevel);
         }
@@ -2193,6 +2161,39 @@ namespace LibLSLCC.AutoComplete
             return base.VisitDotAccessorExpr(context);
         }
 
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
+        [Serializable]
+        private class StackImbalanceException : Exception
+        {
+            //
+            // For guidelines regarding the creation of new exception types, see
+            //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
+            // and
+            //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
+            //
+
+            public StackImbalanceException()
+            {
+            }
+
+
+            public StackImbalanceException(string message) : base(message)
+            {
+            }
+
+
+            public StackImbalanceException(string message, Exception inner) : base(message, inner)
+            {
+            }
+
+
+            protected StackImbalanceException(
+                SerializationInfo info,
+                StreamingContext context) : base(info, context)
+            {
+            }
+        }
 
         private class LastControlChainStatusContainer
         {

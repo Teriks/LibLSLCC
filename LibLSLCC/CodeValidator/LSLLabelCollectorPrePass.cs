@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLLabelCollectorPrePass.cs
 // 
@@ -39,13 +40,18 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Parser;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator
 {
@@ -57,7 +63,6 @@ namespace LibLSLCC.CodeValidator
             new Stack<StatementIndexContainer>();
 
         private readonly ILSLCodeValidatorStrategies _validatorStrategies;
-
         private int _currentScopeId;
 
 
@@ -70,19 +75,13 @@ namespace LibLSLCC.CodeValidator
             _statementIndexStack.Push(new StatementIndexContainer {Index = 0, ScopeId = 0});
         }
 
-        public bool HasSyntaxErrors { get; private set; }
-
-        public bool HasSyntaxWarnings { get; private set; }
-
-
-
 
         /// <summary>
-        /// Gets the syntax warning listener.  this property should NOT be used to generate warning events,
-        /// use <see cref="GenSyntaxWarning"/> for that instead.
+        ///     Gets the syntax warning listener.  this property should NOT be used to generate warning events,
+        ///     use <see cref="GenSyntaxWarning" /> for that instead.
         /// </summary>
         /// <value>
-        /// The syntax warning listener.
+        ///     The syntax warning listener.
         /// </value>
         private ILSLSyntaxWarningListener SyntaxWarningListener
         {
@@ -90,21 +89,28 @@ namespace LibLSLCC.CodeValidator
         }
 
         /// <summary>
-        /// Gets the syntax error listener.  this property should NOT be used to generate error events,
-        /// use <see cref="GenSyntaxError"/> for that instead.
+        ///     Gets the syntax error listener.  this property should NOT be used to generate error events,
+        ///     use <see cref="GenSyntaxError" /> for that instead.
         /// </summary>
         /// <value>
-        /// The syntax error listener.
+        ///     The syntax error listener.
         /// </value>
         private ILSLSyntaxErrorListener SyntaxErrorListener
         {
             get { return _validatorStrategies.SyntaxErrorListener; }
         }
 
+        public bool HasSyntaxErrors { get; private set; }
+        public bool HasSyntaxWarnings { get; private set; }
+
+
         /// <summary>
-        /// Returns a reference to <see cref="SyntaxWarningListener"/> and sets <see cref="HasSyntaxWarnings"/> to <c>true</c>.
+        ///     Returns a reference to <see cref="SyntaxWarningListener" /> and sets <see cref="HasSyntaxWarnings" /> to
+        ///     <c>true</c>.
         /// </summary>
-        /// <returns><see cref="SyntaxWarningListener"/></returns>
+        /// <returns>
+        ///     <see cref="SyntaxWarningListener" />
+        /// </returns>
         private ILSLSyntaxWarningListener GenSyntaxWarning()
         {
             HasSyntaxWarnings = true;
@@ -113,15 +119,16 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Returns a reference to <see cref="SyntaxErrorListener"/> and sets <see cref="HasSyntaxErrors"/> to <c>true</c>.
+        ///     Returns a reference to <see cref="SyntaxErrorListener" /> and sets <see cref="HasSyntaxErrors" /> to <c>true</c>.
         /// </summary>
-        /// <returns><see cref="SyntaxErrorListener"/></returns>
+        /// <returns>
+        ///     <see cref="SyntaxErrorListener" />
+        /// </returns>
         private ILSLSyntaxErrorListener GenSyntaxError()
         {
             HasSyntaxErrors = true;
             return SyntaxErrorListener;
         }
-
 
 
         public override bool VisitCodeStatement(LSLParser.CodeStatementContext context)
@@ -158,7 +165,6 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
         {
             if (context == null || context.children == null)
@@ -177,7 +183,6 @@ namespace LibLSLCC.CodeValidator
 
             return result;
         }
-
 
 
         public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
@@ -208,6 +213,7 @@ namespace LibLSLCC.CodeValidator
 
             return base.VisitLabelStatement(context);
         }
+
 
         private class StatementIndexContainer
         {

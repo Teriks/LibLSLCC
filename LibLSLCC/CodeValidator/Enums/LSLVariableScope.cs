@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLVariableScope.cs
 // 
@@ -39,22 +40,23 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Enums
 {
-
     /// <summary>
-    /// Represents where a variable has been defined
+    ///     Represents where a variable has been defined
     /// </summary>
     public enum LSLVariableScope
     {
         /// <summary>
-        /// Variable defined in local scope, such as in a function or event handler.
+        ///     Variable defined in local scope, such as in a function or event handler.
         /// </summary>
         Local,
 
         /// <summary>
-        /// Variable defined in the outermost global scope.  IE, a global variable.
+        ///     Variable defined in the outermost global scope.  IE, a global variable.
         /// </summary>
         Global
     }

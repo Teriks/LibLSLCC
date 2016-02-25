@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLIfStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -49,36 +52,45 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST Node interface for if statements
+    ///     AST Node interface for if statements
     /// </summary>
     public interface ILSLIfStatementNode : ILSLReturnPathNode, ILSLReadOnlyBranchStatementNode
     {
         /// <summary>
-        /// The code inside the if statement.
+        ///     The code inside the if statement.
         /// </summary>
         ILSLCodeScopeNode Code { get; }
 
         /// <summary>
-        /// The expression inside the condition clause of the if statement.
+        ///     The expression inside the condition clause of the if statement.
         /// </summary>
         ILSLReadOnlyExprNode ConditionExpression { get; }
 
         /// <summary>
-        /// The source code range of the 'if' keyword of the statement.
+        ///     The source code range of the 'if' keyword of the statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeIfKeyword { get; }
 
         /// <summary>
-        /// The source code range of the opening parenthesis of the condition area.
+        ///     The source code range of the opening parenthesis of the condition area.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
-        /// The source code range of the closing parenthesis of the condition area.
+        ///     The source code range of the closing parenthesis of the condition area.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

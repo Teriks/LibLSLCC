@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLVariableNode.cs
 // 
@@ -39,51 +40,51 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for variable references.  
-    /// An <see cref="ILSLVariableNode"/> is also created as a child of an <see cref="ILSLVariableDeclarationNode"/>.
+    ///     AST node interface for variable references.
+    ///     An <see cref="ILSLVariableNode" /> is also created as a child of an <see cref="ILSLVariableDeclarationNode" />.
     /// </summary>
     public interface ILSLVariableNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// True if this variable node references a library constant, False if it references a user defined variable or parameter.
+        ///     True if this variable node references a library constant, False if it references a user defined variable or
+        ///     parameter.
         /// </summary>
         bool IsLibraryConstant { get; }
 
         /// <summary>
-        /// True if this variable node references a user defined global variable.
+        ///     True if this variable node references a user defined global variable.
         /// </summary>
         bool IsGlobal { get; }
 
         /// <summary>
-        /// True if this variable node references a user defined local variable.
+        ///     True if this variable node references a user defined local variable.
         /// </summary>
         bool IsLocal { get; }
 
-
         /// <summary>
-        /// True if this variable node references a function or event handler parameter.
+        ///     True if this variable node references a function or event handler parameter.
         /// </summary>
         bool IsParameter { get; }
 
-
         /// <summary>
-        /// A reference to the <see cref="ILSLVariableDeclarationNode"/> in the syntax tree where this variable was initially declared.
+        ///     A reference to the <see cref="ILSLVariableDeclarationNode" /> in the syntax tree where this variable was initially
+        ///     declared.
         /// </summary>
         ILSLVariableDeclarationNode Declaration { get; }
 
-
         /// <summary>
-        /// The raw type string describing the type of the variable referenced.
+        ///     The raw type string describing the type of the variable referenced.
         /// </summary>
         string TypeName { get; }
 
         /// <summary>
-        /// The name of the referenced variable.
+        ///     The name of the referenced variable.
         /// </summary>
         string Name { get; }
     }

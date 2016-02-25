@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLFunctionDeclarationNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -51,54 +54,58 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for function declaration nodes.
+    ///     AST node interface for function declaration nodes.
     /// </summary>
     public interface ILSLFunctionDeclarationNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// A list of function call nodes that reference this function definition, or an empty list.
+        ///     A list of function call nodes that reference this function definition, or an empty list.
         /// </summary>
         IReadOnlyGenericArray<ILSLFunctionCallNode> References { get; }
 
         /// <summary>
-        /// The string from the source code that represents the return type assigned to the function definition,
-        /// or an empty string if no return type was assigned.
+        ///     The string from the source code that represents the return type assigned to the function definition,
+        ///     or an empty string if no return type was assigned.
         /// </summary>
         string ReturnTypeName { get; }
 
         /// <summary>
-        /// The name of the function.
+        ///     The name of the function.
         /// </summary>
         string Name { get; }
 
-
         /// <summary>
-        /// The source code range of the function name
+        ///     The source code range of the function name
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeName { get; }
 
-
         /// <summary>
-        /// The source code range of the function return type, or <c>null</c> if no return type was specified.
+        ///     The source code range of the function return type, or <c>null</c> if no return type was specified.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeReturnType { get; }
 
         /// <summary>
-        /// The return type assigned to the function definition, it will be <see cref="LSLType.Void"/> if no return type was given.
+        ///     The return type assigned to the function definition, it will be <see cref="LSLType.Void" /> if no return type was
+        ///     given.
         /// </summary>
         LSLType ReturnType { get; }
 
         /// <summary>
-        /// The parameter list node that contains the parameter list definitions for this function.
-        /// It should never be null, even if the function definition contains no parameter definitions.
+        ///     The parameter list node that contains the parameter list definitions for this function.
+        ///     It should never be null, even if the function definition contains no parameter definitions.
         /// </summary>
         ILSLParameterListNode ParameterList { get; }
 
-
         /// <summary>
-        /// The code scope node that represents the code body of the function definition.
+        ///     The code scope node that represents the code body of the function definition.
         /// </summary>
         ILSLCodeScopeNode FunctionBodyNode { get; }
     }

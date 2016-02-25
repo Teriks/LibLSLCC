@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLBinaryExpressionNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,7 +59,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLBinaryExpressionNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLBinaryExpressionNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLBinaryExpressionNode : ILSLBinaryExpressionNode, ILSLExprNode
     {
@@ -71,7 +74,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLBinaryExpressionNode"/> by cloning from another.
+        ///     Create an <see cref="LSLBinaryExpressionNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         public LSLBinaryExpressionNode(LSLBinaryExpressionNode other)
@@ -98,14 +101,13 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             HasErrors = other.HasErrors;
             Parent = other.Parent;
-
         }
 
 
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="context"/> or 
-        /// <paramref name="leftExpression"/> or 
-        /// <paramref name="rightExpression"/> is <c>null</c>.
+        ///     <paramref name="context" /> or
+        ///     <paramref name="leftExpression" /> or
+        ///     <paramref name="rightExpression" /> is <c>null</c>.
         /// </exception>
         internal LSLBinaryExpressionNode(
             LSLParser.ExpressionContext context,
@@ -139,7 +141,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             rightExpression.Parent = this;
 
             ParseAndSetOperation(operationString);
-            
+
             SourceRange = new LSLSourceCodeRange(context);
 
             SourceRangeOperation = new LSLSourceCodeRange(operationToken);
@@ -148,26 +150,24 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
         /// <summary>
-        /// The expression tree on the left of side of the binary operation.
+        ///     The expression tree on the left of side of the binary operation.
         /// </summary>
         public ILSLExprNode LeftExpression { get; private set; }
 
-
-
         /// <summary>
-        /// The expression tree on the right side of the binary operation.
+        ///     The expression tree on the right side of the binary operation.
         /// </summary>
         public ILSLExprNode RightExpression { get; private set; }
 
-
         /// <summary>
-        /// The source code range that encompasses the binary expression and its children.
+        ///     The source code range that encompasses the binary expression and its children.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeOperation { get; private set; }
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -175,16 +175,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The binary operation type of this node.
+        ///     The binary operation type of this node.
         /// </summary>
         public LSLBinaryOperationType Operation { get; private set; }
 
-
         /// <summary>
-        /// The string representation of the binary operation this node preforms.
+        ///     The string representation of the binary operation this node preforms.
         /// </summary>
         public string OperationString { get; private set; }
-
 
         ILSLReadOnlyExprNode ILSLBinaryExpressionNode.LeftExpression
         {
@@ -196,8 +194,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return RightExpression; }
         }
 
+
         /// <summary>
-        /// Gets an instance of this node that represents a syntax error in the node.
+        ///     Gets an instance of this node that represents a syntax error in the node.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>An error form of the node.</returns>
@@ -206,6 +205,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             return new LSLBinaryExpressionNode(sourceRange, Err.Err);
         }
+
 
         private void ParseAndSetOperation(string operationString)
         {
@@ -225,27 +225,30 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLExprNode Members
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values
-        /// for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values
+        ///     for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -255,28 +258,32 @@ namespace LibLSLCC.CodeValidator.Nodes
             return visitor.VisitBinaryExpression(this);
         }
 
+
         /// <summary>
-        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a
+        ///     function call.  False otherwise.
         /// </summary>
         public bool HasPossibleSideEffects
         {
             get
             {
-
                 if (LeftExpression == null || RightExpression == null) return false;
 
-                var eitherSideHaveSideEffects = (LeftExpression.HasPossibleSideEffects || RightExpression.HasPossibleSideEffects);
-     
-                var operatorModifiesLeftVariable = LeftExpression.IsModifiableLeftValue() && Operation.IsAssignOrModifyAssign();
+                var eitherSideHaveSideEffects = (LeftExpression.HasPossibleSideEffects ||
+                                                 RightExpression.HasPossibleSideEffects);
+
+                var operatorModifiesLeftVariable = LeftExpression.IsModifiableLeftValue() &&
+                                                   Operation.IsAssignOrModifyAssign();
 
                 return (eitherSideHaveSideEffects || operatorModifiesLeftVariable);
             }
         }
 
+
         /// <summary>
-        /// Should produce a user friendly description of the expressions return type.
-        /// This is used in some syntax error messages, Ideally you should enclose your description in
-        /// parenthesis or something that will make it stand out in a string.
+        ///     Should produce a user friendly description of the expressions return type.
+        ///     This is used in some syntax error messages, Ideally you should enclose your description in
+        ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
         /// <returns></returns>
         public string DescribeType()
@@ -285,19 +292,17 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
         /// <summary>
-        /// The return type of the expression. see: <see cref="LSLType" />
+        ///     The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type { get; private set; }
 
 
-
         /// <summary>
-        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        ///     The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
-        /// The type of the expression.
+        ///     The type of the expression.
         /// </value>
         public LSLExpressionType ExpressionType
         {
@@ -306,13 +311,16 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the expression is constant and can be calculated at compile time.
+        ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
         public bool IsConstant
         {
-            get { return 
+            get
+            {
+                return
                     (LeftExpression != null && RightExpression != null) &&
-                    (LeftExpression.IsConstant && RightExpression.IsConstant); }
+                    (LeftExpression.IsConstant && RightExpression.IsConstant);
+            }
         }
 
 
@@ -323,15 +331,15 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
-
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLStringLiteralNode.cs
 // 
@@ -39,30 +40,35 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using LibLSLCC.CodeValidator.Components;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST token interface for string literal nodes.
+    ///     AST token interface for string literal nodes.
     /// </summary>
     public interface ILSLStringLiteralNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The pre-processed text of the string literal.
-        /// 
-        /// <see cref="LSLCodeValidator"/> relies on an implementation of <see cref="ILSLStringPreProcessor"/> to fill this value out by passing <see cref="ILSLStringPreProcessor"/>
-        /// the raw text for the string literal and assigning the string it produces to this property.
-        /// <see cref="ILSLStringPreProcessor"/>
+        ///     The pre-processed text of the string literal.
+        ///     <see cref="LSLCodeValidator" /> relies on an implementation of <see cref="ILSLStringPreProcessor" /> to fill this
+        ///     value out by passing <see cref="ILSLStringPreProcessor" />
+        ///     the raw text for the string literal and assigning the string it produces to this property.
+        ///     <see cref="ILSLStringPreProcessor" />
         /// </summary>
         string PreProcessedText { get; }
 
         /// <summary>
-        /// The raw text for the string literal from the source code, this should include the quote characters that surround the string.
-        /// Any escape codes used in the source code string should be double escaped.
+        ///     The raw text for the string literal from the source code, this should include the quote characters that surround
+        ///     the string.
+        ///     Any escape codes used in the source code string should be double escaped.
         /// </summary>
         string RawText { get; }
     }

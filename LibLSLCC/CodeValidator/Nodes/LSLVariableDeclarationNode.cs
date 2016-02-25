@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLVariableDeclarationNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -57,12 +60,11 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLVariableDeclarationNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLVariableDeclarationNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLVariableDeclarationNode : ILSLVariableDeclarationNode, ILSLCodeStatement
     {
         private readonly GenericArray<LSLVariableNode> _references = new GenericArray<LSLVariableNode>();
-
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLVariableDeclarationNode(LSLSourceCodeRange sourceRange, Err err)
@@ -72,6 +74,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             HasErrors = true;
         }
 
+
         private LSLVariableDeclarationNode()
         {
             InsideSingleStatementScope = false;
@@ -79,10 +82,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLVariableDeclarationNode"/> by cloning from another.
+        ///     Create an <see cref="LSLVariableDeclarationNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLVariableDeclarationNode(LSLVariableDeclarationNode other)
         {
             if (other == null)
@@ -94,8 +97,8 @@ namespace LibLSLCC.CodeValidator.Nodes
             StatementIndex = other.StatementIndex;
             IsLastStatementInScope = other.IsLastStatementInScope;
 
-            VariableNode = (LSLVariableNode)other.VariableNode.Clone();
-            
+            VariableNode = (LSLVariableNode) other.VariableNode.Clone();
+
             InsideSingleStatementScope = other.InsideSingleStatementScope;
             DeclarationExpression = other.DeclarationExpression;
 
@@ -135,19 +138,18 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public LSLVariableNode VariableNode { get; private set; }
 
-
-
         /// <summary>
-        /// The expression used to initialize this variable declaration, this will be null if 'HasDeclarationExpression' is false.
-        /// If neither 'IsLocal' or 'IsGlobal' are true, than this property will always be null.
+        ///     The expression used to initialize this variable declaration, this will be null if 'HasDeclarationExpression' is
+        ///     false.
+        ///     If neither 'IsLocal' or 'IsGlobal' are true, than this property will always be null.
         /// </summary>
         public ILSLExprNode DeclarationExpression { get; private set; }
 
-
-
         /// <summary>
-        /// A list of variable nodes representing references to this variable declaration in the source code.  Or an empty list.
-        /// ILSLVariableNodes are used to represent a reference to a declared variable, and are present in the syntax tree at the site of reference.
+        ///     A list of variable nodes representing references to this variable declaration in the source code.  Or an empty
+        ///     list.
+        ///     ILSLVariableNodes are used to represent a reference to a declared variable, and are present in the syntax tree at
+        ///     the site of reference.
         /// </summary>
         public IReadOnlyGenericArray<LSLVariableNode> References
         {
@@ -155,20 +157,18 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// If the scope has a return path, this is set to the node that causes the function to return.
-        /// it may be a return statement, or a control chain node.
+        ///     If the scope has a return path, this is set to the node that causes the function to return.
+        ///     it may be a return statement, or a control chain node.
         /// </summary>
         public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
 
-
         /// <summary>
-        /// The type of dead code that this statement is considered to be, if it is dead
+        ///     The type of dead code that this statement is considered to be, if it is dead
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
-
         /// <summary>
-        /// The name of the variable.
+        ///     The name of the variable.
         /// </summary>
         public string Name
         {
@@ -176,16 +176,15 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The variable type.
+        ///     The variable type.
         /// </summary>
         public LSLType Type
         {
             get { return VariableNode.Type; }
         }
 
-
         /// <summary>
-        /// The raw type string representing the variable type, taken from the source code.
+        ///     The raw type string representing the variable type, taken from the source code.
         /// </summary>
         public string TypeName
         {
@@ -198,7 +197,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if an expression was used to initialize this variable declaration node when it was defined.
+        ///     True if an expression was used to initialize this variable declaration node when it was defined.
         /// </summary>
         public bool HasDeclarationExpression
         {
@@ -206,7 +205,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if this variable declaration is local to a function or event handler.  False if it is a global variable, parameter definition, or library constant.
+        ///     True if this variable declaration is local to a function or event handler.  False if it is a global variable,
+        ///     parameter definition, or library constant.
         /// </summary>
         public bool IsLocal
         {
@@ -214,7 +214,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if this variable declaration is in the global program scope.  False if it is a local variable, parameter definition, or library constant.
+        ///     True if this variable declaration is in the global program scope.  False if it is a local variable, parameter
+        ///     definition, or library constant.
         /// </summary>
         public bool IsGlobal
         {
@@ -222,7 +223,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if this variable declaration represents a local function/event handler parameter.  False if it is a local variable, global variable, or library constant.
+        ///     True if this variable declaration represents a local function/event handler parameter.  False if it is a local
+        ///     variable, global variable, or library constant.
         /// </summary>
         public bool IsParameter
         {
@@ -230,7 +232,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if this variable declaration represents a library defined constant.  False if it is a local variable, global variable, or parameter definition.
+        ///     True if this variable declaration represents a library defined constant.  False if it is a local variable, global
+        ///     variable, or parameter definition.
         /// </summary>
         public bool IsLibraryConstant
         {
@@ -248,8 +251,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
-        /// this is not the scopes level.
+        ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        ///     this is not the scopes level.
         /// </summary>
         public int ScopeId { get; set; }
 
@@ -260,8 +263,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -273,12 +276,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Creates a reference to VariableNode by cloning and setting its <see cref="LSLVariableNode.SourceRange"/>
-        /// to that of <paramref name="referenceToken"/>
+        ///     Creates a reference to VariableNode by cloning and setting its <see cref="LSLVariableNode.SourceRange" />
+        ///     to that of <paramref name="referenceToken" />
         /// </summary>
         /// <param name="referenceToken">The variable reference token from the parser</param>
-        /// <returns>VariableNode cloned, with its <see cref="LSLVariableNode.SourceRange"/> set</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="referenceToken"/> is <c>null</c>.</exception>
+        /// <returns>VariableNode cloned, with its <see cref="LSLVariableNode.SourceRange" /> set</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="referenceToken" /> is <c>null</c>.</exception>
         internal LSLVariableNode CreateReference(IToken referenceToken)
         {
             if (referenceToken == null)
@@ -297,12 +300,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Creates a reference to VariableNode by cloning and setting its <see cref="LSLVariableNode.SourceRange"/>
-        /// to that of <paramref name="range"/>
+        ///     Creates a reference to VariableNode by cloning and setting its <see cref="LSLVariableNode.SourceRange" />
+        ///     to that of <paramref name="range" />
         /// </summary>
         /// <param name="range">The source-code range of the variable token from the parser</param>
-        /// <returns>VariableNode cloned, with its <see cref="LSLVariableNode.SourceRange"/> set</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="range"/> is <c>null</c>.</exception>
+        /// <returns>VariableNode cloned, with its <see cref="LSLVariableNode.SourceRange" /> set</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="range" /> is <c>null</c>.</exception>
         internal LSLVariableNode CreateReference(LSLSourceCodeRange range)
         {
             if (range == null)
@@ -310,7 +313,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("range");
             }
 
-            var v = (LSLVariableNode)VariableNode.Clone();
+            var v = (LSLVariableNode) VariableNode.Clone();
 
             v.SourceRange = range;
             SourceRangesAvailable = true;
@@ -320,7 +323,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.GlobalVariableDeclarationContext context)
         {
             if (context == null)
@@ -347,7 +350,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declarationExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or <paramref name="declarationExpression" /> is
+        ///     <c>null</c>.
+        /// </exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.GlobalVariableDeclarationContext context,
             ILSLExprNode declarationExpression)
         {
@@ -384,7 +390,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="declarationExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or <paramref name="declarationExpression" /> is
+        ///     <c>null</c>.
+        /// </exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.LocalVariableDeclarationContext context,
             ILSLExprNode declarationExpression)
         {
@@ -421,7 +430,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateVar(LSLParser.LocalVariableDeclarationContext context)
         {
             if (context == null)
@@ -448,8 +457,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentException">if <paramref name="name"/> contains invalid ID characters, or <paramref name="type"/> is <see cref="LSLType.Void"/>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     if <paramref name="name" /> contains invalid ID characters, or
+        ///     <paramref name="type" /> is <see cref="LSLType.Void" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateLibraryConstant(LSLType type, string name)
         {
             var n = new LSLVariableDeclarationNode
@@ -463,7 +475,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
         internal static LSLVariableDeclarationNode CreateParameter(LSLParameterNode node)
         {
             var n = new LSLVariableDeclarationNode
@@ -480,7 +492,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Deep clones the variable declaration node.  It should clone the node and also clone its VariableNode child.
+        ///     Deep clones the variable declaration node.  It should clone the node and also clone its VariableNode child.
         /// </summary>
         /// <returns>A deep clone of this variable declaration node.</returns>
         public LSLVariableDeclarationNode Clone()
@@ -499,31 +511,28 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLCodeStatement Members
 
-
-
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
         public bool InsideSingleStatementScope { get; private set; }
 
 
-
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         /// <summary>
-        /// The index of this statement in its scope
+        ///     The index of this statement in its scope
         /// </summary>
         public int StatementIndex { get; set; }
 
 
         /// <summary>
-        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
         /// </summary>
         public bool HasReturnPath
         {
@@ -532,13 +541,13 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Is this statement the last statement in its scope
+        ///     Is this statement the last statement in its scope
         /// </summary>
         public bool IsLastStatementInScope { get; set; }
 
 
         /// <summary>
-        /// Is this statement dead code
+        ///     Is this statement dead code
         /// </summary>
         public bool IsDeadCode { get; set; }
 
@@ -549,49 +558,61 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
-
         /// <summary>
-        /// The source code range of the type specifier for the variable declaration.
+        ///     The source code range of the type specifier for the variable declaration.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeType { get; private set; }
 
 
         /// <summary>
-        /// The source code range that encompasses the variables name in the declaration.
+        ///     The source code range that encompasses the variables name in the declaration.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
 
         /// <summary>
-        /// The source code range of the assignment operator in the declaration expression if one was used.
-        /// This value is only meaningful if either 'IsLocal' or 'IsGlobal' are true, and 'HasDeclarationExpression' is also true.
+        ///     The source code range of the assignment operator in the declaration expression if one was used.
+        ///     This value is only meaningful if either 'IsLocal' or 'IsGlobal' are true, and 'HasDeclarationExpression' is also
+        ///     true.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeOperator { get; private set; }
 
+
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

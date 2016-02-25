@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLSyntaxTreeNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -50,37 +53,34 @@ using LibLSLCC.CodeValidator.Visitor;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// Base read only interface for syntax tree nodes.
+    ///     Base read only interface for syntax tree nodes.
     /// </summary>
     public interface ILSLReadOnlySyntaxTreeNode
     {
-
         /// <summary>
-        /// The read only interface of the parent node of this syntax tree node.
+        ///     The read only interface of the parent node of this syntax tree node.
         /// </summary>
         ILSLReadOnlySyntaxTreeNode Parent { get; }
 
-
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         bool HasErrors { get; }
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>If <see cref="SourceRangesAvailable" /> is <c>false</c> this property will be <c>null</c>.</remarks>
         LSLSourceCodeRange SourceRange { get; }
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         bool SourceRangesAvailable { get; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -90,12 +90,12 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
     /// <summary>
-    /// Base interface for syntax tree nodes.
+    ///     Base interface for syntax tree nodes.
     /// </summary>
     public interface ILSLSyntaxTreeNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         new ILSLSyntaxTreeNode Parent { get; set; }
     }

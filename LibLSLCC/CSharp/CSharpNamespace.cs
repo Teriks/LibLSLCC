@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpNamespace.cs
 // 
@@ -39,38 +40,44 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using LibLSLCC.Collections;
 using LibLSLCC.Settings;
 
+#endregion
+
 namespace LibLSLCC.CSharp
 {
-
     /// <summary>
-    /// Abstraction that provides parsing and validation for CSharp namespace strings.
+    ///     Abstraction that provides parsing and validation for CSharp namespace strings.
     /// </summary>
     public sealed class CSharpNamespace : SettingsBaseClass<CSharpNamespace>, IObservableHashSetItem
     {
-        private string _fullSignature;
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string> {"Name"};
+        private string _fullSignature;
+
 
         /// <summary>
-        /// Parameterless constructor used by <see cref="SettingsBaseClass{CSharpNamespace}"/>
+        ///     Parameterless constructor used by <see cref="SettingsBaseClass{CSharpNamespace}" />
         /// </summary>
         private CSharpNamespace()
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSharpNamespace"/> class by parsing a namespace string.
+        ///     Initializes a new instance of the <see cref="CSharpNamespace" /> class by parsing a namespace string.
         /// </summary>
         /// <param name="name">The namespace string to parse.</param>
         /// <exception cref="System.ArgumentException">
-        /// Thrown if <paramref name="name"/> is <c>null</c>.
-        /// or
-        /// If <paramref name="name"/> does not pass validation by <see cref="CSharpNamespaceNameValidator.Validate"/>.
+        ///     Thrown if <paramref name="name" /> is <c>null</c>.
+        ///     or
+        ///     If <paramref name="name" /> does not pass validation by <see cref="CSharpNamespaceNameValidator.Validate" />.
         /// </exception>
         public CSharpNamespace(string name)
         {
@@ -88,26 +95,17 @@ namespace LibLSLCC.CSharp
             _fullSignature = name;
         }
 
-        /// <summary>
-        /// Implicitly converts a string into a CSharpNamespace.
-        /// </summary>
-        /// <param name="name">The name string to convert from.</param>
-        /// <returns></returns>
-        public static implicit operator CSharpNamespace(string name)
-        {
-            return new CSharpNamespace(name);
-        }
 
         /// <summary>
-        /// Gets or sets the full signature of the namespace.
+        ///     Gets or sets the full signature of the namespace.
         /// </summary>
         /// <value>
-        /// The full namespace signature.
+        ///     The full namespace signature.
         /// </value>
         /// <exception cref="System.ArgumentException">
-        /// Thrown if the value is set to <c>null</c>.
-        /// or
-        /// If the set value does not pass validation by <see cref="CSharpNamespaceNameValidator.Validate"/>.
+        ///     Thrown if the value is set to <c>null</c>.
+        ///     or
+        ///     If the set value does not pass validation by <see cref="CSharpNamespaceNameValidator.Validate" />.
         /// </exception>
         public string FullSignature
         {
@@ -129,12 +127,28 @@ namespace LibLSLCC.CSharp
             }
         }
 
+        IReadOnlyHashedSet<string> IObservableHashSetItem.HashEqualityPropertyNames
+        {
+            get { return _hashEqualityPropertyNames; }
+        }
+
 
         /// <summary>
-        /// Returns the hash code of <see cref="FullSignature"/>.
+        ///     Implicitly converts a string into a CSharpNamespace.
+        /// </summary>
+        /// <param name="name">The name string to convert from.</param>
+        /// <returns></returns>
+        public static implicit operator CSharpNamespace(string name)
+        {
+            return new CSharpNamespace(name);
+        }
+
+
+        /// <summary>
+        ///     Returns the hash code of <see cref="FullSignature" />.
         /// </summary>
         /// <returns>
-        /// Returns the hash code of <see cref="FullSignature"/>. 
+        ///     Returns the hash code of <see cref="FullSignature" />.
         /// </returns>
         public override int GetHashCode()
         {
@@ -143,39 +157,35 @@ namespace LibLSLCC.CSharp
         }
 
 
-
         /// <summary>
-        /// Compares using <see cref="FullSignature"/>.
+        ///     Compares using <see cref="FullSignature" />.
         /// </summary>
         /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is a <see cref="CSharpNamespace"/> with an equal <see cref="FullSignature"/> value; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is a <see cref="CSharpNamespace" /> with an equal
+        ///     <see cref="FullSignature" /> value; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
             var ns = obj as CSharpNamespace;
             if (ns == null) return false;
 
-            if (ns.FullSignature != null && FullSignature != null) return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
+            if (ns.FullSignature != null && FullSignature != null)
+                return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
 
             return ns.FullSignature == FullSignature;
         }
 
 
         /// <summary>
-        /// Returns <see cref="FullSignature"/>.
+        ///     Returns <see cref="FullSignature" />.
         /// </summary>
         /// <returns>
-        /// <see cref="FullSignature"/>.
+        ///     <see cref="FullSignature" />.
         /// </returns>
         public override string ToString()
         {
             return FullSignature;
-        }
-
-        IReadOnlyHashedSet<string> IObservableHashSetItem.HashEqualityPropertyNames
-        {
-            get { return _hashEqualityPropertyNames; }
         }
     }
 }

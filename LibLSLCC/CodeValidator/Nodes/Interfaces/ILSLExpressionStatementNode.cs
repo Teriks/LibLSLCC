@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLExpressionStatementNode.cs
 // 
@@ -39,34 +40,41 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for expression statements, expression statements are the statements that occur line by line inside of code scope.
+    ///     AST node interface for expression statements, expression statements are the statements that occur line by line
+    ///     inside of code scope.
     /// </summary>
     public interface ILSLExpressionStatementNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
-        /// The top expression node that represents the expression in the statement.
+        ///     The top expression node that represents the expression in the statement.
         /// </summary>
         ILSLReadOnlyExprNode Expression { get; }
 
-
         /// <summary>
-        /// True if the expression statement has some modifying affect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression statement has some modifying affect on a local parameter or global/local variable;  or is a
+        ///     function call.  False otherwise.
         /// </summary>
         bool HasPossibleSideEffects { get; }
 
-
         /// <summary>
-        /// The source code range of the semi-colon that ends the expression statement.
+        ///     The source code range of the semi-colon that ends the expression statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

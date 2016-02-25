@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLReturnStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -48,33 +51,38 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for return statements.
+    ///     AST node interface for return statements.
     /// </summary>
     public interface ILSLReturnStatementNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
-        /// The expression node that represents the returned expression, or null if no expression was used with the return statement.
+        ///     The expression node that represents the returned expression, or null if no expression was used with the return
+        ///     statement.
         /// </summary>
         ILSLReadOnlyExprNode ReturnExpression { get; }
 
         /// <summary>
-        /// True if the return statement uses a return expression.
+        ///     True if the return statement uses a return expression.
         /// </summary>
         bool HasReturnExpression { get; }
 
-
         /// <summary>
-        /// The source code range of the 'return' keyword in the return statement.
+        ///     The source code range of the 'return' keyword in the return statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeReturnKeyword { get; }
 
         /// <summary>
-        /// The source code range of the semi-colon that ends the return statement.
+        ///     The source code range of the semi-colon that ends the return statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCodeScopeType.cs
 // 
@@ -39,58 +40,61 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Enums
 {
     /// <summary>
-    /// Represents a category of code scope.
+    ///     Represents a category of code scope.
     /// </summary>
     public enum LSLCodeScopeType
     {
         /// <summary>
-        /// An event handlers code scope.
+        ///     An event handlers code scope.
         /// </summary>
         EventHandler,
 
         /// <summary>
-        /// A user defined functions code scope.
+        ///     A user defined functions code scope.
         /// </summary>
         Function,
 
         /// <summary>
-        /// A Do-Loops code scope.
+        ///     A Do-Loops code scope.
         /// </summary>
         DoLoop,
 
         /// <summary>
-        /// A While-Loops code scope.
+        ///     A While-Loops code scope.
         /// </summary>
         WhileLoop,
 
         /// <summary>
-        /// A For-Loops code scope.
+        ///     A For-Loops code scope.
         /// </summary>
         ForLoop,
 
         /// <summary>
-        /// An If statements code scope.
+        ///     An If statements code scope.
         /// </summary>
         If,
 
         /// <summary>
-        /// An Else-If statements code scope.
+        ///     An Else-If statements code scope.
         /// </summary>
         ElseIf,
 
         /// <summary>
-        /// An Else statements code scope.
+        ///     An Else statements code scope.
         /// </summary>
         Else,
 
         /// <summary>
-        /// An anonymous code scope defined inside of another code scope.
-        /// Basically a matching pare of curly braces inside of another code scope that does not associate with any control statement.
-        /// This is sometimes used to create an anonymous new scope for local variables.
+        ///     An anonymous code scope defined inside of another code scope.
+        ///     Basically a matching pare of curly braces inside of another code scope that does not associate with any control
+        ///     statement.
+        ///     This is sometimes used to create an anonymous new scope for local variables.
         /// </summary>
         AnonymousBlock
     }

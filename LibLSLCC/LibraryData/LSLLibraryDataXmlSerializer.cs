@@ -57,75 +57,77 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryConstantDefinition"/>
+    ///     EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryConstantDefinition" />
     /// </summary>
     public class SerializeConstantSignatureEventArgs : EventArgs
 
     {
         /// <summary>
-        /// The <see cref="LSLLibraryConstantSignature"/> node that was read.
-        /// </summary>
-        public LSLLibraryConstantSignature Signature { get; private set; }
-
-
-        /// <summary>
-        /// Constructs the event args around a given <see cref="LSLLibraryConstantSignature"/> that was just read.
+        ///     Constructs the event args around a given <see cref="LSLLibraryConstantSignature" /> that was just read.
         /// </summary>
         /// <param name="signature"></param>
         public SerializeConstantSignatureEventArgs(LSLLibraryConstantSignature signature)
         {
             Signature = signature;
         }
+
+
+        /// <summary>
+        ///     The <see cref="LSLLibraryConstantSignature" /> node that was read.
+        /// </summary>
+        public LSLLibraryConstantSignature Signature { get; private set; }
     }
 
     /// <summary>
-    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryEventHandlerDefinition"/>
+    ///     EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryEventHandlerDefinition" />
     /// </summary>
     public class SerializeEventHandlerSignatureEventArgs : EventArgs
 
     {
         /// <summary>
-        /// Constructs the event args around a given <see cref="LSLLibraryEventSignature"/> that was just read.
+        ///     Constructs the event args around a given <see cref="LSLLibraryEventSignature" /> that was just read.
         /// </summary>
         public SerializeEventHandlerSignatureEventArgs(LSLLibraryEventSignature eventSignature)
         {
             EventSignature = eventSignature;
         }
 
+
         /// <summary>
-        /// The <see cref="LSLLibraryEventSignature"/> node that was read.
+        ///     The <see cref="LSLLibraryEventSignature" /> node that was read.
         /// </summary>
         public LSLLibraryEventSignature EventSignature { get; private set; }
     }
 
     /// <summary>
-    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryFunctionDefinition"/>
+    ///     EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibraryFunctionDefinition" />
     /// </summary>
     public class SerializeFunctionSignatureEventArgs : EventArgs
 
     {
         /// <summary>
-        /// Constructs the event args around a given <see cref="LSLLibraryFunctionSignature"/> that was just read.
+        ///     Constructs the event args around a given <see cref="LSLLibraryFunctionSignature" /> that was just read.
         /// </summary>
         public SerializeFunctionSignatureEventArgs(LSLLibraryFunctionSignature functionSignature)
         {
             FunctionSignature = functionSignature;
         }
 
+
         /// <summary>
-        /// The <see cref="LSLLibraryFunctionSignature"/> node that was read.
+        ///     The <see cref="LSLLibraryFunctionSignature" /> node that was read.
         /// </summary>
         public LSLLibraryFunctionSignature FunctionSignature { get; private set; }
     }
 
     /// <summary>
-    /// EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibrarySubsetDescription"/>
+    ///     EventArgs for <see cref="LSLLibraryDataXmlSerializer.ReadLibrarySubsetDescription" />
     /// </summary>
     public class SerializeSubsetDescriptionEventArgs : EventArgs
 
     {
         /// <summary>
-        /// Constructs the event args around a given <see cref="LSLLibrarySubsetDescription"/> that was just read.
+        ///     Constructs the event args around a given <see cref="LSLLibrarySubsetDescription" /> that was just read.
         /// </summary>
         public SerializeSubsetDescriptionEventArgs(LSLLibrarySubsetDescription subsetDescription)
         {
@@ -134,52 +136,50 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// The <see cref="LSLLibrarySubsetDescription"/> node that was read.
+        ///     The <see cref="LSLLibrarySubsetDescription" /> node that was read.
         /// </summary>
         public LSLLibrarySubsetDescription SubsetDescription { get; private set; }
     }
 
 
     /// <summary>
-    /// An event driven SAX parser for LSL Library data
+    ///     An event driven SAX parser for LSL Library data
     /// </summary>
     public class LSLLibraryDataXmlSerializer
     {
         /// <summary>
-        /// Info about the current XML line as parsing in progress.
+        ///     The root element name used for LSL Library Data XML
+        /// </summary>
+        public const string RootElementName = "LSLLibraryData";
+
+        /// <summary>
+        ///     Info about the current XML line as parsing in progress.
         /// </summary>
         public IXmlLineInfo CurrentLineInfo { get; private set; }
 
         /// <summary>
-        /// The root element name used for LSL Library Data XML
-        /// </summary>
-        public const string RootElementName = "LSLLibraryData";
-
-
-        /// <summary>
-        /// This event is fired when a function definition has been retrieved from XML markup.
+        ///     This event is fired when a function definition has been retrieved from XML markup.
         /// </summary>
         public event EventHandler<SerializeFunctionSignatureEventArgs> ReadLibraryFunctionDefinition;
 
         /// <summary>
-        /// This event is fired when a constant definition has been retrieved from XML markup.
+        ///     This event is fired when a constant definition has been retrieved from XML markup.
         /// </summary>
         public event EventHandler<SerializeConstantSignatureEventArgs> ReadLibraryConstantDefinition;
 
         /// <summary>
-        /// This event is fired when an event handler definition has been retrieved from XML markup.
+        ///     This event is fired when an event handler definition has been retrieved from XML markup.
         /// </summary>
         public event EventHandler<SerializeEventHandlerSignatureEventArgs> ReadLibraryEventHandlerDefinition;
 
-
         /// <summary>
-        /// This event is fired when a library subset description has been retrieved from XML markup.
+        ///     This event is fired when a library subset description has been retrieved from XML markup.
         /// </summary>
         public event EventHandler<SerializeSubsetDescriptionEventArgs> ReadLibrarySubsetDescription;
 
 
         /// <summary>
-        /// This event is fired when a function definition has been retrieved from XML markup.
+        ///     This event is fired when a function definition has been retrieved from XML markup.
         /// </summary>
         protected virtual void OnReadLibraryFunctionDefinition(LSLLibraryFunctionSignature sig)
         {
@@ -189,7 +189,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// This event is fired when an event handler definition has been retrieved from XML markup.
+        ///     This event is fired when an event handler definition has been retrieved from XML markup.
         /// </summary>
         protected virtual void OnReadLibraryEventHandlerDefinition(LSLLibraryEventSignature sig)
         {
@@ -199,7 +199,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// This event is fired when a constant definition has been retrieved from XML markup.
+        ///     This event is fired when a constant definition has been retrieved from XML markup.
         /// </summary>
         protected virtual void OnReadLibraryConstantDefinition(LSLLibraryConstantSignature sig)
         {
@@ -209,7 +209,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// This event is fired when a library subset description has been retrieved from XML markup.
+        ///     This event is fired when a library subset description has been retrieved from XML markup.
         /// </summary>
         protected virtual void OnReadLibrarySubsetDescription(LSLLibrarySubsetDescription desc)
         {
@@ -219,7 +219,8 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Starts a parse at the current node in the given XmlReader, the default element name to consume the content of is 'LSLLibraryData'
+        ///     Starts a parse at the current node in the given XmlReader, the default element name to consume the content of is
+        ///     'LSLLibraryData'
         /// </summary>
         /// <param name="reader">The XmlReader object to read XML from.</param>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
@@ -304,12 +305,15 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Serialize library signature definitions to an XmlWriter object
+        ///     Serialize library signature definitions to an XmlWriter object
         /// </summary>
         /// <param name="dataProvider">The data provider to serialize.</param>
         /// <param name="writer">The XmlWriter object to serialize to.</param>
-        /// <param name="writeRootElement">Boolean defining whether or not to write a root element to the stream that houses the signatures, or to just write the signatures without putting them in a root element.</param>
-        /// <exception cref="InvalidOperationException"><paramref name="writer"/> is closed.</exception>
+        /// <param name="writeRootElement">
+        ///     Boolean defining whether or not to write a root element to the stream that houses the
+        ///     signatures, or to just write the signatures without putting them in a root element.
+        /// </param>
+        /// <exception cref="InvalidOperationException"><paramref name="writer" /> is closed.</exception>
         public static void WriteXml(ILSLLibraryDataProvider dataProvider,
             XmlWriter writer,
             bool writeRootElement = true)

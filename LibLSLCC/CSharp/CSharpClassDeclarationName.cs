@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpClassDeclarationName.cs
 // 
@@ -39,44 +40,53 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Xml.Serialization;
 using LibLSLCC.Collections;
 using LibLSLCC.Settings;
 
+#endregion
+
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Abstracts a CSharp class declaration name/name signature string, providing validation through parsing.
+    ///     Abstracts a CSharp class declaration name/name signature string, providing validation through parsing.
     /// </summary>
-    public sealed class CSharpClassDeclarationName : SettingsBaseClass<CSharpClassDeclarationName>, IObservableHashSetItem
+    public sealed class CSharpClassDeclarationName : SettingsBaseClass<CSharpClassDeclarationName>,
+        IObservableHashSetItem
     {
         private readonly IReadOnlyHashedSet<string> _hashEqualityPropertyNames = new HashedSet<string>()
         {
             "FullSignature"
         };
 
-        private CSharpClassNameValidationResult _validatedSignature;
         private string _fullSignature;
+        private CSharpClassNameValidationResult _validatedSignature;
+
 
         /// <summary>
-        /// Parameterless constructor used by <see cref="SettingsBaseClass{CSharpNamespace}"/>
+        ///     Parameterless constructor used by <see cref="SettingsBaseClass{CSharpNamespace}" />
         /// </summary>
         private CSharpClassDeclarationName()
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSharpClassDeclarationName"/> class.
+        ///     Initializes a new instance of the <see cref="CSharpClassDeclarationName" /> class.
         /// </summary>
         /// <param name="fullSignature">The full signature.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="fullSignature"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="fullSignature" /> is <c>null</c>.</exception>
         /// <exception cref="System.ArgumentException">
-        /// Thrown if <paramref name="fullSignature"/> is whitespace.
-        /// or
-        /// If <paramref name="fullSignature"/> does not pass validation using <see cref="CSharpClassNameValidator.ValidateDeclaration"/>.
+        ///     Thrown if <paramref name="fullSignature" /> is whitespace.
+        ///     or
+        ///     If <paramref name="fullSignature" /> does not pass validation using
+        ///     <see cref="CSharpClassNameValidator.ValidateDeclaration" />.
         /// </exception>
         public CSharpClassDeclarationName(string fullSignature)
         {
@@ -101,20 +111,11 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        /// Implicitly converts a string into a <see cref="CSharpClassDeclarationName"/> by parsing it.
-        /// </summary>
-        /// <param name="fullSignature">The string representing the full signature of the class declaration name.</param>
-        /// <returns>The newly created <see cref="CSharpClassDeclarationName"/> from the string.</returns>
-        public static implicit operator CSharpClassDeclarationName(string fullSignature)
-        {
-            return new CSharpClassDeclarationName(fullSignature);
-        }
-
-        /// <summary>
-        /// Gets the BaseName of the parsed type, excluding generic arguments.  This is the last name in a qualified type name, if the type is qualified.
+        ///     Gets the BaseName of the parsed type, excluding generic arguments.  This is the last name in a qualified type name,
+        ///     if the type is qualified.
         /// </summary>
         /// <value>
-        /// This is the last name in a qualified type name, if the type is qualified;  otherwise, simply the full given name.
+        ///     This is the last name in a qualified type name, if the type is qualified;  otherwise, simply the full given name.
         /// </value>
         [XmlIgnore]
         public string BaseName
@@ -123,10 +124,10 @@ namespace LibLSLCC.CSharp
         }
 
         /// <summary>
-        /// Gets the qualified name of the parsed type, excluding generic arguments.
+        ///     Gets the qualified name of the parsed type, excluding generic arguments.
         /// </summary>
         /// <value>
-        /// The qualified name of the parsed type, excluding generic arguments.
+        ///     The qualified name of the parsed type, excluding generic arguments.
         /// </value>
         [XmlIgnore]
         public string QualifiedName
@@ -134,12 +135,11 @@ namespace LibLSLCC.CSharp
             get { return _validatedSignature.QualifiedName; }
         }
 
-
         /// <summary>
-        /// Gets the parsing/validation results of the class/type signature string.
+        ///     Gets the parsing/validation results of the class/type signature string.
         /// </summary>
         /// <value>
-        /// The parsing/validation results of the class/type signature string.
+        ///     The parsing/validation results of the class/type signature string.
         /// </value>
         [XmlIgnore]
         public CSharpClassNameValidationResult ValidatedSignature
@@ -147,19 +147,17 @@ namespace LibLSLCC.CSharp
             get { return _validatedSignature; }
         }
 
-
-
         /// <summary>
-        /// Gets or sets the full class/type signature.  Parsing and validation is done when this property is set.
+        ///     Gets or sets the full class/type signature.  Parsing and validation is done when this property is set.
         /// </summary>
         /// <value>
-        /// The full class/type signature.
+        ///     The full class/type signature.
         /// </value>
         /// <exception cref="System.ArgumentNullException">Thrown if you set a <c>null</c> value.</exception>
         /// <exception cref="System.ArgumentException">
-        /// Thrown if you set a value that is whitespace.
-        /// or
-        /// If you set a value that does not pass validation using <see cref="CSharpClassNameValidator.ValidateDeclaration"/>.
+        ///     Thrown if you set a value that is whitespace.
+        ///     or
+        ///     If you set a value that does not pass validation using <see cref="CSharpClassNameValidator.ValidateDeclaration" />.
         /// </exception>
         public string FullSignature
         {
@@ -197,29 +195,46 @@ namespace LibLSLCC.CSharp
                 SetField(ref _validatedSignature, vName, "ValidatedSignature");
 
                 OnPropertyChanged("QualifiedName", oldQualifiedName, QualifiedName);
-                OnPropertyChanged("BaseName",oldBaseName, BaseName);
+                OnPropertyChanged("BaseName", oldBaseName, BaseName);
 
                 SetField(ref _fullSignature, value, "FullSignature");
             }
         }
 
+        IReadOnlyHashedSet<string> IObservableHashSetItem.HashEqualityPropertyNames
+        {
+            get { return _hashEqualityPropertyNames; }
+        }
+
 
         /// <summary>
-        /// Returns <see cref="FullSignature"/>.
+        ///     Implicitly converts a string into a <see cref="CSharpClassDeclarationName" /> by parsing it.
+        /// </summary>
+        /// <param name="fullSignature">The string representing the full signature of the class declaration name.</param>
+        /// <returns>The newly created <see cref="CSharpClassDeclarationName" /> from the string.</returns>
+        public static implicit operator CSharpClassDeclarationName(string fullSignature)
+        {
+            return new CSharpClassDeclarationName(fullSignature);
+        }
+
+
+        /// <summary>
+        ///     Returns <see cref="FullSignature" />.
         /// </summary>
         /// <returns>
-        /// <see cref="FullSignature"/>.
+        ///     <see cref="FullSignature" />.
         /// </returns>
         public override string ToString()
         {
             return FullSignature;
         }
 
+
         /// <summary>
-        /// Returns the hash code of <see cref="FullSignature"/>.
+        ///     Returns the hash code of <see cref="FullSignature" />.
         /// </summary>
         /// <returns>
-        /// Returns the hash code of <see cref="FullSignature"/>. 
+        ///     Returns the hash code of <see cref="FullSignature" />.
         /// </returns>
         public override int GetHashCode()
         {
@@ -229,11 +244,12 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        /// Compares using <see cref="FullSignature"/>.
+        ///     Compares using <see cref="FullSignature" />.
         /// </summary>
         /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is a <see cref="CSharpClassDeclarationName"/> with an equal <see cref="FullSignature"/> value; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="System.Object" /> is a <see cref="CSharpClassDeclarationName" /> with an
+        ///     equal <see cref="FullSignature" /> value; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -244,11 +260,6 @@ namespace LibLSLCC.CSharp
                 return FullSignature.Equals(ns.FullSignature, StringComparison.Ordinal);
 
             return ns.FullSignature == FullSignature;
-        }
-
-        IReadOnlyHashedSet<string> IObservableHashSetItem.HashEqualityPropertyNames
-        {
-            get { return _hashEqualityPropertyNames; }
         }
     }
 }

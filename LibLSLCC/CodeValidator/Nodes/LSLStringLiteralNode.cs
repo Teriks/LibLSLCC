@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLStringLiteralNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,7 +59,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLStringLiteralNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLStringLiteralNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLStringLiteralNode : LSLConstantLiteralNode, ILSLStringLiteralNode
     {
@@ -70,7 +73,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLStringLiteralNode"/> by cloning from another.
+        ///     Create an <see cref="LSLStringLiteralNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
@@ -88,11 +91,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The pre-processed text of the string literal.
+        ///     The pre-processed text of the string literal.
         /// </summary>
         /// <remarks>
-        /// <see cref="LSLCodeValidator"/> relies on an implementation of <see cref="ILSLStringPreProcessor"/> to fill this value out by passing <see cref="ILSLStringPreProcessor"/>
-        /// the raw text for the string literal and assigning the string it produces to this property.
+        ///     <see cref="LSLCodeValidator" /> relies on an implementation of <see cref="ILSLStringPreProcessor" /> to fill this
+        ///     value out by passing <see cref="ILSLStringPreProcessor" />
+        ///     the raw text for the string literal and assigning the string it produces to this property.
         /// </remarks>
         public string PreProcessedText { get; private set; }
 
@@ -101,8 +105,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             get { return Parent; }
         }
 
+
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -112,14 +117,16 @@ namespace LibLSLCC.CodeValidator.Nodes
             return visitor.VisitStringLiteral(this);
         }
 
+
         ILSLReadOnlyExprNode ILSLReadOnlyExprNode.Clone()
         {
             return Clone();
         }
 
+
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -128,9 +135,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLStringLiteralNode(sourceRange, Err.Err);
         }
 
+
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()

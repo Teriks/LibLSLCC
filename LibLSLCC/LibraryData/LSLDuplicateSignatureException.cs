@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLDuplicateSignatureException.cs
 // 
@@ -39,30 +40,35 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
 
+#endregion
+
 namespace LibLSLCC.LibraryData
 {
-
     /// <summary>
-    /// This exception is thrown by LSLLibraryDataProvider when a duplicate signature is added to 
-    /// a subset.
+    ///     This exception is thrown by LSLLibraryDataProvider when a duplicate signature is added to
+    ///     a subset.
     /// </summary>
     [Serializable]
     public class LSLDuplicateSignatureException : InvalidOperationException
     {
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public LSLDuplicateSignatureException()
         {
         }
 
+
         /// <summary>
-        /// Construct with a message.
+        ///     Construct with a message.
         /// </summary>
         /// <param name="message"></param>
         public LSLDuplicateSignatureException(string message)
@@ -72,7 +78,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct with a message and inner exception.
+        ///     Construct with a message and inner exception.
         /// </summary>
         /// <param name="message">The exception message.</param>
         /// <param name="inner">The inner exception.</param>
@@ -81,8 +87,9 @@ namespace LibLSLCC.LibraryData
         {
         }
 
+
         /// <summary>
-        /// Serializable constructor.
+        ///     Serializable constructor.
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>

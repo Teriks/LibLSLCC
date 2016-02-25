@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCodeValidatorStrategies.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Nodes;
@@ -50,61 +53,58 @@ using LibLSLCC.LibraryData;
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    ///     A basic <see cref="ILSLCodeValidatorStrategies"/> implementation that allows you to assign values
-    ///     to members which will be used directly as part of <see cref="LSLCodeValidator"/>'s implementation.
-    ///     <see cref="Default"/> will return a copy of this object with all the default implementations assigned to its properties. 
+    ///     A basic <see cref="ILSLCodeValidatorStrategies" /> implementation that allows you to assign values
+    ///     to members which will be used directly as part of <see cref="LSLCodeValidator" />'s implementation.
+    ///     <see cref="Default" /> will return a copy of this object with all the default implementations assigned to its
+    ///     properties.
     /// </summary>
     public sealed class LSLCodeValidatorStrategies : ILSLCodeValidatorStrategies
     {
         /// <summary>
-        /// The expression validator is in charge of determining if two types are valid
-        /// in a binary expression.  Among other things, like checking if an expression
-        /// of some type can be passed into a function parameter.
+        ///     The expression validator is in charge of determining if two types are valid
+        ///     in a binary expression.  Among other things, like checking if an expression
+        ///     of some type can be passed into a function parameter.
         /// </summary>
         public ILSLExpressionValidator ExpressionValidator { get; set; }
 
         /// <summary>
-        /// The library data provider gives the code validator information about standard library functions,
-        /// constants and events that exist in the LSL namespace.
+        ///     The library data provider gives the code validator information about standard library functions,
+        ///     constants and events that exist in the LSL namespace.
         /// </summary>
         public ILSLBasicLibraryDataProvider LibraryDataProvider { get; set; }
 
         /// <summary>
-        /// The string literal pre-processor is in charge of pre-processing string literals
-        /// from source code before the value is assigned to a <see cref="LSLStringLiteralNode"/> object
+        ///     The string literal pre-processor is in charge of pre-processing string literals
+        ///     from source code before the value is assigned to a <see cref="LSLStringLiteralNode" /> object
         /// </summary>
         public ILSLStringPreProcessor StringLiteralPreProcessor { get; set; }
 
         /// <summary>
-        /// The syntax error listener is an interface that listens for syntax
-        /// errors from the code validator
+        ///     The syntax error listener is an interface that listens for syntax
+        ///     errors from the code validator
         /// </summary>
         public ILSLSyntaxErrorListener SyntaxErrorListener { get; set; }
 
         /// <summary>
-        /// The syntax error listener is an interface that listens for syntax
-        /// warnings from the code validator
+        ///     The syntax error listener is an interface that listens for syntax
+        ///     warnings from the code validator
         /// </summary>
         public ILSLSyntaxWarningListener SyntaxWarningListener { get; set; }
 
 
-
-
         /// <summary>
-        /// Returns LibLSLCC's default <see cref="LSLCodeValidatorStrategies"/> setup.
+        ///     Returns LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup.
         /// </summary>
-        /// <returns>LibLSLCC's default <see cref="LSLCodeValidatorStrategies"/> setup</returns>
+        /// <returns>LibLSLCC's default <see cref="LSLCodeValidatorStrategies" /> setup</returns>
         public static LSLCodeValidatorStrategies Default()
         {
             return new LSLCodeValidatorStrategies
             {
                 SyntaxErrorListener = new LSLDefaultSyntaxErrorListener(),
                 ExpressionValidator = new LSLDefaultExpressionValidator(),
-
                 LibraryDataProvider =
                     new LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData.StandardLsl, LSLLibraryDataAdditions.None,
                         false),
-
                 StringLiteralPreProcessor = new LSLDefaultStringPreProcessor(),
                 SyntaxWarningListener = new LSLDefaultSyntaxWarningListener()
             };

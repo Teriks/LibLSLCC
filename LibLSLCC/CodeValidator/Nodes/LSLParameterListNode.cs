@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLParameterListNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -59,14 +62,12 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLParameterListNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLParameterListNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLParameterListNode : ILSLParameterListNode
     {
         private readonly GenericArray<LSLParameterNode> _parameters = new GenericArray<LSLParameterNode>();
-
         private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
-
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLParameterListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -77,7 +78,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        private LSLParameterListNode(LSLParser.OptionalParameterListContext context, LSLParameterListType parameterListType)
+        private LSLParameterListNode(LSLParser.OptionalParameterListContext context,
+            LSLParameterListType parameterListType)
         {
             SourceRange = new LSLSourceCodeRange(context);
 
@@ -86,8 +88,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             ParameterListType = parameterListType;
         }
 
+
         /// <summary>
-        /// The <see cref="LSLParameterNode"/> objects that are children of this node, or an empty list.
+        ///     The <see cref="LSLParameterNode" /> objects that are children of this node, or an empty list.
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> Parameters
         {
@@ -95,7 +98,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The source code range for each comma separator that appears in the parameter list in order, or an empty list object.
+        ///     The source code range for each comma separator that appears in the parameter list in order, or an empty list
+        ///     object.
         /// </summary>
         public IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList
         {
@@ -103,10 +107,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The parameter list type;  FunctionParameters or EventParameters.
+        ///     The parameter list type;  FunctionParameters or EventParameters.
         /// </summary>
         public LSLParameterListType ParameterListType { get; private set; }
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -114,7 +117,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if this parameter list node contains parameter definition nodes.
+        ///     True if this parameter list node contains parameter definition nodes.
         /// </summary>
         public bool HasParameters
         {
@@ -127,33 +130,32 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
-
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
-
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
-
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -165,8 +167,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -179,14 +181,18 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         /// <summary>
         ///     Builds a parameter list node directly from a parser context, checking for duplicates and reporting
-        ///     duplicate parameter errors via a validator strategies object. <see cref="ILSLCodeValidatorStrategies"/>.
+        ///     duplicate parameter errors via a validator strategies object. <see cref="ILSLCodeValidatorStrategies" />.
         /// </summary>
         /// <param name="context">The context to build from</param>
         /// <param name="validatorStrategies">The validator strategies object to use for reporting errors or warnings</param>
         /// <param name="parameterListType">The parameter list type.</param>
         /// <returns>the created parameter list node</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="validatorStrategies"/> is <c>null</c>.</exception>
-        internal static LSLParameterListNode BuildFromParserContext(LSLParser.OptionalParameterListContext context, LSLParameterListType parameterListType, ILSLCodeValidatorStrategies validatorStrategies)
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or <paramref name="validatorStrategies" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        internal static LSLParameterListNode BuildFromParserContext(LSLParser.OptionalParameterListContext context,
+            LSLParameterListType parameterListType, ILSLCodeValidatorStrategies validatorStrategies)
         {
             if (context == null)
             {
@@ -198,7 +204,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("validatorStrategies");
             }
 
-           
+
             var result = new LSLParameterListNode(context, parameterListType);
 
             var parameterList = context.parameterList();
@@ -230,7 +236,6 @@ namespace LibLSLCC.CodeValidator.Nodes
                 }
                 else if (parameter != null)
                 {
-
                     if (parameterNames.Contains(parameter.ID().GetText()))
                     {
                         var paramLocation = new LSLSourceCodeRange(parameter);
@@ -269,7 +274,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Add a parameter definition node to this parameter list node.
+        ///     Add a parameter definition node to this parameter list node.
         /// </summary>
         /// <param name="node">The parameter definition node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is <c>null</c>.</exception>

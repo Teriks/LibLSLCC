@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLLibraryDataProvider.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -49,79 +53,134 @@ using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
+#endregion
+
 namespace LibLSLCC.LibraryData
 {
-
-
     /// <summary>
-    /// The default base implementation of <see cref="ILSLLibraryDataProvider"/> which features optional live filtering of data
-    /// and stores library information in memory. 
+    ///     The default base implementation of <see cref="ILSLLibraryDataProvider" /> which features optional live filtering of
+    ///     data
+    ///     and stores library information in memory.
     /// </summary>
     public class LSLLibraryDataProvider : ILSLLibraryDataProvider
     {
-        //The query functions and properties of this class will be optimized
-        //later after I get the correct live filtering behaviors down entirely
+        private readonly HashMap<string, LSLLibrarySubsetDescription> _candidateSubsetDescriptions
+            = new HashMap<string, LSLLibrarySubsetDescription>();
 
-       
+        private readonly HashMap<string, HashMap<string, LSLLibraryConstantSignature>>
+            _constantSignaturesBySubsetAndName = new HashMap<string, HashMap<string, LSLLibraryConstantSignature>>();
+
+        private readonly HashMap<string, HashMap<string, LSLLibraryEventSignature>>
+            _eventSignaturesBySubsetAndName = new HashMap<string, HashMap<string, LSLLibraryEventSignature>>();
+
+        private readonly HashMap<string, HashMap<string, GenericArray<LSLLibraryFunctionSignature>>>
+            _functionSignaturesBySubsetAndName =
+                new HashMap<string, HashMap<string, GenericArray<LSLLibraryFunctionSignature>>>();
+
+        private readonly HashMap<string, LSLLibrarySubsetDescription> _subsetDescriptions
+            = new HashMap<string, LSLLibrarySubsetDescription>();
+
+        private readonly HashSet<LSLLibraryConstantSignature> _uniqueOwnedConstants =
+            new HashSet<LSLLibraryConstantSignature>(new LambdaEqualityComparer<object>(ReferenceEquals,
+                RuntimeHelpers.GetHashCode));
+
+        private readonly HashSet<LSLLibraryEventSignature> _uniqueOwnedEvents =
+            new HashSet<LSLLibraryEventSignature>(new LambdaEqualityComparer<object>(ReferenceEquals,
+                RuntimeHelpers.GetHashCode));
+
+        private readonly HashSet<LSLLibraryFunctionSignature> _uniqueOwnedFunctions =
+            new HashSet<LSLLibraryFunctionSignature>(new LambdaEqualityComparer<object>(ReferenceEquals,
+                RuntimeHelpers.GetHashCode));
+
+
         /// <summary>
-        /// If this is false, functions, constants and events which do not 
-        /// belong to subsets in ActiveSubsets will be discarded upon adding
-        /// them to the object
+        ///     Construct an <see cref="LSLLibraryDataProvider" /> with the option of enabling live filtering mode.
         /// </summary>
-        public bool LiveFiltering { get; private set; }
-
-        /// <summary>
-        /// The subsets of library data to present during query's.
-        /// <para>
-        /// If LiveFiltering is disabled, when classes that derive from this class try to call the Add* functions
-        /// to add signatures, the signatures will be discarded if their Subset property does not overlap with this collection.
-        /// 
-        /// During live filtering, all data added from derived classes is accepted and kept in memory, the <see cref="ActiveSubsets"/> collection will
-        /// then determine what subsets are actually presented during query's.
-        /// 
-        /// ActiveSubsets can only be changed after the construction of this object if LiveFiltering is enabled.
-        /// 
-        /// If you try to add a subset to the active subsets collection while LiveFiltering is enabled,
-        /// and an <see cref="LSLLibrarySubsetDescription"/> object has not been added for that subset name;  An <see cref="LSLMissingSubsetDescriptionException"/> will be thrown by the collection.
-        /// </para>
-        /// </summary>
-        public LSLLibraryDataSubsetCollection ActiveSubsets { get; private set;}
-
-
-
-        /// <summary>
-        /// All possible subset names in the library data currently loaded into this provider, taken from the <see cref="SubsetDescriptions"/> dictionary.  
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This is only really useful if LiveFiltering mode is enabled.
-        /// If the provider is not in live filtering mode, subset descriptions who's subsets do not overlap with the <see cref="ActiveSubsets"/> collection are discarded when they are added;
-        /// Therefore they could never be a part of the <see cref="PossibleSubsets"/> collection.
-        /// </para>
-        /// </remarks>
-        public IEnumerable<string> PossibleSubsets
+        /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering" /> mode.  Default value is true.</param>
+        public LSLLibraryDataProvider(bool liveFiltering = true)
         {
-            get
-            {
-                return SubsetDescriptions.Values.Select(x=>x.Subset);
-            }
+            LiveFiltering = liveFiltering;
+            ActiveSubsets = new LSLLibraryDataSubsetCollection();
+
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
+            ActiveSubsets.OnSubsetAdded += ActiveSubsetsOnSubsetAdded;
         }
 
 
         /// <summary>
-        /// Retrieves the friendly names of all the possible subsets that can be added to the <see cref="ActiveSubsets"/> collection of this library data provider.
-        /// The friendly name values are retrieved from the <see cref="SubsetDescriptions"/> dictionary.
+        ///     Construct an LSLLibraryDataProvider an initialize <see cref="ActiveSubsets" /> from the constructor parameter
+        ///     'activeSubsets'.
+        ///     Optionally enable <see cref="LiveFiltering" /> mode using the 'liveFiltering' parameter.
+        /// </summary>
+        /// <param name="activeSubsets">The subsets to add to the <see cref="ActiveSubsets" /> collection upon construction.</param>
+        /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering" /> mode.  Default value is true.</param>
+        public LSLLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true)
+        {
+            LiveFiltering = liveFiltering;
+            ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
+
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
+        }
+
+
+        //The query functions and properties of this class will be optimized
+        //later after I get the correct live filtering behaviors down entirely
+
+
+        /// <summary>
+        ///     If this is false, functions, constants and events which do not
+        ///     belong to subsets in ActiveSubsets will be discarded upon adding
+        ///     them to the object
+        /// </summary>
+        public bool LiveFiltering { get; private set; }
+
+        /// <summary>
+        ///     The subsets of library data to present during query's.
+        ///     <para>
+        ///         If LiveFiltering is disabled, when classes that derive from this class try to call the Add* functions
+        ///         to add signatures, the signatures will be discarded if their Subset property does not overlap with this
+        ///         collection.
+        ///         During live filtering, all data added from derived classes is accepted and kept in memory, the
+        ///         <see cref="ActiveSubsets" /> collection will
+        ///         then determine what subsets are actually presented during query's.
+        ///         ActiveSubsets can only be changed after the construction of this object if LiveFiltering is enabled.
+        ///         If you try to add a subset to the active subsets collection while LiveFiltering is enabled,
+        ///         and an <see cref="LSLLibrarySubsetDescription" /> object has not been added for that subset name;  An
+        ///         <see cref="LSLMissingSubsetDescriptionException" /> will be thrown by the collection.
+        ///     </para>
+        /// </summary>
+        public LSLLibraryDataSubsetCollection ActiveSubsets { get; private set; }
+
+        /// <summary>
+        ///     All possible subset names in the library data currently loaded into this provider, taken from the
+        ///     <see cref="SubsetDescriptions" /> dictionary.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         This is only really useful if LiveFiltering mode is enabled.
+        ///         If the provider is not in live filtering mode, subset descriptions who's subsets do not overlap with the
+        ///         <see cref="ActiveSubsets" /> collection are discarded when they are added;
+        ///         Therefore they could never be a part of the <see cref="PossibleSubsets" /> collection.
+        ///     </para>
+        /// </remarks>
+        public IEnumerable<string> PossibleSubsets
+        {
+            get { return SubsetDescriptions.Values.Select(x => x.Subset); }
+        }
+
+        /// <summary>
+        ///     Retrieves the friendly names of all the possible subsets that can be added to the <see cref="ActiveSubsets" />
+        ///     collection of this library data provider.
+        ///     The friendly name values are retrieved from the <see cref="SubsetDescriptions" /> dictionary.
         /// </summary>
         public IEnumerable<string> PossibleSubsetsFriendlyNames
         {
             get { return SubsetDescriptions.Values.Select(x => x.FriendlyName); }
         }
 
-
-
         /// <summary>
-        /// Retrieves the friendly names of the active subsets in this library data provider.
-        /// The friendly name values are retrieved from the <see cref="SubsetDescriptions"/> dictionary.
+        ///     Retrieves the friendly names of the active subsets in this library data provider.
+        ///     The friendly name values are retrieved from the <see cref="SubsetDescriptions" /> dictionary.
         /// </summary>
         public IEnumerable<string> ActiveSubsetsFriendlyNames
         {
@@ -135,45 +194,42 @@ namespace LibLSLCC.LibraryData
             }
         }
 
-
         /// <summary>
-        /// Contains descriptions of all the subsets that signatures can possibly belong to.
+        ///     Contains descriptions of all the subsets that signatures can possibly belong to.
         /// </summary>
         /// <remarks>
-        /// <para>
-        /// The key to this dictionary is the subset name the description is associated with.
-        /// 
-        /// If a signature is added to the library data provider who's Subsets's property contains a subset
-        /// without a description in this dictionary, an <see cref="LSLMissingSubsetDescriptionException"/> is thrown.
-        /// 
-        /// You can add descriptions for subsets using the <see cref="AddSubsetDescription"/> method of this class.
-        /// </para>
+        ///     <para>
+        ///         The key to this dictionary is the subset name the description is associated with.
+        ///         If a signature is added to the library data provider who's Subsets's property contains a subset
+        ///         without a description in this dictionary, an <see cref="LSLMissingSubsetDescriptionException" /> is thrown.
+        ///         You can add descriptions for subsets using the <see cref="AddSubsetDescription" /> method of this class.
+        ///     </para>
         /// </remarks>
         public IReadOnlyHashMap<string, LSLLibrarySubsetDescription> SubsetDescriptions
         {
             get { return _subsetDescriptions; }
         }
 
-
         /// <summary>
-        /// Returns all supported event handler signatures belonging to the current <see cref="ActiveSubsets"/>.
-        /// <exception cref="LSLDuplicateSignatureException">
-        /// If the current ActiveSubsets caused an event with a duplicate name to be loaded.  
-        /// And that event was not shared across subsets.  This can only really happen when <see cref="LiveFiltering"/> is enabled.
-        /// </exception>
+        ///     Returns all supported event handler signatures belonging to the current <see cref="ActiveSubsets" />.
+        ///     <exception cref="LSLDuplicateSignatureException">
+        ///         If the current ActiveSubsets caused an event with a duplicate name to be loaded.
+        ///         And that event was not shared across subsets.  This can only really happen when <see cref="LiveFiltering" /> is
+        ///         enabled.
+        ///     </exception>
         /// </summary>
         public IEnumerable<LSLLibraryEventSignature> LibraryEvents
         {
             get
             {
-                
                 var events = ActiveSubsets.SelectMany(x =>
                 {
                     HashMap<string, LSLLibraryEventSignature> subsetContent;
-                    return _eventSignaturesBySubsetAndName.TryGetValue(x, out subsetContent) ? subsetContent.Values : new GenericArray<LSLLibraryEventSignature>();
-
+                    return _eventSignaturesBySubsetAndName.TryGetValue(x, out subsetContent)
+                        ? subsetContent.Values
+                        : new GenericArray<LSLLibraryEventSignature>();
                 })
-                .Distinct(new LambdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
+                    .Distinct(new LambdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
 
                 var eventNames = new HashSet<string>();
 
@@ -187,20 +243,23 @@ namespace LibLSLCC.LibraryData
                     else
                     {
                         throw new LSLDuplicateSignatureException(
-                            string.Format("LibraryEvents {{get}} failed because the event '{0};' exist in more than one active subset, ", evnt.SignatureString) +
+                            string.Format(
+                                "LibraryEvents {{get}} failed because the event '{0};' exist in more than one active subset, ",
+                                evnt.SignatureString) +
                             "and it is not shared across the involved subsets.");
                     }
                 }
             }
         }
 
-
         /// <summary>
-        /// Returns all supported function signature overloads belonging to the current <see cref="ActiveSubsets"/>.
-        /// <exception cref="LSLDuplicateSignatureException">
-        /// If the current <see cref="ActiveSubsets"/> caused a function signature with duplicate/ambiguous definition to be retrieved.
-        /// And that function was not shared across subsets.  This can only really happen when <see cref="LiveFiltering"/> is enabled.
-        /// </exception>
+        ///     Returns all supported function signature overloads belonging to the current <see cref="ActiveSubsets" />.
+        ///     <exception cref="LSLDuplicateSignatureException">
+        ///         If the current <see cref="ActiveSubsets" /> caused a function signature with duplicate/ambiguous definition to
+        ///         be retrieved.
+        ///         And that function was not shared across subsets.  This can only really happen when <see cref="LiveFiltering" />
+        ///         is enabled.
+        ///     </exception>
         /// </summary>
         public IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LibraryFunctions
         {
@@ -217,15 +276,14 @@ namespace LibLSLCC.LibraryData
 
                 var functionGroups = new Dictionary<string, GenericArray<LSLLibraryFunctionSignature>>();
 
-                foreach (var subset in ActiveSubsets.Where(x=>_functionSignaturesBySubsetAndName.ContainsKey(x)))
+                foreach (var subset in ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x)))
                 {
-
-                    var subsetFunctions = _functionSignaturesBySubsetAndName[subset].Values.SelectMany(x=>x).ToGenericArray();
+                    var subsetFunctions =
+                        _functionSignaturesBySubsetAndName[subset].Values.SelectMany(x => x).ToGenericArray();
 
                     //iterate over the subset functions, they are guaranteed to not be duplicates.
                     foreach (var subsetFunction in subsetFunctions)
                     {
-
                         if (functionGroups.ContainsKey(subsetFunction.Name))
                         {
                             bool shared = false;
@@ -263,23 +321,23 @@ namespace LibLSLCC.LibraryData
                         else
                         {
                             //add the first overload to the groupings
-                            functionGroups.Add(subsetFunction.Name, new GenericArray<LSLLibraryFunctionSignature> { subsetFunction });
+                            functionGroups.Add(subsetFunction.Name,
+                                new GenericArray<LSLLibraryFunctionSignature> {subsetFunction});
                         }
                     }
-                    
                 }
 
                 return functionGroups.Values;
             }
         }
 
-
         /// <summary>
-        /// Returns all supported constant signatures for the current <see cref="ActiveSubsets"/>.
-        /// <exception cref="LSLDuplicateSignatureException">
-        /// If the current <see cref="ActiveSubsets"/> caused a constant with a duplicate name to be loaded.  
-        /// And that constant was not shared across subsets.  This can only really happen when <see cref="LiveFiltering"/> is enabled.
-        /// </exception>
+        ///     Returns all supported constant signatures for the current <see cref="ActiveSubsets" />.
+        ///     <exception cref="LSLDuplicateSignatureException">
+        ///         If the current <see cref="ActiveSubsets" /> caused a constant with a duplicate name to be loaded.
+        ///         And that constant was not shared across subsets.  This can only really happen when <see cref="LiveFiltering" />
+        ///         is enabled.
+        ///     </exception>
         /// </summary>
         public IEnumerable<LSLLibraryConstantSignature> LibraryConstants
         {
@@ -288,8 +346,9 @@ namespace LibLSLCC.LibraryData
                 var constants = ActiveSubsets.SelectMany(x =>
                 {
                     HashMap<string, LSLLibraryConstantSignature> subsetContent;
-                    return _constantSignaturesBySubsetAndName.TryGetValue(x, out subsetContent) ? subsetContent.Values : new GenericArray<LSLLibraryConstantSignature>();
-
+                    return _constantSignaturesBySubsetAndName.TryGetValue(x, out subsetContent)
+                        ? subsetContent.Values
+                        : new GenericArray<LSLLibraryConstantSignature>();
                 }).Distinct(new LambdaEqualityComparer<LSLLibraryConstantSignature>(ReferenceEquals));
 
 
@@ -305,49 +364,154 @@ namespace LibLSLCC.LibraryData
                     else
                     {
                         throw new LSLDuplicateSignatureException(
-                            string.Format("LibraryConstants {{get}} failed because a constant with the same name '{0};' exist in more than one active subset, ", cons.SignatureString) +
+                            string.Format(
+                                "LibraryConstants {{get}} failed because a constant with the same name '{0};' exist in more than one active subset, ",
+                                cons.SignatureString) +
                             "and it is not shared across the involved subsets.");
                     }
                 }
             }
         }
 
-        private readonly HashMap<string, HashMap<string, GenericArray<LSLLibraryFunctionSignature>>>
-            _functionSignaturesBySubsetAndName = new HashMap<string, HashMap<string, GenericArray<LSLLibraryFunctionSignature>>>();
 
-         
+        /// <summary>
+        ///     Check if a library event handler with the given name is defined whiten this data provider.
+        /// </summary>
+        /// <param name="name">The name of the library event handler to query for existence.</param>
+        /// <returns>True if the library event handler is defined, false if it is not.</returns>
+        public bool EventHandlerExist(string name)
+        {
+            var match =
+                ActiveSubsets.Where(x => _eventSignaturesBySubsetAndName.ContainsKey(x))
+                    .FirstOrDefault(x => _eventSignaturesBySubsetAndName[x].ContainsKey(name));
 
-        private readonly HashMap<string, HashMap<string, LSLLibraryConstantSignature>>
-            _constantSignaturesBySubsetAndName = new HashMap<string, HashMap<string, LSLLibraryConstantSignature>>();
-
-        private readonly HashMap<string, HashMap<string, LSLLibraryEventSignature>>
-           _eventSignaturesBySubsetAndName = new HashMap<string, HashMap<string, LSLLibraryEventSignature>>();
-
-
-
-        private readonly HashMap<string, LSLLibrarySubsetDescription> _subsetDescriptions 
-            = new HashMap<string, LSLLibrarySubsetDescription>();
-
-
-        private readonly HashMap<string, LSLLibrarySubsetDescription> _candidateSubsetDescriptions 
-            = new HashMap<string, LSLLibrarySubsetDescription>();
+            return match != null;
+        }
 
 
-        private readonly HashSet<LSLLibraryFunctionSignature> _uniqueOwnedFunctions = new HashSet<LSLLibraryFunctionSignature>(new LambdaEqualityComparer<object>(ReferenceEquals,RuntimeHelpers.GetHashCode));
-        private readonly HashSet<LSLLibraryConstantSignature> _uniqueOwnedConstants = new HashSet<LSLLibraryConstantSignature>(new LambdaEqualityComparer<object>(ReferenceEquals, RuntimeHelpers.GetHashCode));
-        private readonly HashSet<LSLLibraryEventSignature> _uniqueOwnedEvents = new HashSet<LSLLibraryEventSignature>(new LambdaEqualityComparer<object>(ReferenceEquals, RuntimeHelpers.GetHashCode));
+        /// <summary>
+        ///     Attempt to return a library event handler signature with the given name if it is defined in this data provider,
+        ///     other wise return null.
+        /// </summary>
+        /// <param name="name">The name of the library event handler signature to return.</param>
+        /// <returns>The signature if an event with the given name is defined, otherwise null.</returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        ///     Thrown if <see cref="LiveFiltering" /> is enabled and more than one active subset contains a definition of an event
+        ///     handler with this name that is not shared across those subsets.
+        /// </exception>
+        public LSLLibraryEventSignature GetEventHandlerSignature(string name)
+        {
+            return GetEventHandlerSignature(name, ActiveSubsets);
+        }
+
+
+        /// <summary>
+        ///     Check if a library function with the given name is defined whiten this data provider.
+        /// </summary>
+        /// <param name="name">The name of the library function to query for existence.</param>
+        /// <returns>True if the library function is defined, false if it is not.</returns>
+        public bool LibraryFunctionExist(string name)
+        {
+            var match =
+                ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
+                    .FirstOrDefault(x => _functionSignaturesBySubsetAndName[x].ContainsKey(name));
+
+            return match != null;
+        }
+
+
+        /// <summary>
+        ///     Attempt to return a list of overloads for a function that might be defined in the library data provider given its
+        ///     name.
+        /// </summary>
+        /// <param name="name">The name of the function to attempt to return a list of overloads for.</param>
+        /// <returns>
+        ///     A list of function signatures that represent the overloads among the active subsets for a function with a given
+        ///     name, or null if no function with that name exists.
+        ///     If the function exists but has no overloads, only one item will be returned in the list.
+        /// </returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        ///     Thrown if <see cref="LiveFiltering" /> is enabled and more than one active subset contains a duplicate definition
+        ///     of the function or one of its overloads,
+        ///     and the function/overload is not shared across those subsets.
+        /// </exception>
+        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
+        {
+            return GetLibraryFunctionSignatures(name, ActiveSubsets);
+        }
+
+
+        /// <summary>
+        ///     Attempt to return a library function signature from the active subsets with an exact signature match to the give
+        ///     signature.
+        /// </summary>
+        /// <param name="signatureToTest">
+        ///     The function signature that should match exactly with the library function signature you
+        ///     want to return from the provider.
+        /// </param>
+        /// <returns>
+        ///     A signature defined in the provider among the active subsets that matches exactly with the given signature, or
+        ///     null if none is found.
+        /// </returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        ///     Thrown if <see cref="ActiveSubsets" /> is enabled and more than one active subset contains a duplicate definition
+        ///     of the function or one of its overloads,
+        ///     and the function/overload is not shared across those subsets.
+        /// </exception>
+        public LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest)
+        {
+            var sigs = GetLibraryFunctionSignatures(signatureToTest.Name);
+
+            if (sigs == null) return null;
+
+            return sigs.FirstOrDefault(x => x.SignatureEquivalent(signatureToTest));
+        }
+
+
+        /// <summary>
+        ///     Check whether a library constant with the given name is defined among the active subsets of this library data
+        ///     provider.
+        /// </summary>
+        /// <param name="name">The name of the constant to check the existence of.</param>
+        /// <returns>True if the constant is defined among the current active subsets, or false if it is not.</returns>
+        public bool LibraryConstantExist(string name)
+        {
+            var match =
+                ActiveSubsets.Where(x => _constantSignaturesBySubsetAndName.ContainsKey(x))
+                    .FirstOrDefault(x => _constantSignaturesBySubsetAndName[x].ContainsKey(name));
+
+            return match != null;
+        }
+
+
+        /// <summary>
+        ///     Attempt to return a library constant signature from the active subsets with the same name as the given name.
+        /// </summary>
+        /// <param name="name">The name of the library constant that you want to find among the active subsets.</param>
+        /// <returns>A library constant signature with a matching name, or null if none is found.</returns>
+        /// <exception cref="LSLDuplicateSignatureException">
+        ///     Thrown if <see cref="ActiveSubsets" /> is enabled and more than one active subset contains a constant with a
+        ///     duplicate name,
+        ///     and the constant is not shared across those subsets.
+        /// </exception>
+        public LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
+        {
+            return GetLibraryConstantSignature(name, ActiveSubsets);
+        }
 
 
         private void SignaturesSubsetsChanged(object sender, LibraryDataSubsetsChangedEventArgs e)
         {
             throw new InvalidOperationException(
-                string.Format("The given library signature is owned by an '{0}' and it does not allow you to change the signature's Subsets.  ", GetType().Name) +
+                string.Format(
+                    "The given library signature is owned by an '{0}' and it does not allow you to change the signature's Subsets.  ",
+                    GetType().Name) +
                 "Clone the signature with its clone constructor before attempting to modify its Subsets collection.");
         }
 
 
         /// <summary>
-        /// Clear all library functions defined in this library data provider.
+        ///     Clear all library functions defined in this library data provider.
         /// </summary>
         public void ClearLibraryFunctions()
         {
@@ -360,7 +524,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Clear all library event handlers defined in this library data provider.
+        ///     Clear all library event handlers defined in this library data provider.
         /// </summary>
         public void ClearEventHandlers()
         {
@@ -373,7 +537,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Clear all library constants defined in this library data provider.
+        ///     Clear all library constants defined in this library data provider.
         /// </summary>
         public void ClearLibraryConstants()
         {
@@ -387,15 +551,16 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Clear all subset descriptions defined in this library data provider.
+        ///     Clear all subset descriptions defined in this library data provider.
         /// </summary>
         public void ClearSubsetDescriptions()
         {
             _subsetDescriptions.Clear();
         }
 
+
         /// <summary>
-        /// Clears all library definitions and subset descriptions.
+        ///     Clears all library definitions and subset descriptions.
         /// </summary>
         public void ClearLibraryData()
         {
@@ -405,13 +570,18 @@ namespace LibLSLCC.LibraryData
             ClearLibraryFunctions();
         }
 
+
         /// <summary>
-        /// Add a subset description to this library data provider.
+        ///     Add a subset description to this library data provider.
         /// </summary>
         /// <remarks>
-        /// If <see cref="LiveFiltering"/> is not enabled, the subset description will be put into a holding area and not added to <see cref="SubsetDescriptions"/> until it is referenced by a signature.
+        ///     If <see cref="LiveFiltering" /> is not enabled, the subset description will be put into a holding area and not
+        ///     added to <see cref="SubsetDescriptions" /> until it is referenced by a signature.
         /// </remarks>
-        /// <exception cref="LSLDuplicateSubsetDescriptionException">If a subset description for the same Subset name already exists.</exception>
+        /// <exception cref="LSLDuplicateSubsetDescriptionException">
+        ///     If a subset description for the same Subset name already
+        ///     exists.
+        /// </exception>
         /// <param name="description">The subset description to add.</param>
         public void AddSubsetDescription(LSLLibrarySubsetDescription description)
         {
@@ -429,21 +599,25 @@ namespace LibLSLCC.LibraryData
 
             if (dictRef.ContainsKey(description.Subset))
             {
-                throw new LSLDuplicateSubsetDescriptionException(string.Format("Description for subset {0} already exists.", description.Subset));
+                throw new LSLDuplicateSubsetDescriptionException(
+                    string.Format("Description for subset {0} already exists.", description.Subset));
             }
 
             dictRef.Add(description.Subset, description);
-
         }
 
 
         /// <summary>
-        /// Adds multiple a subset descriptions to this library data provider.
+        ///     Adds multiple a subset descriptions to this library data provider.
         /// </summary>
         /// <remarks>
-        /// If <see cref="LiveFiltering"/> is not enabled, the subset description will be put into a holding area and not added to <see cref="SubsetDescriptions"/> until it is referenced by a signature.
+        ///     If <see cref="LiveFiltering" /> is not enabled, the subset description will be put into a holding area and not
+        ///     added to <see cref="SubsetDescriptions" /> until it is referenced by a signature.
         /// </remarks>
-        /// <exception cref="LSLDuplicateSubsetDescriptionException">If a subset description for the same Subset name already exists.</exception>
+        /// <exception cref="LSLDuplicateSubsetDescriptionException">
+        ///     If a subset description for the same Subset name already
+        ///     exists.
+        /// </exception>
         /// <param name="descriptions">The subset descriptions to add.</param>
         public void AddSubsetDescriptions(IEnumerable<LSLLibrarySubsetDescription> descriptions)
         {
@@ -454,18 +628,21 @@ namespace LibLSLCC.LibraryData
         }
 
 
-
-
         /// <summary>
-        /// Define a library event handler signature
+        ///     Define a library event handler signature
         /// </summary>
         /// <param name="signature">The LSLLibraryEventSignature representing the library event handler to be defined.</param>
-        /// <exception cref="LSLMissingSubsetDescriptionException">Thrown if the event signatures <exception cref="LSLLibraryEventSignature.Subsets"/> property contains a subset that is not described in the library data providers <see cref="SubsetDescriptions"/> collection.</exception>
-        /// <exception cref="LSLDuplicateSignatureException">If the event handler could not be defined because it's name existed in the same subset already.</exception>
+        /// <exception cref="LSLMissingSubsetDescriptionException">
+        ///     Thrown if the event signatures
+        ///     <exception cref="LSLLibraryEventSignature.Subsets" /> property contains a subset that is not described in the
+        ///     library data providers <see cref="SubsetDescriptions" /> collection.
+        /// </exception>
+        /// <exception cref="LSLDuplicateSignatureException">
+        ///     If the event handler could not be defined because it's name existed in
+        ///     the same subset already.
+        /// </exception>
         public void DefineEventHandler(LSLLibraryEventSignature signature)
         {
-
-
             var sig = GetEventHandlerSignature(signature.Name, PossibleSubsets);
             if (sig != null)
             {
@@ -486,18 +663,16 @@ namespace LibLSLCC.LibraryData
             foreach (var subset in signature.Subsets.Where(subset => !_subsetDescriptions.ContainsKey(subset)))
             {
                 LSLLibrarySubsetDescription candidate;
-                if (LiveFiltering || !_candidateSubsetDescriptions.TryGetValue(subset,out candidate))
+                if (LiveFiltering || !_candidateSubsetDescriptions.TryGetValue(subset, out candidate))
                 {
                     throw new LSLMissingSubsetDescriptionException("Event signature: " + signature.SignatureString +
                                                                    "; belongs to the subset \"" + subset +
                                                                    "\" but that subset has no associated SubsetDescription.");
                 }
 
-               
 
                 _subsetDescriptions.Add(subset, candidate);
             }
-
 
 
             if (!_uniqueOwnedEvents.Contains(signature))
@@ -505,8 +680,6 @@ namespace LibLSLCC.LibraryData
                 _uniqueOwnedEvents.Add(signature);
                 signature.Subsets.OnSubsetsChanged += SignaturesSubsetsChanged;
             }
-            
-            
 
 
             foreach (var subset in signature.Subsets)
@@ -517,16 +690,17 @@ namespace LibLSLCC.LibraryData
                 }
                 else
                 {
-                    _eventSignaturesBySubsetAndName[subset] = new HashMap<string, LSLLibraryEventSignature> { {signature.Name,signature} };
+                    _eventSignaturesBySubsetAndName[subset] = new HashMap<string, LSLLibraryEventSignature>
+                    {
+                        {signature.Name, signature}
+                    };
                 }
             }
         }
 
 
-
-
         /// <summary>
-        /// Define all the event handlers from the given enumerable.
+        ///     Define all the event handlers from the given enumerable.
         /// </summary>
         /// <param name="eventHandlersSignatures">The event handler signatures to define.</param>
         public void DefineEventHandlers(IEnumerable<LSLLibraryEventSignature> eventHandlersSignatures)
@@ -539,7 +713,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Define all the function signatures from the given enumerable.
+        ///     Define all the function signatures from the given enumerable.
         /// </summary>
         /// <param name="functionSignatures">The function signatures to define.</param>
         public void DefineFunctions(IEnumerable<LSLLibraryFunctionSignature> functionSignatures)
@@ -551,9 +725,8 @@ namespace LibLSLCC.LibraryData
         }
 
 
-
         /// <summary>
-        /// Defines all the constant signatures from the given enumerable.
+        ///     Defines all the constant signatures from the given enumerable.
         /// </summary>
         /// <param name="constantSignatures">The constant signatures to define.</param>
         public void DefineConstants(IEnumerable<LSLLibraryConstantSignature> constantSignatures)
@@ -565,18 +738,21 @@ namespace LibLSLCC.LibraryData
         }
 
 
-
         /// <summary>
-        /// Define a library constant signature
+        ///     Define a library constant signature
         /// </summary>
         /// <param name="signature">The LSLLibraryConstantSignature representing the library constant to be defined.</param>
-        /// <exception cref="LSLMissingSubsetDescriptionException">Thrown if the constant signatures <exception cref="LSLLibraryConstantSignature.Subsets"/> property contains a subset that is not described in the library data providers <see cref="SubsetDescriptions"/> collection.</exception>
-        /// <exception cref="LSLDuplicateSignatureException">If the constant could not be defined because it's name existed in the same subset already.</exception>
+        /// <exception cref="LSLMissingSubsetDescriptionException">
+        ///     Thrown if the constant signatures
+        ///     <exception cref="LSLLibraryConstantSignature.Subsets" /> property contains a subset that is not described in the
+        ///     library data providers <see cref="SubsetDescriptions" /> collection.
+        /// </exception>
+        /// <exception cref="LSLDuplicateSignatureException">
+        ///     If the constant could not be defined because it's name existed in the
+        ///     same subset already.
+        /// </exception>
         public void DefineConstant(LSLLibraryConstantSignature signature)
         {
-
-
-
             var sig = GetLibraryConstantSignature(signature.Name, PossibleSubsets);
             if (sig != null)
             {
@@ -614,7 +790,6 @@ namespace LibLSLCC.LibraryData
             }
 
 
-
             foreach (var subset in signature.Subsets)
             {
                 if (_constantSignaturesBySubsetAndName.ContainsKey(subset))
@@ -623,24 +798,30 @@ namespace LibLSLCC.LibraryData
                 }
                 else
                 {
-                    _constantSignaturesBySubsetAndName[subset] = new HashMap<string, LSLLibraryConstantSignature> { { signature.Name, signature } };
+                    _constantSignaturesBySubsetAndName[subset] = new HashMap<string, LSLLibraryConstantSignature>
+                    {
+                        {signature.Name, signature}
+                    };
                 }
             }
-            
         }
 
 
         /// <summary>
-        /// Define a library function signature
+        ///     Define a library function signature
         /// </summary>
         /// <param name="signature">The LSLLibraryFunctionSignature representing the library function to be defined.</param>
-        /// <exception cref="LSLMissingSubsetDescriptionException">Thrown if the function signatures <exception cref="LSLLibraryFunctionSignature.Subsets"/> property contains a subset that is not described in the library data providers <see cref="SubsetDescriptions"/> collection.</exception>
-        /// <exception cref="LSLDuplicateSignatureException">If the function could not be defined because a duplicate or ambiguous definition existed in the same subset already.</exception>
+        /// <exception cref="LSLMissingSubsetDescriptionException">
+        ///     Thrown if the function signatures
+        ///     <exception cref="LSLLibraryFunctionSignature.Subsets" /> property contains a subset that is not described in the
+        ///     library data providers <see cref="SubsetDescriptions" /> collection.
+        /// </exception>
+        /// <exception cref="LSLDuplicateSignatureException">
+        ///     If the function could not be defined because a duplicate or ambiguous
+        ///     definition existed in the same subset already.
+        /// </exception>
         public void DefineFunction(LSLLibraryFunctionSignature signature)
         {
-
-
-
             var sigs = GetLibraryFunctionSignatures(signature.Name, PossibleSubsets);
 
             if (sigs != null)
@@ -657,7 +838,6 @@ namespace LibLSLCC.LibraryData
                             "; is considered a duplicate or ambiguous definition.");
                     }
                 }
-
             }
 
             if (!LiveFiltering && !signature.Subsets.Overlaps(ActiveSubsets))
@@ -687,12 +867,12 @@ namespace LibLSLCC.LibraryData
             }
 
 
-
             foreach (var subset in signature.Subsets)
             {
                 if (!_functionSignaturesBySubsetAndName.ContainsKey(subset))
                 {
-                    _functionSignaturesBySubsetAndName[subset] = new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
+                    _functionSignaturesBySubsetAndName[subset] =
+                        new HashMap<string, GenericArray<LSLLibraryFunctionSignature>>();
                 }
 
                 if (_functionSignaturesBySubsetAndName[subset].ContainsKey(signature.Name))
@@ -701,25 +881,11 @@ namespace LibLSLCC.LibraryData
                 }
                 else
                 {
-                    _functionSignaturesBySubsetAndName[subset][signature.Name] = new GenericArray<LSLLibraryFunctionSignature> {signature};
+                    _functionSignaturesBySubsetAndName[subset][signature.Name] =
+                        new GenericArray<LSLLibraryFunctionSignature> {signature};
                 }
             }
         }
-
-
-        /// <summary>
-        /// Construct an <see cref="LSLLibraryDataProvider"/> with the option of enabling live filtering mode.
-        /// </summary>
-        /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering"/> mode.  Default value is true.</param>
-        public LSLLibraryDataProvider(bool liveFiltering = true)
-        {
-            LiveFiltering = liveFiltering;
-            ActiveSubsets = new LSLLibraryDataSubsetCollection();
-
-            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
-            ActiveSubsets.OnSubsetAdded += ActiveSubsetsOnSubsetAdded;
-        }
-
 
 
         private void ActiveSubsetsOnSubsetAdded(object o, LibraryDataSubsetAddedEventArgs subsetAdded)
@@ -729,66 +895,20 @@ namespace LibLSLCC.LibraryData
             if (!SubsetDescriptions.ContainsKey(subsetAdded.SubsetName))
             {
                 throw new LSLMissingSubsetDescriptionException(
-                    "The subset \""+subsetAdded+
+                    "The subset \"" + subsetAdded +
                     "\" cannot be added to the library data providers ActiveSubsets collection while live filtering because a SubsetDescription does not exist for that subset name");
             }
         }
-
-        /// <summary>
-        /// Construct an LSLLibraryDataProvider an initialize <see cref="ActiveSubsets"/> from the constructor parameter 'activeSubsets'.
-        /// Optionally enable <see cref="LiveFiltering"/> mode using the 'liveFiltering' parameter.
-        /// 
-        /// </summary>
-        /// <param name="activeSubsets">The subsets to add to the <see cref="ActiveSubsets"/> collection upon construction.</param>
-        /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering"/> mode.  Default value is true.</param>
-        public LSLLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true)
-        {
-            LiveFiltering = liveFiltering;
-            ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
-
-            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
-        }
-
 
 
         private void ActiveSubsetsOnSubsetsChanged(object o, LibraryDataSubsetsChangedEventArgs e)
         {
             if (!LiveFiltering)
             {
-                throw new InvalidOperationException("Cannot change the active subsets of an "+GetType().Name+" when the object is not in LiveFiltering mode.");
+                throw new InvalidOperationException("Cannot change the active subsets of an " + GetType().Name +
+                                                    " when the object is not in LiveFiltering mode.");
             }
         }
-
-
-        /// <summary>
-        /// Check if a library event handler with the given name is defined whiten this data provider.
-        /// </summary>
-        /// <param name="name">The name of the library event handler to query for existence.</param>
-        /// <returns>True if the library event handler is defined, false if it is not.</returns>
-        public bool EventHandlerExist(string name)
-        {
-            var match = 
-                ActiveSubsets.Where(x=>_eventSignaturesBySubsetAndName.ContainsKey(x))
-                .FirstOrDefault(x => _eventSignaturesBySubsetAndName[x].ContainsKey(name));
-
-            return match != null;
-        }
-
-
-
-        /// <summary>
-        /// Attempt to return a library event handler signature with the given name if it is defined in this data provider, other wise return null.
-        /// </summary>
-        /// <param name="name">The name of the library event handler signature to return.</param>
-        /// <returns>The signature if an event with the given name is defined, otherwise null.</returns>
-        /// <exception cref="LSLDuplicateSignatureException">
-        /// Thrown if <see cref="LiveFiltering"/> is enabled and more than one active subset contains a definition of an event handler with this name that is not shared across those subsets.
-        /// </exception>
-        public LSLLibraryEventSignature GetEventHandlerSignature(string name)
-        {
-            return GetEventHandlerSignature(name, ActiveSubsets);
-        }
-
 
 
         private LSLLibraryEventSignature GetEventHandlerSignature(string name, IEnumerable<string> possibleSubsets)
@@ -796,7 +916,10 @@ namespace LibLSLCC.LibraryData
             LSLLibraryEventSignature result = null;
 
             foreach (var evnt in possibleSubsets
-                .Where(x => _eventSignaturesBySubsetAndName.ContainsKey(x) && _eventSignaturesBySubsetAndName[x].ContainsKey(name))
+                .Where(
+                    x =>
+                        _eventSignaturesBySubsetAndName.ContainsKey(x) &&
+                        _eventSignaturesBySubsetAndName[x].ContainsKey(name))
                 .Select(subset => _eventSignaturesBySubsetAndName[subset][name]))
             {
                 if (result == null)
@@ -809,7 +932,6 @@ namespace LibLSLCC.LibraryData
                         string.Format(
                             "GetEventHandlerSignature for {0} failed because the more than one active subset had a duplicate definition of it, and the event handler was not shared across the involved subsets.",
                             name));
-
                 }
             }
 
@@ -817,61 +939,31 @@ namespace LibLSLCC.LibraryData
         }
 
 
-        /// <summary>
-        /// Check if a library function with the given name is defined whiten this data provider.
-        /// </summary>
-        /// <param name="name">The name of the library function to query for existence.</param>
-        /// <returns>True if the library function is defined, false if it is not.</returns>
-        public bool LibraryFunctionExist(string name)
-        {
-            var match =
-                ActiveSubsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x))
-                .FirstOrDefault(x => _functionSignaturesBySubsetAndName[x].ContainsKey(name));
-
-            return match != null;
-        }
-
-
-
-        /// <summary>
-        /// Attempt to return a list of overloads for a function that might be defined in the library data provider given its name.
-        /// </summary>
-        /// <param name="name">The name of the function to attempt to return a list of overloads for.</param>
-        /// <returns>
-        /// A list of function signatures that represent the overloads among the active subsets for a function with a given name, or null if no function with that name exists.
-        /// If the function exists but has no overloads, only one item will be returned in the list.
-        /// </returns>
-        /// <exception cref="LSLDuplicateSignatureException">
-        /// Thrown if <see cref="LiveFiltering"/> is enabled and more than one active subset contains a duplicate definition of the function or one of its overloads,
-        /// and the function/overload is not shared across those subsets.
-        /// </exception>
-        public IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name)
-        {
-            return GetLibraryFunctionSignatures(name, ActiveSubsets);
-        }
-
-
-        private IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name, IEnumerable<string> subsets)
+        private IReadOnlyGenericArray<LSLLibraryFunctionSignature> GetLibraryFunctionSignatures(string name,
+            IEnumerable<string> subsets)
         {
             var results = new GenericArray<LSLLibraryFunctionSignature>();
 
-            foreach (var subset in subsets.Where(x => _functionSignaturesBySubsetAndName.ContainsKey(x) && _functionSignaturesBySubsetAndName[x].ContainsKey(name)))
+            foreach (
+                var subset in
+                    subsets.Where(
+                        x =>
+                            _functionSignaturesBySubsetAndName.ContainsKey(x) &&
+                            _functionSignaturesBySubsetAndName[x].ContainsKey(name)))
             {
                 foreach (var overload in _functionSignaturesBySubsetAndName[subset][name])
                 {
-
                     var overload1 = overload;
                     var duplicate = results.FirstOrDefault(x => x.DefinitionIsDuplicate(overload1));
 
                     //if its a reference to the same object, then the function was added with multiple subsets, its not an error
-                    if (duplicate != null && !ReferenceEquals(overload,duplicate))
+                    if (duplicate != null && !ReferenceEquals(overload, duplicate))
                     {
                         throw new LSLDuplicateSignatureException(
                             string.Format(
-                                "GetLibraryFunctionSignatures for {0} failed because the more than one active subset had a duplicate/ambiguous definition of it, "+
+                                "GetLibraryFunctionSignatures for {0} failed because the more than one active subset had a duplicate/ambiguous definition of it, " +
                                 "and the function was not shared across the involved subsets.",
                                 name));
-
                     }
                     results.Add(overload);
                 }
@@ -879,57 +971,10 @@ namespace LibLSLCC.LibraryData
 
             //we want distinct by reference here because we do not want to return copies of the same object
             //that have been put into the _functionSignaturesBySubsetAndName because they are shared across subsets
-            return results.Count == 0 ? null : results.Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals)).ToGenericArray();
-        }
-
-
-        /// <summary>
-        /// Attempt to return a library function signature from the active subsets with an exact signature match to the give signature.
-        /// </summary>
-        /// <param name="signatureToTest">The function signature that should match exactly with the library function signature you want to return from the provider.</param>
-        /// <returns>A signature defined in the provider among the active subsets that matches exactly with the given signature, or null if none is found.</returns>
-        /// <exception cref="LSLDuplicateSignatureException">
-        /// Thrown if <see cref="ActiveSubsets"/> is enabled and more than one active subset contains a duplicate definition of the function or one of its overloads,
-        /// and the function/overload is not shared across those subsets.
-        /// </exception>
-        public LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest)
-        {
-            var sigs = GetLibraryFunctionSignatures(signatureToTest.Name);
-
-            if (sigs == null) return null;
-
-            return sigs.FirstOrDefault(x=>x.SignatureEquivalent(signatureToTest));
-        }
-
-
-        /// <summary>
-        /// Check whether a library constant with the given name is defined among the active subsets of this library data provider.
-        /// </summary>
-        /// <param name="name">The name of the constant to check the existence of.</param>
-        /// <returns>True if the constant is defined among the current active subsets, or false if it is not.</returns>
-        public bool LibraryConstantExist(string name)
-        {
-            var match =
-                ActiveSubsets.Where(x => _constantSignaturesBySubsetAndName.ContainsKey(x))
-                .FirstOrDefault(x => _constantSignaturesBySubsetAndName[x].ContainsKey(name));
-
-            return match != null;
-        }
-
-
-
-        /// <summary>
-        /// Attempt to return a library constant signature from the active subsets with the same name as the given name.
-        /// </summary>
-        /// <param name="name">The name of the library constant that you want to find among the active subsets.</param>
-        /// <returns>A library constant signature with a matching name, or null if none is found.</returns>
-        /// <exception cref="LSLDuplicateSignatureException">
-        /// Thrown if <see cref="ActiveSubsets"/> is enabled and more than one active subset contains a constant with a duplicate name, 
-        /// and the constant is not shared across those subsets.
-        /// </exception>
-        public LSLLibraryConstantSignature GetLibraryConstantSignature(string name)
-        {
-            return GetLibraryConstantSignature(name, ActiveSubsets);
+            return results.Count == 0
+                ? null
+                : results.Distinct(new LambdaEqualityComparer<LSLLibraryFunctionSignature>(ReferenceEquals))
+                    .ToGenericArray();
         }
 
 
@@ -938,20 +983,22 @@ namespace LibLSLCC.LibraryData
             LSLLibraryConstantSignature result = null;
 
             foreach (var constant in possibleSubsets
-                .Where(x => _constantSignaturesBySubsetAndName.ContainsKey(x) && _constantSignaturesBySubsetAndName[x].ContainsKey(name))
+                .Where(
+                    x =>
+                        _constantSignaturesBySubsetAndName.ContainsKey(x) &&
+                        _constantSignaturesBySubsetAndName[x].ContainsKey(name))
                 .Select(subset => _constantSignaturesBySubsetAndName[subset][name]))
             {
                 if (result == null)
                 {
                     result = constant;
                 }
-                else if(!ReferenceEquals(result, constant))
+                else if (!ReferenceEquals(result, constant))
                 {
                     throw new LSLDuplicateSignatureException(
                         string.Format(
                             "GetLibraryConstantSignature for {0} failed because the more than one active subset had a duplicate definition of it, and the constant was not shared across the involved subsets.",
                             name));
-
                 }
             }
 

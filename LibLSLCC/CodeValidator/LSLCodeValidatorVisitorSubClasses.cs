@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCodeValidationVisitorSubClasses.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using Antlr4.Runtime;
@@ -70,6 +73,7 @@ namespace LibLSLCC.CodeValidator
             public readonly LSLParser.ExpressionContext OriginalContext;
             public readonly LSLParser.ExpressionContext RightContext;
 
+
             public BinaryExpressionContext(LSLParser.ExpressionContext exprLvalue, IToken operationToken,
                 LSLParser.ExpressionContext exprRvalue, LSLParser.ExpressionContext originalContext)
             {
@@ -91,6 +95,7 @@ namespace LibLSLCC.CodeValidator
             public readonly IToken OperationToken;
             public readonly LSLParser.ExpressionContext OriginalContext;
             public readonly LSLParser.ExpressionContext RightContext;
+
 
             public AssignmentExpressionContext(ILSLExprNode exprLvalue, IToken operationToken,
                 LSLParser.ExpressionContext exprRvalue, LSLParser.ExpressionContext originalContext)

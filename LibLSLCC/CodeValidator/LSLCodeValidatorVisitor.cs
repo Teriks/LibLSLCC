@@ -71,15 +71,16 @@ namespace LibLSLCC.CodeValidator
         private ILSLSyntaxWarningListener _syntaxWarningListenerOveride;
 
 
-        /// <exception cref="ArgumentException">An <see cref="LSLCodeValidatorStrategies"/> property was null</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">An <see cref="LSLCodeValidatorStrategies" /> property was null</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies" /> is <c>null</c>.</exception>
         public LSLCodeValidatorVisitor(ILSLCodeValidatorStrategies validatorStrategies)
         {
-            if(validatorStrategies == null) throw new ArgumentNullException("validatorStrategies");
+            if (validatorStrategies == null) throw new ArgumentNullException("validatorStrategies");
 
             if (!validatorStrategies.IsComplete())
             {
-                throw new ArgumentException("An "+typeof(ILSLCodeValidatorStrategies).Name+" property was null", "validatorStrategies");
+                throw new ArgumentException("An " + typeof (ILSLCodeValidatorStrategies).Name + " property was null",
+                    "validatorStrategies");
             }
 
             _validatorStrategies = validatorStrategies;
@@ -1200,7 +1201,6 @@ namespace LibLSLCC.CodeValidator
             };
 
 
-
             //traverse down the right side of the syntax tree if needed
 
             var elseStatement = context.else_statement;
@@ -1212,7 +1212,7 @@ namespace LibLSLCC.CodeValidator
                 return ReturnFromVisit(context, result);
             }
 
-            
+
             do
             {
                 if (elseStatement.code != null && elseStatement.code.control_structure != null)
@@ -1256,7 +1256,6 @@ namespace LibLSLCC.CodeValidator
 
                     elseStatement = null;
                 }
-
             } while (elseStatement != null);
 
 
@@ -1507,7 +1506,8 @@ namespace LibLSLCC.CodeValidator
             LSLCodeScopeNode result;
             if (!codeStatement.HasErrors)
             {
-                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId, ScopingManager.CurrentCodeScopeType);
+                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId,
+                    ScopingManager.CurrentCodeScopeType);
             }
             else
             {
@@ -1536,7 +1536,8 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            var parameterList = LSLParameterListNode.BuildFromParserContext(context.parameters, LSLParameterListType.EventParameters, _validatorStrategies);
+            var parameterList = LSLParameterListNode.BuildFromParserContext(context.parameters,
+                LSLParameterListType.EventParameters, _validatorStrategies);
 
 
             var isError = parameterList.HasErrors;
@@ -1839,7 +1840,6 @@ namespace LibLSLCC.CodeValidator
             }
             else
             {
-
                 LSLSourceCodeRange errorLocation;
 
                 if (context.open_parenth == null || context.close_parenth == null)
@@ -1933,7 +1933,6 @@ namespace LibLSLCC.CodeValidator
             }
             else
             {
-
                 LSLSourceCodeRange errorLocation;
 
                 if (context.open_parenth == null || context.close_parenth == null)
@@ -2171,7 +2170,7 @@ namespace LibLSLCC.CodeValidator
                 //You can return anything from an event handler.
                 //If its not inside a function, than it's inside an event.
                 var valid = containingFunction == null ||
-                    ExpressionValidator.ValidateReturnTypeMatch(containingFunction.ReturnType, returnExpression);
+                            ExpressionValidator.ValidateReturnTypeMatch(containingFunction.ReturnType, returnExpression);
 
 
                 if (!valid)
@@ -2259,7 +2258,7 @@ namespace LibLSLCC.CodeValidator
             if (statement == null)
             {
                 throw new LSLCodeValidatorInternalException(
-                    "VisitCodeStatement Visit(context.children[0]) did not return an " + typeof(ILSLCodeStatement).Name);
+                    "VisitCodeStatement Visit(context.children[0]) did not return an " + typeof (ILSLCodeStatement).Name);
             }
 
             return ReturnFromVisit(context, statement);
@@ -2356,7 +2355,8 @@ namespace LibLSLCC.CodeValidator
 
 
             throw new InvalidOperationException(
-                "Internal error VisitExpressionContent in "+typeof(LSLCodeValidatorVisitor).Name+" returned a non " + typeof(ILSLExprNode).Name);
+                "Internal error VisitExpressionContent in " + typeof (LSLCodeValidatorVisitor).Name + " returned a non " +
+                typeof (ILSLExprNode).Name);
         }
 
 
@@ -2370,7 +2370,8 @@ namespace LibLSLCC.CodeValidator
             }
 
             throw new InvalidOperationException(
-                "Internal error VisitExpressionContent in LSLCodeValidationVisitor returned a non " + typeof(ILSLExprNode).Name);
+                "Internal error VisitExpressionContent in LSLCodeValidationVisitor returned a non " +
+                typeof (ILSLExprNode).Name);
         }
 
 
@@ -2704,7 +2705,8 @@ namespace LibLSLCC.CodeValidator
                     LibraryDataProvider.GetLibraryConstantSignature(variableReferenceOnLeft.Name);
 
                 GenSyntaxError()
-                    .TupleComponentAccessOnLibraryConstant(operatorLocation, variableReferenceOnLeft, libraryConstantReferenced,
+                    .TupleComponentAccessOnLibraryConstant(operatorLocation, variableReferenceOnLeft,
+                        libraryConstantReferenced,
                         accessedMember);
 
                 return ReturnFromVisit(context, LSLTupleAccessorNode.GetError(new LSLSourceCodeRange(context)));
@@ -3062,7 +3064,7 @@ namespace LibLSLCC.CodeValidator
                 if (expressionList == null)
                 {
                     throw LSLCodeValidatorInternalException
-                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof(LSLExpressionListNode));
+                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof (LSLExpressionListNode));
                 }
 
 
@@ -3114,7 +3116,7 @@ namespace LibLSLCC.CodeValidator
                 if (expressionList == null)
                 {
                     throw LSLCodeValidatorInternalException
-                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof(LSLExpressionListNode));
+                        .VisitReturnTypeException("VisitFunctionCallParameters", typeof (LSLExpressionListNode));
                 }
 
                 //Guaranteed to return non null, checked first with:

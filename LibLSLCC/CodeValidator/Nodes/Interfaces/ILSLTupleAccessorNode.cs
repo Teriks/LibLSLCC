@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLTupleAccessorNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -49,35 +52,35 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for the '.' member access operator expression.
+    ///     AST node interface for the '.' member access operator expression.
     /// </summary>
     public interface ILSLTupleAccessorNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The raw name of the accessed tuple component, taken from the source code.
+        ///     The raw name of the accessed tuple component, taken from the source code.
         /// </summary>
         string AccessedComponentString { get; }
 
         /// <summary>
-        /// The source code range of the tuple component that was accessed.
+        ///     The source code range of the tuple component that was accessed.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeAccessedComponent { get; }
 
-
         /// <summary>
-        /// The tuple member accessed.
-        /// <see cref="LSLTupleComponent"/>
+        ///     The tuple member accessed.
+        ///     <see cref="LSLTupleComponent" />
         /// </summary>
         LSLTupleComponent AccessedComponent { get; }
 
-
         /// <summary>
-        /// The expression that the member access operator was used on.
-        /// This should only ever be a reference to a vector or rotation variable.
-        /// Using a member accessor on a constant, even if it is a vector or rotation, is not allowed.
+        ///     The expression that the member access operator was used on.
+        ///     This should only ever be a reference to a vector or rotation variable.
+        ///     Using a member accessor on a constant, even if it is a vector or rotation, is not allowed.
         /// </summary>
         ILSLReadOnlyExprNode AccessedExpression { get; }
     }

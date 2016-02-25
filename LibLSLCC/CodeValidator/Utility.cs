@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: Utility.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Linq;
@@ -54,6 +57,7 @@ namespace LibLSLCC.CodeValidator
         {
             return vars.Any(v => v == null);
         }
+
 
         public static bool EqualsOneOf(this object i, params object[] vars)
         {

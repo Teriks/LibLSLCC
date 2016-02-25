@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLConstantJumpDescription.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Nodes;
@@ -50,21 +53,23 @@ using LibLSLCC.CodeValidator.Nodes.Interfaces;
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    /// Represents a statement that causes a jump to happen in a constant manner.
-    /// As in:  There is no condition under which a jump to a single known label will not occur.
+    ///     Represents a statement that causes a jump to happen in a constant manner.
+    ///     As in:  There is no condition under which a jump to a single known label will not occur.
     /// </summary>
     public sealed class LSLConstantJumpDescription
     {
-
         /// <summary>
-        /// Construct an <see cref="LSLConstantJumpDescription"/> from another <see cref="LSLConstantJumpDescription"/> and an <see cref="ILSLReadOnlyCodeStatement"/> that
-        /// represents the actual jump statement in the syntax tree.
-        /// 
-        /// DeterminingJump in the constructed object is set to originalJump.DeterminingJump.
-        /// EffectiveJumpStatement in the constructed object is set to the effectedJumpStatement parameter.
+        ///     Construct an <see cref="LSLConstantJumpDescription" /> from another <see cref="LSLConstantJumpDescription" /> and
+        ///     an <see cref="ILSLReadOnlyCodeStatement" /> that
+        ///     represents the actual jump statement in the syntax tree.
+        ///     DeterminingJump in the constructed object is set to originalJump.DeterminingJump.
+        ///     EffectiveJumpStatement in the constructed object is set to the effectedJumpStatement parameter.
         /// </summary>
         /// <param name="originalJump">The LSLConstantJumpDescripton to copy the DeterminingJump property from.</param>
-        /// <param name="effectiveJumpStatement">The <see cref="ILSLReadOnlyCodeStatement"/> that represents the jump statement in the syntax tree.</param>
+        /// <param name="effectiveJumpStatement">
+        ///     The <see cref="ILSLReadOnlyCodeStatement" /> that represents the jump statement in
+        ///     the syntax tree.
+        /// </param>
         public LSLConstantJumpDescription(LSLConstantJumpDescription originalJump,
             ILSLReadOnlyCodeStatement effectiveJumpStatement)
         {
@@ -72,11 +77,15 @@ namespace LibLSLCC.CodeValidator.Primitives
             EffectiveJumpStatement = effectiveJumpStatement;
         }
 
+
         /// <summary>
-        /// Constructs an <see cref="LSLConstantJumpDescription"/> from an ILSLJumpStatement node by 
-        /// setting the DeterminingJump and EffectiveJumpStatement property in this object to the determiningJump parameter.
+        ///     Constructs an <see cref="LSLConstantJumpDescription" /> from an ILSLJumpStatement node by
+        ///     setting the DeterminingJump and EffectiveJumpStatement property in this object to the determiningJump parameter.
         /// </summary>
-        /// <param name="determiningJump">The <see cref="ILSLJumpStatementNode"/> to set DeterminingJump and EffectiveJumpStatement to.</param>
+        /// <param name="determiningJump">
+        ///     The <see cref="ILSLJumpStatementNode" /> to set DeterminingJump and
+        ///     EffectiveJumpStatement to.
+        /// </param>
         public LSLConstantJumpDescription(ILSLJumpStatementNode determiningJump)
         {
             DeterminingJump = determiningJump;
@@ -85,12 +94,12 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Constructs an <see cref="LSLConstantJumpDescription"/> from an ILSLJumpStatement node by 
-        /// setting the DeterminingJump property of this object to the effectiveJumpStatement parameter, and
-        /// the EffectiveJumpStatement of this object to the effectiveJumpStatement parameter.
+        ///     Constructs an <see cref="LSLConstantJumpDescription" /> from an ILSLJumpStatement node by
+        ///     setting the DeterminingJump property of this object to the effectiveJumpStatement parameter, and
+        ///     the EffectiveJumpStatement of this object to the effectiveJumpStatement parameter.
         /// </summary>
-        /// <param name="effectiveJumpStatement">The <see cref="ILSLReadOnlyCodeStatement"/> to set EffectiveJumpStatement to.</param>
-        /// <param name="determiningJump">The <see cref="ILSLJumpStatementNode"/> to set DeterminingJump to.</param>
+        /// <param name="effectiveJumpStatement">The <see cref="ILSLReadOnlyCodeStatement" /> to set EffectiveJumpStatement to.</param>
+        /// <param name="determiningJump">The <see cref="ILSLJumpStatementNode" /> to set DeterminingJump to.</param>
         public LSLConstantJumpDescription(ILSLReadOnlyCodeStatement effectiveJumpStatement,
             ILSLJumpStatementNode determiningJump)
         {
@@ -98,17 +107,18 @@ namespace LibLSLCC.CodeValidator.Primitives
             EffectiveJumpStatement = effectiveJumpStatement;
         }
 
+
         /// <summary>
         ///     EffectiveJumpStatement should represent the statement that
-        ///     the jump will always occur from, it may be an <see cref="LSLControlStatementNode"/>
-        ///     where all branches jump to a single label in a constant manner, or simply an <see cref="LSLJumpStatementNode"/>
+        ///     the jump will always occur from, it may be an <see cref="LSLControlStatementNode" />
+        ///     where all branches jump to a single label in a constant manner, or simply an <see cref="LSLJumpStatementNode" />
         ///     on its own.
         /// </summary>
         public ILSLReadOnlyCodeStatement EffectiveJumpStatement { get; private set; }
 
         /// <summary>
-        ///     The actual <see cref="LSLJumpStatementNode"/> that caused or is part of the cause for the jump to happen
-        ///     if EffectiveJumpStatement is an <see cref="LSLControlStatementNode"/>, it will be the jump from the 'if' statement
+        ///     The actual <see cref="LSLJumpStatementNode" /> that caused or is part of the cause for the jump to happen
+        ///     if EffectiveJumpStatement is an <see cref="LSLControlStatementNode" />, it will be the jump from the 'if' statement
         ///     part of that node, otherwise EffectiveJumpStatement and DeterminingJump will be references to the same
         ///     object.
         /// </summary>

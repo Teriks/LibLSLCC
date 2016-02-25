@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLListIntegerExpr.cs
 // 
@@ -39,11 +40,16 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Globalization;
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.Utility.ListParser
 {
@@ -61,6 +67,7 @@ namespace LibLSLCC.Utility.ListParser
         {
             Value = hex ? Convert.ToInt32(val, 16) : int.Parse(val);
         }
+
 
         /// <summary>
         ///     The integer value.

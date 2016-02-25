@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLXmlLibraryDataProvider.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,28 +59,28 @@ using System.Xml.Serialization;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// Indicates to the XML library data provider what library data elements should be loaded.
+    ///     Indicates to the XML library data provider what library data elements should be loaded.
     /// </summary>
     [Flags]
     public enum LSLLibraryDataLoadOptions
     {
         /// <summary>
-        /// Constants, Functions and Event handler definitions should all be loaded.
+        ///     Constants, Functions and Event handler definitions should all be loaded.
         /// </summary>
-        All = Functions|Constants|Events,
+        All = Functions | Constants | Events,
 
         /// <summary>
-        /// Load Function definitions.
+        ///     Load Function definitions.
         /// </summary>
         Functions = 1,
 
         /// <summary>
-        /// Load Constant definitions.
+        ///     Load Constant definitions.
         /// </summary>
         Constants = 2,
 
         /// <summary>
-        /// Load Event definitions.
+        ///     Load Event definitions.
         /// </summary>
         Events = 4
     }
@@ -88,33 +91,33 @@ namespace LibLSLCC.LibraryData
     public class LSLXmlLibraryDataProvider : LSLLibraryDataProvider,
         IXmlSerializable
     {
-
         /// <summary>
-        /// The root element name used for LSL Library Data XML
+        ///     The root element name used for LSL Library Data XML
         /// </summary>
         public static readonly string RootElementName = LSLLibraryDataXmlSerializer.RootElementName;
 
 
         /// <summary>
-        /// Construct an LSLXmlLibraryDataProvider with the option to enable live filtering mode in the base class
+        ///     Construct an LSLXmlLibraryDataProvider with the option to enable live filtering mode in the base class
         /// </summary>
         /// <param name="liveFiltering">Whether or not to enable live filtering mode in the base class.</param>
         public LSLXmlLibraryDataProvider(bool liveFiltering = true) : base(liveFiltering)
         {
-            
         }
 
 
         /// <summary>
-        /// Construct an LSLXmlLibraryDataProvider with the ability to set the active subsets in the base class, and optionally enable
-        /// live filtering mode.
+        ///     Construct an LSLXmlLibraryDataProvider with the ability to set the active subsets in the base class, and optionally
+        ///     enable
+        ///     live filtering mode.
         /// </summary>
         /// <param name="activeSubsets">The active subsets to set in the base class.</param>
         /// <param name="liveFiltering">Whether or not to enable live filtering mode in the base class.</param>
-        public LSLXmlLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true) : base(activeSubsets, liveFiltering)
+        public LSLXmlLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true)
+            : base(activeSubsets, liveFiltering)
         {
-
         }
+
 
         /// <summary>
         ///     This method is reserved and should not be used. When implementing the IXmlSerializable interface, you should return
@@ -133,6 +136,7 @@ namespace LibLSLCC.LibraryData
             return null;
         }
 
+
         /// <summary>
         ///     Generates an object from its XML representation.
         /// </summary>
@@ -145,7 +149,21 @@ namespace LibLSLCC.LibraryData
         }
 
 
-        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <summary>
+        ///     Converts an object into its XML representation.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
+        [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
+        void IXmlSerializable.WriteXml(XmlWriter writer)
+        {
+            LSLLibraryDataXmlSerializer.WriteXml(this, writer, false);
+        }
+
+
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        ///     If a syntax error was detected in the XML (Attribute value did not
+        ///     pass pattern validation.. etc..)
+        /// </exception>
         private void _ReadXml(XmlReader reader, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             var lineInfo = (IXmlLineInfo) reader;
@@ -154,13 +172,13 @@ namespace LibLSLCC.LibraryData
                 var serializer = new LSLLibraryDataXmlSerializer();
 
 
-                serializer.ReadLibrarySubsetDescription += (sender,e) =>
+                serializer.ReadLibrarySubsetDescription += (sender, e) =>
                 {
                     lineInfo = serializer.CurrentLineInfo;
                     AddSubsetDescription(e.SubsetDescription);
                 };
 
-                if((loadOptions & LSLLibraryDataLoadOptions.Functions) == LSLLibraryDataLoadOptions.Functions)
+                if ((loadOptions & LSLLibraryDataLoadOptions.Functions) == LSLLibraryDataLoadOptions.Functions)
                 {
                     serializer.ReadLibraryFunctionDefinition += (sender, e) =>
                     {
@@ -189,7 +207,7 @@ namespace LibLSLCC.LibraryData
 
                 serializer.Parse(reader);
             }
-            //LSLLibraryDataXmlSerializer.Parse() handles XmlSyntaxExceptions by throwing an LSLLibraryDataXmlSyntaxException.
+                //LSLLibraryDataXmlSerializer.Parse() handles XmlSyntaxExceptions by throwing an LSLLibraryDataXmlSyntaxException.
             catch (LSLMissingSubsetDescriptionException e)
             {
                 //thrown by AddSubsetDescription
@@ -207,16 +225,6 @@ namespace LibLSLCC.LibraryData
             }
         }
 
-        /// <summary>
-        ///     Converts an object into its XML representation.
-        /// </summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
-        [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
-        void IXmlSerializable.WriteXml(XmlWriter writer)
-        {
-            LSLLibraryDataXmlSerializer.WriteXml(this, writer, false);
-        }
-
 
         /// <summary>
         ///     Converts an object into its XML representation.
@@ -230,12 +238,18 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Fills a library data provider from an XML reader object, the data provider is cleared of all definitions first.
+        ///     Fills a library data provider from an XML reader object, the data provider is cleared of all definitions first.
         /// </summary>
         /// <param name="data">The XML reader to read from.</param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
         /// <exception cref="ArgumentNullException">When the 'data' parameter is <c>null</c>.</exception>
-        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        ///     If a syntax error was detected in the XML (Attribute value did not
+        ///     pass pattern validation.. etc..)
+        /// </exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void FillFromXml(XmlReader data, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
@@ -253,12 +267,18 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Adds additional library data provider from an XML reader object, the data provider is not cleared first.
+        ///     Adds additional library data provider from an XML reader object, the data provider is not cleared first.
         /// </summary>
         /// <param name="data">The XML reader to read from.</param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
         /// <exception cref="ArgumentNullException">When the 'data' parameter is <c>null</c>.</exception>
-        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        ///     If a syntax error was detected in the XML (Attribute value did not
+        ///     pass pattern validation.. etc..)
+        /// </exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void AddFromXml(XmlReader data, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
@@ -276,17 +296,29 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Adds additional library data provider from an XML file, the data provider is not cleared first.
-        /// Encoding is detected using the BOM (Byte Order Mark) of the file.
+        ///     Adds additional library data provider from an XML file, the data provider is not cleared first.
+        ///     Encoding is detected using the BOM (Byte Order Mark) of the file.
         /// </summary>
         /// <param name="filename">The XML file to read library data from.</param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
         /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
         /// <exception cref="ArgumentNullException">When the 'filename' parameter is <c>null</c>.</exception>
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
-        /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
-        /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
-        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="DirectoryNotFoundException">
+        ///     When the path in the 'filename' parameter is invalid, such as being on an
+        ///     unmapped drive.
+        /// </exception>
+        /// <exception cref="IOException">
+        ///     When the path in the 'filename' parameter includes an incorrect or invalid syntax for a
+        ///     file name, directory name, or volume label.
+        /// </exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        ///     If a syntax error was detected in the XML (Attribute value did not
+        ///     pass pattern validation.. etc..)
+        /// </exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void AddFromXml(string filename, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
@@ -302,7 +334,6 @@ namespace LibLSLCC.LibraryData
 
             using (var reader = new XmlTextReader(new StreamReader(filename, true)))
             {
-
                 reader.ReadStartElement(RootElementName);
 
                 _ReadXml(reader, loadOptions);
@@ -313,20 +344,41 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Adds additional library data by parsing every XML file in a given directory, the data provider is not cleared first.
+        ///     Adds additional library data by parsing every XML file in a given directory, the data provider is not cleared
+        ///     first.
         /// </summary>
         /// <param name="path">The directory path.</param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
         /// <exception cref="System.ArgumentNullException">path</exception>
         /// <exception cref="System.ArgumentException">path</exception>
-        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
-        /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        ///     If a syntax error was detected in an XML file (Attribute value did
+        ///     not pass pattern validation.. etc..)
+        /// </exception>
+        /// <exception cref="DirectoryNotFoundException">
+        ///     When the path in the 'path' parameter is invalid, such as being on an
+        ///     unmapped drive.
+        /// </exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
-        /// <exception cref="SecurityException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
-        /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
+        /// <exception cref="SecurityException">
+        ///     The caller does not have the required permission.
+        ///     <see cref="Directory.EnumerateFiles(string)" />.
+        /// </exception>
+        /// <exception cref="UnauthorizedAccessException">
+        ///     The caller does not have the required permission.
+        ///     <see cref="Directory.EnumerateFiles(string)" />.
+        /// </exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream of a file.</exception>
-        /// <exception cref="PathTooLongException">A path, file name, or combined exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters and file names must be less than 260 characters.</exception>
-        public void AddFromXmlDirectory(string path, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
+        /// <exception cref="PathTooLongException">
+        ///     A path, file name, or combined exceed the system-defined maximum length. For
+        ///     example, on Windows-based platforms, paths must be less than 248 characters and file names must be less than 260
+        ///     characters.
+        /// </exception>
+        public void AddFromXmlDirectory(string path,
+            LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (path == null)
             {
@@ -346,27 +398,49 @@ namespace LibLSLCC.LibraryData
                 }
                 catch (LSLLibraryDataXmlSyntaxException e)
                 {
-                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File {0}: {1}", file, e.Message), e);
+                    throw new LSLLibraryDataXmlSyntaxException(
+                        string.Format("Error Parsing File {0}: {1}", file, e.Message), e);
                 }
             }
         }
 
 
         /// <summary>
-        /// Fills a library data provider by parsing every XML file in a given directory, the data provider is cleared of all definitions first.
+        ///     Fills a library data provider by parsing every XML file in a given directory, the data provider is cleared of all
+        ///     definitions first.
         /// </summary>
         /// <param name="path">The directory path.</param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
         /// <exception cref="System.ArgumentNullException">path</exception>
         /// <exception cref="System.ArgumentException">path</exception>
-        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in an XML file (Attribute value did not pass pattern validation.. etc..)</exception>
-        /// <exception cref="DirectoryNotFoundException">When the path in the 'path' parameter is invalid, such as being on an unmapped drive.</exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        ///     If a syntax error was detected in an XML file (Attribute value did
+        ///     not pass pattern validation.. etc..)
+        /// </exception>
+        /// <exception cref="DirectoryNotFoundException">
+        ///     When the path in the 'path' parameter is invalid, such as being on an
+        ///     unmapped drive.
+        /// </exception>
         /// <exception cref="IOException">If an IOException occurs while reading a file.</exception>
-        /// <exception cref="SecurityException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
-        /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission.  <see cref="Directory.EnumerateFiles(string)"/>.</exception>
+        /// <exception cref="SecurityException">
+        ///     The caller does not have the required permission.
+        ///     <see cref="Directory.EnumerateFiles(string)" />.
+        /// </exception>
+        /// <exception cref="UnauthorizedAccessException">
+        ///     The caller does not have the required permission.
+        ///     <see cref="Directory.EnumerateFiles(string)" />.
+        /// </exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream of a file.</exception>
-        /// <exception cref="PathTooLongException">A path, file name, or combined exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters and file names must be less than 260 characters.</exception>
-        public void FillFromXmlDirectory(string path, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
+        /// <exception cref="PathTooLongException">
+        ///     A path, file name, or combined exceed the system-defined maximum length. For
+        ///     example, on Windows-based platforms, paths must be less than 248 characters and file names must be less than 260
+        ///     characters.
+        /// </exception>
+        public void FillFromXmlDirectory(string path,
+            LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
             if (path == null)
             {
@@ -388,23 +462,37 @@ namespace LibLSLCC.LibraryData
                 }
                 catch (LSLLibraryDataXmlSyntaxException e)
                 {
-                    throw new LSLLibraryDataXmlSyntaxException(string.Format("Error Parsing File '{0}': {1}", file, e.Message), e);
+                    throw new LSLLibraryDataXmlSyntaxException(
+                        string.Format("Error Parsing File '{0}': {1}", file, e.Message), e);
                 }
             }
         }
 
+
         /// <summary>
-        /// Fills a library data provider from an XML reader object, the data provider is cleared of all definitions first.
-        /// Encoding is detected using the BOM (Byte Order Mark) of the file.
+        ///     Fills a library data provider from an XML reader object, the data provider is cleared of all definitions first.
+        ///     Encoding is detected using the BOM (Byte Order Mark) of the file.
         /// </summary>
         /// <param name="filename">The XML file to read library data from.</param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
         /// <exception cref="ArgumentException">When the 'filename' parameter is whitespace.</exception>
         /// <exception cref="ArgumentNullException">When the 'filename' parameter is <c>null</c>.</exception>
         /// <exception cref="FileNotFoundException">When the file in the 'filename' parameter could not be found.</exception>
-        /// <exception cref="DirectoryNotFoundException">When the path in the 'filename' parameter is invalid, such as being on an unmapped drive.</exception>
-        /// <exception cref="IOException">When the path in the 'filename' parameter includes an incorrect or invalid syntax for a file name, directory name, or volume label.</exception>
-        /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the XML (Attribute value did not pass pattern validation.. etc..)</exception>
+        /// <exception cref="DirectoryNotFoundException">
+        ///     When the path in the 'filename' parameter is invalid, such as being on an
+        ///     unmapped drive.
+        /// </exception>
+        /// <exception cref="IOException">
+        ///     When the path in the 'filename' parameter includes an incorrect or invalid syntax for a
+        ///     file name, directory name, or volume label.
+        /// </exception>
+        /// <exception cref="LSLLibraryDataXmlSyntaxException">
+        ///     If a syntax error was detected in the XML (Attribute value did not
+        ///     pass pattern validation.. etc..)
+        /// </exception>
         /// <exception cref="XmlException">If incorrect XML was encountered in the input stream.</exception>
         public void FillFromXml(string filename, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
         {
@@ -422,7 +510,6 @@ namespace LibLSLCC.LibraryData
 
             using (var reader = new XmlTextReader(new StreamReader(filename, true)))
             {
-
                 reader.ReadStartElement(RootElementName);
 
                 _ReadXml(reader, loadOptions);

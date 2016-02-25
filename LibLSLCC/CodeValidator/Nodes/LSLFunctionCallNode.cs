@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLFunctionCallNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -48,7 +51,6 @@ using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.Visitor;
-using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
@@ -56,14 +58,13 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLFunctionCallNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLFunctionCallNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLFunctionCallNode : ILSLFunctionCallNode, ILSLExprNode
     {
         private readonly bool _libraryFunction;
         private readonly LSLFunctionSignature _librarySignature;
         private readonly LSLPreDefinedFunctionSignature _preDefinition;
-
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
@@ -74,7 +75,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="preDefinition"/> or <paramref name="parameterList"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or <paramref name="preDefinition" /> or
+        ///     <paramref name="parameterList" /> is <c>null</c>.
+        /// </exception>
         internal LSLFunctionCallNode(
             LSLParser.Expr_FunctionCallContext context,
             LSLPreDefinedFunctionSignature preDefinition,
@@ -114,7 +118,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="signature"/> or <paramref name="parameterList"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or <paramref name="signature" /> or
+        ///     <paramref name="parameterList" /> is <c>null</c>.
+        /// </exception>
         internal LSLFunctionCallNode(
             LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature signature,
@@ -154,10 +161,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLFunctionCallNode"/> by cloning from another.
+        ///     Create an <see cref="LSLFunctionCallNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLFunctionCallNode(LSLFunctionCallNode other)
         {
             if (other == null)
@@ -181,12 +188,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
             if (SourceRangesAvailable)
             {
-
                 SourceRange = other.SourceRange;
                 SourceRangeOpenParenth = other.SourceRangeOpenParenth;
                 SourceRangeCloseParenth = other.SourceRangeCloseParenth;
                 SourceRangeName = other.SourceRangeName;
-
             }
 
             HasErrors = other.HasErrors;
@@ -195,50 +200,53 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parameter list node containing the expressions used to call this function, this will never be null even if the parameter list is empty.
+        ///     The parameter list node containing the expressions used to call this function, this will never be null even if the
+        ///     parameter list is empty.
         /// </summary>
         public LSLExpressionListNode ParameterListNode { get; private set; }
 
-
         /// <summary>
-        /// The syntax tree node where the function was defined if it is a user defined function.  If the function call is to a library function this will be null.
+        ///     The syntax tree node where the function was defined if it is a user defined function.  If the function call is to a
+        ///     library function this will be null.
         /// </summary>
         public LSLFunctionDeclarationNode DefinitionNode
         {
-            get
-            {
-                return !_libraryFunction ? _preDefinition.DefinitionNode : null;
-            }
+            get { return !_libraryFunction ? _preDefinition.DefinitionNode : null; }
         }
 
         /// <summary>
-        /// True if the function that was called is a library function call, false if it was a call to a user defined function.
+        ///     True if the function that was called is a library function call, false if it was a call to a user defined function.
         /// </summary>
         public bool IsLibraryFunctionCall
         {
-            get
-            {
-                return _libraryFunction;
-            }
+            get { return _libraryFunction; }
         }
 
         /// <summary>
-        /// The source code range of the opening parentheses where the parameters of the function start.
+        ///     The source code range of the opening parentheses where the parameters of the function start.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeOpenParenth { get; private set; }
 
         /// <summary>
-        /// The source code range of the closing parentheses where the parameters of the function end.
+        ///     The source code range of the closing parentheses where the parameters of the function end.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeCloseParenth { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the function name in the function call expression.
+        ///     The source code range of the function name in the function call expression.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -247,20 +255,16 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The name of the function that was called.
+        ///     The name of the function that was called.
         /// </summary>
         public string Name { get; private set; }
 
-
         /// <summary>
-        /// The function signature of the function that was called, as it was defined by either the user or library.
+        ///     The function signature of the function that was called, as it was defined by either the user or library.
         /// </summary>
         public LSLFunctionSignature Signature
         {
-            get
-            {
-                return _libraryFunction ? _librarySignature : _preDefinition;
-            }
+            get { return _libraryFunction ? _librarySignature : _preDefinition; }
         }
 
         ILSLExpressionListNode ILSLFunctionCallNode.ArgumentExpressionList
@@ -275,8 +279,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceCodeRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -297,8 +301,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLExprNode Members
 
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
@@ -308,32 +313,35 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -351,13 +359,12 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
 
             throw new InvalidOperationException(
-                typeof(LSLFunctionCallNode).Name+" could not be visited, object is in an invalid state");
+                typeof (LSLFunctionCallNode).Name + " could not be visited, object is in an invalid state");
         }
 
 
-
         /// <summary>
-        /// The return type of the expression. see: <see cref="LSLType" />
+        ///     The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type
         {
@@ -366,10 +373,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        ///     The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
-        /// The type of the expression.
+        ///     The type of the expression.
         /// </value>
         public LSLExpressionType ExpressionType
         {
@@ -377,7 +384,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if the expression is constant and can be calculated at compile time.
+        ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
         public bool IsConstant
         {
@@ -386,7 +393,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a
+        ///     function call.  False otherwise.
         /// </summary>
         public bool HasPossibleSideEffects
         {
@@ -394,15 +402,14 @@ namespace LibLSLCC.CodeValidator.Nodes
             {
                 //function calls can ALWAYS have some sort of side effect on the program state.
                 return true;
-                
             }
         }
 
 
         /// <summary>
-        /// Should produce a user friendly description of the expressions return type.
-        /// This is used in some syntax error messages, Ideally you should enclose your description in
-        /// parenthesis or something that will make it stand out in a string.
+        ///     Should produce a user friendly description of the expressions return type.
+        ///     This is used in some syntax error messages, Ideally you should enclose your description in
+        ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
         /// <returns></returns>
         public string DescribeType()

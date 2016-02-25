@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLLibraryDataProvider.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
@@ -52,32 +55,32 @@ using LibLSLCC.Collections;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// An interface for providing data about the standard LSL library.
+    ///     An interface for providing data about the standard LSL library.
     /// </summary>
     public interface ILSLLibraryDataProvider : ILSLBasicLibraryDataProvider
     {
         /// <summary>
-        /// Gets a map of subset descriptions for subset's used by signatures in this data provider.
+        ///     Gets a map of subset descriptions for subset's used by signatures in this data provider.
         /// </summary>
         /// <value>
-        /// The subset description map.
+        ///     The subset description map.
         /// </value>
         IReadOnlyHashMap<string, LSLLibrarySubsetDescription> SubsetDescriptions { get; }
 
-
         /// <summary>
-        ///     Enumerable of <see cref="LSLLibraryEventSignature"/> describing the event handlers supported according to this data provider
+        ///     Enumerable of <see cref="LSLLibraryEventSignature" /> describing the event handlers supported according to this
+        ///     data provider
         /// </summary>
         IEnumerable<LSLLibraryEventSignature> LibraryEvents { get; }
 
         /// <summary>
-        ///     Enumerable of the <see cref="LSLLibraryFunctionSignature"/> overloads defined according to this data provider
+        ///     Enumerable of the <see cref="LSLLibraryFunctionSignature" /> overloads defined according to this data provider
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         IEnumerable<IReadOnlyGenericArray<LSLLibraryFunctionSignature>> LibraryFunctions { get; }
 
         /// <summary>
-        ///     Enumerable of the <see cref="LibraryConstants"/> defined according to this data provider
+        ///     Enumerable of the <see cref="LibraryConstants" /> defined according to this data provider
         /// </summary>
         IEnumerable<LSLLibraryConstantSignature> LibraryConstants { get; }
     }

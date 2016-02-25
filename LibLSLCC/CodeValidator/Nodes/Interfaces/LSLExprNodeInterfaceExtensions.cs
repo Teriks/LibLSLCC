@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLExprNodeInterfaceExtensions.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -49,12 +52,12 @@ using LibLSLCC.CodeValidator.Enums;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// Various extensions for dealing with syntax tree node interfaces.
+    ///     Various extensions for dealing with syntax tree node interfaces.
     /// </summary>
     public static class LSLExprNodeInterfaceExtensions
     {
         /// <summary>
-        /// Determines if the expression node represents a code literal.  Such as a string, vector, rotation or list literal.
+        ///     Determines if the expression node represents a code literal.  Such as a string, vector, rotation or list literal.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a code literal.</returns>
@@ -65,16 +68,13 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// Determines if the expression node represents a compound expression.
-        /// 
-        /// Compound expressions are:
-        /// 
-        /// Binary Expressions
-        /// Parenthesized Expressions
-        /// Postfix Expressions
-        /// Prefix Expressions
-        /// Typecast Expressions
-        /// 
+        ///     Determines if the expression node represents a compound expression.
+        ///     Compound expressions are:
+        ///     Binary Expressions
+        ///     Parenthesized Expressions
+        ///     Postfix Expressions
+        ///     Prefix Expressions
+        ///     Typecast Expressions
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a compound expression.</returns>
@@ -87,8 +87,9 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
                    node.ExpressionType == LSLExpressionType.TypecastExpression;
         }
 
+
         /// <summary>
-        /// Determines if an expression node represents a function call to a user defined or library defined function.
+        ///     Determines if an expression node represents a function call to a user defined or library defined function.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a function call to either a user defined or library defined function.</returns>
@@ -100,7 +101,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// Determines if an expression node represents a function call to a library defined function.
+        ///     Determines if an expression node represents a function call to a library defined function.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a function call to a library defined function.</returns>
@@ -111,7 +112,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// Determines if an expression node represents a function call to a user defined function.
+        ///     Determines if an expression node represents a function call to a user defined function.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a function call to a user defined function.</returns>
@@ -120,8 +121,9 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
             return node.ExpressionType == LSLExpressionType.UserFunction;
         }
 
+
         /// <summary>
-        /// Determines if an expression node represents a reference to a global or local variable.
+        ///     Determines if an expression node represents a reference to a global or local variable.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to either a global or local variable.</returns>
@@ -133,20 +135,24 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// Determines whether the expression is a reference to a vector or rotation component, using the dot operator.
+        ///     Determines whether the expression is a reference to a vector or rotation component, using the dot operator.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
-        /// <returns>True if the expression node represents a reference to a vector or rotation variable component via the dot operator.</returns>
+        /// <returns>
+        ///     True if the expression node represents a reference to a vector or rotation variable component via the dot
+        ///     operator.
+        /// </returns>
         public static bool IsVectorOrRotationComponent(this ILSLReadOnlyExprNode node)
         {
-            return node.ExpressionType == LSLExpressionType.VectorComponentAccess || 
+            return node.ExpressionType == LSLExpressionType.VectorComponentAccess ||
                    node.ExpressionType == LSLExpressionType.RotationComponentAccess;
         }
 
 
         /// <summary>
-        /// Determines whether the given expression is a modifiable L-Value.
-        /// This is true if its a global variable, local variable, local parameter or a reference to a vector component via the dot operator.
+        ///     Determines whether the given expression is a modifiable L-Value.
+        ///     This is true if its a global variable, local variable, local parameter or a reference to a vector component via the
+        ///     dot operator.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression is a modifiable L-Value.</returns>
@@ -157,20 +163,20 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// Determines if an expression node represents a reference to a global/local variable or parameter reference.
+        ///     Determines if an expression node represents a reference to a global/local variable or parameter reference.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to either a global/local variable or parameter reference.</returns>
         public static bool IsVariableOrParameter(this ILSLReadOnlyExprNode node)
         {
-            return node.ExpressionType == LSLExpressionType.GlobalVariable    ||
-                   node.ExpressionType == LSLExpressionType.LocalVariable     ||
-                   node.ExpressionType == LSLExpressionType.ParameterVariable ;
+            return node.ExpressionType == LSLExpressionType.GlobalVariable ||
+                   node.ExpressionType == LSLExpressionType.LocalVariable ||
+                   node.ExpressionType == LSLExpressionType.ParameterVariable;
         }
 
 
         /// <summary>
-        /// Determines if an expression node represents a reference to a local variable.
+        ///     Determines if an expression node represents a reference to a local variable.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to a local variable.</returns>
@@ -182,7 +188,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// Determines if an expression node represents a reference to a local parameter.
+        ///     Determines if an expression node represents a reference to a local parameter.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to a local parameter.</returns>
@@ -194,7 +200,7 @@ namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 
 
         /// <summary>
-        /// Determines if an expression node represents a reference to a global variable.
+        ///     Determines if an expression node represents a reference to a global variable.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to a global variable.</returns>

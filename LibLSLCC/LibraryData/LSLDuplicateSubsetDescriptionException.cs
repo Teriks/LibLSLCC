@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLDuplicateSubsetDescriptionException.cs
 // 
@@ -39,28 +40,35 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
 
+#endregion
+
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// This exception is thrown by <see cref="LSLLibraryDataProvider"/> when a subset description for the same subset is added more than once.
+    ///     This exception is thrown by <see cref="LSLLibraryDataProvider" /> when a subset description for the same subset is
+    ///     added more than once.
     /// </summary>
     [Serializable]
     public class LSLDuplicateSubsetDescriptionException : Exception
     {
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public LSLDuplicateSubsetDescriptionException()
         {
         }
 
+
         /// <summary>
-        /// Construct with a message.
+        ///     Construct with a message.
         /// </summary>
         /// <param name="message"></param>
         public LSLDuplicateSubsetDescriptionException(string message)
@@ -70,7 +78,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct with a message and inner exception.
+        ///     Construct with a message and inner exception.
         /// </summary>
         /// <param name="message">The exception message.</param>
         /// <param name="inner">The inner exception.</param>
@@ -79,8 +87,9 @@ namespace LibLSLCC.LibraryData
         {
         }
 
+
         /// <summary>
-        /// Serializable constructor.
+        ///     Serializable constructor.
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>

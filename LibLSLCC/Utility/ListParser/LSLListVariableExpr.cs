@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLListVariableExpr.cs
 // 
@@ -39,9 +40,14 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.Utility.ListParser
 {
@@ -58,6 +64,7 @@ namespace LibLSLCC.Utility.ListParser
         {
             Name = name;
         }
+
 
         /// <summary>
         ///     Name of the variable referenced

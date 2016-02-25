@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLAutoCompleteLocalVariable.cs
 // 
@@ -39,18 +40,24 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Primitives;
+
+#endregion
 
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a local variable declaration parsed by the auto complete parser.
+    ///     Represents a local variable declaration parsed by the auto complete parser.
     /// </summary>
     public sealed class LSLAutoCompleteLocalVariable
     {
-        internal LSLAutoCompleteLocalVariable(string name, string TypeName, LSLSourceCodeRange range, LSLSourceCodeRange sourceRangeType,
+        internal LSLAutoCompleteLocalVariable(string name, string TypeName, LSLSourceCodeRange range,
+            LSLSourceCodeRange sourceRangeType,
             LSLSourceCodeRange sourceRangeName, LSLAutoCompleteScopeAddress address)
         {
             Name = name;
@@ -62,52 +69,52 @@ namespace LibLSLCC.AutoComplete
             SourceRangeType = sourceRangeType;
         }
 
+
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> that encompasses the local variable name.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> that encompasses the local variable name.
         /// </summary>
         /// <value>
-        /// The <see cref="LSLSourceCodeRange"/> that encompasses the local variable name.
+        ///     The <see cref="LSLSourceCodeRange" /> that encompasses the local variable name.
         /// </value>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
-
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> that encompasses the local variable type specifier.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> that encompasses the local variable type specifier.
         /// </summary>
         /// <value>
-        /// The <see cref="LSLSourceCodeRange"/> that encompasses the local variable type specifier.
+        ///     The <see cref="LSLSourceCodeRange" /> that encompasses the local variable type specifier.
         /// </value>
         public LSLSourceCodeRange SourceRangeType { get; private set; }
 
         /// <summary>
-        /// Gets the scope address where this local variable came in to existence.
+        ///     Gets the scope address where this local variable came in to existence.
         /// </summary>
         /// <value>
-        /// The scope address where this local variable came in to existence.
+        ///     The scope address where this local variable came in to existence.
         /// </value>
         public LSLAutoCompleteScopeAddress ScopeAddress { get; private set; }
 
         /// <summary>
-        /// Gets the name of the local variable.
+        ///     Gets the name of the local variable.
         /// </summary>
         /// <value>
-        /// The name of the local variable.
+        ///     The name of the local variable.
         /// </value>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets a string representing the type specifier used when declaring the local variable.
+        ///     Gets a string representing the type specifier used when declaring the local variable.
         /// </summary>
         /// <value>
-        /// A string representing the type specifier used when declaring the local variable.
+        ///     A string representing the type specifier used when declaring the local variable.
         /// </value>
         public string TypeName { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="LSLSourceCodeRange"/> that encompasses the local variable declaration statement.
+        ///     Gets the <see cref="LSLSourceCodeRange" /> that encompasses the local variable declaration statement.
         /// </summary>
         /// <value>
-        /// The <see cref="LSLSourceCodeRange"/> that encompasses the local variable declaration statement.
+        ///     The <see cref="LSLSourceCodeRange" /> that encompasses the local variable declaration statement.
         /// </value>
         public LSLSourceCodeRange SourceRange { get; private set; }
     }

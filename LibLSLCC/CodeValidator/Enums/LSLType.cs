@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLType.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -48,9 +51,8 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Enums
 {
-
     /// <summary>
-    /// Represents the basic types in LSL
+    ///     Represents the basic types in LSL
     /// </summary>
     public enum LSLType
     {
@@ -97,17 +99,18 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
     /// <summary>
-    /// Extensions for converting <see cref="LSLType"/>'s to strings and also parsing them.
+    ///     Extensions for converting <see cref="LSLType" />'s to strings and also parsing them.
     /// </summary>
     public static class LSLTypeTools
     {
         /// <summary>
-        ///     Convert an LSL type name into an <see cref="LSLType"/> representation (case insensitive).  "void" is not recognized.
+        ///     Convert an LSL type name into an <see cref="LSLType" /> representation (case insensitive).  "void" is not
+        ///     recognized.
         /// </summary>
         /// <param name="typeName">LSL Type name as string.</param>
-        /// <returns>An <see cref="LSLType"/> representation of the name passed to <paramref name="typeName"/>.</returns>
-        /// <exception cref="ArgumentException">If <paramref name="typeName"/> was not recognized.</exception>
-        /// <exception cref="ArgumentNullException">If <paramref name="typeName"/> was <c>null</c>.</exception>
+        /// <returns>An <see cref="LSLType" /> representation of the name passed to <paramref name="typeName" />.</returns>
+        /// <exception cref="ArgumentException">If <paramref name="typeName" /> was not recognized.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="typeName" /> was <c>null</c>.</exception>
         public static LSLType FromLSLTypeName(string typeName)
         {
             if (string.IsNullOrEmpty(typeName))
@@ -139,12 +142,13 @@ namespace LibLSLCC.CodeValidator.Enums
             throw new ArgumentException("\"" + typeName + "\" is not a valid LSL type name", "typeName");
         }
 
+
         /// <summary>
-        ///     Convert an <see cref="LSLType"/> to an LSL type name string.
+        ///     Convert an <see cref="LSLType" /> to an LSL type name string.
         /// </summary>
-        /// <param name="type"><see cref="LSLType"/> to convert.</param>
+        /// <param name="type"><see cref="LSLType" /> to convert.</param>
         /// <returns>LSL type string representation.</returns>
-        /// <exception cref="ArgumentException">If <see cref="LSLType"/> is <see cref="LSLType.Void"/>.</exception>
+        /// <exception cref="ArgumentException">If <see cref="LSLType" /> is <see cref="LSLType.Void" />.</exception>
         public static string ToLSLTypeName(this LSLType type)
         {
             if (type == LSLType.Void)

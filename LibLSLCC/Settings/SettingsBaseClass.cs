@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: SettingsBaseClass.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -49,32 +53,17 @@ using System.Linq;
 using System.Reflection;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.Settings
 {
     /// <summary>
-    /// A base class for settings objects.
+    ///     A base class for settings objects.
     /// </summary>
     /// <typeparam name="TSetting"></typeparam>
     public abstract class SettingsBaseClass<TSetting> : ICloneable, INotifyPropertyChanged, INotifyPropertyChanging
         where TSetting : class
     {
-        private class DeepClonableValueHashMap<TKey, TValue> : HashMap<TKey, TValue>
-        {
-            public override object Clone()
-            {
-                var map = new DeepClonableValueHashMap<TKey, TValue>();
-
-                foreach (var kvp in this)
-                {
-                    var clonableValue = (ICloneable) kvp.Value;
-                    map.Add(kvp.Key, (TValue) clonableValue.Clone());
-                }
-
-                return map;
-            }
-        }
-
-
         private readonly
             DeepClonableValueHashMap<object, HashMap<string, Action<SettingsPropertyChangedEventArgs<TSetting>>>>
             _subscribedChanged =
@@ -89,19 +78,111 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        /// The property changed event, fired when a settings property has changed.
+        ///     Deep clones this settings object.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <returns>A deep clone of this settings object.</returns>
+        object ICloneable.Clone()
+        {
+            var myType = GetType();
+
+            var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
+            var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+
+            const BindingFlags constructorBindingFlags =
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
+
+            var constructors =
+                myType.GetConstructors(constructorBindingFlags).Where(x => !x.GetParameters().Any()).ToList();
+            if (!constructors.Any())
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        "{0}.Init(object instance):  Type '{0}'  has no parameterless constructor.",
+                        myType.FullName));
+            }
+
+            var constructor = constructors.First();
+
+            object instance = constructor.Invoke(null);
+
+            ICloner cloner = new DefaultCloner();
+
+            foreach (var fieldInfo in fields)
+            {
+                var clonerAttribute = fieldInfo.GetCustomAttributes(typeof (MemberClonerAttribute), true);
+
+                var child = fieldInfo.GetValue(this);
+                if (child == null) continue;
+
+                if (clonerAttribute.Any())
+                {
+                    var clonerAttr = (MemberClonerAttribute) clonerAttribute.First();
+                    cloner = Activator.CreateInstance(clonerAttr.ClonerType) as ICloner;
+
+                    if (cloner == null)
+                    {
+                        throw new InvalidOperationException(
+                            string.Format(
+                                "Field '{0}' has a [MemberClonerAttribute] with a cloner type that does not implement ICloner.",
+                                fieldInfo.Name));
+                    }
+
+                    fieldInfo.SetValue(instance, cloner.Clone(child));
+                }
+                else
+                {
+                    var clone = cloner.Clone(child);
+                    fieldInfo.SetValue(instance, clone ?? fieldInfo.GetValue(this));
+                }
+            }
+
+            foreach (var propInfo in props.Where(p => p.CanWrite && p.CanRead))
+            {
+                var clonerAttribute = propInfo.GetCustomAttributes(typeof (MemberClonerAttribute), true);
+
+                var child = propInfo.GetValue(this, null);
+                if (child == null) continue;
+
+                if (clonerAttribute.Any())
+                {
+                    var clonerAttr = (MemberClonerAttribute) clonerAttribute.First();
+                    cloner = Activator.CreateInstance(clonerAttr.ClonerType) as ICloner;
+
+                    if (cloner == null)
+                    {
+                        throw new InvalidOperationException(
+                            string.Format(
+                                "Property '{0}' has a [MemberClonerAttribute] with a cloner type that does not implement ICloner.",
+                                propInfo.Name));
+                    }
+
+                    propInfo.SetValue(instance, cloner.Clone(child), null);
+                }
+                else
+                {
+                    var clone = cloner.Clone(child);
+                    propInfo.SetValue(instance, clone ?? propInfo.GetValue(this, null), null);
+                }
+            }
+
+            return instance;
+        }
 
 
         /// <summary>
-        /// The property changing event, fired when a settings property is about to change, but has not changed yet.
+        ///     The property changed event, fired when a settings property has changed.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        ///     The property changing event, fired when a settings property is about to change, but has not changed yet.
         /// </summary>
         public event PropertyChangingEventHandler PropertyChanging;
 
 
         /// <summary>
-        /// Occurs when a property is about to change but has not changed yet.
+        ///     Occurs when a property is about to change but has not changed yet.
         /// </summary>
         /// <param name="propertyName">The name of the property that is fixing to change.</param>
         /// <param name="oldValue">The old value of the property.</param>
@@ -149,12 +230,13 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        /// Subscribe to the property changed event on this settings object and all child settings objects recursively.
+        ///     Subscribe to the property changed event on this settings object and all child settings objects recursively.
         /// </summary>
         /// <param name="owner">The object that is subscribing to the changed event.</param>
         /// <param name="handler">The changed event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
-        public void SubscribePropertyChangedRecursive(object owner, Action<SettingsPropertyChangedEventArgs<object>> handler)
+        public void SubscribePropertyChangedRecursive(object owner,
+            Action<SettingsPropertyChangedEventArgs<object>> handler)
         {
             if (!_subscribedChanged.ContainsKey(owner))
             {
@@ -186,9 +268,8 @@ namespace LibLSLCC.Settings
         }
 
 
-
         /// <summary>
-        /// Subscribe to the property changed event on this settings object.
+        ///     Subscribe to the property changed event on this settings object.
         /// </summary>
         /// <param name="owner">The object that is subscribing to the changed event.</param>
         /// <param name="handler">The changed event handler.</param>
@@ -211,14 +292,16 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// Subscribe to the property changed event on this settings object for a specific property.
+        ///     Subscribe to the property changed event on this settings object for a specific property.
         /// </summary>
         /// <param name="owner">The object that is subscribing to the changed event.</param>
         /// <param name="propertyName">The name of the property to subscribe to.</param>
         /// <param name="handler">The changed event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
-        public void SubscribePropertyChanged(object owner, string propertyName, Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
+        public void SubscribePropertyChanged(object owner, string propertyName,
+            Action<SettingsPropertyChangedEventArgs<TSetting>> handler)
         {
             if (!_subscribedChanged.ContainsKey(owner))
             {
@@ -238,7 +321,8 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        /// Remove all property changed subscriptions belonging to an object from this settings object and all child settings objects recursively.
+        ///     Remove all property changed subscriptions belonging to an object from this settings object and all child settings
+        ///     objects recursively.
         /// </summary>
         /// <param name="owner">The subscriber to remove subscriptions for.</param>
         public void UnSubscribePropertyChangedRecursive(object owner)
@@ -253,8 +337,9 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// Remove a property changed subscription from this settings object given the subscriber object.
+        ///     Remove a property changed subscription from this settings object given the subscriber object.
         /// </summary>
         /// <param name="owner">The subscriber to remove the subscription for.</param>
         public void UnSubscribePropertyChanged(object owner)
@@ -262,8 +347,10 @@ namespace LibLSLCC.Settings
             _subscribedChanged.Remove(owner);
         }
 
+
         /// <summary>
-        /// Remove a specific property changed subscription from this settings object given the subscriber object and the property name.
+        ///     Remove a specific property changed subscription from this settings object given the subscriber object and the
+        ///     property name.
         /// </summary>
         /// <param name="owner">The subscriber to remove the subscription for.</param>
         /// <param name="propertyName">The property name to remove the subscription for.</param>
@@ -277,13 +364,15 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// Subscribe to the property changing event on this settings object and all child settings objects recursively.
+        ///     Subscribe to the property changing event on this settings object and all child settings objects recursively.
         /// </summary>
         /// <param name="owner">The object that is subscribing to the changing event.</param>
         /// <param name="handler">The changing event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
-        public void SubscribePropertyChangingRecursive(object owner, Action<SettingsPropertyChangingEventArgs<object>> handler)
+        public void SubscribePropertyChangingRecursive(object owner,
+            Action<SettingsPropertyChangingEventArgs<object>> handler)
         {
             if (!_subscribedChanging.ContainsKey(owner))
             {
@@ -315,8 +404,9 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// Subscribe to the property changing event on this settings object.
+        ///     Subscribe to the property changing event on this settings object.
         /// </summary>
         /// <param name="owner">The object that is subscribing to the changing event.</param>
         /// <param name="handler">The changing event handler.</param>
@@ -339,14 +429,16 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// Subscribe to the property changing event on this settings object for a specific property.
+        ///     Subscribe to the property changing event on this settings object for a specific property.
         /// </summary>
         /// <param name="owner">The object that is subscribing to the changing event.</param>
         /// <param name="propertyName">The name of the property to subscribe to.</param>
         /// <param name="handler">The changing event handler.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
-        public void SubscribePropertyChanging(object owner, string propertyName, Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
+        public void SubscribePropertyChanging(object owner, string propertyName,
+            Action<SettingsPropertyChangingEventArgs<TSetting>> handler)
         {
             if (!_subscribedChanging.ContainsKey(owner))
             {
@@ -364,8 +456,10 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// Remove all property changing subscriptions belonging to an object from this settings object and all child settings objects recursively.
+        ///     Remove all property changing subscriptions belonging to an object from this settings object and all child settings
+        ///     objects recursively.
         /// </summary>
         /// <param name="owner">The subscriber to remove subscriptions for.</param>
         public void UnSubscribePropertyChangingRecursive(object owner)
@@ -380,8 +474,9 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// Remove a property changing subscription from this settings object given the subscriber object.
+        ///     Remove a property changing subscription from this settings object given the subscriber object.
         /// </summary>
         /// <param name="owner">The subscriber to remove the subscription for.</param>
         public void UnSubscribePropertyChanging(object owner)
@@ -389,8 +484,10 @@ namespace LibLSLCC.Settings
             _subscribedChanging.Remove(owner);
         }
 
+
         /// <summary>
-        /// Remove a specific property changing subscription from this settings object given the subscriber object and the property name.
+        ///     Remove a specific property changing subscription from this settings object given the subscriber object and the
+        ///     property name.
         /// </summary>
         /// <param name="owner">The subscriber to remove the subscription for.</param>
         /// <param name="propertyName">The property name to remove the subscription for.</param>
@@ -406,7 +503,7 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        /// Occurs when after a property has changed.
+        ///     Occurs when after a property has changed.
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed.</param>
         /// <param name="oldValue">The old value of the property.</param>
@@ -436,9 +533,10 @@ namespace LibLSLCC.Settings
             }
         }
 
+
         /// <summary>
-        /// A tool for implementing the property changed/changing interface that goes in a public properties set handler.
-        /// This should be used in properties that wish to abide by the property changed/changing interface.
+        ///     A tool for implementing the property changed/changing interface that goes in a public properties set handler.
+        ///     This should be used in properties that wish to abide by the property changed/changing interface.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="field">The backing field of the property.</param>
@@ -501,11 +599,13 @@ namespace LibLSLCC.Settings
             subscribedChanged.SetValue(newVal, changed.Clone());
         }
 
+
         /// <summary>
-        /// Returns a hash code for this settings object.  This uses the hash code all public instance fields and properties to generate a hash.
+        ///     Returns a hash code for this settings object.  This uses the hash code all public instance fields and properties to
+        ///     generate a hash.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {
@@ -536,12 +636,15 @@ namespace LibLSLCC.Settings
             return hash;
         }
 
+
         /// <summary>
-        /// Determines whether the specified <see cref="SettingsBaseClass{T}" />, is equal to this instance by comparing its public instance fields and properties.
+        ///     Determines whether the specified <see cref="SettingsBaseClass{T}" />, is equal to this instance by comparing its
+        ///     public instance fields and properties.
         /// </summary>
         /// <param name="other">The <see cref="SettingsBaseClass{T}" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="SettingsBaseClass{T}" /> is equal to this instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="SettingsBaseClass{T}" /> is equal to this instance; otherwise, <c>false</c>
+        ///     .
         /// </returns>
         public override bool Equals(object other)
         {
@@ -595,8 +698,9 @@ namespace LibLSLCC.Settings
             return mval.Equals(tval) && mval.GetHashCode() == tval.GetHashCode();
         }
 
+
         /// <summary>
-        /// Deep clones this settings object.
+        ///     Deep clones this settings object.
         /// </summary>
         /// <returns>A deep clone of this settings object.</returns>
         public TSetting Clone()
@@ -607,7 +711,7 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        /// Assign all settings properties 
+        ///     Assign all settings properties
         /// </summary>
         /// <param name="other"></param>
         public void MemberwiseAssign(TSetting other)
@@ -620,102 +724,30 @@ namespace LibLSLCC.Settings
 
             foreach (var field in fields)
             {
-                field.SetValue(this,field.GetValue(other));
+                field.SetValue(this, field.GetValue(other));
             }
 
-            foreach (var prop in props.Where(x=>x.CanRead && x.CanWrite))
+            foreach (var prop in props.Where(x => x.CanRead && x.CanWrite))
             {
-                prop.SetValue(this, prop.GetValue(other,null),null);
+                prop.SetValue(this, prop.GetValue(other, null), null);
             }
         }
 
-        /// <summary>
-        /// Deep clones this settings object.
-        /// </summary>
-        /// <returns>A deep clone of this settings object.</returns>
-        object ICloneable.Clone()
+
+        private class DeepClonableValueHashMap<TKey, TValue> : HashMap<TKey, TValue>
         {
-            var myType = GetType();
-
-            var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
-            var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-
-            const BindingFlags constructorBindingFlags =
-                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly;
-
-            var constructors =
-                myType.GetConstructors(constructorBindingFlags).Where(x => !x.GetParameters().Any()).ToList();
-            if (!constructors.Any())
+            public override object Clone()
             {
-                throw new InvalidOperationException(
-                    string.Format(
-                        "{0}.Init(object instance):  Type '{0}'  has no parameterless constructor.",
-                        myType.FullName));
+                var map = new DeepClonableValueHashMap<TKey, TValue>();
+
+                foreach (var kvp in this)
+                {
+                    var clonableValue = (ICloneable) kvp.Value;
+                    map.Add(kvp.Key, (TValue) clonableValue.Clone());
+                }
+
+                return map;
             }
-
-            var constructor = constructors.First();
-
-            object instance = constructor.Invoke(null);
-
-            ICloner cloner = new DefaultCloner();
-
-            foreach (var fieldInfo in fields)
-            {
-                var clonerAttribute = fieldInfo.GetCustomAttributes(typeof(MemberClonerAttribute), true);
-
-                var child = fieldInfo.GetValue(this);
-                if (child == null) continue;
-
-                if (clonerAttribute.Any())
-                {
-                    var clonerAttr = (MemberClonerAttribute)clonerAttribute.First();
-                    cloner = Activator.CreateInstance(clonerAttr.ClonerType) as ICloner;
-
-                    if (cloner == null)
-                    {
-                        throw new InvalidOperationException(string.Format("Field '{0}' has a [MemberClonerAttribute] with a cloner type that does not implement ICloner.", 
-                            fieldInfo.Name));
-                    }
-
-                    fieldInfo.SetValue(instance, cloner.Clone(child));
-                }
-                else
-                {
-                    
-                    var clone = cloner.Clone(child);
-                    fieldInfo.SetValue(instance, clone ?? fieldInfo.GetValue(this));
-                }
-            }
-
-            foreach (var propInfo in props.Where(p => p.CanWrite && p.CanRead))
-            {
-                var clonerAttribute = propInfo.GetCustomAttributes(typeof(MemberClonerAttribute), true);
-               
-                var child = propInfo.GetValue(this, null);
-                if (child == null) continue;
-
-                if (clonerAttribute.Any())
-                {
-                    var clonerAttr = (MemberClonerAttribute)clonerAttribute.First();
-                    cloner = Activator.CreateInstance(clonerAttr.ClonerType) as ICloner;
-
-                    if (cloner == null)
-                    {
-                        throw new InvalidOperationException(string.Format("Property '{0}' has a [MemberClonerAttribute] with a cloner type that does not implement ICloner.",
-                            propInfo.Name));
-                    }
-
-                    propInfo.SetValue(instance, cloner.Clone(child), null);
-                }
-                else
-                {
-                    var clone = cloner.Clone(child);
-                    propInfo.SetValue(instance, clone ?? propInfo.GetValue(this, null), null);
-                }
-            }
-
-            return instance;
         }
     }
 }

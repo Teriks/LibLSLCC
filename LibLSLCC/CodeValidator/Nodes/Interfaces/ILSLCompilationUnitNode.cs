@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLCompilationUnitNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -49,38 +52,36 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for the top level node in an LSL syntax tree.
+    ///     AST node interface for the top level node in an LSL syntax tree.
     /// </summary>
     public interface ILSLCompilationUnitNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// A list of objects describing the comments found in the source code and their position/range.
+        ///     A list of objects describing the comments found in the source code and their position/range.
         /// </summary>
         IReadOnlyGenericArray<LSLComment> Comments { get; }
 
-
         /// <summary>
-        /// Global variable declaration nodes, in order of appearance.
-        /// Returns and empty enumerable if none exist.
+        ///     Global variable declaration nodes, in order of appearance.
+        ///     Returns and empty enumerable if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLVariableDeclarationNode> GlobalVariableDeclarations { get; }
 
         /// <summary>
-        /// User defined function nodes, in order of appearance. 
-        /// Returns and empty enumerable if none exist.
+        ///     User defined function nodes, in order of appearance.
+        ///     Returns and empty enumerable if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLFunctionDeclarationNode> FunctionDeclarations { get; }
 
         /// <summary>
-        /// User defined state nodes, in order of appearance.
-        /// Returns and empty enumerable if none exist.
+        ///     User defined state nodes, in order of appearance.
+        ///     Returns and empty enumerable if none exist.
         /// </summary>
         IReadOnlyGenericArray<ILSLStateScopeNode> StateDeclarations { get; }
 
         /// <summary>
-        /// The state node for the default script state.
+        ///     The state node for the default script state.
         /// </summary>
         ILSLStateScopeNode DefaultStateNode { get; }
     }

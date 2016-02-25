@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLCodeScopeNode.cs
 // 
@@ -39,43 +40,41 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
 using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
 
 #endregion
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for code scopes. 
-    /// Includes function, event handler, control/loop statement code body's, and anonymous code scopes.
+    ///     AST node interface for code scopes.
+    ///     Includes function, event handler, control/loop statement code body's, and anonymous code scopes.
     /// </summary>
     public interface ILSLCodeScopeNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
         ///     Code statements that are children of this code scope, this will never be <c>null</c> but it may be empty.
         /// </summary>
-        /// <seealso cref="HasCodeStatements"/>
+        /// <seealso cref="HasCodeStatements" />
         IEnumerable<ILSLReadOnlyCodeStatement> CodeStatements { get; }
-
 
         /// <summary>
         ///     True if this code scope contains any code statements.
         /// </summary>
         bool HasCodeStatements { get; }
 
-
         /// <summary>
         ///     True if this code scope is an implicit braceless code scope.
         ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements.
         /// </summary>
-        /// <seealso cref="ILSLReadOnlyCodeStatement.InsideSingleStatementScope"/>
+        /// <seealso cref="ILSLReadOnlyCodeStatement.InsideSingleStatementScope" />
         bool IsSingleStatementScope { get; }
-
 
         /// <summary>
         ///     The type of code scope this node represents.

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCompilationUnitNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,11 +59,12 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLCompilationUnitNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLCompilationUnitNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLCompilationUnitNode : ILSLCompilationUnitNode, ILSLSyntaxTreeNode
     {
-        private readonly GenericArray<LSLFunctionDeclarationNode> _functionDeclarations = new GenericArray<LSLFunctionDeclarationNode>();
+        private readonly GenericArray<LSLFunctionDeclarationNode> _functionDeclarations =
+            new GenericArray<LSLFunctionDeclarationNode>();
 
         private readonly GenericArray<LSLVariableDeclarationNode> _globalVariableDeclarations =
             new GenericArray<LSLVariableDeclarationNode>();
@@ -68,8 +72,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         private readonly GenericArray<LSLStateScopeNode> _stateDeclarations = new GenericArray<LSLStateScopeNode>();
         private int _addCounter;
         private LSLStateScopeNode _defaultState;
-
-
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLCompilationUnitNode(LSLSourceCodeRange sourceRange, Err err)
@@ -80,7 +82,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal LSLCompilationUnitNode(LSLParser.CompilationUnitContext context)
         {
             if (context == null)
@@ -93,9 +95,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
         /// <summary>
-        /// Global variable declaration nodes, in order of appearance.
-        /// Returns and empty enumerable if none exist.
+        ///     Global variable declaration nodes, in order of appearance.
+        ///     Returns and empty enumerable if none exist.
         /// </summary>
         public IReadOnlyGenericArray<LSLVariableDeclarationNode> GlobalVariableDeclarations
         {
@@ -103,8 +106,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// User defined function nodes, in order of appearance. 
-        /// Returns and empty enumerable if none exist.
+        ///     User defined function nodes, in order of appearance.
+        ///     Returns and empty enumerable if none exist.
         /// </summary>
         public IReadOnlyGenericArray<LSLFunctionDeclarationNode> FunctionDeclarations
         {
@@ -112,8 +115,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// User defined state nodes, in order of appearance.
-        /// Returns and empty enumerable if none exist.
+        ///     User defined state nodes, in order of appearance.
+        ///     Returns and empty enumerable if none exist.
         /// </summary>
         public IReadOnlyGenericArray<LSLStateScopeNode> StateDeclarations
         {
@@ -121,9 +124,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The state node for the default script state.
+        ///     The state node for the default script state.
         /// </summary>
-        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <c>null</c>.</exception>
         public LSLStateScopeNode DefaultState
         {
             get { return _defaultState; }
@@ -149,12 +152,10 @@ namespace LibLSLCC.CodeValidator.Nodes
             }
         }
 
-
         /// <summary>
-        /// A list of objects describing the comments found in the source code and their position/range.
+        ///     A list of objects describing the comments found in the source code and their position/range.
         /// </summary>
         public IReadOnlyGenericArray<LSLComment> Comments { get; set; }
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -183,8 +184,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -195,9 +196,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
         /// <summary>
-        /// Add a global variable declaration node to this compilation unit node.
+        ///     Add a global variable declaration node to this compilation unit node.
         /// </summary>
         /// <param name="declaration">The global variable declaration node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
@@ -223,7 +223,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Add a function declaration node to this compilation unit node.
+        ///     Add a function declaration node to this compilation unit node.
         /// </summary>
         /// <param name="declaration">The function declaration node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
@@ -246,7 +246,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Add a state declaration node to this compilation unit node.
+        ///     Add a state declaration node to this compilation unit node.
         /// </summary>
         /// <param name="declaration">The state declaration node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
@@ -280,25 +280,28 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLTreeNode Members
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -310,7 +313,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 

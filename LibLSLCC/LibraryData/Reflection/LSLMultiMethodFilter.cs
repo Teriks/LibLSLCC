@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLMultiMethodFilter.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.Collections;
 using System.Collections.Generic;
@@ -47,48 +51,73 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
+#endregion
+
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Allows multiple <see cref="ILSLMethodFilter"/> objects to participate in filtering/mutating method
-    /// signatures de-serialized from runtime types using <see cref="LSLLibraryDataReflectionSerializer"/>.
+    ///     Allows multiple <see cref="ILSLMethodFilter" /> objects to participate in filtering/mutating method
+    ///     signatures de-serialized from runtime types using <see cref="LSLLibraryDataReflectionSerializer" />.
     /// </summary>
     public class LSLMultiMethodFilter : ILSLMethodFilter, IEnumerable<ILSLMethodFilter>
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLMultiMethodFilter" /> class.
+        /// </summary>
+        public LSLMultiMethodFilter()
+        {
+            Filters = new Collection<ILSLMethodFilter>();
+        }
+
 
         /// <summary>
-        /// A modifiable collection of all <see cref="ILSLMethodFilter"/> objects participating in filtering.
+        ///     A modifiable collection of all <see cref="ILSLMethodFilter" /> objects participating in filtering.
         /// </summary>
         /// <value>
-        /// The <see cref="ILSLMethodFilter"/>'s being used to filter.
+        ///     The <see cref="ILSLMethodFilter" />'s being used to filter.
         /// </value>
         // ReSharper disable once CollectionNeverUpdated.Global
         public Collection<ILSLMethodFilter> Filters { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLMultiMethodFilter"/> class.
-        /// </summary>
-        public LSLMultiMethodFilter()
-        {
-            Filters= new Collection<ILSLMethodFilter>();
-        }
 
         /// <summary>
-        /// Allows <see cref="MethodInfo"/> objects to be prematurely filtered from de-serialization output.  Returns <c>true</c> if the <see cref="MethodInfo"/> should be filtered.
+        ///     Returns an enumerator that enumerates through the <see cref="ILSLMethodFilter" /> objects that have been added to
+        ///     this <see cref="LSLMultiMethodFilter" />.
         /// </summary>
-        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer"/> this add-on belongs to.</param>
-        /// <param name="info">The <see cref="MethodInfo"/> object we may want to filter from the output.</param>
+        /// <returns>
+        ///     An enumerator over the <see cref="ILSLMethodFilter" /> objects that have been added to this
+        ///     <see cref="LSLMultiMethodFilter" />.
+        /// </returns>
+        public IEnumerator<ILSLMethodFilter> GetEnumerator()
+        {
+            return Filters.GetEnumerator();
+        }
+
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+
+        /// <summary>
+        ///     Allows <see cref="MethodInfo" /> objects to be prematurely filtered from de-serialization output.  Returns
+        ///     <c>true</c> if the <see cref="MethodInfo" /> should be filtered.
+        /// </summary>
+        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer" /> this add-on belongs to.</param>
+        /// <param name="info">The <see cref="MethodInfo" /> object we may want to filter from the output.</param>
         /// <returns><c>true</c> if the method needs to be filtered from the results.</returns>
         public bool PreFilter(LSLLibraryDataReflectionSerializer serializer, MethodInfo info)
         {
             return Filters.Any(filter => filter.PreFilter(serializer, info));
         }
 
+
         /// <summary>
-        /// Allows modification a function signature after its basic information has been serialized, before its returned.
+        ///     Allows modification a function signature after its basic information has been serialized, before its returned.
         /// </summary>
-        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer"/> this add-on belongs to.</param>
-        /// <param name="info">The <see cref="MethodInfo"/> object the library function signature was serialized from.</param>
+        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer" /> this add-on belongs to.</param>
+        /// <param name="info">The <see cref="MethodInfo" /> object the library function signature was serialized from.</param>
         /// <param name="signature">The signature.</param>
         /// <returns><c>true</c> if the method needs to be filtered from the results.</returns>
         public bool MutateSignature(LSLLibraryDataReflectionSerializer serializer, MethodInfo info,
@@ -99,27 +128,12 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Add's a filter to this multi filter, this here so list initializer syntax can be utilized to build a multi filter.
+        ///     Add's a filter to this multi filter, this here so list initializer syntax can be utilized to build a multi filter.
         /// </summary>
         /// <param name="filter">The filter to add.</param>
         public void Add(ILSLMethodFilter filter)
         {
             Filters.Add(filter);
-        }
-
-
-        /// <summary>
-        /// Returns an enumerator that enumerates through the <see cref="ILSLMethodFilter"/> objects that have been added to this <see cref="LSLMultiMethodFilter"/>.
-        /// </summary>
-        /// <returns>An enumerator over the <see cref="ILSLMethodFilter"/> objects that have been added to this <see cref="LSLMultiMethodFilter"/>.</returns>
-        public IEnumerator<ILSLMethodFilter> GetEnumerator()
-        {
-            return Filters.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

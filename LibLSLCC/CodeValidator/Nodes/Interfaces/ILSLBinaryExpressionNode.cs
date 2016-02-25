@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLBinaryExpressionNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -50,35 +53,37 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST interface for binary expression nodes.
+    ///     AST interface for binary expression nodes.
     /// </summary>
     public interface ILSLBinaryExpressionNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The binary operation type of this node.
+        ///     The binary operation type of this node.
         /// </summary>
         LSLBinaryOperationType Operation { get; }
 
         /// <summary>
-        /// The string representation of the binary operation this node preforms.
+        ///     The string representation of the binary operation this node preforms.
         /// </summary>
         string OperationString { get; }
 
         /// <summary>
-        /// The expression tree on the left of side of the binary operation.
+        ///     The expression tree on the left of side of the binary operation.
         /// </summary>
         ILSLReadOnlyExprNode LeftExpression { get; }
 
         /// <summary>
-        /// The expression tree on the right side of the binary operation.
+        ///     The expression tree on the right side of the binary operation.
         /// </summary>
         ILSLReadOnlyExprNode RightExpression { get; }
 
-
         /// <summary>
-        /// The source code range that encompasses the binary expression and its children.
+        ///     The source code range that encompasses the binary expression and its children.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOperation { get; }
     }
 }

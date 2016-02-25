@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLScopeAddress.cs
 // 
@@ -39,16 +40,18 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
-    /// Represents a scope address within the auto complete parser.
+    ///     Represents a scope address within the auto complete parser.
     /// </summary>
     public sealed class LSLAutoCompleteScopeAddress
     {
         /// <summary>
-        /// Construct a new scope address given a code area ID, scope ID and scope level.
+        ///     Construct a new scope address given a code area ID, scope ID and scope level.
         /// </summary>
         /// <param name="codeAreaId">The code area ID of the address.</param>
         /// <param name="scopeId">The scope ID of the address.</param>
@@ -62,27 +65,30 @@ namespace LibLSLCC.AutoComplete
 
 
         /// <summary>
-        /// Effectively the index of the code able script area.  
-        /// Each time a function declaration body or event handler body is encountered, this address value increases by one.
+        ///     Effectively the index of the code able script area.
+        ///     Each time a function declaration body or event handler body is encountered, this address value increases by one.
         /// </summary>
         public int CodeAreaId { get; private set; }
 
         /// <summary>
-        /// The overall scope level, every time an opening brace is encountered this increments, and when a closing brace is encountered it decrements.
+        ///     The overall scope level, every time an opening brace is encountered this increments, and when a closing brace is
+        ///     encountered it decrements.
         /// </summary>
         public int ScopeLevel { get; private set; }
 
         /// <summary>
-        /// Gets the scope ID,  the top level of a function declaration scope or event handler scope is considered to be ScopeId=1.
-        /// Subsequent scopes within the function declaration or event handler declaration cause the ID value to increment, it is never decremented. 
-        /// It resets to 1 at the top level of every function declaration or event handler.
+        ///     Gets the scope ID,  the top level of a function declaration scope or event handler scope is considered to be
+        ///     ScopeId=1.
+        ///     Subsequent scopes within the function declaration or event handler declaration cause the ID value to increment, it
+        ///     is never decremented.
+        ///     It resets to 1 at the top level of every function declaration or event handler.
         /// </summary>
         public int ScopeId { get; private set; }
 
 
         /// <summary>
-        /// Returns a string that represents the scope address.
-        /// The format is: "(CodeAreaID: 0, ScopeID: 0, ScopeLevel: 0)"
+        ///     Returns a string that represents the scope address.
+        ///     The format is: "(CodeAreaID: 0, ScopeID: 0, ScopeLevel: 0)"
         /// </summary>
         public override string ToString()
         {

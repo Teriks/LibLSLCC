@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLDummyExpr.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -62,10 +65,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
         }
 
+
         internal LSLDummyExpr()
         {
             SourceRangesAvailable = false;
         }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -84,7 +89,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLExprNode Members
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
@@ -106,35 +111,36 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The return type of the expression. see: <see cref="LSLType" />
+        ///     The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type { get; set; }
 
 
-
         /// <summary>
-        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        ///     The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
-        /// The type of the expression.
+        ///     The type of the expression.
         /// </value>
         public LSLExpressionType ExpressionType { get; set; }
 
 
         /// <summary>
-        /// True if the expression is constant and can be calculated at compile time.
+        ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
         public bool IsConstant { get; set; }
 
         /// <summary>
-        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a
+        ///     function call.  False otherwise.
         /// </summary>
         public bool HasPossibleSideEffects { get; private set; }
 
 
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
@@ -152,9 +158,9 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Should produce a user friendly description of the expressions return type.
-        /// This is used in some syntax error messages, Ideally you should enclose your description in
-        /// parenthesis or something that will make it stand out in a string.
+        ///     Should produce a user friendly description of the expressions return type.
+        ///     This is used in some syntax error messages, Ideally you should enclose your description in
+        ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
         /// <returns></returns>
         public string DescribeType()
@@ -164,10 +170,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Deep clone the expression node into a new node.
-        /// This should deep clone all of the node's children as well.
+        ///     Deep clone the expression node into a new node.
+        ///     This should deep clone all of the node's children as well.
         /// </summary>
-        /// <returns>Cloned <see cref="ILSLReadOnlyExprNode"/></returns>
+        /// <returns>Cloned <see cref="ILSLReadOnlyExprNode" /></returns>
         ILSLReadOnlyExprNode ILSLReadOnlyExprNode.Clone()
         {
             return Clone();

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLFunctionAttributeSerializer.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -48,42 +52,16 @@ using System.Reflection;
 using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.CodeValidator.Primitives;
 
+#endregion
+
 namespace LibLSLCC.LibraryData.Reflection
 {
     internal class LSLFunctionAttributeSerializer
     {
         public ILSLReturnTypeConverter FallBackReturnTypeConverter { get; set; }
-
         public ILSLParamTypeConverter FallBackParameterTypeConverter { get; set; }
-
         public bool AttributedParametersOnly { get; set; }
         public Func<ParameterInfo, bool> ParameterFilter { get; set; }
-
-
-        public class Info
-        {
-            public bool ModInvoke { get; set; }
-
-            public bool Deprecated { get; set; }
-
-            public bool Variadic { get; set; }
-
-            public bool ExplicitReturnTypePresent { get; set; }
-
-            public LSLType ReturnType { get; set; }
-
-            public List<LSLParameter> Parameters { get; set; }
-
-
-            public ILSLReturnTypeConverter ReturnTypeConverter { get; set; }
-
-            public ILSLParamTypeConverter ParamTypeConverter { get; set; }
-
-            public Info()
-            {
-                Parameters = new List<LSLParameter>();
-            }
-        }
 
 
         public Info GetInfo(MethodInfo method)
@@ -104,7 +82,7 @@ namespace LibLSLCC.LibraryData.Reflection
             if (attr.ConstructorArguments.Count > 0)
             {
                 result.ExplicitReturnTypePresent = true;
-                result.ReturnType = (LSLType)attr.ConstructorArguments[0].Value;
+                result.ReturnType = (LSLType) attr.ConstructorArguments[0].Value;
             }
             else if (attr.NamedArguments.Any(x => x.MemberInfo.Name == "ReturnType"))
             {
@@ -115,12 +93,14 @@ namespace LibLSLCC.LibraryData.Reflection
 
             if (attr.NamedArguments.Any(x => x.MemberInfo.Name == "ModInvoke"))
             {
-                result.ModInvoke = (bool)attr.NamedArguments.First(x => x.MemberInfo.Name == "ModInvoke").TypedValue.Value;
+                result.ModInvoke =
+                    (bool) attr.NamedArguments.First(x => x.MemberInfo.Name == "ModInvoke").TypedValue.Value;
             }
 
             if (attr.NamedArguments.Any(x => x.MemberInfo.Name == "Deprecated"))
             {
-                result.Deprecated = (bool)attr.NamedArguments.First(x => x.MemberInfo.Name == "Deprecated").TypedValue.Value;
+                result.Deprecated =
+                    (bool) attr.NamedArguments.First(x => x.MemberInfo.Name == "Deprecated").TypedValue.Value;
             }
 
 
@@ -133,7 +113,8 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[" + typeof(LSLFunctionAttribute).Name + "] of on method '{0}' declared in Type '{1}' has both an explicit " +
+                            "[" + typeof (LSLFunctionAttribute).Name +
+                            "] of on method '{0}' declared in Type '{1}' has both an explicit " +
                             "return type and a ReturnTypeConverter of Type {2}, only one or the other is allowed.",
                             method.Name, method.DeclaringType.FullName, rtConverter.FullName));
                 }
@@ -142,10 +123,11 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[" + typeof(LSLFunctionAttribute).Name + ".ReturnTypeConverter] of Type '{0}' on method '{1}' declared in " +
-                            "Type '{2}' does not implement " + typeof(ILSLReturnTypeConverter).Name + ".",
+                            "[" + typeof (LSLFunctionAttribute).Name +
+                            ".ReturnTypeConverter] of Type '{0}' on method '{1}' declared in " +
+                            "Type '{2}' does not implement " + typeof (ILSLReturnTypeConverter).Name + ".",
                             rtConverter.FullName,
-                            method.Name, 
+                            method.Name,
                             method.DeclaringType.FullName));
                 }
 
@@ -158,7 +140,8 @@ namespace LibLSLCC.LibraryData.Reflection
             {
                 throw new LSLLibraryDataAttributeException(
                     string.Format(
-                        "[" + typeof(LSLFunctionAttribute).Name + "] of on method '{0}' declared in Type '{1}' has no explicit ReturnType or " +
+                        "[" + typeof (LSLFunctionAttribute).Name +
+                        "] of on method '{0}' declared in Type '{1}' has no explicit ReturnType or " +
                         "ReturnTypeConverter, and no fall-back converter was specified in the serializer.",
                         method.Name,
                         method.DeclaringType.FullName));
@@ -175,7 +158,8 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "Return type of method '{1}' with [" + typeof(LSLFunctionAttribute).Name + "] attribute declared in Type '{2}' could not be converted from '{3}' to a  " +
+                            "Return type of method '{1}' with [" + typeof (LSLFunctionAttribute).Name +
+                            "] attribute declared in Type '{2}' could not be converted from '{3}' to a  " +
                             "corresponding LSLType by the preferred ReturnTypeConverter of Type '{0}'.",
                             method.Name,
                             method.DeclaringType.FullName,
@@ -196,7 +180,9 @@ namespace LibLSLCC.LibraryData.Reflection
                 {
                     throw new LSLLibraryDataAttributeException(
                         string.Format(
-                            "[" + typeof(LSLFunctionAttribute).Name + ".ParamTypeConverter] of Type '{0}' on method '{1}' declared in Type '{2}' does not implement " + typeof(ILSLParamTypeConverter).Name + ".",
+                            "[" + typeof (LSLFunctionAttribute).Name +
+                            ".ParamTypeConverter] of Type '{0}' on method '{1}' declared in Type '{2}' does not implement " +
+                            typeof (ILSLParamTypeConverter).Name + ".",
                             rtConverter.FullName,
                             method.Name,
                             method.DeclaringType.FullName));
@@ -225,19 +211,21 @@ namespace LibLSLCC.LibraryData.Reflection
                 LSLType pType;
                 bool isVariadic;
 
-                
+
                 if (paramAttributes.Count == 0)
                 {
                     //without attribute, only add if AttributedParametersOnly is false.
 
-                    if(AttributedParametersOnly) continue;
+                    if (AttributedParametersOnly) continue;
 
                     if (preferedParameterConverter == null)
                     {
                         throw new LSLLibraryDataAttributeException(
                             string.Format(
-                                "Required [" + typeof(LSLParamAttribute).Name + "] missing on parameter index '{0}' in method '{1}' declared in Type '{2}'.  It was required because " +
-                                "an explicit [" + typeof(LSLFunctionAttribute).Name + ".ParamTypeConverter] was not defined on the method, and the serializer provided no fall-back converter.",
+                                "Required [" + typeof (LSLParamAttribute).Name +
+                                "] missing on parameter index '{0}' in method '{1}' declared in Type '{2}'.  It was required because " +
+                                "an explicit [" + typeof (LSLFunctionAttribute).Name +
+                                ".ParamTypeConverter] was not defined on the method, and the serializer provided no fall-back converter.",
                                 param.Position,
                                 method.Name,
                                 method.DeclaringType.FullName));
@@ -255,7 +243,9 @@ namespace LibLSLCC.LibraryData.Reflection
                     {
                         throw new LSLLibraryDataAttributeException(
                             string.Format(
-                                "Preferred parameter type converter of Type '{0}' used by attribute [" + typeof(LSLFunctionAttribute).Name + "] on method '{1}' declared in Type '{2}', failed to converter a parameter of Type '{3}'.",
+                                "Preferred parameter type converter of Type '{0}' used by attribute [" +
+                                typeof (LSLFunctionAttribute).Name +
+                                "] on method '{1}' declared in Type '{2}', failed to converter a parameter of Type '{3}'.",
                                 preferedParameterConverter.GetType().FullName,
                                 method.Name,
                                 method.DeclaringType.FullName,
@@ -266,7 +256,8 @@ namespace LibLSLCC.LibraryData.Reflection
                     {
                         throw new LSLLibraryDataAttributeException(
                             string.Format(
-                                "Preferred parameter type converter of Type '{0}' used by attribute [" + typeof(LSLFunctionAttribute).Name + "] on method '{1}'" +
+                                "Preferred parameter type converter of Type '{0}' used by attribute [" +
+                                typeof (LSLFunctionAttribute).Name + "] on method '{1}'" +
                                 " declared in Type '{2}', converted a parameter of Type '{3}' to 'LSLType.Void' and the parameter was not variadic.",
                                 preferedParameterConverter.GetType().FullName,
                                 method.Name,
@@ -282,7 +273,6 @@ namespace LibLSLCC.LibraryData.Reflection
                 }
                 else
                 {
-
                     //with explicit attribute
 
                     var pAttr = paramAttributes.First();
@@ -299,7 +289,8 @@ namespace LibLSLCC.LibraryData.Reflection
 
                         throw new LSLLibraryDataAttributeException(
                             string.Format(
-                                "[" + typeof(LSLFunctionAttribute).Name + "] on method '{0}' declared in Type '{1}', used an [LSLParam(LSLType.Void)] attribute on a non variadic parameter of Type '{2}'.",
+                                "[" + typeof (LSLFunctionAttribute).Name +
+                                "] on method '{0}' declared in Type '{1}', used an [LSLParam(LSLType.Void)] attribute on a non variadic parameter of Type '{2}'.",
                                 method.Name,
                                 method.DeclaringType.FullName,
                                 cSharpParameterType.FullName));
@@ -312,13 +303,31 @@ namespace LibLSLCC.LibraryData.Reflection
                     }
 
 
-
                     result.Parameters.Add(new LSLParameter(pType, param.Name, isVariadic));
                 }
             }
 
 
             return result;
+        }
+
+
+        public class Info
+        {
+            public Info()
+            {
+                Parameters = new List<LSLParameter>();
+            }
+
+
+            public bool ModInvoke { get; set; }
+            public bool Deprecated { get; set; }
+            public bool Variadic { get; set; }
+            public bool ExplicitReturnTypePresent { get; set; }
+            public LSLType ReturnType { get; set; }
+            public List<LSLParameter> Parameters { get; set; }
+            public ILSLReturnTypeConverter ReturnTypeConverter { get; set; }
+            public ILSLParamTypeConverter ParamTypeConverter { get; set; }
         }
     }
 }

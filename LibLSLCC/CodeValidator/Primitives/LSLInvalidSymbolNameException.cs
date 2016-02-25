@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLInvalidSymbolNameException.cs
 // 
@@ -39,38 +40,46 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
 using LibLSLCC.LibraryData;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    /// Thrown when <see cref="LSLLibraryConstantSignature"/>, <see cref="LSLFunctionSignature"/>, <see cref="LSLEventSignature"/> or <see cref="LSLParameter"/> 
-    /// have their Name set to a value that does not conform the LSL's symbol naming convention.
+    ///     Thrown when <see cref="LSLLibraryConstantSignature" />, <see cref="LSLFunctionSignature" />,
+    ///     <see cref="LSLEventSignature" /> or <see cref="LSLParameter" />
+    ///     have their Name set to a value that does not conform the LSL's symbol naming convention.
     /// </summary>
     [Serializable]
     public class LSLInvalidSymbolNameException : Exception
     {
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public LSLInvalidSymbolNameException()
         {
         }
 
+
         /// <summary>
-        /// Construct with message.
+        ///     Construct with message.
         /// </summary>
         /// <param name="message"></param>
         public LSLInvalidSymbolNameException(string message) : base(message)
         {
         }
 
+
         /// <summary>
-        /// Construct with message and inner exception.
+        ///     Construct with message and inner exception.
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="innerException">Inner exception.</param>
@@ -78,8 +87,9 @@ namespace LibLSLCC.CodeValidator.Primitives
         {
         }
 
+
         /// <summary>
-        /// Serializable constructor.
+        ///     Serializable constructor.
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>

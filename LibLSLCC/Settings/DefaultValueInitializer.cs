@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: DefaultValueInitializer.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.ComponentModel;
@@ -47,14 +51,16 @@ using System.Linq;
 using System.Reflection;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.Settings
 {
     /// <summary>
-    /// A static class with utilities for initializing an objects field/property's with default values.
+    ///     A static class with utilities for initializing an objects field/property's with default values.
     /// </summary>
-    /// <seealso cref="IDefaultSettingsValueFactory"/>
-    /// <seealso cref="DefaultValueFactoryAttribute"/>
-    /// <seealso cref="DefaultValueAttribute"/>
+    /// <seealso cref="IDefaultSettingsValueFactory" />
+    /// <seealso cref="DefaultValueFactoryAttribute" />
+    /// <seealso cref="DefaultValueAttribute" />
     public static class DefaultValueInitializer
     {
         private static void SetValue(MemberInfo field, object instance, object value)
@@ -76,46 +82,48 @@ namespace LibLSLCC.Settings
             else
             {
                 throw new ArgumentException(typeof (DefaultValueInitializer).FullName +
-                                                    ".SetValue(): field was not a FieldInfo or PropertyInfo derivative of MemberInfo.");
+                                            ".SetValue(): field was not a FieldInfo or PropertyInfo derivative of MemberInfo.");
             }
         }
 
 
         /// <summary>
-        /// Get the default value for a given public instance field/property in an object instance.
+        ///     Get the default value for a given public instance field/property in an object instance.
         /// </summary>
         /// <param name="instance">The object instance.</param>
         /// <param name="memberName">The field/property name.</param>
-        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/></typeparam>
-        /// <returns>The default value for the public field/property specified by <paramref name="memberName"/>.</returns>
+        /// <typeparam name="T">The <see cref="Type" /> of <paramref name="instance" /></typeparam>
+        /// <returns>The default value for the public field/property specified by <paramref name="memberName" />.</returns>
         /// <exception cref="ArgumentNullException">
-        /// <para>
-        /// If <paramref name="instance"/> or <paramref name="memberName"/> are <c>null</c>.
-        /// </para>
+        ///     <para>
+        ///         If <paramref name="instance" /> or <paramref name="memberName" /> are <c>null</c>.
+        ///     </para>
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// <para>
-        /// If <paramref name="memberName"/> is a property that is not both readable and writable.
-        /// </para>
-        /// <para>
-        /// If <paramref name="memberName"/> is all whitespace.
-        /// </para>
-        /// <para>
-        /// If <paramref name="memberName"/> does not exist in <paramref name="instance"/>.
-        /// </para>
+        ///     <para>
+        ///         If <paramref name="memberName" /> is a property that is not both readable and writable.
+        ///     </para>
+        ///     <para>
+        ///         If <paramref name="memberName" /> is all whitespace.
+        ///     </para>
+        ///     <para>
+        ///         If <paramref name="memberName" /> does not exist in <paramref name="instance" />.
+        ///     </para>
         /// </exception>
         /// <exception cref="InvalidOperationException">
-        /// <para>
-        /// If the field/property does not possess a <see cref="DefaultValueFactoryAttribute"/> or <see cref="DefaultValueAttribute"/> and
-        /// its declared type possesses no default constructor.
-        /// </para>
-        /// <para>
-        /// If the field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
-        /// </para>
+        ///     <para>
+        ///         If the field/property does not possess a <see cref="DefaultValueFactoryAttribute" /> or
+        ///         <see cref="DefaultValueAttribute" /> and
+        ///         its declared type possesses no default constructor.
+        ///     </para>
+        ///     <para>
+        ///         If the field/property possesses both <see cref="DefaultValueFactoryAttribute" /> and
+        ///         <see cref="DefaultValueAttribute" /> at once.
+        ///     </para>
         /// </exception>
-        /// <seealso cref="IDefaultSettingsValueFactory"/>
-        /// <seealso cref="DefaultValueFactoryAttribute"/>
-        /// <seealso cref="DefaultValueAttribute"/>
+        /// <seealso cref="IDefaultSettingsValueFactory" />
+        /// <seealso cref="DefaultValueFactoryAttribute" />
+        /// <seealso cref="DefaultValueAttribute" />
         public static object GetDefaultValue<T>(T instance, string memberName)
         {
             if (instance == null)
@@ -143,9 +151,10 @@ namespace LibLSLCC.Settings
 
             if (settingsProperty == null && settingsField == null)
             {
-
-                throw new ArgumentException(typeof(DefaultValueInitializer).FullName +
-                                    string.Format(".GetDefaultValue(): field/property with the name of \"{0}\" did not exist in the given type \"{1}\".", memberName, typeof(T).FullName), "memberName");
+                throw new ArgumentException(typeof (DefaultValueInitializer).FullName +
+                                            string.Format(
+                                                ".GetDefaultValue(): field/property with the name of \"{0}\" did not exist in the given type \"{1}\".",
+                                                memberName, typeof (T).FullName), "memberName");
             }
 
 
@@ -153,8 +162,8 @@ namespace LibLSLCC.Settings
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 
-            var member = settingsField == null ? settingsProperty : (MemberInfo)settingsField;
-            
+            var member = settingsField == null ? settingsProperty : (MemberInfo) settingsField;
+
 
             var asField = member as FieldInfo;
             var asProp = member as PropertyInfo;
@@ -177,18 +186,19 @@ namespace LibLSLCC.Settings
                     verbs = "writeable";
                 }
 
-                throw new ArgumentException(typeof(DefaultValueInitializer).FullName +
-                                    string.Format(".GetDefaultValue(): field/property with the name of \"{0}\" in type \"{1}\" is not \"{2}\".",
-                                    memberName, typeof(T).FullName, verbs), "memberName");
+                throw new ArgumentException(typeof (DefaultValueInitializer).FullName +
+                                            string.Format(
+                                                ".GetDefaultValue(): field/property with the name of \"{0}\" in type \"{1}\" is not \"{2}\".",
+                                                memberName, typeof (T).FullName, verbs), "memberName");
             }
 
 
             var fieldType = isField ? asField.FieldType : asProp.PropertyType;
 
 
-            var factoryAttribute = member.GetCustomAttributes(typeof(DefaultValueFactoryAttribute), true).ToList();
+            var factoryAttribute = member.GetCustomAttributes(typeof (DefaultValueFactoryAttribute), true).ToList();
 
-            var defaultAttribute = member.GetCustomAttributes(typeof(DefaultValueAttribute), true).ToList();
+            var defaultAttribute = member.GetCustomAttributes(typeof (DefaultValueAttribute), true).ToList();
 
             if (defaultAttribute.Any() && factoryAttribute.Any())
             {
@@ -202,17 +212,17 @@ namespace LibLSLCC.Settings
 
             if (factoryAttribute.Any())
             {
-                var factory = ((DefaultValueFactoryAttribute)factoryAttribute.First());
+                var factory = ((DefaultValueFactoryAttribute) factoryAttribute.First());
 
                 return factory.Factory.GetDefaultValue(member, instance);
             }
             if (defaultAttribute.Any())
             {
-                var defaultValue = ((DefaultValueAttribute)defaultAttribute.First());
+                var defaultValue = ((DefaultValueAttribute) defaultAttribute.First());
 
                 return defaultValue.Value;
             }
-            
+
             var constructors =
                 fieldType.GetConstructors(constructorBindingFlags).Where(x => !x.GetParameters().Any()).ToList();
 
@@ -222,7 +232,7 @@ namespace LibLSLCC.Settings
                     string.Format(
                         "{0}.Init(object instance):  Property '{1} {2}.{3};' is defined with a type that has no parameterless constructor,"
                         + " use the [DefaultValueFactory] attribute on the property.",
-                        typeof(DefaultValueInitializer).FullName,
+                        typeof (DefaultValueInitializer).FullName,
                         fieldType.FullName,
                         member.DeclaringType.FullName,
                         member.Name));
@@ -236,43 +246,49 @@ namespace LibLSLCC.Settings
         }
 
 
-
         /// <summary>
-        /// Sets a field/property of <paramref name="instance"/> to its default value.
+        ///     Sets a field/property of <paramref name="instance" /> to its default value.
         /// </summary>
         /// <param name="instance">The instance of the object containing the field/property.</param>
         /// <param name="memberName">The member name of the field/property.</param>
-        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/></typeparam>
-        /// <returns><paramref name="instance"/></returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="instance"/> or <paramref name="memberName"/> are <c>null</c>.</exception>
+        /// <typeparam name="T">The <see cref="Type" /> of <paramref name="instance" /></typeparam>
+        /// <returns>
+        ///     <paramref name="instance" />
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="instance" /> or <paramref name="memberName" /> are
+        ///     <c>null</c>.
+        /// </exception>
         /// <exception cref="ArgumentException">
-        /// <para>
-        /// If <paramref name="memberName"/> is a property that is not both readable and writable.
-        /// </para>
-        /// <para>
-        /// If <paramref name="memberName"/> is all whitespace.
-        /// </para>
-        /// <para>
-        /// If <paramref name="memberName"/> does not exist in <paramref name="instance"/>.
-        /// </para>
+        ///     <para>
+        ///         If <paramref name="memberName" /> is a property that is not both readable and writable.
+        ///     </para>
+        ///     <para>
+        ///         If <paramref name="memberName" /> is all whitespace.
+        ///     </para>
+        ///     <para>
+        ///         If <paramref name="memberName" /> does not exist in <paramref name="instance" />.
+        ///     </para>
         /// </exception>
-        /// <exception cref="InvalidOperationException"> 
-        /// <para>
-        /// If the field/property does not possess a <see cref="DefaultValueFactoryAttribute"/> or <see cref="DefaultValueAttribute"/> and
-        /// its declared type possesses no default constructor.
-        /// </para>
-        /// <para>
-        /// If the field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
-        /// </para>
+        /// <exception cref="InvalidOperationException">
+        ///     <para>
+        ///         If the field/property does not possess a <see cref="DefaultValueFactoryAttribute" /> or
+        ///         <see cref="DefaultValueAttribute" /> and
+        ///         its declared type possesses no default constructor.
+        ///     </para>
+        ///     <para>
+        ///         If the field/property possesses both <see cref="DefaultValueFactoryAttribute" /> and
+        ///         <see cref="DefaultValueAttribute" /> at once.
+        ///     </para>
         /// </exception>
-        /// <seealso cref="IDefaultSettingsValueFactory"/>
-        /// <seealso cref="DefaultValueFactoryAttribute"/>
-        /// <seealso cref="DefaultValueAttribute"/>
+        /// <seealso cref="IDefaultSettingsValueFactory" />
+        /// <seealso cref="DefaultValueFactoryAttribute" />
+        /// <seealso cref="DefaultValueAttribute" />
         public static T SetToDefault<T>(T instance, string memberName)
         {
             var defaultValue = GetDefaultValue(instance, memberName);
 
-            var member = typeof (T).GetProperty(memberName) ?? (MemberInfo) typeof(T).GetField(memberName);
+            var member = typeof (T).GetProperty(memberName) ?? (MemberInfo) typeof (T).GetField(memberName);
 
             if (member == null) return instance;
 
@@ -297,23 +313,28 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        /// <para>
-        /// Checks for necessary resets on fields/properties of an object using <see cref="IDefaultSettingsValueFactory.CheckForNecessaryResets"/>,
-        /// then resets them to their default value using <see cref="IDefaultSettingsValueFactory.GetDefaultValue"/> if necessary.
-        /// </para>
-        /// <para>
-        /// This only affects fields/properties possessing a <see cref="DefaultValueFactoryAttribute"/>.
-        /// </para>
+        ///     <para>
+        ///         Checks for necessary resets on fields/properties of an object using
+        ///         <see cref="IDefaultSettingsValueFactory.CheckForNecessaryResets" />,
+        ///         then resets them to their default value using <see cref="IDefaultSettingsValueFactory.GetDefaultValue" /> if
+        ///         necessary.
+        ///     </para>
+        ///     <para>
+        ///         This only affects fields/properties possessing a <see cref="DefaultValueFactoryAttribute" />.
+        ///     </para>
         /// </summary>
         /// <param name="instance">The object instance to check for and preform necessary field/property resets on.</param>
-        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/>.</typeparam>
-        /// <returns><paramref name="instance"/></returns>
+        /// <typeparam name="T">The <see cref="Type" /> of <paramref name="instance" />.</typeparam>
+        /// <returns>
+        ///     <paramref name="instance" />
+        /// </returns>
         /// <exception cref="InvalidOperationException">
-        /// Thrown if a field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
+        ///     Thrown if a field/property possesses both <see cref="DefaultValueFactoryAttribute" /> and
+        ///     <see cref="DefaultValueAttribute" /> at once.
         /// </exception>
-        /// <seealso cref="IDefaultSettingsValueFactory"/>
-        /// <seealso cref="DefaultValueFactoryAttribute"/>
-        /// <seealso cref="DefaultValueAttribute"/>
+        /// <seealso cref="IDefaultSettingsValueFactory" />
+        /// <seealso cref="DefaultValueFactoryAttribute" />
+        /// <seealso cref="DefaultValueAttribute" />
         public static T DoNeccessaryResets<T>(T instance)
         {
             var settingsProperties =
@@ -344,9 +365,9 @@ namespace LibLSLCC.Settings
                 var fieldType = isField ? asField.FieldType : asProp.PropertyType;
 
 
-                var factoryAttribute = member.GetCustomAttributes(typeof(DefaultValueFactoryAttribute), true).ToList();
+                var factoryAttribute = member.GetCustomAttributes(typeof (DefaultValueFactoryAttribute), true).ToList();
 
-                var defaultAttribute = member.GetCustomAttributes(typeof(DefaultValueAttribute), true).ToList();
+                var defaultAttribute = member.GetCustomAttributes(typeof (DefaultValueAttribute), true).ToList();
 
                 if (defaultAttribute.Any() && factoryAttribute.Any())
                 {
@@ -360,7 +381,7 @@ namespace LibLSLCC.Settings
 
                 if (!factoryAttribute.Any()) continue;
 
-                var factory = ((DefaultValueFactoryAttribute)factoryAttribute.First());
+                var factory = ((DefaultValueFactoryAttribute) factoryAttribute.First());
 
                 //copy the for-each item reference into a local
                 //to avoid a possible compiler portability issue when using it in a lambda enclosure
@@ -384,20 +405,21 @@ namespace LibLSLCC.Settings
         }
 
 
-
-
         /// <summary>
-        /// Initializes all fields/properties in a given object to their default values.
+        ///     Initializes all fields/properties in a given object to their default values.
         /// </summary>
         /// <param name="instance">The object instance do the field/property reset on.</param>
-        /// <typeparam name="T">The <see cref="Type"/> of <paramref name="instance"/>.</typeparam>
-        /// <returns><paramref name="instance"/></returns>
-        /// <exception cref="InvalidOperationException"> 
-        /// Thrown if the field/property possesses both <see cref="DefaultValueFactoryAttribute"/> and <see cref="DefaultValueAttribute"/> at once.
+        /// <typeparam name="T">The <see cref="Type" /> of <paramref name="instance" />.</typeparam>
+        /// <returns>
+        ///     <paramref name="instance" />
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     Thrown if the field/property possesses both <see cref="DefaultValueFactoryAttribute" /> and
+        ///     <see cref="DefaultValueAttribute" /> at once.
         /// </exception>
-        /// <seealso cref="IDefaultSettingsValueFactory"/>
-        /// <seealso cref="DefaultValueFactoryAttribute"/>
-        /// <seealso cref="DefaultValueAttribute"/>
+        /// <seealso cref="IDefaultSettingsValueFactory" />
+        /// <seealso cref="DefaultValueFactoryAttribute" />
+        /// <seealso cref="DefaultValueAttribute" />
         public static T Init<T>(T instance)
         {
             var settingsProperties =
@@ -459,7 +481,6 @@ namespace LibLSLCC.Settings
                             SetValue(localMember, instance, factory.Factory.GetDefaultValue(localMember, instance));
                         }
                     });
-
                 }
                 else if (defaultAttribute.Any())
                 {

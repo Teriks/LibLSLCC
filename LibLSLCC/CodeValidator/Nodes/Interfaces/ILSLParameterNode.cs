@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLParameterNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -49,43 +52,47 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for parameter function and event handler parameter definitions.
+    ///     AST node interface for parameter function and event handler parameter definitions.
     /// </summary>
     public interface ILSLParameterNode : ILSLReadOnlySyntaxTreeNode
     {
         /// <summary>
-        /// The name of the parameter.
+        ///     The name of the parameter.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// The <see cref="LSLType"/> associated with the parameter.
+        ///     The <see cref="LSLType" /> associated with the parameter.
         /// </summary>
         LSLType Type { get; }
 
         /// <summary>
-        /// The string representation of the <see cref="LSLType"/> for the parameter, taken from the source code.
+        ///     The string representation of the <see cref="LSLType" /> for the parameter, taken from the source code.
         /// </summary>
         string TypeName { get; }
 
         /// <summary>
-        /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
+        ///     The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode" />.
         /// </summary>
         int ParameterIndex { get; }
 
-
         /// <summary>
-        /// The source code range of the parameter name.
+        ///     The source code range of the parameter name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeName { get; }
 
         /// <summary>
-        /// The source code range of the parameter type specifier.
+        ///     The source code range of the parameter type specifier.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeType { get; }
     }
 }

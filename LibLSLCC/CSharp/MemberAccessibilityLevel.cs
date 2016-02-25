@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: MemberAccessibilityLevel.cs
 // 
@@ -39,61 +40,69 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System;
+
+#endregion
 
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Represents the accessibility level of a CSharp class member.
+    ///     Represents the accessibility level of a CSharp class member.
     /// </summary>
     public enum MemberAccessibilityLevel
     {
         /// <summary>
-        /// public accessibility
+        ///     public accessibility
         /// </summary>
         Public,
 
         /// <summary>
-        /// default accessibility
+        ///     default accessibility
         /// </summary>
         Default,
 
         /// <summary>
-        /// private accessibility
+        ///     private accessibility
         /// </summary>
         Private,
 
         /// <summary>
-        /// internal accessibility
+        ///     internal accessibility
         /// </summary>
         Internal,
 
         /// <summary>
-        /// protected accessibility
+        ///     protected accessibility
         /// </summary>
         Protected,
 
         /// <summary>
-        /// protected internal accessibility
+        ///     protected internal accessibility
         /// </summary>
         ProtectedInternal
     }
 
 
     /// <summary>
-    /// Extension methods for <see cref="MemberAccessibilityLevel"/>.
+    ///     Extension methods for <see cref="MemberAccessibilityLevel" />.
     /// </summary>
     public static class MemberAccessibilityLevelExtensions
     {
         /// <summary>
-        /// Converts <see cref="MemberAccessibilityLevel"/> to its corresponding CSharp keyword.
+        ///     Converts <see cref="MemberAccessibilityLevel" /> to its corresponding CSharp keyword.
         /// </summary>
-        /// <param name="value">The <see cref="MemberAccessibilityLevel"/> to convert.</param>
+        /// <param name="value">The <see cref="MemberAccessibilityLevel" /> to convert.</param>
         /// <param name="addTrailingSpace">if set to <c>true</c>, add a trailing space to the converted string when its not empty.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">If the given enum value is not convertible to a string (will not occur).</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     If the given enum value is not convertible to a string (will not
+        ///     occur).
+        /// </exception>
         public static string ToCSharpKeyword(this MemberAccessibilityLevel value, bool addTrailingSpace = false)
         {
             string spacer = addTrailingSpace ? " " : "";

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: IReadOnlyHashedSet.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
@@ -49,47 +52,53 @@ using System.Collections.Generic;
 namespace LibLSLCC.Collections
 {
     /// <summary>
-    /// Read only Hashed Set interface, used by <see cref="HashedSet{T}"/>.
+    ///     Read only Hashed Set interface, used by <see cref="HashedSet{T}" />.
     /// </summary>
     /// <typeparam name="T">The type the set is to contain.</typeparam>
     public interface IReadOnlyHashedSet<T> : IReadOnlyContainer<T>
     {
         /// <summary>
-        /// Determines if this ICollection is read only.
+        ///     Determines if this ICollection is read only.
         /// </summary>
         bool IsReadOnly { get; }
 
+
         /// <summary>
-        /// Returns an enumerator that iterates through the collection.
+        ///     Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>
-        /// An enumerator that can be used to iterate through the collection.
+        ///     An enumerator that can be used to iterate through the collection.
         /// </returns>
         new IEnumerator<T> GetEnumerator();
 
+
         /// <summary>
-        /// Determine if the set contains the given object.
+        ///     Determine if the set contains the given object.
         /// </summary>
         /// <param name="item">The item to look for.</param>
         /// <returns>True if the set contains the given item.</returns>
         bool Contains(T item);
 
+
         /// <summary>
-        /// Copies the elements of the <see cref="IReadOnlyHashedSet{T}"/> to an array, starting at arrayIndex in the target array.
+        ///     Copies the elements of the <see cref="IReadOnlyHashedSet{T}" /> to an array, starting at arrayIndex in the target
+        ///     array.
         /// </summary>
         /// <param name="array">The array to copy the items to.</param>
         /// <param name="arrayIndex">The array index to start at in the target array.</param>
         void CopyTo(T[] array, int arrayIndex);
 
+
         /// <summary>
-        /// Determines whether a set is a subset of a specified collection.
+        ///     Determines whether a set is a subset of a specified collection.
         /// </summary>
         /// <param name="other">The other collection.</param>
         /// <returns>True if this set is a subset of the other collection.</returns>
         bool IsSubsetOf(IEnumerable<T> other);
 
+
         /// <summary>
-        /// Determines whether the current set is a superset of the specified collection.
+        ///     Determines whether the current set is a superset of the specified collection.
         /// </summary>
         /// <param name="other">The other collection.</param>
         /// <returns>True if this set is a superset of the specified collection.</returns>
@@ -97,28 +106,31 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Determines whether the current set is a proper (strict) superset of a specified collection.
+        ///     Determines whether the current set is a proper (strict) superset of a specified collection.
         /// </summary>
         /// <param name="other">The other collection.</param>
         /// <returns>True if the current set is a proper (string) superset of a specified collection.</returns>
         bool IsProperSupersetOf(IEnumerable<T> other);
 
+
         /// <summary>
-        /// Determines whether the current set is a proper (strict) subset of a specified collection.
+        ///     Determines whether the current set is a proper (strict) subset of a specified collection.
         /// </summary>
         /// <param name="other">The other collection.</param>
         /// <returns>True if the current set is a proper (string) subset of a specified collection.</returns>
         bool IsProperSubsetOf(IEnumerable<T> other);
 
+
         /// <summary>
-        /// Determines whether the current set overlaps with the specified collection.
+        ///     Determines whether the current set overlaps with the specified collection.
         /// </summary>
         /// <param name="other">The other collection.</param>
         /// <returns>True if the current set overlaps with the specified collection.</returns>
         bool Overlaps(IEnumerable<T> other);
 
+
         /// <summary>
-        /// Determines whether the current set and the specified collection contain the same elements.
+        ///     Determines whether the current set and the specified collection contain the same elements.
         /// </summary>
         /// <param name="other">The other collection.</param>
         /// <returns>True if the current set and the specified collection contain the same elements.</returns>

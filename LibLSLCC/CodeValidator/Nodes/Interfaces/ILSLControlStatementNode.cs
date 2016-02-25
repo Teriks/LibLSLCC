@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLControlStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Collections.Generic;
@@ -48,41 +51,40 @@ using System.Collections.Generic;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for control statement chains.  This node's children consists of
-    /// an if statement, optionally multiple else-if statements, and an optional else statement.
+    ///     AST node interface for control statement chains.  This node's children consists of
+    ///     an if statement, optionally multiple else-if statements, and an optional else statement.
     /// </summary>
     public interface ILSLControlStatementNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
-        /// True if the control statement node has an else statement child.
+        ///     True if the control statement node has an else statement child.
         /// </summary>
         bool HasElseStatement { get; }
 
         /// <summary>
-        /// True if the control statement node has an if statement child.
-        /// This can only really be false if the node contains errors.
+        ///     True if the control statement node has an if statement child.
+        ///     This can only really be false if the node contains errors.
         /// </summary>
         bool HasIfStatement { get; }
 
         /// <summary>
-        /// True if the control statement node has any if-else statement children.
+        ///     True if the control statement node has any if-else statement children.
         /// </summary>
         bool HasElseIfStatements { get; }
 
         /// <summary>
-        /// The else statement child of this control statement node if one exists, otherwise <c>null</c>.
+        ///     The else statement child of this control statement node if one exists, otherwise <c>null</c>.
         /// </summary>
         ILSLElseStatementNode ElseStatement { get; }
 
         /// <summary>
-        /// The if statement child of this control statement node if one exists, otherwise <c>null</c>.
+        ///     The if statement child of this control statement node if one exists, otherwise <c>null</c>.
         /// </summary>
         ILSLIfStatementNode IfStatement { get; }
 
         /// <summary>
-        /// The else-if statement children of this control statement node if one exists, otherwise an empty enumerable.
+        ///     The else-if statement children of this control statement node if one exists, otherwise an empty enumerable.
         /// </summary>
         IEnumerable<ILSLElseIfStatementNode> ElseIfStatement { get; }
     }

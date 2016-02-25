@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLBinaryOperationSignature.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -49,14 +52,16 @@ using LibLSLCC.CodeValidator.Enums;
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    /// Represents the signature of a binary operation. Includes the types on either side of the expression, and the operation type.
+    ///     Represents the signature of a binary operation. Includes the types on either side of the expression, and the
+    ///     operation type.
     /// </summary>
     public sealed class LSLBinaryOperationSignature
     {
-
         /// <summary>
-        /// Construct an <see cref="LSLBinaryOperationSignature"/> from the source code string representation of the binary operation,
-        /// the operations return type, the return type of the expression on the left and the return type of the expression on the right.
+        ///     Construct an <see cref="LSLBinaryOperationSignature" /> from the source code string representation of the binary
+        ///     operation,
+        ///     the operations return type, the return type of the expression on the left and the return type of the expression on
+        ///     the right.
         /// </summary>
         /// <param name="operation">Source code string representation of the operator.</param>
         /// <param name="returns">The return type of the binary operation.</param>
@@ -72,10 +77,11 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Construct an <see cref="LSLBinaryOperationSignature"/> from an <see cref="LSLBinaryOperationType"/>, the operations return type, 
-        /// the return type of the expression on the left and the return type of the expression on the right.
+        ///     Construct an <see cref="LSLBinaryOperationSignature" /> from an <see cref="LSLBinaryOperationType" />, the
+        ///     operations return type,
+        ///     the return type of the expression on the left and the return type of the expression on the right.
         /// </summary>
-        /// <param name="operation">The <see cref="LSLBinaryOperationType"/> of the binary operation signature.</param>
+        /// <param name="operation">The <see cref="LSLBinaryOperationType" /> of the binary operation signature.</param>
         /// <param name="returns">The return type of the binary operation.</param>
         /// <param name="left">The return type of the expression on the left side of the binary operation.</param>
         /// <param name="right">The return type of the expression on the right side of the binary operation.</param>
@@ -88,29 +94,31 @@ namespace LibLSLCC.CodeValidator.Primitives
             Operation = operation;
         }
 
+
         /// <summary>
-        /// The return type of the binary operation.
+        ///     The return type of the binary operation.
         /// </summary>
         public LSLType Returns { get; private set; }
 
         /// <summary>
-        /// The return type of the expression on the left side of the binary operation.
+        ///     The return type of the expression on the left side of the binary operation.
         /// </summary>
         public LSLType Left { get; private set; }
 
         /// <summary>
-        /// The return type of the expression on the right side of the binary operation.
+        ///     The return type of the expression on the right side of the binary operation.
         /// </summary>
         public LSLType Right { get; private set; }
 
         /// <summary>
-        /// The <see cref="LSLBinaryOperationType"/> describing the operator used in the binary expression.
+        ///     The <see cref="LSLBinaryOperationType" /> describing the operator used in the binary expression.
         /// </summary>
         public LSLBinaryOperationType Operation { get; private set; }
 
 
         /// <summary>
-        /// Gets a hash code for the <see cref="LSLBinaryOperationSignature"/> object derived from the properties: Returns, Left, Right and Operation.
+        ///     Gets a hash code for the <see cref="LSLBinaryOperationSignature" /> object derived from the properties: Returns,
+        ///     Left, Right and Operation.
         /// </summary>
         /// <returns>The hash code for this object.</returns>
         public override int GetHashCode()
@@ -125,12 +133,17 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Compares this <see cref="LSLBinaryOperationSignature"/> to another <see cref="LSLBinaryOperationSignature"/> or object.
-        /// The properties: Returns, Left, Right and Operation are compared for equality and if they are all equal True is returned, otherwise False.
-        /// If 'obj' is not an <see cref="LSLBinaryOperationSignature"/>, then false is always returned.
+        ///     Compares this <see cref="LSLBinaryOperationSignature" /> to another <see cref="LSLBinaryOperationSignature" /> or
+        ///     object.
+        ///     The properties: Returns, Left, Right and Operation are compared for equality and if they are all equal True is
+        ///     returned, otherwise False.
+        ///     If 'obj' is not an <see cref="LSLBinaryOperationSignature" />, then false is always returned.
         /// </summary>
-        /// <param name="obj">The other <see cref="LSLBinaryOperationSignature"/> to compare this one to.</param>
-        /// <returns>True if 'obj' is an <see cref="LSLBinaryOperationSignature"/> object, and the properties: Returns, Left, Right and Operation are equal in both of them.</returns>
+        /// <param name="obj">The other <see cref="LSLBinaryOperationSignature" /> to compare this one to.</param>
+        /// <returns>
+        ///     True if 'obj' is an <see cref="LSLBinaryOperationSignature" /> object, and the properties: Returns, Left,
+        ///     Right and Operation are equal in both of them.
+        /// </returns>
         public override bool Equals(object obj)
         {
             var o = obj as LSLBinaryOperationSignature;

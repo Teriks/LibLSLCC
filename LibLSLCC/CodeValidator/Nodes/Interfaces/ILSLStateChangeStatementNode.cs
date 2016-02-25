@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLStateChangeStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -48,33 +51,41 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for state change statements.
+    ///     AST node interface for state change statements.
     /// </summary>
     public interface ILSLStateChangeStatementNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
-        /// The name of the state that this state change statement jumps to.
+        ///     The name of the state that this state change statement jumps to.
         /// </summary>
         string StateTargetName { get; }
 
         /// <summary>
-        /// The source code range of the 'state' keyword in the state change statement.
+        ///     The source code range of the 'state' keyword in the state change statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeStateKeyword { get; }
 
         /// <summary>
-        /// The source code range of the target state name in the state change statement.
+        ///     The source code range of the target state name in the state change statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeStateName { get; }
 
         /// <summary>
-        /// The source code range of the semi-colon that ends the state change statement.
+        ///     The source code range of the semi-colon that ends the state change statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

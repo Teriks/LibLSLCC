@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLElseStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -49,20 +52,22 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for else statements.
+    ///     AST node interface for else statements.
     /// </summary>
     public interface ILSLElseStatementNode : ILSLReturnPathNode, ILSLReadOnlyBranchStatementNode
     {
-
         /// <summary>
-        /// The code scope node associated with this else statement.
+        ///     The code scope node associated with this else statement.
         /// </summary>
         ILSLCodeScopeNode Code { get; }
 
         /// <summary>
-        /// The source code range of the 'else' keyword in the else statement.
+        ///     The source code range of the 'else' keyword in the else statement.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeElseKeyword { get; }
     }
 }

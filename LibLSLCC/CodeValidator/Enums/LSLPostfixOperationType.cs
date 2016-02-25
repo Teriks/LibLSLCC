@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLPostfixOperationType.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -48,40 +51,43 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Enums
 {
-
     /// <summary>
-    /// Represents different types of LSL postfix operators.
+    ///     Represents different types of LSL postfix operators.
     /// </summary>
     public enum LSLPostfixOperationType
     {
         /// <summary>
-        /// Postfix Increment.
+        ///     Postfix Increment.
         /// </summary>
         Increment = 2,
 
         /// <summary>
-        /// Postfix Decrement.
+        ///     Postfix Decrement.
         /// </summary>
         Decrement = 1,
 
         /// <summary>
-        /// Unknown/Erroneous postfix operator.
+        ///     Unknown/Erroneous postfix operator.
         /// </summary>
         Error = 0
     }
 
     /// <summary>
-    ///  <see cref="LSLPostfixOperationType"/> extensions for converting <see cref="LSLPostfixOperationType"/> from source code string representation
-    /// and back.
+    ///     <see cref="LSLPostfixOperationType" /> extensions for converting <see cref="LSLPostfixOperationType" /> from source
+    ///     code string representation
+    ///     and back.
     /// </summary>
     public static class LSLPostfixOperationTypeTools
     {
         /// <summary>
-        /// Converts the provided  <see cref="LSLPostfixOperationType"/> to its source code string representation.
+        ///     Converts the provided  <see cref="LSLPostfixOperationType" /> to its source code string representation.
         /// </summary>
-        /// <param name="type">The <see cref="LSLPostfixOperationType"/> to convert to a string.</param>
-        /// <exception cref="ArgumentException">Thrown if the <see cref="LSLPostfixOperationType"/> provided was equal to <see cref="LSLPostfixOperationType.Error"/>.</exception>
-        /// <returns>The source code string representation of the <see cref="LSLPostfixOperationType"/>.</returns>
+        /// <param name="type">The <see cref="LSLPostfixOperationType" /> to convert to a string.</param>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if the <see cref="LSLPostfixOperationType" /> provided was equal to
+        ///     <see cref="LSLPostfixOperationType.Error" />.
+        /// </exception>
+        /// <returns>The source code string representation of the <see cref="LSLPostfixOperationType" />.</returns>
         public static string ToOperatorString(this LSLPostfixOperationType type)
         {
             switch (type)
@@ -99,8 +105,9 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Determines whether the given postfix operation is a modifying operation.
-        /// Both <see cref="LSLPostfixOperationType.Decrement"/> and <see cref="LSLPostfixOperationType.Increment"/> are modifying operations.
+        ///     Determines whether the given postfix operation is a modifying operation.
+        ///     Both <see cref="LSLPostfixOperationType.Decrement" /> and <see cref="LSLPostfixOperationType.Increment" /> are
+        ///     modifying operations.
         /// </summary>
         /// <param name="type">If the postfix operation modifies the expression to its left.</param>
         /// <returns></returns>
@@ -111,12 +118,15 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Parses a <see cref="LSLPostfixOperationType"/> from its source code string representation.
+        ///     Parses a <see cref="LSLPostfixOperationType" /> from its source code string representation.
         /// </summary>
-        /// <param name="operationString">The string to attempt to parse an <see cref="LSLPostfixOperationType"/> from.</param>
+        /// <param name="operationString">The string to attempt to parse an <see cref="LSLPostfixOperationType" /> from.</param>
         /// <exception cref="ArgumentNullException">Thrown if 'operationString' is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown if 'operationString' was not a valid source code string representation of an LSL postfix operator.</exception>
-        /// <returns>The parsed <see cref="LSLPostfixOperationType"/>.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if 'operationString' was not a valid source code string representation of an
+        ///     LSL postfix operator.
+        /// </exception>
+        /// <returns>The parsed <see cref="LSLPostfixOperationType" />.</returns>
         public static LSLPostfixOperationType ParseFromOperator(string operationString)
         {
             if (string.IsNullOrEmpty(operationString))

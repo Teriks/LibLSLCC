@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLSyntaxListenerPriorityQueue.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -54,9 +57,9 @@ using LibLSLCC.LibraryData;
 
 namespace LibLSLCC.CodeValidator.Components
 {
-
     /// <summary>
-    /// A proxy object for <see cref="ILSLSyntaxErrorListener"/> and <see cref="ILSLSyntaxWarningListener"/> that queue's/sorts syntax warnings/errors by their starting index in source code.
+    ///     A proxy object for <see cref="ILSLSyntaxErrorListener" /> and <see cref="ILSLSyntaxWarningListener" /> that
+    ///     queue's/sorts syntax warnings/errors by their starting index in source code.
     /// </summary>
     public sealed class LSLSyntaxListenerPriorityQueue : ILSLSyntaxErrorListener, ILSLSyntaxWarningListener
     {
@@ -64,37 +67,18 @@ namespace LibLSLCC.CodeValidator.Components
         private readonly PriorityQueue<int, Action> _warningActionQueue = new PriorityQueue<int, Action>();
 
 
-
-
         /// <summary>
-        /// Gets the number of syntax warnings that have been queued.
+        ///     Construct a <see cref="LSLSyntaxListenerPriorityQueue" /> by wrapping another
+        ///     <see cref="ILSLSyntaxErrorListener" /> and <see cref="ILSLSyntaxWarningListener" />
         /// </summary>
-        /// <value>
-        /// The number of syntax warnings queued.
-        /// </value>
-        public int NumberOfSyntaxWarnings
-        {
-            get { return _warningActionQueue.Count; }
-        }
-
-
-        /// <summary>
-        /// Gets the number of syntax errors that have been queued.
-        /// </summary>
-        /// <value>
-        /// The number of syntax errors queued.
-        /// </value>
-        public int NumberOfSyntaxErrors
-        {
-            get { return _errorActionQueue.Count; }
-        }
-
-
-        /// <summary>
-        /// Construct a <see cref="LSLSyntaxListenerPriorityQueue"/> by wrapping another <see cref="ILSLSyntaxErrorListener"/> and <see cref="ILSLSyntaxWarningListener"/>
-        /// </summary>
-        /// <param name="invokeErrorsOn">Syntax errors will be priority queued by their index in the source code and invoked on this object.</param>
-        /// <param name="invokeWarningsOn">Syntax warnings will be priority queued by their index in the source code and invoked on this object.</param>
+        /// <param name="invokeErrorsOn">
+        ///     Syntax errors will be priority queued by their index in the source code and invoked on
+        ///     this object.
+        /// </param>
+        /// <param name="invokeWarningsOn">
+        ///     Syntax warnings will be priority queued by their index in the source code and invoked on
+        ///     this object.
+        /// </param>
         public LSLSyntaxListenerPriorityQueue(
             ILSLSyntaxErrorListener invokeErrorsOn,
             ILSLSyntaxWarningListener invokeWarningsOn)
@@ -103,35 +87,60 @@ namespace LibLSLCC.CodeValidator.Components
             SyntaxWarningListener = invokeWarningsOn;
         }
 
+
         /// <summary>
-        /// The syntax error listener that this object delegates to.
+        ///     Gets the number of syntax warnings that have been queued.
+        /// </summary>
+        /// <value>
+        ///     The number of syntax warnings queued.
+        /// </value>
+        public int NumberOfSyntaxWarnings
+        {
+            get { return _warningActionQueue.Count; }
+        }
+
+        /// <summary>
+        ///     Gets the number of syntax errors that have been queued.
+        /// </summary>
+        /// <value>
+        ///     The number of syntax errors queued.
+        /// </value>
+        public int NumberOfSyntaxErrors
+        {
+            get { return _errorActionQueue.Count; }
+        }
+
+        /// <summary>
+        ///     The syntax error listener that this object delegates to.
         /// </summary>
         public ILSLSyntaxErrorListener SyntaxErrorListener { get; private set; }
 
-
         /// <summary>
-        /// The syntax warning listener that this object delegates to.
+        ///     The syntax warning listener that this object delegates to.
         /// </summary>
         public ILSLSyntaxWarningListener SyntaxWarningListener { get; private set; }
 
 
         /// <summary>
-        /// A parsing error at the grammar level has occurred somewhere in the source code.
+        ///     A parsing error at the grammar level has occurred somewhere in the source code.
         /// </summary>
         /// <param name="line">The line on which the error occurred.</param>
         /// <param name="column">The character column at which the error occurred.</param>
         /// <param name="offendingTokenText">The text representing the offending token.</param>
         /// <param name="message">The parsing error messaged passed along from the parsing back end.</param>
         /// <param name="offendingTokenRange">The source code range of the offending symbol.</param>
-        void ILSLSyntaxErrorListener.GrammarLevelParserSyntaxError(int line, int column, LSLSourceCodeRange offendingTokenRange, string offendingTokenText, string message)
+        void ILSLSyntaxErrorListener.GrammarLevelParserSyntaxError(int line, int column,
+            LSLSourceCodeRange offendingTokenRange, string offendingTokenText, string message)
         {
             _errorActionQueue.Enqueue(line,
-                () => SyntaxErrorListener.GrammarLevelParserSyntaxError(line, column, offendingTokenRange, offendingTokenText, message));
+                () =>
+                    SyntaxErrorListener.GrammarLevelParserSyntaxError(line, column, offendingTokenRange,
+                        offendingTokenText, message));
         }
 
 
         /// <summary>
-        /// A reference to an undefined variable was encountered.
+        ///     A reference to an undefined variable was encountered.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="name">Name of the variable attempting to be referenced.</param>
@@ -143,20 +152,22 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// A parameter name for a function or event handler was used more than once.
+        ///     A parameter name for a function or event handler was used more than once.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="parameterListType">The type of parameter list the duplicate parameter name was found in.</param>
         /// <param name="type">The type of the new parameter who's name was duplicate.</param>
         /// <param name="name">The name of the new parameter, which was duplicate.</param>
-        void ILSLSyntaxErrorListener.ParameterNameRedefined(LSLSourceCodeRange location, LSLParameterListType parameterListType, LSLType type, string name)
+        void ILSLSyntaxErrorListener.ParameterNameRedefined(LSLSourceCodeRange location,
+            LSLParameterListType parameterListType, LSLType type, string name)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.ParameterNameRedefined(location, parameterListType, type, name));
         }
 
+
         /// <summary>
-        /// A binary operation was encountered that had incorrect expression types on either or both sides.
+        ///     A binary operation was encountered that had incorrect expression types on either or both sides.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="left">The left expression.</param>
@@ -170,8 +181,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidBinaryOperation(location, left, operation, right));
         }
 
+
         /// <summary>
-        /// A prefix operation was attempted on an invalid type.
+        ///     A prefix operation was attempted on an invalid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The prefix operation that was attempted on the expression.</param>
@@ -183,8 +195,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidPrefixOperation(location, operation, right));
         }
 
+
         /// <summary>
-        /// A postfix operation was attempted on an invalid type.
+        ///     A postfix operation was attempted on an invalid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The postfix operation that was attempted on the expression.</param>
@@ -196,8 +209,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidPostfixOperation(location, left, operation));
         }
 
+
         /// <summary>
-        /// An invalid cast was preformed on some expression
+        ///     An invalid cast was preformed on some expression
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="castTo">The type that the cast operation attempted to cast the expression to.</param>
@@ -209,8 +223,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidCastOperation(location, castTo, fromExpression));
         }
 
+
         /// <summary>
-        /// A variable declaration was initialized with an invalid type on the right.
+        ///     A variable declaration was initialized with an invalid type on the right.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="variableType">The actual type of the variable attempting to be initialized.</param>
@@ -223,8 +238,9 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxErrorListener.TypeMismatchInVariableDeclaration(location, variableType, assignedExpression));
         }
 
+
         /// <summary>
-        /// A variable was redefined.
+        ///     A variable was redefined.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="variableType">The type of the variable that was considered a re-definition.</param>
@@ -236,8 +252,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.VariableRedefined(location, variableType, variableName));
         }
 
+
         /// <summary>
-        /// A vector literal contained an invalid expression in its initializer list.
+        ///     A vector literal contained an invalid expression in its initializer list.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="component">The vector component of the initializer that contained the invalid expression.</param>
@@ -249,8 +266,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidVectorContent(location, component, invalidExpressionContent));
         }
 
+
         /// <summary>
-        /// A list literal contained an invalid expression in its initializer list.
+        ///     A list literal contained an invalid expression in its initializer list.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="index">The index in the initializer list that contained the invalid expression.</param>
@@ -262,8 +280,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidListContent(location, index, invalidExpressionContent));
         }
 
+
         /// <summary>
-        /// A rotation literal contained an invalid expression in its initializer list.
+        ///     A rotation literal contained an invalid expression in its initializer list.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="component">The rotation component of the initializer that contained the invalid expression.</param>
@@ -275,8 +294,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidRotationContent(location, component, invalidExpressionContent));
         }
 
+
         /// <summary>
-        /// Attempted to return a value from a function with no return type. (A void function)
+        ///     Attempted to return a value from a function with no return type. (A void function)
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
@@ -291,8 +311,9 @@ namespace LibLSLCC.CodeValidator.Components
                         attemptedReturnExpression));
         }
 
+
         /// <summary>
-        /// Attempted to return an invalid expression type from a function with a defined return type.
+        ///     Attempted to return an invalid expression type from a function with a defined return type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
@@ -307,8 +328,9 @@ namespace LibLSLCC.CodeValidator.Components
                         attemptedReturnExpression));
         }
 
+
         /// <summary>
-        /// An empty return statement was encountered in a non void function. (A function with a defined return type)
+        ///     An empty return statement was encountered in a non void function. (A function with a defined return type)
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
@@ -319,8 +341,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.ReturnedVoidFromNonVoidFunction(location, functionSignature));
         }
 
+
         /// <summary>
-        /// A jump statement to an undefined label name was encountered.
+        ///     A jump statement to an undefined label name was encountered.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="labelName">The name of the label that was given to the jump statement.</param>
@@ -330,8 +353,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.JumpToUndefinedLabel(location, labelName));
         }
 
+
         /// <summary>
-        /// A call to an undefined function was encountered.
+        ///     A call to an undefined function was encountered.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the function used in the call.</param>
@@ -341,8 +365,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.CallToUndefinedFunction(location, functionName));
         }
 
+
         /// <summary>
-        /// A user defined or library function was called with the wrong number of parameters.
+        ///     A user defined or library function was called with the wrong number of parameters.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The function signature of the defined function attempting to be called.</param>
@@ -358,12 +383,14 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-
         /// <summary>
-        /// A user defined function was re-defined.
+        ///     A user defined function was re-defined.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="previouslyDefinedSignature">The signature of the previously defined function that is considered a duplicated to the new definition.</param>
+        /// <param name="previouslyDefinedSignature">
+        ///     The signature of the previously defined function that is considered a
+        ///     duplicated to the new definition.
+        /// </param>
         void ILSLSyntaxErrorListener.RedefinedFunction(LSLSourceCodeRange location,
             LSLFunctionSignature previouslyDefinedSignature)
         {
@@ -371,8 +398,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.RedefinedFunction(location, previouslyDefinedSignature));
         }
 
+
         /// <summary>
-        /// A code label was considered a redefinition of an already defined code label, given the scope of the new definition.
+        ///     A code label was considered a redefinition of an already defined code label, given the scope of the new definition.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="labelName">The name of the label being redefined.</param>
@@ -381,10 +409,12 @@ namespace LibLSLCC.CodeValidator.Components
             _errorActionQueue.Enqueue(location.StartIndex, () => SyntaxErrorListener.RedefinedLabel(location, labelName));
         }
 
+
         /// <summary>
-        /// A '.' member access was attempted on an invalid variable type, or the variable type did not contain the given component.
-        /// Valid component names for vectors are:  x,y and z
-        /// Valid component names for rotations are:  x,y,z and s
+        ///     A '.' member access was attempted on an invalid variable type, or the variable type did not contain the given
+        ///     component.
+        ///     Valid component names for vectors are:  x,y and z
+        ///     Valid component names for rotations are:  x,y,z and s
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
@@ -397,8 +427,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidTupleComponentAccessOperation(location, exprLvalue, memberAccessed));
         }
 
+
         /// <summary>
-        /// The return type of the expression present in an if statements condition is not a valid type.
+        ///     The return type of the expression present in an if statements condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the if statement.</param>
@@ -409,8 +440,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.IfConditionNotValidType(location, attemptedConditionExpression));
         }
 
+
         /// <summary>
-        /// The return type of the expression present in an else-if statements condition is not a valid type.
+        ///     The return type of the expression present in an else-if statements condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the else-if statement.</param>
@@ -421,8 +453,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.ElseIfConditionNotValidType(location, attemptedConditionExpression));
         }
 
+
         /// <summary>
-        /// The return type of the expression present in a do-loops condition is not a valid type.
+        ///     The return type of the expression present in a do-loops condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the do-loop.</param>
@@ -433,8 +466,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.DoLoopConditionNotValidType(location, attemptedConditionExpression));
         }
 
+
         /// <summary>
-        /// The return type of the expression present in a while-loops condition is not a valid type.
+        ///     The return type of the expression present in a while-loops condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the while-loop.</param>
@@ -445,8 +479,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.WhileLoopConditionNotValidType(location, attemptedConditionExpression));
         }
 
+
         /// <summary>
-        /// The return type of the expression present in a for-loops condition is not a valid type.
+        ///     The return type of the expression present in a for-loops condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the for-loop.</param>
@@ -457,8 +492,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.ForLoopConditionNotValidType(location, attemptedConditionExpression));
         }
 
+
         /// <summary>
-        /// A parameter type mismatch was encountered when trying to call a user defined or library function.
+        ///     A parameter type mismatch was encountered when trying to call a user defined or library function.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="parameterNumberWithError">The index of the parameter with the type mismatch. (Zero based)</param>
@@ -474,8 +510,9 @@ namespace LibLSLCC.CodeValidator.Components
                         calledFunction, parameterExpressionsGiven));
         }
 
+
         /// <summary>
-        /// A state name was re-defined.
+        ///     A state name was re-defined.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="stateName">The name of the state being redefined.</param>
@@ -485,8 +522,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.RedefinedStateName(location, stateName));
         }
 
+
         /// <summary>
-        /// An event handler which was not defined in the library data provider was used in the program.
+        ///     An event handler which was not defined in the library data provider was used in the program.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="givenEventHandlerSignature">The signature of the event handler attempting to be used.</param>
@@ -497,13 +535,18 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.UnknownEventHandlerDeclared(location, givenEventHandlerSignature));
         }
 
+
         /// <summary>
-        /// An event handler was used in the program which was defined in the library data provider, but the given call signature in the program
-        /// was incorrect.
+        ///     An event handler was used in the program which was defined in the library data provider, but the given call
+        ///     signature in the program
+        ///     was incorrect.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="givenEventHandlerSignature">The invalid signature used for the event handler in the source code.</param>
-        /// <param name="correctEventHandlerSignature">The actual valid signature for the event handler from the library data provider.</param>
+        /// <param name="correctEventHandlerSignature">
+        ///     The actual valid signature for the event handler from the library data
+        ///     provider.
+        /// </param>
         void ILSLSyntaxErrorListener.IncorrectEventHandlerSignature(LSLSourceCodeRange location,
             LSLEventSignature givenEventHandlerSignature,
             LSLLibraryEventSignature correctEventHandlerSignature)
@@ -514,8 +557,10 @@ namespace LibLSLCC.CodeValidator.Components
                         correctEventHandlerSignature));
         }
 
+
         /// <summary>
-        /// A standard library constant defined in the library data provider was redefined in source code as a global or local variable.
+        ///     A standard library constant defined in the library data provider was redefined in source code as a global or local
+        ///     variable.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="redefinitionType">The type used in the re-definition.</param>
@@ -530,12 +575,16 @@ namespace LibLSLCC.CodeValidator.Components
                         originalSignature));
         }
 
+
         /// <summary>
-        /// A library function that exist in the library data provider was redefined by the user as a user defined function.
+        ///     A library function that exist in the library data provider was redefined by the user as a user defined function.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the library function the user attempted to redefine.</param>
-        /// <param name="libraryFunctionSignatureOverloads">All of the overloads for the library function, there may only be one if no overloads actually exist.</param>
+        /// <param name="libraryFunctionSignatureOverloads">
+        ///     All of the overloads for the library function, there may only be one if
+        ///     no overloads actually exist.
+        /// </param>
         void ILSLSyntaxErrorListener.RedefinedStandardLibraryFunction(LSLSourceCodeRange location, string functionName,
             IReadOnlyGenericArray<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads)
         {
@@ -545,8 +594,9 @@ namespace LibLSLCC.CodeValidator.Components
                         libraryFunctionSignatureOverloads));
         }
 
+
         /// <summary>
-        /// A state change statement was encountered that attempted to change states to an undefined state name.
+        ///     A state change statement was encountered that attempted to change states to an undefined state name.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="stateName">The undefined state name referenced.</param>
@@ -556,8 +606,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.ChangeToUndefinedState(location, stateName));
         }
 
+
         /// <summary>
-        /// An attempt to modify a library constant defined in the library data provider was made.
+        ///     An attempt to modify a library constant defined in the library data provider was made.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="constantName">The name of the constant the user attempted to modified.</param>
@@ -567,8 +618,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.ModifiedLibraryConstant(location, constantName));
         }
 
+
         /// <summary>
-        /// The user attempted to use 'default' for a user defined state name.
+        ///     The user attempted to use 'default' for a user defined state name.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         void ILSLSyntaxErrorListener.RedefinedDefaultState(LSLSourceCodeRange location)
@@ -578,7 +630,7 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Dead code after a return path was detected in a function with a non-void return type.
+        ///     Dead code after a return path was detected in a function with a non-void return type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="inFunction">The signature of the function the dead code was detected in.</param>
@@ -590,9 +642,10 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.DeadCodeAfterReturnPath(location, inFunction, deadSegment));
         }
 
+
         /// <summary>
-        /// A function with a non-void return type lacks a necessary return statement.  
-        /// Not all code paths return a value.
+        ///     A function with a non-void return type lacks a necessary return statement.
+        ///     Not all code paths return a value.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="inFunction">The signature of the function in question.</param>
@@ -603,8 +656,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.NotAllCodePathsReturnAValue(location, inFunction));
         }
 
+
         /// <summary>
-        /// A code state does not declare the use of any event handlers at all. (This is not allowed)
+        ///     A code state does not declare the use of any event handlers at all. (This is not allowed)
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="stateName">The name of the state in which this error occurred.</param>
@@ -614,9 +668,10 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.StateHasNoEventHandlers(location, stateName));
         }
 
+
         /// <summary>
-        /// A conditional expression is missing from an IF, ELSE IF, or WHILE/DO-WHILE statement;
-        /// FOR loops can have a missing condition expression, but other control statements cannot.
+        ///     A conditional expression is missing from an IF, ELSE IF, or WHILE/DO-WHILE statement;
+        ///     FOR loops can have a missing condition expression, but other control statements cannot.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="statementType">The type of branch/loop statement the condition was missing from.</param>
@@ -627,9 +682,11 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.MissingConditionalExpression(location, statementType));
         }
 
+
         /// <summary>
-        /// Attempted to define a variable inside of a single statement block.  Such as inside of an IF statement which does not
-        /// use braces.  This applies to other statements that can use brace-less single statement blocks as well.
+        ///     Attempted to define a variable inside of a single statement block.  Such as inside of an IF statement which does
+        ///     not
+        ///     use braces.  This applies to other statements that can use brace-less single statement blocks as well.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         void ILSLSyntaxErrorListener.DefinedVariableInNonScopeBlock(LSLSourceCodeRange location)
@@ -638,8 +695,10 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.DefinedVariableInNonScopeBlock(location));
         }
 
+
         /// <summary>
-        /// An illegal character was found inside of a string literal according to the current ILSLStringPreProccessor instance.
+        ///     An illegal character was found inside of a string literal according to the current ILSLStringPreProccessor
+        ///     instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
@@ -649,8 +708,10 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.IllegalStringCharacter(location, err));
         }
 
+
         /// <summary>
-        /// An invalid escape sequence was found inside of a string literal according to the current <see cref="ILSLStringPreProcessor"/> instance.
+        ///     An invalid escape sequence was found inside of a string literal according to the current
+        ///     <see cref="ILSLStringPreProcessor" /> instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
@@ -660,8 +721,10 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.InvalidStringEscapeCode(location, err));
         }
 
+
         /// <summary>
-        /// A call to function was attempted in a static context.  For example, inside of a global variables declaration expression.
+        ///     A call to function was attempted in a static context.  For example, inside of a global variables declaration
+        ///     expression.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         void ILSLSyntaxErrorListener.CallToFunctionInStaticContext(LSLSourceCodeRange location)
@@ -670,8 +733,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.CallToFunctionInStaticContext(location));
         }
 
+
         /// <summary>
-        /// A library defined event handler was used more than once in the same state.
+        ///     A library defined event handler was used more than once in the same state.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="eventHandlerName">The name of the event handler which was used more than once.</param>
@@ -683,58 +747,79 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.RedefinedEventHandler(location, eventHandlerName, stateName));
         }
 
+
         /// <summary>
-        /// The default code state was missing from the program.
+        ///     The default code state was missing from the program.
         /// </summary>
         void ILSLSyntaxErrorListener.MissingDefaultState()
         {
             _errorActionQueue.Enqueue(0, () => SyntaxErrorListener.MissingDefaultState());
         }
 
+
         /// <summary>
-        /// An overload could not be resolved for an attempted call to an overloaded library function.
+        ///     An overload could not be resolved for an attempted call to an overloaded library function.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
-        /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
-        void ILSLSyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
+        /// <param name="givenParameterExpressions">
+        ///     The parameter expressions the user attempted to pass to the overloaded library
+        ///     function.
+        /// </param>
+        void ILSLSyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location,
+            string functionName,
             IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(location, functionName, givenParameterExpressions));
+                    SyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(location, functionName,
+                        givenParameterExpressions));
         }
 
 
         /// <summary>
-        /// A call to an overloaded library function matches up with one or more overloads.
+        ///     A call to an overloaded library function matches up with one or more overloads.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
         /// <param name="ambiguousMatches">All of the function overloads the call to the library function matched up with.</param>
-        /// <param name="givenParameterExpressions">The parameter expressions the user attempted to pass to the overloaded library function.</param>
-        void ILSLSyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches, IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
+        /// <param name="givenParameterExpressions">
+        ///     The parameter expressions the user attempted to pass to the overloaded library
+        ///     function.
+        /// </param>
+        void ILSLSyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location,
+            string functionName,
+            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches,
+            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(location, functionName, ambiguousMatches, givenParameterExpressions));
+                    SyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(location, functionName,
+                        ambiguousMatches, givenParameterExpressions));
         }
 
+
         /// <summary>
-        /// The dot operator used to access the tuple component members of vectors and rotations was used on a library constant.
+        ///     The dot operator used to access the tuple component members of vectors and rotations was used on a library
+        ///     constant.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
-        /// <param name="libraryConstantSignature">The library constant signature that was referenced, retrieved from the library data provider.</param>
+        /// <param name="libraryConstantSignature">
+        ///     The library constant signature that was referenced, retrieved from the library
+        ///     data provider.
+        /// </param>
         /// <param name="accessedMember">The member the user attempted to access.</param>
-        void ILSLSyntaxErrorListener.TupleComponentAccessOnLibraryConstant(LSLSourceCodeRange location, ILSLVariableNode libraryConstantReferenceNode,
+        void ILSLSyntaxErrorListener.TupleComponentAccessOnLibraryConstant(LSLSourceCodeRange location,
+            ILSLVariableNode libraryConstantReferenceNode,
             LSLLibraryConstantSignature libraryConstantSignature, string accessedMember)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.TupleComponentAccessOnLibraryConstant(location, libraryConstantReferenceNode, libraryConstantSignature, accessedMember));
+                    SyntaxErrorListener.TupleComponentAccessOnLibraryConstant(location, libraryConstantReferenceNode,
+                        libraryConstantSignature, accessedMember));
         }
+
 
         void ILSLSyntaxErrorListener.BinaryOperatorInStaticContext(LSLSourceCodeRange location)
         {
@@ -743,6 +828,7 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxErrorListener.BinaryOperatorInStaticContext(location));
         }
 
+
         void ILSLSyntaxErrorListener.ParenthesizedExpressionInStaticContext(LSLSourceCodeRange location)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
@@ -750,8 +836,9 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxErrorListener.ParenthesizedExpressionInStaticContext(location));
         }
 
+
         /// <summary>
-        /// A postfix expression was used in a static context (a global variable declaration expression)
+        ///     A postfix expression was used in a static context (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         void ILSLSyntaxErrorListener.PostfixOperationInStaticContext(LSLSourceCodeRange location)
@@ -761,30 +848,37 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxErrorListener.PostfixOperationInStaticContext(location));
         }
 
+
         /// <summary>
-        /// A prefix expression was used in a static context (a global variable declaration expression)
+        ///     A prefix expression was used in a static context (a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         /// <param name="type">The prefix operation type.</param>
-        void ILSLSyntaxErrorListener.InvalidPrefixOperationUsedInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type)
+        void ILSLSyntaxErrorListener.InvalidPrefixOperationUsedInStaticContext(LSLSourceCodeRange location,
+            LSLPrefixOperationType type)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxErrorListener.InvalidPrefixOperationUsedInStaticContext(location, type));
         }
 
-        void ILSLSyntaxErrorListener.PrefixOperationOnGlobalVariableInStaticContext(LSLSourceCodeRange location, LSLPrefixOperationType type)
+
+        void ILSLSyntaxErrorListener.PrefixOperationOnGlobalVariableInStaticContext(LSLSourceCodeRange location,
+            LSLPrefixOperationType type)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxErrorListener.PrefixOperationOnGlobalVariableInStaticContext(location, type));
         }
 
-        void ILSLSyntaxErrorListener.ModifyingPrefixOperationOnNonVariable(LSLSourceCodeRange location, LSLPrefixOperationType type)
+
+        void ILSLSyntaxErrorListener.ModifyingPrefixOperationOnNonVariable(LSLSourceCodeRange location,
+            LSLPrefixOperationType type)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.ModifyingPrefixOperationOnNonVariable(location, type));
         }
+
 
         void ILSLSyntaxErrorListener.NegateOperationOnVectorLiteralInStaticContext(LSLSourceCodeRange location)
         {
@@ -792,11 +886,13 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxErrorListener.NegateOperationOnVectorLiteralInStaticContext(location));
         }
 
+
         void ILSLSyntaxErrorListener.NegateOperationOnRotationLiteralInStaticContext(LSLSourceCodeRange location)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.NegateOperationOnRotationLiteralInStaticContext(location));
         }
+
 
         void ILSLSyntaxErrorListener.CastExpressionInStaticContext(LSLSourceCodeRange location)
         {
@@ -805,25 +901,29 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        void ILSLSyntaxErrorListener.AssignmentToNonassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed)
+        void ILSLSyntaxErrorListener.AssignmentToNonassignableExpression(LSLSourceCodeRange location,
+            string assignmentOperatorUsed)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.AssignmentToNonassignableExpression(location, assignmentOperatorUsed));
         }
 
 
-        void ILSLSyntaxErrorListener.PostfixOperationOnNonVariable(LSLSourceCodeRange location, LSLPostfixOperationType type)
+        void ILSLSyntaxErrorListener.PostfixOperationOnNonVariable(LSLSourceCodeRange location,
+            LSLPostfixOperationType type)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxErrorListener.PostfixOperationOnNonVariable(location, type));
         }
 
+
         void ILSLSyntaxWarningListener.MultipleListAssignmentsInExpression(LSLSourceCodeRange location)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.MultipleListAssignmentsInExpression(location));
         }
+
 
         void ILSLSyntaxWarningListener.MultipleStringAssignmentsInExpression(LSLSourceCodeRange location)
         {
@@ -839,6 +939,7 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxWarningListener.DeadCodeDetected(location, currentFunction, deadSegment));
         }
 
+
         void ILSLSyntaxWarningListener.DeadCodeDetected(LSLSourceCodeRange location,
             LSLEventSignature currentEvent, LSLDeadCodeSegment deadSegment)
         {
@@ -846,10 +947,12 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxWarningListener.DeadCodeDetected(location, currentEvent, deadSegment));
         }
 
+
         void ILSLSyntaxWarningListener.UselessSemicolon(LSLSourceCodeRange location)
         {
             _warningActionQueue.Enqueue(location.StartIndex, () => SyntaxWarningListener.UselessSemicolon(location));
         }
+
 
         void ILSLSyntaxWarningListener.ExpressionStatementHasNoEffect(LSLSourceCodeRange location)
         {
@@ -857,7 +960,9 @@ namespace LibLSLCC.CodeValidator.Components
                 () => SyntaxWarningListener.ExpressionStatementHasNoEffect(location));
         }
 
-        void ILSLSyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
+
+        void ILSLSyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location,
+            ILSLExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -866,7 +971,9 @@ namespace LibLSLCC.CodeValidator.Components
                         expressionCountTotal));
         }
 
-        void ILSLSyntaxWarningListener.ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
+
+        void ILSLSyntaxWarningListener.ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location,
+            ILSLExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -875,46 +982,59 @@ namespace LibLSLCC.CodeValidator.Components
                         expressionCountTotal));
         }
 
+
         void ILSLSyntaxWarningListener.RedundantCast(LSLSourceCodeRange location, LSLType castType)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.RedundantCast(location, castType));
         }
 
-        void ILSLSyntaxWarningListener.FunctionNeverUsed(LSLSourceCodeRange location, ILSLFunctionDeclarationNode functionDeclarationNode)
+
+        void ILSLSyntaxWarningListener.FunctionNeverUsed(LSLSourceCodeRange location,
+            ILSLFunctionDeclarationNode functionDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.FunctionNeverUsed(location, functionDeclarationNode));
         }
 
-        void ILSLSyntaxWarningListener.GlobalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable)
+
+        void ILSLSyntaxWarningListener.GlobalVariableNeverUsed(LSLSourceCodeRange location,
+            ILSLVariableDeclarationNode variable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.GlobalVariableNeverUsed(location, variable));
         }
 
-        void ILSLSyntaxWarningListener.LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
+
+        void ILSLSyntaxWarningListener.LocalVariableNeverUsed(LSLSourceCodeRange location,
+            ILSLVariableDeclarationNode variable,
             LSLFunctionSignature inFunction)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.LocalVariableNeverUsed(location, variable, inFunction));
         }
 
-        void ILSLSyntaxWarningListener.LocalVariableNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode variable,
+
+        void ILSLSyntaxWarningListener.LocalVariableNeverUsed(LSLSourceCodeRange location,
+            ILSLVariableDeclarationNode variable,
             LSLEventSignature inEvent)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.LocalVariableNeverUsed(location, variable, inEvent));
         }
 
-        void ILSLSyntaxWarningListener.FunctionParameterNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode parameter,
+
+        void ILSLSyntaxWarningListener.FunctionParameterNeverUsed(LSLSourceCodeRange location,
+            ILSLVariableDeclarationNode parameter,
             LSLFunctionSignature inFunction)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.FunctionParameterNeverUsed(location, parameter, inFunction));
         }
 
-        void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
+
+        void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
+            LSLFunctionSignature functionSignature,
             LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -923,7 +1043,9 @@ namespace LibLSLCC.CodeValidator.Components
                         globalVariable));
         }
 
-        void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLEventSignature eventHandlerSignature,
+
+        void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
+            LSLEventSignature eventHandlerSignature,
             LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -931,6 +1053,7 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxWarningListener.ParameterHidesGlobalVariable(location, eventHandlerSignature, parameter,
                         globalVariable));
         }
+
 
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
@@ -942,6 +1065,7 @@ namespace LibLSLCC.CodeValidator.Components
                         parameter));
         }
 
+
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
             LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
@@ -951,6 +1075,7 @@ namespace LibLSLCC.CodeValidator.Components
                     SyntaxWarningListener.LocalVariableHidesParameter(location, eventHandlerSignature, localVariable,
                         parameter));
         }
+
 
         void ILSLSyntaxWarningListener.LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
@@ -962,6 +1087,7 @@ namespace LibLSLCC.CodeValidator.Components
                         globalVariable));
         }
 
+
         void ILSLSyntaxWarningListener.LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
             LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
@@ -972,44 +1098,53 @@ namespace LibLSLCC.CodeValidator.Components
                         localVariable, globalVariable));
         }
 
-        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location, LSLLibraryFunctionSignature functionSignature)
+
+        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location,
+            LSLLibraryFunctionSignature functionSignature)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.UseOfDeprecatedLibraryFunction(location, functionSignature));
         }
 
-        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryConstant(LSLSourceCodeRange location, LSLLibraryConstantSignature constantSignature)
+
+        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryConstant(LSLSourceCodeRange location,
+            LSLLibraryConstantSignature constantSignature)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.UseOfDeprecatedLibraryConstant(location, constantSignature));
         }
 
-        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(LSLSourceCodeRange location, LSLLibraryEventSignature eventSignature)
+
+        void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(LSLSourceCodeRange location,
+            LSLLibraryEventSignature eventSignature)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(location, eventSignature));
         }
 
-        void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLFunctionSignature currentFunctionBodySignature,
+
+        void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
+            LSLFunctionSignature currentFunctionBodySignature,
             LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.VariableRedeclaredInInnerScope(location, currentFunctionBodySignature,
-                    newDeclarationNode, previousDeclarationNode));
+                        newDeclarationNode, previousDeclarationNode));
         }
 
 
-        void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location, LSLEventSignature currentEventBodySignature,
+        void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
+            LSLEventSignature currentEventBodySignature,
             LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.VariableRedeclaredInInnerScope(location, currentEventBodySignature,
-                    newDeclarationNode, previousDeclarationNode));
+                        newDeclarationNode, previousDeclarationNode));
         }
 
 
@@ -1029,7 +1164,8 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        void ILSLSyntaxWarningListener.ReturnedValueFromEventHandler(LSLSourceCodeRange location, LSLEventSignature eventSignature, ILSLExprNode returnExpression)
+        void ILSLSyntaxWarningListener.ReturnedValueFromEventHandler(LSLSourceCodeRange location,
+            LSLEventSignature eventSignature, ILSLExprNode returnExpression)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -1037,17 +1173,19 @@ namespace LibLSLCC.CodeValidator.Components
         }
 
 
-        void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLExprNode expression,
+        void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange location,
+            ILSLExprNode expression,
             LSLConditionalStatementType conditionalStatementType)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxWarningListener.ConditionalExpressionIsConstant(location, expression, conditionalStatementType));
+                () =>
+                    SyntaxWarningListener.ConditionalExpressionIsConstant(location, expression, conditionalStatementType));
         }
 
 
         /// <summary>
-        /// Invoke all the queued errors on <see cref="SyntaxErrorListener"/>
-        /// so that the syntax errors are reported in order by their position in source code.
+        ///     Invoke all the queued errors on <see cref="SyntaxErrorListener" />
+        ///     so that the syntax errors are reported in order by their position in source code.
         /// </summary>
         public void InvokeQueuedErrors()
         {
@@ -1059,8 +1197,8 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Invoke all the queued errors on <see cref="SyntaxWarningListener"/>
-        /// so that the syntax warnings are reported in order by their position in source code.
+        ///     Invoke all the queued errors on <see cref="SyntaxWarningListener" />
+        ///     so that the syntax warnings are reported in order by their position in source code.
         /// </summary>
         public void InvokeQueuedWarnings()
         {
@@ -1070,9 +1208,11 @@ namespace LibLSLCC.CodeValidator.Components
             }
         }
 
+
         /// <summary>
-        /// Invoke all the queued warnings and errors on <see cref="SyntaxErrorListener"/> and <see cref="SyntaxWarningListener"/>
-        /// so that the syntax warnings and errors are reported in order by their position in source code.
+        ///     Invoke all the queued warnings and errors on <see cref="SyntaxErrorListener" /> and
+        ///     <see cref="SyntaxWarningListener" />
+        ///     so that the syntax warnings and errors are reported in order by their position in source code.
         /// </summary>
         public void InvokeQueuedActions()
         {
@@ -1080,7 +1220,5 @@ namespace LibLSLCC.CodeValidator.Components
 
             InvokeQueuedWarnings();
         }
-
-
     }
 }

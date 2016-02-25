@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLConstantLiteralNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -54,18 +57,18 @@ using LibLSLCC.CodeValidator.Visitor;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Base class for constant literal nodes.
+    ///     Base class for constant literal nodes.
     /// </summary>
-    /// <seealso cref="LSLIntegerLiteralNode"/>
-    /// <seealso cref="LSLHexLiteralNode"/>
-    /// <seealso cref="LSLFloatLiteralNode"/>
-    /// <seealso cref="LSLStringLiteralNode"/>
+    /// <seealso cref="LSLIntegerLiteralNode" />
+    /// <seealso cref="LSLHexLiteralNode" />
+    /// <seealso cref="LSLFloatLiteralNode" />
+    /// <seealso cref="LSLStringLiteralNode" />
     public abstract class LSLConstantLiteralNode : ILSLExprNode
     {
 // ReSharper disable UnusedParameter.Local
 
         /// <summary>
-        /// Allows easy creation of an error state from derived nodes.
+        ///     Allows easy creation of an error state from derived nodes.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <param name="err">Dummy error enum parameter.</param>
@@ -79,10 +82,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLConstantLiteralNode"/> by cloning from another.
+        ///     Create an <see cref="LSLConstantLiteralNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         protected LSLConstantLiteralNode(LSLConstantLiteralNode other)
         {
             if (other == null)
@@ -106,10 +109,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create a constant literal node using the ANTLR context of the expression atom that represents the source literal.
+        ///     Create a constant literal node using the ANTLR context of the expression atom that represents the source literal.
         /// </summary>
         /// <param name="rawText">The raw text of the constant literal.</param>
-        /// <param name="type">The <see cref="LSLType"/> that the source code literal represents.</param>
+        /// <param name="type">The <see cref="LSLType" /> that the source code literal represents.</param>
         /// <param name="sourceRange">The source code range of the constant literal.</param>
         protected internal LSLConstantLiteralNode(string rawText, LSLType type, LSLSourceCodeRange sourceRange)
         {
@@ -128,12 +131,12 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region Nested type: Err
 
         /// <summary>
-        /// Dummy argument for the protected constructor <see cref="LSLConstantLiteralNode(LSLSourceCodeRange, Err)"/>.
+        ///     Dummy argument for the protected constructor <see cref="LSLConstantLiteralNode(LSLSourceCodeRange, Err)" />.
         /// </summary>
         protected enum Err
         {
             /// <summary>
-            /// Dummy member
+            ///     Dummy member
             /// </summary>
             Err
         }
@@ -143,32 +146,35 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLExprNode Members
 
         /// <summary>
-        /// The raw text of the literal taken from the source code.
+        ///     The raw text of the literal taken from the source code.
         /// </summary>
         public string RawText { get; private set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -177,23 +183,22 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
-
         /// <summary>
-        /// The return type of the expression. see: <see cref="LSLType" />
+        ///     The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type { get; private set; }
 
 
         /// <summary>
-        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        ///     The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
-        /// The type of the expression.
+        ///     The type of the expression.
         /// </value>
         public LSLExpressionType ExpressionType
         {
@@ -202,7 +207,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the expression is constant and can be calculated at compile time.
+        ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
         public bool IsConstant
         {
@@ -210,9 +215,11 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a
+        ///     function call.  False otherwise.
         /// </summary>
-        public bool HasPossibleSideEffects {
+        public bool HasPossibleSideEffects
+        {
             get
             {
                 //a literal expression node can never change the state of the surrounding program
@@ -222,16 +229,16 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and also clone all of its children.
+        ///     Deep clones the expression node.  It should clone the node and also clone all of its children.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public abstract ILSLExprNode Clone();
 
 
         /// <summary>
-        /// Should produce a user friendly description of the expressions return type.
-        /// This is used in some syntax error messages, Ideally you should enclose your description in
-        /// parenthesis or something that will make it stand out in a string.
+        ///     Should produce a user friendly description of the expressions return type.
+        ///     This is used in some syntax error messages, Ideally you should enclose your description in
+        ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
         /// <returns></returns>
         public string DescribeType()

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLLibraryDataAttributeException.cs
 // 
@@ -39,15 +40,20 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
 
+#endregion
+
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Thrown when a problem with a library data reflection attribute is discovered.
+    ///     Thrown when a problem with a library data reflection attribute is discovered.
     /// </summary>
     [Serializable]
     public class LSLLibraryDataAttributeException : Exception
@@ -60,22 +66,24 @@ namespace LibLSLCC.LibraryData.Reflection
         //
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataAttributeException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataAttributeException" /> class.
         /// </summary>
         public LSLLibraryDataAttributeException()
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataAttributeException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataAttributeException" /> class.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         public LSLLibraryDataAttributeException(string message) : base(message)
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataAttributeException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataAttributeException" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="inner">The inner.</param>
@@ -83,11 +91,18 @@ namespace LibLSLCC.LibraryData.Reflection
         {
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataAttributeException"/> class.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataAttributeException" /> class.
         /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+        /// <param name="info">
+        ///     The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object
+        ///     data about the exception being thrown.
+        /// </param>
+        /// <param name="context">
+        ///     The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual
+        ///     information about the source or destination.
+        /// </param>
         protected LSLLibraryDataAttributeException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLListExpr.cs
 // 
@@ -39,9 +40,14 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.Utility.ListParser
 {

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLMultiConstantFilter.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.Collections;
 using System.Collections.Generic;
@@ -47,26 +51,18 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
+#endregion
+
 namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
-    /// Allows multiple <see cref="ILSLConstantFilter"/> objects to participate in filtering/mutating constant
-    /// signatures de-serialized from runtime types using <see cref="LSLLibraryDataReflectionSerializer"/>.
+    ///     Allows multiple <see cref="ILSLConstantFilter" /> objects to participate in filtering/mutating constant
+    ///     signatures de-serialized from runtime types using <see cref="LSLLibraryDataReflectionSerializer" />.
     /// </summary>
     public class LSLMultiConstantFilter : ILSLConstantFilter, IEnumerable<ILSLConstantFilter>
     {
-
         /// <summary>
-        /// A modifiable collection of all <see cref="ILSLConstantFilter"/> objects participating in filtering.
-        /// </summary>
-        /// <value>
-        /// The <see cref="ILSLConstantFilter"/>'s being used to filter.
-        /// </value>
-        // ReSharper disable once CollectionNeverUpdated.Global
-        public Collection<ILSLConstantFilter> Filters { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLMultiMethodFilter"/> class.
+        ///     Initializes a new instance of the <see cref="LSLMultiMethodFilter" /> class.
         /// </summary>
         public LSLMultiConstantFilter()
         {
@@ -75,42 +71,66 @@ namespace LibLSLCC.LibraryData.Reflection
 
 
         /// <summary>
-        /// Add's a filter to this multi filter, this here so list initializer syntax can be utilized to build a multi filter.
+        ///     A modifiable collection of all <see cref="ILSLConstantFilter" /> objects participating in filtering.
         /// </summary>
-        /// <param name="filter">The filter to add.</param>
-        public void Add(LSLMultiConstantFilter filter)
+        /// <value>
+        ///     The <see cref="ILSLConstantFilter" />'s being used to filter.
+        /// </value>
+        // ReSharper disable once CollectionNeverUpdated.Global
+        public Collection<ILSLConstantFilter> Filters { get; private set; }
+
+
+        /// <summary>
+        ///     Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        ///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
+        /// <filterpriority>1</filterpriority>
+        public IEnumerator<ILSLConstantFilter> GetEnumerator()
         {
-            Filters.Add(filter);
+            return Filters.GetEnumerator();
+        }
+
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
 
         /// <summary>
-        /// Allows <see cref="PropertyInfo"/> objects to be prematurely filtered from de-serialization output.  Returns <c>true</c> if the <see cref="PropertyInfo"/> should be filtered.
+        ///     Allows <see cref="PropertyInfo" /> objects to be prematurely filtered from de-serialization output.  Returns
+        ///     <c>true</c> if the <see cref="PropertyInfo" /> should be filtered.
         /// </summary>
-        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer"/> this add-on belongs to.</param>
-        /// <param name="info">The <see cref="PropertyInfo"/> object we may want to filter from the output.</param>
+        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer" /> this add-on belongs to.</param>
+        /// <param name="info">The <see cref="PropertyInfo" /> object we may want to filter from the output.</param>
         /// <returns><c>true</c> if the property needs to be filtered from the results.</returns>
         public bool PreFilter(LSLLibraryDataReflectionSerializer serializer, PropertyInfo info)
         {
             return Filters.Any(filter => filter.PreFilter(serializer, info));
         }
 
+
         /// <summary>
-        /// Allows <see cref="FieldInfo"/> objects to be prematurely filtered from de-serialization output.  Returns <c>true</c> if the <see cref="MethodInfo"/> should be filtered.
+        ///     Allows <see cref="FieldInfo" /> objects to be prematurely filtered from de-serialization output.  Returns
+        ///     <c>true</c> if the <see cref="MethodInfo" /> should be filtered.
         /// </summary>
-        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer"/> this add-on belongs to.</param>
-        /// <param name="info">The <see cref="PropertyInfo"/> object we may want to filter from the output.</param>
+        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer" /> this add-on belongs to.</param>
+        /// <param name="info">The <see cref="PropertyInfo" /> object we may want to filter from the output.</param>
         /// <returns><c>true</c> if the field needs to be filtered from the results.</returns>
         public bool PreFilter(LSLLibraryDataReflectionSerializer serializer, FieldInfo info)
         {
             return Filters.Any(filter => filter.PreFilter(serializer, info));
         }
 
+
         /// <summary>
-        /// Allows modification of a constant signature after its basic information has been serialized from an objects Property, before its returned.
+        ///     Allows modification of a constant signature after its basic information has been serialized from an objects
+        ///     Property, before its returned.
         /// </summary>
-        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer"/> this add-on belongs to.</param>
-        /// <param name="info">The <see cref="PropertyInfo"/> object the library constant signature was serialized from.</param>
+        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer" /> this add-on belongs to.</param>
+        /// <param name="info">The <see cref="PropertyInfo" /> object the library constant signature was serialized from.</param>
         /// <param name="signature">The signature.</param>
         /// <returns><c>true</c> if the constant needs to be filtered from the results.</returns>
         public bool MutateSignature(LSLLibraryDataReflectionSerializer serializer, PropertyInfo info,
@@ -119,11 +139,13 @@ namespace LibLSLCC.LibraryData.Reflection
             return Filters.Any(filter => filter.MutateSignature(serializer, info, signature));
         }
 
+
         /// <summary>
-        /// Allows modification of a constant signature after its basic information has been serialized from an objects Property, before its returned.
+        ///     Allows modification of a constant signature after its basic information has been serialized from an objects
+        ///     Property, before its returned.
         /// </summary>
-        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer"/> this add-on belongs to.</param>
-        /// <param name="info">The <see cref="FieldInfo"/> object the library constant signature was serialized from.</param>
+        /// <param name="serializer">The <see cref="LSLLibraryDataReflectionSerializer" /> this add-on belongs to.</param>
+        /// <param name="info">The <see cref="FieldInfo" /> object the library constant signature was serialized from.</param>
         /// <param name="signature">The signature.</param>
         /// <returns><c>true</c> if the constant needs to be filtered from the results.</returns>
         public bool MutateSignature(LSLLibraryDataReflectionSerializer serializer, FieldInfo info,
@@ -132,21 +154,14 @@ namespace LibLSLCC.LibraryData.Reflection
             return Filters.Any(filter => filter.MutateSignature(serializer, info, signature));
         }
 
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
-        /// </returns>
-        /// <filterpriority>1</filterpriority>
-        public IEnumerator<ILSLConstantFilter> GetEnumerator()
-        {
-            return Filters.GetEnumerator();
-        }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        /// <summary>
+        ///     Add's a filter to this multi filter, this here so list initializer syntax can be utilized to build a multi filter.
+        /// </summary>
+        /// <param name="filter">The filter to add.</param>
+        public void Add(LSLMultiConstantFilter filter)
         {
-            return GetEnumerator();
+            Filters.Add(filter);
         }
     }
 }

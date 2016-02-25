@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLExpressionListNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -57,12 +60,12 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLExpressionListNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLExpressionListNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLExpressionListNode : ILSLExpressionListNode
     {
-        private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
         private readonly GenericArray<ILSLExprNode> _expressions = new GenericArray<ILSLExprNode>();
+        private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLExpressionListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -75,10 +78,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLExpressionListNode"/> by cloning from another.
+        ///     Create an <see cref="LSLExpressionListNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLExpressionListNode(LSLExpressionListNode other)
         {
             if (other == null)
@@ -115,7 +118,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext, LSLExpressionListType listType)
+        internal LSLExpressionListNode(LSLParser.OptionalExpressionListContext parserContext,
+            LSLExpressionListType listType)
         {
             ListType = listType;
             SourceRange = new LSLSourceCodeRange(parserContext);
@@ -125,11 +129,27 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
+        ///     A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
         /// </summary>
         public IReadOnlyGenericArray<ILSLExprNode> Expressions
         {
             get { return _expressions; }
+        }
+
+        /// <summary>
+        ///     True if all expressions in the expression list are considered to be constant expressions.
+        /// </summary>
+        public bool AllExpressionsConstant
+        {
+            get { return Expressions.Count == 0 || Expressions.All(lslExprNode => lslExprNode.IsConstant); }
+        }
+
+        /// <summary>
+        ///     True if any expression in the expression list can possibly have side effects on the state of the program.
+        /// </summary>
+        public bool HasExpressionWithPossibleSideEffects
+        {
+            get { return Expressions.Any(lslExprNode => lslExprNode.HasPossibleSideEffects); }
         }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
@@ -138,11 +158,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The type of expression list this node represents.
-        /// <see cref="LSLExpressionListType"/>
+        ///     The type of expression list this node represents.
+        ///     <see cref="LSLExpressionListType" />
         /// </summary>
         public LSLExpressionListType ListType { get; private set; }
-
 
         IReadOnlyGenericArray<ILSLReadOnlyExprNode> ILSLExpressionListNode.Expressions
         {
@@ -150,23 +169,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if all expressions in the expression list are considered to be constant expressions.
-        /// </summary>
-        public bool AllExpressionsConstant
-        {
-            get { return Expressions.Count == 0 || Expressions.All(lslExprNode => lslExprNode.IsConstant); }
-        }
-
-        /// <summary>
-        /// True if any expression in the expression list can possibly have side effects on the state of the program.
-        /// </summary>
-        public bool HasExpressionWithPossibleSideEffects
-        {
-            get { return Expressions.Any(lslExprNode => lslExprNode.HasPossibleSideEffects); }
-        }
-
-        /// <summary>
-        /// True if this expression list node actually has expression children, False if it is empty.
+        ///     True if this expression list node actually has expression children, False if it is empty.
         /// </summary>
         public bool HasExpressions
         {
@@ -174,7 +177,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The source code range for each comma separator that appears in the expression list in order, or an empty list object.
+        ///     The source code range for each comma separator that appears in the expression list in order, or an empty list
+        ///     object.
         /// </summary>
         public IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList
         {
@@ -183,8 +187,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -193,8 +197,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLExpressionListNode(sourceRange, Err.Err);
         }
 
+
         /// <summary>
-        /// Adds a new expression to the expression list node.
+        ///     Adds a new expression to the expression list node.
         /// </summary>
         /// <param name="node">The expression node to add to the expression list.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is <c>null</c>.</exception>
@@ -210,8 +215,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             _expressions.Add(node);
         }
 
+
         /// <summary>
-        /// Deep clones the expression list node and all of its child expressions.
+        ///     Deep clones the expression list node and all of its child expressions.
         /// </summary>
         /// <returns>A deep cloned copy of this expression list node.</returns>
         public LSLExpressionListNode Clone()
@@ -219,6 +225,16 @@ namespace LibLSLCC.CodeValidator.Nodes
             return HasErrors ? GetError(SourceRange) : new LSLExpressionListNode(this);
         }
 
+
+        /// <summary>
+        ///     Add an <see cref="LSLSourceCodeRange" /> for a comma in the expression list.
+        ///     This method does NOT clone <paramref name="sourceRange" /> for you.
+        /// </summary>
+        /// <param name="sourceRange"></param>
+        internal void AddCommaSourceRange(LSLSourceCodeRange sourceRange)
+        {
+            _sourceRangeCommaList.Add(sourceRange);
+        }
 
         #region Nested type: Err
 
@@ -232,27 +248,29 @@ namespace LibLSLCC.CodeValidator.Nodes
         #region ILSLTreeNode Members
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -284,25 +302,16 @@ namespace LibLSLCC.CodeValidator.Nodes
                 return visitor.VisitForLoopInitExpressions(this);
             }
 
-            throw new InvalidOperationException("Visit "+typeof(LSLExpressionListNode)+", unknown LSLExpressionListType.");
+            throw new InvalidOperationException("Visit " + typeof (LSLExpressionListNode) +
+                                                ", unknown LSLExpressionListType.");
         }
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
         #endregion
-
-        /// <summary>
-        /// Add an <see cref="LSLSourceCodeRange"/> for a comma in the expression list.
-        /// This method does NOT clone <paramref name="sourceRange"/> for you.
-        /// </summary>
-        /// <param name="sourceRange"></param>
-        internal void AddCommaSourceRange(LSLSourceCodeRange sourceRange)
-        {
-            _sourceRangeCommaList.Add(sourceRange);
-        }
     }
 }

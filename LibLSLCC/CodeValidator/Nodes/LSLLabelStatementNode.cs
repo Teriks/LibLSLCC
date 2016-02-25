@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLLabelStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Diagnostics.CodeAnalysis;
@@ -55,7 +58,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLLabelStatementNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLLabelStatementNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLLabelStatementNode : ILSLLabelStatementNode, ILSLCodeStatement
     {
@@ -68,6 +71,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRange = sourceRange;
             HasErrors = true;
         }
+
 
         internal LSLLabelStatementNode(LSLParser.LabelStatementContext context, bool insideSingleStatementScope)
         {
@@ -86,7 +90,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
+        ///     A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
         /// </summary>
         public IReadOnlyGenericArray<LSLJumpStatementNode> JumpsToHere
         {
@@ -94,11 +98,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// If the scope has a return path, this is set to the node that causes the function to return.
-        /// it may be a return statement, or a control chain node.
+        ///     If the scope has a return path, this is set to the node that causes the function to return.
+        ///     it may be a return statement, or a control chain node.
         /// </summary>
         public ILSLReadOnlyCodeStatement ReturnPath { get; set; }
-
 
         IReadOnlyGenericArray<ILSLJumpStatementNode> ILSLLabelStatementNode.JumpsToHere
         {
@@ -115,9 +118,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
-
         /// <summary>
-        /// The name of the label.
+        ///     The name of the label.
         /// </summary>
         public string LabelName { get; private set; }
 
@@ -127,31 +129,36 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </summary>
         public int ScopeId { get; set; }
 
-
         /// <summary>
-        /// The source code range of the '@' symbol that prefixes the label name.
+        ///     The source code range of the '@' symbol that prefixes the label name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeLabelPrefix { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the label's name.
+        ///     The source code range of the label's name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeLabelName { get; private set; }
 
-
         /// <summary>
-        /// The source code range of the semi-colon that follows the label definition.
+        ///     The source code range of the semi-colon that follows the label definition.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeSemicolon { get; private set; }
 
 
-
         /// <summary>
-        /// Adds a <see cref="JumpsToHere"/> reference from a given <see cref="LSLJumpStatementNode"/>
+        ///     Adds a <see cref="JumpsToHere" /> reference from a given <see cref="LSLJumpStatementNode" />
         /// </summary>
         /// <param name="jump"></param>
         public void AddJumpToHere(LSLJumpStatementNode jump)
@@ -161,8 +168,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -183,16 +190,15 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLCodeStatement Members
 
-
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
         /// </summary>
-        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope"/>
+        /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
         public bool InsideSingleStatementScope { get; private set; }
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
@@ -204,7 +210,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
+        ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.
         /// </summary>
         public bool HasReturnPath
         {
@@ -229,27 +235,33 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>

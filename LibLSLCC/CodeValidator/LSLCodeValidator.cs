@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCodeValidator.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -48,7 +51,6 @@ using Antlr4.Runtime;
 using LibLSLCC.CodeValidator.Components;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
@@ -56,13 +58,17 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    /// <see cref="LSLCodeValidator"/> is responsible for building an abstracted LSL syntax tree with <see cref="ILSLCompilationUnitNode"/> as the top node.
-    /// <para>
-    /// <see cref="LSLCodeValidator"/> preforms full front end syntax checking of the source code as the tree is built.
-    /// It delegates syntax errors and syntax warning invocations/information to the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener"/> and
-    /// <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> instances of the <see cref="ILSLCodeValidatorStrategies"/> object
-    /// assigned to the <see cref="ValidatorStrategies"/> property.
-    /// </para>
+    ///     <see cref="LSLCodeValidator" /> is responsible for building an abstracted LSL syntax tree with
+    ///     <see cref="ILSLCompilationUnitNode" /> as the top node.
+    ///     <para>
+    ///         <see cref="LSLCodeValidator" /> preforms full front end syntax checking of the source code as the tree is
+    ///         built.
+    ///         It delegates syntax errors and syntax warning invocations/information to the
+    ///         <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener" /> and
+    ///         <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener" /> instances of the
+    ///         <see cref="ILSLCodeValidatorStrategies" /> object
+    ///         assigned to the <see cref="ValidatorStrategies" /> property.
+    ///     </para>
     /// </summary>
     public sealed class LSLCodeValidator : ILSLCodeValidator
     {
@@ -71,12 +77,15 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Constructs an LSLCodeValidator using the given <see cref="ILSLCodeValidatorStrategies"/>.
+        ///     Constructs an LSLCodeValidator using the given <see cref="ILSLCodeValidatorStrategies" />.
         /// </summary>
-        /// <see cref="ILSLCodeValidatorStrategies"/>
-        /// <param name="validatorStrategies">The <see cref="ILSLCodeValidatorStrategies"/> to use.</param>
-        /// <exception cref="ArgumentException">If one or more of <paramref name="validatorStrategies"/> properties are <c>null</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies"/> is <c>null</c>.</exception>
+        /// <see cref="ILSLCodeValidatorStrategies" />
+        /// <param name="validatorStrategies">The <see cref="ILSLCodeValidatorStrategies" /> to use.</param>
+        /// <exception cref="ArgumentException">
+        ///     If one or more of <paramref name="validatorStrategies" /> properties are
+        ///     <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="validatorStrategies" /> is <c>null</c>.</exception>
         public LSLCodeValidator(ILSLCodeValidatorStrategies validatorStrategies)
         {
             if (validatorStrategies == null)
@@ -90,10 +99,10 @@ namespace LibLSLCC.CodeValidator
             string describeNulls;
             if (!validatorStrategies.IsComplete(out describeNulls))
             {
-                throw new ArgumentException(typeof(ILSLCodeValidatorStrategies).Name+" is incomplete:"+
-                    Environment.NewLine+
-                    Environment.NewLine+
-                    describeNulls);
+                throw new ArgumentException(typeof (ILSLCodeValidatorStrategies).Name + " is incomplete:" +
+                                            Environment.NewLine +
+                                            Environment.NewLine +
+                                            describeNulls);
             }
 
 
@@ -101,9 +110,11 @@ namespace LibLSLCC.CodeValidator
             _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
         }
 
+
         /// <summary>
-        /// Construct an <see cref="LSLCodeValidator"/> using <see cref="LSLCodeValidatorStrategies.Default"/> to initialize the <see cref="ValidatorStrategies"/> property.
-        /// <see cref="LSLCodeValidatorStrategies.Default"/>
+        ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default" /> to initialize
+        ///     the <see cref="ValidatorStrategies" /> property.
+        ///     <see cref="LSLCodeValidatorStrategies.Default" />
         /// </summary>
         public LSLCodeValidator()
         {
@@ -112,31 +123,32 @@ namespace LibLSLCC.CodeValidator
             _antlrParserErrorHandler = new LSLAntlrErrorHandler(validatorStrategies.SyntaxErrorListener);
         }
 
+
         /// <summary>
-        /// <see cref="ILSLCodeValidatorStrategies"/> that provides several components to the validator.
-        /// Among them are the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener"/> and <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener"/> implementations.
+        ///     <see cref="ILSLCodeValidatorStrategies" /> that provides several components to the validator.
+        ///     Among them are the <see cref="ILSLCodeValidatorStrategies.SyntaxErrorListener" /> and
+        ///     <see cref="ILSLCodeValidatorStrategies.SyntaxWarningListener" /> implementations.
         /// </summary>
         public ILSLCodeValidatorStrategies ValidatorStrategies { get; private set; }
 
         /// <summary>
-        /// Set to true if the last call to validate revealed syntax errors and returned null
+        ///     Set to true if the last call to validate generated syntax warnings
+        /// </summary>
+        public bool HasSyntaxWarnings { get; private set; }
+
+        /// <summary>
+        ///     Set to true if the last call to validate revealed syntax errors and returned null
         /// </summary>
         public bool HasSyntaxErrors { get; private set; }
 
 
         /// <summary>
-        /// Set to true if the last call to validate generated syntax warnings
-        /// </summary>
-        public bool HasSyntaxWarnings { get; private set; }
-
-
-        /// <summary>
-        /// Validates the code content of a stream and returns the top of the compilation unit syntax tree as a
-        /// <see cref="LSLCompilationUnitNode"/> object, if parsing resulted in syntax errors the result will be null
+        ///     Validates the code content of a stream and returns the top of the compilation unit syntax tree as a
+        ///     <see cref="LSLCompilationUnitNode" /> object, if parsing resulted in syntax errors the result will be null
         /// </summary>
         /// <param name="stream">The TextReader to parse code from</param>
         /// <returns>Top level node of an LSL syntax tree</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <c>null</c>.</exception>
         public ILSLCompilationUnitNode Validate(TextReader stream)
         {
             if (stream == null)
@@ -186,7 +198,6 @@ namespace LibLSLCC.CodeValidator
                 tree.Comments = lexer.Comments;
 
                 return tree;
-
             }
             finally
             {

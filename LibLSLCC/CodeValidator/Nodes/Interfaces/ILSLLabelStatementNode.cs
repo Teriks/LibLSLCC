@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLLabelStatementNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -49,40 +52,46 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for label statements.
+    ///     AST node interface for label statements.
     /// </summary>
     public interface ILSLLabelStatementNode : ILSLReadOnlyCodeStatement
     {
         /// <summary>
-        /// The name of the label.
+        ///     The name of the label.
         /// </summary>
         string LabelName { get; }
 
         /// <summary>
-        /// A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
+        ///     A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
         /// </summary>
         IReadOnlyGenericArray<ILSLJumpStatementNode> JumpsToHere { get; }
 
-
-
         /// <summary>
-        /// The source code range of the '@' symbol that prefixes the label name.
+        ///     The source code range of the '@' symbol that prefixes the label name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeLabelPrefix { get; }
 
         /// <summary>
-        /// The source code range of the label's name.
+        ///     The source code range of the label's name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeLabelName { get; }
 
         /// <summary>
-        /// The source code range of the semi-colon that follows the label definition.
+        ///     The source code range of the semi-colon that follows the label definition.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeSemicolon { get; }
     }
 }

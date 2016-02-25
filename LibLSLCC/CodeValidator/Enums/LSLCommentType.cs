@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLCommentType.cs
 // 
@@ -39,21 +40,23 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Enums
 {
     /// <summary>
-    /// Represents a source code comment type.
+    ///     Represents a source code comment type.
     /// </summary>
     public enum LSLCommentType
     {
         /// <summary>
-        /// A Block comment.
+        ///     A Block comment.
         /// </summary>
         Block,
 
         /// <summary>
-        /// A Single Line comment.
+        ///     A Single Line comment.
         /// </summary>
         SingleLine
     }

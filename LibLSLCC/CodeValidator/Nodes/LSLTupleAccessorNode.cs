@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLVecRotAccessorNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,11 +58,10 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLTupleAccessorNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLTupleAccessorNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLTupleAccessorNode : ILSLTupleAccessorNode, ILSLExprNode
     {
-
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLTupleAccessorNode(LSLSourceCodeRange sourceRange, Err err)
@@ -70,8 +72,14 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentException">If <paramref name="accessedExpressionType"/> is not <see cref="LSLType.Vector"/> or <see cref="LSLType.Rotation"/>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="accessedExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     If <paramref name="accessedExpressionType" /> is not <see cref="LSLType.Vector" />
+        ///     or <see cref="LSLType.Rotation" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="context" /> or <paramref name="accessedExpression" /> is
+        ///     <c>null</c>.
+        /// </exception>
         internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression,
             LSLType accessedExpressionType,
             LSLTupleComponent accessedComponent)
@@ -106,10 +114,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLTupleAccessorNode"/> by cloning from another.
+        ///     Create an <see cref="LSLTupleAccessorNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLTupleAccessorNode(LSLTupleAccessorNode other)
         {
             if (other == null)
@@ -137,13 +145,11 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The expression that the member access operator was used on.
-        /// This should only ever be a reference to a variable.
-        /// Using a member accessor on a constant, even if it is a vector or rotation, is not allowed.
+        ///     The expression that the member access operator was used on.
+        ///     This should only ever be a reference to a variable.
+        ///     Using a member accessor on a constant, even if it is a vector or rotation, is not allowed.
         /// </summary>
         public ILSLExprNode AccessedExpression { get; private set; }
-
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -151,33 +157,34 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The raw name of the accessed tuple member, taken from the source code.
+        ///     The raw name of the accessed tuple member, taken from the source code.
         /// </summary>
         public string AccessedComponentString { get; private set; }
 
         /// <summary>
-        /// The source code range of the tuple member that was accessed.
+        ///     The source code range of the tuple member that was accessed.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeAccessedComponent { get; private set; }
 
         /// <summary>
-        /// The tuple component accessed.
-        /// <see cref="LSLTupleComponent"/>
+        ///     The tuple component accessed.
+        ///     <see cref="LSLTupleComponent" />
         /// </summary>
         public LSLTupleComponent AccessedComponent { get; private set; }
-
-
-
 
         ILSLReadOnlyExprNode ILSLTupleAccessorNode.AccessedExpression
         {
             get { return AccessedExpression; }
         }
 
+
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -206,10 +213,10 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLExprNode Members
 
-
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public ILSLExprNode Clone()
@@ -219,37 +226,40 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
 
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor" /> is <c>null</c>.</exception>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (visitor == null)
@@ -261,9 +271,8 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-
         /// <summary>
-        /// The return type of the expression. see: <see cref="LSLType" />
+        ///     The return type of the expression. see: <see cref="LSLType" />
         /// </summary>
         public LSLType Type
         {
@@ -272,12 +281,12 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
+        ///     The expression type/classification of the expression. see: <see cref="LSLExpressionType" />
         /// </summary>
         /// <value>
-        /// The type of the expression.
+        ///     The type of the expression.
         /// </value>
-        /// <exception cref="InvalidOperationException" accessor="get">If <see cref="AccessedExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException" accessor="get">If <see cref="AccessedExpression" /> is <c>null</c>.</exception>
         public LSLExpressionType ExpressionType
         {
             get
@@ -285,7 +294,8 @@ namespace LibLSLCC.CodeValidator.Nodes
                 if (AccessedExpression == null)
                 {
                     throw new InvalidOperationException(
-                        typeof(LSLTupleAccessorNode).Name+".AccessedExpression == null.  node is an error node, do not invoke methods on it;  Check 'HasErrors' first.");
+                        typeof (LSLTupleAccessorNode).Name +
+                        ".AccessedExpression == null.  node is an error node, do not invoke methods on it;  Check 'HasErrors' first.");
                 }
 
                 return AccessedExpression.Type == LSLType.Vector
@@ -296,7 +306,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the expression is constant and can be calculated at compile time.
+        ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
         public bool IsConstant
         {
@@ -305,21 +315,19 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a function call.  False otherwise.
+        ///     True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a
+        ///     function call.  False otherwise.
         /// </summary>
         public bool HasPossibleSideEffects
         {
-            get
-            {
-                return AccessedExpression != null && AccessedExpression.HasPossibleSideEffects;
-            }
+            get { return AccessedExpression != null && AccessedExpression.HasPossibleSideEffects; }
         }
 
 
         /// <summary>
-        /// Should produce a user friendly description of the expressions return type.
-        /// This is used in some syntax error messages, Ideally you should enclose your description in
-        /// parenthesis or something that will make it stand out in a string.
+        ///     Should produce a user friendly description of the expressions return type.
+        ///     This is used in some syntax error messages, Ideally you should enclose your description in
+        ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
         /// <returns></returns>
         public string DescribeType()

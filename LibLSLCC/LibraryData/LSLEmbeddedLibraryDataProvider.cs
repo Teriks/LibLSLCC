@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLEmbeddedLibraryDataProvider.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -62,47 +65,52 @@ namespace LibLSLCC.LibraryData
         private LSLLibraryBaseData _liveFilteringBaseLibraryData;
         private LSLLibraryDataAdditions _liveFilteringLibraryDataAdditions;
 
-        /// <summary>
-        /// Get a stream that points the default library XML data embedded in the LibLSLCC assembly.
-        /// </summary>
-        /// <returns>A stream containing the default library XML data embedded in LibLSLCC</returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public static Stream GetDefaultLibraryDataStream()
-        {
-            return typeof(LSLEmbeddedLibraryDataProvider).Assembly.GetManifestResourceStream(
-                    "LibLSLCC.LibraryData.default.xml");
-        }
-
 
         /// <summary>
-        /// Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
+        ///     Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
         /// </summary>
         /// <param name="liveFiltering">
-        /// If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query results will change.
-        /// Otherwise if this is false, only subsets present upon construction will be loaded.
+        ///     If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query
+        ///     results will change.
+        ///     Otherwise if this is false, only subsets present upon construction will be loaded.
         /// </param>
         /// <param name="libraryBaseData">The base library data to use.</param>
         /// <param name="dataAdditions">Library data additions.</param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
-        /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///     If the embedded library data could not be loaded from the assembly
+        ///     manifest.
+        /// </exception>
         public LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData libraryBaseData,
-            LSLLibraryDataAdditions dataAdditions, bool liveFiltering, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : this(GetSubsets(libraryBaseData,dataAdditions),liveFiltering, loadOptions)
+            LSLLibraryDataAdditions dataAdditions, bool liveFiltering,
+            LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
+            : this(GetSubsets(libraryBaseData, dataAdditions), liveFiltering, loadOptions)
         {
-
         }
 
 
         /// <summary>
-        /// Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
+        ///     Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
         /// </summary>
         /// <param name="activeSubsets">The library subsets to utilize.</param>
         /// <param name="liveFiltering">
-        /// If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query results will change.
-        /// Otherwise if this is false, only subsets present upon construction will be loaded.
+        ///     If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query
+        ///     results will change.
+        ///     Otherwise if this is false, only subsets present upon construction will be loaded.
         /// </param>
-        /// <param name="loadOptions">Optionally specifies what type's of library definitions will be loaded, defaults to <see cref="LSLLibraryDataLoadOptions.All"/></param>
-        /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
-        public LSLEmbeddedLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : base(activeSubsets, liveFiltering)
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///     If the embedded library data could not be loaded from the assembly
+        ///     manifest.
+        /// </exception>
+        public LSLEmbeddedLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering,
+            LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : base(activeSubsets, liveFiltering)
         {
             using (var libraryData = GetDefaultLibraryDataStream())
             {
@@ -119,11 +127,14 @@ namespace LibLSLCC.LibraryData
         }
 
 
-
         /// <summary>
-        /// Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file in live filtering mode with no active subsets set.
+        ///     Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file in live
+        ///     filtering mode with no active subsets set.
         /// </summary>
-        /// <exception cref="InvalidOperationException">If the embedded library data could not be loaded from the assembly manifest.</exception>
+        /// <exception cref="InvalidOperationException">
+        ///     If the embedded library data could not be loaded from the assembly
+        ///     manifest.
+        /// </exception>
         public LSLEmbeddedLibraryDataProvider() : base(true)
         {
             using (var libraryData = GetDefaultLibraryDataStream())
@@ -141,9 +152,8 @@ namespace LibLSLCC.LibraryData
         }
 
 
-
         /// <summary>
-        /// Easy way to add either 'lsl' or 'os-lsl' to the active subsets
+        ///     Easy way to add either 'lsl' or 'os-lsl' to the active subsets
         /// </summary>
         public LSLLibraryBaseData LiveFilteringBaseLibraryData
         {
@@ -159,7 +169,7 @@ namespace LibLSLCC.LibraryData
         }
 
         /// <summary>
-        /// Easy way to add extra modules to the active subsets
+        ///     Easy way to add extra modules to the active subsets
         /// </summary>
         public LSLLibraryDataAdditions LiveFilteringLibraryDataAdditions
         {
@@ -174,7 +184,21 @@ namespace LibLSLCC.LibraryData
             }
         }
 
-        private static IEnumerable<string> GetSubsets(LSLLibraryBaseData libraryBaseData, LSLLibraryDataAdditions dataAdditions)
+
+        /// <summary>
+        ///     Get a stream that points the default library XML data embedded in the LibLSLCC assembly.
+        /// </summary>
+        /// <returns>A stream containing the default library XML data embedded in LibLSLCC</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public static Stream GetDefaultLibraryDataStream()
+        {
+            return typeof (LSLEmbeddedLibraryDataProvider).Assembly.GetManifestResourceStream(
+                "LibLSLCC.LibraryData.default.xml");
+        }
+
+
+        private static IEnumerable<string> GetSubsets(LSLLibraryBaseData libraryBaseData,
+            LSLLibraryDataAdditions dataAdditions)
         {
             yield return libraryBaseData.ToSubsetName();
 
@@ -187,51 +211,50 @@ namespace LibLSLCC.LibraryData
 
 
     /// <summary>
-    /// Represents the available additional library subsets in LSLEmbeddedLibraryDataProvider.xml
+    ///     Represents the available additional library subsets in LSLEmbeddedLibraryDataProvider.xml
     /// </summary>
     [Flags]
     public enum LSLLibraryDataAdditions
     {
         /// <summary>
-        /// Specifies no extra library data
+        ///     Specifies no extra library data
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// Specifies the addition of the OpenSim OSSL functions
+        ///     Specifies the addition of the OpenSim OSSL functions
         /// </summary>
         OpenSimOssl = 1,
 
         /// <summary>
-        /// Specifies the addition of the OpenSim light share functions
+        ///     Specifies the addition of the OpenSim light share functions
         /// </summary>
         OpenSimWindlight = 2,
 
         /// <summary>
-        /// Specifies the addition of the OpenSim bullet phys* functions
+        ///     Specifies the addition of the OpenSim bullet phys* functions
         /// </summary>
         OpenSimBulletPhysics = 4,
 
         /// <summary>
-        /// Specifies the addition of the OpenSim mod invoke functions
+        ///     Specifies the addition of the OpenSim mod invoke functions
         /// </summary>
         OpenSimModInvoke = 8,
 
         /// <summary>
-        /// Specifies the addition of the OpenSim json store functions
+        ///     Specifies the addition of the OpenSim json store functions
         /// </summary>
         OpenSimJsonStore = 16
     }
 
 
     /// <summary>
-    /// Extensions for the LSLLibraryDataAdditions flags Enum
+    ///     Extensions for the LSLLibraryDataAdditions flags Enum
     /// </summary>
     public static class LSLLibraryDataAdditionEnumExtensions
     {
-
         /// <summary>
-        /// Converts LSLLibraryDataAdditions to the corresponding subset string
+        ///     Converts LSLLibraryDataAdditions to the corresponding subset string
         /// </summary>
         /// <param name="dataAdditionFlags"></param>
         /// <returns>a string representation of the subset</returns>
@@ -242,54 +265,58 @@ namespace LibLSLCC.LibraryData
                 yield return ("ossl");
             }
 
-            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimWindlight) == LSLLibraryDataAdditions.OpenSimWindlight)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimWindlight) ==
+                LSLLibraryDataAdditions.OpenSimWindlight)
             {
                 yield return ("os-lightshare");
             }
 
-            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimBulletPhysics) == LSLLibraryDataAdditions.OpenSimBulletPhysics)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimBulletPhysics) ==
+                LSLLibraryDataAdditions.OpenSimBulletPhysics)
             {
                 yield return ("os-bullet-physics");
             }
 
-            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimModInvoke) == LSLLibraryDataAdditions.OpenSimModInvoke)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimModInvoke) ==
+                LSLLibraryDataAdditions.OpenSimModInvoke)
             {
                 yield return ("os-mod-api");
             }
 
 
-            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimJsonStore) == LSLLibraryDataAdditions.OpenSimJsonStore)
+            if ((dataAdditionFlags & LSLLibraryDataAdditions.OpenSimJsonStore) ==
+                LSLLibraryDataAdditions.OpenSimJsonStore)
             {
                 yield return ("os-json-store");
             }
-        } 
+        }
     }
 
 
     /// <summary>
-    /// Represents the available base library subsets in LSLEmbeddedLibraryDataProvider.xml
+    ///     Represents the available base library subsets in LSLEmbeddedLibraryDataProvider.xml
     /// </summary>
     public enum LSLLibraryBaseData
     {
         /// <summary>
-        /// Standard LSL
+        ///     Standard LSL
         /// </summary>
         StandardLsl,
 
         /// <summary>
-        /// OpenSim subset of Standard LSL
+        ///     OpenSim subset of Standard LSL
         /// </summary>
         OpensimLsl
     }
 
 
     /// <summary>
-    /// Extensions for the LSLLibraryBaseDataEnumExtensions Enum
+    ///     Extensions for the LSLLibraryBaseDataEnumExtensions Enum
     /// </summary>
     public static class LSLLibraryBaseDataEnumExtensions
     {
         /// <summary>
-        /// Converts LSLLibraryBaseData to the corresponding subset string
+        ///     Converts LSLLibraryBaseData to the corresponding subset string
         /// </summary>
         /// <param name="baseDataOption"></param>
         /// <returns>a string representation of the subset</returns>

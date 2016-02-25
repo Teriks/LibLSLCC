@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLParameterNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,7 +58,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLParameterNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLParameterNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLParameterNode : ILSLParameterNode, ILSLSyntaxTreeNode
     {
@@ -69,7 +72,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         internal LSLParameterNode(LSLParser.ParameterDefinitionContext context)
         {
             if (context == null)
@@ -98,59 +101,61 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The name of the parameter.
+        ///     The name of the parameter.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// The <see cref="LSLType"/> associated with the parameter.
+        ///     The <see cref="LSLType" /> associated with the parameter.
         /// </summary>
         public LSLType Type { get; private set; }
 
         /// <summary>
-        /// The string representation of the <see cref="LSLType"/> for the parameter, taken from the source code.
+        ///     The string representation of the <see cref="LSLType" /> for the parameter, taken from the source code.
         /// </summary>
         public string TypeName { get; private set; }
 
         /// <summary>
-        /// The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode"/>.
+        ///     The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode" />.
         /// </summary>
         public int ParameterIndex { get; set; }
 
         /// <summary>
-        /// The source code range of the parameter name.
+        ///     The source code range of the parameter name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
 
         /// <summary>
-        /// The source code range of the parameter type specifier.
+        ///     The source code range of the parameter type specifier.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeType { get; private set; }
 
-
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; private set; }
 
-
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
-
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -162,13 +167,14 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 
+
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -177,6 +183,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
             return new LSLParameterNode(sourceRange, Err.Err);
         }
+
 
         private enum Err
         {

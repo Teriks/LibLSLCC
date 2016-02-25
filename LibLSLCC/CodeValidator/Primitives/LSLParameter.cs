@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLParameter.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -51,7 +54,7 @@ using LibLSLCC.Utility;
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    /// Represents a basic parameter that belongs to either an event handler or function signature.
+    ///     Represents a basic parameter that belongs to either an event handler or function signature.
     /// </summary>
     public sealed class LSLParameter
     {
@@ -61,13 +64,17 @@ namespace LibLSLCC.CodeValidator.Primitives
         /// <param name="type">The parameter type</param>
         /// <param name="name">The parameter name</param>
         /// <param name="variadic">Is the parameter variadic</param>
-        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the parameter name does not follow LSL symbol naming conventions for parameters.</exception>
-        /// <exception cref="ArgumentException">Thrown if type is <see cref="LSLType.Void"/> and variadic is false.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException">
+        ///     Thrown if the parameter name does not follow LSL symbol naming
+        ///     conventions for parameters.
+        /// </exception>
+        /// <exception cref="ArgumentException">Thrown if type is <see cref="LSLType.Void" /> and variadic is false.</exception>
         public LSLParameter(LSLType type, string name, bool variadic)
         {
             if (type == LSLType.Void && variadic == false)
             {
-                throw new ArgumentException(GetType().FullName + ": Type cannot be LSLType.Void unless the parameter it is variadic.");
+                throw new ArgumentException(GetType().FullName +
+                                            ": Type cannot be LSLType.Void unless the parameter it is variadic.");
             }
 
 
@@ -78,14 +85,16 @@ namespace LibLSLCC.CodeValidator.Primitives
 
             if (!LSLTokenTools.IDRegexAnchored.IsMatch(name))
             {
-                throw new LSLInvalidSymbolNameException(string.Format(GetType().FullName + ": Parameter name '{0}' contained invalid characters or formatting.", name));
+                throw new LSLInvalidSymbolNameException(
+                    string.Format(
+                        GetType().FullName + ": Parameter name '{0}' contained invalid characters or formatting.", name));
             }
 
             Type = type;
             Name = name;
             Variadic = variadic;
-
         }
+
 
         /// <summary>
         ///     Name of the parameter
@@ -103,15 +112,17 @@ namespace LibLSLCC.CodeValidator.Primitives
         public LSLType Type { get; private set; }
 
         /// <summary>
-        ///     The parameter index, which gets set when the parameter is added to an <see cref="LSLFunctionSignature"/> or <see cref="LSLEventSignature "/>
+        ///     The parameter index, which gets set when the parameter is added to an <see cref="LSLFunctionSignature" /> or
+        ///     <see cref="LSLEventSignature " />
         /// </summary>
         public int ParameterIndex { get; set; }
 
         /// <summary>
-        /// Returns the signature string of the parameter.
-        /// If the parameter is not variadic, then the signature is simply the type name followed by the parameter name, separated with a space.
-        /// Otherwise if the parameter is variadic, it will be formated as:  params any[] parameter_name
-        /// If the variadic parameter actually has a type, the 'any' keyword will be replaced with the name of that type.
+        ///     Returns the signature string of the parameter.
+        ///     If the parameter is not variadic, then the signature is simply the type name followed by the parameter name,
+        ///     separated with a space.
+        ///     Otherwise if the parameter is variadic, it will be formated as:  params any[] parameter_name
+        ///     If the variadic parameter actually has a type, the 'any' keyword will be replaced with the name of that type.
         /// </summary>
         public string SignatureString
         {
@@ -123,14 +134,14 @@ namespace LibLSLCC.CodeValidator.Primitives
                 }
 
                 //the any part is just for future proofing at the moment
-                return (Type == LSLType.Void ? "any" : Type.ToLSLTypeName())  +" "+ Name;
+                return (Type == LSLType.Void ? "any" : Type.ToLSLTypeName()) + " " + Name;
             }
         }
 
 
         /// <summary>
-        /// Returns a hash code for the <see cref="LSLParameter"/> object.
-        /// The hash code is generated from the parameter Type, Name, ParameterIndex and Variadic status.
+        ///     Returns a hash code for the <see cref="LSLParameter" /> object.
+        ///     The hash code is generated from the parameter Type, Name, ParameterIndex and Variadic status.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -145,11 +156,17 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// Determines if the <see cref="Type"/>, <see cref="Name"/>, <see cref="ParameterIndex"/> and <see cref="Variadic"/> status are of equal values in another <see cref="LSLParameter"/> object.
-        /// If obj is not actually an <see cref="LSLParameter"/> object, or derived from one, than this function will always return false.
+        ///     Determines if the <see cref="Type" />, <see cref="Name" />, <see cref="ParameterIndex" /> and
+        ///     <see cref="Variadic" /> status are of equal values in another <see cref="LSLParameter" /> object.
+        ///     If obj is not actually an <see cref="LSLParameter" /> object, or derived from one, than this function will always
+        ///     return false.
         /// </summary>
-        /// <param name="obj">The <see cref="LSLParameter"/> object to compare this one to.</param>
-        /// <returns>True if 'obj' is an <see cref="LSLParameter"/> object or derived type; And <see cref="Type"/>, <see cref="Name"/>, <see cref="ParameterIndex"/> and <see cref="Variadic"/> status are of equal values in both objects.</returns>
+        /// <param name="obj">The <see cref="LSLParameter" /> object to compare this one to.</param>
+        /// <returns>
+        ///     True if 'obj' is an <see cref="LSLParameter" /> object or derived type; And <see cref="Type" />,
+        ///     <see cref="Name" />, <see cref="ParameterIndex" /> and <see cref="Variadic" /> status are of equal values in both
+        ///     objects.
+        /// </returns>
         public override bool Equals(object obj)
         {
             var o = obj as LSLParameter;

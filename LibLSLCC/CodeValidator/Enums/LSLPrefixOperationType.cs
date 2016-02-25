@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLPrefixOperationType.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -48,61 +51,63 @@ using System;
 
 namespace LibLSLCC.CodeValidator.Enums
 {
-
     /// <summary>
-    /// Represents different types of LSL prefix operators.
+    ///     Represents different types of LSL prefix operators.
     /// </summary>
     public enum LSLPrefixOperationType
     {
         /// <summary>
-        /// Prefix increment.
+        ///     Prefix increment.
         /// </summary>
         Increment = 6,
 
         /// <summary>
-        /// Prefix decrement.
+        ///     Prefix decrement.
         /// </summary>
         Decrement = 5,
 
         /// <summary>
-        /// Prefix negation.
+        ///     Prefix negation.
         /// </summary>
         Negative = 4,
 
         /// <summary>
-        /// Positive number prefix.
+        ///     Positive number prefix.
         /// </summary>
         Positive = 3,
 
         /// <summary>
-        /// Boolean not prefix operator.
+        ///     Boolean not prefix operator.
         /// </summary>
         BooleanNot = 2,
 
         /// <summary>
-        /// Bitwise not prefix operator. (~)
+        ///     Bitwise not prefix operator. (~)
         /// </summary>
         BitwiseNot = 1,
 
         /// <summary>
-        /// Unknown/Erroneous prefix operator.
+        ///     Unknown/Erroneous prefix operator.
         /// </summary>
         Error = 0
     }
 
     /// <summary>
-    /// <see cref="LSLPrefixOperationType"/> extensions for converting <see cref="LSLPrefixOperationType"/> from source code string representation
-    /// and back.
+    ///     <see cref="LSLPrefixOperationType" /> extensions for converting <see cref="LSLPrefixOperationType" /> from source
+    ///     code string representation
+    ///     and back.
     /// </summary>
     public static class LSLPrefixOperationTypeTools
     {
-
         /// <summary>
-        /// Converts the provided <see cref="LSLPrefixOperationType"/> to its source code string representation.
+        ///     Converts the provided <see cref="LSLPrefixOperationType" /> to its source code string representation.
         /// </summary>
-        /// <param name="type">The <see cref="LSLPrefixOperationType"/> to convert to a string.</param>
-        /// <exception cref="ArgumentException">Thrown if the <see cref="LSLPrefixOperationType"/> provided was equal to <see cref="LSLPrefixOperationType.Error"/>.</exception>
-        /// <returns>The source code string representation of the <see cref="LSLPrefixOperationType"/>.</returns>
+        /// <param name="type">The <see cref="LSLPrefixOperationType" /> to convert to a string.</param>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if the <see cref="LSLPrefixOperationType" /> provided was equal to
+        ///     <see cref="LSLPrefixOperationType.Error" />.
+        /// </exception>
+        /// <returns>The source code string representation of the <see cref="LSLPrefixOperationType" />.</returns>
         public static string ToOperatorString(this LSLPrefixOperationType type)
         {
             switch (type)
@@ -127,10 +132,10 @@ namespace LibLSLCC.CodeValidator.Enums
         }
 
 
-
         /// <summary>
-        /// Determines whether the given prefix operation is a modifying operation.
-        /// Currently only <see cref="LSLPrefixOperationType.Decrement"/> and <see cref="LSLPrefixOperationType.Increment"/> are considered modifying operations.
+        ///     Determines whether the given prefix operation is a modifying operation.
+        ///     Currently only <see cref="LSLPrefixOperationType.Decrement" /> and <see cref="LSLPrefixOperationType.Increment" />
+        ///     are considered modifying operations.
         /// </summary>
         /// <param name="type">If the prefix operation modifies the expression to its right.</param>
         /// <returns></returns>
@@ -141,12 +146,15 @@ namespace LibLSLCC.CodeValidator.Enums
 
 
         /// <summary>
-        /// Parses a <see cref="LSLPrefixOperationType"/> from its source code string representation.
+        ///     Parses a <see cref="LSLPrefixOperationType" /> from its source code string representation.
         /// </summary>
-        /// <param name="operationString">The string to attempt to parse an <see cref="LSLPrefixOperationType"/> from.</param>
+        /// <param name="operationString">The string to attempt to parse an <see cref="LSLPrefixOperationType" /> from.</param>
         /// <exception cref="ArgumentNullException">Thrown if 'operationString' is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown if 'operationString' was not a valid source code string representation of an LSL prefix operator.</exception>
-        /// <returns>The parsed <see cref="LSLPrefixOperationType"/>.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Thrown if 'operationString' was not a valid source code string representation of an
+        ///     LSL prefix operator.
+        /// </exception>
+        /// <returns>The parsed <see cref="LSLPrefixOperationType" />.</returns>
         public static LSLPrefixOperationType ParseFromOperator(string operationString)
         {
             if (string.IsNullOrEmpty(operationString))

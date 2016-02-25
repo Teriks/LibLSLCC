@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLDeadCodeSegment.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Enums;
@@ -52,11 +55,10 @@ namespace LibLSLCC.CodeValidator.Primitives
     ///     A code segment type for housing a range of statement nodes that are considered to be dead.
     ///     a DeadCodeType enum property is provided to describe what caused the code to be dead
     /// </summary>
-    public  sealed class LSLDeadCodeSegment : LSLCodeSegment
+    public sealed class LSLDeadCodeSegment : LSLCodeSegment
     {
-
         /// <summary>
-        /// Construct an <see cref="LSLDeadCodeSegment"/> with the given <see cref="LSLDeadCodeType"/>
+        ///     Construct an <see cref="LSLDeadCodeSegment" /> with the given <see cref="LSLDeadCodeType" />
         /// </summary>
         /// <param name="deadCodeType"></param>
         public LSLDeadCodeSegment(LSLDeadCodeType deadCodeType)
@@ -64,8 +66,9 @@ namespace LibLSLCC.CodeValidator.Primitives
             DeadCodeType = deadCodeType;
         }
 
+
         /// <summary>
-        /// The type of dead code that this <see cref="LSLDeadCodeSegment"/> represents.
+        ///     The type of dead code that this <see cref="LSLDeadCodeSegment" /> represents.
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; private set; }
     }

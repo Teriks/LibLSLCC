@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLHexLiteralNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,7 +58,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLHexLiteralNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLHexLiteralNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLHexLiteralNode : LSLConstantLiteralNode, ILSLHexLiteralNode
     {
@@ -69,7 +72,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Create an <see cref="LSLHexLiteralNode"/> by cloning from another.
+        ///     Create an <see cref="LSLHexLiteralNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
@@ -78,18 +81,21 @@ namespace LibLSLCC.CodeValidator.Nodes
         {
         }
 
+
         internal LSLHexLiteralNode(LSLParser.Expr_AtomContext context)
             : base(context.GetText(), LSLType.Integer, new LSLSourceCodeRange(context))
         {
         }
+
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
             get { return Parent; }
         }
 
+
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -99,6 +105,7 @@ namespace LibLSLCC.CodeValidator.Nodes
             return visitor.VisitHexLiteral(this);
         }
 
+
         ILSLReadOnlyExprNode ILSLReadOnlyExprNode.Clone()
         {
             return Clone();
@@ -106,8 +113,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -116,9 +123,11 @@ namespace LibLSLCC.CodeValidator.Nodes
             return new LSLHexLiteralNode(sourceRange, Err.Err);
         }
 
+
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         public override ILSLExprNode Clone()

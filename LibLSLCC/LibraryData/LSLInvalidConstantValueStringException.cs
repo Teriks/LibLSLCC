@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLInvalidConstantValueStringException.cs
 // 
@@ -39,15 +40,20 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
 
+#endregion
+
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// Thrown by functions that deal with subset names, when an invalid format for a subset name is encountered
+    ///     Thrown by functions that deal with subset names, when an invalid format for a subset name is encountered
     /// </summary>
     [Serializable]
     public class LSLInvalidConstantValueStringException : Exception
@@ -60,22 +66,24 @@ namespace LibLSLCC.LibraryData
         //
 
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public LSLInvalidConstantValueStringException()
         {
         }
 
+
         /// <summary>
-        /// Construct with message.
+        ///     Construct with message.
         /// </summary>
         /// <param name="message">Exception message.</param>
         public LSLInvalidConstantValueStringException(string message) : base(message)
         {
         }
 
+
         /// <summary>
-        /// Construct with message and inner exception.
+        ///     Construct with message and inner exception.
         /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="inner">Inner exception.</param>
@@ -83,8 +91,9 @@ namespace LibLSLCC.LibraryData
         {
         }
 
+
         /// <summary>
-        /// Serializable constructor.
+        ///     Serializable constructor.
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>

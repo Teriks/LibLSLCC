@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLLibrarySubsetDescription.cs
 // 
@@ -39,36 +40,45 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
+#endregion
+
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// Represents a description for a named library subset.
+    ///     Represents a description for a named library subset.
     /// </summary>
     public class LSLLibrarySubsetDescription : IXmlSerializable
     {
         private string _subset;
 
+
         /// <summary>
-        /// Construct a description for a subset by giving the subset name, and a user friendly name associated with the subset.
-        /// Optionally you can provide a description string describing the subset.
+        ///     Construct a description for a subset by giving the subset name, and a user friendly name associated with the
+        ///     subset.
+        ///     Optionally you can provide a description string describing the subset.
         /// </summary>
         /// <param name="subsetName">The subset name.</param>
         /// <param name="friendlyName">A user friendly name for the subset.</param>
         /// <param name="description">Optional description string.</param>
-        /// <exception cref="LSLInvalidSubsetNameException">If the given subset name does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        /// <exception cref="LSLInvalidSubsetNameException">
+        ///     If the given subset name does not match the pattern
+        ///     ([a-zA-Z]+[a-zA-Z_0-9\\-]*).
+        /// </exception>
         public LSLLibrarySubsetDescription(string subsetName, string friendlyName, string description = "")
         {
             Subset = subsetName;
             FriendlyName = friendlyName;
             Description = description;
         }
-
 
 
         private LSLLibrarySubsetDescription()
@@ -78,9 +88,12 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// The name of the subset this subset description contains information about.
+        ///     The name of the subset this subset description contains information about.
         /// </summary>
-        /// <exception cref="LSLInvalidSubsetNameException">If the given subset name does not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        /// <exception cref="LSLInvalidSubsetNameException">
+        ///     If the given subset name does not match the pattern
+        ///     ([a-zA-Z]+[a-zA-Z_0-9\\-]*).
+        /// </exception>
         public string Subset
         {
             get { return _subset; }
@@ -92,17 +105,18 @@ namespace LibLSLCC.LibraryData
         }
 
         /// <summary>
-        /// The friendly name to associate with the subset.
+        ///     The friendly name to associate with the subset.
         /// </summary>
         public string FriendlyName { get; private set; }
 
         /// <summary>
-        /// The description string for the subset.
+        ///     The description string for the subset.
         /// </summary>
         public string Description { get; private set; }
 
+
         /// <summary>
-        /// Implementors of IXmlSerializable should return null from this function.
+        ///     Implementors of IXmlSerializable should return null from this function.
         /// </summary>
         /// <returns>null</returns>
         public XmlSchema GetSchema()
@@ -111,28 +125,13 @@ namespace LibLSLCC.LibraryData
         }
 
 
-
         /// <summary>
-        /// Reads a library subset description object from an XML fragment.
+        ///     Generates an object from its XML representation.
         /// </summary>
-        /// <param name="fragment">The XML reader containing the fragment to read.</param>
-        /// <returns>The parsed LSLLibrarySubsetDescription object.</returns>
-        public static LSLLibrarySubsetDescription FromXmlFragment(XmlReader fragment)
-        {
-            var ev = new LSLLibrarySubsetDescription();
-            IXmlSerializable x = ev;
-            x.ReadXml(fragment);
-            return ev;
-        }
-
-
-        /// <summary>
-        /// Generates an object from its XML representation.
-        /// </summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized. </param>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
         public void ReadXml(XmlReader reader)
         {
-            var lineNumberInfo = (IXmlLineInfo)reader;
+            var lineNumberInfo = (IXmlLineInfo) reader;
 
             reader.MoveToContent();
 
@@ -155,19 +154,19 @@ namespace LibLSLCC.LibraryData
                 {
                     throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                         string.Format("SubsetDescription{0}: Unknown attribute '{1}'.",
-                        hasSubset ? (" '" + Subset + "'") : "", reader.Name));
+                            hasSubset ? (" '" + Subset + "'") : "", reader.Name));
                 }
             }
 
             if (!hasSubset || string.IsNullOrWhiteSpace(Subset))
             {
-                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, 
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     string.Format("SubsetDescription '{0}': Missing Subset Attribute.", Subset));
             }
 
             if (!hasFriendlyName || string.IsNullOrWhiteSpace(FriendlyName))
             {
-                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, 
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
                     string.Format("SubsetDescription '{0}': Missing FriendlyName Attribute.", Subset));
             }
 
@@ -196,9 +195,9 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Converts an object into its XML representation.
+        ///     Converts an object into its XML representation.
         /// </summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized. </param>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Subset", Subset);
@@ -206,6 +205,20 @@ namespace LibLSLCC.LibraryData
             writer.WriteStartElement("Description");
             writer.WriteString(Description);
             writer.WriteEndElement();
+        }
+
+
+        /// <summary>
+        ///     Reads a library subset description object from an XML fragment.
+        /// </summary>
+        /// <param name="fragment">The XML reader containing the fragment to read.</param>
+        /// <returns>The parsed LSLLibrarySubsetDescription object.</returns>
+        public static LSLLibrarySubsetDescription FromXmlFragment(XmlReader fragment)
+        {
+            var ev = new LSLLibrarySubsetDescription();
+            IXmlSerializable x = ev;
+            x.ReadXml(fragment);
+            return ev;
         }
     }
 }

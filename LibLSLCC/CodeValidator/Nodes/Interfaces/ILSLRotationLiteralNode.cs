@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLRotationLiteralNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -49,62 +52,76 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for rotation literal nodes.
+    ///     AST node interface for rotation literal nodes.
     /// </summary>
     public interface ILSLRotationLiteralNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The source code range of the opening '&lt;' bracket of the rotation literal.
+        ///     The source code range of the opening '&lt;' bracket of the rotation literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOpenBracket { get; }
 
         /// <summary>
-        /// The source code range of the closing '&gt;' bracket of the rotation literal.
+        ///     The source code range of the closing '&gt;' bracket of the rotation literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCloseBracket { get; }
 
-
         /// <summary>
-        /// The expression node used to initialize the X (first) Component of the rotation literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the X (first) Component of the rotation literal.
+        ///     This should never be null.
         /// </summary>
         ILSLReadOnlyExprNode XExpression { get; }
 
         /// <summary>
-        /// The source code range of the first component separator comma to appear in the rotation literal.
+        ///     The source code range of the first component separator comma to appear in the rotation literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCommaOne { get; }
 
         /// <summary>
-        /// The expression node used to initialize the Y (second) Component of the rotation literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the Y (second) Component of the rotation literal.
+        ///     This should never be null.
         /// </summary>
         ILSLReadOnlyExprNode YExpression { get; }
 
         /// <summary>
-        /// The source code range of the second component separator comma to appear in the rotation literal.
+        ///     The source code range of the second component separator comma to appear in the rotation literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCommaTwo { get; }
 
         /// <summary>
-        /// The expression node used to initialize the Z (third) Component of the rotation literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the Z (third) Component of the rotation literal.
+        ///     This should never be null.
         /// </summary>
         ILSLReadOnlyExprNode ZExpression { get; }
 
         /// <summary>
-        /// The source code range of the third component separator comma to appear in the rotation literal.
+        ///     The source code range of the third component separator comma to appear in the rotation literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCommaThree { get; }
 
         /// <summary>
-        /// The expression node used to initialize the S (fourth) Component of the rotation literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the S (fourth) Component of the rotation literal.
+        ///     This should never be null.
         /// </summary>
         ILSLReadOnlyExprNode SExpression { get; }
     }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLLibraryDataXmlSyntaxException.cs
 // 
@@ -39,39 +40,133 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
+#endregion
+
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// Exception thrown by <see cref="LSLLibraryDataXmlSerializer.Parse"/> and the XML reading methods of <see cref="LSLXmlLibraryDataProvider"/>
-    /// when there are syntax errors in XML library data.
+    ///     Exception thrown by <see cref="LSLLibraryDataXmlSerializer.Parse" /> and the XML reading methods of
+    ///     <see cref="LSLXmlLibraryDataProvider" />
+    ///     when there are syntax errors in XML library data.
     /// </summary>
     [Serializable]
     public class LSLLibraryDataXmlSyntaxException : Exception
     {
+        //
+        // For guidelines regarding the creation of new exception types, see
+        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
+        // and
+        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
+        //
 
         /// <summary>
-        /// The line number on which the exception occurred.
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException" /> class.
+        /// </summary>
+        public LSLLibraryDataXmlSyntaxException()
+        {
+        }
+
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException" /> class.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        public LSLLibraryDataXmlSyntaxException(string message) : base(message)
+        {
+        }
+
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException" /> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="inner">The inner exception.</param>
+        public LSLLibraryDataXmlSyntaxException(string message, Exception inner) : base(message, inner)
+        {
+        }
+
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException" /> class.
+        /// </summary>
+        /// <param name="lineNumber">The line number the syntax error occurred on.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="inner">The inner exception.</param>
+        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message, Exception inner)
+            : base("[Line #" + lineNumber + "]: " + message, inner)
+        {
+            LineNumber = lineNumber;
+        }
+
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException" /> class.
+        /// </summary>
+        /// <param name="info">
+        ///     The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object
+        ///     data about the exception being thrown.
+        /// </param>
+        /// <param name="context">
+        ///     The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual
+        ///     information about the source or destination.
+        /// </param>
+        protected LSLLibraryDataXmlSyntaxException(
+            SerializationInfo info,
+            StreamingContext context) : base(info, context)
+        {
+        }
+
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException" /> class.
+        /// </summary>
+        /// <param name="lineNumber">The line number.</param>
+        /// <param name="message">The message.</param>
+        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message)
+            : base("[Line #" + lineNumber + "]: " + message)
+        {
+            LineNumber = lineNumber;
+        }
+
+
+        /// <summary>
+        ///     The line number on which the exception occurred.
         /// </summary>
         public int LineNumber { get; private set; }
 
 
         /// <summary>
-        /// When overridden in a derived class, sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with information about the exception.
+        ///     When overridden in a derived class, sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with
+        ///     information about the exception.
         /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown. 
-        /// </param><param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination. </param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is a null reference (Nothing in Visual Basic). 
+        /// <param name="info">
+        ///     The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the
+        ///     exception being thrown.
+        /// </param>
+        /// <param name="context">
+        ///     The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual
+        ///     information about the source or destination.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">
+        ///     The <paramref name="info" /> parameter is a null reference (Nothing in Visual Basic).
         /// </exception>
         /// <filterpriority>2</filterpriority>
         /// <PermissionSet>
-        /// <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*"/>
-        /// <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="SerializationFormatter"/>
+        ///     <IPermission
+        ///         class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+        ///         version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*" />
+        ///     <IPermission
+        ///         class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+        ///         version="1" Flags="SerializationFormatter" />
         /// </PermissionSet>
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -84,70 +179,6 @@ namespace LibLSLCC.LibraryData
             info.AddValue("LineNumber", LineNumber.ToString());
 
             base.GetObjectData(info, context);
-        }
-
-
-        //
-        // For guidelines regarding the creation of new exception types, see
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-        // and
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-        //
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException"/> class.
-        /// </summary>
-        public LSLLibraryDataXmlSyntaxException()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException"/> class.
-        /// </summary>
-        /// <param name="message">The message that describes the error.</param>
-        public LSLLibraryDataXmlSyntaxException(string message) : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException"/> class.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="inner">The inner exception.</param>
-        public LSLLibraryDataXmlSyntaxException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException"/> class.
-        /// </summary>
-        /// <param name="lineNumber">The line number the syntax error occurred on.</param>
-        /// <param name="message">The message.</param>
-        /// <param name="inner">The inner exception.</param>
-        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message, Exception inner) : base("[Line #"+lineNumber+"]: "+message, inner)
-        {
-            LineNumber = lineNumber;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException"/> class.
-        /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
-        protected LSLLibraryDataXmlSyntaxException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LSLLibraryDataXmlSyntaxException"/> class.
-        /// </summary>
-        /// <param name="lineNumber">The line number.</param>
-        /// <param name="message">The message.</param>
-        public LSLLibraryDataXmlSyntaxException(int lineNumber, string message) : base("[Line #" + lineNumber + "]: " + message)
-        {
-            LineNumber = lineNumber;
         }
     }
 }

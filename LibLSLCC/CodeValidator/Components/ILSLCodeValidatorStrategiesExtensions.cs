@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLCodeValidatorStrategiesExtensions.cs
 // 
@@ -39,23 +40,28 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Components
 {
     /// <summary>
-    /// Extensions for <see cref="ILSLCodeValidatorStrategies"/>
+    ///     Extensions for <see cref="ILSLCodeValidatorStrategies" />
     /// </summary>
     public static class ILSLCodeValidatorStrategiesExtensions
     {
         /// <summary>
-        /// Returns true if all strategy properties are non null.
+        ///     Returns true if all strategy properties are non null.
         /// </summary>
-        /// <param name="strategies">The <see cref="ILSLCodeValidatorStrategies"/> to check.</param>
+        /// <param name="strategies">The <see cref="ILSLCodeValidatorStrategies" /> to check.</param>
         /// <returns>True if all properties are initialized.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="strategies"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="strategies" /> is <c>null</c>.</exception>
         public static bool IsComplete(this ILSLCodeValidatorStrategies strategies)
         {
             if (strategies == null)
@@ -73,12 +79,15 @@ namespace LibLSLCC.CodeValidator.Components
 
 
         /// <summary>
-        /// Returns true if all strategy properties are non null.
+        ///     Returns true if all strategy properties are non null.
         /// </summary>
-        /// <param name="strategies">The <see cref="ILSLCodeValidatorStrategies"/> to check.</param>
-        /// <param name="describeNulls">A string describing which properties are null if <see cref="IsComplete(ILSLCodeValidatorStrategies, out string)"/> returns <c>false</c></param>
+        /// <param name="strategies">The <see cref="ILSLCodeValidatorStrategies" /> to check.</param>
+        /// <param name="describeNulls">
+        ///     A string describing which properties are null if
+        ///     <see cref="IsComplete(ILSLCodeValidatorStrategies, out string)" /> returns <c>false</c>
+        /// </param>
         /// <returns>True if all properties are initialized.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="strategies"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="strategies" /> is <c>null</c>.</exception>
         public static bool IsComplete(this ILSLCodeValidatorStrategies strategies, out string describeNulls)
         {
             if (strategies == null)
@@ -91,19 +100,22 @@ namespace LibLSLCC.CodeValidator.Components
 
             if (strategies.ExpressionValidator == null)
             {
-                nullProps += typeof(ILSLCodeValidatorStrategies).Name+".ExpressionValidator is null." + Environment.NewLine;
+                nullProps += typeof (ILSLCodeValidatorStrategies).Name + ".ExpressionValidator is null." +
+                             Environment.NewLine;
             }
             if (strategies.LibraryDataProvider == null)
             {
-                nullProps += typeof(ILSLCodeValidatorStrategies).Name + ".LibraryDataProvider is null." + Environment.NewLine;
+                nullProps += typeof (ILSLCodeValidatorStrategies).Name + ".LibraryDataProvider is null." +
+                             Environment.NewLine;
             }
             if (strategies.SyntaxErrorListener == null)
             {
-                nullProps += typeof(ILSLCodeValidatorStrategies).Name + ".SyntaxErrorListener is null." + Environment.NewLine;
+                nullProps += typeof (ILSLCodeValidatorStrategies).Name + ".SyntaxErrorListener is null." +
+                             Environment.NewLine;
             }
             if (strategies.SyntaxWarningListener == null)
             {
-                nullProps += typeof(ILSLCodeValidatorStrategies).Name + ".SyntaxWarningListener is null.";
+                nullProps += typeof (ILSLCodeValidatorStrategies).Name + ".SyntaxWarningListener is null.";
             }
 
             describeNulls = string.IsNullOrEmpty(nullProps) ? null : nullProps;

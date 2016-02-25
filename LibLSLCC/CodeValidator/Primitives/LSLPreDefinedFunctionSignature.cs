@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLPreDefinedFunctionSignature.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System.Linq;
@@ -50,39 +53,44 @@ using LibLSLCC.CodeValidator.Nodes;
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
-
     /// <summary>
-    /// Represents a function signature that was parsed during the pre-pass that occurs during code validation.
+    ///     Represents a function signature that was parsed during the pre-pass that occurs during code validation.
     /// </summary>
     public sealed class LSLPreDefinedFunctionSignature : LSLFunctionSignature
     {
         /// <summary>
-        /// Construct an <see cref="LSLPreDefinedFunctionSignature"/> from an <see cref="LSLType"/> representing the return type, a function name and an <see cref="LSLParameterListNode"/>
-        /// from an LSL Syntax tree.
+        ///     Construct an <see cref="LSLPreDefinedFunctionSignature" /> from an <see cref="LSLType" /> representing the return
+        ///     type, a function name and an <see cref="LSLParameterListNode" />
+        ///     from an LSL Syntax tree.
         /// </summary>
         /// <param name="returnType">The return type of the function signature.</param>
         /// <param name="name">The name of the function.</param>
-        /// <param name="parameters">The <see cref="LSLParameterListNode"/> from an LSL syntax tree that represents the function signatures parameters.</param>
+        /// <param name="parameters">
+        ///     The <see cref="LSLParameterListNode" /> from an LSL syntax tree that represents the function
+        ///     signatures parameters.
+        /// </param>
         public LSLPreDefinedFunctionSignature(LSLType returnType, string name, LSLParameterListNode parameters)
             : base(returnType, name, parameters.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)))
         {
             ParameterListNode = parameters;
         }
 
+
         /// <summary>
-        /// The LSLParameterListNOde from an LSL syntax tree the represents the function signatures parameters.
+        ///     The LSLParameterListNOde from an LSL syntax tree the represents the function signatures parameters.
         /// </summary>
         public LSLParameterListNode ParameterListNode { get; private set; }
 
-
         /// <summary>
-        /// The <see cref="LSLFunctionDeclarationNode"/> in the syntax tree that this function signature belongs to/represents.
+        ///     The <see cref="LSLFunctionDeclarationNode" /> in the syntax tree that this function signature belongs
+        ///     to/represents.
         /// </summary>
         public LSLFunctionDeclarationNode DefinitionNode { get; private set; }
 
 
         /// <summary>
-        /// Internal method that sets the DefinitionNode property, this method is named this way to bring clarity to the source code where it is used.
+        ///     Internal method that sets the DefinitionNode property, this method is named this way to bring clarity to the source
+        ///     code where it is used.
         /// </summary>
         /// <param name="definition"></param>
         internal void GiveDefinition(LSLFunctionDeclarationNode definition)

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLEventHandlerNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -55,7 +58,7 @@ using LibLSLCC.Parser;
 namespace LibLSLCC.CodeValidator.Nodes
 {
     /// <summary>
-    /// Default <see cref="ILSLEventHandlerNode"/> implementation used by <see cref="LSLCodeValidator"/>
+    ///     Default <see cref="ILSLEventHandlerNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
     public sealed class LSLEventHandlerNode : ILSLEventHandlerNode, ILSLSyntaxTreeNode
     {
@@ -69,7 +72,10 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="parameterListNode"/> or <paramref name="eventBodyNode"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="parameterListNode" /> or <paramref name="eventBodyNode" /> is
+        ///     <c>null</c>.
+        /// </exception>
         internal LSLEventHandlerNode(LSLParser.EventHandlerContext context, LSLParameterListNode parameterListNode,
             LSLCodeScopeNode eventBodyNode)
         {
@@ -98,8 +104,9 @@ namespace LibLSLCC.CodeValidator.Nodes
             SourceRangesAvailable = true;
         }
 
+
         /// <summary>
-        /// An in order list of parameter nodes that belong to the event handler, or an empty enumerable if none exist.
+        ///     An in order list of parameter nodes that belong to the event handler, or an empty enumerable if none exist.
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
         {
@@ -107,24 +114,25 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The code scope node that represents the code body of the event handler.
+        ///     The code scope node that represents the code body of the event handler.
         /// </summary>
         public LSLCodeScopeNode EventBodyNode { get; private set; }
 
-
         /// <summary>
-        /// The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
-        /// It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
-        /// Ideally you should not be handling a syntax tree with syntax errors in it.
+        ///     The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
+        ///     It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
+        ///     Ideally you should not be handling a syntax tree with syntax errors in it.
         /// </summary>
         public LSLParameterListNode ParameterListNode { get; private set; }
 
         /// <summary>
-        /// The source code range of the event handler name.
+        ///     The source code range of the event handler name.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRangeName { get; private set; }
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -132,10 +140,9 @@ namespace LibLSLCC.CodeValidator.Nodes
         }
 
         /// <summary>
-        /// The name of the event handler.
+        ///     The name of the event handler.
         /// </summary>
         public string Name { get; private set; }
-
 
         ILSLCodeScopeNode ILSLEventHandlerNode.Code
         {
@@ -149,8 +156,8 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// Returns a version of this node type that represents its error state;  in case of a syntax error
-        /// in the node that prevents the node from being even partially built.
+        ///     Returns a version of this node type that represents its error state;  in case of a syntax error
+        ///     in the node that prevents the node from being even partially built.
         /// </summary>
         /// <param name="sourceRange">The source code range of the error.</param>
         /// <returns>A version of this node type in its undefined/error state.</returns>
@@ -171,29 +178,30 @@ namespace LibLSLCC.CodeValidator.Nodes
 
         #region ILSLTreeNode Members
 
-
         /// <summary>
-        /// The source code range that this syntax tree node occupies.
+        ///     The source code range that this syntax tree node occupies.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
 
-
         /// <summary>
-        /// Should return true if source code ranges are available/set to meaningful values for this node.
+        ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
         public bool SourceRangesAvailable { get; private set; }
 
 
         /// <summary>
-        /// True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors.
         /// </summary>
         public bool HasErrors { get; internal set; }
 
 
         /// <summary>
-        /// Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}"/>
+        ///     Accept a visit from an implementor of <see cref="ILSLValidatorNodeVisitor{T}" />
         /// </summary>
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
@@ -205,7 +213,7 @@ namespace LibLSLCC.CodeValidator.Nodes
 
 
         /// <summary>
-        /// The parent node of this syntax tree node.
+        ///     The parent node of this syntax tree node.
         /// </summary>
         public ILSLSyntaxTreeNode Parent { get; set; }
 

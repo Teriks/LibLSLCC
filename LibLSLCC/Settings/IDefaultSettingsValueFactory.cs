@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: IDefaultSettingsValueFactory.cs
 // 
@@ -39,31 +40,37 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System.Reflection;
+
+#endregion
 
 namespace LibLSLCC.Settings
 {
     /// <summary>
-    /// An interface for objects that produce default values for a field/property in another object.
+    ///     An interface for objects that produce default values for a field/property in another object.
     /// </summary>
-    /// <seealso cref="DefaultValueInitializer"/>
+    /// <seealso cref="DefaultValueInitializer" />
     public interface IDefaultSettingsValueFactory
     {
         /// <summary>
-        /// Determines whether or not a given field/property needs to be reset to a default value.
+        ///     Determines whether or not a given field/property needs to be reset to a default value.
         /// </summary>
-        /// <param name="member">The <see cref="MemberInfo"/> of the field/property.</param>
+        /// <param name="member">The <see cref="MemberInfo" /> of the field/property.</param>
         /// <param name="objectInstance">The object instance that owns the field/property.</param>
         /// <param name="settingValue">The current value of the field/property.</param>
         /// <returns></returns>
         bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue);
 
+
         /// <summary>
-        /// Gets the default value of a given field/property in an object.
+        ///     Gets the default value of a given field/property in an object.
         /// </summary>
-        /// <param name="member">The <see cref="MemberInfo"/> of the field/property.</param>
+        /// <param name="member">The <see cref="MemberInfo" /> of the field/property.</param>
         /// <param name="objectInstance">The object instance that owns the field/property.</param>
         /// <returns>The default value of the field/property.</returns>
         object GetDefaultValue(MemberInfo member, object objectInstance);

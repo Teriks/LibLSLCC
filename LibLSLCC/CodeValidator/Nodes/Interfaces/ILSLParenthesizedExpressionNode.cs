@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLParenthesizedExpressionNode.cs
 // 
@@ -39,33 +40,43 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
 
+#endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for parenthesized expressions.
+    ///     AST node interface for parenthesized expressions.
     /// </summary>
     public interface ILSLParenthesizedExpressionNode : ILSLReadOnlyExprNode
     {
         /// <summary>
-        /// The expression node contained within the parenthesis, this should never be null.
+        ///     The expression node contained within the parenthesis, this should never be null.
         /// </summary>
         ILSLReadOnlyExprNode InnerExpression { get; }
 
         /// <summary>
-        /// The source code range of the opening parenthesis in the parenthesized expression.
+        ///     The source code range of the opening parenthesis in the parenthesized expression.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOpenParenth { get; }
 
         /// <summary>
-        /// The source code range of the closing parenthesis in the parenthesized expression.
+        ///     The source code range of the closing parenthesis in the parenthesized expression.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCloseParenth { get; }
     }
 }

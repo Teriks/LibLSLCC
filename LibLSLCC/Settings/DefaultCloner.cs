@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: DefaultCloner.cs
 // 
@@ -39,21 +40,27 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System;
+
+#endregion
 
 namespace LibLSLCC.Settings
 {
     /// <summary>
-    /// The default implementation of <see cref="ICloner"/>.
-    /// This implementation clones an object by using its <see cref="ICloneable"/> interface, or searching directly for a method named "Clone" with zero parameters.
+    ///     The default implementation of <see cref="ICloner" />.
+    ///     This implementation clones an object by using its <see cref="ICloneable" /> interface, or searching directly for a
+    ///     method named "Clone" with zero parameters.
     /// </summary>
     public class DefaultCloner : ICloner
     {
         /// <summary>
-        /// Create a clone of the object <paramref name="instance"/> using its <see cref="ICloneable"/> interface, or by
-        /// searching directly for a method named "Clone" with zero parameters.
+        ///     Create a clone of the object <paramref name="instance" /> using its <see cref="ICloneable" /> interface, or by
+        ///     searching directly for a method named "Clone" with zero parameters.
         /// </summary>
         /// <param name="instance">The object to clone.</param>
         /// <returns>The cloned object.</returns>
@@ -62,10 +69,10 @@ namespace LibLSLCC.Settings
             var i = instance as ICloneable;
             if (i != null) return i.Clone();
 
-            var methodInfo = instance.GetType().GetMethod("Clone",new Type[] {});
+            var methodInfo = instance.GetType().GetMethod("Clone", new Type[] {});
             if (methodInfo != null)
             {
-                return methodInfo.Invoke(instance,new object[] {});
+                return methodInfo.Invoke(instance, new object[] {});
             }
 
             return instance;

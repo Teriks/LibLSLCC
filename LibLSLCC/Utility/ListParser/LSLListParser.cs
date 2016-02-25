@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLListParser.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -85,6 +88,7 @@ namespace LibLSLCC.Utility.ListParser
             AllowVariableReferencesInRotations = 4
         }
 
+
         private static IEnumerable<object> EnumerateExpressionList(LSLParser.ExpressionListContext context)
         {
             var expression = context.expression();
@@ -104,15 +108,18 @@ namespace LibLSLCC.Utility.ListParser
         }
 
 
-
         /// <summary>
-        /// Attempts to parse an LSL list from a string and returns true if the parse succeeded.
+        ///     Attempts to parse an LSL list from a string and returns true if the parse succeeded.
         /// </summary>
         /// <param name="list">The string containing the list.</param>
-        /// <param name="expressions">The resulting expression list will be put at this location if the parse succeeded, otherwise it will be null.</param>
+        /// <param name="expressions">
+        ///     The resulting expression list will be put at this location if the parse succeeded, otherwise
+        ///     it will be null.
+        /// </param>
         /// <param name="parsingFlags">Optional parsing flags.</param>
         /// <returns></returns>
-        public static bool TryParseList(string list, out List<ILSLListExpr> expressions, LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
+        public static bool TryParseList(string list, out List<ILSLListExpr> expressions,
+            LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
         {
             try
             {
@@ -128,22 +135,30 @@ namespace LibLSLCC.Utility.ListParser
 
 
         /// <summary>
-        /// Formats the specified expressions into the string representation of an LSL list.
+        ///     Formats the specified expressions into the string representation of an LSL list.
         /// </summary>
         /// <param name="expressions">The expressions to format.</param>
-        /// <param name="brackets">if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV list content.</param>
+        /// <param name="brackets">
+        ///     if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV
+        ///     list content.
+        /// </param>
         /// <returns></returns>
-        public static string Format(IEnumerable<ILSLListExpr> expressions, bool brackets=true)
+        public static string Format(IEnumerable<ILSLListExpr> expressions, bool brackets = true)
         {
-            return  (brackets ? "[" : "") + string.Join(", ", expressions.Select(x => x.ValueString)) + (brackets ? "]" : "");
+            return (brackets ? "[" : "") + string.Join(", ", expressions.Select(x => x.ValueString)) +
+                   (brackets ? "]" : "");
         }
 
 
         /// <summary>
-        /// Formats the specified list string by parsing it with <see cref="ParseList"/> and passing the resulting enumerable to <see cref="Format(IEnumerable{ILSLListExpr},bool)"/>.
+        ///     Formats the specified list string by parsing it with <see cref="ParseList" /> and passing the resulting enumerable
+        ///     to <see cref="Format(IEnumerable{ILSLListExpr},bool)" />.
         /// </summary>
         /// <param name="listString">The string containing the list to parse and format.</param>
-        /// <param name="brackets">if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV list content.</param>
+        /// <param name="brackets">
+        ///     if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV
+        ///     list content.
+        /// </param>
         /// <returns></returns>
         public static string Format(string listString, bool brackets = true)
         {
@@ -151,13 +166,13 @@ namespace LibLSLCC.Utility.ListParser
         }
 
 
-
-
         private static ILSLListExpr BasicAtomToExpr(LSLParser.Expr_AtomContext c, string numericPrefix = null)
         {
             if (c.string_literal != null)
             {
-                if(numericPrefix!=null) throw new InvalidOperationException("LSLListParser.BasicAtomToExpr:  Numeric prefix cannot be added to a string literal node.");
+                if (numericPrefix != null)
+                    throw new InvalidOperationException(
+                        "LSLListParser.BasicAtomToExpr:  Numeric prefix cannot be added to a string literal node.");
                 return (new LSLListStringExpr(c.GetText()));
             }
             if (c.float_literal != null)
@@ -167,7 +182,9 @@ namespace LibLSLCC.Utility.ListParser
             }
             if (c.hex_literal != null)
             {
-                if (numericPrefix != null) throw new InvalidOperationException("LSLListParser.BasicAtomToExpr:  Numeric prefix cannot be added to a hex literal node.");
+                if (numericPrefix != null)
+                    throw new InvalidOperationException(
+                        "LSLListParser.BasicAtomToExpr:  Numeric prefix cannot be added to a hex literal node.");
                 return new LSLListFloatExpr(c.GetText(), true);
             }
             if (c.integer_literal != null)
@@ -179,11 +196,12 @@ namespace LibLSLCC.Utility.ListParser
             return null;
         }
 
+
         /// <summary>
-        /// Parses an LSL list from a string and returns the simple expressions it contains as an enumerable.
-        /// <remarks>
-        /// Take note that parsing wont start to occur until you begin enumerating the returned value.
-        /// </remarks>
+        ///     Parses an LSL list from a string and returns the simple expressions it contains as an enumerable.
+        ///     <remarks>
+        ///         Take note that parsing wont start to occur until you begin enumerating the returned value.
+        ///     </remarks>
         /// </summary>
         /// <param name="list">The string containing the list.</param>
         /// <param name="parsingFlags">Optional parsing flags.</param>
@@ -257,7 +275,7 @@ namespace LibLSLCC.Utility.ListParser
                                 "Variable references are not allowed in the list.");
                         }
                     }
-  
+
                     if (atomToken.rotation_literal != null)
                     {
                         yield return ListExpressionFromRotation(parsingFlags, atomToken);
@@ -289,7 +307,6 @@ namespace LibLSLCC.Utility.ListParser
                 }
                 else if (negateOrPositive != null)
                 {
-
                     var floatOrInt = negateOrPositive.expr_rvalue as LSLParser.Expr_AtomContext;
                     var operation = negateOrPositive.operation.Text;
 
@@ -303,9 +320,10 @@ namespace LibLSLCC.Utility.ListParser
                     else
                     {
                         throw new LSLListParserSyntaxException(
-                            string.Format("The Negative and Positive prefix operator can only be used on Floats and Integer list elements, operator '{0}' is not valid.", operation));
+                            string.Format(
+                                "The Negative and Positive prefix operator can only be used on Floats and Integer list elements, operator '{0}' is not valid.",
+                                operation));
                     }
-
                 }
                 else
                 {
@@ -315,9 +333,10 @@ namespace LibLSLCC.Utility.ListParser
             }
         }
 
-        private static ILSLListExpr ListExpressionFromVector(LSLListParsingFlags parsingFlags, LSLParser.Expr_AtomContext atomToken)
-        {
 
+        private static ILSLListExpr ListExpressionFromVector(LSLListParsingFlags parsingFlags,
+            LSLParser.Expr_AtomContext atomToken)
+        {
             object[] vecComponents =
             {
                 atomToken.vector_literal.vector_x,
@@ -338,11 +357,13 @@ namespace LibLSLCC.Utility.ListParser
                     }
                     else if (atom.variable != null)
                     {
-                        if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInVectors) ==LSLListParsingFlags.AllowVariableReferencesInVectors)
+                        if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInVectors) ==
+                            LSLListParsingFlags.AllowVariableReferencesInVectors)
                         {
                             vecComponents[i] = new LSLListVariableExpr(atomToken.GetText());
                         }
-                        throw new LSLListParserOptionsConstraintException("Variable references are not allowed in Vector literals.");
+                        throw new LSLListParserOptionsConstraintException(
+                            "Variable references are not allowed in Vector literals.");
                     }
                     else
                     {
@@ -364,7 +385,9 @@ namespace LibLSLCC.Utility.ListParser
                     else
                     {
                         throw new LSLListParserSyntaxException(
-                            string.Format("The Negative and Positive prefix operator can only be used on Floats and Integers inside of a Vector, operator '{0}' is not valid.", operation));
+                            string.Format(
+                                "The Negative and Positive prefix operator can only be used on Floats and Integers inside of a Vector, operator '{0}' is not valid.",
+                                operation));
                     }
                 }
                 else
@@ -376,17 +399,17 @@ namespace LibLSLCC.Utility.ListParser
                 throw_type_error:
 
                 throw new LSLListParserSyntaxException(
-                              "Vectors must contain only Float and Integer literal values.");
+                    "Vectors must contain only Float and Integer literal values.");
             }
 
-            return new LSLListVectorExpr((ILSLListExpr)vecComponents[0], (ILSLListExpr)vecComponents[1], (ILSLListExpr)vecComponents[2]);
+            return new LSLListVectorExpr((ILSLListExpr) vecComponents[0], (ILSLListExpr) vecComponents[1],
+                (ILSLListExpr) vecComponents[2]);
         }
 
 
-
-        private static ILSLListExpr ListExpressionFromRotation(LSLListParsingFlags parsingFlags, LSLParser.Expr_AtomContext atomToken)
+        private static ILSLListExpr ListExpressionFromRotation(LSLListParsingFlags parsingFlags,
+            LSLParser.Expr_AtomContext atomToken)
         {
-
             object[] rotComponents =
             {
                 atomToken.rotation_literal.rotation_x,
@@ -408,11 +431,13 @@ namespace LibLSLCC.Utility.ListParser
                     }
                     else if (atom.variable != null)
                     {
-                        if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInRotations) == LSLListParsingFlags.AllowVariableReferencesInRotations)
+                        if ((parsingFlags & LSLListParsingFlags.AllowVariableReferencesInRotations) ==
+                            LSLListParsingFlags.AllowVariableReferencesInRotations)
                         {
                             rotComponents[i] = new LSLListVariableExpr(atomToken.GetText());
                         }
-                        throw new LSLListParserOptionsConstraintException("Variable references are not allowed in Rotation literals.");
+                        throw new LSLListParserOptionsConstraintException(
+                            "Variable references are not allowed in Rotation literals.");
                     }
                     else
                     {
@@ -434,7 +459,9 @@ namespace LibLSLCC.Utility.ListParser
                     else
                     {
                         throw new LSLListParserSyntaxException(
-                            string.Format("The Negative and Positive prefix operator can only be used on Floats and Integers inside of a Rotation, operator '{0}' is not valid.", operation));
+                            string.Format(
+                                "The Negative and Positive prefix operator can only be used on Floats and Integers inside of a Rotation, operator '{0}' is not valid.",
+                                operation));
                     }
                 }
                 else
@@ -446,10 +473,11 @@ namespace LibLSLCC.Utility.ListParser
                 throw_type_error:
 
                 throw new LSLListParserSyntaxException(
-                            "Rotations must contain only Float and Integer literal values.");
+                    "Rotations must contain only Float and Integer literal values.");
             }
 
-            return new LSLListRotationExpr((ILSLListExpr)rotComponents[0], (ILSLListExpr)rotComponents[1], (ILSLListExpr)rotComponents[2], (ILSLListExpr)rotComponents[3]);
+            return new LSLListRotationExpr((ILSLListExpr) rotComponents[0], (ILSLListExpr) rotComponents[1],
+                (ILSLListExpr) rotComponents[2], (ILSLListExpr) rotComponents[3]);
         }
 
 

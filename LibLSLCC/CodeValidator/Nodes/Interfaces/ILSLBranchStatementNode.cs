@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLBranchStatementNode.cs
 // 
@@ -39,27 +40,25 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for branch statement nodes that participate in the dead code detection algorithm.
+    ///     AST node interface for branch statement nodes that participate in the dead code detection algorithm.
     /// </summary>
     public interface ILSLBranchStatementNode : ILSLReadOnlyBranchStatementNode, ILSLSyntaxTreeNode
     {
-
-        //here for expandability later
     }
 
     /// <summary>
-    /// Read only AST node interface for branch statement nodes that participate in the dead code detection algorithm.
+    ///     Read only AST node interface for branch statement nodes that participate in the dead code detection algorithm.
     /// </summary>
     public interface ILSLReadOnlyBranchStatementNode : ILSLReadOnlySyntaxTreeNode
     {
-
         /// <summary>
-        /// Determines if the condition controlling the branch is a constant expression.
+        ///     Determines if the condition controlling the branch is a constant expression.
         /// </summary>
         bool IsConstantBranch { get; }
     }

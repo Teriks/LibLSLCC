@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLComment.cs
 // 
@@ -39,22 +40,27 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using LibLSLCC.CodeValidator.Enums;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator.Primitives
 {
     /// <summary>
-    /// A container for LSL source code comment strings.
+    ///     A container for LSL source code comment strings.
     /// </summary>
     public sealed class LSLComment
     {
         /// <summary>
-        /// Construct a comment object from comment text, type and source code range.
+        ///     Construct a comment object from comment text, type and source code range.
         /// </summary>
         /// <param name="text">The text that up the entire comment, including the special comment start/end sequences.</param>
-        /// <param name="type">The comment type.  <see cref="LSLCommentType"/></param>
+        /// <param name="type">The comment type.  <see cref="LSLCommentType" /></param>
         /// <param name="sourceRange">The source code range that the comment occupies.</param>
         public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceRange)
         {
@@ -65,26 +71,28 @@ namespace LibLSLCC.CodeValidator.Primitives
 
 
         /// <summary>
-        /// The raw comment text.
+        ///     The raw comment text.
         /// </summary>
         public string Text { get; private set; }
 
         /// <summary>
-        /// The source code range which the comment occupies.
+        ///     The source code range which the comment occupies.
         /// </summary>
         public LSLSourceCodeRange SourceRange { get; private set; }
 
         /// <summary>
-        /// The LSLCommentType type of the comment.
+        ///     The LSLCommentType type of the comment.
         /// </summary>
         public LSLCommentType Type { get; private set; }
 
 
         /// <summary>
-        /// Returns the comment text.
+        ///     Returns the comment text.
         /// </summary>
-        /// <seealso cref="Text"/>
-        /// <returns><see cref="Text"/></returns>
+        /// <seealso cref="Text" />
+        /// <returns>
+        ///     <see cref="Text" />
+        /// </returns>
         public override string ToString()
         {
             return Text;

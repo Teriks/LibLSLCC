@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLExprNode.cs
 // 
@@ -39,19 +40,20 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST base interface for syntax tree expression nodes.
+    ///     AST base interface for syntax tree expression nodes.
     /// </summary>
     public interface ILSLExprNode : ILSLReadOnlyExprNode, ILSLSyntaxTreeNode
     {
-
         /// <summary>
-        /// Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except the parent.
-        /// When cloned, the parent node reference should still point to the same node.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
         new ILSLExprNode Clone();

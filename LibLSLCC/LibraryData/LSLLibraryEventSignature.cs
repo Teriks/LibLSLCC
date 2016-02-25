@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: LSLLibraryEventSignature.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -56,7 +59,7 @@ using LibLSLCC.CodeValidator.Primitives;
 namespace LibLSLCC.LibraryData
 {
     /// <summary>
-    /// Represents a library event handler returned from an <see cref="ILSLLibraryDataProvider"/> implementation.
+    ///     Represents a library event handler returned from an <see cref="ILSLLibraryDataProvider" /> implementation.
     /// </summary>
     [XmlRoot("EventHandler")]
     public sealed class LSLLibraryEventSignature : LSLEventSignature, IXmlSerializable, ILSLLibrarySignature
@@ -70,10 +73,12 @@ namespace LibLSLCC.LibraryData
             DocumentationString = "";
         }
 
+
         /// <summary>
-        /// Construct an LSLLibraryEventSignature by copying the signature details from an <see cref="LSLEventSignature "/> object.
+        ///     Construct an LSLLibraryEventSignature by copying the signature details from an <see cref="LSLEventSignature " />
+        ///     object.
         /// </summary>
-        /// <param name="sig">The <see cref="LSLEventSignature "/> object to copy signatures details from.</param>
+        /// <param name="sig">The <see cref="LSLEventSignature " /> object to copy signatures details from.</param>
         public LSLLibraryEventSignature(LSLEventSignature sig)
             : base(sig)
         {
@@ -82,10 +87,10 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct an LSLLibraryEventSignature by cloning another LSLLibraryEventSignature object.
+        ///     Construct an LSLLibraryEventSignature by cloning another LSLLibraryEventSignature object.
         /// </summary>
         /// <param name="other">The LSLLibraryEventSignature to copy construct from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLLibraryEventSignature(LSLLibraryEventSignature other)
             : base(other)
         {
@@ -102,7 +107,8 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct an LSLLibraryEventSignature by providing a Name and a list of <see cref="LSLParameter"/> objects that belong to the signature.
+        ///     Construct an LSLLibraryEventSignature by providing a Name and a list of <see cref="LSLParameter" /> objects that
+        ///     belong to the signature.
         /// </summary>
         /// <param name="name">The name of the event handler.</param>
         /// <param name="parameters">The list of parameters that belong to this signature.</param>
@@ -114,7 +120,7 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Construct an LSLLibraryEventSignature with no parameters by providing an event Name only.
+        ///     Construct an LSLLibraryEventSignature with no parameters by providing an event Name only.
         /// </summary>
         /// <param name="name">The name of the event Handler.</param>
         public LSLLibraryEventSignature(string name)
@@ -123,17 +129,17 @@ namespace LibLSLCC.LibraryData
             DocumentationString = "";
         }
 
+
         /// <summary>
-        /// The library subsets that this LSLLibraryEventSignature belongs to.
+        ///     The library subsets that this LSLLibraryEventSignature belongs to.
         /// </summary>
         public LSLLibraryDataSubsetCollection Subsets
         {
             get { return _subsets; }
         }
 
-
         /// <summary>
-        /// Additional dynamic property values that can be attached to the constant signature and parsed from XML
+        ///     Additional dynamic property values that can be attached to the constant signature and parsed from XML
         /// </summary>
         public IDictionary<string, string> Properties
         {
@@ -141,15 +147,15 @@ namespace LibLSLCC.LibraryData
         }
 
         /// <summary>
-        /// Returns the documentation string attached to this library signature.
+        ///     Returns the documentation string attached to this library signature.
         /// </summary>
         public string DocumentationString { get; set; }
 
-
         /// <summary>
-        /// Returns a formated string containing the signature and documentation for this library signature.
-        /// It consists of the SignatureString followed by a semi-colon, and then followed by a new-line and DocumentationString
-        /// if the documentation string is not null.
+        ///     Returns a formated string containing the signature and documentation for this library signature.
+        ///     It consists of the SignatureString followed by a semi-colon, and then followed by a new-line and
+        ///     DocumentationString
+        ///     if the documentation string is not null.
         /// </summary>
         public string SignatureAndDocumentation
         {
@@ -164,6 +170,34 @@ namespace LibLSLCC.LibraryData
                        DocumentationString;
             }
         }
+
+        /// <summary>
+        ///     Whether or not this library signature is marked as deprecated or not.
+        /// </summary>
+        public bool Deprecated
+        {
+            get
+            {
+                string deprecatedStatus;
+                return (Properties.TryGetValue("Deprecated", out deprecatedStatus) &&
+                        deprecatedStatus.ToLower() == "true");
+            }
+            set
+            {
+                if (value == false)
+                {
+                    if (Properties.ContainsKey("Deprecated"))
+                    {
+                        Properties.Remove("Deprecated");
+                    }
+                }
+                else
+                {
+                    Properties["Deprecated"] = "true";
+                }
+            }
+        }
+
 
         /// <summary>
         ///     This method is reserved and should not be used. When implementing the IXmlSerializable interface, you should return
@@ -183,23 +217,29 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Fills an event signature object from an XML fragment.
+        ///     Fills an event signature object from an XML fragment.
         /// </summary>
         /// <param name="reader">The XML reader containing the fragment to read.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="reader"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">If <paramref name="reader" /> is <c>null</c>.</exception>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">
-        /// On missing or unknown attributes.  
-        /// If a parameter 'Name' is used more than once.  
-        /// If a parameter 'Name' is whitespace.
-        /// If a parameter 'Type' is <see cref="LSLType.Void"/>.   
-        /// If a parameter 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
-        /// If a 'Properties' node 'Name' is <c>null</c> or whitespace.
-        /// If a 'Properties' node 'Name' is used more than once.
-        /// If a 'Properties' node 'Value' is <c>null</c> or whitespace.
+        ///     On missing or unknown attributes.
+        ///     If a parameter 'Name' is used more than once.
+        ///     If a parameter 'Name' is whitespace.
+        ///     If a parameter 'Type' is <see cref="LSLType.Void" />.
+        ///     If a parameter 'Type' does not correspond to an <see cref="LSLType" /> enumeration member.
+        ///     If a 'Properties' node 'Name' is <c>null</c> or whitespace.
+        ///     If a 'Properties' node 'Name' is used more than once.
+        ///     If a 'Properties' node 'Value' is <c>null</c> or whitespace.
         /// </exception>
-        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException">
+        ///     Thrown if the event signatures name or any of its parameters names do
+        ///     not abide by LSL symbol naming conventions.
+        /// </exception>
         /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
-        /// <exception cref="LSLInvalidSubsetNameException">Thrown if any of the given subset names in the 'Subsets' CSV string do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
+        /// <exception cref="LSLInvalidSubsetNameException">
+        ///     Thrown if any of the given subset names in the 'Subsets' CSV string do
+        ///     not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).
+        /// </exception>
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             if (reader == null) throw new ArgumentNullException("reader");
@@ -229,15 +269,16 @@ namespace LibLSLCC.LibraryData
                 else
                 {
                     throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                        string.Format("EventHandler{0}: Unknown attribute '{1}'.", 
-                        hasName ? (" '" + Name + "'") : "", reader.Name));
+                        string.Format("EventHandler{0}: Unknown attribute '{1}'.",
+                            hasName ? (" '" + Name + "'") : "", reader.Name));
                 }
             }
 
 
             if (!hasName)
             {
-                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber, "EventHandler: Missing Name attribute.");
+                throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
+                    "EventHandler: Missing Name attribute.");
             }
 
 
@@ -253,12 +294,13 @@ namespace LibLSLCC.LibraryData
             {
                 if ((reader.Name == "Parameter") && reader.IsStartElement())
                 {
-
                     var pName = reader.GetAttribute("Name");
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("EventHandler '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.", Name));
+                            string.Format(
+                                "EventHandler '{0}': Parameter Name attribute invalid, cannot be empty or whitespace.",
+                                Name));
                     }
 
                     LSLType pType;
@@ -266,13 +308,16 @@ namespace LibLSLCC.LibraryData
                     if (!Enum.TryParse(reader.GetAttribute("Type"), out pType))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("EventHandler '{0}': Parameter named '{1}' has an invalid Type attribute.", pName, Name));
+                            string.Format("EventHandler '{0}': Parameter named '{1}' has an invalid Type attribute.",
+                                pName, Name));
                     }
 
                     if (pType == LSLType.Void)
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("EventHandler '{0}': Parameter named '{1}' has an invalid Type, event parameters cannot be Void.", Name, pName));
+                            string.Format(
+                                "EventHandler '{0}': Parameter named '{1}' has an invalid Type, event parameters cannot be Void.",
+                                Name, pName));
                     }
 
                     if (parameterNames.Contains(pName))
@@ -283,7 +328,7 @@ namespace LibLSLCC.LibraryData
 
                     parameterNames.Add(pName);
                     AddParameter(new LSLParameter(pType, pName, false));
-     
+
                     canRead = reader.Read();
                 }
                 else if ((reader.Name == "DocumentationString") && reader.IsStartElement())
@@ -298,7 +343,8 @@ namespace LibLSLCC.LibraryData
                     if (string.IsNullOrWhiteSpace(pName))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("EventHandler '{0}': Property element's Name attribute cannot be empty.", pName));
+                            string.Format("EventHandler '{0}': Property element's Name attribute cannot be empty.",
+                                pName));
                     }
 
                     var value = reader.GetAttribute("Value");
@@ -306,7 +352,8 @@ namespace LibLSLCC.LibraryData
                     if (string.IsNullOrWhiteSpace(value))
                     {
                         throw new LSLLibraryDataXmlSyntaxException(lineNumberInfo.LineNumber,
-                            string.Format("EventHandler '{0}': Property element's Value attribute cannot be empty.", pName));
+                            string.Format("EventHandler '{0}': Property element's Value attribute cannot be empty.",
+                                pName));
                     }
 
                     if (_properties.ContainsKey(pName))
@@ -333,11 +380,11 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Converts this <see cref="LSLLibraryEventSignature"/> into its XML representation.
-        ///     The root element name is not written, this is due to <see cref="IXmlSerializable"/> implementation requirements.
+        ///     Converts this <see cref="LSLLibraryEventSignature" /> into its XML representation.
+        ///     The root element name is not written, this is due to <see cref="IXmlSerializable" /> implementation requirements.
         /// </summary>
         /// <param name="writer">The <see cref="XmlWriter" /> stream to which the object is serialized. </param>
-        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="writer" /> is <c>null</c>.</exception>
         public void WriteXml(XmlWriter writer)
         {
             if (writer == null) throw new ArgumentNullException("writer");
@@ -368,9 +415,9 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Attempts to parse the signature from a formated string.
-        /// Such as:  listen( integer channel, string name, key id, string message )
-        /// Trailing semi-colon is optional.
+        ///     Attempts to parse the signature from a formated string.
+        ///     Such as:  listen( integer channel, string name, key id, string message )
+        ///     Trailing semi-colon is optional.
         /// </summary>
         /// <param name="str"></param>
         /// <exception cref="ArgumentException">Thrown if the string could not be parsed.</exception>
@@ -385,60 +432,38 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        /// Reads an event signature object from an XML fragment.
+        ///     Reads an event signature object from an XML fragment.
         /// </summary>
         /// <param name="reader">The XML reader containing the fragment to read.</param>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">
-        /// On missing or unknown attributes.  
-        /// If a parameter 'Name' is used more than once.  
-        /// If a parameter 'Name' is whitespace.
-        /// If a parameter 'Type' is <see cref="LSLType.Void"/>.   
-        /// If a parameter 'Type' does not correspond to an <see cref="LSLType"/> enumeration member.
-        /// If a 'Properties' node 'Name' is <c>null</c> or whitespace.
-        /// If a 'Properties' node 'Name' is used more than once.
-        /// If a 'Properties' node 'Value' is <c>null</c> or whitespace.
+        ///     On missing or unknown attributes.
+        ///     If a parameter 'Name' is used more than once.
+        ///     If a parameter 'Name' is whitespace.
+        ///     If a parameter 'Type' is <see cref="LSLType.Void" />.
+        ///     If a parameter 'Type' does not correspond to an <see cref="LSLType" /> enumeration member.
+        ///     If a 'Properties' node 'Name' is <c>null</c> or whitespace.
+        ///     If a 'Properties' node 'Name' is used more than once.
+        ///     If a 'Properties' node 'Value' is <c>null</c> or whitespace.
         /// </exception>
-        /// <exception cref="LSLInvalidSymbolNameException">Thrown if the event signatures name or any of its parameters names do not abide by LSL symbol naming conventions.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException">
+        ///     Thrown if the event signatures name or any of its parameters names do
+        ///     not abide by LSL symbol naming conventions.
+        /// </exception>
         /// <exception cref="XmlException">Incorrect XML encountered in the input stream. </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <c>null</c>.</exception>
-        /// <exception cref="LSLInvalidSubsetNameException">Thrown if any of the given subset names in the 'Subsets' CSV string do not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).</exception>
-        /// <returns>The parsed <see cref="LSLLibraryEventSignature"/> object.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="reader" /> is <c>null</c>.</exception>
+        /// <exception cref="LSLInvalidSubsetNameException">
+        ///     Thrown if any of the given subset names in the 'Subsets' CSV string do
+        ///     not match the pattern ([a-zA-Z]+[a-zA-Z_0-9\\-]*).
+        /// </exception>
+        /// <returns>The parsed <see cref="LSLLibraryEventSignature" /> object.</returns>
         public static LSLLibraryEventSignature FromXmlFragment(XmlReader reader)
         {
-            if(reader == null) throw new ArgumentNullException("reader");
+            if (reader == null) throw new ArgumentNullException("reader");
 
             var ev = new LSLLibraryEventSignature();
             IXmlSerializable x = ev;
             x.ReadXml(reader);
             return ev;
         }
-
-        /// <summary>
-        /// Whether or not this library signature is marked as deprecated or not.
-        /// </summary>
-        public bool Deprecated
-        {
-            get
-            {
-                string deprecatedStatus;
-                return (Properties.TryGetValue("Deprecated", out deprecatedStatus) &&
-                        deprecatedStatus.ToLower() == "true");
-            }
-            set
-            {
-                if (value == false)
-                {
-                    if (Properties.ContainsKey("Deprecated"))
-                    {
-                        Properties.Remove("Deprecated");
-                    }
-                }
-                else
-                {
-                    Properties["Deprecated"] = "true";
-                }
-            }
-        }
-
     }
 }

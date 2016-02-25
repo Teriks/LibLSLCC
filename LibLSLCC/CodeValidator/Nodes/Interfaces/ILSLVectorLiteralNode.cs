@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: ILSLVectorLiteralNode.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using LibLSLCC.CodeValidator.Primitives;
@@ -48,60 +51,67 @@ using LibLSLCC.CodeValidator.Primitives;
 
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
-
     /// <summary>
-    /// AST node interface for vector literal nodes.
+    ///     AST node interface for vector literal nodes.
     /// </summary>
     public interface ILSLVectorLiteralNode : ILSLReadOnlyExprNode
     {
-
         /// <summary>
-        /// The source code range of the opening '&lt;' bracket of the vector literal.
+        ///     The source code range of the opening '&lt;' bracket of the vector literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeOpenBracket { get; }
 
         /// <summary>
-        /// The source code range of the closing '&gt;' bracket of the vector literal.
+        ///     The source code range of the closing '&gt;' bracket of the vector literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCloseBracket { get; }
 
-
         /// <summary>
-        /// The expression node used to initialize the X Axis Component of the vector literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the X Axis Component of the vector literal.
+        ///     This should never be null.
         /// </summary>
         ILSLReadOnlyExprNode XExpression { get; }
 
-
         /// <summary>
-        /// The source code range of the first component separator comma to appear in the vector literal.
+        ///     The source code range of the first component separator comma to appear in the vector literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCommaOne { get; }
 
-
         /// <summary>
-        /// The expression node used to initialize the Y Axis Component of the vector literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the Y Axis Component of the vector literal.
+        ///     This should never be null.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         ILSLReadOnlyExprNode YExpression { get; }
 
-
         /// <summary>
-        /// The source code range of the second component separator comma to appear in the vector literal.
+        ///     The source code range of the second component separator comma to appear in the vector literal.
         /// </summary>
-        /// <remarks>If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> is <c>false</c> this property will be <c>null</c>.</remarks>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
+        ///     <c>null</c>.
+        /// </remarks>
         LSLSourceCodeRange SourceRangeCommaTwo { get; }
 
-
         /// <summary>
-        /// The expression node used to initialize the Z Axis Component of the vector literal.  
-        /// This should never be null.
+        ///     The expression node used to initialize the Z Axis Component of the vector literal.
+        ///     This should never be null.
         /// </summary>
         ILSLReadOnlyExprNode ZExpression { get; }
     }
-
 }

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLHexLiteralNode.cs
 // 
@@ -39,17 +40,18 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST token interface for HEX literal nodes.
+    ///     AST token interface for HEX literal nodes.
     /// </summary>
     public interface ILSLHexLiteralNode : ILSLReadOnlyExprNode
     {
-
         /// <summary>
-        /// The raw source code text that defines the HEX literal.
+        ///     The raw source code text that defines the HEX literal.
         /// </summary>
         string RawText { get; }
     }

@@ -1,4 +1,5 @@
 #region FileInfo
+
 // 
 // File: HashMapExtensions.cs
 // 
@@ -39,27 +40,31 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
 
+#endregion
+
 namespace LibLSLCC.Collections
 {
     /// <summary>
-    /// Extensions for <see cref="HashMap{TKey,TValue}"/> objects.
+    ///     Extensions for <see cref="HashMap{TKey,TValue}" /> objects.
     /// </summary>
     public static class HashMapExtensions
     {
-
         /// <summary>
-        /// Converts an <see cref="IEnumerable{T}"/> object into a <see cref="HashMap{TKey,TSource}"/>
+        ///     Converts an <see cref="IEnumerable{T}" /> object into a <see cref="HashMap{TKey,TSource}" />
         /// </summary>
-        /// <param name="source">The <see cref="IEnumerable{T}"/> to convert.</param>
+        /// <param name="source">The <see cref="IEnumerable{T}" /> to convert.</param>
         /// <param name="keySelector">The key selector function.</param>
         /// <typeparam name="TSource"> </typeparam>
         /// <typeparam name="TKey"></typeparam>
-        /// <returns>The generated <see cref="HashMap{TKey,TValue}"/> object.</returns>
+        /// <returns>The generated <see cref="HashMap{TKey,TValue}" /> object.</returns>
         public static HashMap<TKey, TSource> ToHashMap<TSource, TKey>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
@@ -69,15 +74,15 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Converts an <see cref="IEnumerable{T}"/> object into a <see cref="HashMap{TKey,TSource}"/>
+        ///     Converts an <see cref="IEnumerable{T}" /> object into a <see cref="HashMap{TKey,TSource}" />
         /// </summary>
-        /// <param name="source">The <see cref="IEnumerable{T}"/> to convert.</param>
+        /// <param name="source">The <see cref="IEnumerable{T}" /> to convert.</param>
         /// <param name="keySelector">The key selector function.</param>
         /// <param name="elementSelector">The element selector function.</param>
         /// <typeparam name="TSource"> </typeparam>
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TElement"></typeparam>
-        /// <returns>The generated <see cref="HashMap{TKey,TValue}"/> object.</returns>
+        /// <returns>The generated <see cref="HashMap{TKey,TValue}" /> object.</returns>
         public static HashMap<TKey, TElement> ToHashMap<TSource, TKey, TElement>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -88,14 +93,14 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Converts an <see cref="IEnumerable{T}"/> object into a <see cref="HashMap{TKey,TSource}"/>
+        ///     Converts an <see cref="IEnumerable{T}" /> object into a <see cref="HashMap{TKey,TSource}" />
         /// </summary>
-        /// <param name="source">The <see cref="IEnumerable{T}"/> to convert.</param>
+        /// <param name="source">The <see cref="IEnumerable{T}" /> to convert.</param>
         /// <param name="keySelector">The key selector function.</param>
         /// <param name="comparer">The key comparer function.</param>
         /// <typeparam name="TSource"> </typeparam>
         /// <typeparam name="TKey"></typeparam>
-        /// <returns>The generated <see cref="HashMap{TKey,TValue}"/> object.</returns>
+        /// <returns>The generated <see cref="HashMap{TKey,TValue}" /> object.</returns>
         public static HashMap<TKey, TSource> ToHashMap<TSource, TKey>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -106,16 +111,16 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Converts an <see cref="IEnumerable{T}"/> object into a <see cref="HashMap{TKey,TSource}"/>
+        ///     Converts an <see cref="IEnumerable{T}" /> object into a <see cref="HashMap{TKey,TSource}" />
         /// </summary>
-        /// <param name="source">The <see cref="IEnumerable{T}"/> to convert.</param>
+        /// <param name="source">The <see cref="IEnumerable{T}" /> to convert.</param>
         /// <param name="keySelector">The key selector function.</param>
         /// <param name="elementSelector">The element selector function.</param>
         /// <param name="comparer">The key comparer function.</param>
         /// <typeparam name="TSource"> </typeparam>
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TElement"></typeparam>
-        /// <returns>The generated <see cref="HashMap{TKey,TValue}"/> object.</returns>
+        /// <returns>The generated <see cref="HashMap{TKey,TValue}" /> object.</returns>
         public static HashMap<TKey, TElement> ToHashMap<TSource, TKey, TElement>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -136,13 +141,14 @@ namespace LibLSLCC.Collections
             }
             comparer = comparer ?? EqualityComparer<TKey>.Default;
             ICollection<TSource> list = source as ICollection<TSource>;
-            var ret = list == null ? new HashMap<TKey, TElement>(comparer) : new HashMap<TKey, TElement>(list.Count, comparer);
+            var ret = list == null
+                ? new HashMap<TKey, TElement>(comparer)
+                : new HashMap<TKey, TElement>(list.Count, comparer);
             foreach (TSource item in source)
             {
                 ret.Add(keySelector(item), elementSelector(item));
             }
             return ret;
         }
-
     }
 }

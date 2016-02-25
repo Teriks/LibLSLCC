@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ILSLLoopNode.cs
 // 
@@ -39,22 +40,23 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 namespace LibLSLCC.CodeValidator.Nodes.Interfaces
 {
     /// <summary>
-    /// AST node interface for all loop type nodes that rely on a loop condition.
+    ///     AST node interface for all loop type nodes that rely on a loop condition.
     /// </summary>
     public interface ILSLLoopNode
     {
         /// <summary>
-        /// The condition expression that controls the loop.
+        ///     The condition expression that controls the loop.
         /// </summary>
         ILSLReadOnlyExprNode ConditionExpression { get; }
 
-
         /// <summary>
-        /// The code scope node that represents the code scope of the loop body.
+        ///     The code scope node that represents the code scope of the loop body.
         /// </summary>
         ILSLCodeScopeNode Code { get; }
     }

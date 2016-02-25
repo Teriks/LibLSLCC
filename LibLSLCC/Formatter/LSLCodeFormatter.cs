@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCodeFormatter.cs
 // 
@@ -39,17 +40,22 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.IO;
 using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Formatter.Visitor;
 
+#endregion
+
 namespace LibLSLCC.Formatter
 {
     /// <summary>
-    /// Implements a code formatter that can format an ILSLCompilationUnitNode
+    ///     Implements a code formatter that can format an ILSLCompilationUnitNode
     /// </summary>
     public sealed class LSLCodeFormatter
     {
@@ -57,9 +63,9 @@ namespace LibLSLCC.Formatter
 
 
         /// <summary>
-        /// Construct a new LSLCodeFormatter.
+        ///     Construct a new LSLCodeFormatter.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="settings"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="settings" /> is <c>null</c>.</exception>
         public LSLCodeFormatter(LSLCodeFormatterSettings settings)
         {
             if (settings == null)
@@ -69,18 +75,20 @@ namespace LibLSLCC.Formatter
             _settings = settings;
         }
 
+
         /// <summary>
-        /// Construct a new LSLCodeFormatter.
+        ///     Construct a new LSLCodeFormatter.
         /// </summary>
         public LSLCodeFormatter()
         {
             _settings = new LSLCodeFormatterSettings();
         }
 
+
         /// <summary>
-        /// The code formatter settings.
+        ///     The code formatter settings.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <see cref="Settings"/> is set to <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <see cref="Settings" /> is set to <c>null</c>.</exception>
         public LSLCodeFormatterSettings Settings
         {
             get { return _settings; }
@@ -88,7 +96,8 @@ namespace LibLSLCC.Formatter
             {
                 if (_settings == null)
                 {
-                    throw new ArgumentNullException("value", typeof(LSLCodeFormatter).Name+".Settings cannot be null!.");
+                    throw new ArgumentNullException("value",
+                        typeof (LSLCodeFormatter).Name + ".Settings cannot be null!.");
                 }
                 _settings = value;
             }
@@ -96,15 +105,25 @@ namespace LibLSLCC.Formatter
 
 
         /// <summary>
-        /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, <paramref name="sourceReference"/> is only required if you want to keep comments.
+        ///     Formats an <see cref="ILSLCompilationUnitNode" /> to an output writer, <paramref name="sourceReference" /> is only
+        ///     required if you want to keep comments.
         /// </summary>
-        /// <param name="sourceReference">The source code of the script, only necessary if comments exist.  Passing null will cause all comments to be stripped, regardless of formatter settings.</param>
-        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode"/> syntax tree node to format.</param>
+        /// <param name="sourceReference">
+        ///     The source code of the script, only necessary if comments exist.  Passing null will cause
+        ///     all comments to be stripped, regardless of formatter settings.
+        /// </param>
+        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode" /> syntax tree node to format.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
-        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/>, default is: <c>false</c>.</param>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings"/> is left <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
-        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer" />, default is: <c>false</c>.</param>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings" /> is left <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
+        ///     <paramref name="compilationUnit" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public void Format(string sourceReference, ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
@@ -115,7 +134,8 @@ namespace LibLSLCC.Formatter
 
             if (compilationUnit.HasErrors)
             {
-                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot format a tree with syntax errors.");
+                throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
+                                            ".HasErrors is true, cannot format a tree with syntax errors.");
             }
 
             if (writer == null)
@@ -125,7 +145,7 @@ namespace LibLSLCC.Formatter
 
             if (Settings == null)
             {
-                throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
+                throw new InvalidOperationException(typeof (LSLCodeFormatter).Name + ".Settings cannot be null.");
             }
 
             var formatter = new LSLCodeFormatterVisitor(Settings);
@@ -134,15 +154,24 @@ namespace LibLSLCC.Formatter
 
 
         /// <summary>
-        /// Formats an <see cref="ILSLCompilationUnitNode"/> to an output writer, comments will be ignored/stripped.
+        ///     Formats an <see cref="ILSLCompilationUnitNode" /> to an output writer, comments will be ignored/stripped.
         /// </summary>
-        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode"/> to format.</param>
+        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode" /> to format.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
-        /// <param name="closeStream"><c>true</c> if this method should close <paramref name="writer"/> when finished.  The default value is <c>false</c>.</param>
+        /// <param name="closeStream">
+        ///     <c>true</c> if this method should close <paramref name="writer" /> when finished.  The
+        ///     default value is <c>false</c>.
+        /// </param>
         /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings"/> is left <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
-        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="Settings" /> is left <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
+        ///     <paramref name="compilationUnit" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public void Format(ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
@@ -153,7 +182,8 @@ namespace LibLSLCC.Formatter
 
             if (compilationUnit.HasErrors)
             {
-                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot format a tree with syntax errors.");
+                throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
+                                            ".HasErrors is true, cannot format a tree with syntax errors.");
             }
 
             if (writer == null)
@@ -163,9 +193,9 @@ namespace LibLSLCC.Formatter
 
             if (Settings == null)
             {
-                throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
+                throw new InvalidOperationException(typeof (LSLCodeFormatter).Name + ".Settings cannot be null.");
             }
- 
+
             var formatter = new LSLCodeFormatterVisitor(Settings);
             formatter.WriteAndFlush(null, compilationUnit, writer, closeStream);
         }
