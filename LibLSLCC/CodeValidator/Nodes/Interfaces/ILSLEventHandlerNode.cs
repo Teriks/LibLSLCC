@@ -65,9 +65,7 @@ namespace LibLSLCC.CodeValidator
         ILSLCodeScopeNode Code { get; }
 
         /// <summary>
-        ///     The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
-        ///     It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
-        ///     Ideally you should not be handling a syntax tree with syntax errors in it.
+        ///     The parameter list node for the parameters of the event handler.  This is non null even when no parameters exist.
         /// </summary>
         ILSLParameterListNode ParameterList { get; }
 

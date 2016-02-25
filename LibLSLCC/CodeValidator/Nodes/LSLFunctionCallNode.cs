@@ -85,13 +85,13 @@ namespace LibLSLCC.CodeValidator
             if (argumentList == null) throw new ArgumentNullException("argumentList");
 
 
-            Name = DefinitionNode.Name;
+            Name = Definition.Name;
 
             ArgumentExpressionList = argumentList;
             ArgumentExpressionList.Parent = this;
 
-            DefinitionNode = definition;
-            DefinitionNode.AddReference(this);
+            Definition = definition;
+            Definition.AddReference(this);
 
             Signature = definition.CreateSignature();
 
@@ -147,7 +147,7 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("argumentExpressionList");
             }
 
-            DefinitionNode =  preDefinition.DefinitionNode;
+            Definition =  preDefinition.DefinitionNode;
             Signature =  preDefinition;
 
             Name = context.function_name.Text;
@@ -221,7 +221,7 @@ namespace LibLSLCC.CodeValidator
 
             Name = other.Name;
 
-            DefinitionNode = other.DefinitionNode;
+            Definition = other.Definition;
             Signature = new LSLFunctionSignature(other.Signature);
 
             _libraryFunction = other._libraryFunction;
@@ -255,7 +255,7 @@ namespace LibLSLCC.CodeValidator
         ///     The syntax tree node where the function was defined if it is a user defined function.  If the function call is to a
         ///     library function this will be null.
         /// </summary>
-        public LSLFunctionDeclarationNode DefinitionNode { get; private set; }
+        public LSLFunctionDeclarationNode Definition { get; private set; }
 
         /// <summary>
         ///     True if the function that was called is a library function call, false if it was a call to a user defined function.
@@ -314,7 +314,7 @@ namespace LibLSLCC.CodeValidator
 
         ILSLFunctionDeclarationNode ILSLFunctionCallNode.Definition
         {
-            get { return DefinitionNode; }
+            get { return Definition; }
         }
 
 

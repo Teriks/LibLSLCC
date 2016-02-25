@@ -49,7 +49,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
 
 #endregion
@@ -144,22 +143,12 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     An in order list of parameter nodes that belong to the event handler, or an empty enumerable if none exist.
-        /// </summary>
-        public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
-        {
-            get { return ParameterList.Parameters; }
-        }
-
-        /// <summary>
         ///     The code scope node that represents the code body of the event handler.
         /// </summary>
         public LSLCodeScopeNode Code { get; private set; }
 
         /// <summary>
-        ///     The parameter list node for the parameters of the event handler.  This is not null even when no parameters exist.
-        ///     It can be null if there are errors in the event handler node that prevent the parameters from being parsed.
-        ///     Ideally you should not be handling a syntax tree with syntax errors in it.
+        ///     The parameter list node for the parameters of the event handler.  This is non null even when no parameters exist.
         /// </summary>
         public LSLParameterListNode ParameterList { get; private set; }
 
