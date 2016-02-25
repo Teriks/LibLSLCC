@@ -113,8 +113,8 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default" /> to initialize
         ///     the <see cref="ValidatorStrategies" /> property.
-        ///     <see cref="LSLCodeValidatorStrategies.Default" />
         /// </summary>
+        /// <seealso cref="LSLCodeValidatorStrategies.Default"/>
         public LSLCodeValidator()
         {
             var validatorStrategies = LSLCodeValidatorStrategies.Default();
