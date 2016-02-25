@@ -45,7 +45,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Serialization;
-using LibLSLCC.Formatter;
+using LibLSLCC.CodeFormatter;
 using LSLCCEditor.Settings;
 
 namespace LSLCCEditor.SettingsUI

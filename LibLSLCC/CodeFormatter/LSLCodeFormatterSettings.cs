@@ -50,7 +50,7 @@ using LibLSLCC.Settings;
 
 #endregion
 
-namespace LibLSLCC.Formatter
+namespace LibLSLCC.CodeFormatter
 {
     /// <summary>
     ///     Settings object for <see cref="LSLCodeFormatter" />.

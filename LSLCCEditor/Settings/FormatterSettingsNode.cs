@@ -42,7 +42,7 @@
 #endregion
 
 using System.Reflection;
-using LibLSLCC.Formatter;
+using LibLSLCC.CodeFormatter;
 using LibLSLCC.Settings;
 
 namespace LSLCCEditor.Settings

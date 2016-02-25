@@ -51,10 +51,10 @@ using LibLSLCC.CodeValidator;
 
 #endregion
 
-namespace LibLSLCC.Formatter
+namespace LibLSLCC.CodeFormatter
 {
     /// <summary>
-    ///     Implements a code formatter that can format an ILSLCompilationUnitNode
+    ///     Implements a code formatter that can format an <see cref="ILSLCompilationUnitNode"/>.
     /// </summary>
     public sealed class LSLCodeFormatter
     {

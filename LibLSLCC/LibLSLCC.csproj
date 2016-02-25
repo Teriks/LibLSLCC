@@ -96,8 +96,8 @@
     <Compile Include="CSharp\CSharpKeywords.cs" />
     <Compile Include="CSharp\CSharpNamespace.cs" />
     <Compile Include="CSharp\MemberAccessibilityLevel.cs" />
-    <Compile Include="Formatter\LSLCodeFormatter.cs" />
-    <Compile Include="Formatter\LSLCodeFormatterSettings.cs" />
+    <Compile Include="CodeFormatter\LSLCodeFormatter.cs" />
+    <Compile Include="CodeFormatter\LSLCodeFormatterSettings.cs" />
     <Compile Include="CodeValidator\Strategies\Interfaces\ILSLBasicLibraryDataProvider.cs" />
     <Compile Include="LibraryData\LSLEmbeddedLibraryDataProvider.cs" />
     <Compile Include="LibraryData\ILSLLibrarySignature.cs" />
@@ -308,7 +308,7 @@
     <Compile Include="Compilers\OpenSim\LSLOpenSimCompiler.cs" />
     <Compile Include="Compilers\OpenSim\Internal\LSLOpenSimCompilerVisitor.cs" />
     <Compile Include="CodeValidator\LSLCodeValidator.cs" />
-    <Compile Include="Formatter\Internal\LSLCodeFormatterVisitor.cs" />
+    <Compile Include="CodeFormatter\Internal\LSLCodeFormatterVisitor.cs" />
     <Compile Include="AntlrParser\LSLBaseListener.cs" />
     <Compile Include="AntlrParser\LSLBaseVisitor.cs" />
     <Compile Include="AntlrParser\LSLLexer.cs" />

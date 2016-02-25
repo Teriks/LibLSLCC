@@ -56,7 +56,7 @@ using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.Formatter
+namespace LibLSLCC.CodeFormatter
 {
     /// <summary>
     ///     An LSL Syntax tree visitor that formats code.
