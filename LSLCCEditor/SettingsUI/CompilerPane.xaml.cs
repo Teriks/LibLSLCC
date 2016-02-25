@@ -45,10 +45,14 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml.Serialization;
+using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.CSharp;
 using LibLSLCC.Settings;
+using LSLCCEditor.EditControl;
 using LSLCCEditor.Settings;
 using LSLCCEditor.Utility.Validation;
 
@@ -63,6 +67,18 @@ namespace LSLCCEditor.SettingsUI
             "PropertyType", typeof (ObservableCollection<string>), typeof (CompilerPane),
             new PropertyMetadata(default(ObservableCollection<string>)));
 
+
+
+        public static readonly DependencyProperty CanEditCurrentConfigurationProperty = DependencyProperty.Register(
+            "CanEditCurrentConfiguration", typeof (bool), typeof (CompilerPane), new PropertyMetadata(default(bool)));
+
+        public bool CanEditCurrentConfiguration
+        {
+            get { return (bool) GetValue(CanEditCurrentConfigurationProperty); }
+            set { SetValue(CanEditCurrentConfigurationProperty, value); }
+        }
+
+
         public ObservableCollection<string> CompilerConfigurationNames
         {
             get { return (ObservableCollection<string>) GetValue(PropertyTypeProperty); }
@@ -75,8 +91,24 @@ namespace LSLCCEditor.SettingsUI
                 "SelectedCompilerConfigurationName", typeof (string), typeof (CompilerPane),
                 new PropertyMetadata(default(string), SelectedCompilerConfigurationNameChanged));
 
-        
 
+
+        private static bool CanDeleteAndEdit(string configName)
+        {
+            switch (configName)
+            {
+                case "OpenSim Client Code":
+                    return false;
+                case "OpenSim Server Code":
+                    return false;
+                case "OpenSim Client Code (co-op Stop)":
+                    return false;
+                case "OpenSim Server Code (co-op Stop)":
+                    return false;
+            }
+
+            return true;
+        }
 
         private static void SelectedCompilerConfigurationNameChanged(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
@@ -87,7 +119,11 @@ namespace LSLCCEditor.SettingsUI
 
             if (newValue == null) return;
 
-            UpdateUiToNamedConfig(pane, newValue);
+
+            pane.CanEditCurrentConfiguration = CanDeleteAndEdit(newValue);
+
+
+            UpdateUiToConfig(pane, AppSettings.Settings.CompilerConfigurations[newValue].Clone());
         }
 
 
@@ -95,7 +131,7 @@ namespace LSLCCEditor.SettingsUI
         private NotifyCollectionChangedEventHandler _lastNamespaceImportsChangedHandler;
 
 
-        private static void UpdateUiToNamedConfig(CompilerPane pane,  string configName)
+        private static void UpdateUiToConfig(CompilerPane pane,  CompilerConfigurationNode config)
         {
             if (pane.CurrentCompilerConfiguration != null)
             {
@@ -110,7 +146,7 @@ namespace LSLCCEditor.SettingsUI
 
 
             pane.CurrentConfigIsEdited = false;
-            pane.CurrentCompilerConfiguration = AppSettings.Settings.CompilerConfigurations[configName].Clone();
+            pane.CurrentCompilerConfiguration = config;
 
             var compilerConfig = pane.CurrentCompilerConfiguration.OpenSimCompilerSettings;
 
@@ -453,7 +489,7 @@ namespace LSLCCEditor.SettingsUI
 
         private void Revert_OnClick(object sender, RoutedEventArgs e)
         {
-            UpdateUiToNamedConfig(this, SelectedCompilerConfigurationName);
+            UpdateUiToConfig(this, AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfigurationName].Clone());
         }
 
         private void Save_OnClick(object sender, RoutedEventArgs e)
@@ -550,7 +586,7 @@ namespace LSLCCEditor.SettingsUI
                 new CSharpNamespace(NamespaceImportAddText));
         }
 
-        private void importsDelete_OnClick(object sender, RoutedEventArgs e)
+        private void ImportsDelete_OnClick(object sender, RoutedEventArgs e)
         {
             object[] ar = new object[NamespaceNameListBox.SelectedItems.Count];
             NamespaceNameListBox.SelectedItems.CopyTo(ar, 0);
@@ -560,6 +596,11 @@ namespace LSLCCEditor.SettingsUI
                 CurrentCompilerConfiguration.OpenSimCompilerSettings.GeneratedNamespaceImports.Remove(
                     (CSharpNamespace) obj);
             }
+        }
+
+        private void ImportsCopyToClipboard_OnClick(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetData(DataFormats.Text, string.Join(Environment.NewLine, NamespaceNameListBox.SelectedItems));
         }
 
         private void Rename_OnClick(object sender, RoutedEventArgs e)
@@ -583,5 +624,50 @@ namespace LSLCCEditor.SettingsUI
 
             SelectedCompilerConfigurationName = x.ChosenName;
         }
+
+
+        private void Import_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dialogResult = MessageBox.Show(OwnerSettingsWindow,
+                "Are you sure you want to overwrite the currently selected compiler configuration by importing one over it?",
+                "Overwrite Selected Compiler Configuration?",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (dialogResult != MessageBoxResult.Yes) return;
+
+            ImportExportTools.DoImportSettingsWindow(OwnerSettingsWindow, "Compiler Config (*.xml)|*.xml;", ".xml",
+                reader =>
+                {
+                    var x = new XmlSerializer(typeof(CompilerConfigurationNode));
+
+                    var settings = (CompilerConfigurationNode)x.Deserialize(reader);
+
+                    UpdateUiToConfig(this, settings);
+
+                    CurrentConfigIsEdited = true;
+                });
+        }
+
+
+        private void Export_OnClick(object sender, RoutedEventArgs e)
+        {
+            ImportExportTools.DoExportSettingsWindow(OwnerSettingsWindow, "Compiler Config (*.xml)|*.xml;",
+                "LSLCCEditor_CompilerConfig.xml",
+                writer =>
+                {
+                    var x = new XmlSerializer(typeof(CompilerConfigurationNode));
+
+                    x.Serialize(writer, CurrentCompilerConfiguration);
+                });
+        }
+
+
+        private void ImportsContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            ((MenuItem)ImportsContextMenu.Items[0]).IsEnabled = CanEditCurrentConfiguration;
+        }
+
+
+
     }
 }

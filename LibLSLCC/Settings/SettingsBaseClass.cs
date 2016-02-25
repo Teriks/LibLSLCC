@@ -565,6 +565,8 @@ namespace LibLSLCC.Settings
 
         private static void TransferObservers<T>(Type baseType, T oldVal, T newVal)
         {
+            if (newVal == null || oldVal == null) return;
+
             const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
                                            | BindingFlags.Static;
 

@@ -128,12 +128,9 @@ namespace LibLSLCC.Settings
             };
 
             using (var f = File.Create(file))
+            using (var writer = XmlWriter.Create(f, writerSettings))
             {
-                using (var writer = XmlWriter.Create(f, writerSettings))
-                {
-                    serializer.Serialize(writer, Settings);
-                }
-
+                serializer.Serialize(writer, Settings);
                 f.Flush(true);
             }
         }

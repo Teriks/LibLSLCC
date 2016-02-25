@@ -57,6 +57,7 @@
     <Compile Include="Converters\IntegerGreaterThanToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\MultiBooleanConverter.cs" />
     <Compile Include="Converters\MultiBooleanVisibilityConverter.cs" />
     <Compile Include="DebugObjectView.xaml.cs">
       <DependentUpon>DebugObjectView.xaml</DependentUpon>
@@ -86,9 +87,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

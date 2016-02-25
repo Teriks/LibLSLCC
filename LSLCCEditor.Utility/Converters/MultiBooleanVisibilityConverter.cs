@@ -62,13 +62,37 @@ namespace LSLCCEditor.Utility.Converters
         public Visibility False { get; set; }
 
 
+        public MultiBooleanVisibilityConverter()
+        {
+            True = Visibility.Visible;
+            False = Visibility.Collapsed;
+        }
+
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var r = And
-                ? values.Cast<bool>().Aggregate(true, (current, val) => current && val)
-                : values.Cast<bool>().Aggregate(false, (current, val) => current || val);
+            if (values == null) return false;
 
-            return r ? True : False;
+            try
+            {
+                if (And)
+                {
+                    var value = values.Select(System.Convert.ToBoolean).Aggregate(true, (current, v) => current && v);
+                    return value ? True : False;
+                }
+                else
+                {
+                    var value = values.Select(System.Convert.ToBoolean).Aggregate(false, (current, v) => current || v);
+                    return value ? True : False;
+                }
+            }
+            catch (InvalidCastException)
+            {
+                return False;
+            }
+            catch (FormatException)
+            {
+                return False;
+            }
         }
 
 

@@ -492,6 +492,16 @@ namespace LibraryDataScrapingTools
 
             retrySave:
 
+
+
+            var libraryDataWritterSettings = new XmlWriterSettings()
+            {
+                Indent = true,
+                Encoding = Encoding.Unicode,
+                CloseOutput = false,
+            };
+
+
             var saveGeneratedLibraryDataDialog = new SaveFileDialog
             {
                 CreatePrompt = true,
@@ -519,16 +529,11 @@ namespace LibraryDataScrapingTools
             {
                 libraryDataOutputFilePath = saveGeneratedLibraryDataDialog.FileName;
 
-                var writerSettings = new XmlWriterSettings()
-                {
-                    Indent = true,
-                    Encoding = Encoding.Unicode
-                };
-
                 using (var strm = saveGeneratedLibraryDataDialog.OpenFile())
-                using (var file = XmlWriter.Create(strm, writerSettings))
+                using (var file = XmlWriter.Create(strm, libraryDataWritterSettings))
                 {
                     provider.WriteXml(file, true);
+                    strm.Flush();
                 }
             }
 
@@ -676,16 +681,11 @@ namespace LibraryDataScrapingTools
                 }
                 else
                 {
-                    var writerSettings = new XmlWriterSettings()
-                    {
-                        Indent = true,
-                        Encoding = Encoding.Unicode
-                    };
-
                     using (var strm = saveFileLibraryData.OpenFile())
-                    using (var file = XmlWriter.Create(strm, writerSettings))
+                    using (var file = XmlWriter.Create(strm, libraryDataWritterSettings))
                     {
                         diff.NotInRight.WriteXml(file, true);
+                        strm.Flush();
                     }
                 }
             }
@@ -741,20 +741,17 @@ namespace LibraryDataScrapingTools
                 }
                 else
                 {
-                    var writerSettings = new XmlWriterSettings()
-                    {
-                        Indent = true,
-                        Encoding = Encoding.Unicode
-                    };
-
                     using (var strm = saveFileLibraryData.OpenFile())
-                    using (var file = XmlWriter.Create(strm, writerSettings))
+                    using (var file = XmlWriter.Create(strm, libraryDataWritterSettings))
                     {
                         diff.NotInLeft.WriteXml(file, true);
+                        strm.Flush();
                     }
                 }
             }
         }
+
+
         private static GenericArray<GenericArray<T>> ChunkBy<T>(GenericArray<T> source, int chunkSize)
         {
             return source

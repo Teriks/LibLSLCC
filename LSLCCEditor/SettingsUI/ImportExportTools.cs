@@ -118,12 +118,9 @@ namespace LSLCCEditor.SettingsUI
             try
             {
                 using (var f = saveDialog.OpenFile())
+                using (var file = XmlWriter.Create(f, settings))
                 {
-                    using (var file = XmlWriter.Create(f, settings))
-                    {
-                        serialize(file);
-                    }
-
+                    serialize(file);
                     f.Flush();
                 }
             }
