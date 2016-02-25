@@ -60,6 +60,14 @@ using System.Windows.Media;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
+
+#if !DEBUG
+//Prevent resharper from removing this import when cleaning up in debug mode.
+//It's not used in debug mode because the debug mode editor does not catch compiler internal exceptions.
+//LibLSLCC.Compilers.LSLCompilerInternalException happens to be the only thing referenced in this file from the following namespace.
+using LibLSLCC.Compilers;
+#endif
+
 using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Formatter;
 using LibLSLCC.LibraryData;
@@ -83,6 +91,7 @@ namespace LSLCCEditor
     /// </summary>
     public partial class MainWindow : Window, IDisposable
     {
+
         public static readonly RoutedCommand FileNew = new RoutedCommand();
         public static readonly RoutedCommand FileOpen = new RoutedCommand();
         public static readonly RoutedCommand FileOpenNewTab = new RoutedCommand();
@@ -118,7 +127,7 @@ namespace LSLCCEditor
             var newValue = (bool)dependencyPropertyChangedEventArgs.NewValue;
 
             AppSettings.Settings.ShowEndOfLine = newValue;
-
+            
             foreach (var tab in self.EditorTabs)
             {
                 tab.Content.Editor.Settings.ShowEndOfLine = newValue;
