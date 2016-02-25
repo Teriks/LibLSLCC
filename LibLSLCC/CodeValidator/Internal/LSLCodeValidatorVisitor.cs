@@ -59,7 +59,7 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Internal
+namespace LibLSLCC.CodeValidator
 {
     internal sealed partial class LSLCodeValidatorVisitor : LSLBaseVisitor<ILSLSyntaxTreeNode>
     {

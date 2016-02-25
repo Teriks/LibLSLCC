@@ -50,7 +50,6 @@ using System.IO;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
-using LibLSLCC.Compilers.OpenSim.Internal;
 using LibLSLCC.LibraryData;
 
 #endregion

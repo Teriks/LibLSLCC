@@ -59,17 +59,23 @@ namespace LibLSLCC.CodeValidator
     public interface ILSLCodeValidator
     {
         /// <summary>
-        ///     Set to true if the last call to validate revealed syntax errors and returned null
+        ///     Set to true if the last call to <see cref="Validate"/> generated syntax warnings.
+        /// </summary>
+        bool HasSyntaxWarnings { get; }
+
+        /// <summary>
+        ///     Set to <c>true</c> if the last call to <see cref="Validate"/> generated syntax errors.
+        ///     <see cref="Validate"/> will return <c>null</c> upon encountering syntax errors as well.
         /// </summary>
         bool HasSyntaxErrors { get; }
 
 
         /// <summary>
-        ///     Validates the code content of a stream and returns the top of the compilation unit syntax tree as a
-        ///     <see cref="LSLCompilationUnitNode" /> object, if parsing resulted in syntax errors the result will be null
+        ///     Validates the code content of a TextReader and returns the top of the compilation unit syntax tree.
+        ///     If parsing resulted in syntax errors the result will be <c>null</c>.
         /// </summary>
-        /// <param name="stream">The TextReader to parse code from</param>
-        /// <returns>Top level node of an LSL syntax tree</returns>
+        /// <param name="stream">The TextReader to parse code from.</param>
+        /// <returns>Top level node of an LSL syntax tree.</returns>
         ILSLCompilationUnitNode Validate(TextReader stream);
     }
 }

@@ -98,23 +98,41 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Construct an LSLXmlLibraryDataProvider with the option to enable live filtering mode in the base class
+        ///     Construct an LSLXmlLibraryDataProvider with the option to enable or disable live filtering mode in the base class.
+        ///     <see cref="LSLLibraryDataProvider.LiveFiltering"/> will be enabled by default.
+        /// </summary>
+        public LSLXmlLibraryDataProvider()
+        {
+        }
+
+        /// <summary>
+        ///     Construct an LSLXmlLibraryDataProvider with the option to enable or disable live filtering mode in the base class
         /// </summary>
         /// <param name="liveFiltering">Whether or not to enable live filtering mode in the base class.</param>
-        public LSLXmlLibraryDataProvider(bool liveFiltering = true) : base(liveFiltering)
+        public LSLXmlLibraryDataProvider(bool liveFiltering) : base(liveFiltering)
         {
         }
 
 
         /// <summary>
         ///     Construct an LSLXmlLibraryDataProvider with the ability to set the active subsets in the base class, and optionally
-        ///     enable
-        ///     live filtering mode.
+        ///     enable or disable live filtering mode.
         /// </summary>
         /// <param name="activeSubsets">The active subsets to set in the base class.</param>
         /// <param name="liveFiltering">Whether or not to enable live filtering mode in the base class.</param>
-        public LSLXmlLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true)
+        public LSLXmlLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering)
             : base(activeSubsets, liveFiltering)
+        {
+        }
+
+
+        /// <summary>
+        ///     Construct an LSLXmlLibraryDataProvider with the ability to set the active subsets in the base class.
+        ///     <see cref="LSLLibraryDataProvider.LiveFiltering"/> will be enabled by default.
+        /// </summary>
+        /// <param name="activeSubsets">The active subsets to set in the base class.</param>
+        public LSLXmlLibraryDataProvider(IEnumerable<string> activeSubsets)
+            : base(activeSubsets)
         {
         }
 

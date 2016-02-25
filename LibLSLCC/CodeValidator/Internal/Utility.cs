@@ -49,7 +49,7 @@ using System.Linq;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Internal
+namespace LibLSLCC.CodeValidator
 {
     internal static class Utility
     {

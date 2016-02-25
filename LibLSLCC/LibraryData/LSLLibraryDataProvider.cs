@@ -94,10 +94,25 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLLibraryDataProvider" /> with the option of enabling live filtering mode.
+        ///     Construct an <see cref="LSLLibraryDataProvider" />.
+        ///     <see cref="LiveFiltering"/> will be enabled by default.
+        /// </summary>
+        public LSLLibraryDataProvider()
+        {
+            LiveFiltering = true;
+            ActiveSubsets = new LSLLibraryDataSubsetCollection();
+
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
+            ActiveSubsets.OnSubsetAdded += ActiveSubsetsOnSubsetAdded;
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLLibraryDataProvider" />.
+        ///     Optionally enable <see cref="LiveFiltering" /> mode using the <paramref name="liveFiltering"/> parameter.
         /// </summary>
         /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering" /> mode.  Default value is true.</param>
-        public LSLLibraryDataProvider(bool liveFiltering = true)
+        public LSLLibraryDataProvider(bool liveFiltering)
         {
             LiveFiltering = liveFiltering;
             ActiveSubsets = new LSLLibraryDataSubsetCollection();
@@ -108,13 +123,26 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Construct an LSLLibraryDataProvider an initialize <see cref="ActiveSubsets" /> from the constructor parameter
-        ///     'activeSubsets'.
-        ///     Optionally enable <see cref="LiveFiltering" /> mode using the 'liveFiltering' parameter.
+        ///     Construct an LSLLibraryDataProvider an initialize <see cref="ActiveSubsets" /> from the constructor parameter 'activeSubsets'.
+        ///     <see cref="LiveFiltering"/> will be enabled by default.
+        /// </summary>
+        /// <param name="activeSubsets">The subsets to add to the <see cref="ActiveSubsets" /> collection upon construction.</param>
+        public LSLLibraryDataProvider(IEnumerable<string> activeSubsets)
+        {
+            LiveFiltering = true;
+            ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
+
+            ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
+        }
+
+
+        /// <summary>
+        ///     Construct an LSLLibraryDataProvider an initialize <see cref="ActiveSubsets" /> from the constructor parameter 'activeSubsets'.
+        ///     Optionally enable <see cref="LiveFiltering" /> mode using the <paramref name="liveFiltering"/> parameter.
         /// </summary>
         /// <param name="activeSubsets">The subsets to add to the <see cref="ActiveSubsets" /> collection upon construction.</param>
         /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering" /> mode.  Default value is true.</param>
-        public LSLLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering = true)
+        public LSLLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering)
         {
             LiveFiltering = liveFiltering;
             ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
@@ -128,9 +156,10 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     If this is false, functions, constants and events which do not
-        ///     belong to subsets in ActiveSubsets will be discarded upon adding
-        ///     them to the object
+        ///     If this is <c>false</c>, functions, constants and events which do not belong to subsets in <see cref="ActiveSubsets"/>
+        ///     will be discarded upon adding them to the object.
+        /// 
+        ///     This properties default value is <c>true</c> when not specified in the constructor.
         /// </summary>
         public bool LiveFiltering { get; private set; }
 

@@ -52,7 +52,7 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Internal
+namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLLabelCollectorPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {

@@ -50,7 +50,7 @@ using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Internal
+namespace LibLSLCC.CodeValidator
 {
     internal static class LSLAntlrTreeTools
     {

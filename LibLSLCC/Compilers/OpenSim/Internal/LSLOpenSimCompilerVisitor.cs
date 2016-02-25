@@ -51,7 +51,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Internal;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.CodeValidator.Visitor;
@@ -62,7 +61,7 @@ using LibLSLCC.Utility.ListParser;
 
 #endregion
 
-namespace LibLSLCC.Compilers.OpenSim.Internal
+namespace LibLSLCC.Compilers.OpenSim
 {
     // ReSharper disable InconsistentNaming
     internal sealed class LSLOpenSimCompilerVisitor : LSLValidatorNodeVisitor<bool>

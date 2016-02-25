@@ -60,22 +60,21 @@ namespace LibLSLCC.LibraryData
     ///     LibLSLCC.CodeValidator.Components.LibraryDataProvider.LSLEmbeddedLibraryDataProvider.xml
     ///     to define its data
     /// </summary>
-    public class LSLEmbeddedLibraryDataProvider : LSLXmlLibraryDataProvider
+    sealed public class LSLEmbeddedLibraryDataProvider : LSLXmlLibraryDataProvider
     {
         private LSLLibraryBaseData _liveFilteringBaseLibraryData;
         private LSLLibraryDataAdditions _liveFilteringLibraryDataAdditions;
 
 
         /// <summary>
-        ///     Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
+        ///     Constructs an <see cref="LSLEmbeddedLibraryDataProvider"/> using the library data embedded in LibLSLCC's assembly.
         /// </summary>
         /// <param name="liveFiltering">
         ///     If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query
-        ///     results will change.
-        ///     Otherwise if this is false, only subsets present upon construction will be loaded.
+        ///     results will change.  Otherwise if this is false, only subsets present upon construction will be loaded.
         /// </param>
         /// <param name="libraryBaseData">The base library data to use.</param>
-        /// <param name="dataAdditions">Library data additions.</param>
+        /// <param name="dataAdditions">Addititional library data to import (flags).</param>
         /// <param name="loadOptions">
         ///     Optionally specifies what type's of library definitions will be loaded, defaults to
         ///     <see cref="LSLLibraryDataLoadOptions.All" />
@@ -93,13 +92,55 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file.
+        ///     Constructs an <see cref="LSLEmbeddedLibraryDataProvider"/> using the library data embedded in LibLSLCC's assembly.
+        ///     <see cref="LSLLibraryDataProvider.LiveFiltering"/> will be enabled by default.
+        /// </summary>
+        /// <param name="libraryBaseData">The base library data to use.</param>
+        /// <param name="dataAdditions">Addititional library data to import (flags).</param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///     If the embedded library data could not be loaded from the assembly
+        ///     manifest.
+        /// </exception>
+        public LSLEmbeddedLibraryDataProvider(LSLLibraryBaseData libraryBaseData,
+            LSLLibraryDataAdditions dataAdditions,
+            LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All)
+            : this(GetSubsets(libraryBaseData, dataAdditions), loadOptions)
+        {
+        }
+
+
+
+        /// <summary>
+        ///     Constructs an <see cref="LSLEmbeddedLibraryDataProvider"/> using the library data embedded in LibLSLCC's assembly.
+        ///     <see cref="LSLLibraryDataProvider.LiveFiltering"/> will be enabled by default.
+        /// </summary>
+        /// <param name="activeSubsets">The library subsets to utilize.</param>
+        /// <param name="loadOptions">
+        ///     Optionally specifies what type's of library definitions will be loaded, defaults to
+        ///     <see cref="LSLLibraryDataLoadOptions.All" />
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///     If the embedded library data could not be loaded from the assembly
+        ///     manifest.
+        /// </exception>
+        public LSLEmbeddedLibraryDataProvider(IEnumerable<string> activeSubsets, LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) :
+            this(activeSubsets, true, loadOptions)
+        {
+
+        }
+
+
+        /// <summary>
+        ///     Constructs an <see cref="LSLEmbeddedLibraryDataProvider"/> using the library data embedded in LibLSLCC's assembly.
         /// </summary>
         /// <param name="activeSubsets">The library subsets to utilize.</param>
         /// <param name="liveFiltering">
         ///     If this is set to true, all subsets will be loaded into memory. And when you change the active subsets query
-        ///     results will change.
-        ///     Otherwise if this is false, only subsets present upon construction will be loaded.
+        ///     results will change.  Otherwise if this is false, only subsets present upon construction will be loaded.
         /// </param>
         /// <param name="loadOptions">
         ///     Optionally specifies what type's of library definitions will be loaded, defaults to
@@ -128,15 +169,17 @@ namespace LibLSLCC.LibraryData
         }
 
 
+
+
         /// <summary>
-        ///     Constructs an LSLEmbeddedLibraryDataProvider using the embedded LSLEmbeddedLibraryDataProvider.xml file in live
-        ///     filtering mode with no active subsets set.
+        ///     Constructs an <see cref="LSLEmbeddedLibraryDataProvider"/> using the library data embedded in LibLSLCC's assembly.
+        ///     <see cref="LSLLibraryDataProvider.LiveFiltering"/> will be enabled by default.
         /// </summary>
         /// <exception cref="InvalidOperationException">
         ///     If the embedded library data could not be loaded from the assembly
         ///     manifest.
         /// </exception>
-        public LSLEmbeddedLibraryDataProvider() : base(true)
+        public LSLEmbeddedLibraryDataProvider()
         {
             using (var libraryData = GetDefaultLibraryDataStream())
             {
@@ -151,6 +194,7 @@ namespace LibLSLCC.LibraryData
                 FillFromXml(reader);
             }
         }
+
 
 
         /// <summary>

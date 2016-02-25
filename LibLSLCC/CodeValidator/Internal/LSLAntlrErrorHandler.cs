@@ -53,7 +53,7 @@ using LibLSLCC.CodeValidator.Strategies;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Internal
+namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLAntlrErrorHandler : IAntlrErrorListener<IToken>
     {

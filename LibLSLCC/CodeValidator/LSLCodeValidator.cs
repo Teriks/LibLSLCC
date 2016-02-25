@@ -48,7 +48,6 @@
 using System;
 using System.IO;
 using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.Internal;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Parser;
@@ -132,23 +131,24 @@ namespace LibLSLCC.CodeValidator
         public ILSLCodeValidatorStrategies ValidatorStrategies { get; private set; }
 
         /// <summary>
-        ///     Set to true if the last call to validate generated syntax warnings
+        ///     Set to true if the last call to <see cref="Validate"/> generated syntax warnings.
         /// </summary>
         public bool HasSyntaxWarnings { get; private set; }
 
         /// <summary>
-        ///     Set to true if the last call to validate revealed syntax errors and returned null
+        ///     Set to <c>true</c> if the last call to <see cref="Validate"/> generated syntax errors.
+        ///     <see cref="Validate"/> will return <c>null</c> upon encountering syntax errors as well.
         /// </summary>
         public bool HasSyntaxErrors { get; private set; }
 
 
         /// <summary>
-        ///     Validates the code content of a stream and returns the top of the compilation unit syntax tree as a
-        ///     <see cref="LSLCompilationUnitNode" /> object, if parsing resulted in syntax errors the result will be null
+        ///     Validates the code content of a TextReader and returns the top of the compilation unit syntax tree.
+        ///     If parsing resulted in syntax errors the result will be <c>null</c>.
         /// </summary>
-        /// <param name="stream">The TextReader to parse code from</param>
-        /// <returns>Top level node of an LSL syntax tree</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <c>null</c>.</exception>
+        /// <param name="stream">The TextReader to parse code from.</param>
+        /// <returns>Top level node of an LSL syntax tree.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <see langword="null" />.</exception>
         public ILSLCompilationUnitNode Validate(TextReader stream)
         {
             if (stream == null)
