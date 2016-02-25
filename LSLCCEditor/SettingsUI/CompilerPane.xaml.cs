@@ -45,14 +45,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Serialization;
-using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.CSharp;
 using LibLSLCC.Settings;
-using LSLCCEditor.EditControl;
 using LSLCCEditor.Settings;
 using LSLCCEditor.Utility.Validation;
 

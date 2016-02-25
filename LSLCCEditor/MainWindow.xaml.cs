@@ -60,7 +60,6 @@ using System.Windows.Media;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Nodes;
 using LibLSLCC.CodeValidator.Strategies;
-using LibLSLCC.Compilers;
 using LibLSLCC.Compilers.OpenSim;
 using LibLSLCC.Formatter;
 using LibLSLCC.LibraryData;

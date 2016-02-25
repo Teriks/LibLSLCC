@@ -42,7 +42,6 @@
 #endregion
 #region Imports
 
-using System;
 using System.Windows;
 using System.Windows.Threading;
 using LibLSLCC.Settings;

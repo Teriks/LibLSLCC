@@ -47,6 +47,7 @@
 
 using System;
 using System.IO;
+using System.Media;
 using System.Windows;
 using LSLCCEditor.Styles;
 using Microsoft.Win32;
@@ -100,7 +101,7 @@ namespace LSLCCEditor
 
         private void ThisOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            System.Media.SystemSounds.Hand.Play();
+            SystemSounds.Hand.Play();
         }
 
 
