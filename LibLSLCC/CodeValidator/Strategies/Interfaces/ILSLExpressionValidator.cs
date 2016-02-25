@@ -45,13 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
+
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components
+namespace LibLSLCC.CodeValidator.Strategies
 {
     /// <summary>
     ///     Represents the result of an expression/type validation preformed by an ILSLExpressionValidator object

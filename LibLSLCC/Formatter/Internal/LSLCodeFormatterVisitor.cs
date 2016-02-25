@@ -50,16 +50,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.Formatter.Visitor
+namespace LibLSLCC.Formatter.Internal
 {
     /// <summary>
     ///     An LSL Syntax tree visitor that formats code.

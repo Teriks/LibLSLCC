@@ -45,12 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Collections;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents a flat code segment, it is basically a write only collection for

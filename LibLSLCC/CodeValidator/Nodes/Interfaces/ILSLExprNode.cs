@@ -43,7 +43,7 @@
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes.Interfaces
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST base interface for syntax tree expression nodes.

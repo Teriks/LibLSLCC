@@ -45,11 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Enums;
+
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     A code segment type for housing a range of statement nodes that are considered to be dead.

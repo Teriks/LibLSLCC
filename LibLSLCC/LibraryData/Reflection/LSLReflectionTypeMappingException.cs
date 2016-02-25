@@ -48,7 +48,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator;
 
 #endregion
 

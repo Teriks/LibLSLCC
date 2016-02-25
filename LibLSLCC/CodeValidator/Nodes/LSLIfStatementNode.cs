@@ -48,14 +48,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Default <see cref="ILSLIfStatementNode" /> implementation used by <see cref="LSLCodeValidator" />

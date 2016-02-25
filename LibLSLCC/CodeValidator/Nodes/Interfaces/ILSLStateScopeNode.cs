@@ -45,12 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes.Interfaces
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST node interface for code state blocks.

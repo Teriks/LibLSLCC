@@ -47,10 +47,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
@@ -2162,7 +2162,7 @@ namespace LibLSLCC.AutoComplete
         }
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
+        [SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
         [Serializable]
         private class StackImbalanceException : Exception
         {

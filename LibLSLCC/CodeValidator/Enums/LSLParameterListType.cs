@@ -45,11 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
+
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Enums
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents a parameter list type of a <see cref="ILSLParameterListNode" />

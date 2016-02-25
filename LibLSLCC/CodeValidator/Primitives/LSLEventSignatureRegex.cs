@@ -49,12 +49,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Regex tools for parsing <see cref="LSLEventSignature " /> objects from strings.

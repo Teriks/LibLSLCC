@@ -46,15 +46,12 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Default <see cref="ILSLSemicolonStatement" /> implementation used by <see cref="LSLCodeValidator" />

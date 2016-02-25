@@ -49,8 +49,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 

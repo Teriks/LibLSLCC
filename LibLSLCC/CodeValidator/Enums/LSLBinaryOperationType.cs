@@ -49,7 +49,7 @@ using System;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Enums
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Describes different types of binary operations.

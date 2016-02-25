@@ -51,7 +51,7 @@ using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Thrown when <see cref="LSLLibraryConstantSignature" />, <see cref="LSLFunctionSignature" />,

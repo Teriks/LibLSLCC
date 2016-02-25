@@ -18,8 +18,7 @@ using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 
 #pragma warning disable 0162

@@ -43,7 +43,7 @@
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Enums
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Describes the cause of dead code

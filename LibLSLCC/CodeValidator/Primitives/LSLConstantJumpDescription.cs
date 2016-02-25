@@ -45,12 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
+
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents a statement that causes a jump to happen in a constant manner.

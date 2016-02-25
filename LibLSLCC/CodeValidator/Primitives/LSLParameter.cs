@@ -46,12 +46,11 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents a basic parameter that belongs to either an event handler or function signature.

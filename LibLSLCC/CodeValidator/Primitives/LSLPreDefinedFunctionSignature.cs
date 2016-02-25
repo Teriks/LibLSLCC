@@ -46,12 +46,10 @@
 #region Imports
 
 using System.Linq;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents a function signature that was parsed during the pre-pass that occurs during code validation.

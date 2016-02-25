@@ -50,7 +50,7 @@ using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Serialization;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator;
 
 #endregion
 

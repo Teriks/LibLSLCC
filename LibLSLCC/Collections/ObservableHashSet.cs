@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ObservableHashSet.cs
 // 
@@ -39,7 +40,10 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
@@ -47,36 +51,38 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
+#endregion
+
 namespace LibLSLCC.Collections
 {
     /// <summary>
-    /// Observable and bindable HashSet
+    ///     Observable and bindable HashSet
     /// </summary>
-    /// <seealso cref="IObservableHashSetItem"/>
+    /// <seealso cref="IObservableHashSetItem" />
     /// <typeparam name="T">The item type the hash set holds.</typeparam>
     public class ObservableHashSet<T> : ObservableCollection<T>, ICloneable
     {
-
-        private readonly HashSet<T>  _hashSet;
+        private readonly HashSet<T> _hashSet;
 
 
         /// <summary>
-        /// Construct an empty ObservableHashSet
+        ///     Construct an empty ObservableHashSet
         /// </summary>
         public ObservableHashSet()
         {
             _hashSet = new HashSet<T>();
         }
 
+
         /// <summary>
-        /// Construct an ObservableHashSet using the elements from an <see cref="IEnumerable{T}"/>
+        ///     Construct an ObservableHashSet using the elements from an <see cref="IEnumerable{T}" />
         /// </summary>
-        /// <param name="collection">The <see cref="IEnumerable{T}"/> to draw elements from.</param>
-        public ObservableHashSet(IEnumerable<T> collection )
+        /// <param name="collection">The <see cref="IEnumerable{T}" /> to draw elements from.</param>
+        public ObservableHashSet(IEnumerable<T> collection)
         {
             _hashSet = new HashSet<T>();
 
-            foreach (var item in collection.Where(x=>!_hashSet.Contains(x)))
+            foreach (var item in collection.Where(x => !_hashSet.Contains(x)))
             {
                 Add(item);
             }
@@ -84,11 +90,19 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Removes all items from the collection.
+        ///     Creates a shallow copy of this ObservableHashSet.
+        /// </summary>
+        public virtual object Clone()
+        {
+            return new ObservableHashSet<T>(_hashSet);
+        }
+
+
+        /// <summary>
+        ///     Removes all items from the collection.
         /// </summary>
         protected override void ClearItems()
         {
-
             foreach (var item in _hashSet)
             {
                 var observable = item as IObservableHashSetItem;
@@ -106,7 +120,7 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Removes the item at the specified index of the collection.
+        ///     Removes the item at the specified index of the collection.
         /// </summary>
         /// <param name="index">The zero-based index of the element to remove.</param>
         protected override void RemoveItem(int index)
@@ -127,9 +141,10 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Inserts an item into the collection at the specified index.
+        ///     Inserts an item into the collection at the specified index.
         /// </summary>
-        /// <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param><param name="item">The object to insert.</param>
+        /// <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
+        /// <param name="item">The object to insert.</param>
         protected override void InsertItem(int index, T item)
         {
             if (_hashSet.Contains(item)) return;
@@ -148,9 +163,10 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        /// Replaces the element at the specified index.
+        ///     Replaces the element at the specified index.
         /// </summary>
-        /// <param name="index">The zero-based index of the element to replace.</param><param name="item">The new value for the element at the specified index.</param>
+        /// <param name="index">The zero-based index of the element to replace.</param>
+        /// <param name="item">The new value for the element at the specified index.</param>
         protected override void SetItem(int index, T item)
         {
             if (_hashSet.Contains(item)) return;
@@ -165,30 +181,22 @@ namespace LibLSLCC.Collections
             _hashSet.Add(item);
 
 
-
-
             base.SetItem(index, item);
         }
 
-        private static void ObservableOnPropertyChanging(object sender, PropertyChangingEventArgs propertyChangingEventArgs)
+
+        private static void ObservableOnPropertyChanging(object sender,
+            PropertyChangingEventArgs propertyChangingEventArgs)
         {
             var item = sender as IObservableHashSetItem;
 
             if (item != null && item.HashEqualityPropertyNames.Contains(propertyChangingEventArgs.PropertyName))
             {
                 throw new InvalidOperationException(
-                    string.Format("Cannot change property '{0}' of type '{1}' when the object belongs to an ObservableHashSet, as it will effect the hash value of the object.",
-                    propertyChangingEventArgs.PropertyName, item.GetType().Name));
+                    string.Format(
+                        "Cannot change property '{0}' of type '{1}' when the object belongs to an ObservableHashSet, as it will effect the hash value of the object.",
+                        propertyChangingEventArgs.PropertyName, item.GetType().Name));
             }
-        }
-
-
-        /// <summary>
-        /// Creates a shallow copy of this ObservableHashSet.
-        /// </summary>
-        public virtual object Clone()
-        {
-            return new ObservableHashSet<T>(_hashSet);
         }
     }
 }

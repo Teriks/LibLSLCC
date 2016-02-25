@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: ClassAccessibilityLevel.cs
 // 
@@ -39,45 +40,53 @@
 // ============================================================
 // 
 // 
+
 #endregion
 
+#region Imports
+
 using System;
+
+#endregion
 
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Represents the accessibility level of a CSharp class.
+    ///     Represents the accessibility level of a CSharp class.
     /// </summary>
     public enum ClassAccessibilityLevel
     {
         /// <summary>
-        /// default accessibility
+        ///     default accessibility
         /// </summary>
         Default,
 
         /// <summary>
-        /// internal accessibility
+        ///     internal accessibility
         /// </summary>
         Internal,
 
         /// <summary>
-        /// public accessibility
+        ///     public accessibility
         /// </summary>
         Public,
     }
 
     /// <summary>
-    /// Extension methods for <see cref="ClassAccessibilityLevel"/>.
+    ///     Extension methods for <see cref="ClassAccessibilityLevel" />.
     /// </summary>
     public static class ClassAccessibilityLevelExtensions
     {
         /// <summary>
-        /// Converts <see cref="ClassAccessibilityLevel"/> to its corresponding CSharp keyword.
+        ///     Converts <see cref="ClassAccessibilityLevel" /> to its corresponding CSharp keyword.
         /// </summary>
-        /// <param name="value">The <see cref="ClassAccessibilityLevel"/> to convert.</param>
+        /// <param name="value">The <see cref="ClassAccessibilityLevel" /> to convert.</param>
         /// <param name="addTrailingSpace">if set to <c>true</c>, add a trailing space to the converted string when its not empty.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">If the given enum value is not convertible to a string (will not occur).</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        ///     If the given enum value is not convertible to a string (will not
+        ///     occur).
+        /// </exception>
         public static string ToCSharpKeyword(this ClassAccessibilityLevel value, bool addTrailingSpace = false)
         {
             string spacer = addTrailingSpace ? " " : "";

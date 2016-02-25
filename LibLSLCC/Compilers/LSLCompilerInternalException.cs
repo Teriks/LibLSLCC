@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLCompilerInternalException.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -50,7 +53,7 @@ using System.Runtime.Serialization;
 namespace LibLSLCC.Compilers
 {
     /// <summary>
-    /// Exception for internal compiler errors.
+    ///     Exception for internal compiler errors.
     /// </summary>
     [Serializable]
     public class LSLCompilerInternalException : Exception
@@ -63,7 +66,7 @@ namespace LibLSLCC.Compilers
         //
 
         /// <summary>
-        /// Default exception constructor.
+        ///     Default exception constructor.
         /// </summary>
         public LSLCompilerInternalException()
         {
@@ -71,15 +74,16 @@ namespace LibLSLCC.Compilers
 
 
         /// <summary>
-        /// Construct the exception with a message.
+        ///     Construct the exception with a message.
         /// </summary>
         /// <param name="message">The message to construct the exception with.</param>
         public LSLCompilerInternalException(string message) : base(message)
         {
         }
 
+
         /// <summary>
-        /// Construct the exception with a message and inner exception.
+        ///     Construct the exception with a message and inner exception.
         /// </summary>
         /// <param name="message">The message to construct the exception with.</param>
         /// <param name="inner">The inner exception to construct the exception with.</param>
@@ -87,8 +91,9 @@ namespace LibLSLCC.Compilers
         {
         }
 
+
         /// <summary>
-        /// Serializable constructor.
+        ///     Serializable constructor.
         /// </summary>
         /// <param name="info">SerializationInfo.</param>
         /// <param name="context">StreamingContext.</param>

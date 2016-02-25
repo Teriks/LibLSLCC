@@ -47,16 +47,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Collections;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Internal
 {
     internal interface ILSLTreePreePass
     {

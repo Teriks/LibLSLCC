@@ -1,7 +1,7 @@
 ﻿#region FileInfo
 
 // 
-// File: LSLAntlrErrorHandler.cs
+// File: Utility.cs
 // 
 // 
 // ============================================================
@@ -45,61 +45,23 @@
 
 #region Imports
 
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Primitives;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Internal
 {
-    internal sealed class LSLAntlrErrorHandler : IAntlrErrorListener<IToken>
+    internal static class Utility
     {
-        private static readonly Regex NonLValueAssignmentError =
-            new Regex("mismatched input '[*+-/%]?=' expecting {(.*?)}");
-
-        private readonly ILSLSyntaxErrorListener _errorListener;
-
-
-        public LSLAntlrErrorHandler(ILSLSyntaxErrorListener errorListener)
+        public static bool AnyNull(params object[] vars)
         {
-            _errorListener = errorListener;
+            return vars.Any(v => v == null);
         }
 
 
-        public bool HasErrors { get; private set; }
-
-
-        public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine,
-            string msg,
-            RecognitionException e)
+        public static bool EqualsOneOf(this object i, params object[] vars)
         {
-            HasErrors = true;
-
-            var m = NonLValueAssignmentError.Match(msg);
-
-            var expected = new HashSet<string>(m.Groups[1].ToString().Split(',').Select(x => x.Trim('\'', ' ')));
-
-            if (m.Success && expected.Contains("*") && !(
-                expected.Contains("TYPE")
-                || expected.Contains("ID")
-                || expected.Contains("INT")
-                || expected.Contains("FLOAT")
-                || expected.Contains("HEX_LITERAL")
-                || expected.Contains("QUOTED_STRING")
-                ))
-            {
-                _errorListener.AssignmentToNonassignableExpression(new LSLSourceCodeRange(offendingSymbol),
-                    offendingSymbol.Text);
-            }
-            else
-            {
-                _errorListener.GrammarLevelParserSyntaxError(line, charPositionInLine,
-                    new LSLSourceCodeRange(offendingSymbol), offendingSymbol.Text, msg);
-            }
+            return vars.Contains(i);
         }
     }
 }

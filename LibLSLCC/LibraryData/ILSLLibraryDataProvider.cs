@@ -47,7 +47,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.CodeValidator.Components;
+using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Collections;
 
 #endregion

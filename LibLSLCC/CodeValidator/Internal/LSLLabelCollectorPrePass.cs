@@ -46,14 +46,12 @@
 #region Imports
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Internal
 {
     internal sealed class LSLLabelCollectorPrePass : LSLBaseVisitor<bool>, ILSLTreePreePass
     {

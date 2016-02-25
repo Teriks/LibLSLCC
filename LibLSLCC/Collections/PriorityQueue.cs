@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: PriorityQueue.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -61,6 +64,21 @@ namespace LibLSLCC.Collections
     {
         private readonly List<KeyValuePair<TPriority, TValue>> _baseHeap;
         private readonly IComparer<TPriority> _comparer;
+
+
+        /// <summary>
+        ///     Create a shallow clone of this priority queue.
+        /// </summary>
+        /// <returns>A shallow clone of this priority queue.</returns>
+        public virtual object Clone()
+        {
+            var instance = new PriorityQueue<TPriority, TValue>(_comparer);
+            foreach (var item in _baseHeap)
+            {
+                instance._baseHeap.Add(item);
+            }
+            return instance;
+        }
 
         #region Constructors
 
@@ -131,7 +149,6 @@ namespace LibLSLCC.Collections
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         public PriorityQueue(IEnumerable<KeyValuePair<TPriority, TValue>> data, IComparer<TPriority> comparer)
         {
-
             if (data == null)
             {
                 throw new ArgumentNullException("data");
@@ -507,20 +524,5 @@ namespace LibLSLCC.Collections
         }
 
         #endregion
-
-
-        /// <summary>
-        /// Create a shallow clone of this priority queue.
-        /// </summary>
-        /// <returns>A shallow clone of this priority queue.</returns>
-        public virtual object Clone()
-        {
-            var instance = new PriorityQueue<TPriority, TValue>(_comparer);
-            foreach (var item in _baseHeap)
-            {
-                instance._baseHeap.Add(item);
-            }
-            return instance;
-        }
     }
 }

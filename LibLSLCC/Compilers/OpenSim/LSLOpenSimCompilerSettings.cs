@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLOpenSimCompilerSettings.cs
 // 
@@ -39,60 +40,68 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Settings;
 
+#endregion
+
 namespace LibLSLCC.Compilers.OpenSim
 {
     /// <summary>
-    /// Settings for the <see cref="LSLOpenSimCompiler"/> class.
+    ///     Settings for the <see cref="LSLOpenSimCompiler" /> class.
     /// </summary>
     public class LSLOpenSimCompilerSettings : SettingsBaseClass<LSLOpenSimCompilerSettings>
         // ReSharper restore InconsistentNaming
     {
         private CSharpFunctionCall _coOpTerminationFunctionCall = "opensim_reserved_CheckForCoopTermination()";
-        private bool _insertCoOpTerminationCalls;
         private bool _generateClass;
-        private CSharpNamespace _generatedClassNamespace;
-        private CSharpClassDeclarationName _generatedClassName;
-        private CSharpInheritanceList _generatedInheritanceList;
-        private CSharpConstructorSignature _generatedConstructorSignature;
-        private MemberAccessibilityLevel _generatedConstructorAccessibility;
-        private ObservableSettingsHashSet<CSharpNamespace> _generatedNamespaceImports = new ObservableSettingsHashSet<CSharpNamespace>();
-        private string _scriptHeader;
         private ClassAccessibilityLevel _generatedClassAccessibility;
+        private CSharpClassDeclarationName _generatedClassName;
+        private CSharpNamespace _generatedClassNamespace;
+        private MemberAccessibilityLevel _generatedConstructorAccessibility;
+        private CSharpConstructorSignature _generatedConstructorSignature;
+        private CSharpInheritanceList _generatedInheritanceList;
+
+        private ObservableSettingsHashSet<CSharpNamespace> _generatedNamespaceImports =
+            new ObservableSettingsHashSet<CSharpNamespace>();
+
+        private bool _insertCoOpTerminationCalls;
+        private string _scriptHeader;
 
 
         /// <summary>
-        /// Construct an <see cref="LSLOpenSimCompilerSettings"/> object that uses a given <see cref="ILSLLibraryDataProvider"/> implementation
-        /// to provide library data to the compiler.
+        ///     Construct an <see cref="LSLOpenSimCompilerSettings" /> object that uses a given
+        ///     <see cref="ILSLLibraryDataProvider" /> implementation
+        ///     to provide library data to the compiler.
         /// </summary>
         // ReSharper disable once EmptyConstructor
         public LSLOpenSimCompilerSettings()
         {
-
         }
 
+
         /// <summary>
-        /// The call signature to use for co-op termination calls when InsertCoOpTerminationCalls is set to true
-        /// it defaults to "opensim_reserved_CheckForCoopTermination()"
-        /// 
-        /// Note that you should not add a semi-colon to the end of the signature string.
+        ///     The call signature to use for co-op termination calls when InsertCoOpTerminationCalls is set to true
+        ///     it defaults to "opensim_reserved_CheckForCoopTermination()"
+        ///     Note that you should not add a semi-colon to the end of the signature string.
         /// </summary>
         public CSharpFunctionCall CoOpTerminationFunctionCall
         {
             get { return _coOpTerminationFunctionCall; }
-            set { SetField(ref _coOpTerminationFunctionCall,value, "CoOpTerminationFunctionCall"); }
+            set { SetField(ref _coOpTerminationFunctionCall, value, "CoOpTerminationFunctionCall"); }
         }
 
         /// <summary>
-        /// If this is set to true, the function signature string specified by CoOpTerminationFunctionCall will be inserted
-        /// (called) at the top of user defined functions, state events, for loops, while loops, do while loops and immediately
-        /// after defined labels in generated code.
+        ///     If this is set to true, the function signature string specified by CoOpTerminationFunctionCall will be inserted
+        ///     (called) at the top of user defined functions, state events, for loops, while loops, do while loops and immediately
+        ///     after defined labels in generated code.
         /// </summary>
         public bool InsertCoOpTerminationCalls
         {
@@ -101,7 +110,7 @@ namespace LibLSLCC.Compilers.OpenSim
         }
 
         /// <summary>
-        /// Whether or not to generate a class around the generated code, defaults to false.
+        ///     Whether or not to generate a class around the generated code, defaults to false.
         /// </summary>
         public bool GenerateClass
         {
@@ -110,7 +119,7 @@ namespace LibLSLCC.Compilers.OpenSim
         }
 
         /// <summary>
-        /// This set should contain all the namespace's that the generated code should import
+        ///     This set should contain all the namespace's that the generated code should import
         /// </summary>
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ObservableSettingsHashSet<CSharpNamespace> GeneratedNamespaceImports
@@ -120,7 +129,7 @@ namespace LibLSLCC.Compilers.OpenSim
         }
 
         /// <summary>
-        /// The name of the namespace the class should reside in if GenerateClass is set to true.
+        ///     The name of the namespace the class should reside in if GenerateClass is set to true.
         /// </summary>
         public CSharpNamespace GeneratedClassNamespace
         {
@@ -129,7 +138,7 @@ namespace LibLSLCC.Compilers.OpenSim
         }
 
         /// <summary>
-        /// The name of the class around the generated code if GeneratedClass is set to true.
+        ///     The name of the class around the generated code if GeneratedClass is set to true.
         /// </summary>
         public CSharpClassDeclarationName GeneratedClassName
         {
@@ -138,8 +147,9 @@ namespace LibLSLCC.Compilers.OpenSim
         }
 
         /// <summary>
-        /// The name of the class the generated class should inherit from if GenerateClass is set to true, or null/empty if you don't want the
-        /// generated class to derive from anything.
+        ///     The name of the class the generated class should inherit from if GenerateClass is set to true, or null/empty if you
+        ///     don't want the
+        ///     generated class to derive from anything.
         /// </summary>
         public CSharpInheritanceList GeneratedInheritanceList
         {
@@ -147,24 +157,20 @@ namespace LibLSLCC.Compilers.OpenSim
             set { SetField(ref _generatedInheritanceList, value, "GeneratedInheritanceList"); }
         }
 
-
         /// <summary>
-        /// The constructor signature to be inserted into the generated class if GenerateClass is set to true, this string is copied verbatim.
-        /// example: (int parameter) : base(parameter)
+        ///     The constructor signature to be inserted into the generated class if GenerateClass is set to true, this string is
+        ///     copied verbatim.
+        ///     example: (int parameter) : base(parameter)
         /// </summary>
         public CSharpConstructorSignature GeneratedConstructorSignature
         {
             get { return _generatedConstructorSignature; }
-            set
-            {
-                SetField(ref _generatedConstructorSignature, value, "GeneratedConstructorSignature");
-            }
+            set { SetField(ref _generatedConstructorSignature, value, "GeneratedConstructorSignature"); }
         }
 
-
         /// <summary>
-        /// The accessibility level of the class if GenerateClass is set to true.
-        /// defaults to <see cref="ClassAccessibilityLevel.Default"/>.
+        ///     The accessibility level of the class if GenerateClass is set to true.
+        ///     defaults to <see cref="ClassAccessibilityLevel.Default" />.
         /// </summary>
         public ClassAccessibilityLevel GeneratedClassAccessibility
         {
@@ -172,10 +178,10 @@ namespace LibLSLCC.Compilers.OpenSim
             set { SetField(ref _generatedClassAccessibility, value, "GeneratedClassAccessibility"); }
         }
 
-
         /// <summary>
-        /// The accessibility of the constructor signature to be inserted into the generated class if GenerateClass is set to true.
-        /// defaults to <see cref="MemberAccessibilityLevel.Public"/>.
+        ///     The accessibility of the constructor signature to be inserted into the generated class if GenerateClass is set to
+        ///     true.
+        ///     defaults to <see cref="MemberAccessibilityLevel.Public" />.
         /// </summary>
         public MemberAccessibilityLevel GeneratedConstructorAccessibility
         {
@@ -183,10 +189,9 @@ namespace LibLSLCC.Compilers.OpenSim
             set { SetField(ref _generatedConstructorAccessibility, value, "GeneratedConstructorAccessibility"); }
         }
 
-
         /// <summary>
-        /// String content to be placed at the very beginning of the generated script, use this to place comments.
-        /// If its null or empty then the compiler ignores it.
+        ///     String content to be placed at the very beginning of the generated script, use this to place comments.
+        ///     If its null or empty then the compiler ignores it.
         /// </summary>
         public string ScriptHeader
         {
@@ -196,11 +201,14 @@ namespace LibLSLCC.Compilers.OpenSim
 
 
         /// <summary>
-        /// Create a settings object that targets OpenSim's server side runtime.  The settings object will be setup to generate a class named
-        /// "XEngineScript" that derives from "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase" and contains all the generated code.
-        /// This class will be put in the namespace "SecondLife" and "OpenSim.Region.ScriptEngine.Shared" will be added to the namespace imports.
+        ///     Create a settings object that targets OpenSim's server side runtime.  The settings object will be setup to generate
+        ///     a class named
+        ///     "XEngineScript" that derives from "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase" and contains
+        ///     all the generated code.
+        ///     This class will be put in the namespace "SecondLife" and "OpenSim.Region.ScriptEngine.Shared" will be added to the
+        ///     namespace imports.
         /// </summary>
-        /// <returns>The generated <see cref="LSLOpenSimCompilerSettings"/> settings object.</returns>
+        /// <returns>The generated <see cref="LSLOpenSimCompilerSettings" /> settings object.</returns>
         public static LSLOpenSimCompilerSettings OpenSimServerSideDefault()
         {
             var compilerSettings = new LSLOpenSimCompilerSettings()
@@ -219,12 +227,14 @@ namespace LibLSLCC.Compilers.OpenSim
             return compilerSettings;
         }
 
+
         /// <summary>
-        /// Create a settings object that targets LibLSLCC's LSL Runtime.  (Which is not implemented yet)
-        /// The settings object will be setup to generate a class named "LSLScript" that derives from "LSLScriptBase".
-        /// This class will be put into the namespace "SecondLife" and "LibLSLCC.LSLRuntime" will be added to the namespace imports.
+        ///     Create a settings object that targets LibLSLCC's LSL Runtime.  (Which is not implemented yet)
+        ///     The settings object will be setup to generate a class named "LSLScript" that derives from "LSLScriptBase".
+        ///     This class will be put into the namespace "SecondLife" and "LibLSLCC.LSLRuntime" will be added to the namespace
+        ///     imports.
         /// </summary>
-        /// <returns>The generated <see cref="LSLOpenSimCompilerSettings"/> settings object.</returns>
+        /// <returns>The generated <see cref="LSLOpenSimCompilerSettings" /> settings object.</returns>
         public static LSLOpenSimCompilerSettings LibLSLCCRuntimeDefault()
         {
             var compilerSettings = new LSLOpenSimCompilerSettings()
@@ -244,16 +254,16 @@ namespace LibLSLCC.Compilers.OpenSim
 
 
         /// <summary>
-        /// Create a settings object that will settings that will make the <see cref="LSLOpenSimCompiler"/> generate code that is up-loadable
-        /// to an OpenSim server via the in viewer editor.  (This only works if the OpenSim server has CSharp scripting enabled)
+        ///     Create a settings object that will settings that will make the <see cref="LSLOpenSimCompiler" /> generate code that
+        ///     is up-loadable
+        ///     to an OpenSim server via the in viewer editor.  (This only works if the OpenSim server has CSharp scripting
+        ///     enabled)
         /// </summary>
-        /// <returns>The generated <see cref="LSLOpenSimCompilerSettings"/> settings object.</returns>
+        /// <returns>The generated <see cref="LSLOpenSimCompilerSettings" /> settings object.</returns>
         public static LSLOpenSimCompilerSettings OpenSimClientUploadable()
         {
             var compilerSettings = new LSLOpenSimCompilerSettings();
             return compilerSettings;
         }
     }
-
-
 }

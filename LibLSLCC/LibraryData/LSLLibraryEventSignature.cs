@@ -51,8 +51,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator;
 
 #endregion
 

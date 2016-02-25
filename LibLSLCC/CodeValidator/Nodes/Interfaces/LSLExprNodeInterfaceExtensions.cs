@@ -45,11 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Enums;
+
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes.Interfaces
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Various extensions for dealing with syntax tree node interfaces.

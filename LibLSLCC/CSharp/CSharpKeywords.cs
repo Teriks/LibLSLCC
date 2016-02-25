@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpKeywords.cs
 // 
@@ -39,20 +40,25 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Static class with utilities for identifying and dealing with CSharp keywords
+    ///     Static class with utilities for identifying and dealing with CSharp keywords
     /// </summary>
     public static class CSharpKeywords
     {
         /// <summary>
-        /// A map of built in type names to their corresponding <see cref="Type"/>.
+        ///     A map of built in type names to their corresponding <see cref="Type" />.
         /// </summary>
         public static readonly IReadOnlyHashMap<string, Type> BuiltInTypeMap = new HashMap<string, Type>()
         {
@@ -73,36 +79,8 @@ namespace LibLSLCC.CSharp
             {"string", typeof (string)}
         };
 
-
-
         /// <summary>
-        /// Converts a CSharp type alias such as 'int', 'float' or object (etc..) to its corresponding <see cref="Type"/>.
-        /// </summary>
-        /// <param name="keywordTypeName">The keyword type alias to convert to an actual <see cref="Type"/>.</param>
-        /// <returns>The type if there is a corresponding <see cref="Type"/>, otherwise <c>null</c>.</returns>
-        public static Type KeywordTypetoType(string keywordTypeName)
-        {
-            Type t;
-            if (BuiltInTypeMap.TryGetValue(keywordTypeName, out t))
-            {
-                return t;
-            }
-            return null;
-        }
-
-
-        /// <summary>
-        /// Determines if a string is a built in type alias reference such as int.
-        /// </summary>
-        /// <returns><c>true</c> if the given string contains a built in type alias name; otherwise <c>false</c>.</returns>
-        public static bool IsTypeAliasKeyword(string keywordTypeName)
-        {
-            return BuiltInTypeMap.ContainsKey(keywordTypeName);
-        }
-
-
-        /// <summary>
-        /// A hashed set of non contextual CSharp keywords/reserved words.
+        ///     A hashed set of non contextual CSharp keywords/reserved words.
         /// </summary>
         public static readonly IReadOnlyHashedSet<string> NonContextualKeywordSet = new HashedSet<string>()
         {
@@ -185,8 +163,35 @@ namespace LibLSLCC.CSharp
             "while"
         };
 
+
         /// <summary>
-        /// Determines whether a string is a non contextual CSharp keyword/reserved word.
+        ///     Converts a CSharp type alias such as 'int', 'float' or object (etc..) to its corresponding <see cref="Type" />.
+        /// </summary>
+        /// <param name="keywordTypeName">The keyword type alias to convert to an actual <see cref="Type" />.</param>
+        /// <returns>The type if there is a corresponding <see cref="Type" />, otherwise <c>null</c>.</returns>
+        public static Type KeywordTypetoType(string keywordTypeName)
+        {
+            Type t;
+            if (BuiltInTypeMap.TryGetValue(keywordTypeName, out t))
+            {
+                return t;
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        ///     Determines if a string is a built in type alias reference such as int.
+        /// </summary>
+        /// <returns><c>true</c> if the given string contains a built in type alias name; otherwise <c>false</c>.</returns>
+        public static bool IsTypeAliasKeyword(string keywordTypeName)
+        {
+            return BuiltInTypeMap.ContainsKey(keywordTypeName);
+        }
+
+
+        /// <summary>
+        ///     Determines whether a string is a non contextual CSharp keyword/reserved word.
         /// </summary>
         /// <param name="str">The string.</param>
         /// <returns></returns>

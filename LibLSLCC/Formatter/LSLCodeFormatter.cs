@@ -47,8 +47,8 @@
 
 using System;
 using System.IO;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.Formatter.Visitor;
+using LibLSLCC.CodeValidator;
+using LibLSLCC.Formatter.Internal;
 
 #endregion
 

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpClassNameValidator.cs
 // 
@@ -39,198 +40,191 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Linq;
 using System.Text;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Returned by <see cref="CSharpParsedTypeValidateTypeCallback"/>, a delegate which
-    /// allows the user to preform additional validation on a parsed class name.
+    ///     Returned by <see cref="CSharpParsedTypeValidateTypeCallback" />, a delegate which
+    ///     allows the user to preform additional validation on a parsed class name.
     /// </summary>
     public class CSharpParsedTypeValidationResult
     {
         /// <summary>
-        /// Gets a value indicating whether additional user validation was successful.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if the additional user validation succeeded; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsValid { get; private set; }
-
-        /// <summary>
-        /// Gets the error message provided by the user if their extra validation failed.
-        /// </summary>
-        /// <value>
-        /// The user provided error message.
-        /// </value>
-        public string ErrorMessage { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the tag, this can be anything the user wants it to be.
-        /// </summary>
-        /// <value>
-        /// The object tag.
-        /// </value>
-        public object Tag { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CSharpParsedTypeValidationResult"/> class with <see cref="IsValid"/> set to <c>true</c>.
+        ///     Initializes a new instance of the <see cref="CSharpParsedTypeValidationResult" /> class with <see cref="IsValid" />
+        ///     set to <c>true</c>.
         /// </summary>
         public CSharpParsedTypeValidationResult()
         {
             IsValid = true;
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSharpParsedTypeValidationResult"/> class with <see cref="IsValid"/> set to <c>false</c>.
+        ///     Initializes a new instance of the <see cref="CSharpParsedTypeValidationResult" /> class with <see cref="IsValid" />
+        ///     set to <c>false</c>.
         /// </summary>
-        /// <param name="errorMessage">The user provided error message to set <see cref="ErrorMessage"/> with.</param>
+        /// <param name="errorMessage">The user provided error message to set <see cref="ErrorMessage" /> with.</param>
         public CSharpParsedTypeValidationResult(string errorMessage)
         {
             IsValid = false;
             ErrorMessage = errorMessage;
         }
+
+
+        /// <summary>
+        ///     Gets a value indicating whether additional user validation was successful.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if the additional user validation succeeded; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsValid { get; private set; }
+
+        /// <summary>
+        ///     Gets the error message provided by the user if their extra validation failed.
+        /// </summary>
+        /// <value>
+        ///     The user provided error message.
+        /// </value>
+        public string ErrorMessage { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the tag, this can be anything the user wants it to be.
+        /// </summary>
+        /// <value>
+        ///     The object tag.
+        /// </value>
+        public object Tag { get; set; }
     }
 
 
     /// <summary>
-    /// A delegate for injecting additional user validation into the class name parser.
+    ///     A delegate for injecting additional user validation into the class name parser.
     /// </summary>
     /// <param name="parsedTypeDescription">
-    /// The <see cref="CSharpParsedTypeValidationResult"/> which represents the results of the user validation callback for the parsed type.
+    ///     The <see cref="CSharpParsedTypeValidationResult" /> which represents the results of the user validation callback
+    ///     for the parsed type.
     /// </param>
     /// <returns></returns>
     public delegate CSharpParsedTypeValidationResult CSharpParsedTypeValidateTypeCallback(
-    CSharpClassNameValidationResult parsedTypeDescription);
-
+        CSharpClassNameValidationResult parsedTypeDescription);
 
 
     /// <summary>
-    /// Class name validation result's produced by <see cref="CSharpClassNameValidator.ValidateDeclaration"/> 
-    /// and <see cref="CSharpClassNameValidator.ValidateInitialization"/>.
+    ///     Class name validation result's produced by <see cref="CSharpClassNameValidator.ValidateDeclaration" />
+    ///     and <see cref="CSharpClassNameValidator.ValidateInitialization" />.
     /// </summary>
     public sealed class CSharpClassNameValidationResult
     {
         /// <summary>
-        /// Gets a value indicating whether the given string passed to <see cref="CSharpClassNameValidator.ValidateDeclaration"/>
-        /// or <see cref="CSharpClassNameValidator.ValidateInitialization"/> was syntactically valid.
+        ///     Gets a value indicating whether the given string passed to
+        ///     <see cref="CSharpClassNameValidator.ValidateDeclaration" />
+        ///     or <see cref="CSharpClassNameValidator.ValidateInitialization" /> was syntactically valid.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if parsing success; otherwise, <c>false</c>.
+        ///     <c>true</c> if parsing success; otherwise, <c>false</c>.
         /// </value>
         public bool Success { get; internal set; }
 
         /// <summary>
-        /// Gets the basic class name of the parsed type reference, without any namespace qualification.
-        /// This does not include the generic arguments in the type reference, if there are any.
+        ///     Gets the basic class name of the parsed type reference, without any namespace qualification.
+        ///     This does not include the generic arguments in the type reference, if there are any.
         /// </summary>
         /// <value>
-        /// The base name of the class in the type reference.
+        ///     The base name of the class in the type reference.
         /// </value>
         public string BaseName { get; internal set; }
 
         /// <summary>
-        /// Gets the fully qualified name of the parsed type reference, with any namespace qualification that was included in the string.
-        /// This does not include the generic arguments in the type reference, if there are any.
+        ///     Gets the fully qualified name of the parsed type reference, with any namespace qualification that was included in
+        ///     the string.
+        ///     This does not include the generic arguments in the type reference, if there are any.
         /// </summary>
         /// <value>
-        /// The fully qualified name of the class in the type reference.
+        ///     The fully qualified name of the class in the type reference.
         /// </value>
         public string QualifiedName { get; internal set; }
 
         /// <summary>
-        /// Gets a value indicating whether the parsed type reference represented a generic type with generic type arguments.
+        ///     Gets a value indicating whether the parsed type reference represented a generic type with generic type arguments.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the type reference used generic type arguments; otherwise, <c>false</c>.
+        ///     <c>true</c> if the type reference used generic type arguments; otherwise, <c>false</c>.
         /// </value>
         public bool IsGeneric { get; internal set; }
 
         /// <summary>
-        /// Gets a user friendly parsing error description when <see cref="Success"/> is false, otherwise <c>null</c>.
+        ///     Gets a user friendly parsing error description when <see cref="Success" /> is false, otherwise <c>null</c>.
         /// </summary>
         /// <value>
-        /// The parsing error description, if <see cref="Success"/> is <c>false</c>; otherwise, <c>null</c>.
+        ///     The parsing error description, if <see cref="Success" /> is <c>false</c>; otherwise, <c>null</c>.
         /// </value>
         public string ErrorDescription { get; internal set; }
 
         /// <summary>
-        /// Gets an index near where the parsing error occurred when <see cref="Success"/> is <c>false</c>, otherwise 0.
+        ///     Gets an index near where the parsing error occurred when <see cref="Success" /> is <c>false</c>, otherwise 0.
         /// </summary>
         /// <value>
-        /// The string index of the error.
+        ///     The string index of the error.
         /// </value>
         public int ErrorIndex { get; internal set; }
 
         /// <summary>
-        /// Gets the sub validation results for the generic arguments of the parsed type if it has any.
-        /// The contents of this array will always be empty if <see cref="Success"/> is <c>false</c>.
+        ///     Gets the sub validation results for the generic arguments of the parsed type if it has any.
+        ///     The contents of this array will always be empty if <see cref="Success" /> is <c>false</c>.
         /// </summary>
         /// <value>
-        /// The sub validation results for the generic arguments.
+        ///     The sub validation results for the generic arguments.
         /// </value>
         public IReadOnlyGenericArray<CSharpClassNameValidationResult> GenericArguments { get; internal set; }
 
         /// <summary>
-        /// Gets the type validation result for this parsed type.  This is only ever non <c>null</c> if a callback for type validation
-        /// is passed to <see cref="CSharpClassNameValidator.ValidateInitialization"/>.
+        ///     Gets the type validation result for this parsed type.  This is only ever non <c>null</c> if a callback for type
+        ///     validation
+        ///     is passed to <see cref="CSharpClassNameValidator.ValidateInitialization" />.
         /// </summary>
         /// <value>
-        /// The type validation result for this parsed class name.
+        ///     The type validation result for this parsed class name.
         /// </value>
         public CSharpParsedTypeValidationResult TypeValidationResult { get; internal set; }
 
-
         /// <summary>
-        /// Gets the full signature of the type/class, with spaces that exist in the input stripped out.
+        ///     Gets the full signature of the type/class, with spaces that exist in the input stripped out.
         /// </summary>
         /// <value>
-        /// The full signature of the parsed type/class.
+        ///     The full signature of the parsed type/class.
         /// </value>
         public string FullSignature { get; internal set; }
     }
 
 
-
-
-
     /// <summary>
-    /// Tools to check the validity of raw class type names in strings
+    ///     Tools to check the validity of raw class type names in strings
     /// </summary>
     public static class CSharpClassNameValidator
     {
-
         /// <summary>
-        /// Context of a class name signature
-        /// </summary>
-        private enum ClassSigType
-        {
-            /// <summary>
-            /// The class name signature is used to declare a class, it could be a generic type definition signature.
-            /// </summary>
-            Declaration,
-
-            /// <summary>
-            /// The class name signature is used to refer to the class in a initialized context such as 
-            /// after the new keyword or in a cast, it still might be generic with filled out type parameters.
-            /// </summary>
-            Initialization
-        }
-
-
-        /// <summary>
-        /// Validates that the specified input string is syntactically valid C# class definition signature, including generic definition.
+        ///     Validates that the specified input string is syntactically valid C# class definition signature, including generic
+        ///     definition.
         /// </summary>
         /// <remarks>
-        /// This function will detect misuse of keywords and built in type names the class definition signature used to define a type, even generic types.
+        ///     This function will detect misuse of keywords and built in type names the class definition signature used to define
+        ///     a type, even generic types.
         /// </remarks>
         /// <param name="input">The input string containing the proposed type value.</param>
-        /// <returns><see cref="CSharpClassNameValidationResult"/></returns>
+        /// <returns>
+        ///     <see cref="CSharpClassNameValidationResult" />
+        /// </returns>
         public static CSharpClassNameValidationResult ValidateDeclaration(string input)
         {
             return _Validate(input, ClassSigType.Declaration, false, null, 0);
@@ -238,38 +232,24 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        /// Validates that the specified input string is syntactically valid C# type initialization signature, including generic types.
+        ///     Validates that the specified input string is syntactically valid C# type initialization signature, including
+        ///     generic types.
         /// </summary>
         /// <param name="input">The input string containing the proposed type value.</param>
-        /// <param name="validateTypeCallback">A call back to allow you to verify the existence of the types in the type signature as they are parsed.</param>
+        /// <param name="validateTypeCallback">
+        ///     A call back to allow you to verify the existence of the types in the type signature
+        ///     as they are parsed.
+        /// </param>
         /// <param name="allowBuiltInAliases">Allow built in aliases such as 'int' or 'char' to pass as class names</param>
-        /// <returns><see cref="CSharpClassNameValidationResult"/></returns>
+        /// <returns>
+        ///     <see cref="CSharpClassNameValidationResult" />
+        /// </returns>
         public static CSharpClassNameValidationResult ValidateInitialization(string input, bool allowBuiltInAliases,
             CSharpParsedTypeValidateTypeCallback validateTypeCallback = null)
         {
             return _Validate(input, ClassSigType.Initialization, allowBuiltInAliases, validateTypeCallback, 0);
         }
 
-
-        private class Qualification
-        {
-            public Qualification(StringBuilder builder, int startIndex)
-            {
-                Builder = builder;
-                StartIndex = startIndex;
-            }
-
-            public StringBuilder Builder { get; private set; }
-            public int StartIndex { get; private set; }
-
-            public int StopIndex
-            {
-                get
-                {
-                    return StartIndex + (Builder.Length - 1);
-                }
-            }
-        }
 
         private static CSharpClassNameValidationResult _Validate(string input, ClassSigType signatureType,
             bool allowBuiltinAliases, CSharpParsedTypeValidateTypeCallback validateTypeCallback, int index)
@@ -350,7 +330,7 @@ namespace LibLSLCC.CSharp
                             };
                         }
 
-                        qualifications.Add(new Qualification(new StringBuilder(), index+1));
+                        qualifications.Add(new Qualification(new StringBuilder(), index + 1));
                     }
                     else
                     {
@@ -384,7 +364,7 @@ namespace LibLSLCC.CSharp
                         //we have accumulated a type argument suitable for recursive decent
                         //validate it recursively
                         var validateGenericArgument = _Validate(genericPart.Trim(), signatureType, allowBuiltinAliases,
-                            validateTypeCallback, index- genericPart.Length);
+                            validateTypeCallback, index - genericPart.Length);
 
                         //return immediately on failure
                         if (!validateGenericArgument.Success) return validateGenericArgument;
@@ -556,6 +536,42 @@ namespace LibLSLCC.CSharp
 
 
             return classDescription;
+        }
+
+
+        /// <summary>
+        ///     Context of a class name signature
+        /// </summary>
+        private enum ClassSigType
+        {
+            /// <summary>
+            ///     The class name signature is used to declare a class, it could be a generic type definition signature.
+            /// </summary>
+            Declaration,
+
+            /// <summary>
+            ///     The class name signature is used to refer to the class in a initialized context such as
+            ///     after the new keyword or in a cast, it still might be generic with filled out type parameters.
+            /// </summary>
+            Initialization
+        }
+
+        private class Qualification
+        {
+            public Qualification(StringBuilder builder, int startIndex)
+            {
+                Builder = builder;
+                StartIndex = startIndex;
+            }
+
+
+            public StringBuilder Builder { get; private set; }
+            public int StartIndex { get; private set; }
+
+            public int StopIndex
+            {
+                get { return StartIndex + (Builder.Length - 1); }
+            }
         }
     }
 }

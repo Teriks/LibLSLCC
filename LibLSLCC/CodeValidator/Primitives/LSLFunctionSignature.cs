@@ -48,13 +48,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents a basic LSL function signature.

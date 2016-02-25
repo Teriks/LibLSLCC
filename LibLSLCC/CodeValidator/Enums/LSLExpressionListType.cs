@@ -45,11 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
+
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Enums
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents the different types of expression lists that an <see cref="ILSLExpressionListNode" /> can represent.

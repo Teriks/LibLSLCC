@@ -47,14 +47,11 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.CodeValidator.Visitor;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes
+namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLDummyExpr : ILSLExprNode
     {

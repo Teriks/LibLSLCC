@@ -47,7 +47,7 @@
 
 using System;
 using System.Linq;
-using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator;
 
 #endregion
 

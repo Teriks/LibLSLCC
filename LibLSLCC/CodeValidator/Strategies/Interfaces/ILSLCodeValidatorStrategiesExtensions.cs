@@ -49,7 +49,7 @@ using System;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components
+namespace LibLSLCC.CodeValidator.Strategies
 {
     /// <summary>
     ///     Extensions for <see cref="ILSLCodeValidatorStrategies" />

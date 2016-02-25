@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpFunctionCallValidator.cs
 // 
@@ -39,85 +40,108 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Result object for <see cref="CSharpFunctionCallValidator.Validate"/>
+    ///     Result object for <see cref="CSharpFunctionCallValidator.Validate" />
     /// </summary>
     public sealed class CSharpFunctionCallValidationResult
     {
         /// <summary>
-        /// <c>true</c> if the function call was succesfully parsed.
+        ///     <c>true</c> if the function call was succesfully parsed.
         /// </summary>
         public bool Success { get; internal set; }
 
         /// <summary>
-        /// An error description if <see cref="Success"/> is <c>false</c>
+        ///     An error description if <see cref="Success" /> is <c>false</c>
         /// </summary>
         public string ErrorDescription { get; internal set; }
 
         /// <summary>
-        /// The index in the parsed string at which an error was detected if <see cref="Success"/> is <c>false</c>.
+        ///     The index in the parsed string at which an error was detected if <see cref="Success" /> is <c>false</c>.
         /// </summary>
         public int ErrorIndex { get; internal set; }
 
         /// <summary>
-        /// The explicit generic parameters specified if any.
+        ///     The explicit generic parameters specified if any.
         /// </summary>
         public IReadOnlyGenericArray<CSharpClassNameValidationResult> ExplicitGenericParameters { get; internal set; }
 
         /// <summary>
-        /// The parsed function call parameters.
+        ///     The parsed function call parameters.
         /// </summary>
         public IReadOnlyGenericArray<CSharpParameterSignature> Parameters { get; internal set; }
 
         /// <summary>
-        /// The parsed method name from the function call signature.
+        ///     The parsed method name from the function call signature.
         /// </summary>
         public string MethodName { get; internal set; }
     }
 
 
     /// <summary>
-    /// Represents the possible parameter modifiers of a CSharp function call.
+    ///     Represents the possible parameter modifiers of a CSharp function call.
     /// </summary>
     public enum CSharpParameterModifier
     {
         /// <summary>
-        /// no modifiers
+        ///     no modifiers
         /// </summary>
         None,
 
         /// <summary>
-        /// the out modifier.
+        ///     the out modifier.
         /// </summary>
         Out,
 
         /// <summary>
-        /// the pass by reference modifier.
+        ///     the pass by reference modifier.
         /// </summary>
         Ref,
 
         /// <summary>
-        /// this means that the parameter passed was a brand new object, which was created directly in the parameter slot.
+        ///     this means that the parameter passed was a brand new object, which was created directly in the parameter slot.
         /// </summary>
         New
     }
 
     /// <summary>
-    /// Represents the signature of a parameter passed to a CSharp function method call.
+    ///     Represents the signature of a parameter passed to a CSharp function method call.
     /// </summary>
     public sealed class CSharpParameterSignature
     {
+        internal CSharpParameterSignature(string parameterText, CSharpParameterModifier modifier)
+        {
+            Modifier = modifier;
+            ParameterText = parameterText;
+        }
+
+
         /// <summary>
-        /// Calculate a hash for the parameter signature using <see cref="ParameterText"/> and <see cref="Modifier"/>
+        ///     The modifier that appears in front of the parameter
+        /// </summary>
+        public CSharpParameterModifier Modifier { get; private set; }
+
+        /// <summary>
+        ///     The text that represents the parsed parameter, after the modifier if one is present.
+        /// </summary>
+        public string ParameterText { get; private set; }
+
+
+        /// <summary>
+        ///     Calculate a hash for the parameter signature using <see cref="ParameterText" /> and <see cref="Modifier" />
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -125,24 +149,9 @@ namespace LibLSLCC.CSharp
             return (ParameterText != null ? ParameterText.GetHashCode() : 0);
         }
 
-        /// <summary>
-        /// The modifier that appears in front of the parameter
-        /// </summary>
-        public CSharpParameterModifier Modifier { get; private set; }
 
         /// <summary>
-        /// The text that represents the parsed parameter, after the modifier if one is present.
-        /// </summary>
-        public string ParameterText { get; private set; }
-
-        internal CSharpParameterSignature(string parameterText, CSharpParameterModifier modifier)
-        {
-            Modifier = modifier;
-            ParameterText = parameterText;
-        }
-
-        /// <summary>
-        /// Test equality using <see cref="ParameterText"/> and <see cref="Modifier"/>
+        ///     Test equality using <see cref="ParameterText" /> and <see cref="Modifier" />
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -157,26 +166,10 @@ namespace LibLSLCC.CSharp
 
 
     /// <summary>
-    /// Static class containing utilities for validating a CSharp method call signature.
+    ///     Static class containing utilities for validating a CSharp method call signature.
     /// </summary>
     public static class CSharpFunctionCallValidator
     {
-        private enum States
-        {
-            WaitingForFirstCharacter,
-            AccumulatingMethodNamePart,
-            AccumulatingExplicitGenericMethodParameters,
-            AfterExplicitGenericMethodParameters,
-            AccumulatingGenericTypePart,
-            WaitingForParameterName,
-            AccumulatingParameter,
-            AfterSignature,
-            InParenthesizedExpression,
-            InCurlyBraceExpression,
-            InBracketExpression
-        }
-
-
         private static bool IsValidPlainParameter(string paramText, int paramStartIndex,
             out string err, out int errIndex)
         {
@@ -265,7 +258,6 @@ namespace LibLSLCC.CSharp
             }
 
 
-
             string testp = string.Format("class P{{void F(object a){{}}P(){{F(new {0});}}}}", paramText);
             const int pstartIndex = 36;
 
@@ -300,10 +292,10 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        /// Parses and validates a string as a CSharp method call.
+        ///     Parses and validates a string as a CSharp method call.
         /// </summary>
         /// <param name="signature">The method call signature, without a semi-colon at the end.</param>
-        /// <returns>The parse/validation result.  <see cref="CSharpFunctionCallValidationResult"/></returns>
+        /// <returns>The parse/validation result.  <see cref="CSharpFunctionCallValidationResult" /></returns>
         public static CSharpFunctionCallValidationResult Validate(string signature)
         {
             var result = new CSharpFunctionCallValidationResult {Success = true};
@@ -791,6 +783,22 @@ namespace LibLSLCC.CSharp
             result.Parameters = parameters;
             result.ExplicitGenericParameters = explicitGenericParameters;
             return result;
+        }
+
+
+        private enum States
+        {
+            WaitingForFirstCharacter,
+            AccumulatingMethodNamePart,
+            AccumulatingExplicitGenericMethodParameters,
+            AfterExplicitGenericMethodParameters,
+            AccumulatingGenericTypePart,
+            WaitingForParameterName,
+            AccumulatingParameter,
+            AfterSignature,
+            InParenthesizedExpression,
+            InCurlyBraceExpression,
+            InBracketExpression
         }
     }
 }

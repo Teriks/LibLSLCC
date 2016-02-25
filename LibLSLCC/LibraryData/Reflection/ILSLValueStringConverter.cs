@@ -46,7 +46,7 @@
 #region Imports
 
 using System.Reflection;
-using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator;
 
 #endregion
 

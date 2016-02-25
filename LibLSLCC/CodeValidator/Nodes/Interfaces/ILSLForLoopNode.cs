@@ -45,11 +45,11 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Primitives;
+
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes.Interfaces
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST node interface for for-loop statements.

@@ -1,7 +1,7 @@
 ﻿#region FileInfo
 
 // 
-// File: ILSLCodeValidatorStrategies.cs
+// File: LSLAntlrErrorHandler.cs
 // 
 // 
 // ============================================================
@@ -45,47 +45,60 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Antlr4.Runtime;
+using LibLSLCC.CodeValidator.Strategies;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components
+namespace LibLSLCC.CodeValidator.Internal
 {
-    /// <summary>
-    ///     Represents various sub strategies and listeners that are used in the <see cref="LSLCodeValidator" /> implementation
-    ///     of <see cref="ILSLCodeValidator" />.
-    /// </summary>
-    public interface ILSLCodeValidatorStrategies
+    internal sealed class LSLAntlrErrorHandler : IAntlrErrorListener<IToken>
     {
-        /// <summary>
-        ///     The expression validator is in charge of determining if two types are valid
-        ///     in a binary expression.  It also does several other things, one being checking if an expression
-        ///     with a certain return type can be passed into a function parameter.
-        /// </summary>
-        ILSLExpressionValidator ExpressionValidator { get; }
+        private static readonly Regex NonLValueAssignmentError =
+            new Regex("mismatched input '[*+-/%]?=' expecting {(.*?)}");
 
-        /// <summary>
-        ///     The library data provider gives the code validator information about standard library functions,
-        ///     constants and events that exist in the LSL namespace.
-        /// </summary>
-        ILSLBasicLibraryDataProvider LibraryDataProvider { get; }
+        private readonly ILSLSyntaxErrorListener _errorListener;
 
-        /// <summary>
-        ///     The string literal pre-processor is in charge of pre-processing string literals
-        ///     from source code before the value is assigned to an <see cref="ILSLStringLiteralNode.PreProcessedText" />.
-        /// </summary>
-        ILSLStringPreProcessor StringLiteralPreProcessor { get; }
 
-        /// <summary>
-        ///     The syntax error listener is an interface that listens for syntax
-        ///     errors from the code validator
-        /// </summary>
-        ILSLSyntaxErrorListener SyntaxErrorListener { get; }
+        public LSLAntlrErrorHandler(ILSLSyntaxErrorListener errorListener)
+        {
+            _errorListener = errorListener;
+        }
 
-        /// <summary>
-        ///     The syntax error listener is an interface that listens for syntax
-        ///     warnings from the code validator
-        /// </summary>
-        ILSLSyntaxWarningListener SyntaxWarningListener { get; }
+
+        public bool HasErrors { get; private set; }
+
+
+        public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine,
+            string msg,
+            RecognitionException e)
+        {
+            HasErrors = true;
+
+            var m = NonLValueAssignmentError.Match(msg);
+
+            var expected = new HashSet<string>(m.Groups[1].ToString().Split(',').Select(x => x.Trim('\'', ' ')));
+
+            if (m.Success && expected.Contains("*") && !(
+                expected.Contains("TYPE")
+                || expected.Contains("ID")
+                || expected.Contains("INT")
+                || expected.Contains("FLOAT")
+                || expected.Contains("HEX_LITERAL")
+                || expected.Contains("QUOTED_STRING")
+                ))
+            {
+                _errorListener.AssignmentToNonassignableExpression(new LSLSourceCodeRange(offendingSymbol),
+                    offendingSymbol.Text);
+            }
+            else
+            {
+                _errorListener.GrammarLevelParserSyntaxError(line, charPositionInLine,
+                    new LSLSourceCodeRange(offendingSymbol), offendingSymbol.Text, msg);
+            }
+        }
     }
 }

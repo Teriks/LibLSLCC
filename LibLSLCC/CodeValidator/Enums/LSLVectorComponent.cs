@@ -49,7 +49,7 @@ using System;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Enums
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Enum representing LSL's vector type components

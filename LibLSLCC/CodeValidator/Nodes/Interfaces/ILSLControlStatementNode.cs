@@ -49,7 +49,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes.Interfaces
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST node interface for control statement chains.  This node's children consists of

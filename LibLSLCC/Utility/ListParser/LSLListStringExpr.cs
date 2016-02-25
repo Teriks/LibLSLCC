@@ -45,7 +45,7 @@
 
 #region Imports
 
-using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator;
 
 #endregion
 

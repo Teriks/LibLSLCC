@@ -51,10 +51,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator.Internal;
+using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.CodeValidator.Visitor;
 using LibLSLCC.Collections;
 using LibLSLCC.CSharp;
@@ -63,7 +61,7 @@ using LibLSLCC.Utility.ListParser;
 
 #endregion
 
-namespace LibLSLCC.Compilers.OpenSim.Visitors
+namespace LibLSLCC.Compilers.OpenSim.Internal
 {
     // ReSharper disable InconsistentNaming
     internal sealed class LSLOpenSimCompilerVisitor : LSLValidatorNodeVisitor<bool>
@@ -153,17 +151,10 @@ private static class UTILITIES
         /// </summary>
         private readonly HashSet<LSLBinaryOperationSignature> _binOpsUsed = new HashSet<LSLBinaryOperationSignature>();
 
-
-        private static string GenBinaryOperationStubName(LSLBinaryOperationSignature binOp)
-        {
-            return "_o" + ((int)binOp.Left) + "" + ((int)binOp.Operation) + "" + ((int)binOp.Right);
-        }
-
         /// <summary>
-        /// Tracks what event handler node compilation is currently taking place in.
+        ///     Tracks what event handler node compilation is currently taking place in.
         /// </summary>
         private ILSLEventHandlerNode _currentLslEventHandlerNode;
-
 
         /*/// <summary>
         /// Tracks what function declaration node compilation is currently taking place in.
@@ -192,8 +183,13 @@ private static class UTILITIES
         public LSLOpenSimCompilerSettings Settings { get; set; }
 
         public ILSLBasicLibraryDataProvider LibraryDataProvider { get; set; }
-
         public TextWriter Writer { get; private set; }
+
+
+        private static string GenBinaryOperationStubName(LSLBinaryOperationSignature binOp)
+        {
+            return "_o" + ((int) binOp.Left) + "" + ((int) binOp.Operation) + "" + ((int) binOp.Right);
+        }
 
 
         private string GetCoOpTerminationCallString()
@@ -205,18 +201,28 @@ private static class UTILITIES
 
 
         /// <summary>
-        /// Compiles a syntax tree into OpenSim compatible CSharp code, writing the output to the specified TextWriter.
+        ///     Compiles a syntax tree into OpenSim compatible CSharp code, writing the output to the specified TextWriter.
         /// </summary>
         /// <param name="compilationUnit">
-        /// The top node of an LSL Syntax tree to compile.
-        /// This is returned from <see cref="LSLCodeValidator.Validate"/> or user implemented Code DOM.</param>
+        ///     The top node of an LSL Syntax tree to compile.
+        ///     This is returned from <see cref="LSLCodeValidator.Validate" /> or user implemented Code DOM.
+        /// </param>
         /// <param name="writer">The text writer to write the generated code to.</param>
-        /// <param name="closeStream">Whether or not to close <paramref name="writer"/> once compilation is done.  The default value is <c>false</c>.</param>
-        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
-        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings"/> is <c>null</c>.</exception>
-        /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer"/>.</exception>
-        /// <exception cref="ObjectDisposedException">If <paramref name="writer"/> is already disposed.</exception>
+        /// <param name="closeStream">
+        ///     Whether or not to close <paramref name="writer" /> once compilation is done.  The default
+        ///     value is <c>false</c>.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
+        ///     <paramref name="compilationUnit" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer" />.</exception>
+        /// <exception cref="ObjectDisposedException">If <paramref name="writer" /> is already disposed.</exception>
         public void WriteAndFlush(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = true)
         {
             if (compilationUnit == null)
@@ -226,7 +232,8 @@ private static class UTILITIES
 
             if (compilationUnit.HasErrors)
             {
-                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot compile a tree with syntax errors.");
+                throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
+                                            ".HasErrors is true, cannot compile a tree with syntax errors.");
             }
 
             if (writer == null)
@@ -704,7 +711,8 @@ private static class UTILITIES
                                return ("new LSL_Types.list(" + e.ValueString + ")");
                            default:
                                throw new InvalidOperationException(
-                                   typeof(LSLOpenSimCompilerVisitor).Name+".GenerateExpandedListConstant encountered a Void list element type.");
+                                   typeof (LSLOpenSimCompilerVisitor).Name +
+                                   ".GenerateExpandedListConstant encountered a Void list element type.");
                        }
                    })) + ")";
         }
@@ -740,7 +748,8 @@ private static class UTILITIES
                         break;
                     default:
                         throw new InvalidOperationException(
-                            typeof(LSLOpenSimCompilerVisitor).Name + ".VisitLibraryConstantVariableReference retrieved a library "
+                            typeof (LSLOpenSimCompilerVisitor).Name +
+                            ".VisitLibraryConstantVariableReference retrieved a library "
                             + "constant from the library data provider using 'LSLType.Void' as its Type.");
                 }
             }
@@ -830,12 +839,14 @@ private static class UTILITIES
             //This is here so that, if the binary operation validator is changed to allow it;
             //than we will still be generating correct code.
             bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
-                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+                                                    !(parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalAnd ||
+                                                      parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalOr));
 
 
-            var inVectorOrRotationInitializer = 
-                node.Parent is ILSLVectorLiteralNode || 
+            var inVectorOrRotationInitializer =
+                node.Parent is ILSLVectorLiteralNode ||
                 node.Parent is ILSLRotationLiteralNode;
 
 
@@ -865,7 +876,7 @@ private static class UTILITIES
             //Except if the parent is a logical operator, in which case a stub is not used.
             //so it needs to be boxed.
             var box =
-                !(parentIsFunctionCall || parentIsNonLogicBinaryOperation || inVectorOrRotationInitializer) || 
+                !(parentIsFunctionCall || parentIsNonLogicBinaryOperation || inVectorOrRotationInitializer) ||
                 inModInvokeTopLevel;
 
 
@@ -904,8 +915,10 @@ private static class UTILITIES
             var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
 
             bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
-                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+                                                    !(parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalAnd ||
+                                                      parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalOr));
 
             var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
 
@@ -914,7 +927,7 @@ private static class UTILITIES
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
-            var inVectorOrRotationInitializer = 
+            var inVectorOrRotationInitializer =
                 node.Parent is ILSLVectorLiteralNode ||
                 node.Parent is ILSLRotationLiteralNode;
 
@@ -943,7 +956,7 @@ private static class UTILITIES
 
             //Except if the parent is a logical operator, in which case a stub is not used.
             //so it needs to be boxed.
-            var box = 
+            var box =
                 !(parentIsFunctionCall || parentIsNonLogicBinaryOperation || inVectorOrRotationInitializer) ||
                 inModInvokeTopLevel;
 
@@ -953,7 +966,7 @@ private static class UTILITIES
                 Writer.Write("new LSL_Types.LSLInteger(");
             }
 
-            Writer.Write(node.IsIntegerLiteralOverflowed() ?  (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
+            Writer.Write(node.IsIntegerLiteralOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
 
             if (box)
             {
@@ -969,8 +982,10 @@ private static class UTILITIES
             var parentAsBinaryExpression = node.Parent as ILSLBinaryExpressionNode;
 
             bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
-                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+                                                    !(parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalAnd ||
+                                                      parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalOr));
 
             var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
 
@@ -1045,8 +1060,10 @@ private static class UTILITIES
             //This is here so that, if the binary operation validator is changed to allow it;
             //than we will still be generating correct code.
             bool parentIsNonLogicBinaryOperation = (parentAsBinaryExpression != null &&
-                  !(parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalAnd ||
-                    parentAsBinaryExpression.Operation == LSLBinaryOperationType.LogicalOr));
+                                                    !(parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalAnd ||
+                                                      parentAsBinaryExpression.Operation ==
+                                                      LSLBinaryOperationType.LogicalOr));
 
 
             ILSLFunctionCallNode parentFunctionCallNode = null;
@@ -1569,10 +1586,9 @@ private static class UTILITIES
 
             foreach (var binOp in _binOpsUsed)
             {
-
-
-                Writer.WriteLine(GenIndent() + "private " + 
-                                 LSLAtomType_To_CSharpType(binOp.Returns) + " " + GenBinaryOperationStubName(binOp) + "(" +
+                Writer.WriteLine(GenIndent() + "private " +
+                                 LSLAtomType_To_CSharpType(binOp.Returns) + " " + GenBinaryOperationStubName(binOp) +
+                                 "(" +
                                  LSLAtomType_To_CSharpType(binOp.Right) + " right, " +
                                  LSLAtomType_To_CSharpType(binOp.Left) + " left)");
 
@@ -1594,9 +1610,6 @@ private static class UTILITIES
 
             _binOpsUsed.Clear();
         }
-
-
-
 
 
         public override bool VisitCompilationUnit(ILSLCompilationUnitNode unode)
@@ -1761,7 +1774,6 @@ private static class UTILITIES
 
         public override bool VisitEventHandler(ILSLEventHandlerNode node)
         {
-
             _currentLslEventHandlerNode = node;
 
             Writer.Write(GenIndent());
@@ -1796,7 +1808,6 @@ private static class UTILITIES
         /// <returns>default(T)</returns>
         public override bool VisitFunctionDeclaration(ILSLFunctionDeclarationNode node)
         {
-
             //_currentLslFunctionDeclarationNode = node;
 
             Writer.Write(GenIndent() + "public ");
@@ -1921,7 +1932,6 @@ private static class UTILITIES
             }
             else
             {
-
                 Writer.Write(GenIndent() + "return");
 
                 if (node.HasReturnExpression)
@@ -1931,7 +1941,6 @@ private static class UTILITIES
                 }
 
                 Writer.WriteLine(";");
-
             }
 
             return false;
@@ -1982,7 +1991,7 @@ private static class UTILITIES
             else
             {
                 Writer.WriteLine(GenIndent() + "LSLLabel_" + node.LabelName + ":" +
-                             (node.IsLastStatementInScope ? ";" : ""));
+                                 (node.IsLastStatementInScope ? ";" : ""));
             }
 
             return false;

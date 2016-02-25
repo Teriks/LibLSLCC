@@ -51,18 +51,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Internal
 {
     internal sealed partial class LSLCodeValidatorVisitor : LSLBaseVisitor<ILSLSyntaxTreeNode>
     {

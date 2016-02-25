@@ -46,12 +46,11 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Enums;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Internal
 {
     internal static class LSLAntlrTreeTools
     {

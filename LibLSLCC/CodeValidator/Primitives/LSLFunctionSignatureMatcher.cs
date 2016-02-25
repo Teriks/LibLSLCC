@@ -48,15 +48,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Enums;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
+using LibLSLCC.CodeValidator.Strategies;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents the status of an attempted function signature match against parameter expressions

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: LSLOpenSimCompiler.cs
 // 
@@ -39,15 +40,16 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
 using System.IO;
 using LibLSLCC.CodeValidator;
-using LibLSLCC.CodeValidator.Components;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
-using LibLSLCC.Compilers.OpenSim.Visitors;
+using LibLSLCC.CodeValidator.Strategies;
+using LibLSLCC.Compilers.OpenSim.Internal;
 using LibLSLCC.LibraryData;
 
 #endregion
@@ -55,7 +57,7 @@ using LibLSLCC.LibraryData;
 namespace LibLSLCC.Compilers.OpenSim
 {
     /// <summary>
-    /// A compiler that converts LSL Syntax trees into CSharp code that is compatible with OpenSim's CSharp LSL runtime.
+    ///     A compiler that converts LSL Syntax trees into CSharp code that is compatible with OpenSim's CSharp LSL runtime.
     /// </summary>
     public sealed class LSLOpenSimCompiler
         // ReSharper restore InconsistentNaming
@@ -64,11 +66,15 @@ namespace LibLSLCC.Compilers.OpenSim
 
 
         /// <summary>
-        /// Construct an <see cref="LSLOpenSimCompiler"/> using the provided <see cref="ILSLBasicLibraryDataProvider"/> and <see cref="LSLOpenSimCompilerSettings"/> object.
+        ///     Construct an <see cref="LSLOpenSimCompiler" /> using the provided <see cref="ILSLBasicLibraryDataProvider" /> and
+        ///     <see cref="LSLOpenSimCompilerSettings" /> object.
         /// </summary>
-        /// <param name="settings"><see cref="LSLOpenSimCompilerSettings"/> to use.</param>
-        /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider"/> implementation.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="libraryDataProvider"/> or <paramref name="settings"/> is <c>null</c>.</exception>
+        /// <param name="settings"><see cref="LSLOpenSimCompilerSettings" /> to use.</param>
+        /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider" /> implementation.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="libraryDataProvider" /> or <paramref name="settings" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public LSLOpenSimCompiler(ILSLBasicLibraryDataProvider libraryDataProvider, LSLOpenSimCompilerSettings settings)
         {
             if (libraryDataProvider == null)
@@ -87,10 +93,11 @@ namespace LibLSLCC.Compilers.OpenSim
 
 
         /// <summary>
-        /// Construct an <see cref="LSLOpenSimCompiler"/> using the default settings and the provided <see cref="ILSLLibraryDataProvider"/> object.
+        ///     Construct an <see cref="LSLOpenSimCompiler" /> using the default settings and the provided
+        ///     <see cref="ILSLLibraryDataProvider" /> object.
         /// </summary>
-        /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider"/> implementation.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="libraryDataProvider"/> is <c>null</c>.</exception>
+        /// <param name="libraryDataProvider">An <see cref="ILSLBasicLibraryDataProvider" /> implementation.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="libraryDataProvider" /> is <c>null</c>.</exception>
         public LSLOpenSimCompiler(ILSLBasicLibraryDataProvider libraryDataProvider)
         {
             if (libraryDataProvider == null)
@@ -104,17 +111,15 @@ namespace LibLSLCC.Compilers.OpenSim
 
 
         /// <summary>
-        /// The library data provider the compiler is using to provide modInvoke information.
+        ///     The library data provider the compiler is using to provide modInvoke information.
         /// </summary>
         public ILSLBasicLibraryDataProvider LibraryDataProvider
         {
             get { return _visitor.LibraryDataProvider; }
         }
 
-
-
         /// <summary>
-        /// Settings for the OpenSim CSharp Compiler
+        ///     Settings for the OpenSim CSharp Compiler
         /// </summary>
         /// <exception cref="ArgumentNullException">If the value is set to null.</exception>
         public LSLOpenSimCompilerSettings Settings
@@ -132,18 +137,28 @@ namespace LibLSLCC.Compilers.OpenSim
 
 
         /// <summary>
-        /// Compiles a syntax tree into OpenSim compatible CSharp code, writing the output to the specified TextWriter.
+        ///     Compiles a syntax tree into OpenSim compatible CSharp code, writing the output to the specified TextWriter.
         /// </summary>
         /// <param name="compilationUnit">
-        /// The top node of an LSL Syntax tree to compile.
-        /// This is returned from <see cref="LSLCodeValidator.Validate"/> or user implemented Code DOM.</param>
+        ///     The top node of an LSL Syntax tree to compile.
+        ///     This is returned from <see cref="LSLCodeValidator.Validate" /> or user implemented Code DOM.
+        /// </param>
         /// <param name="writer">The text writer to write the generated code to.</param>
-        /// <param name="closeStream">Whether or not to close <paramref name="writer"/> once compilation is done.  The default value is <c>false</c>.</param>
-        /// <exception cref="ArgumentException">If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors"/> is <c>true</c> in <paramref name="compilationUnit"/>.</exception>
-        /// <exception cref="ArgumentNullException">If <paramref name="compilationUnit"/> or <paramref name="writer"/> is <c>null</c>.</exception>
-        /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer"/>.</exception>
-        /// <exception cref="ObjectDisposedException">If <paramref name="writer"/> is already disposed.</exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings"/> is <c>null</c>.</exception>
+        /// <param name="closeStream">
+        ///     Whether or not to close <paramref name="writer" /> once compilation is done.  The default
+        ///     value is <c>false</c>.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
+        ///     <paramref name="compilationUnit" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer" />.</exception>
+        /// <exception cref="ObjectDisposedException">If <paramref name="writer" /> is already disposed.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
         public void Compile(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = false)
         {
             if (compilationUnit == null)
@@ -153,7 +168,8 @@ namespace LibLSLCC.Compilers.OpenSim
 
             if (compilationUnit.HasErrors)
             {
-                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name + ".HasErrors is true, cannot compile a tree with syntax errors.");
+                throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
+                                            ".HasErrors is true, cannot compile a tree with syntax errors.");
             }
 
             if (writer == null)

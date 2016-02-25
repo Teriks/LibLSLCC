@@ -46,11 +46,10 @@
 #region Imports
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.Enums;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Nodes.Interfaces
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     AST node interface for code scopes.

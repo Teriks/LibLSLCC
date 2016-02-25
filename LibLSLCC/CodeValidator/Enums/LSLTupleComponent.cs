@@ -46,11 +46,10 @@
 #region Imports
 
 using System;
-using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Enums
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents the component accessed by an <see cref="LSLTupleAccessorNode" /> syntax tree node.

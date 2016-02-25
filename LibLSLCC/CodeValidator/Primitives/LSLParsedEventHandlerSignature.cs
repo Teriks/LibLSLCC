@@ -46,11 +46,10 @@
 #region Imports
 
 using System.Linq;
-using LibLSLCC.CodeValidator.Nodes;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Primitives
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents and event handler signature parsed from source code.

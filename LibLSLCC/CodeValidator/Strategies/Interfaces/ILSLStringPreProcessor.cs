@@ -46,12 +46,10 @@
 #region Imports
 
 using System.Collections.Generic;
-using LibLSLCC.CodeValidator.Nodes;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components
+namespace LibLSLCC.CodeValidator.Strategies
 {
     /// <summary>
     ///     Represents a character error for the <see cref="ILSLStringPreProcessor" /> type.

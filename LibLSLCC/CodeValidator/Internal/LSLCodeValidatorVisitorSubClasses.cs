@@ -46,12 +46,11 @@
 #region Imports
 
 using Antlr4.Runtime;
-using LibLSLCC.CodeValidator.Nodes.Interfaces;
 using LibLSLCC.Parser;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator
+namespace LibLSLCC.CodeValidator.Internal
 {
     internal sealed partial class LSLCodeValidatorVisitor
     {

@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: CSharpConstructorSignatureValidator.cs
 // 
@@ -39,130 +40,121 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
+#region Imports
 
 using System;
 using System.Collections.Generic;
 using LibLSLCC.Collections;
 
+#endregion
+
 namespace LibLSLCC.CSharp
 {
     /// <summary>
-    /// Represents the ways parameters can be forwarded in a CSharp constructor.
+    ///     Represents the ways parameters can be forwarded in a CSharp constructor.
     /// </summary>
     public enum CSharpConstructorParameterForwarding
     {
         /// <summary>
-        /// No parameter forwarding.
+        ///     No parameter forwarding.
         /// </summary>
         None,
 
         /// <summary>
-        /// Parameters are forwarded to the base class.
+        ///     Parameters are forwarded to the base class.
         /// </summary>
         Base,
 
         /// <summary>
-        /// Parameters are forwarded to another constructor in 'this' object.
+        ///     Parameters are forwarded to another constructor in 'this' object.
         /// </summary>
         This
     }
 
     /// <summary>
-    /// Constructor signature parsing results returned by <see cref="CSharpConstructorSignatureValidator.Validate"/>.
+    ///     Constructor signature parsing results returned by <see cref="CSharpConstructorSignatureValidator.Validate" />.
     /// </summary>
     public sealed class CSharpConstructorSignatureValidationResult
     {
         /// <summary>
-        /// Gets a value indicating whether the constructor signature parse was successful.
+        ///     Gets a value indicating whether the constructor signature parse was successful.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if success; otherwise, <c>false</c>.
+        ///     <c>true</c> if success; otherwise, <c>false</c>.
         /// </value>
         public bool Success { get; internal set; }
 
         /// <summary>
-        /// Will contain a syntax error description if <see cref="Success"/> is <c>false</c>
+        ///     Will contain a syntax error description if <see cref="Success" /> is <c>false</c>
         /// </summary>
         /// <value>
-        /// The error description.
+        ///     The error description.
         /// </value>
         public string ErrorDescription { get; internal set; }
 
         /// <summary>
-        /// Gets the index at which a syntax error was detected when <see cref="Success"/> is <c>false</c>
+        ///     Gets the index at which a syntax error was detected when <see cref="Success" /> is <c>false</c>
         /// </summary>
         /// <value>
-        /// The index of the syntax error.
+        ///     The index of the syntax error.
         /// </value>
         public int ErrorIndex { get; internal set; }
 
         /// <summary>
-        /// Gets the class name validation/parsing results for each parameter type.
+        ///     Gets the class name validation/parsing results for each parameter type.
         /// </summary>
         /// <value>
-        /// The parsing results for each parameter type.
+        ///     The parsing results for each parameter type.
         /// </value>
         public IReadOnlyGenericArray<CSharpClassNameValidationResult> ParameterTypes { get; internal set; }
 
         /// <summary>
-        /// Gets the parameter names.
+        ///     Gets the parameter names.
         /// </summary>
         /// <value>
-        /// The parameter names.
+        ///     The parameter names.
         /// </value>
         public IReadOnlyGenericArray<string> ParameterNames { get; internal set; }
 
-        /// <summary >
-        /// Gets the parameter forwarding type, if any.  IE, what the constructor signature forwarded its parameter's to (base, this or none)
+        /// <summary>
+        ///     Gets the parameter forwarding type, if any.  IE, what the constructor signature forwarded its parameter's to (base,
+        ///     this or none)
         /// </summary>
         /// <value>
-        /// The parameter forwarding type.
+        ///     The parameter forwarding type.
         /// </value>
         public CSharpConstructorParameterForwarding ParameterForwarding { get; internal set; }
 
         /// <summary>
-        /// Gets the names of any forwarded parameters.
+        ///     Gets the names of any forwarded parameters.
         /// </summary>
         /// <value>
-        /// The forwarded parameter names.
+        ///     The forwarded parameter names.
         /// </value>
         public IReadOnlyGenericArray<string> ForwardedParameters { get; internal set; }
     }
 
 
     /// <summary>
-    /// Static functions for parsing basic CSharp constructor signatures from strings.
+    ///     Static functions for parsing basic CSharp constructor signatures from strings.
     /// </summary>
     public static class CSharpConstructorSignatureValidator
     {
-        private enum States
-        {
-            Start,
-            WaitingForParamType,
-            AfterForwardingKeyword,
-            AccumulatingForwardedParam,
-            EndOfBasicSignature,
-            WaitingForForwardingKeyword,
-            AccumulatingParamType,
-            AccumulatingGenericType,
-            AccumulatingParamName,
-            EndOfForwardingSignature,
-            WaitingForParameterName,
-            AccumulatingForwardingKeyword,
-            WaitingForForwardedParam
-        }
-
-        
-
         /// <summary>
-        /// Validates the specified constructor signature string.
-        /// It expects a constructor signature string which starts at the first parenthesis after the constructor's name identifier.
+        ///     Validates the specified constructor signature string.
+        ///     It expects a constructor signature string which starts at the first parenthesis after the constructor's name
+        ///     identifier.
         /// </summary>
         /// <param name="input">The constructor signature string.</param>
-        /// <param name="validateTypeCallback">The validate type callback, used for additional custom validation of parameter types in the constructor signature.</param>
+        /// <param name="validateTypeCallback">
+        ///     The validate type callback, used for additional custom validation of parameter types
+        ///     in the constructor signature.
+        /// </param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="input"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="input" /> is <c>null</c>.</exception>
         public static CSharpConstructorSignatureValidationResult Validate(string input,
             CSharpParsedTypeValidateTypeCallback validateTypeCallback = null)
         {
@@ -388,7 +380,8 @@ namespace LibLSLCC.CSharp
                             if (c == ',' && state == States.AccumulatingGenericType) continue;
 
                             result.Success = false;
-                            result.ErrorDescription = string.Format("CSharpIDValidator.IsValidIdentifier{0}' character.", c);
+                            result.ErrorDescription = string.Format(
+                                "CSharpIDValidator.IsValidIdentifier{0}' character.", c);
                             result.ErrorIndex = index;
                             return result;
                     }
@@ -492,6 +485,24 @@ namespace LibLSLCC.CSharp
             result.ForwardedParameters = forwardedParameters;
 
             return result;
+        }
+
+
+        private enum States
+        {
+            Start,
+            WaitingForParamType,
+            AfterForwardingKeyword,
+            AccumulatingForwardedParam,
+            EndOfBasicSignature,
+            WaitingForForwardingKeyword,
+            AccumulatingParamType,
+            AccumulatingGenericType,
+            AccumulatingParamName,
+            EndOfForwardingSignature,
+            WaitingForParameterName,
+            AccumulatingForwardingKeyword,
+            WaitingForForwardedParam
         }
     }
 }

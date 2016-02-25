@@ -64,7 +64,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
 using LibLSLCC.AutoComplete;
-using LibLSLCC.CodeValidator.Enums;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Settings;

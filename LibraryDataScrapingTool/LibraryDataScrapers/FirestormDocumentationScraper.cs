@@ -44,7 +44,7 @@
 
 using System.Text.RegularExpressions;
 using System.Xml;
-using LibLSLCC.CodeValidator.Primitives;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.LibraryData;
 using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
 using LibraryDataScrapingTools.ScraperInterfaces;

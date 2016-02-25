@@ -1,12 +1,11 @@
 ﻿#region Imports
 
-using LibLSLCC.CodeValidator.Primitives;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibLSLCC.CodeValidator.Components
+namespace LibLSLCC.CodeValidator.Strategies
 {
     /// <summary>
     ///     A minimal interface for providing data about what exists in the standard LSL library.
