@@ -2726,9 +2726,6 @@ namespace LibLSLCC.CodeValidator.Internal
             }
 
 
-            var accessedComponent = LSLTupleComponentTools.ParseComponentName(accessedMember);
-
-
             if (variableReferenceOnLeft.Type == LSLType.Vector)
             {
                 if (accessedMember == "s")
@@ -2742,8 +2739,7 @@ namespace LibLSLCC.CodeValidator.Internal
             }
 
 
-            var result = new LSLTupleAccessorNode(context, variableReferenceOnLeft,
-                variableReferenceOnLeft.Type, accessedComponent);
+            var result = new LSLTupleAccessorNode(context, variableReferenceOnLeft, variableReferenceOnLeft.Type);
 
 
             return ReturnFromVisit(context, result);

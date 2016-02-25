@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     The raw name of the accessed tuple component, taken from the source code.
         /// </summary>
-        string AccessedComponentString { get; }
+        string AccessedComponent { get; }
 
         /// <summary>
         ///     The source code range of the tuple component that was accessed.
@@ -67,12 +67,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     <c>null</c>.
         /// </remarks>
         LSLSourceCodeRange SourceRangeAccessedComponent { get; }
-
-        /// <summary>
-        ///     The tuple member accessed.
-        ///     <see cref="LSLTupleComponent" />
-        /// </summary>
-        LSLTupleComponent AccessedComponent { get; }
 
         /// <summary>
         ///     The expression that the member access operator was used on.

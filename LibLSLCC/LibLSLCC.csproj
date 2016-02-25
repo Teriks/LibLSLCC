@@ -241,7 +241,6 @@
     <Compile Include="CodeValidator\Enums\LSLPrefixOperationType.cs" />
     <Compile Include="CodeValidator\Nodes\LSLRotationLiteralNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLStringLiteralNode.cs" />
-    <Compile Include="CodeValidator\Enums\LSLTupleComponent.cs" />
     <Compile Include="CodeValidator\Nodes\LSLTypecastExprNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLVariableNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLTupleAccessorNode.cs" />

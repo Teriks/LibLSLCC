@@ -77,9 +77,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         ///     <paramref name="context" /> or <paramref name="accessedExpression" /> is
         ///     <c>null</c>.
         /// </exception>
-        internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression,
-            LSLType accessedExpressionType,
-            LSLTupleComponent accessedComponent)
+        internal LSLTupleAccessorNode(LSLParser.DotAccessorExprContext context, ILSLExprNode accessedExpression, LSLType accessedExpressionType)
         {
             if (accessedExpressionType != LSLType.Vector && accessedExpressionType != LSLType.Rotation)
             {
@@ -96,8 +94,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("context");
             }
 
-            AccessedComponentString = context.member.Text;
-            AccessedComponent = accessedComponent;
+            AccessedComponent = context.member.Text;
 
             SourceRangeAccessedComponent = new LSLSourceCodeRange(context.member);
 
@@ -122,7 +119,7 @@ namespace LibLSLCC.CodeValidator.Nodes
                 throw new ArgumentNullException("other");
             }
 
-            AccessedComponentString = other.AccessedComponentString;
+            AccessedComponent = other.AccessedComponent;
             AccessedComponent = other.AccessedComponent;
 
             AccessedExpression = other.AccessedExpression.Clone();
@@ -156,7 +153,7 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// <summary>
         ///     The raw name of the accessed tuple member, taken from the source code.
         /// </summary>
-        public string AccessedComponentString { get; private set; }
+        public string AccessedComponent { get; private set; }
 
         /// <summary>
         ///     The source code range of the tuple member that was accessed.
@@ -167,11 +164,6 @@ namespace LibLSLCC.CodeValidator.Nodes
         /// </remarks>
         public LSLSourceCodeRange SourceRangeAccessedComponent { get; private set; }
 
-        /// <summary>
-        ///     The tuple component accessed.
-        ///     <see cref="LSLTupleComponent" />
-        /// </summary>
-        public LSLTupleComponent AccessedComponent { get; private set; }
 
         ILSLReadOnlyExprNode ILSLTupleAccessorNode.AccessedExpression
         {

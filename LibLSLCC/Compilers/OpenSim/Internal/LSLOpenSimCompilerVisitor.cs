@@ -496,7 +496,7 @@ private static class UTILITIES
         {
             Visit(node.AccessedExpression);
             Writer.Write(".");
-            Writer.Write(node.AccessedComponentString);
+            Writer.Write(node.AccessedComponent);
 
             return false;
         }
