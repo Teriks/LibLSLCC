@@ -50,6 +50,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -60,6 +61,10 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLCodeScopeNode : ILSLCodeScopeNode, ILSLCodeStatement
     {
+        HashSet<LSLLabelStatementNode> _preDefinedLabels = new HashSet<LSLLabelStatementNode>(
+            new LambdaEqualityComparer<LSLLabelStatementNode>(ReferenceEquals));
+
+
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLCodeScopeNode(LSLSourceCodeRange sourceRange, Err err)
@@ -67,6 +72,28 @@ namespace LibLSLCC.CodeValidator
         {
             SourceRange = sourceRange;
             HasErrors = true;
+        }
+
+
+
+        /// <summary>
+        /// Sets a labels parent to this <see cref="LSLCodeScopeNode"/>, also sets <see cref="LSLLabelStatementNode.ParentScopeId"/> to this nodes <see cref="ScopeId"/>.
+        /// </summary>
+        /// <param name="label">The label node to take pre define ownership of.</param>
+        /// <returns><paramref name="label"/>.</returns>
+        public LSLLabelStatementNode PreDefineLabel(LSLLabelStatementNode label)
+        {
+            if (_preDefinedLabels == null)
+            {
+                _preDefinedLabels = new HashSet<LSLLabelStatementNode>(
+            new LambdaEqualityComparer<LSLLabelStatementNode>(ReferenceEquals));
+            }
+
+
+            label.Parent = this;
+            label.ParentScopeId = ScopeId;
+            _preDefinedLabels.Add(label);
+            return label;
         }
 
 
@@ -86,7 +113,7 @@ namespace LibLSLCC.CodeValidator
         ///     Create a single statement <see cref="LSLCodeScopeNode" /> with the given
         ///     <see cref="ScopeId" /> and <see cref="LSLCodeScopeType" />.
         ///     <see cref="IsSingleStatementScope" /> will be <c>true</c>, you will not be able to add more statements with
-        ///     <see cref="AddCodeStatement" />.
+        ///     <see cref="AddStatement" />.
         /// </summary>
         /// <param name="scopeId">The <see cref="ParentScopeId"/>.</param>
         /// <param name="statement">The statement in the single statement code scope.</param>
@@ -96,7 +123,7 @@ namespace LibLSLCC.CodeValidator
             if (statement == null) throw new ArgumentNullException("statement");
 
             ScopeId = scopeId;
-            AddCodeStatement(statement);
+            AddStatement(statement);
             IsSingleStatementScope = true;
         }
 
@@ -375,7 +402,7 @@ namespace LibLSLCC.CodeValidator
         ///     scope already contains a statement.
         /// </exception>
         /// <seealso cref="EndScope" />
-        public void AddCodeStatement(ILSLCodeStatement statement)
+        public void AddStatement(ILSLCodeStatement statement)
         {
             if (statement == null)
             {
@@ -390,13 +417,23 @@ namespace LibLSLCC.CodeValidator
 
 
             var asCodeScope = statement as LSLCodeScopeNode;
+
             if (asCodeScope != null)
             {
                 asCodeScope.CodeScopeType = LSLCodeScopeType.AnonymousBlock;
             }
 
+            var asLabel = statement as LSLLabelStatementNode;
 
-            statement.Parent = this;
+            if (_preDefinedLabels.Contains(asLabel))
+            {
+                _preDefinedLabels.Remove(asLabel);
+            }
+            else
+            {
+                statement.Parent = this;
+            }
+
 
             statement.InsideSingleStatementScope = IsSingleStatementScope;
 

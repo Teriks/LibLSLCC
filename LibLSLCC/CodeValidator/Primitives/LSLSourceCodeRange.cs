@@ -209,6 +209,11 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("node");
             }
 
+            if (!node.SourceRangesAvailable)
+            {
+                throw new ArgumentException("node.SourceRangesAvailable == false", "start");
+            }
+
             LineStart = node.SourceRange.LineStart;
             ColumnStart = node.SourceRange.ColumnStart;
             StartIndex = node.SourceRange.StartIndex;

@@ -258,7 +258,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="declaration">The global variable declaration node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
-        public void AddVariableDeclaration(LSLVariableDeclarationNode declaration)
+        public void AddVariable(LSLVariableDeclarationNode declaration)
         {
             if (declaration == null)
             {
@@ -284,7 +284,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="declaration">The function declaration node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
-        public void AddFunctionDeclaration(LSLFunctionDeclarationNode declaration)
+        public void AddFunction(LSLFunctionDeclarationNode declaration)
         {
             if (declaration == null)
             {
@@ -309,7 +309,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="declaration">The state declaration node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'declaration' parameter is <c>null</c>.</exception>
-        public void AddStateDeclaration(LSLStateScopeNode declaration)
+        public void AddState(LSLStateScopeNode declaration)
         {
             if (declaration == null)
             {

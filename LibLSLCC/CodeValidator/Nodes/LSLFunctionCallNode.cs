@@ -100,6 +100,24 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
+        ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list and definition reference.
+        ///     This represents a call to a user defined function.  <paramref name="definition" /> receives this node
+        ///     as a new reference via <see cref="LSLFunctionDeclarationNode.AddReference" />.
+        /// </summary>
+        /// <param name="argumentList">The list of expression arguments.</param>
+        /// <param name="definition">The function definition node.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="definition" /> or <paramref name="argumentList" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        public LSLFunctionCallNode(LSLFunctionDeclarationNode definition, params ILSLExprNode[] argumentList)
+            : this(definition, new LSLExpressionListNode(argumentList))
+        {
+            
+        }
+
+
+        /// <summary>
         ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list.
         ///     This represents a call to a library function, since it has no definition node.
         /// </summary>
@@ -123,6 +141,24 @@ namespace LibLSLCC.CodeValidator
             ArgumentExpressionList.Parent = this;
 
             _libraryFunction = true;
+        }
+
+
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list.
+        ///     This represents a call to a library function, since it has no definition node.
+        /// </summary>
+        /// <param name="functionSignature">The signature of the library function.</param>
+        /// <param name="argumentList">The list of expression arguments.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="functionSignature" /> or <paramref name="argumentList" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        public LSLFunctionCallNode(LSLFunctionSignature functionSignature, params ILSLExprNode[] argumentList)
+            : this(functionSignature, new LSLExpressionListNode(argumentList))
+        {
         }
 
 

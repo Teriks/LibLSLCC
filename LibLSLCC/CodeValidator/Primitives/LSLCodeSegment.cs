@@ -76,13 +76,19 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The source code range that encompasses all <see cref="ILSLReadOnlyCodeStatement" /> objects in the LSLCodeStatement
+        ///     The source code range that encompasses all <see cref="ILSLReadOnlyCodeStatement" /> objects in the <see cref="LSLCodeSegment"/>.
         /// </summary>
         /// <remarks>
-        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
-        ///     <c>null</c>.
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> for any added statements, this property will be <c>null</c>.
         /// </remarks>
         public LSLSourceCodeRange SourceRange { get; private set; }
+
+
+        /// <summary>
+        /// <c>true</c> if <see cref="SourceRange"/> could be calculated for this segment and is non <c>null</c>.
+        /// </summary>
+        public bool SourceRangeAvailable { get; private set; }
+
 
         /// <summary>
         ///     The <see cref="ILSLReadOnlyCodeStatement" /> at the start of the code segment.
@@ -113,13 +119,28 @@ namespace LibLSLCC.CodeValidator
             if (StartNode == null)
             {
                 StartNode = statement;
-                SourceRange = new LSLSourceCodeRange(statement);
+
+                if (statement.SourceRangesAvailable)
+                {
+                    SourceRange = new LSLSourceCodeRange(statement);
+                    SourceRangeAvailable = true;
+                }
+                else
+                {
+                    SourceRangeAvailable = false;
+                }
+
+
                 _statementNodes.Add(statement);
             }
             else
             {
                 _statementNodes.Add(statement);
-                SourceRange = new LSLSourceCodeRange(SourceRange, EndNode.SourceRange);
+
+                if (SourceRangeAvailable)
+                {
+                    SourceRange = new LSLSourceCodeRange(SourceRange, EndNode.SourceRange);
+                }
             }
         }
     }

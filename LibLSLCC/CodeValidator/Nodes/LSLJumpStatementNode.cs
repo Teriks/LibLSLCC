@@ -66,11 +66,17 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode" /> to jump to.</param>
         /// <exception cref="ArgumentNullException"><paramref name="jumpTarget" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="jumpTarget" /> does not have a Parent, is not already in the syntax tree.</exception>
         public LSLJumpStatementNode(LSLLabelStatementNode jumpTarget)
         {
             if (jumpTarget == null)
             {
                 throw new ArgumentNullException("jumpTarget");
+            }
+
+            if (jumpTarget.Parent == null)
+            {
+                throw new ArgumentException("jumpTarget.Parent is null, must have a parent (be part of the syntax tree) prior to being jumped to.", "jumpTarget");
             }
 
             LabelName = jumpTarget.LabelName;

@@ -96,6 +96,17 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /// <summary>
+        ///     Create a <see cref="LSLListLiteralNode" /> with the given list of <see cref="ILSLExprNode"/> as content.
+        /// </summary>
+        /// <param name="expressionList">The <see cref="ILSLExprNode"/> list.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="expressionList" /> is <c>null</c>.</exception>
+        public LSLListLiteralNode(params ILSLExprNode[] expressionList)
+            : this(new LSLExpressionListNode(expressionList))
+        {
+        }
+
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="expressionListNode" /> is
         ///     <c>null</c>.

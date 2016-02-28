@@ -328,29 +328,56 @@ namespace DemoArea
                         new LSLFloatLiteralNode(3.0f))
                     );
 
-                program.AddVariableDeclaration(gv);
-                program.AddVariableDeclaration(gv2);
+                program.AddVariable(gv);
+                program.AddVariable(gv2);
 
                 var llSay = LSLFunctionSignature.Parse("llSay(integer chan, string msg);");
+
+
+
+
+                var funCode = new LSLCodeScopeNode(0);
+
+                funCode.AddStatement(new LSLExpressionStatementNode(new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(3), new LSLStringLiteralNode("test"))));
+
+                program.AddFunction(new LSLFunctionDeclarationNode(LSLType.Void, "myfunc", funCode));
+
 
                 var eventCode = new LSLCodeScopeNode(0);
 
                 var v = LSLVariableDeclarationNode.CreateLocalVar(LSLType.List, "test",
-                    new LSLListLiteralNode(new LSLExpressionListNode(new LSLIntegerLiteralNode(3),
-                        new LSLIntegerLiteralNode(4)))
+                    new LSLListLiteralNode(new LSLIntegerLiteralNode(3), new LSLIntegerLiteralNode(4))
                     );
 
-                var fun = new LSLFunctionCallNode(llSay,
-                    new LSLExpressionListNode(new LSLHexLiteralNode(0x332), new LSLStringLiteralNode("hello world")));
+                var fun = new LSLFunctionCallNode(llSay, new LSLHexLiteralNode(0x332), new LSLStringLiteralNode("hello world"));
 
 
-                eventCode.AddCodeStatement(v);
-                eventCode.AddCodeStatement(new LSLExpressionStatementNode(fun));
-                eventCode.AddCodeStatement(new LSLExpressionStatementNode(fun.Clone()));
-                eventCode.AddCodeStatement(new LSLExpressionStatementNode(fun.Clone()));
+              
+                eventCode.AddStatement(v);
+
+                var label = new LSLLabelStatementNode("test");
+                eventCode.PreDefineLabel(label);
+
+                var ic = new LSLCodeScopeNode(1);
+
+
+                ic.AddStatement(new LSLJumpStatementNode(label));
+
+                ic.AddStatement(new LSLExpressionStatementNode(fun));
+                ic.AddStatement(new LSLExpressionStatementNode(fun.Clone()));
+                ic.AddStatement(new LSLExpressionStatementNode(fun.Clone()));
+
+                ic.EndScope();
+
 
 
                 eventCode.EndScope();
+
+
+                eventCode.AddStatement(ic);
+
+                eventCode.AddStatement(label);
+
 
                 var e = new LSLEventHandlerNode("state_entry", eventCode);
 

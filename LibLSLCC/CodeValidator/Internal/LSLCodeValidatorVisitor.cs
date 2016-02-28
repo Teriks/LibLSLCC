@@ -577,7 +577,7 @@ namespace LibLSLCC.CodeValidator
                     //prevent global variable declarations from being added
                     //to the global variable pool, they are effectively undefined if there is an error
                     //in their definition
-                    result.AddVariableDeclaration(child);
+                    result.AddVariable(child);
                 }
             }
 
@@ -599,7 +599,7 @@ namespace LibLSLCC.CodeValidator
 
                 //function definitions are guaranteed not to have duplicate definitions in a pre-pass
                 //also guaranteed to have syntactically correct parameter definitions
-                result.AddFunctionDeclaration(child);
+                result.AddFunction(child);
             }
 
 
@@ -637,7 +637,7 @@ namespace LibLSLCC.CodeValidator
                     result.HasErrors = true;
                 }
 
-                result.AddStateDeclaration(child);
+                result.AddState(child);
             }
 
             ScopingManager.ExitCompilationUnit();
@@ -1429,7 +1429,7 @@ namespace LibLSLCC.CodeValidator
                     result.HasErrors = true;
                 }
 
-                result.AddCodeStatement(child);
+                result.AddStatement(child);
             }
 
             result.EndScope();
@@ -1510,7 +1510,7 @@ namespace LibLSLCC.CodeValidator
 
             ScopingManager.ExitSingleStatementScope();
 
-            result.AddCodeStatement(codeStatement);
+            result.AddStatement(codeStatement);
             result.EndScope();
 
 
