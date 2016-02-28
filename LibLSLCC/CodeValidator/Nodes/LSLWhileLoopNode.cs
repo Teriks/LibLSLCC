@@ -70,30 +70,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLWhileLoopNode" /> with the given <see cref="ScopeId" />, condition and code body.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="condition">The <see cref="ConditionExpression" />.</param>
-        /// <param name="code">The <see cref="Code" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="condition" /> or <paramref name="code" /> is <c>null</c>.</exception>
-        public LSLWhileLoopNode(int scopeId, ILSLExprNode condition, LSLCodeScopeNode code)
-        {
-            if (condition == null) throw new ArgumentNullException("condition");
-            if (code == null) throw new ArgumentNullException("code");
-
-            ScopeId = scopeId;
-
-            ConditionExpression = condition;
-            ConditionExpression.Parent = this;
-
-            Code = code;
-            Code.Parent = this;
-            Code.CodeScopeType = LSLCodeScopeType.WhileLoop;
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLWhileLoopNode" /> with a <see cref="ScopeId" /> of zero, condition and code body.
+        ///     Construct an <see cref="LSLWhileLoopNode" /> with a <see cref="ParentScopeId" /> of zero, condition and code body.
         /// </summary>
         /// <param name="condition">The <see cref="ConditionExpression" />.</param>
         /// <param name="code">The <see cref="Code" />.</param>
@@ -103,7 +80,6 @@ namespace LibLSLCC.CodeValidator
             if (condition == null) throw new ArgumentNullException("condition");
             if (code == null) throw new ArgumentNullException("code");
 
-            ScopeId = 0;
 
             ConditionExpression = condition;
             ConditionExpression.Parent = this;
@@ -221,7 +197,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
         /// <summary>
         ///     True if the node represents a return path out of its ILSLCodeScopeNode parent, False otherwise.

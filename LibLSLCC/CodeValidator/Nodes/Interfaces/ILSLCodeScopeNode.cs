@@ -69,6 +69,13 @@ namespace LibLSLCC.CodeValidator
         bool HasCodeStatements { get; }
 
         /// <summary>
+        ///     The scope ID of this code scope.
+        ///     All child statements will inherit this ID.
+        /// </summary>
+        /// <seealso cref="ILSLReadOnlyCodeStatement.ParentScopeId"/>
+        int ScopeId { get; }
+
+        /// <summary>
         ///     True if this code scope is an implicit braceless code scope.
         ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements.
         /// </summary>

@@ -665,7 +665,7 @@ private static class UTILITIES
                 If a variable is declared inside of dead code, it is put at the very top of the scope it was 
                 defined in and initialized with the default value for its type.
             */
-            Writer.Write(LocalVariableNamePrefix + node.Declaration.ScopeId + "_" + node.Name);
+            Writer.Write(LocalVariableNamePrefix + node.Declaration.ParentScopeId + "_" + node.Name);
             return false;
         }
 
@@ -1531,7 +1531,7 @@ private static class UTILITIES
                 if (SafeToPruneLocalVariableDeclaration(deadVariableDeclarationNode)) continue;
 
 
-                var variableName = "Var" + node.ScopeId + "_" + deadVariableDeclarationNode.Name;
+                var variableName = "Var" + node.ParentScopeId + "_" + deadVariableDeclarationNode.Name;
 
                 Writer.Write(GenIndent());
                 Writer.Write(LSLAtomType_To_CSharpType(deadVariableDeclarationNode.Type));
@@ -2057,7 +2057,7 @@ private static class UTILITIES
             Writer.Write(GenIndent());
 
 
-            var variableName = LocalVariableNamePrefix + node.ScopeId + "_" + node.Name;
+            var variableName = LocalVariableNamePrefix + node.ParentScopeId + "_" + node.Name;
 
 
             if (!node.HasDeclarationExpression)

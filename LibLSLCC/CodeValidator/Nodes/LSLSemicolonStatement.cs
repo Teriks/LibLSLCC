@@ -60,18 +60,9 @@ namespace LibLSLCC.CodeValidator
         private ILSLSyntaxTreeNode _parent;
 
 
-        /// <summary>
-        ///     Construct an <see cref="LSLSemicolonStatement" /> with the given <see cref="ScopeId" />.
-        /// </summary>
-        /// <param name="scopeId">the <see cref="ScopeId" />.</param>
-        public LSLSemicolonStatement(int scopeId)
-        {
-            ScopeId = scopeId;
-        }
-
 
         /// <summary>
-        ///     Construct an <see cref="LSLSemicolonStatement" /> with a <see cref="ScopeId" /> of zero.
+        ///     Construct an <see cref="LSLSemicolonStatement" /> with a <see cref="ParentScopeId" /> of zero.
         /// </summary>
         public LSLSemicolonStatement()
         {
@@ -156,7 +147,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
         /// <summary>
         ///     Is this statement dead code

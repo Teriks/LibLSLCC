@@ -228,7 +228,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
         IReadOnlyGenericArray<ILSLVariableNode> ILSLVariableDeclarationNode.References
         {

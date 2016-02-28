@@ -52,7 +52,7 @@ namespace LibLSLCC.CodeValidator
             to.IsDeadCode = from.IsDeadCode;
             to.DeadCodeType = from.DeadCodeType;
             to.StatementIndex = from.StatementIndex;
-            to.ScopeId = from.ScopeId;
+            to.ParentScopeId = from.ParentScopeId;
         }
     }
 }

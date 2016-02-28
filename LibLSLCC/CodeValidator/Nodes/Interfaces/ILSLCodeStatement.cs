@@ -79,7 +79,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        int ScopeId { get; }
+        int ParentScopeId { get; }
 
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
@@ -119,7 +119,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        new int ScopeId { get; set; }
+        new int ParentScopeId { get; set; }
 
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.

@@ -70,30 +70,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLDoLoopNode" /> with the given <see cref="ScopeId" />, condition and code body.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="condition">The <see cref="ConditionExpression" />.</param>
-        /// <param name="code">The <see cref="Code" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="code" /> or <paramref name="condition" /> is <c>null</c>.</exception>
-        public LSLDoLoopNode(int scopeId, LSLCodeScopeNode code, ILSLExprNode condition)
-        {
-            if (condition == null) throw new ArgumentNullException("condition");
-            if (code == null) throw new ArgumentNullException("code");
-
-            ScopeId = scopeId;
-
-            ConditionExpression = condition;
-            ConditionExpression.Parent = this;
-
-            Code = code;
-            Code.Parent = this;
-            Code.CodeScopeType = LSLCodeScopeType.DoLoop;
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLDoLoopNode" /> with a <see cref="ScopeId" /> of zero, condition and code body.
+        ///     Construct an <see cref="LSLDoLoopNode" /> with a <see cref="ParentScopeId" /> of zero, condition and code body.
         /// </summary>
         /// <param name="condition">The <see cref="ConditionExpression" />.</param>
         /// <param name="code">The <see cref="Code" />.</param>
@@ -103,7 +80,6 @@ namespace LibLSLCC.CodeValidator
             if (condition == null) throw new ArgumentNullException("condition");
             if (code == null) throw new ArgumentNullException("code");
 
-            ScopeId = 0;
 
             ConditionExpression = condition;
             ConditionExpression.Parent = this;
@@ -216,7 +192,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
         /// <summary>
         ///     The source code range of the opening parenthesis of the condition expression area.

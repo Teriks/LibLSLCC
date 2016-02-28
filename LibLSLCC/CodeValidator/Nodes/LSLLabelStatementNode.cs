@@ -72,26 +72,14 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
         /// <summary>
-        ///     Creates a <see cref="LSLLabelStatementNode" /> with a <see cref="ScopeId" /> of zero and the given
-        ///     <see cref="LabelName" />.
+        ///     Creates a <see cref="LSLLabelStatementNode" /> with the given <see cref="ParentScopeId" /> and <see cref="LabelName" />.
         /// </summary>
         /// <param name="labelName">The <see cref="LabelName" /></param>
         /// <exception cref="ArgumentNullException"><paramref name="labelName" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="labelName" /> contained characters not allowed in an LSL ID token.</exception>
-        public LSLLabelStatementNode(string labelName) : this(0, labelName)
-        {
-        }
-
-
-        /// <summary>
-        ///     Creates a <see cref="LSLLabelStatementNode" /> with the given <see cref="ScopeId" /> and <see cref="LabelName" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="labelName">The <see cref="LabelName" /></param>
-        /// <exception cref="ArgumentNullException"><paramref name="labelName" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="labelName" /> contained characters not allowed in an LSL ID token.</exception>
-        public LSLLabelStatementNode(int scopeId, string labelName)
+        public LSLLabelStatementNode(string labelName)
         {
             if (labelName == null)
             {
@@ -105,7 +93,6 @@ namespace LibLSLCC.CodeValidator
             }
 
             LabelName = labelName;
-            ScopeId = scopeId;
         }
 
 
@@ -185,7 +172,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
         /// <summary>
         ///     The source code range of the '@' symbol that prefixes the label name.

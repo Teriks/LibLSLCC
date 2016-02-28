@@ -201,7 +201,7 @@ namespace LibLSLCC.CodeValidator
 
             var statementIndexInfo = _statementIndexStack.Peek();
 
-            ctx.ScopeId = statementIndexInfo.ScopeId;
+            ctx.ParentScopeId = statementIndexInfo.ScopeId;
 
             ctx.StatementIndex = statementIndexInfo.Index;
 

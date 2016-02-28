@@ -60,7 +60,7 @@ namespace LibLSLCC.CodeValidator
     {
         /// <summary>
         ///     Creates an <see cref="LSLJumpStatementNode" /> that jumps to a specified <see cref="LSLLabelStatementNode" />, with
-        ///     a <see cref="ScopeId" /> of zero.
+        ///     a <see cref="ParentScopeId" /> of zero.
         ///     <paramref name="jumpTarget" /> receives a <see cref="LSLLabelStatementNode.JumpsToHere" /> reference via
         ///     <see cref="LSLLabelStatementNode.AddJumpToHere" />.
         /// </summary>
@@ -72,32 +72,6 @@ namespace LibLSLCC.CodeValidator
             {
                 throw new ArgumentNullException("jumpTarget");
             }
-
-            LabelName = jumpTarget.LabelName;
-
-            JumpTarget = jumpTarget;
-
-            JumpTarget.AddJumpToHere(this);
-        }
-
-
-        /// <summary>
-        ///     Creates an <see cref="LSLJumpStatementNode" /> with a the specified <see cref="ScopeId" /> that jumps to a
-        ///     <see cref="LSLLabelStatementNode" />.
-        ///     <paramref name="jumpTarget" /> receives a <see cref="LSLLabelStatementNode.JumpsToHere" /> reference via
-        ///     <see cref="LSLLabelStatementNode.AddJumpToHere" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode" /> to jump to.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="jumpTarget" /> is <c>null</c>.</exception>
-        public LSLJumpStatementNode(int scopeId, LSLLabelStatementNode jumpTarget)
-        {
-            if (jumpTarget == null)
-            {
-                throw new ArgumentNullException("jumpTarget");
-            }
-
-            ScopeId = scopeId;
 
             LabelName = jumpTarget.LabelName;
 
@@ -328,7 +302,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
 
         /// <summary>

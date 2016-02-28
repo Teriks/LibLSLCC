@@ -333,7 +333,7 @@ namespace DemoArea
 
                 var llSay = LSLFunctionSignature.Parse("llSay(integer chan, string msg);");
 
-                var eventCode = new LSLCodeScopeNode();
+                var eventCode = new LSLCodeScopeNode(0);
 
                 var v = LSLVariableDeclarationNode.CreateLocalVar(LSLType.List, "test",
                     new LSLListLiteralNode(new LSLExpressionListNode(new LSLIntegerLiteralNode(3),

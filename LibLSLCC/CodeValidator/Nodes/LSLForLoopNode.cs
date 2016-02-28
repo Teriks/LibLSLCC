@@ -71,7 +71,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Construct an <see cref="LSLForLoopNode" /> without init expressions or afterthought expressions, and a
-        ///     <see cref="ScopeId" /> of zero.
+        ///     <see cref="ParentScopeId" /> of zero.
         /// </summary>
         /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
         /// <param name="code">The code body of the for loop.</param>
@@ -82,7 +82,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLForLoopNode" /> without init expressions, and a <see cref="ScopeId" /> of zero.
+        ///     Construct an <see cref="LSLForLoopNode" /> without init expressions, and a <see cref="ParentScopeId" /> of zero.
         /// </summary>
         /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
         /// <param name="afterthoughtExpressions">The afterthought expression list.</param>
@@ -96,7 +96,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLForLoopNode" /> without afterthought expressions,  and a <see cref="ScopeId" /> of zero.
+        ///     Construct an <see cref="LSLForLoopNode" /> without afterthought expressions,  and a <see cref="ParentScopeId" /> of zero.
         /// </summary>
         /// <param name="initExpression">The init expression list.</param>
         /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
@@ -109,7 +109,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLForLoopNode" /> with all possible children and a <see cref="ScopeId" /> of zero.
+        ///     Construct an <see cref="LSLForLoopNode" /> with all possible children and a <see cref="ParentScopeId" /> of zero.
         /// </summary>
         /// <param name="initExpression">The init expression list.</param>
         /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
@@ -125,91 +125,6 @@ namespace LibLSLCC.CodeValidator
             if (initExpression == null) throw new ArgumentNullException("initExpression");
             if (afterthoughtExpressions == null) throw new ArgumentNullException("afterthoughtExpressions");
             if (code == null) throw new ArgumentNullException("code");
-
-            ScopeId = 0;
-
-            InitExpressionList = initExpression;
-            InitExpressionList.Parent = this;
-
-            ConditionExpression = condition;
-
-            if (ConditionExpression != null)
-            {
-                ConditionExpression.Parent = this;
-            }
-
-            AfterthoughtExpressionList = afterthoughtExpressions;
-            AfterthoughtExpressionList.Parent = this;
-
-            Code = code;
-            Code.Parent = this;
-            Code.CodeScopeType = LSLCodeScopeType.ForLoop;
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLForLoopNode" /> without init expressions or afterthought expressions, and the given
-        ///     <see cref="ScopeId" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
-        /// <param name="code">The code body of the for loop.</param>
-        public LSLForLoopNode(int scopeId, ILSLExprNode condition, LSLCodeScopeNode code) :
-            this(scopeId, new LSLExpressionListNode(), condition, new LSLExpressionListNode(), code)
-        {
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLForLoopNode" /> without init expressions, and the given <see cref="ScopeId" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
-        /// <param name="afterthoughtExpressions">The afterthought expression list.</param>
-        /// <param name="code">The code body of the for loop.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="afterthoughtExpressions" /> is <c>null</c>.</exception>
-        public LSLForLoopNode(int scopeId, ILSLExprNode condition,
-            LSLExpressionListNode afterthoughtExpressions, LSLCodeScopeNode code) :
-                this(scopeId, new LSLExpressionListNode(), condition, afterthoughtExpressions, code)
-        {
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLForLoopNode" /> without afterthought expressions, and the given <see cref="ScopeId" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="initExpression">The init expression list.</param>
-        /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
-        /// <param name="code">The code body of the for loop.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="initExpression" /> is <c>null</c>.</exception>
-        public LSLForLoopNode(int scopeId, LSLExpressionListNode initExpression, ILSLExprNode condition,
-            LSLCodeScopeNode code) :
-                this(scopeId, initExpression, condition, new LSLExpressionListNode(), code)
-        {
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLForLoopNode" /> with all possible children and the given <see cref="ScopeId" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="initExpression">The init expression list.</param>
-        /// <param name="condition">The for loop condition expression, may be <c>null</c>.</param>
-        /// <param name="afterthoughtExpressions">The afterthought expression list.</param>
-        /// <param name="code">The code body of the for loop.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="initExpression" /> or
-        ///     <paramref name="afterthoughtExpressions" /> or <paramref name="code" /> is <c>null</c>.
-        /// </exception>
-        public LSLForLoopNode(int scopeId, LSLExpressionListNode initExpression, ILSLExprNode condition,
-            LSLExpressionListNode afterthoughtExpressions, LSLCodeScopeNode code)
-        {
-            if (initExpression == null) throw new ArgumentNullException("initExpression");
-            if (afterthoughtExpressions == null) throw new ArgumentNullException("afterthoughtExpressions");
-            if (code == null) throw new ArgumentNullException("code");
-
-            ScopeId = scopeId;
 
             InitExpressionList = initExpression;
             InitExpressionList.Parent = this;
@@ -412,7 +327,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
 
         /// <summary>

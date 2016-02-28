@@ -74,24 +74,9 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> with the given <see cref="ScopeId" /> and an 'if' statement
-        ///     node.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="ifStatement">The if statement that starts the control chain.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement" /> is <c>null</c>.</exception>
-        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement)
-        {
-            if (ifStatement == null) throw new ArgumentNullException("ifStatement");
-
-            ScopeId = scopeId;
-            IfStatement = ifStatement;
-        }
-
 
         /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero and an 'if' statement
+        ///     Construct an <see cref="LSLControlStatementNode" /> with an 'if' statement
         ///     node.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
@@ -100,35 +85,12 @@ namespace LibLSLCC.CodeValidator
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
 
-            ScopeId = 0;
             IfStatement = ifStatement;
         }
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> with the given <see cref="ScopeId" />, with 'if' and 'else'
-        ///     statement nodes.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="ifStatement">The if statement that starts the control chain.</param>
-        /// <param name="elseStatement">The else statement.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="ifStatement" /> or <paramref name="elseStatement" /> is
-        ///     <c>null</c>.
-        /// </exception>
-        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement, LSLElseStatementNode elseStatement)
-        {
-            if (ifStatement == null) throw new ArgumentNullException("ifStatement");
-            if (elseStatement == null) throw new ArgumentNullException("elseStatement");
-
-            ScopeId = scopeId;
-            IfStatement = ifStatement;
-            ElseStatement = elseStatement;
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero, with 'if' and 'else'
+        ///     Construct an <see cref="LSLControlStatementNode" /> with 'if' and 'else'
         ///     statement nodes.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
@@ -142,45 +104,14 @@ namespace LibLSLCC.CodeValidator
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
             if (elseStatement == null) throw new ArgumentNullException("elseStatement");
 
-            ScopeId = 0;
             IfStatement = ifStatement;
             ElseStatement = elseStatement;
         }
 
 
-        /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> the given <see cref="ScopeId" />; with 'if', 'else-if' and
-        ///     'else' statement nodes.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="ifStatement">The if statement that starts the control chain.</param>
-        /// <param name="elseIfStatements">Else-if statements.</param>
-        /// <param name="elseStatement">The else statement.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="ifStatement" /> or <paramref name="elseIfStatements" /> or
-        ///     <paramref name="elseStatement" /> is <c>null</c>.
-        /// </exception>
-        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement,
-            IEnumerable<LSLElseIfStatementNode> elseIfStatements, LSLElseStatementNode elseStatement)
-        {
-            if (ifStatement == null) throw new ArgumentNullException("ifStatement");
-            if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
-            if (elseStatement == null) throw new ArgumentNullException("elseStatement");
-
-            ScopeId = scopeId;
-
-            IfStatement = ifStatement;
-            ElseStatement = elseStatement;
-
-            foreach (var elif in elseIfStatements)
-            {
-                AddElseIfStatement(elif);
-            }
-        }
-
 
         /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero; with 'if', 'else-if' and
+        ///     Construct an <see cref="LSLControlStatementNode" /> with 'if', 'else-if' and
         ///     'else' statement nodes.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
@@ -197,7 +128,6 @@ namespace LibLSLCC.CodeValidator
             if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
             if (elseStatement == null) throw new ArgumentNullException("elseStatement");
 
-            ScopeId = 0;
 
             IfStatement = ifStatement;
             ElseStatement = elseStatement;
@@ -209,36 +139,10 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> the given <see cref="ScopeId" />; with 'if' and 'else-if'
-        ///     statement nodes.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="ifStatement">The if statement that starts the control chain.</param>
-        /// <param name="elseIfStatements">Else-if statements.</param>
-        /// <exception cref="ArgumentNullException">
-        ///     <paramref name="ifStatement" /> or <paramref name="elseIfStatements" /> is
-        ///     <c>null</c>.
-        /// </exception>
-        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement,
-            IEnumerable<LSLElseIfStatementNode> elseIfStatements)
-        {
-            if (ifStatement == null) throw new ArgumentNullException("ifStatement");
-            if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
-
-            ScopeId = scopeId;
-
-            IfStatement = ifStatement;
-
-            foreach (var elif in elseIfStatements)
-            {
-                AddElseIfStatement(elif);
-            }
-        }
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero; with 'if' and 'else-if'
+        ///     Construct an <see cref="LSLControlStatementNode" />  with 'if' and 'else-if'
         ///     statement nodes.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
@@ -253,7 +157,6 @@ namespace LibLSLCC.CodeValidator
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
             if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
 
-            ScopeId = 0;
 
             IfStatement = ifStatement;
 
@@ -418,7 +321,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
 
         /// <summary>
@@ -622,14 +525,14 @@ namespace LibLSLCC.CodeValidator
             public bool Equals(LSLConstantJumpDescription x, LSLConstantJumpDescription y)
             {
                 return x.DeterminingJump.JumpTarget == y.DeterminingJump.JumpTarget &&
-                       x.DeterminingJump.JumpTarget.ScopeId == y.DeterminingJump.JumpTarget.ScopeId;
+                       x.DeterminingJump.JumpTarget.ParentScopeId == y.DeterminingJump.JumpTarget.ParentScopeId;
             }
 
 
             public int GetHashCode(LSLConstantJumpDescription obj)
             {
                 var hash = 17;
-                hash = hash*31 + obj.DeterminingJump.JumpTarget.ScopeId.GetHashCode();
+                hash = hash*31 + obj.DeterminingJump.JumpTarget.ParentScopeId.GetHashCode();
                 hash = hash*31 + obj.DeterminingJump.LabelName.GetHashCode();
 
                 return hash;

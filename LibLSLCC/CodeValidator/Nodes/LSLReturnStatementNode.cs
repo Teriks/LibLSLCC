@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLReturnStatementNode" /> with a given return expression and <see cref="ScopeId" /> of
+        ///     Construct an <see cref="LSLReturnStatementNode" /> with a given return expression and <see cref="ParentScopeId" /> of
         ///     zero.
         /// </summary>
         /// <param name="returnExpression">The <see cref="ReturnExpression" />.</param>
@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLReturnStatementNode" /> with a <see cref="ScopeId" /> of zero and no return expression.
+        ///     Construct an <see cref="LSLReturnStatementNode" /> with a <see cref="ParentScopeId" /> of zero and no return expression.
         /// </summary>
         public LSLReturnStatementNode()
         {
@@ -124,37 +124,6 @@ namespace LibLSLCC.CodeValidator
             LSLStatementNodeTools.CopyStatement(this, other);
 
             HasErrors = other.HasErrors;
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLReturnStatementNode" /> with the given <see cref="ScopeId" /> and return expression.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" /></param>
-        /// <param name="returnExpression">The <see cref="ReturnExpression" />.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="returnExpression" /> is <c>null</c>.</exception>
-        public LSLReturnStatementNode(int scopeId, ILSLExprNode returnExpression)
-        {
-            if (returnExpression == null)
-            {
-                throw new ArgumentNullException("returnExpression");
-            }
-
-            ScopeId = scopeId;
-
-            ReturnExpression = returnExpression;
-            ReturnExpression.Parent = this;
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLReturnStatementNode" /> with the given <see cref="ScopeId" />, without a return
-        ///     expression.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" /></param>
-        public LSLReturnStatementNode(int scopeId)
-        {
-            ScopeId = scopeId;
         }
 
 
@@ -236,7 +205,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
         /// <summary>
         ///     The source code range of the 'return' keyword in the return statement.

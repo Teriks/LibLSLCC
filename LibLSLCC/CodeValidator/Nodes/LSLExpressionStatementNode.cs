@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLExpressionStatementNode" /> with the given expression and a <see cref="ScopeId" /> of
+        ///     Construct an <see cref="LSLExpressionStatementNode" /> with the given expression and a <see cref="ParentScopeId" /> of
         ///     zero.
         /// </summary>
         /// <param name="expression">The expression to appear as a statement.</param>
@@ -78,25 +78,6 @@ namespace LibLSLCC.CodeValidator
         public LSLExpressionStatementNode(ILSLExprNode expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
-
-            ScopeId = 0;
-
-            Expression = expression;
-            Expression.Parent = this;
-        }
-
-
-        /// <summary>
-        ///     Construct an <see cref="LSLExpressionStatementNode" /> with the given expression and <see cref="ScopeId" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="expression">The expression to appear as a statement.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="expression" /> is <c>null</c>.</exception>
-        public LSLExpressionStatementNode(int scopeId, ILSLExprNode expression)
-        {
-            if (expression == null) throw new ArgumentNullException("expression");
-
-            ScopeId = scopeId;
 
             Expression = expression;
             Expression.Parent = this;
@@ -179,7 +160,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
 
         /// <summary>

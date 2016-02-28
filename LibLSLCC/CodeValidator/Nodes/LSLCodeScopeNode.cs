@@ -71,33 +71,24 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Create a <see cref="LSLCodeScopeNode" /> with the given <see cref="ILSLReadOnlyCodeStatement.ScopeId" /> and
+        ///     Create a <see cref="LSLCodeScopeNode" /> with the given <see cref="ScopeId" /> and
         ///     <see cref="LSLCodeScopeType" />.
         /// </summary>
-        /// <param name="scopeId">The ScopeId.</param>
+        /// <param name="scopeId">The <see cref="ParentScopeId"/>.</param>
         public LSLCodeScopeNode(int scopeId)
         {
             ScopeId = scopeId;
         }
 
 
-        /// <summary>
-        ///     Create a <see cref="LSLCodeScopeNode" /> with the given <see cref="LSLCodeScopeType" /> and a
-        ///     <see cref="ScopeId" /> of zero.
-        /// </summary>
-        public LSLCodeScopeNode()
-        {
-            ScopeId = 0;
-        }
-
 
         /// <summary>
         ///     Create a single statement <see cref="LSLCodeScopeNode" /> with the given
-        ///     <see cref="ILSLReadOnlyCodeStatement.ScopeId" /> and <see cref="LSLCodeScopeType" />.
+        ///     <see cref="ScopeId" /> and <see cref="LSLCodeScopeType" />.
         ///     <see cref="IsSingleStatementScope" /> will be <c>true</c>, you will not be able to add more statements with
         ///     <see cref="AddCodeStatement" />.
         /// </summary>
-        /// <param name="scopeId">The ScopeId.</param>
+        /// <param name="scopeId">The <see cref="ParentScopeId"/>.</param>
         /// <param name="statement">The statement in the single statement code scope.</param>
         /// <exception cref="ArgumentNullException"><paramref name="statement" /> is <c>null</c>.</exception>
         public LSLCodeScopeNode(int scopeId, ILSLCodeStatement statement)
@@ -105,24 +96,6 @@ namespace LibLSLCC.CodeValidator
             if (statement == null) throw new ArgumentNullException("statement");
 
             ScopeId = scopeId;
-            AddCodeStatement(statement);
-            IsSingleStatementScope = true;
-        }
-
-
-        /// <summary>
-        ///     Create a single statement <see cref="LSLCodeScopeNode" /> with the given <see cref="LSLCodeScopeType" /> and a
-        ///     <see cref="ScopeId" /> of zero.
-        ///     <see cref="IsSingleStatementScope" /> will be <c>true</c>, you will not be able to add more statements with
-        ///     <see cref="AddCodeStatement" />.
-        /// </summary>
-        /// <param name="statement">The statement in the single statement code scope.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="statement" /> is <c>null</c>.</exception>
-        public LSLCodeScopeNode(ILSLCodeStatement statement)
-        {
-            if (statement == null) throw new ArgumentNullException("statement");
-
-            ScopeId = 0;
             AddCodeStatement(statement);
             IsSingleStatementScope = true;
         }
@@ -258,6 +231,13 @@ namespace LibLSLCC.CodeValidator
         }
 
         /// <summary>
+        ///     The scope ID of this code scope.
+        ///     All child statements will inherit this ID.
+        /// </summary>
+        /// <seealso cref="ILSLReadOnlyCodeStatement.ParentScopeId"/>
+        public int ScopeId { get; private set; }
+
+        /// <summary>
         ///     True if this code scope is an implicit braceless scope.
         ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements.
         /// </summary>
@@ -306,13 +286,13 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public LSLDeadCodeType DeadCodeType { get; set; }
 
+
         /// <summary>
-        ///     A unique identifier for this scope, all direct descendants
-        ///     share this ScopeId, ScopeId is 1 for the top scope of functions or
-        ///     event handlers, the tree builder increments the id as new scopes are encountered
-        ///     inside the top level scope
+        ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
+        ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
+
 
         /// <summary>
         ///     The index of this statement in its parent scope
@@ -422,7 +402,7 @@ namespace LibLSLCC.CodeValidator
 
             statement.StatementIndex = _codeStatements.Count;
             statement.IsLastStatementInScope = true;
-            statement.ScopeId = ScopeId;
+            statement.ParentScopeId = ScopeId;
 
             if (_lastStatementAdded != null)
             {
@@ -438,7 +418,7 @@ namespace LibLSLCC.CodeValidator
                 //inspect all constant jumps that have been added prior to the current statement
                 foreach (var constantJump in ConstantJumps)
                 {
-                    if (constantJump.JumpTarget.ScopeId != ScopeId)
+                    if (constantJump.JumpTarget.ParentScopeId != ScopeId)
                     {
                         //we jumped out of the scope, into the outer scope. this is the only possible scenario
                         //because we can't jump into a nested scope (like into an if statement, or scope block).
@@ -692,18 +672,6 @@ namespace LibLSLCC.CodeValidator
             return IsSingleStatementScope
                 ? visitor.VisitSingleStatementCodeScope(this)
                 : visitor.VisitMultiStatementCodeScope(this);
-        }
-
-
-        /// <summary>
-        ///     Deep clones the node.  It should clone the node and all of its children and cloneable properties, except the
-        ///     parent.
-        ///     When cloned, the parent node reference should be left <c>null</c>.
-        /// </summary>
-        /// <returns>A deep clone of this statement tree node.</returns>
-        public LSLCodeScopeNode Clone()
-        {
-            return HasErrors ? GetError(SourceRange) : new LSLCodeScopeNode(this);
         }
 
 

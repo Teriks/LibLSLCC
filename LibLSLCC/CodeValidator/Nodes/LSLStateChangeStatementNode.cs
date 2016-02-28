@@ -69,29 +69,11 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        /// <summary>
-        ///     Construct an <see cref="LSLStateChangeStatementNode" /> with the given <see cref="ScopeId" /> that changes state to
-        ///     the state node specified by <paramref name="state" />.
-        /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
-        /// <param name="state">The state node representing the state to change to.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="state" /> is <c>null</c>.</exception>
-        public LSLStateChangeStatementNode(int scopeId, LSLStateScopeNode state)
-        {
-            if (state == null)
-            {
-                throw new ArgumentNullException("state");
-            }
-
-            ScopeId = scopeId;
-            StateTargetName = state.StateName;
-        }
-
 
         /// <summary>
         ///     Construct an <see cref="LSLStateChangeStatementNode" /> that changes state to the state node specified by
         ///     <paramref name="state" />.
-        ///     <see cref="ScopeId" /> will be set to zero.
+        ///     <see cref="ParentScopeId" /> will be set to zero.
         /// </summary>
         /// <param name="state">The state node representing the state to change to.</param>
         /// <exception cref="ArgumentNullException"><paramref name="state" /> is <c>null</c>.</exception>
@@ -102,9 +84,9 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("state");
             }
 
-            ScopeId = 0;
             StateTargetName = state.StateName;
         }
+
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
@@ -166,7 +148,7 @@ namespace LibLSLCC.CodeValidator
         ///     Represents an ID number for the scope this code statement is in, they are unique per-function/event handler.
         ///     this is not the scopes level.
         /// </summary>
-        public int ScopeId { get; set; }
+        public int ParentScopeId { get; set; }
 
         /// <summary>
         ///     The source code range of the 'state' keyword in the state change statement.
