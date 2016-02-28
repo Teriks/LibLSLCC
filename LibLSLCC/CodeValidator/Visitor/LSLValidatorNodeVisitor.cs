@@ -94,7 +94,7 @@ namespace LibLSLCC.CodeValidator
         ///     method seen here.
         /// </seealso>
         /// <returns>An object of type (T) from the visitor implementation of this function.</returns>
-        public virtual T VisitFunctionCallParameters(ILSLExpressionListNode node)
+        public virtual T VisitFunctionCallArguments(ILSLExpressionListNode node)
         {
             return VisitExpressionList(node);
         }
@@ -344,7 +344,7 @@ namespace LibLSLCC.CodeValidator
 
             if (node.HasAfterthoughtExpressions)
             {
-                Visit(node.AfterthoughExpressionList);
+                Visit(node.AfterthoughtExpressionList);
             }
 
             return default(T);
@@ -737,15 +737,15 @@ namespace LibLSLCC.CodeValidator
         ///     Multi-statement code scopes will always be: a function/event handler code body, the body of a control/loop
         ///     statement, or an anonymous code scope declared inside of a parent code scope.
         /// </summary>
-        /// <param name="node">The Syntax Tree Node.</param>
+        /// <param name="codeScopeNode">The Syntax Tree Node.</param>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitCodeScope">
         ///     VisitMultiStatementCodeScope makes a call to the method seen
         ///     here.
         /// </seealso>
         /// <returns>An object of type (T) from the visitor implementation of this function.</returns>
-        public virtual T VisitMultiStatementCodeScope(ILSLCodeScopeNode node)
+        public virtual T VisitMultiStatementCodeScope(ILSLCodeScopeNode codeScopeNode)
         {
-            return VisitCodeScope(node);
+            return VisitCodeScope(codeScopeNode);
         }
 
 
@@ -765,14 +765,14 @@ namespace LibLSLCC.CodeValidator
         ///     traversal.
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
-        /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitFunctionCallParameters">
+        /// <seealso cref="VisitFunctionCallArguments">
         ///     VisitLibraryFunctionCallParameters makes a call
         ///     to the method seen here.
         /// </seealso>
         /// <returns>An object of type (T) from the visitor implementation of this function.</returns>
         public virtual T VisitLibraryFunctionCallParameters(ILSLExpressionListNode node)
         {
-            return VisitFunctionCallParameters(node);
+            return VisitFunctionCallArguments(node);
         }
 
 
@@ -781,14 +781,14 @@ namespace LibLSLCC.CodeValidator
         ///     traversal.
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
-        /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitFunctionCallParameters">
+        /// <seealso cref="VisitFunctionCallArguments">
         ///     VisitUserFunctionCallParameters makes a call to
         ///     the method seen here.
         /// </seealso>
         /// <returns>An object of type (T) from the visitor implementation of this function.</returns>
         public virtual T VisitUserFunctionCallParameters(ILSLExpressionListNode node)
         {
-            return VisitFunctionCallParameters(node);
+            return VisitFunctionCallArguments(node);
         }
 
 
@@ -887,7 +887,7 @@ namespace LibLSLCC.CodeValidator
         ///     Visit an expression list node during a syntax tree traversal.
         /// </summary>
         /// <param name="node">The Syntax Tree Node.</param>
-        /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitFunctionCallParameters">VisitFunctionCallParameters calls this method.</seealso>
+        /// <seealso cref="VisitFunctionCallArguments">VisitFunctionCallParameters calls this method.</seealso>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitListLiteralInitializerList">
         ///     VisitListLiteralInitializerList calls this
         ///     method.
@@ -910,13 +910,13 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Visit a code state definition node during a syntax tree traversal.
         /// </summary>
-        /// <param name="node">The Syntax Tree Node.</param>
+        /// <param name="stateNode">The Syntax Tree Node.</param>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitDefaultState">VisitDefaultState calls this method.</seealso>
         /// <seealso cref="LSLValidatorNodeVisitor{T}.VisitDefinedState">VisitDefinedState calls this method.</seealso>
         /// <returns>An object of type (T) from the visitor implementation of this function.</returns>
-        public virtual T VisitState(ILSLStateScopeNode node)
+        public virtual T VisitState(ILSLStateScopeNode stateNode)
         {
-            foreach (var ev in node.EventHandlers)
+            foreach (var ev in stateNode.EventHandlers)
             {
                 Visit(ev);
             }

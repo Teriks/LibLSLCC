@@ -52,8 +52,13 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     A container for LSL source code comment strings.
     /// </summary>
-    public sealed class LSLComment
+    public struct LSLComment
     {
+        private readonly string _text;
+        private readonly LSLSourceCodeRange _sourceRange;
+        private readonly LSLCommentType _type;
+
+
         /// <summary>
         ///     Construct a comment object from comment text, type and source code range.
         /// </summary>
@@ -62,26 +67,35 @@ namespace LibLSLCC.CodeValidator
         /// <param name="sourceRange">The source code range that the comment occupies.</param>
         public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceRange)
         {
-            Text = text;
-            Type = type;
-            SourceRange = sourceRange;
+            _text = text;
+            _type = type;
+            _sourceRange = sourceRange;
         }
 
 
         /// <summary>
         ///     The raw comment text.
         /// </summary>
-        public string Text { get; private set; }
+        public string Text
+        {
+            get { return _text; }
+        }
 
         /// <summary>
         ///     The source code range which the comment occupies.
         /// </summary>
-        public LSLSourceCodeRange SourceRange { get; private set; }
+        public LSLSourceCodeRange SourceRange
+        {
+            get { return _sourceRange; }
+        }
 
         /// <summary>
         ///     The LSLCommentType type of the comment.
         /// </summary>
-        public LSLCommentType Type { get; private set; }
+        public LSLCommentType Type
+        {
+            get { return _type; }
+        }
 
 
         /// <summary>

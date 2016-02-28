@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLDoLoopNode : ILSLDoLoopNode, ILSLCodeStatement
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLDoLoopNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,12 +70,12 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLDoLoopNode"/> with the given <see cref="ScopeId"/>, condition and code body.
+        ///     Construct an <see cref="LSLDoLoopNode" /> with the given <see cref="ScopeId" />, condition and code body.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
-        /// <param name="condition">The <see cref="ConditionExpression"/>.</param>
-        /// <param name="code">The <see cref="Code"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="condition"/> is <c>null</c>.</exception>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
+        /// <param name="condition">The <see cref="ConditionExpression" />.</param>
+        /// <param name="code">The <see cref="Code" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="code" /> or <paramref name="condition" /> is <c>null</c>.</exception>
         public LSLDoLoopNode(int scopeId, LSLCodeScopeNode code, ILSLExprNode condition)
         {
             if (condition == null) throw new ArgumentNullException("condition");
@@ -87,18 +88,19 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.DoLoop;
         }
 
 
         /// <summary>
-        /// Construct an <see cref="LSLDoLoopNode"/> with a <see cref="ScopeId"/> of zero, condition and code body.
+        ///     Construct an <see cref="LSLDoLoopNode" /> with a <see cref="ScopeId" /> of zero, condition and code body.
         /// </summary>
-        /// <param name="condition">The <see cref="ConditionExpression"/>.</param>
-        /// <param name="code">The <see cref="Code"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="condition"/> is <c>null</c>.</exception>
+        /// <param name="condition">The <see cref="ConditionExpression" />.</param>
+        /// <param name="code">The <see cref="Code" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="code" /> or <paramref name="condition" /> is <c>null</c>.</exception>
         public LSLDoLoopNode(LSLCodeScopeNode code, ILSLExprNode condition)
         {
-            if(condition == null) throw new ArgumentNullException("condition");
+            if (condition == null) throw new ArgumentNullException("condition");
             if (code == null) throw new ArgumentNullException("code");
 
             ScopeId = 0;
@@ -108,6 +110,7 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.DoLoop;
         }
 
 
@@ -130,6 +133,7 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.DoLoop;
 
             ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
@@ -145,6 +149,41 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLDoLoopNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLDoLoopNode(LSLDoLoopNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeCloseParenth = other.SourceRangeCloseParenth;
+                SourceRangeDoKeyword = other.SourceRangeDoKeyword;
+                SourceRangeOpenParenth = other.SourceRangeOpenParenth;
+                SourceRangeSemicolon = other.SourceRangeSemicolon;
+                SourceRangeWhileKeyword = other.SourceRangeWhileKeyword;
+            }
+
+            ConditionExpression = other.ConditionExpression.Clone();
+            ConditionExpression.Parent = this;
+
+            Code = other.Code.Clone();
+            Code.Parent = this;
+
+            LSLStatementNodeTools.CopyStatement(this, other);
+
+            HasErrors = other.HasErrors;
+        }*/
+
+
         /// <summary>
         ///     The code scope node that represents the code scope of the loop body.
         /// </summary>
@@ -154,7 +193,6 @@ namespace LibLSLCC.CodeValidator
         ///     The condition expression that controls the loop, this could be null in the case of for-loops.
         /// </summary>
         public ILSLExprNode ConditionExpression { get; private set; }
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -260,7 +298,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>

@@ -48,8 +48,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
@@ -62,6 +62,7 @@ namespace LibLSLCC.CodeValidator
     public sealed class LSLFunctionDeclarationNode : ILSLFunctionDeclarationNode, ILSLSyntaxTreeNode
     {
         private readonly GenericArray<LSLFunctionCallNode> _references = new GenericArray<LSLFunctionCallNode>();
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLFunctionDeclarationNode(LSLSourceCodeRange sourceRange, Err err)
@@ -72,23 +73,65 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /*
         /// <summary>
-        ///     Construct an <see cref="LSLFunctionDeclarationNode"/> with the given return type, and code body.
+        ///     Create an <see cref="LSLFunctionDeclarationNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLFunctionDeclarationNode(LSLFunctionDeclarationNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeName = other.SourceRangeName;
+                SourceRangeReturnType = other.SourceRangeReturnType;
+                SourceRangesAvailable = other.SourceRangesAvailable;
+            }
+
+
+            Name = other.Name;
+
+            ParameterList = other.ParameterList.Clone();
+            ParameterList.Parent = this;
+
+            Code = other.Code.Clone();
+            Code.Parent = this;
+
+
+            HasErrors = other.HasErrors;
+        }*/
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLFunctionDeclarationNode" /> with the given return type, and code body.
         ///     The function declaration will have an empty parameter list node.
         /// </summary>
-        /// <exception cref="ArgumentException">if <paramref name="functionName"/> contains invalid characters for an LSL ID token.</exception>
-        public LSLFunctionDeclarationNode(LSLType returnType, string functionName, LSLCodeScopeNode code) : this(returnType, functionName, new LSLParameterListNode(), code)
+        /// <exception cref="ArgumentException">
+        ///     if <paramref name="functionName" /> contains invalid characters for an LSL ID
+        ///     token.
+        /// </exception>
+        public LSLFunctionDeclarationNode(LSLType returnType, string functionName, LSLCodeScopeNode code)
+            : this(returnType, functionName, new LSLParameterListNode(), code)
         {
         }
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLFunctionDeclarationNode"/> with the given return type, parameter list, and code body.
+        ///     Construct an <see cref="LSLFunctionDeclarationNode" /> with the given return type, parameter list, and code body.
         /// </summary>
         /// <exception cref="ArgumentNullException">
-        ///    <paramref name="functionName"/> or <paramref name="parameterList" /> or <paramref name="code" /> is <c>null</c>.
+        ///     <paramref name="functionName" /> or <paramref name="parameterList" /> or <paramref name="code" /> is <c>null</c>.
         /// </exception>
-        /// <exception cref="ArgumentException">if <paramref name="functionName"/> contains invalid characters for an LSL ID token.</exception>
+        /// <exception cref="ArgumentException">
+        ///     if <paramref name="functionName" /> contains invalid characters for an LSL ID
+        ///     token.
+        /// </exception>
         public LSLFunctionDeclarationNode(LSLType returnType, string functionName,
             LSLParameterListNode parameterList, LSLCodeScopeNode code)
         {
@@ -107,7 +150,8 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(functionName))
             {
-                throw new ArgumentException("functionName provided contained characters not allowed in an LSL ID token.", "functionName");
+                throw new ArgumentException(
+                    "functionName provided contained characters not allowed in an LSL ID token.", "functionName");
             }
 
             Name = functionName;
@@ -122,10 +166,8 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.Function;
         }
-
-
-
 
 
         /// <exception cref="ArgumentNullException">
@@ -165,6 +207,7 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.Function;
 
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeName = new LSLSourceCodeRange(context.function_name);
@@ -274,6 +317,17 @@ namespace LibLSLCC.CodeValidator
             return new LSLFunctionDeclarationNode(sourceRange, Err.Err);
         }
 
+
+        /// <summary>
+        ///     Build a <see cref="LSLFunctionSignature" /> object based off the signature of this function declaration node.
+        /// </summary>
+        /// <returns>The created <see cref="LSLFunctionSignature" />.</returns>
+        public LSLFunctionSignature CreateSignature()
+        {
+            return new LSLFunctionSignature(ReturnType, Name,
+                ParameterList.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
+        }
+
         #region Nested type: Err
 
         private enum Err
@@ -321,17 +375,27 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         #endregion
-
-        /// <summary>
-        /// Build a <see cref="LSLFunctionSignature"/> object based off the signature of this function declaration node.
-        /// </summary>
-        /// <returns>The created <see cref="LSLFunctionSignature"/>.</returns>
-        public LSLFunctionSignature CreateSignature()
-        {
-            return new LSLFunctionSignature(ReturnType, Name, ParameterList.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
-        }
     }
 }

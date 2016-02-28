@@ -46,6 +46,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using LibLSLCC.CodeFormatter;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Compilers;
 using LibLSLCC.LibraryData;
@@ -310,6 +311,66 @@ namespace DemoArea
     {
         static void Main(string[] args)
         {
+            {
+                Console.WriteLine("Pretty Print DOM Test.");
+                Console.WriteLine("======================");
+                Console.WriteLine("");
+
+                LSLCompilationUnitNode program = new LSLCompilationUnitNode();
+
+                var gv = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Rotation, "rot",
+                    new LSLRotationLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
+                        new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f))
+                    );
+
+                var gv2 = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Vector, "vec",
+                    new LSLVectorLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
+                        new LSLFloatLiteralNode(3.0f))
+                    );
+
+                program.AddVariableDeclaration(gv);
+                program.AddVariableDeclaration(gv2);
+
+                var llSay = LSLFunctionSignature.Parse("llSay(integer chan, string msg);");
+
+                var eventCode = new LSLCodeScopeNode();
+
+                var v = LSLVariableDeclarationNode.CreateLocalVar(LSLType.List, "test",
+                    new LSLListLiteralNode(new LSLExpressionListNode(new LSLIntegerLiteralNode(3),
+                        new LSLIntegerLiteralNode(4)))
+                    );
+
+                var fun = new LSLFunctionCallNode(llSay,
+                    new LSLExpressionListNode(new LSLHexLiteralNode(0x332), new LSLStringLiteralNode("hello world")));
+
+
+                eventCode.AddCodeStatement(v);
+                eventCode.AddCodeStatement(new LSLExpressionStatementNode(fun));
+                eventCode.AddCodeStatement(new LSLExpressionStatementNode(fun.Clone()));
+                eventCode.AddCodeStatement(new LSLExpressionStatementNode(fun.Clone()));
+
+
+                eventCode.EndScope();
+
+                var e = new LSLEventHandlerNode("state_entry", eventCode);
+
+                program.DefaultState.AddEventHandler(e);
+
+                LSLCodeFormatter formatter = new LSLCodeFormatter();
+
+
+                formatter.Format(program, Console.Out);
+
+                Console.WriteLine("");
+                Console.WriteLine("======================");
+            }
+
+
+
+            Console.WriteLine("");
+            Console.WriteLine("Library data reflect and compile test.");
+            Console.WriteLine("======================");
+            Console.WriteLine("");
 
 
             var x = new LSLLibraryDataReflectionSerializer

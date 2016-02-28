@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLStateChangeStatementNode : ILSLStateChangeStatementNode, ILSLCodeStatement
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLStateChangeStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,11 +70,12 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLStateChangeStatementNode"/> with the given <see cref="ScopeId"/> that changes state to the state node specified by <paramref name="state"/>.
+        ///     Construct an <see cref="LSLStateChangeStatementNode" /> with the given <see cref="ScopeId" /> that changes state to
+        ///     the state node specified by <paramref name="state" />.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
         /// <param name="state">The state node representing the state to change to.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="state"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="state" /> is <c>null</c>.</exception>
         public LSLStateChangeStatementNode(int scopeId, LSLStateScopeNode state)
         {
             if (state == null)
@@ -86,13 +88,13 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
-        /// Construct an <see cref="LSLStateChangeStatementNode"/> that changes state to the state node specified by <paramref name="state"/>.
-        /// <see cref="ScopeId"/> will be set to zero.
+        ///     Construct an <see cref="LSLStateChangeStatementNode" /> that changes state to the state node specified by
+        ///     <paramref name="state" />.
+        ///     <see cref="ScopeId" /> will be set to zero.
         /// </summary>
         /// <param name="state">The state node representing the state to change to.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="state"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="state" /> is <c>null</c>.</exception>
         public LSLStateChangeStatementNode(LSLStateScopeNode state)
         {
             if (state == null)
@@ -121,6 +123,32 @@ namespace LibLSLCC.CodeValidator
             SourceRangeStateName = new LSLSourceCodeRange(context.state_target);
 
             SourceRangesAvailable = true;
+        }
+
+
+        /// <summary>
+        ///     Create an <see cref="LSLStateChangeStatementNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLStateChangeStatementNode(LSLStateChangeStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeSemicolon = other.SourceRangeSemicolon;
+                SourceRangeStateKeyword = other.SourceRangeStateKeyword;
+            }
+
+            StateTargetName = other.StateTargetName;
+
+            LSLStatementNodeTools.CopyStatement(this, other);
+
+            HasErrors = other.HasErrors;
         }
 
 
@@ -202,7 +230,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -268,6 +315,18 @@ namespace LibLSLCC.CodeValidator
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitStateChangeStatement(this);
+        }
+
+
+        /// <summary>
+        ///     Deep clones the node.  It should clone the node and all of its children and cloneable properties, except the
+        ///     parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
+        /// </summary>
+        /// <returns>A deep clone of this statement tree node.</returns>
+        public LSLStateChangeStatementNode Clone()
+        {
+            return HasErrors ? GetError(SourceRange) : new LSLStateChangeStatementNode(this);
         }
 
         #endregion

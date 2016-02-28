@@ -48,8 +48,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -60,6 +60,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLEventHandlerNode : ILSLEventHandlerNode, ILSLSyntaxTreeNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLEventHandlerNode(LSLSourceCodeRange sourceRange, Err err)
@@ -70,43 +71,68 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
-        /// Construct an <see cref="LSLEventHandlerNode"/> with the given parameter list and code body.
+        ///     Construct an <see cref="LSLEventHandlerNode" /> with the given parameter list and code body.
         /// </summary>
+        /// <param name="name">The event handler name.</param>
         /// <param name="parameterList">The parameter list.</param>
         /// <param name="code">The code body.</param>
-        /// <exception cref="ArgumentNullException">if <paramref name="parameterList"/> or <paramref name="code"/> is <c>null</c>.</exception>
-        public LSLEventHandlerNode(LSLParameterListNode parameterList, LSLCodeScopeNode code)
+        /// <exception cref="ArgumentNullException">
+        ///     if <paramref name="name" /> or <paramref name="parameterList" /> or
+        ///     <paramref name="code" /> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentException"><paramref name="name" /> contained characters not allowed in an LSL ID token.</exception>
+        public LSLEventHandlerNode(string name, LSLParameterListNode parameterList, LSLCodeScopeNode code)
         {
-            if(parameterList == null) throw new ArgumentNullException("parameterList");
-            if(code == null) throw new ArgumentNullException("code");
+            if (name == null) throw new ArgumentNullException("name");
+            if (parameterList == null) throw new ArgumentNullException("parameterList");
+            if (code == null) throw new ArgumentNullException("code");
+
+            if (!LSLTokenTools.IDRegex.IsMatch(name))
+            {
+                throw new ArgumentException("name provided contained characters not allowed in an LSL ID token.", "name");
+            }
 
             ParameterList = parameterList;
             ParameterList.Parent = this;
 
+            Name = name;
+
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.EventHandler;
         }
 
 
-
         /// <summary>
-        /// Construct an <see cref="LSLEventHandlerNode"/> with the given code body and no parameters.
+        ///     Construct an <see cref="LSLEventHandlerNode" /> with the given code body and no parameters.
         /// </summary>
+        /// <param name="name">The event handler name.</param>
         /// <param name="code">The code body.</param>
-        /// <exception cref="ArgumentNullException">if <paramref name="code"/> is <c>null</c>.</exception>
-        public LSLEventHandlerNode(LSLCodeScopeNode code)
+        /// <exception cref="ArgumentNullException">if <paramref name="name" /> or <paramref name="code" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="name" /> provided contained characters not allowed in an LSL ID
+        ///     token.
+        /// </exception>
+        public LSLEventHandlerNode(string name, LSLCodeScopeNode code)
         {
+            if (name == null) throw new ArgumentNullException("name");
             if (code == null) throw new ArgumentNullException("code");
+
+            if (!LSLTokenTools.IDRegex.IsMatch(name))
+            {
+                throw new ArgumentException("name provided contained characters not allowed in an LSL ID token.", "name");
+            }
 
             ParameterList = new LSLParameterListNode();
             ParameterList.Parent = this;
 
+            Name = name;
+
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.EventHandler;
         }
-
 
 
         /// <exception cref="ArgumentNullException">
@@ -130,6 +156,7 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.EventHandler;
 
             ParameterList = parameterList;
             ParameterList.Parent = this;
@@ -140,6 +167,36 @@ namespace LibLSLCC.CodeValidator
 
             SourceRangesAvailable = true;
         }
+
+
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLEventHandlerNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLEventHandlerNode(LSLEventHandlerNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeName = other.SourceRangeName;
+            }
+
+            Name = other.Name;
+
+            ParameterList = other.ParameterList.Clone();
+            ParameterList.Parent = this;
+
+            Code = other.Code.Clone();
+            Code.Parent = this;
+
+            HasErrors = other.HasErrors;
+        }*/
 
 
         /// <summary>
@@ -194,6 +251,17 @@ namespace LibLSLCC.CodeValidator
             return new LSLEventHandlerNode(sourceRange, Err.Err);
         }
 
+
+        /// <summary>
+        ///     Build a <see cref="LSLEventSignature" /> object based off the signature of this function declaration node.
+        /// </summary>
+        /// <returns>The created <see cref="LSLEventSignature" />.</returns>
+        public LSLEventSignature CreateSignature()
+        {
+            return new LSLEventSignature(Name,
+                ParameterList.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
+        }
+
         #region Nested type: Err
 
         private enum Err
@@ -242,18 +310,27 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         #endregion
-
-
-        /// <summary>
-        /// Build a <see cref="LSLEventSignature"/> object based off the signature of this function declaration node.
-        /// </summary>
-        /// <returns>The created <see cref="LSLEventSignature"/>.</returns>
-        public LSLEventSignature CreateSignature()
-        {
-            return new LSLEventSignature(Name, ParameterList.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
-        }
     }
 }

@@ -47,7 +47,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using LibLSLCC.AntlrParser;
 
 #endregion
@@ -60,7 +59,7 @@ namespace LibLSLCC.CodeValidator
     public sealed class LSLFunctionCallNode : ILSLFunctionCallNode, ILSLExprNode
     {
         private readonly bool _libraryFunction;
-
+        private ILSLSyntaxTreeNode _parent;
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLFunctionCallNode(LSLSourceCodeRange sourceCodeRange, Err err)
@@ -72,13 +71,16 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///  Construct an <see cref="LSLFunctionCallNode"/> with an arguments list and definition reference.
-        ///  This represents a call to a user defined function.  <paramref name="definition"/> receives this node
-        ///  as a new reference via <see cref="LSLFunctionDeclarationNode.AddReference"/>.
+        ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list and definition reference.
+        ///     This represents a call to a user defined function.  <paramref name="definition" /> receives this node
+        ///     as a new reference via <see cref="LSLFunctionDeclarationNode.AddReference" />.
         /// </summary>
         /// <param name="argumentList">The argument list node.</param>
         /// <param name="definition">The function definition node.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="definition"/> or <paramref name="argumentList"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="definition" /> or <paramref name="argumentList" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public LSLFunctionCallNode(LSLFunctionDeclarationNode definition, LSLExpressionListNode argumentList)
         {
             if (definition == null) throw new ArgumentNullException("definition");
@@ -94,17 +96,19 @@ namespace LibLSLCC.CodeValidator
             Definition.AddReference(this);
 
             Signature = definition.CreateSignature();
-
         }
 
 
         /// <summary>
-        ///  Construct an <see cref="LSLFunctionCallNode"/> with an arguments list.
-        ///  This represents a call to a library function, since it has no definition node.
+        ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list.
+        ///     This represents a call to a library function, since it has no definition node.
         /// </summary>
         /// <param name="functionSignature">The signature of the library function.</param>
         /// <param name="argumentList">The argument list node.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="functionSignature"/> or <paramref name="argumentList"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="functionSignature" /> or <paramref name="argumentList" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public LSLFunctionCallNode(LSLFunctionSignature functionSignature, LSLExpressionListNode argumentList)
         {
             if (functionSignature == null) throw new ArgumentNullException("functionSignature");
@@ -120,7 +124,6 @@ namespace LibLSLCC.CodeValidator
 
             _libraryFunction = true;
         }
-
 
 
         /// <exception cref="ArgumentNullException">
@@ -147,8 +150,8 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("argumentExpressionList");
             }
 
-            Definition =  preDefinition.DefinitionNode;
-            Signature =  preDefinition;
+            Definition = preDefinition.DefinitionNode;
+            Signature = preDefinition;
 
             Name = context.function_name.Text;
 
@@ -219,16 +222,6 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("other");
             }
 
-            Name = other.Name;
-
-            Definition = other.Definition;
-            Signature = new LSLFunctionSignature(other.Signature);
-
-            _libraryFunction = other._libraryFunction;
-
-
-            ArgumentExpressionList = other.ArgumentExpressionList.Clone();
-            ArgumentExpressionList.Parent = this;
 
             SourceRangesAvailable = other.SourceRangesAvailable;
 
@@ -240,8 +233,18 @@ namespace LibLSLCC.CodeValidator
                 SourceRangeName = other.SourceRangeName;
             }
 
+            Name = other.Name;
+
+            Definition = other.Definition;
+            Signature = new LSLFunctionSignature(other.Signature);
+
+            _libraryFunction = other._libraryFunction;
+
+
+            ArgumentExpressionList = other.ArgumentExpressionList.Clone();
+            ArgumentExpressionList.Parent = this;
+
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -343,19 +346,44 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public ILSLExprNode Clone()
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public LSLFunctionCallNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLFunctionCallNode(this);
+        }
+
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
         }
 
 
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>

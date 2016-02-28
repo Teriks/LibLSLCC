@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLRotationLiteralNode : ILSLRotationLiteralNode, ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLRotationLiteralNode(LSLSourceCodeRange sourceRange, Err err)
@@ -68,9 +69,8 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
-        ///  Construct an <see cref="LSLRotationLiteralNode"/> with the given component expressions.
+        ///     Construct an <see cref="LSLRotationLiteralNode" /> with the given component expressions.
         /// </summary>
         /// <param name="x">The 'x' rotation component expression.</param>
         /// <param name="y">The 'y' rotation component expression.</param>
@@ -85,7 +85,6 @@ namespace LibLSLCC.CodeValidator
         public LSLRotationLiteralNode(ILSLExprNode x, ILSLExprNode y,
             ILSLExprNode z, ILSLExprNode s)
         {
-
             if (x == null)
             {
                 throw new ArgumentNullException("x");
@@ -94,13 +93,14 @@ namespace LibLSLCC.CodeValidator
             {
                 throw new ArgumentNullException("y");
             }
+
             if (z == null)
             {
                 throw new ArgumentNullException("z");
             }
             if (s == null)
             {
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException("z");
             }
 
             XExpression = x;
@@ -123,7 +123,7 @@ namespace LibLSLCC.CodeValidator
         ///     <paramref name="s" /> is <c>null</c>.
         /// </exception>
         internal LSLRotationLiteralNode(LSLParser.RotationLiteralContext context, ILSLExprNode x, ILSLExprNode y,
-            ILSLExprNode z, ILSLExprNode s) : this(x,y,z,s)
+            ILSLExprNode z, ILSLExprNode s) : this(x, y, z, s)
         {
             if (context == null)
             {
@@ -154,6 +154,20 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("other");
             }
 
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+
+                SourceRangeOpenBracket = other.SourceRangeOpenBracket;
+                SourceRangeCommaOne = other.SourceRangeCommaOne;
+                SourceRangeCommaTwo = other.SourceRangeCommaTwo;
+                SourceRangeCommaThree = other.SourceRangeCommaThree;
+                SourceRangeCloseBracket = other.SourceRangeCloseBracket;
+            }
+
             XExpression = other.XExpression.Clone();
             YExpression = other.YExpression.Clone();
             ZExpression = other.ZExpression.Clone();
@@ -164,20 +178,7 @@ namespace LibLSLCC.CodeValidator
             ZExpression.Parent = this;
             SExpression.Parent = this;
 
-            SourceRangesAvailable = other.SourceRangesAvailable;
-
-            if (!SourceRangesAvailable) return;
-
-            SourceRange = other.SourceRange;
-
-            SourceRangeOpenBracket = other.SourceRangeOpenBracket;
-            SourceRangeCommaOne = other.SourceRangeCommaOne;
-            SourceRangeCommaTwo = other.SourceRangeCommaTwo;
-            SourceRangeCommaThree = other.SourceRangeCommaThree;
-            SourceRangeCloseBracket = other.SourceRangeCloseBracket;
-
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -275,19 +276,44 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public ILSLExprNode Clone()
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public LSLRotationLiteralNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLRotationLiteralNode(this);
+        }
+
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
         }
 
 
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>

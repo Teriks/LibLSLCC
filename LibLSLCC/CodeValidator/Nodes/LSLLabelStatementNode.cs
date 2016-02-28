@@ -47,8 +47,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
@@ -61,6 +61,7 @@ namespace LibLSLCC.CodeValidator
     public sealed class LSLLabelStatementNode : ILSLLabelStatementNode, ILSLCodeStatement
     {
         private readonly GenericArray<LSLJumpStatementNode> _jumpsToHere = new GenericArray<LSLJumpStatementNode>();
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLLabelStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -72,23 +73,24 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Creates a <see cref="LSLLabelStatementNode"/> with a <see cref="ScopeId"/> of zero and the given <see cref="LabelName"/>.
+        ///     Creates a <see cref="LSLLabelStatementNode" /> with a <see cref="ScopeId" /> of zero and the given
+        ///     <see cref="LabelName" />.
         /// </summary>
-        /// <param name="labelName">The <see cref="LabelName"/></param>
-        /// <exception cref="ArgumentNullException"><paramref name="labelName"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="labelName"/> contained characters not allowed in an LSL ID token.</exception>
+        /// <param name="labelName">The <see cref="LabelName" /></param>
+        /// <exception cref="ArgumentNullException"><paramref name="labelName" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="labelName" /> contained characters not allowed in an LSL ID token.</exception>
         public LSLLabelStatementNode(string labelName) : this(0, labelName)
         {
         }
 
 
         /// <summary>
-        /// Creates a <see cref="LSLLabelStatementNode"/> with the given <see cref="ScopeId"/> and <see cref="LabelName"/>.
+        ///     Creates a <see cref="LSLLabelStatementNode" /> with the given <see cref="ScopeId" /> and <see cref="LabelName" />.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
-        /// <param name="labelName">The <see cref="LabelName"/></param>
-        /// <exception cref="ArgumentNullException"><paramref name="labelName"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="labelName"/> contained characters not allowed in an LSL ID token.</exception>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
+        /// <param name="labelName">The <see cref="LabelName" /></param>
+        /// <exception cref="ArgumentNullException"><paramref name="labelName" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="labelName" /> contained characters not allowed in an LSL ID token.</exception>
         public LSLLabelStatementNode(int scopeId, string labelName)
         {
             if (labelName == null)
@@ -98,7 +100,8 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(labelName))
             {
-                throw new ArgumentException("labelName provided contained characters not allowed in an LSL ID token.", "labelName");
+                throw new ArgumentException("labelName provided contained characters not allowed in an LSL ID token.",
+                    "labelName");
             }
 
             LabelName = labelName;
@@ -120,6 +123,36 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLLabelStatementNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLLabelStatementNode(LSLLabelStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeLabelName = other.SourceRangeLabelName;
+                SourceRangeLabelPrefix = other.SourceRangeLabelPrefix;
+                SourceRangeSemicolon = other.SourceRangeSemicolon;
+            }
+
+            //TODO figure out jump to here
+
+            LabelName = other.LabelName;
+
+            LSLStatementNodeTools.CopyStatement(this, other);
+
+            HasErrors = other.HasErrors;
+        }*/
+
+
         /// <summary>
         ///     A list of all jump statement nodes in the syntax tree that jump to this label node, or an empty list.
         /// </summary>
@@ -127,7 +160,6 @@ namespace LibLSLCC.CodeValidator
         {
             get { return _jumpsToHere; }
         }
-
 
         IReadOnlyGenericArray<ILSLJumpStatementNode> ILSLLabelStatementNode.JumpsToHere
         {
@@ -216,7 +248,6 @@ namespace LibLSLCC.CodeValidator
 
         #region ILSLCodeStatement Members
 
-
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.
@@ -229,7 +260,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>

@@ -59,6 +59,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLElseStatementNode : ILSLElseStatementNode, ILSLBranchStatementNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLElseStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -70,17 +71,43 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLElseStatementNode"/> with the given code body.
+        ///     Construct an <see cref="LSLElseStatementNode" /> with the given code body.
         /// </summary>
         /// <param name="code">The code.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="code"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="code" /> is <c>null</c>.</exception>
         public LSLElseStatementNode(LSLCodeScopeNode code)
         {
             if (code == null) throw new ArgumentNullException("code");
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.Else;
         }
+
+
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLElseStatementNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLElseStatementNode(LSLElseStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeElseKeyword = other.SourceRangeElseKeyword;
+            }
+
+            Code = other.Code.Clone();
+            Code.Parent = this;
+
+            HasErrors = other.HasErrors;
+        }*/
 
 
         /// <exception cref="ArgumentNullException"><paramref name="code" /> or <paramref name="code" /> is <c>null</c>.</exception>
@@ -103,6 +130,7 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.Else;
 
 
             SourceRangeElseKeyword = new LSLSourceCodeRange(context.else_keyword);
@@ -193,7 +221,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         /// <summary>
         ///     The source code range that this syntax tree node occupies.

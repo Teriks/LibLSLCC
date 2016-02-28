@@ -58,22 +58,14 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLJumpStatementNode : ILSLJumpStatementNode, ILSLCodeStatement
     {
-// ReSharper disable UnusedParameter.Local
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
-        private LSLJumpStatementNode(LSLSourceCodeRange sourceRange, Err err)
-// ReSharper restore UnusedParameter.Local
-        {
-            SourceRange = sourceRange;
-            HasErrors = true;
-        }
-
-
         /// <summary>
-        /// Creates an <see cref="LSLJumpStatementNode"/> that jumps to a specified <see cref="LSLLabelStatementNode"/>, with a <see cref="ScopeId"/> of zero.
-        /// <paramref name="jumpTarget"/> receives a <see cref="LSLLabelStatementNode.JumpsToHere"/> reference via  <see cref="LSLLabelStatementNode.AddJumpToHere"/>.
+        ///     Creates an <see cref="LSLJumpStatementNode" /> that jumps to a specified <see cref="LSLLabelStatementNode" />, with
+        ///     a <see cref="ScopeId" /> of zero.
+        ///     <paramref name="jumpTarget" /> receives a <see cref="LSLLabelStatementNode.JumpsToHere" /> reference via
+        ///     <see cref="LSLLabelStatementNode.AddJumpToHere" />.
         /// </summary>
-        /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode"/> to jump to.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="jumpTarget"/> is <c>null</c>.</exception>
+        /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode" /> to jump to.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="jumpTarget" /> is <c>null</c>.</exception>
         public LSLJumpStatementNode(LSLLabelStatementNode jumpTarget)
         {
             if (jumpTarget == null)
@@ -90,12 +82,14 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Creates an <see cref="LSLJumpStatementNode"/> with a the specified <see cref="ScopeId"/> that jumps to a <see cref="LSLLabelStatementNode"/>.
-        /// <paramref name="jumpTarget"/> receives a <see cref="LSLLabelStatementNode.JumpsToHere"/> reference via  <see cref="LSLLabelStatementNode.AddJumpToHere"/>.
+        ///     Creates an <see cref="LSLJumpStatementNode" /> with a the specified <see cref="ScopeId" /> that jumps to a
+        ///     <see cref="LSLLabelStatementNode" />.
+        ///     <paramref name="jumpTarget" /> receives a <see cref="LSLLabelStatementNode.JumpsToHere" /> reference via
+        ///     <see cref="LSLLabelStatementNode.AddJumpToHere" />.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
-        /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode"/> to jump to.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="jumpTarget"/> is <c>null</c>.</exception>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
+        /// <param name="jumpTarget">The <see cref="LSLLabelStatementNode" /> to jump to.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="jumpTarget" /> is <c>null</c>.</exception>
         public LSLJumpStatementNode(int scopeId, LSLLabelStatementNode jumpTarget)
         {
             if (jumpTarget == null)
@@ -111,7 +105,6 @@ namespace LibLSLCC.CodeValidator
 
             JumpTarget.AddJumpToHere(this);
         }
-
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="jumpTarget" /> is <c>null</c>.</exception>
@@ -145,10 +138,56 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLJumpStatementNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLJumpStatementNode(LSLJumpStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeJumpKeyword = other.SourceRangeJumpKeyword;
+                SourceRangeLabelName = other.SourceRangeLabelName;
+                SourceRangeSemicolon = other.SourceRangeSemicolon;
+            }
+
+            //TODO figure this out
+
+            JumpTarget = other.JumpTarget.Clone();
+
+            LabelName = other.LabelName;
+
+            ConstantJump = other.ConstantJump;
+
+            LSLStatementNodeTools.CopyStatement(this, other);
+
+            HasErrors = other.HasErrors;
+        }*/
+
+
         /// <summary>
         ///     The label statement node in the syntax tree that this jump statement jumps to.
         /// </summary>
         public LSLLabelStatementNode JumpTarget { get; private set; }
+
+        private ILSLSyntaxTreeNode _parent; // ReSharper disable UnusedParameter.Local
+
+
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
+        private LSLJumpStatementNode(LSLSourceCodeRange sourceRange, Err err)
+// ReSharper restore UnusedParameter.Local
+        {
+            SourceRange = sourceRange;
+            HasErrors = true;
+        }
 
         #region ILSLCodeStatement Members
 
@@ -163,7 +202,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         /// <summary>
         ///     True if this jump is guaranteed to occur in a constant manner.
@@ -243,8 +301,6 @@ namespace LibLSLCC.CodeValidator
         }
 
         #endregion
-
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

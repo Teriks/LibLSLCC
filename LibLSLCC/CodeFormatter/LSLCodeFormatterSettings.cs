@@ -138,6 +138,8 @@ namespace LibLSLCC.CodeFormatter
         private string _tabString = "\t";
         private bool _whileExpressionWrapping = true;
         private bool _whileLoopBracesOnNewLine = true;
+        private int _maximumNewLinesBetweenLocalStatements = 8;
+        private int _maximumNewLinesBetweenGlobalStatements = 8;
 
         /// <summary>
         ///     Whether or not the formatter should strip all comments from the source code.
@@ -1086,6 +1088,34 @@ namespace LibLSLCC.CodeFormatter
             {
                 SetField(ref _addSpacesBeforeOpeningStateBraceAfterCommentBreak, value,
                     "AddSpacesBeforeOpeningStateBraceAfterCommentBreak");
+            }
+        }
+
+        /// <summary>
+        ///     The maximum amount of newlines that can appear between local code statements.
+        /// </summary>
+        [DefaultValueFactory(typeof(ResetIfLessThanOne))]
+        public int MaximumNewLinesBetweenLocalStatements
+        {
+            get { return _maximumNewLinesBetweenLocalStatements; }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _maximumNewLinesBetweenLocalStatements, value, "MaximumNewLinesBetweenLocalStatements");
+            }
+        }
+
+        /// <summary>
+        ///     The maximum amount of newlines that can appear between global code statements.
+        /// </summary>
+        [DefaultValueFactory(typeof (ResetIfLessThanOne))]
+        public int MaximumNewLinesBetweenGlobalStatements
+        {
+            get { return _maximumNewLinesBetweenGlobalStatements; }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _maximumNewLinesBetweenGlobalStatements, value, "MaximumNewLinesBetweenGlobalStatements");
             }
         }
 

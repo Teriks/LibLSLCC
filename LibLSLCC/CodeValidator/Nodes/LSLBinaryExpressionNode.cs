@@ -59,6 +59,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLBinaryExpressionNode : ILSLBinaryExpressionNode, ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLBinaryExpressionNode(LSLSourceCodeRange sourceRange, Err err)
@@ -96,35 +97,38 @@ namespace LibLSLCC.CodeValidator
             }
 
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
         /// <summary>
-        /// Create a <see cref="LSLBinaryExpressionNode"/> from two <see cref="ILSLExprNode"/>'s and an operator description.
+        ///     Create a <see cref="LSLBinaryExpressionNode" /> from two <see cref="ILSLExprNode" />'s and an operator description.
         /// </summary>
-        /// <param name="resultType">The resulting type of the binary operation between <paramref name="leftExpression"/> and <paramref name="rightExpression"/>.</param>
+        /// <param name="resultType">
+        ///     The resulting type of the binary operation between <paramref name="leftExpression" /> and
+        ///     <paramref name="rightExpression" />.
+        /// </param>
         /// <param name="leftExpression">The left expression.</param>
         /// <param name="operation">The operator.</param>
         /// <param name="rightExpression">The right expression.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="leftExpression"/> or <paramref name="rightExpression"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">
-        ///     Thrown if <paramref name="resultType"/> is equal to <see cref="LSLType.Void"/> or
-        ///     <paramref name="operation"/> is equal to <see cref="LSLBinaryOperationType.Error" />
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="leftExpression" /> or <paramref name="rightExpression" /> is
+        ///     <c>null</c>.
         /// </exception>
-        public LSLBinaryExpressionNode(LSLType resultType, ILSLExprNode leftExpression, LSLBinaryOperationType operation, ILSLExprNode rightExpression)
+        /// <exception cref="ArgumentException">
+        ///     Thrown if <paramref name="resultType" /> is equal to <see cref="LSLType.Void" /> or
+        ///     <paramref name="operation" /> is equal to <see cref="LSLBinaryOperationType.Error" />
+        /// </exception>
+        public LSLBinaryExpressionNode(LSLType resultType, ILSLExprNode leftExpression, LSLBinaryOperationType operation,
+            ILSLExprNode rightExpression)
         {
-
             if (leftExpression == null)
             {
                 throw new ArgumentNullException("leftExpression");
             }
-
             if (rightExpression == null)
             {
                 throw new ArgumentNullException("rightExpression");
             }
-
             if (resultType == LSLType.Void)
             {
                 throw new ArgumentException("Binary operation resultType cannot be LSLType.Void.", "resultType");
@@ -373,23 +377,43 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public ILSLExprNode Clone()
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public LSLBinaryExpressionNode Clone()
         {
-            if (HasErrors)
-            {
-                return GetError(SourceRange);
-            }
+            return HasErrors ? GetError(SourceRange) : new LSLBinaryExpressionNode(this);
+        }
 
-            return new LSLBinaryExpressionNode(this);
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
         }
 
         #endregion

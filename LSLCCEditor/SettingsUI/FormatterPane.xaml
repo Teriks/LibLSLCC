@@ -330,6 +330,16 @@
                         <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesAtEndOfCodeScope}" />
                     </StackPanel>
+                    <StackPanel>
+                        <Label>Max Newlines Between Global Statements:</Label>
+                        <xctk:IntegerUpDown Minimum="1"
+                            Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesBetweenGlobalStatements}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label>Max Newlines Between Local Statements:</Label>
+                        <xctk:IntegerUpDown Minimum="1"
+                            Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesBetweenLocalStatements}" />
+                    </StackPanel>
                 </ItemsControl>
             </Expander>
             <Expander Header="Expression Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400">

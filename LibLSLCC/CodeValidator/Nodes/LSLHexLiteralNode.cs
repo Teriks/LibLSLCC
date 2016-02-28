@@ -56,7 +56,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLHexLiteralNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLHexLiteralNode : LSLConstantLiteralNode, ILSLHexLiteralNode
+    public sealed class LSLHexLiteralNode : LSLConstantLiteralNode<LSLHexLiteralNode>, ILSLHexLiteralNode
     {
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -77,13 +77,13 @@ namespace LibLSLCC.CodeValidator
         {
         }
 
+
         /// <summary>
-        /// Construct an <see cref="LSLHexLiteralNode"/> from an integer value.
+        ///     Construct an <see cref="LSLHexLiteralNode" /> from an integer value.
         /// </summary>
         /// <param name="value">The integer value, it will be converted to a hex string representation.</param>
         public LSLHexLiteralNode(int value) : base("0x" + value.ToString("X"), LSLType.Integer, null)
         {
-            
         }
 
 
@@ -135,7 +135,7 @@ namespace LibLSLCC.CodeValidator
         ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
-        public override ILSLExprNode Clone()
+        public override LSLHexLiteralNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLHexLiteralNode(this);
         }

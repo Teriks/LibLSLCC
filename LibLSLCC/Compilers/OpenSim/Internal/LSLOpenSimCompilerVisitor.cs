@@ -1446,7 +1446,7 @@ private static class UTILITIES
 
             if (node.HasAfterthoughtExpressions)
             {
-                Visit(node.AfterthoughExpressionList);
+                Visit(node.AfterthoughtExpressionList);
             }
 
             Writer.WriteLine(")");

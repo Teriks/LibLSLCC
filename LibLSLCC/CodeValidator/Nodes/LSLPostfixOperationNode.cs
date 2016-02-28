@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLPostfixOperationNode : ILSLPostfixOperationNode, ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLPostfixOperationNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,14 +70,16 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLPostfixOperationNode"/> from a given <see cref="ILSLExprNode"/> and <see cref="LSLPostfixOperationType"/>.
+        ///     Construct an <see cref="LSLPostfixOperationNode" /> from a given <see cref="ILSLExprNode" /> and
+        ///     <see cref="LSLPostfixOperationType" />.
         /// </summary>
         /// <param name="resultType">The return type of the postfix operation on the given expression.</param>
         /// <param name="leftExpression">The expression the postfix operation occurs on.</param>
         /// <param name="operationType">The postfix operation type.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="leftExpression"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="operationType"/> is <see cref="LSLPostfixOperationType.Error"/>.</exception>
-        public LSLPostfixOperationNode(LSLType resultType, ILSLExprNode leftExpression, LSLPostfixOperationType operationType)
+        /// <exception cref="ArgumentNullException"><paramref name="leftExpression" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="operationType" /> is <see cref="LSLPostfixOperationType.Error" />.</exception>
+        public LSLPostfixOperationNode(LSLType resultType, ILSLExprNode leftExpression,
+            LSLPostfixOperationType operationType)
         {
             if (leftExpression == null)
             {
@@ -140,14 +143,6 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("other");
             }
 
-            Type = other.Type;
-
-            LeftExpression = other.LeftExpression.Clone();
-            LeftExpression.Parent = this;
-
-            Operation = other.Operation;
-            OperationString = other.OperationString;
-
             SourceRangesAvailable = other.SourceRangesAvailable;
 
             if (SourceRangesAvailable)
@@ -156,8 +151,15 @@ namespace LibLSLCC.CodeValidator
                 SourceRangeOperation = other.SourceRangeOperation;
             }
 
+            Type = other.Type;
+
+            LeftExpression = other.LeftExpression.Clone();
+            LeftExpression.Parent = this;
+
+            Operation = other.Operation;
+            OperationString = other.OperationString;
+
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -221,19 +223,44 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public ILSLExprNode Clone()
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public LSLPostfixOperationNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLPostfixOperationNode(this);
+        }
+
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
         }
 
 
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>

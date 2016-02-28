@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLParenthesizedExpressionNode : ILSLParenthesizedExpressionNode, ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLParenthesizedExpressionNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,10 +70,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Create a <see cref="LSLParenthesizedExpressionNode"/> around a given <see cref="ILSLExprNode"/>.
+        ///     Create a <see cref="LSLParenthesizedExpressionNode" /> around a given <see cref="ILSLExprNode" />.
         /// </summary>
         /// <param name="innerExpression"></param>
-        /// <exception cref="ArgumentNullException"><paramref name="innerExpression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="innerExpression" /> is <c>null</c>.</exception>
         public LSLParenthesizedExpressionNode(ILSLExprNode innerExpression)
         {
             if (innerExpression == null)
@@ -83,8 +84,6 @@ namespace LibLSLCC.CodeValidator
             InnerExpression = innerExpression;
             InnerExpression.Parent = this;
         }
-
-
 
 
         /// <exception cref="ArgumentNullException">
@@ -139,7 +138,6 @@ namespace LibLSLCC.CodeValidator
             }
 
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -203,19 +201,44 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public ILSLExprNode Clone()
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public LSLParenthesizedExpressionNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLParenthesizedExpressionNode(this);
+        }
+
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
         }
 
 
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>

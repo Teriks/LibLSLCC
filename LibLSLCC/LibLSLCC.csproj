@@ -72,6 +72,7 @@
     <Compile Include="CodeValidator\Internal\LSLFunctionAndStateDefinitionPrePass.cs" />
     <Compile Include="CodeValidator\Internal\LSLLabelCollectorPrePass.cs" />
     <Compile Include="CodeValidator\Internal\LSLCodeValidatorVisitorScopeTracker.cs" />
+    <Compile Include="CodeValidator\Internal\LSLStatementNodeTools.cs" />
     <Compile Include="CodeValidator\Strategies\Interfaces\ILSLCodeValidatorStrategiesExtensions.cs" />
     <Compile Include="CodeValidator\Strategies\LSLCodeValidatorStrategies.cs" />
     <Compile Include="CodeValidator\Strategies\LSLDefaultExpressionValidator.cs" />
@@ -298,7 +299,7 @@
     <Compile Include="CodeValidator\Nodes\LSLSemicolonStatement.cs" />
     <Compile Include="CodeValidator\Nodes\LSLStateChangeStatementNode.cs" />
     <Compile Include="CodeValidator\Nodes\LSLVariableDeclarationNode.cs" />
-    <Compile Include="CodeValidator\Visitor\LSLDefaultValidatorNodeVisitor.cs" />
+    <Compile Include="CodeValidator\Visitor\LSLValidatorNodeVisitor.cs" />
     <Compile Include="CodeValidator\Visitor\ILSLValidatorNodeVisitor.cs" />
     <Compile Include="Collections\IReadOnlyHashedSet.cs" />
     <Compile Include="Collections\PriorityQueue.cs" />

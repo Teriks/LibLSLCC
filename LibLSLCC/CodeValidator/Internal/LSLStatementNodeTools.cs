@@ -1,14 +1,13 @@
 ﻿#region FileInfo
-
 // 
-// File: ILSLStringLiteralNode.cs
+// File: LSLStatementNodeTools.cs
 // 
 // 
 // ============================================================
 // ============================================================
 // 
 // 
-// Copyright (c) 2015, Teriks
+// Copyright (c) 2016, Teriks
 // 
 // All rights reserved.
 // 
@@ -40,34 +39,20 @@
 // ============================================================
 // 
 // 
-
 #endregion
-
-#region Imports
-
-#endregion
-
 namespace LibLSLCC.CodeValidator
 {
-    /// <summary>
-    ///     AST token interface for string literal nodes.
-    /// </summary>
-    public interface ILSLStringLiteralNode : ILSLReadOnlyExprNode
+    internal static class LSLStatementNodeTools
     {
-        /// <summary>
-        ///     The pre-processed text of the string literal.
-        ///     <see cref="LSLCodeValidator" /> relies on an implementation of <see cref="ILSLStringPreProcessor" /> to fill this
-        ///     value out by passing <see cref="ILSLStringPreProcessor" />
-        ///     the raw text for the string literal and assigning the string it produces to this property.
-        ///     <see cref="ILSLStringPreProcessor" />
-        /// </summary>
-        string PreProcessedText { get; }
+        public static void CopyStatement(ILSLCodeStatement to, ILSLCodeStatement from)
+        {
+            to.IsLastStatementInScope = from.IsLastStatementInScope;
+            to.InsideSingleStatementScope = from.InsideSingleStatementScope;
 
-        /// <summary>
-        ///     The raw text for the string literal from the source code, this should include the quote characters that surround
-        ///     the string.
-        ///     Any escape codes used in the source code string should be double escaped.
-        /// </summary>
-        string RawText { get; }
+            to.IsDeadCode = from.IsDeadCode;
+            to.DeadCodeType = from.DeadCodeType;
+            to.StatementIndex = from.StatementIndex;
+            to.ScopeId = from.ScopeId;
+        }
     }
 }

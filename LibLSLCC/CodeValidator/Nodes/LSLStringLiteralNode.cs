@@ -56,7 +56,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLStringLiteralNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLStringLiteralNode : LSLConstantLiteralNode, ILSLStringLiteralNode
+    public sealed class LSLStringLiteralNode : LSLConstantLiteralNode<LSLStringLiteralNode>, ILSLStringLiteralNode
     {
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -77,33 +77,38 @@ namespace LibLSLCC.CodeValidator
             PreProcessedText = other.PreProcessedText;
         }
 
+
         /// <summary>
-        /// Create an <see cref="LSLStringLiteralNode"/> from the given raw and preprocessed source code text.
-        /// <paramref name="preProccessedText"/> should contain the preprocessed text, with raw control characters entitized into escape sequences, 
-        /// and existing escape sequences double escaped with an extra backslash.
+        ///     Create an <see cref="LSLStringLiteralNode" /> from the given raw and preprocessed source code text.
+        ///     <paramref name="preProccessedText" /> should contain the preprocessed text, with raw control characters entitized
+        ///     into escape sequences,
+        ///     and existing escape sequences double escaped with an extra backslash.
         /// </summary>
-        /// <param name="rawText">The raw source code text, including quotes.</param>
-        /// <param name="preProccessedText">The preprocessed string literal text, including quotes.</param>
-        /// <seealso cref="LSLDefaultStringPreProcessor"/>
-        public LSLStringLiteralNode(string rawText, string preProccessedText)
-            : base(rawText, LSLType.String, null)
+        /// <param name="rawContent">The raw string content, without quotes.</param>
+        /// <param name="preProccessedText">The preprocessed string literal text, without quotes.</param>
+        /// <seealso cref="LSLDefaultStringPreProcessor" />
+        public LSLStringLiteralNode(string rawContent, string preProccessedText)
+            : base("\"" + rawContent + "\"", LSLType.String, null)
         {
-            PreProcessedText = preProccessedText;
+            PreProcessedText = "\"" + preProccessedText + "\"";
         }
 
 
         /// <summary>
-        /// Create an <see cref="LSLStringLiteralNode"/> from the given raw and preprocessed source code text.
-        /// <see cref="PreProcessedText"/> is generated using <see cref="LSLDefaultStringPreProcessor"/>.
+        ///     Create an <see cref="LSLStringLiteralNode" /> from the given raw and preprocessed source code text.
+        ///     <see cref="PreProcessedText" /> is generated using <see cref="LSLDefaultStringPreProcessor" />.
         /// </summary>
-        /// <param name="rawText">The raw source code text, including quotes.</param>
-        /// <exception cref="ArgumentException"><paramref name="rawText"/> contains invalid characters or invalid escape sequences.</exception>
-        public LSLStringLiteralNode(string rawText)
-            : base(rawText, LSLType.String, null)
+        /// <param name="rawContent">The raw source code text, without quotes.</param>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="rawContent" /> contains invalid characters or invalid escape
+        ///     sequences.
+        /// </exception>
+        public LSLStringLiteralNode(string rawContent)
+            : base("\"" + rawContent + "\"", LSLType.String, null)
         {
             var preprocessor = new LSLDefaultStringPreProcessor();
 
-            preprocessor.ProcessString(rawText);
+            preprocessor.ProcessString(RawText);
 
             if (preprocessor.HasInvalidEscapeSequences)
             {
@@ -178,7 +183,7 @@ namespace LibLSLCC.CodeValidator
         ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
-        public override ILSLExprNode Clone()
+        public override LSLStringLiteralNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLStringLiteralNode(this);
         }

@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLExpressionStatementNode : ILSLExpressionStatementNode, ILSLCodeStatement
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLExpressionStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,10 +70,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLExpressionStatementNode"/> with the given expression and a <see cref="ScopeId"/> of zero.
+        ///     Construct an <see cref="LSLExpressionStatementNode" /> with the given expression and a <see cref="ScopeId" /> of
+        ///     zero.
         /// </summary>
         /// <param name="expression">The expression to appear as a statement.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="expression" /> is <c>null</c>.</exception>
         public LSLExpressionStatementNode(ILSLExprNode expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -85,11 +87,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLExpressionStatementNode"/> with the given expression and <see cref="ScopeId"/>.
+        ///     Construct an <see cref="LSLExpressionStatementNode" /> with the given expression and <see cref="ScopeId" />.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
         /// <param name="expression">The expression to appear as a statement.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="expression" /> is <c>null</c>.</exception>
         public LSLExpressionStatementNode(int scopeId, ILSLExprNode expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -99,7 +101,6 @@ namespace LibLSLCC.CodeValidator
             Expression = expression;
             Expression.Parent = this;
         }
-
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="expression" /> is <c>null</c>.</exception>
@@ -128,10 +129,36 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
+        ///     Create an <see cref="LSLExpressionStatementNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLExpressionStatementNode(LSLExpressionStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeSemicolon = other.SourceRangeSemicolon;
+            }
+
+
+            Expression = other.Expression.Clone();
+            Expression.Parent = this;
+
+            LSLStatementNodeTools.CopyStatement(this, other);
+
+            HasErrors = other.HasErrors;
+        }
+
+
+        /// <summary>
         ///     The top expression node that represents the expression in the statement.
         /// </summary>
         public ILSLExprNode Expression { get; private set; }
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -189,7 +216,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -267,6 +313,18 @@ namespace LibLSLCC.CodeValidator
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitExpressionStatement(this);
+        }
+
+
+        /// <summary>
+        ///     Deep clones the node.  It should clone the node and all of its children and cloneable properties, except the
+        ///     parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
+        /// </summary>
+        /// <returns>A deep clone of this statement tree node.</returns>
+        public LSLExpressionStatementNode Clone()
+        {
+            return HasErrors ? GetError(SourceRange) : new LSLExpressionStatementNode(this);
         }
 
         #endregion

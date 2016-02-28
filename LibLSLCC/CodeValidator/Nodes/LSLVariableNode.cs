@@ -48,7 +48,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.AntlrParser;
-using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
 
 #endregion
@@ -60,6 +59,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLVariableNode : ILSLVariableNode, ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLVariableNode(LSLSourceCodeRange sourceRange, Err err)
@@ -88,6 +88,13 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("other");
             }
 
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+            }
+
             Name = other.Name;
             Type = other.Type;
 
@@ -97,15 +104,7 @@ namespace LibLSLCC.CodeValidator
             ExpressionType = other.ExpressionType;
             Declaration = other.Declaration;
 
-            SourceRangesAvailable = other.SourceRangesAvailable;
-
-            if (SourceRangesAvailable)
-            {
-                SourceRange = other.SourceRange;
-            }
-
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -173,17 +172,20 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLVariableNode"/> that references a global variable declaration node.
+        ///     Construct an <see cref="LSLVariableNode" /> that references a global variable declaration node.
         /// </summary>
         /// <param name="declarationNode">A global declaration node.</param>
         /// <param name="variableName">The name of the global variable.</param>
         /// <param name="type">The type of the global variable.</param>
-        /// <returns>A new variable node representing a reference to <paramref name="declarationNode"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="declarationNode"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="type"/> is <see cref="LSLType.Void"/> or <paramref name="variableName"/> contains characters that are not valid in an LSL ID token.</exception>
-        internal static LSLVariableNode CreateGlobalVar(LSLType type, string variableName, ILSLVariableDeclarationNode declarationNode)
+        /// <returns>A new variable node representing a reference to <paramref name="declarationNode" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="declarationNode" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
+        ///     <paramref name="variableName" /> contains characters that are not valid in an LSL ID token.
+        /// </exception>
+        internal static LSLVariableNode CreateGlobalVarReference(LSLType type, string variableName,
+            ILSLVariableDeclarationNode declarationNode)
         {
-
             if (declarationNode == null)
             {
                 throw new ArgumentNullException("declarationNode");
@@ -196,7 +198,8 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(variableName))
             {
-                throw new ArgumentException("variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new ArgumentException(
+                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
             }
 
             return new LSLVariableNode
@@ -211,20 +214,21 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
-
         /// <summary>
-        /// Construct an <see cref="LSLVariableNode"/> that references a local variable declaration node.
+        ///     Construct an <see cref="LSLVariableNode" /> that references a local variable declaration node.
         /// </summary>
         /// <param name="declarationNode">A variable declaration node.</param>
         /// <param name="variableName">The name of the local variable.</param>
         /// <param name="type">The type of the local variable.</param>
-        /// <returns>A new variable node representing a reference to <paramref name="declarationNode"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="declarationNode"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="type"/> is <see cref="LSLType.Void"/> or <paramref name="variableName"/> contains characters that are not valid in an LSL ID token.</exception>
-        internal static LSLVariableNode CreateLocalVar(LSLType type, string variableName, ILSLVariableDeclarationNode declarationNode)
+        /// <returns>A new variable node representing a reference to <paramref name="declarationNode" />.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="declarationNode" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
+        ///     <paramref name="variableName" /> contains characters that are not valid in an LSL ID token.
+        /// </exception>
+        internal static LSLVariableNode CreateLocalVarReference(LSLType type, string variableName,
+            ILSLVariableDeclarationNode declarationNode)
         {
-
             if (declarationNode == null)
             {
                 throw new ArgumentNullException("declarationNode");
@@ -237,7 +241,8 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(variableName))
             {
-                throw new ArgumentException("variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new ArgumentException(
+                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
             }
 
             return new LSLVariableNode
@@ -253,79 +258,72 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLVariableNode"/> that references a local parameter declaration node.
+        ///     Construct an <see cref="LSLVariableNode" /> that references a local parameter node.
         /// </summary>
-        /// <param name="declarationNode">A variable declaration node.</param>
-        /// <param name="parameterName">The name of the parameter.</param>
-        /// <param name="type">The type of the parameter.</param>
-        /// <returns>A new variable node representing a reference to <paramref name="declarationNode"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="declarationNode"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="type"/> is <see cref="LSLType.Void"/> or <paramref name="parameterName"/> contains characters that are not valid in an LSL ID token.</exception>
-        internal static LSLVariableNode CreateParameterVar(LSLType type, string parameterName, ILSLVariableDeclarationNode declarationNode)
+        /// <param name="declarationNode">A parameter node that declares the parameter variable.</param>
+        internal static LSLVariableNode CreateParameterReference(LSLParameterNode declarationNode)
         {
-
-            if (declarationNode == null)
+            var v = new LSLVariableNode
             {
-                throw new ArgumentNullException("declarationNode");
-            }
+                Name = declarationNode.Name,
+                TypeName = declarationNode.Type.ToLSLTypeName(),
+                Type = declarationNode.Type,
+                ExpressionType = LSLExpressionType.ParameterVariable,
+                IsConstant = false
 
-            if (type == LSLType.Void)
-            {
-                throw new ArgumentException("parameter type cannot be LSLType.Void", "type");
-            }
-
-            if (!LSLTokenTools.IDRegex.IsMatch(parameterName))
-            {
-                throw new ArgumentException("parameterName provided contained characters not allowed in an LSL ID token.", "parameterName");
-            }
-
-            return new LSLVariableNode
-            {
-                Name = parameterName,
-                TypeName = type.ToLSLTypeName(),
-                Type = type,
-                IsConstant = false,
-                Declaration = declarationNode,
-                ExpressionType = LSLExpressionType.ParameterVariable
             };
+
+            if (!declarationNode.SourceRangesAvailable) return v;
+
+            v.SourceRange = declarationNode.SourceRangeName;
+            v.SourceRangesAvailable = true;
+
+            return v;
         }
 
 
         /// <summary>
-        /// Construct an <see cref="LSLVariableNode"/> that references a library constant.
+        ///     Construct an <see cref="LSLVariableNode" /> that references a library constant.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="constantName"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="type"/> is <see cref="LSLType.Void"/> or <paramref name="constantName"/> is contains characters that are invalid in an LSL ID token.</exception>
-        public static LSLVariableNode CreateLibraryConstantVar(LSLType type, string constantName)
+        /// <exception cref="ArgumentNullException"><paramref name="constantName" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
+        ///     <paramref name="constantName" /> is contains characters that are invalid in an LSL ID token.
+        /// </exception>
+        internal static LSLVariableNode CreateLibraryConstantReference(LSLType type, string constantName)
         {
-            if (constantName == null) throw new ArgumentNullException("constantName");
-
+            if (constantName == null)
+            {
+                throw new ArgumentNullException("constantName");
+            }
 
             if (type == LSLType.Void)
             {
-                throw new ArgumentException("constant type cannot be LSLType.Void", "type");
+                throw new ArgumentException(
+                    typeof(LSLVariableNode).Name + ".CreateLibraryConstant:  type cannot be LSLType.Void.", "type");
             }
 
             if (!LSLTokenTools.IDRegex.IsMatch(constantName))
             {
-                throw new ArgumentException("constantName provided contained characters not allowed in an LSL ID token.", "constantName");
+                throw new ArgumentException(
+                    typeof(LSLVariableNode).Name + ".CreateLibraryConstant:  name contains invalid ID characters.",
+                    "constantName");
             }
-
 
             return new LSLVariableNode
             {
                 Name = constantName,
                 TypeName = type.ToLSLTypeName(),
                 Type = type,
+                ExpressionType = LSLExpressionType.LibraryConstant,
                 IsConstant = true,
-                ExpressionType = LSLExpressionType.LibraryConstant
+                SourceRangesAvailable = false
             };
         }
 
 
-
         /// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="declaration" /> is <c>null</c>.</exception>
-        internal static LSLVariableNode CreateVar(LSLParser.GlobalVariableDeclarationContext context,
+        internal static LSLVariableNode CreateVarReference(LSLParser.GlobalVariableDeclarationContext context,
             ILSLVariableDeclarationNode declaration)
         {
             if (context == null)
@@ -353,7 +351,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="declaration" /> is <c>null</c>.</exception>
-        internal static LSLVariableNode CreateVar(LSLParser.LocalVariableDeclarationContext context,
+        internal static LSLVariableNode CreateVarReference(LSLParser.LocalVariableDeclarationContext context,
             ILSLVariableDeclarationNode declaration)
         {
             if (context == null)
@@ -380,63 +378,6 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        /// <exception cref="ArgumentException">
-        ///     if <paramref name="name" /> contains invalid ID characters, or
-        ///     <paramref name="type" /> is <see cref="LSLType.Void" />.
-        /// </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
-        internal static LSLVariableNode CreateLibraryConstant(LSLType type, string name)
-        {
-            if (name == null)
-            {
-                throw new ArgumentNullException("name");
-            }
-
-            if (type == LSLType.Void)
-            {
-                throw new ArgumentException(
-                    typeof (LSLVariableNode).Name + ".CreateLibraryConstant:  type cannot be LSLType.Void.", "type");
-            }
-
-            if (!LSLTokenTools.IDRegex.IsMatch(name))
-            {
-                throw new ArgumentException(
-                    typeof (LSLVariableNode).Name + ".CreateLibraryConstant:  name contains invalid ID characters.",
-                    "name");
-            }
-
-            return new LSLVariableNode
-            {
-                Name = name,
-                TypeName = type.ToLSLTypeName(),
-                Type = type,
-                ExpressionType = LSLExpressionType.LibraryConstant,
-                IsConstant = true,
-                SourceRangesAvailable = false
-            };
-        }
-
-
-        /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
-        internal static LSLVariableNode CreateParameter(LSLParameterNode node)
-        {
-            if (node == null)
-            {
-                throw new ArgumentNullException("node");
-            }
-
-            return new LSLVariableNode
-            {
-                Name = node.Name,
-                TypeName = node.Type.ToLSLTypeName(),
-                Type = node.Type,
-                ExpressionType = LSLExpressionType.ParameterVariable,
-                IsConstant = false,
-                SourceRange = node.SourceRange,
-                SourceRangesAvailable = true
-            };
-        }
-
         #region Nested type: Err
 
         private enum Err
@@ -451,19 +392,44 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public ILSLExprNode Clone()
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public LSLVariableNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLVariableNode(this);
+        }
+
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
         }
 
 
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -536,7 +502,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
-        public bool IsConstant { get; set; }
+        public bool IsConstant { get; private set; }
 
         /// <summary>
         ///     True if the expression statement has some modifying effect on a local parameter or global/local variable;  or is a
@@ -572,7 +538,5 @@ namespace LibLSLCC.CodeValidator
         public LSLType Type { get; private set; }
 
         #endregion
-
-
     }
 }

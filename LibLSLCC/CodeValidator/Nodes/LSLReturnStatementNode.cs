@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLReturnStatementNode : ILSLReturnStatementNode, ILSLCodeStatement
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLReturnStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,10 +70,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLReturnStatementNode"/> with a given return expression and <see cref="ScopeId"/> of zero.
+        ///     Construct an <see cref="LSLReturnStatementNode" /> with a given return expression and <see cref="ScopeId" /> of
+        ///     zero.
         /// </summary>
-        /// <param name="returnExpression">The <see cref="ReturnExpression"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="returnExpression"/> is <c>null</c>.</exception>
+        /// <param name="returnExpression">The <see cref="ReturnExpression" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="returnExpression" /> is <c>null</c>.</exception>
         public LSLReturnStatementNode(ILSLExprNode returnExpression)
         {
             if (returnExpression == null)
@@ -86,7 +88,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLReturnStatementNode"/> with a <see cref="ScopeId"/> of zero and no return expression.
+        ///     Construct an <see cref="LSLReturnStatementNode" /> with a <see cref="ScopeId" /> of zero and no return expression.
         /// </summary>
         public LSLReturnStatementNode()
         {
@@ -94,11 +96,43 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLReturnStatementNode"/> with the given <see cref="ScopeId"/> and return expression.
+        ///     Create an <see cref="LSLReturnStatementNode" /> by cloning from another.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/></param>
-        /// <param name="returnExpression">The <see cref="ReturnExpression"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="returnExpression"/> is <c>null</c>.</exception>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLReturnStatementNode(LSLReturnStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeReturnKeyword = other.SourceRangeReturnKeyword;
+                SourceRangeSemicolon = other.SourceRangeSemicolon;
+            }
+
+            if (HasReturnExpression)
+            {
+                ReturnExpression = other.ReturnExpression.Clone();
+                ReturnExpression.Parent = this;
+            }
+
+
+            LSLStatementNodeTools.CopyStatement(this, other);
+
+            HasErrors = other.HasErrors;
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLReturnStatementNode" /> with the given <see cref="ScopeId" /> and return expression.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ScopeId" /></param>
+        /// <param name="returnExpression">The <see cref="ReturnExpression" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="returnExpression" /> is <c>null</c>.</exception>
         public LSLReturnStatementNode(int scopeId, ILSLExprNode returnExpression)
         {
             if (returnExpression == null)
@@ -114,9 +148,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLReturnStatementNode"/> with the given <see cref="ScopeId"/>, without a return expression.
+        ///     Construct an <see cref="LSLReturnStatementNode" /> with the given <see cref="ScopeId" />, without a return
+        ///     expression.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/></param>
+        /// <param name="scopeId">The <see cref="ScopeId" /></param>
         public LSLReturnStatementNode(int scopeId)
         {
             ScopeId = scopeId;
@@ -173,7 +208,6 @@ namespace LibLSLCC.CodeValidator
         ///     statement.
         /// </summary>
         public ILSLExprNode ReturnExpression { get; private set; }
-
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {
@@ -254,7 +288,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -288,6 +341,18 @@ namespace LibLSLCC.CodeValidator
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitReturnStatement(this);
+        }
+
+
+        /// <summary>
+        ///     Deep clones the node.  It should clone the node and all of its children and cloneable properties, except the
+        ///     parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
+        /// </summary>
+        /// <returns>A deep clone of this statement tree node.</returns>
+        public LSLReturnStatementNode Clone()
+        {
+            return HasErrors ? GetError(SourceRange) : new LSLReturnStatementNode(this);
         }
 
 

@@ -121,7 +121,6 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         new int ScopeId { get; set; }
 
-
         /// <summary>
         ///     True if this statement belongs to a single statement code scope.
         ///     A single statement code scope is a braceless code scope that can be used in control or loop statements.

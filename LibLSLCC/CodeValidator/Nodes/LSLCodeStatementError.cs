@@ -54,11 +54,26 @@ namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLCodeStatementError : ILSLCodeStatement
     {
+        private ILSLSyntaxTreeNode _parent;
+
+
         internal LSLCodeStatementError(LSLParser.CodeStatementContext parserContext)
         {
             SourceRange = new LSLSourceCodeRange(parserContext);
 
             SourceRangesAvailable = true;
+        }
+
+
+        public LSLCodeStatementError(LSLCodeStatementError other)
+        {
+            SourceRangesAvailable = other.SourceRangesAvailable;
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+            }
+
+            LSLStatementNodeTools.CopyStatement(this, other);
         }
 
 
@@ -72,8 +87,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
 
+                _parent = value;
+            }
+        }
 
         /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
@@ -148,5 +181,17 @@ namespace LibLSLCC.CodeValidator
         ///     this is not the scopes level.
         /// </summary>
         public int ScopeId { get; set; }
+
+
+        /// <summary>
+        ///     Deep clones the code statement node.  It should clone the node and all of its children and cloneable properties,
+        ///     except the parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
+        /// </summary>
+        /// <returns>A deep clone of this statement tree node.</returns>
+        public ILSLCodeStatement Clone()
+        {
+            return new LSLCodeStatementError(this);
+        }
     }
 }

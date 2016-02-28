@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLIntegerLiteralNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLIntegerLiteralNode : LSLConstantLiteralNode, ILSLIntegerLiteralNode
+    public sealed class LSLIntegerLiteralNode : LSLConstantLiteralNode<LSLIntegerLiteralNode>, ILSLIntegerLiteralNode
     {
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -67,16 +67,22 @@ namespace LibLSLCC.CodeValidator
         {
         }
 
+
         /// <summary>
-        /// Construct an <see cref="LSLIntegerLiteralNode"/> from a positive integer value.
-        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="value"/> is not positive; add to a prefix negate node instead.</exception>
+        ///     Construct an <see cref="LSLIntegerLiteralNode" /> from a positive integer value.
+        ///     <exception cref="ArgumentOutOfRangeException">
+        ///         if <paramref name="value" /> is not positive; add to a prefix negate
+        ///         node instead.
+        ///     </exception>
         /// </summary>
         /// <param name="value">The integer value.</param>
-        public LSLIntegerLiteralNode(int value) : base(value.ToString(CultureInfo.InvariantCulture), LSLType.Integer, null)
+        public LSLIntegerLiteralNode(int value)
+            : base(value.ToString(CultureInfo.InvariantCulture), LSLType.Integer, null)
         {
             if (Math.Sign(value) < 0)
             {
-                throw new ArgumentOutOfRangeException("value", "value must positive, add to a prefix negate node instead.");
+                throw new ArgumentOutOfRangeException("value",
+                    "value must positive, add to a prefix negate node instead.");
             }
         }
 
@@ -139,7 +145,7 @@ namespace LibLSLCC.CodeValidator
         ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
-        public override ILSLExprNode Clone()
+        public override LSLIntegerLiteralNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLIntegerLiteralNode(this);
         }

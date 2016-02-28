@@ -54,6 +54,7 @@ namespace LibLSLCC.CodeValidator
 {
     internal sealed class LSLDummyExpr : ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLDummyExpr(Err err)
@@ -103,7 +104,29 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <summary>
+        ///     The parent node of this syntax tree node.
+        /// </summary>
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -136,14 +159,13 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
+        /// <returns>A deep clone of this expression tree node.</returns>
         public ILSLExprNode Clone()
         {
             return new LSLDummyExpr
             {
-                Parent = Parent,
                 ExpressionType = ExpressionType,
                 Type = Type,
                 HasErrors = HasErrors,

@@ -48,8 +48,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
@@ -62,6 +62,7 @@ namespace LibLSLCC.CodeValidator
     public sealed class LSLStateScopeNode : ILSLStateScopeNode, ILSLSyntaxTreeNode
     {
         private readonly GenericArray<LSLEventHandlerNode> _eventHandlers = new GenericArray<LSLEventHandlerNode>();
+        private ILSLSyntaxTreeNode _parent;
 
 
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -75,12 +76,12 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an empty <see cref="LSLStateScopeNode"/> with the given name.
-        /// if <paramref name="stateName"/> is "default", <see cref="IsDefaultState"/> will be set to <c>true</c>.
+        ///     Construct an empty <see cref="LSLStateScopeNode" /> with the given name.
+        ///     if <paramref name="stateName" /> is "default", <see cref="IsDefaultState" /> will be set to <c>true</c>.
         /// </summary>
         /// <param name="stateName">The name of the state.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="stateName"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="stateName"/> contained characters not allowed in an LSL ID token.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="stateName" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="stateName" /> contained characters not allowed in an LSL ID token.</exception>
         public LSLStateScopeNode(string stateName)
         {
             if (stateName == null)
@@ -90,7 +91,8 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(stateName))
             {
-                throw new ArgumentException("stateName provided contained characters not allowed in an LSL ID token.", "stateName");
+                throw new ArgumentException("stateName provided contained characters not allowed in an LSL ID token.",
+                    "stateName");
             }
 
             StateName = stateName;
@@ -199,6 +201,40 @@ namespace LibLSLCC.CodeValidator
 
             SourceRangesAvailable = true;
         }
+
+
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLStateScopeNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLStateScopeNode(LSLStateScopeNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+            if (SourceRangesAvailable)
+            {
+                SourceRangeCloseBrace = other.SourceRangeCloseBrace;
+                SourceRangeOpenBrace = other.SourceRangeOpenBrace;
+                SourceRangeStateKeyword = other.SourceRangeStateKeyword;
+                SourceRangeStateName = other.SourceRangeStateName;
+                SourceRange = other.SourceRange;
+            }
+
+            IsDefaultState = other.IsDefaultState;
+            StateName = other.StateName;
+
+            foreach (var e in EventHandlers)
+            {
+                AddEventHandler(e.Clone());
+            }
+
+
+            HasErrors = other.HasErrors;
+        }*/
 
 
         /// <summary>
@@ -355,7 +391,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         #endregion
     }

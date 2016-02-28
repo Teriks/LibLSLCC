@@ -63,6 +63,7 @@ namespace LibLSLCC.CodeValidator
         private readonly List<LSLElseIfStatementNode> _elseIfStatement = new List<LSLElseIfStatementNode>();
         private LSLElseStatementNode _elseStatement;
         private LSLIfStatementNode _ifStatement;
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLControlStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -74,14 +75,15 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> with the given <see cref="ScopeId"/> and an 'if' statement node.
+        ///     Construct an <see cref="LSLControlStatementNode" /> with the given <see cref="ScopeId" /> and an 'if' statement
+        ///     node.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="ifStatement" /> is <c>null</c>.</exception>
         public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement)
         {
-            if(ifStatement == null) throw new ArgumentNullException("ifStatement");
+            if (ifStatement == null) throw new ArgumentNullException("ifStatement");
 
             ScopeId = scopeId;
             IfStatement = ifStatement;
@@ -89,10 +91,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> with a <see cref="ScopeId"/> of zero and an 'if' statement node.
+        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero and an 'if' statement
+        ///     node.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="ifStatement" /> is <c>null</c>.</exception>
         public LSLControlStatementNode(LSLIfStatementNode ifStatement)
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
@@ -103,12 +106,16 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> with the given <see cref="ScopeId"/>, with 'if' and 'else' statement nodes.
+        ///     Construct an <see cref="LSLControlStatementNode" /> with the given <see cref="ScopeId" />, with 'if' and 'else'
+        ///     statement nodes.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
         /// <param name="elseStatement">The else statement.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> or <paramref name="elseStatement"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="ifStatement" /> or <paramref name="elseStatement" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement, LSLElseStatementNode elseStatement)
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
@@ -121,11 +128,15 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> with a <see cref="ScopeId"/> of zero, with 'if' and 'else' statement nodes.
+        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero, with 'if' and 'else'
+        ///     statement nodes.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
         /// <param name="elseStatement">The else statement.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> or <paramref name="elseStatement"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="ifStatement" /> or <paramref name="elseStatement" /> is
+        ///     <c>null</c>.
+        /// </exception>
         public LSLControlStatementNode(LSLIfStatementNode ifStatement, LSLElseStatementNode elseStatement)
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
@@ -137,16 +148,20 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> the given <see cref="ScopeId"/>; with 'if', 'else-if' and 'else' statement nodes.
+        ///     Construct an <see cref="LSLControlStatementNode" /> the given <see cref="ScopeId" />; with 'if', 'else-if' and
+        ///     'else' statement nodes.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
         /// <param name="elseIfStatements">Else-if statements.</param>
         /// <param name="elseStatement">The else statement.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> or <paramref name="elseIfStatements"/> or <paramref name="elseStatement"/> is <c>null</c>.</exception>
-        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement, IEnumerable<LSLElseIfStatementNode> elseIfStatements, LSLElseStatementNode elseStatement)
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="ifStatement" /> or <paramref name="elseIfStatements" /> or
+        ///     <paramref name="elseStatement" /> is <c>null</c>.
+        /// </exception>
+        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement,
+            IEnumerable<LSLElseIfStatementNode> elseIfStatements, LSLElseStatementNode elseStatement)
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
             if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
@@ -165,13 +180,18 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> with a <see cref="ScopeId"/> of zero; with 'if', 'else-if' and 'else' statement nodes.
+        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero; with 'if', 'else-if' and
+        ///     'else' statement nodes.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
         /// <param name="elseIfStatements">Else-if statements.</param>
         /// <param name="elseStatement">The else statement.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> or <paramref name="elseIfStatements"/> or <paramref name="elseStatement"/> is <c>null</c>.</exception>
-        public LSLControlStatementNode(LSLIfStatementNode ifStatement, IEnumerable<LSLElseIfStatementNode> elseIfStatements, LSLElseStatementNode elseStatement)
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="ifStatement" /> or <paramref name="elseIfStatements" /> or
+        ///     <paramref name="elseStatement" /> is <c>null</c>.
+        /// </exception>
+        public LSLControlStatementNode(LSLIfStatementNode ifStatement,
+            IEnumerable<LSLElseIfStatementNode> elseIfStatements, LSLElseStatementNode elseStatement)
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
             if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
@@ -190,13 +210,18 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> the given <see cref="ScopeId"/>; with 'if' and 'else-if' statement nodes.
+        ///     Construct an <see cref="LSLControlStatementNode" /> the given <see cref="ScopeId" />; with 'if' and 'else-if'
+        ///     statement nodes.
         /// </summary>
-        /// <param name="scopeId">The <see cref="ScopeId"/>.</param>
+        /// <param name="scopeId">The <see cref="ScopeId" />.</param>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
         /// <param name="elseIfStatements">Else-if statements.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> or <paramref name="elseIfStatements"/> is <c>null</c>.</exception>
-        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement, IEnumerable<LSLElseIfStatementNode> elseIfStatements)
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="ifStatement" /> or <paramref name="elseIfStatements" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        public LSLControlStatementNode(int scopeId, LSLIfStatementNode ifStatement,
+            IEnumerable<LSLElseIfStatementNode> elseIfStatements)
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
             if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
@@ -212,14 +237,18 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
-        /// Construct an <see cref="LSLControlStatementNode"/> with a <see cref="ScopeId"/> of zero; with 'if' and 'else-if' statement nodes.
+        ///     Construct an <see cref="LSLControlStatementNode" /> with a <see cref="ScopeId" /> of zero; with 'if' and 'else-if'
+        ///     statement nodes.
         /// </summary>
         /// <param name="ifStatement">The if statement that starts the control chain.</param>
         /// <param name="elseIfStatements">Else-if statements.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ifStatement"/> or <paramref name="elseIfStatements"/> is <c>null</c>.</exception>
-        public LSLControlStatementNode(LSLIfStatementNode ifStatement, IEnumerable<LSLElseIfStatementNode> elseIfStatements)
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="ifStatement" /> or <paramref name="elseIfStatements" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        public LSLControlStatementNode(LSLIfStatementNode ifStatement,
+            IEnumerable<LSLElseIfStatementNode> elseIfStatements)
         {
             if (ifStatement == null) throw new ArgumentNullException("ifStatement");
             if (elseIfStatements == null) throw new ArgumentNullException("elseIfStatements");
@@ -233,7 +262,6 @@ namespace LibLSLCC.CodeValidator
                 AddElseIfStatement(elif);
             }
         }
-
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
@@ -248,6 +276,48 @@ namespace LibLSLCC.CodeValidator
 
             SourceRangesAvailable = true;
         }
+
+
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLControlStatementNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLControlStatementNode(LSLControlStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+            }
+
+            if (other.HasIfStatement)
+            {
+                IfStatement = other.IfStatement.Clone();
+                IfStatement.Parent = this;
+            }
+
+            if (other.HasElseIfStatements)
+            {
+                foreach (var e in other.ElseIfStatements)
+                {
+                    AddElseIfStatement(e.Clone());
+                }
+            }
+
+            if (other.HasElseStatement)
+            {
+                ElseStatement = other.ElseStatement.Clone();
+                ElseStatement.Parent = this;
+            }
+
+            LSLStatementNodeTools.CopyStatement(this, other);
+
+            HasErrors = other.HasErrors;
+        }*/
 
 
         /// <summary>
@@ -414,7 +484,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>

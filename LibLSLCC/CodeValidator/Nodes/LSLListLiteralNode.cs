@@ -58,6 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLListLiteralNode : ILSLListLiteralNode, ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLListLiteralNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,7 +70,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Create a <see cref="LSLListLiteralNode"/> with an empty <see cref="LSLExpressionListNode"/> as content.
+        ///     Create a <see cref="LSLListLiteralNode" /> with an empty <see cref="LSLExpressionListNode" /> as content.
         /// </summary>
         public LSLListLiteralNode() : this(new LSLExpressionListNode())
         {
@@ -77,10 +78,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Create a <see cref="LSLListLiteralNode"/> with the given <see cref="LSLExpressionListNode"/> as content.
+        ///     Create a <see cref="LSLListLiteralNode" /> with the given <see cref="LSLExpressionListNode" /> as content.
         /// </summary>
         /// <param name="expressionListNode">The expression list node.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="expressionListNode"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="expressionListNode" /> is <c>null</c>.</exception>
         public LSLListLiteralNode(LSLExpressionListNode expressionListNode)
         {
             if (expressionListNode == null)
@@ -88,15 +89,11 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("expressionListNode");
             }
 
-            HasPossibleSideEffects = expressionListNode.HasExpressionWithPossibleSideEffects;
-            IsConstant = expressionListNode.AllExpressionsConstant;
-
             ExpressionListNode = expressionListNode;
             ExpressionListNode.Parent = this;
 
             SourceRangesAvailable = true;
         }
-
 
 
         /// <exception cref="ArgumentNullException">
@@ -114,9 +111,6 @@ namespace LibLSLCC.CodeValidator
             {
                 throw new ArgumentNullException("expressionListNode");
             }
-
-            HasPossibleSideEffects = expressionListNode.HasExpressionWithPossibleSideEffects;
-            IsConstant = expressionListNode.AllExpressionsConstant;
 
             ExpressionListNode = expressionListNode;
             ExpressionListNode.Parent = this;
@@ -141,12 +135,6 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("other");
             }
 
-            HasPossibleSideEffects = other.HasPossibleSideEffects;
-            IsConstant = other.IsConstant;
-
-            ExpressionListNode = other.ExpressionListNode.Clone();
-            ExpressionListNode.Parent = this;
-
             SourceRangesAvailable = other.SourceRangesAvailable;
 
             if (SourceRangesAvailable)
@@ -156,8 +144,10 @@ namespace LibLSLCC.CodeValidator
                 SourceRangeCloseBracket = other.SourceRangeCloseBracket;
             }
 
+            ExpressionListNode = other.ExpressionListNode.Clone();
+            ExpressionListNode.Parent = this;
+
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -222,19 +212,44 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
         ///     the parent.
-        ///     When cloned, the parent node reference should still point to the same node.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public ILSLExprNode Clone()
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public LSLListLiteralNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLListLiteralNode(this);
+        }
+
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
         }
 
 
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -293,14 +308,20 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     True if the expression is constant and can be calculated at compile time.
         /// </summary>
-        public bool IsConstant { get; private set; }
+        public bool IsConstant
+        {
+            get { return ExpressionListNode != null && ExpressionListNode.AllExpressionsConstant; }
+        }
 
 
         /// <summary>
         ///     True if the expression has some modifying effect on a local parameter or global/local variable;  or is a function
         ///     call.  False otherwise.
         /// </summary>
-        public bool HasPossibleSideEffects { get; private set; }
+        public bool HasPossibleSideEffects
+        {
+            get { return ExpressionListNode != null && ExpressionListNode.HasExpressionWithPossibleSideEffects; }
+        }
 
 
         /// <summary>

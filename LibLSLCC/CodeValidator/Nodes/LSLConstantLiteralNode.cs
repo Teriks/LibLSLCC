@@ -59,8 +59,9 @@ namespace LibLSLCC.CodeValidator
     /// <seealso cref="LSLHexLiteralNode" />
     /// <seealso cref="LSLFloatLiteralNode" />
     /// <seealso cref="LSLStringLiteralNode" />
-    public abstract class LSLConstantLiteralNode : ILSLExprNode
+    public abstract class LSLConstantLiteralNode<CType> : ILSLExprNode where CType : ILSLExprNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
 
         /// <summary>
@@ -78,11 +79,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Create an <see cref="LSLConstantLiteralNode" /> by cloning from another.
+        ///     Create an <see cref="LSLConstantLiteralNode{CType}" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        protected LSLConstantLiteralNode(LSLConstantLiteralNode other)
+        protected LSLConstantLiteralNode(LSLConstantLiteralNode<CType> other)
         {
             if (other == null)
             {
@@ -99,7 +100,6 @@ namespace LibLSLCC.CodeValidator
                 SourceRange = other.SourceRange;
             }
 
-            Parent = other.Parent;
             HasErrors = other.HasErrors;
         }
 
@@ -109,7 +109,10 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="rawText">The raw text of the constant literal.</param>
         /// <param name="type">The <see cref="LSLType" /> that the source code literal represents.</param>
-        /// <param name="sourceRange">The source code range of the constant literal, or <c>null</c> if source code ranges are not available.</param>
+        /// <param name="sourceRange">
+        ///     The source code range of the constant literal, or <c>null</c> if source code ranges are not
+        ///     available.
+        /// </param>
         protected internal LSLConstantLiteralNode(string rawText, LSLType type, LSLSourceCodeRange sourceRange)
         {
             RawText = rawText;
@@ -127,7 +130,7 @@ namespace LibLSLCC.CodeValidator
         #region Nested type: Err
 
         /// <summary>
-        ///     Dummy argument for the protected constructor <see cref="LSLConstantLiteralNode(LSLSourceCodeRange, Err)" />.
+        ///     Dummy argument for the protected error node constructor.
         /// </summary>
         protected enum Err
         {
@@ -181,7 +184,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -225,10 +247,18 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Deep clones the expression node.  It should clone the node and also clone all of its children.
+        ///     Deep clones the expression node.  It should clone the node and all of its children and cloneable properties, except
+        ///     the parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
-        /// <returns>A deep clone of this expression node.</returns>
-        public abstract ILSLExprNode Clone();
+        /// <returns>A deep clone of this expression tree node.</returns>
+        public abstract CType Clone();
+
+
+        ILSLExprNode ILSLExprNode.Clone()
+        {
+            return Clone();
+        }
 
 
         /// <summary>

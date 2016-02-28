@@ -48,8 +48,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -66,12 +66,12 @@ namespace LibLSLCC.CodeValidator
         private readonly GenericArray<LSLVariableDeclarationNode> _globalVariableDeclarations =
             new GenericArray<LSLVariableDeclarationNode>();
 
-        private readonly GenericArray<LSLStateScopeNode> _stateDeclarations 
+        private readonly GenericArray<LSLStateScopeNode> _stateDeclarations
             = new GenericArray<LSLStateScopeNode>();
-
 
         private int _addCounter;
         private LSLStateScopeNode _defaultState;
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLCompilationUnitNode(LSLSourceCodeRange sourceRange, Err err)
@@ -81,8 +81,9 @@ namespace LibLSLCC.CodeValidator
             HasErrors = true;
         }
 
+
         /// <summary>
-        /// Construct an <see cref="LSLCompilationUnitNode"/> with an empty default state node.
+        ///     Construct an <see cref="LSLCompilationUnitNode" /> with an empty default state node.
         /// </summary>
         public LSLCompilationUnitNode()
         {
@@ -90,12 +91,11 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
-        /// Construct an <see cref="LSLCompilationUnitNode"/> with the provided default state node.
+        ///     Construct an <see cref="LSLCompilationUnitNode" /> with the provided default state node.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="defaultState"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="defaultState"/>.IsDefaultState is <c>false</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="defaultState" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="defaultState" />.IsDefaultState is <c>false</c>.</exception>
         public LSLCompilationUnitNode(LSLStateScopeNode defaultState)
         {
             if (defaultState == null) throw new ArgumentNullException("defaultState");
@@ -107,7 +107,6 @@ namespace LibLSLCC.CodeValidator
 
             DefaultState = defaultState;
         }
-
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
@@ -122,6 +121,45 @@ namespace LibLSLCC.CodeValidator
 
             SourceRangesAvailable = true;
         }
+
+
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLCompilationUnitNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLCompilationUnitNode(LSLCompilationUnitNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+            }
+
+            Comments = other.Comments.ToGenericArray();
+
+            foreach (var v in other.GlobalVariableDeclarations)
+            {
+                AddVariableDeclaration((LSLVariableDeclarationNode) v.Clone());
+            }
+
+            foreach (var f in other.FunctionDeclarations)
+            {
+                AddFunctionDeclaration(f.Clone());
+            }
+
+            foreach (var s in other.StateDeclarations)
+            {
+                AddStateDeclaration(s.Clone());
+            }
+
+            HasErrors = other.HasErrors;
+        }*/
 
 
         /// <summary>
@@ -331,7 +369,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         #endregion
     }

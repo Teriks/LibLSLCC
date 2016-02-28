@@ -49,8 +49,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -63,6 +63,7 @@ namespace LibLSLCC.CodeValidator
     {
         private readonly GenericArray<ILSLExprNode> _expressions = new GenericArray<ILSLExprNode>();
         private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
+        private ILSLSyntaxTreeNode _parent;
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLExpressionListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -75,21 +76,20 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Create an empty <see cref="LSLExpressionListNode"/>.
+        ///     Create an empty <see cref="LSLExpressionListNode" />.
         /// </summary>
         public LSLExpressionListNode()
         {
-            
         }
 
 
         /// <summary>
-        /// Create an <see cref="LSLExpressionListNode"/> with the given expressions.
+        ///     Create an <see cref="LSLExpressionListNode" /> with the given expressions.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="expressions"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="expressions" /> is <c>null</c>.</exception>
         public LSLExpressionListNode(IEnumerable<ILSLExprNode> expressions)
         {
-            if(expressions == null) throw new ArgumentNullException("expressions");
+            if (expressions == null) throw new ArgumentNullException("expressions");
 
             foreach (var expression in expressions)
             {
@@ -99,9 +99,9 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Create an <see cref="LSLExpressionListNode"/> with the given expressions.
+        ///     Create an <see cref="LSLExpressionListNode" /> with the given expressions.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="expressions"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="expressions" /> is <c>null</c>.</exception>
         public LSLExpressionListNode(params ILSLExprNode[] expressions)
         {
             if (expressions == null) throw new ArgumentNullException("expressions");
@@ -128,13 +128,9 @@ namespace LibLSLCC.CodeValidator
             ListType = other.ListType;
 
 
-            foreach (var lslExprNode in other.Expressions)
+            foreach (var expr in other.Expressions)
             {
-                var node = lslExprNode.Clone();
-
-                node.Parent = this;
-
-                AddExpression(node);
+                AddExpression(expr.Clone());
             }
 
             SourceRangesAvailable = other.SourceRangesAvailable;
@@ -150,7 +146,6 @@ namespace LibLSLCC.CodeValidator
             }
 
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -346,7 +341,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         #endregion
     }

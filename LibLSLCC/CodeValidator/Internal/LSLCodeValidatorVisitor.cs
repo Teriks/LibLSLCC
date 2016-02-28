@@ -1408,8 +1408,7 @@ namespace LibLSLCC.CodeValidator
             ScopingManager.IncrementScopeId();
 
 
-            var result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId,
-                ScopingManager.CurrentCodeScopeType);
+            var result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId);
 
 
             var codeStatementContexts = context.codeStatement();
@@ -1501,8 +1500,7 @@ namespace LibLSLCC.CodeValidator
             LSLCodeScopeNode result;
             if (!codeStatement.HasErrors)
             {
-                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId,
-                    ScopingManager.CurrentCodeScopeType);
+                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId);
             }
             else
             {
@@ -1995,7 +1993,7 @@ namespace LibLSLCC.CodeValidator
             var isError = false;
 
 
-            ILSLExpressionListNode loopInit = null;
+            LSLExpressionListNode loopInit = null;
             if (context.loop_init != null)
             {
                 loopInit = VisitForLoopInitExpressions(context.loop_init) as LSLExpressionListNode;

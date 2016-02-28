@@ -59,6 +59,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLIfStatementNode : ILSLIfStatementNode, ILSLBranchStatementNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLIfStatementNode(LSLSourceCodeRange sourceRange, Err err)
@@ -69,13 +70,12 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
-        /// Construct an <see cref="LSLIfStatementNode"/> with the given condition expression and code.
+        ///     Construct an <see cref="LSLIfStatementNode" /> with the given condition expression and code.
         /// </summary>
         /// <param name="condition">The branch condition.</param>
         /// <param name="code">The code.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="condition"/> or <paramref name="code"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="condition" /> or <paramref name="code" /> is <c>null</c>.</exception>
         public LSLIfStatementNode(ILSLExprNode condition, LSLCodeScopeNode code)
         {
             if (condition == null) throw new ArgumentNullException("condition");
@@ -86,6 +86,7 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.If;
         }
 
 
@@ -113,6 +114,7 @@ namespace LibLSLCC.CodeValidator
 
             Code = code;
             Code.Parent = this;
+            Code.CodeScopeType = LSLCodeScopeType.If;
 
             ConditionExpression = conditionExpression;
             ConditionExpression.Parent = this;
@@ -125,6 +127,37 @@ namespace LibLSLCC.CodeValidator
 
             SourceRangesAvailable = true;
         }
+
+
+        /*
+        /// <summary>
+        ///     Create an <see cref="LSLIfStatementNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLIfStatementNode(LSLIfStatementNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeIfKeyword = other.SourceRangeIfKeyword;
+                SourceRangeOpenParenth = other.SourceRangeOpenParenth;
+                SourceRangeCloseParenth = other.SourceRangeCloseParenth;
+            }
+
+            ConditionExpression = other.ConditionExpression;
+            ConditionExpression.Parent = this;
+
+            Code = other.Code.Clone();
+            Code.Parent = this;
+
+            HasErrors = other.HasErrors;
+        }*/
 
 
         /// <summary>
@@ -271,7 +304,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         #endregion
     }

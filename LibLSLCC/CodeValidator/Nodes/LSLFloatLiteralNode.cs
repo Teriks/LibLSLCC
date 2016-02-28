@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLFloatLiteralNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLFloatLiteralNode : LSLConstantLiteralNode, ILSLFloatLiteralNode
+    public sealed class LSLFloatLiteralNode : LSLConstantLiteralNode<LSLFloatLiteralNode>, ILSLFloatLiteralNode
     {
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
@@ -79,16 +79,21 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLFloatLiteralNode"/> with a positive floating point value.
+        ///     Construct an <see cref="LSLFloatLiteralNode" /> with a positive floating point value.
         /// </summary>
         /// <param name="value"></param>
-        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="value"/> is not positive; add to a prefix negate node instead.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     if <paramref name="value" /> is not positive; add to a prefix negate node
+        ///     instead.
+        /// </exception>
         /// <exception cref="ArithmeticException"><paramref name="value" /> is equal to <see cref="F:System.Single.NaN" />. </exception>
-        public LSLFloatLiteralNode(float value) : base(value.ToString(CultureInfo.InvariantCulture), LSLType.Float, null)
+        public LSLFloatLiteralNode(float value)
+            : base(value.ToString(CultureInfo.InvariantCulture), LSLType.Float, null)
         {
             if (Math.Sign(value) < 0)
             {
-                throw new ArgumentOutOfRangeException("value", "value must positive, add to a prefix negate node instead.");
+                throw new ArgumentOutOfRangeException("value",
+                    "value must positive, add to a prefix negate node instead.");
             }
         }
 
@@ -141,7 +146,7 @@ namespace LibLSLCC.CodeValidator
         ///     When cloned, the parent node reference should still point to the same node.
         /// </summary>
         /// <returns>A deep clone of this expression node.</returns>
-        public override ILSLExprNode Clone()
+        public override LSLFloatLiteralNode Clone()
         {
             return HasErrors ? GetError(SourceRange) : new LSLFloatLiteralNode(this);
         }

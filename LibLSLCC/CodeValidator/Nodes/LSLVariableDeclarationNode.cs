@@ -48,8 +48,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 using LibLSLCC.Utility;
 
 #endregion
@@ -62,6 +62,7 @@ namespace LibLSLCC.CodeValidator
     public sealed class LSLVariableDeclarationNode : ILSLVariableDeclarationNode, ILSLCodeStatement
     {
         private readonly GenericArray<LSLVariableNode> _references = new GenericArray<LSLVariableNode>();
+        private ILSLSyntaxTreeNode _parent;
         // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLVariableDeclarationNode(LSLSourceCodeRange sourceRange, Err err)
@@ -74,7 +75,6 @@ namespace LibLSLCC.CodeValidator
 
         private LSLVariableDeclarationNode()
         {
-
         }
 
 
@@ -91,20 +91,6 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            StatementIndex = other.StatementIndex;
-            IsLastStatementInScope = other.IsLastStatementInScope;
-
-            VariableNode = (LSLVariableNode) other.VariableNode.Clone();
-
-            InsideSingleStatementScope = other.InsideSingleStatementScope;
-            DeclarationExpression = other.DeclarationExpression;
-
-            DeadCodeType = other.DeadCodeType;
-
-            IsDeadCode = other.IsDeadCode;
-
-            ScopeId = other.ScopeId;
-
             SourceRangesAvailable = other.SourceRangesAvailable;
 
             if (SourceRangesAvailable)
@@ -115,16 +101,19 @@ namespace LibLSLCC.CodeValidator
                 SourceRangeOperator = other.SourceRangeOperator;
             }
 
+            VariableNode = other.VariableNode.Clone();
+            VariableNode.Parent = this;
+
+
             if (other.HasDeclarationExpression)
             {
+                DeclarationExpression = other.DeclarationExpression.Clone();
                 DeclarationExpression.Parent = this;
             }
 
-            _references.AddRange(other._references);
-
+            LSLStatementNodeTools.CopyStatement(this, other);
 
             HasErrors = other.HasErrors;
-            Parent = other.Parent;
         }
 
 
@@ -151,7 +140,6 @@ namespace LibLSLCC.CodeValidator
         {
             get { return _references; }
         }
-
 
         /// <summary>
         ///     The type of dead code that this statement is considered to be, if it is dead
@@ -275,7 +263,7 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("referenceToken");
             }
 
-            var v = (LSLVariableNode) VariableNode.Clone();
+            var v = VariableNode.Clone();
 
             v.SourceRange = new LSLSourceCodeRange(referenceToken);
             SourceRangesAvailable = true;
@@ -286,7 +274,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Creates a reference to <see cref="VariableNode"/> by cloning and setting its <see cref="LSLVariableNode.SourceRange" />
+        ///     Creates a reference to <see cref="VariableNode" /> by cloning and setting its
+        ///     <see cref="LSLVariableNode.SourceRange" />
         ///     to that of <paramref name="range" />
         /// </summary>
         /// <param name="range">The source-code range of the variable token from the parser</param>
@@ -299,7 +288,7 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("range");
             }
 
-            var v = (LSLVariableNode) VariableNode.Clone();
+            var v = VariableNode.Clone();
 
             v.SourceRange = range;
             SourceRangesAvailable = true;
@@ -310,19 +299,25 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Creates a reference to this variable declaration by cloning <see cref="VariableNode"/>.
+        ///     Creates a reference to this variable declaration by cloning <see cref="VariableNode" />.
         /// </summary>
-        /// <returns>A clone of <see cref="VariableNode"/>.</returns>
+        /// <returns>A clone of <see cref="VariableNode" />.</returns>
         public LSLVariableNode CreateReference()
         {
-            return (LSLVariableNode)VariableNode.Clone();
+            var v = VariableNode.Clone();
+            _references.Add(v);
+            return v;
         }
 
+
         /// <summary>
-        /// Creates a global variable declaration node with the given <see cref="LSLType"/> and name.
+        ///     Creates a global variable declaration node with the given <see cref="LSLType" /> and name.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="variableName"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="variableName"/> contained characters not allowed in an LSL ID token.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID
+        ///     token.
+        /// </exception>
         public static LSLVariableDeclarationNode CreateGlobalVar(LSLType type, string variableName)
         {
             if (variableName == null)
@@ -332,21 +327,26 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(variableName))
             {
-                throw new ArgumentException("variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new ArgumentException(
+                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
             }
 
             var n = new LSLVariableDeclarationNode();
-            n.VariableNode = LSLVariableNode.CreateGlobalVar(type, variableName, n);
+            n.VariableNode = LSLVariableNode.CreateGlobalVarReference(type, variableName, n);
             n.VariableNode.Parent = n;
 
             return n;
         }
 
+
         /// <summary>
-        /// Creates a local variable declaration node with the given <see cref="LSLType"/> and name.
+        ///     Creates a local variable declaration node with the given <see cref="LSLType" /> and name.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="variableName"/> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException"><paramref name="variableName"/> contained characters not allowed in an LSL ID token.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID
+        ///     token.
+        /// </exception>
         public static LSLVariableDeclarationNode CreateLocalVar(LSLType type, string variableName)
         {
             if (variableName == null)
@@ -356,15 +356,134 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(variableName))
             {
-                throw new ArgumentException("variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new ArgumentException(
+                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
             }
 
             var n = new LSLVariableDeclarationNode();
-            n.VariableNode = LSLVariableNode.CreateLocalVar(type, variableName, n);
+            n.VariableNode = LSLVariableNode.CreateLocalVarReference(type, variableName, n);
             n.VariableNode.Parent = n;
 
             return n;
         }
+
+
+        /// <summary>
+        ///     Creates a local variable declaration node with the given <see cref="LSLType" />, name, and declaration expression.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
+        ///     is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID token.
+        /// </exception>
+        public static LSLVariableDeclarationNode CreateLocalVar(LSLType type, string variableName,
+            ILSLExprNode declarationExpression)
+        {
+            if (variableName == null)
+            {
+                throw new ArgumentNullException("variableName");
+            }
+            if (declarationExpression == null)
+            {
+                throw new ArgumentNullException("declarationExpression");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            {
+                throw new ArgumentException(
+                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+            }
+
+            var n = new LSLVariableDeclarationNode();
+            n.VariableNode = LSLVariableNode.CreateLocalVarReference(type, variableName, n);
+            n.VariableNode.Parent = n;
+
+            n.DeclarationExpression = declarationExpression;
+
+            return n;
+        }
+
+
+        /// <summary>
+        ///     Creates a global variable declaration node with the given <see cref="LSLType" />, name, and declaration expression.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
+        ///     is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID token.
+        /// </exception>
+        public static LSLVariableDeclarationNode CreateGlobalVar(LSLType type, string variableName,
+            ILSLExprNode declarationExpression)
+        {
+            if (variableName == null)
+            {
+                throw new ArgumentNullException("variableName");
+            }
+            if (declarationExpression == null)
+            {
+                throw new ArgumentNullException("declarationExpression");
+            }
+
+            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            {
+                throw new ArgumentException(
+                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+            }
+
+            var n = new LSLVariableDeclarationNode();
+            n.VariableNode = LSLVariableNode.CreateGlobalVarReference(type, variableName, n);
+            n.VariableNode.Parent = n;
+
+            n.DeclarationExpression = declarationExpression;
+
+            return n;
+        }
+
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLVariableDeclarationNode" /> that references a library constant.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="constantName" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentException">
+        ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
+        ///     <paramref name="constantName" /> is contains characters that are invalid in an LSL ID token.
+        /// </exception>
+        public static LSLVariableDeclarationNode CreateLibraryConstant(LSLType type, string constantName)
+        {
+            var n = new LSLVariableDeclarationNode
+            {
+                VariableNode = LSLVariableNode.CreateLibraryConstantReference(type, constantName)
+            };
+
+            n.VariableNode.Parent = n;
+
+            return n;
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLVariableDeclarationNode" /> that represents a parameter.
+        /// </summary>
+        /// <param name="declarationNode">A parameter node that declares the parameter variable.</param>
+        public static LSLVariableDeclarationNode CreateParameter(LSLParameterNode declarationNode)
+        {
+            var n = new LSLVariableDeclarationNode
+            {
+                VariableNode = LSLVariableNode.CreateParameterReference(declarationNode),
+                SourceRange = declarationNode.SourceRange,
+                SourceRangesAvailable = true
+            };
+
+            n.VariableNode.Parent = n;
+
+            return n;
+        }
+
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
@@ -376,7 +495,7 @@ namespace LibLSLCC.CodeValidator
             }
 
             var n = new LSLVariableDeclarationNode();
-            n.VariableNode = LSLVariableNode.CreateVar(context, n);
+            n.VariableNode = LSLVariableNode.CreateVarReference(context, n);
             n.SourceRange = new LSLSourceCodeRange(context);
             n.VariableNode.Parent = n;
 
@@ -413,7 +532,7 @@ namespace LibLSLCC.CodeValidator
 
 
             var n = new LSLVariableDeclarationNode();
-            n.VariableNode = LSLVariableNode.CreateVar(context, n);
+            n.VariableNode = LSLVariableNode.CreateVarReference(context, n);
             n.SourceRange = new LSLSourceCodeRange(context);
             n.VariableNode.Parent = n;
             n.DeclarationExpression = declarationExpression;
@@ -453,7 +572,7 @@ namespace LibLSLCC.CodeValidator
 
 
             var n = new LSLVariableDeclarationNode();
-            n.VariableNode = LSLVariableNode.CreateVar(context, n);
+            n.VariableNode = LSLVariableNode.CreateVarReference(context, n);
             n.SourceRange = new LSLSourceCodeRange(context);
             n.VariableNode.Parent = n;
             n.DeclarationExpression = declarationExpression;
@@ -483,7 +602,7 @@ namespace LibLSLCC.CodeValidator
             }
 
             var n = new LSLVariableDeclarationNode();
-            n.VariableNode = LSLVariableNode.CreateVar(context, n);
+            n.VariableNode = LSLVariableNode.CreateVarReference(context, n);
             n.SourceRange = new LSLSourceCodeRange(context);
             n.VariableNode.Parent = n;
 
@@ -501,49 +620,6 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        /// <exception cref="ArgumentException">
-        ///     if <paramref name="name" /> contains invalid ID characters, or
-        ///     <paramref name="type" /> is <see cref="LSLType.Void" />.
-        /// </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="name" /> is <c>null</c>.</exception>
-        internal static LSLVariableDeclarationNode CreateLibraryConstant(LSLType type, string name)
-        {
-            var n = new LSLVariableDeclarationNode
-            {
-                VariableNode = LSLVariableNode.CreateLibraryConstant(type, name)
-            };
-
-            n.VariableNode.Parent = n;
-
-            return n;
-        }
-
-
-        /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
-        internal static LSLVariableDeclarationNode CreateParameter(LSLParameterNode node)
-        {
-            var n = new LSLVariableDeclarationNode
-            {
-                VariableNode = LSLVariableNode.CreateParameter(node),
-                SourceRange = node.SourceRange,
-                SourceRangesAvailable = true
-            };
-
-            n.VariableNode.Parent = n;
-
-            return n;
-        }
-
-
-        /// <summary>
-        ///     Deep clones the variable declaration node.  It should clone the node and also clone its VariableNode child.
-        /// </summary>
-        /// <returns>A deep clone of this variable declaration node.</returns>
-        public LSLVariableDeclarationNode Clone()
-        {
-            return HasErrors ? GetError(SourceRange) : new LSLVariableDeclarationNode(this);
-        }
-
         #region Nested type: Err
 
         private enum Err
@@ -556,7 +632,7 @@ namespace LibLSLCC.CodeValidator
         #region ILSLCodeStatement Members
 
         /// <summary>
-        /// Always <c>false</c> for <see cref="LSLVariableDeclarationNode"/>.
+        ///     Always <c>false</c> for <see cref="LSLVariableDeclarationNode" />.
         /// </summary>
         /// <seealso cref="ILSLCodeScopeNode.IsSingleStatementScope" />
         /// <exception cref="NotSupportedException" accessor="set">if <c>value</c> is <c>true</c>.</exception>
@@ -567,7 +643,7 @@ namespace LibLSLCC.CodeValidator
             {
                 if (value)
                 {
-                    throw new NotSupportedException(GetType().Name+" cannot exist in a single statement scope.");
+                    throw new NotSupportedException(GetType().Name + " cannot exist in a single statement scope.");
                 }
             }
         }
@@ -576,7 +652,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
 
         /// <summary>
@@ -678,6 +773,18 @@ namespace LibLSLCC.CodeValidator
                 return visitor.VisitGlobalVariableDeclaration(this);
             }
             return visitor.VisitLocalVariableDeclaration(this);
+        }
+
+
+        /// <summary>
+        ///     Deep clones the node.  It should clone the node and all of its children and cloneable properties, except the parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
+        ///     The <see cref="References"/> collection is not cloned.
+        /// </summary>
+        /// <returns>A deep clone of this statement tree node.</returns>
+        public LSLVariableDeclarationNode Clone()
+        {
+            return HasErrors ? GetError(SourceRange) : new LSLVariableDeclarationNode(this);
         }
 
         #endregion

@@ -59,6 +59,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public sealed class LSLParameterNode : ILSLParameterNode, ILSLSyntaxTreeNode
     {
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLParameterNode(LSLSourceCodeRange sourceRange, Err err)
@@ -70,12 +71,15 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct a <see cref="LSLParameterNode"/> with the given <see cref="Type"/> and <see cref="Name"/>.
+        ///     Construct a <see cref="LSLParameterNode" /> with the given <see cref="Type" /> and <see cref="Name" />.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/>.</param>
-        /// <param name="parameterName">The <see cref="Name"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="parameterName"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">if <paramref name="type"/> is <see cref="LSLType.Void"/> or <paramref name="parameterName"/> contains characters that are invalid in an LSL ID token.</exception>
+        /// <param name="type">The <see cref="Type" />.</param>
+        /// <param name="parameterName">The <see cref="Name" />.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="parameterName" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     if <paramref name="type" /> is <see cref="LSLType.Void" /> or
+        ///     <paramref name="parameterName" /> contains characters that are invalid in an LSL ID token.
+        /// </exception>
         public LSLParameterNode(LSLType type, string parameterName)
         {
             if (parameterName == null)
@@ -90,7 +94,8 @@ namespace LibLSLCC.CodeValidator
 
             if (!LSLTokenTools.IDRegex.IsMatch(parameterName))
             {
-                throw new ArgumentException("parameterName provided contained characters not allowed in an LSL ID token.", "parameterName");
+                throw new ArgumentException(
+                    "parameterName provided contained characters not allowed in an LSL ID token.", "parameterName");
             }
 
             Name = parameterName;
@@ -99,7 +104,6 @@ namespace LibLSLCC.CodeValidator
 
             TypeName = Type.ToLSLTypeName();
         }
-
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
@@ -122,6 +126,33 @@ namespace LibLSLCC.CodeValidator
             SourceRangeName = new LSLSourceCodeRange(context.parameter_name);
 
             SourceRangesAvailable = true;
+        }
+
+
+        /// <summary>
+        ///     Create an <see cref="LSLParameterNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLParameterNode(LSLParameterNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                SourceRangeName = other.SourceRangeName;
+                SourceRangeType = other.SourceRangeType;
+            }
+
+            TypeName = other.TypeName;
+            Type = other.Type;
+            Name = other.Name;
+            ParameterIndex = other.ParameterIndex;
+
+            HasErrors = other.HasErrors;
         }
 
 
@@ -148,7 +179,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode" />.
         /// </summary>
-        public int ParameterIndex { get; set; }
+        public int ParameterIndex { get; internal set; }
 
         /// <summary>
         ///     The source code range of the parameter name.
@@ -199,7 +230,38 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
+
+
+        /// <summary>
+        ///     Deep clones the syntax tree node.  It should clone the node and all of its children and cloneable properties,
+        ///     except the parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
+        /// </summary>
+        /// <returns>A deep clone of this syntax tree node.</returns>
+        public LSLParameterNode Clone()
+        {
+            return HasErrors ? GetError(SourceRange) : new LSLParameterNode(this);
+        }
 
 
         /// <summary>

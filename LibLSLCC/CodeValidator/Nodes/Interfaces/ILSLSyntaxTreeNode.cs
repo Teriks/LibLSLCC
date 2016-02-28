@@ -45,7 +45,11 @@
 
 #region Imports
 
+#endregion
 
+#region Imports
+
+using System;
 
 #endregion
 
@@ -95,7 +99,14 @@ namespace LibLSLCC.CodeValidator
     {
         /// <summary>
         ///     The parent node of this syntax tree node.
+        ///     The parent node may only be assigned once, and may not be assigned <c>null</c>
         /// </summary>
+        /// <remarks>
+        ///     Throw <see cref="InvalidOperationException" /> upon a detected second assignment,
+        ///     Throw <see cref="ArgumentNullException" /> if assigned null.
+        /// </remarks>
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
         new ILSLSyntaxTreeNode Parent { get; set; }
     }
 }

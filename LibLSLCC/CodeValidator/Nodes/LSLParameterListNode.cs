@@ -49,8 +49,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 
 #endregion
 
@@ -63,6 +63,7 @@ namespace LibLSLCC.CodeValidator
     {
         private readonly HashMap<string, LSLParameterNode> _parameters = new HashMap<string, LSLParameterNode>();
         private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
+        private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLParameterListNode(LSLSourceCodeRange sourceRange, Err err)
@@ -83,8 +84,9 @@ namespace LibLSLCC.CodeValidator
             ParameterListType = parameterListType;
         }
 
+
         /// <summary>
-        /// Construct an empty <see cref="LSLParameterListNode"/>.
+        ///     Construct an empty <see cref="LSLParameterListNode" />.
         /// </summary>
         public LSLParameterListNode()
         {
@@ -92,15 +94,15 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLParameterListNode"/> with the parameter nodes in <paramref name="parameters"/>.
+        ///     Construct an <see cref="LSLParameterListNode" /> with the parameter nodes in <paramref name="parameters" />.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
-        ///     If two parameters with the same name exist in <paramref name="parameters"/>.
+        ///     If two parameters with the same name exist in <paramref name="parameters" />.
         /// </exception>
         public LSLParameterListNode(IEnumerable<LSLParameterNode> parameters)
         {
-            if(parameters == null) throw new ArgumentNullException("parameters");
+            if (parameters == null) throw new ArgumentNullException("parameters");
 
             foreach (var v in parameters)
             {
@@ -110,11 +112,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        /// Construct an <see cref="LSLParameterListNode"/> with the parameter nodes in <paramref name="parameters"/>.
+        ///     Construct an <see cref="LSLParameterListNode" /> with the parameter nodes in <paramref name="parameters" />.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
-        ///     If two parameters with the same name exist in <paramref name="parameters"/>.
+        ///     If two parameters with the same name exist in <paramref name="parameters" />.
         /// </exception>
         public LSLParameterListNode(params LSLParameterNode[] parameters)
         {
@@ -124,6 +126,33 @@ namespace LibLSLCC.CodeValidator
             {
                 AddParameterNode(v);
             }
+        }
+
+
+        /// <summary>
+        ///     Create an <see cref="LSLParameterListNode" /> by cloning from another.
+        /// </summary>
+        /// <param name="other">The other node to clone from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
+        public LSLParameterListNode(LSLParameterListNode other)
+        {
+            if (other == null) throw new ArgumentNullException("other");
+
+
+            SourceRangesAvailable = other.SourceRangesAvailable;
+
+            if (SourceRangesAvailable)
+            {
+                SourceRange = other.SourceRange;
+                _sourceRangeCommaList = other.SourceRangeCommaList.ToGenericArray();
+            }
+
+            foreach (var param in other.Parameters)
+            {
+                AddParameterNode(param.Clone());
+            }
+
+            HasErrors = other.HasErrors;
         }
 
 
@@ -170,7 +199,26 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The parent node of this syntax tree node.
         /// </summary>
-        public ILSLSyntaxTreeNode Parent { get; set; }
+        /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        public ILSLSyntaxTreeNode Parent
+        {
+            get { return _parent; }
+            set
+            {
+                if (_parent != null)
+                {
+                    throw new InvalidOperationException(GetType().Name +
+                                                        ": Parent node already set, it can only be set once.");
+                }
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", GetType().Name + ": Parent cannot be set to null.");
+                }
+
+                _parent = value;
+            }
+        }
 
         /// <summary>
         ///     True if this syntax tree node contains syntax errors.
@@ -201,6 +249,18 @@ namespace LibLSLCC.CodeValidator
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             return visitor.VisitParameterDefinitionList(this);
+        }
+
+
+        /// <summary>
+        ///     Deep clones the syntax tree node.  It should clone the node and all of its children and cloneable properties,
+        ///     except the parent.
+        ///     When cloned, the parent node reference should be left <c>null</c>.
+        /// </summary>
+        /// <returns>A deep clone of this syntax tree node.</returns>
+        public LSLParameterListNode Clone()
+        {
+            return HasErrors ? GetError(SourceRange) : new LSLParameterListNode(this);
         }
 
 
@@ -329,7 +389,8 @@ namespace LibLSLCC.CodeValidator
 
             if (_parameters.ContainsKey(node.Name))
             {
-                throw new ArgumentException("Parameter with the name \"{0}\" has already been added to the parameter list.");
+                throw new ArgumentException(
+                    "Parameter with the name \"{0}\" has already been added to the parameter list.");
             }
 
             node.Parent = this;

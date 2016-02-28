@@ -68,8 +68,14 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an event signature by cloning another <see cref="LSLEventSignature" /> object.
         /// </summary>
         /// <param name="other">The  <see cref="LSLEventSignature" /> to copy construct from.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
         public LSLEventSignature(LSLEventSignature other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
             Name = other.Name;
             _parameters = new GenericArray<LSLParameter>(other._parameters);
         }
