@@ -128,14 +128,10 @@ namespace LibLSLCC.CodeValidator
 
             ScopeId = scopeId;
 
-            int single = 0;
             foreach (var stat in statements)
             {
                 AddStatement(stat);
-                if (single < 2) single++;
             }
-
-            IsSingleStatementScope = single == 1;
 
             EndScope();
         }
@@ -212,16 +208,23 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
-        internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, int scopeId)
+        /// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="statement" /> is <c>null</c>.</exception>
+        internal LSLCodeScopeNode(LSLParser.CodeStatementContext context, int scopeId, ILSLCodeStatement statement)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
+            if (statement == null)
+            {
+                throw new ArgumentNullException("statement");
+            }
+
+            AddStatement(statement);
+            EndScope();
 
             ScopeId = scopeId;
-            IsSingleStatementScope = true;
+            _isSingleStatementScope = true;
 
             SourceRange = new LSLSourceCodeRange(context);
 
@@ -311,9 +314,24 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     True if this code scope is an implicit braceless scope.
-        ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements.
+        ///     Bracless code scopes can only occur as the code body in loop type constructs and control statements. <para/>
+        ///     Setting this to <c>true</c> when the scope does not currently contain exactly one statement will cause an <see cref="ArgumentException"/> to be thrown.
         /// </summary>
-        public bool IsSingleStatementScope { get; private set; }
+        /// <exception cref="ArgumentException" accessor="set">If the code scope does not contain exactly one statement and <paramref name="value"/> is set to <c>true</c>.</exception>
+        public bool IsSingleStatementScope
+        {
+            get { return _isSingleStatementScope; }
+            set
+            {
+                if (value && _codeStatements.Count != 1)
+                {
+                    throw new ArgumentException(
+                        string.Format("Cannot set IsSingleStatementScope to true unless the scope contains exactly one one statement, it currently has {0}.", _codeStatements.Count), 
+                        "value");
+                }
+                _isSingleStatementScope = value;
+            }
+        }
 
         /// <summary>
         ///     The type of code scope this node represents.
@@ -844,6 +862,7 @@ namespace LibLSLCC.CodeValidator
         private bool _afterLabelJumpDownOverReturn;
         private ILSLSyntaxTreeNode _parent;
         private bool _endScope;
+        private bool _isSingleStatementScope;
 
         #endregion
 

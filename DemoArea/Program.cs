@@ -535,11 +535,16 @@ default{
 
 
 
-        /// ===============================
+       
 
-
+        /// <summary>
+        /// Builds a code document manually and uses <see cref="LSLCodeFormatter"/> to 
+        /// write the tree to standard output.
+        /// </summary>
         private static void PrettyPrintExample()
         {
+
+
             Console.WriteLine("Pretty Print DOM Example.");
             Console.WriteLine("======================");
             Console.WriteLine("");
@@ -646,7 +651,7 @@ default{
                         new LSLExpressionStatementNode(new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(0), new LSLStringLiteralNode("hello world"))),
 
                         new LSLDoLoopNode(
-                            new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc)),
+                            new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc)) { IsSingleStatementScope = true },
                             constant.CreateReference()
                             ),
 
@@ -657,7 +662,7 @@ default{
 
                         new LSLControlStatementNode(
                                 new LSLIfStatementNode(constant.CreateReference(),
-                                new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc))
+                                new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc)) { IsSingleStatementScope = true }
                                 )
                             ),
 
@@ -683,9 +688,8 @@ default{
             });
 
 
-            LSLCodeFormatter formatter = new LSLCodeFormatter();
+            var formatter = new LSLCodeFormatter();
 
-            formatter.Settings.ConvertBracelessControlStatements = true;
 
             Console.WriteLine("Print Compilation Unit:");
             Console.WriteLine();
@@ -693,9 +697,16 @@ default{
             Console.WriteLine();
 
             Console.WriteLine();
-            Console.WriteLine("Print Specific Node:");
+            Console.WriteLine("Print Specific Event Node:");
             Console.WriteLine();
             formatter.Format(program.DefaultState.EventHandlers.First(), Console.Out);
+            Console.WriteLine();
+
+
+            Console.WriteLine();
+            Console.WriteLine("Print Specific Function Call:");
+            Console.WriteLine();
+            formatter.Format(callSay, Console.Out);
             Console.WriteLine();
 
             Console.WriteLine();

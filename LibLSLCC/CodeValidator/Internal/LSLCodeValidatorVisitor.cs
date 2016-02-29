@@ -1501,20 +1501,17 @@ namespace LibLSLCC.CodeValidator
             ScopingManager.IncrementScopeId();
 
             LSLCodeScopeNode result;
+
             if (!codeStatement.HasErrors)
             {
-                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId);
+                result = new LSLCodeScopeNode(context, ScopingManager.CurrentScopeId, codeStatement);
             }
             else
             {
                 result = LSLCodeScopeNode.GetError(new LSLSourceCodeRange(context));
             }
 
-
             ScopingManager.ExitSingleStatementScope();
-
-            result.AddStatement(codeStatement);
-            result.EndScope();
 
 
             return ReturnFromVisit(context, result);
