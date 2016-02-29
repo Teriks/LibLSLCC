@@ -330,16 +330,19 @@ namespace LibLSLCC.CodeValidator
         /// <returns>Hash code for this <see cref="LSLFunctionSignature" /></returns>
         public override int GetHashCode()
         {
-            var hash = 17;
-            hash = hash*31 + ReturnType.GetHashCode();
-            hash = hash*31 + Name.GetHashCode();
-
-            return Parameters.Aggregate(hash, (current, lslParameter) =>
+            unchecked
             {
-                var c = current*31 + lslParameter.Type.GetHashCode();
-                c = c*31 + lslParameter.Variadic.GetHashCode();
-                return c;
-            });
+                var hash = 17;
+                hash = hash*31 + ReturnType.GetHashCode();
+                hash = hash*31 + Name.GetHashCode();
+
+                return Parameters.Aggregate(hash, (current, lslParameter) =>
+                {
+                    var c = current*31 + lslParameter.Type.GetHashCode();
+                    c = c*31 + lslParameter.Variadic.GetHashCode();
+                    return c;
+                });
+            }
         }
 
 

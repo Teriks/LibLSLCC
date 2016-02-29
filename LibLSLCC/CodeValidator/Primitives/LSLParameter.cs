@@ -145,12 +145,15 @@ namespace LibLSLCC.CodeValidator
         /// <returns></returns>
         public override int GetHashCode()
         {
-            var hash = 17;
-            hash = hash*31 + Type.GetHashCode();
-            hash = hash*31 + Name.GetHashCode();
-            hash = hash*31 + ParameterIndex.GetHashCode();
-            hash = hash*31 + Variadic.GetHashCode();
-            return hash;
+            unchecked
+            {
+                var hash = 17;
+                hash = hash*31 + Type.GetHashCode();
+                hash = hash*31 + Name.GetHashCode();
+                hash = hash*31 + ParameterIndex.GetHashCode();
+                hash = hash*31 + Variadic.GetHashCode();
+                return hash;
+            }
         }
 
 

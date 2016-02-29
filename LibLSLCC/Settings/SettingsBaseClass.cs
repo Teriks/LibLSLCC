@@ -611,31 +611,34 @@ namespace LibLSLCC.Settings
         /// </returns>
         public override int GetHashCode()
         {
-            var myType = GetType();
-
-            var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
-            var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-            int hash = 0;
-
-
-            foreach (var field in fields)
+            unchecked
             {
-                var val = field.GetValue(this) ?? 0;
+                var myType = GetType();
 
-                hash ^= val.GetHashCode();
-                hash = (hash << 7) | (hash >> (32 - 7));
+                var fields = myType.GetFields(BindingFlags.Instance | BindingFlags.Public);
+                var props = myType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+                int hash = 0;
+
+
+                foreach (var field in fields)
+                {
+                    var val = field.GetValue(this) ?? 0;
+
+                    hash ^= val.GetHashCode();
+                    hash = (hash << 7) | (hash >> (32 - 7));
+                }
+
+                foreach (var prop in props)
+                {
+                    var val = prop.GetValue(this, null) ?? 0;
+
+                    hash ^= val.GetHashCode();
+                    hash = (hash << 7) | (hash >> (32 - 7));
+                }
+
+                return hash;
             }
-
-            foreach (var prop in props)
-            {
-                var val = prop.GetValue(this, null) ?? 0;
-
-                hash ^= val.GetHashCode();
-                hash = (hash << 7) | (hash >> (32 - 7));
-            }
-
-            return hash;
         }
 
 

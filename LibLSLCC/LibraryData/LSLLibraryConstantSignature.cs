@@ -1183,14 +1183,17 @@ namespace LibLSLCC.LibraryData
         /// <returns></returns>
         public override int GetHashCode()
         {
-            var hash = 17;
+            unchecked
+            {
+                var hash = 17;
 
 
-            hash = hash*31 + Type.GetHashCode();
-            hash = hash*31 + Name.GetHashCode();
+                hash = hash*31 + Type.GetHashCode();
+                hash = hash*31 + Name.GetHashCode();
 
 
-            return hash;
+                return hash;
+            }
         }
 
 

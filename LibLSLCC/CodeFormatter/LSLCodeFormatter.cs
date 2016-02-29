@@ -213,7 +213,7 @@ namespace LibLSLCC.CodeFormatter
         /// <summary>
         ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer.
         /// </summary>
-        /// <param name="sourceComments">Source code comment concurrences.</param>
+        /// <param name="sourceComments">Source code comments.</param>
         /// <param name="syntaxTree">Syntax tree node to format to output.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream">
@@ -328,7 +328,7 @@ namespace LibLSLCC.CodeFormatter
         ///     When provided the formatter can make more intelligent decisions in various places, such as retaining user spacing
         ///     when comments appear on the same line as a statement.
         /// </param>
-        /// <param name="sourceComments">Source code comment concurrences.</param>
+        /// <param name="sourceComments">Source code comments.</param>
         /// <param name="syntaxTree">Syntax tree node to format to output.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream">

@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Represents a range in LSL source code.
     /// </summary>
-    public class LSLSourceCodeRange
+    public class LSLSourceCodeRange : IEquatable<LSLSourceCodeRange>
     {
         /// <summary>
         ///     Construct an empty source code range.
@@ -403,26 +403,71 @@ namespace LibLSLCC.CodeValidator
         ///     Determines if this source code range object is exactly equal to another.  (All properties are equal)
         ///     If 'obj' is not an <see cref="LSLSourceCodeRange" /> object this function always returns false.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <param name="obj">The other <see cref="LSLSourceCodeRange"/>.</param>
+        /// <returns><c>true</c> if equal.</returns>
         public override bool Equals(object obj)
         {
-            var x = obj as LSLSourceCodeRange;
-            if (x == null) return false;
-
-            return ColumnStart == x.ColumnStart &&
-                   ColumnEnd == x.ColumnEnd && LineStart == x.LineStart && StartIndex == x.StartIndex;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((LSLSourceCodeRange) obj);
         }
 
 
         /// <summary>
-        ///     Derives a hash code for this <see cref="LSLSourceCodeRange" /> by using the HasIndexInfo, ColumnStart, LineStart
-        ///     and StartIndex properties.
+        ///     Determines if this source code range object is exactly equal to another.  (All properties are equal)
+        /// </summary>
+        /// <param name="other">The other <see cref="LSLSourceCodeRange"/>.</param>
+        /// <returns><c>true</c> if equal.</returns>
+        public bool Equals(LSLSourceCodeRange other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return IsEmpty == other.IsEmpty && LineStart == other.LineStart && LineEnd == other.LineEnd && ColumnStart == other.ColumnStart && ColumnEnd == other.ColumnEnd && StartIndex == other.StartIndex && StopIndex == other.StopIndex;
+        }
+
+
+        /// <summary>
+        ///     Determines if this source code range object is exactly equal to another.  (All properties are equal)
+        /// </summary>
+        /// <param name="left">The left <see cref="LSLSourceCodeRange"/>.</param>
+        /// <param name="right">The right <see cref="LSLSourceCodeRange"/>.</param>
+        /// <returns><c>true</c> if equal.</returns>
+        public static bool operator ==(LSLSourceCodeRange left, LSLSourceCodeRange right)
+        {
+            return Equals(left, right);
+        }
+
+
+        /// <summary>
+        ///     Determines if this source code range object is inequal to another.  (All properties are inequal)
+        /// </summary>
+        /// <param name="left">The left <see cref="LSLSourceCodeRange"/>.</param>
+        /// <param name="right">The right <see cref="LSLSourceCodeRange"/>.</param>
+        /// <returns><c>true</c> if inequal.</returns>
+        public static bool operator !=(LSLSourceCodeRange left, LSLSourceCodeRange right)
+        {
+            return !Equals(left, right);
+        }
+
+
+        /// <summary>
+        ///     Generates a hash code for this <see cref="LSLSourceCodeRange" /> using all of its properties.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return ((ColumnStart*251) + LineStart)*251 + StartIndex;
+            unchecked
+            {
+                var hashCode = IsEmpty.GetHashCode();
+                hashCode = (hashCode*397) ^ LineStart;
+                hashCode = (hashCode*397) ^ LineEnd;
+                hashCode = (hashCode*397) ^ ColumnStart;
+                hashCode = (hashCode*397) ^ ColumnEnd;
+                hashCode = (hashCode*397) ^ StartIndex;
+                hashCode = (hashCode*397) ^ StopIndex;
+                return hashCode;
+            }
         }
     }
 }
