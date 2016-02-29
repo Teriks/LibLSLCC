@@ -116,12 +116,10 @@ namespace LibLSLCC.CodeFormatter
             get { return _expressionContextStack.Count > 0 ? _expressionContextStack.Peek().Item2 : null; }
         }
 
-        private bool ExpressionWrappingCurrentlyEnabled
+        private bool ExpressionWrappingEnabled
         {
             get { return _expressionContextStack.Count > 0 && _expressionContextStack.Peek().Item1; }
         }
-
-
 
 
         private ExpressionListWrappingContext CurrentExpressionListWrappingContext
@@ -129,7 +127,7 @@ namespace LibLSLCC.CodeFormatter
             get { return _expressionListContextStack.Count > 0 ? _expressionListContextStack.Peek().Item2 : null; }
         }
 
-        private bool ExpressionWrappingListCurrentlyEnabled
+        private bool ExpressionListWrappingEnabled
         {
             get { return _expressionListContextStack.Count > 0 && _expressionListContextStack.Peek().Item1; }
         }
@@ -151,7 +149,7 @@ namespace LibLSLCC.CodeFormatter
         }
 
 
-        private void ExpressionWrappingPush(bool enabled, ExpressionWrappingContext context)
+        private void Expression_WrappingPush(bool enabled, ExpressionWrappingContext context)
         {
             if (enabled && context == null)
             {
@@ -163,7 +161,7 @@ namespace LibLSLCC.CodeFormatter
         }
 
 
-        private void ExpressionListWrappingPush(bool enabled, ExpressionListWrappingContext context)
+        private void ExpressionList_WrappingPush(bool enabled, ExpressionListWrappingContext context)
         {
             if (enabled && context == null)
             {
@@ -175,14 +173,15 @@ namespace LibLSLCC.CodeFormatter
         }
 
 
-        private Tuple<bool, ExpressionWrappingContext> ExpressionWrappingPop()
+        private Tuple<bool, ExpressionWrappingContext> Expression_WrappingPop()
         {
             return _expressionContextStack.Pop();
         }
-        private Tuple<bool, ExpressionListWrappingContext> ExpressionListWrappingPop()
+        private Tuple<bool, ExpressionListWrappingContext> ExpressionList_WrappingPop()
         {
             return _expressionListContextStack.Pop();
         }
+
 
         private string GenIndent(int add = 0)
         {
@@ -483,10 +482,10 @@ namespace LibLSLCC.CodeFormatter
                 }
 
 
-                ExpressionWrappingPush(true, wrappingContext);
+                Expression_WrappingPush(true, wrappingContext);
                 Visit(node.RightExpression);
 
-                ExpressionWrappingPop();
+                Expression_WrappingPop();
 
                 return true;
             }
@@ -511,7 +510,7 @@ namespace LibLSLCC.CodeFormatter
             _binaryExpressionsSinceNewLine++;
 
 
-            if (ExpressionWrappingCurrentlyEnabled &&
+            if (ExpressionWrappingEnabled &&
                 ((_writeColumn - CurrentExpressionWrappingContext.WriteColumn) >
                  CurrentExpressionWrappingContext.ColumnsBeforeExpressionWrap
                  && _binaryExpressionsSinceNewLine >= CurrentExpressionWrappingContext.MinimumExpressionsToWrap))
@@ -541,20 +540,20 @@ namespace LibLSLCC.CodeFormatter
 
         public override bool VisitListLiteralInitializerList(ILSLExpressionListNode node)
         {
-            ExpressionWrappingPush(false, null);
+            Expression_WrappingPush(false, null);
 
 
             var nodeCount = node.Expressions.Count;
 
 
-            ExpressionWrappingPush(false, null);
+            Expression_WrappingPush(false, null);
 
 
             if (nodeCount > 0)
             {
                 var first = node.Expressions[0];
 
-                ExpressionListWrappingPush(true, new ExpressionListWrappingContext(first, this)
+                ExpressionList_WrappingPush(true, new ExpressionListWrappingContext(first, this)
                 {
                     MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeListLiteralWrap,
                     ForceWrapping = true
@@ -568,10 +567,10 @@ namespace LibLSLCC.CodeFormatter
 
             if (nodeCount > 0)
             {
-                ExpressionListWrappingPop();
+                ExpressionList_WrappingPop();
             }
 
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             return true;
         }
@@ -582,14 +581,14 @@ namespace LibLSLCC.CodeFormatter
             var nodeCount = node.Expressions.Count;
 
 
-            ExpressionWrappingPush(false, null);
+            Expression_WrappingPush(false, null);
 
 
             if (nodeCount > 0)
             {
                 var first = node.Expressions[0];
 
-                ExpressionListWrappingPush(true, new ExpressionListWrappingContext(first, this)
+                ExpressionList_WrappingPush(true, new ExpressionListWrappingContext(first, this)
                 {
                     MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeArgumentListWrap,
                     ForceWrapping = true
@@ -603,10 +602,10 @@ namespace LibLSLCC.CodeFormatter
 
             if (nodeCount > 0)
             {
-                ExpressionListWrappingPop();
+                ExpressionList_WrappingPop();
             }
 
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             return true;
         }
@@ -652,7 +651,7 @@ namespace LibLSLCC.CodeFormatter
 
         public override bool VisitParenthesizedExpression(ILSLParenthesizedExpressionNode node)
         {
-            ExpressionWrappingPush(false, null);
+            Expression_WrappingPush(false, null);
 
             Write("(");
 
@@ -670,7 +669,7 @@ namespace LibLSLCC.CodeFormatter
 
             Write(")");
 
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             return true;
         }
@@ -703,7 +702,7 @@ namespace LibLSLCC.CodeFormatter
 
         public override bool VisitRotationLiteral(ILSLRotationLiteralNode node)
         {
-            ExpressionWrappingPush(false, null);
+            Expression_WrappingPush(false, null);
 
             Write("<");
 
@@ -794,7 +793,7 @@ namespace LibLSLCC.CodeFormatter
 
             Write(">");
 
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             return true;
         }
@@ -853,7 +852,7 @@ namespace LibLSLCC.CodeFormatter
 
         public override bool VisitVectorLiteral(ILSLVectorLiteralNode node)
         {
-            ExpressionWrappingPush(false, null);
+            Expression_WrappingPush(false, null);
 
             Write("<");
 
@@ -918,7 +917,7 @@ namespace LibLSLCC.CodeFormatter
 
             Write(">");
 
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             return true;
         }
@@ -986,9 +985,9 @@ namespace LibLSLCC.CodeFormatter
                 MinimumExpressionsToWrap = Settings.MinimumExpressionsInDoWhileToWrap
             };
 
-            ExpressionWrappingPush(Settings.DoWhileExpressionWrapping, wrappingContext);
+            Expression_WrappingPush(Settings.DoWhileExpressionWrapping, wrappingContext);
             Visit(node.ConditionExpression);
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
 
             if (canWriteComments)
@@ -1023,19 +1022,19 @@ namespace LibLSLCC.CodeFormatter
                 if (canWriteComments)
                     WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.InitExpressionList.SourceRange);
 
-                ExpressionWrappingPush(false, null);
+                Expression_WrappingPush(false, null);
 
 
 
-                ExpressionListWrappingPush(true,
+                ExpressionList_WrappingPush(true,
                     new ExpressionListWrappingContext(node.InitExpressionList.Expressions.First(), this));
 
                 VisitExpressionList(node.InitExpressionList);
 
-                ExpressionListWrappingPop();
+                ExpressionList_WrappingPop();
 
 
-                ExpressionWrappingPop();
+                Expression_WrappingPop();
 
                 if (canWriteComments)
                     WriteCommentsBetweenRange(node.InitExpressionList.SourceRange, node.SourceRangeFirstSemicolon);
@@ -1072,9 +1071,9 @@ namespace LibLSLCC.CodeFormatter
                     node.ConditionExpression.SourceRange);
 
 
-                ExpressionWrappingPush(false, null);
+                Expression_WrappingPush(false, null);
                 Visit(node.ConditionExpression);
-                ExpressionWrappingPop();
+                Expression_WrappingPop();
 
                 if(canWriteComments)
                     WriteCommentsBetweenRange(node.ConditionExpression.SourceRange, node.SourceRangeSecondSemicolon);
@@ -1112,16 +1111,16 @@ namespace LibLSLCC.CodeFormatter
                     WriteCommentsBetweenRange(commentsBetween, node.SourceRangeSecondSemicolon,
                         node.AfterthoughtExpressionList.SourceRange);
 
-                ExpressionWrappingPush(false, null);
+                Expression_WrappingPush(false, null);
 
-                ExpressionListWrappingPush(true,
+                ExpressionList_WrappingPush(true,
                     new ExpressionListWrappingContext(node.InitExpressionList.Expressions.First(), this));
 
                 VisitExpressionList(node.AfterthoughtExpressionList);
 
-                ExpressionListWrappingPop();
+                ExpressionList_WrappingPop();
 
-                ExpressionWrappingPop();
+                Expression_WrappingPop();
 
                 if(canWriteComments)
                     WriteCommentsBetweenRange(node.AfterthoughtExpressionList.SourceRange, node.SourceRangeCloseParenth);
@@ -1184,9 +1183,9 @@ namespace LibLSLCC.CodeFormatter
                 MinimumExpressionsToWrap = Settings.MinimumExpressionsInWhileToWrap
             };
 
-            ExpressionWrappingPush(Settings.WhileExpressionWrapping, wrappingContext);
+            Expression_WrappingPush(Settings.WhileExpressionWrapping, wrappingContext);
             Visit(node.ConditionExpression);
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             canWriteComments = node.SourceRangesAvailable && node.ConditionExpression.SourceRangesAvailable;
 
@@ -2148,9 +2147,9 @@ namespace LibLSLCC.CodeFormatter
                     MinimumExpressionsToWrap = Settings.MinimumExpressionsInReturnToWrap
                 };
 
-                ExpressionWrappingPush(Settings.ReturnExpressionWrapping, wrappingContext);
+                Expression_WrappingPush(Settings.ReturnExpressionWrapping, wrappingContext);
                 Visit(node.ReturnExpression);
-                ExpressionWrappingPop();
+                Expression_WrappingPop();
 
                 if(!cannotWriteComments)
                     WriteCommentsBetweenRange(node.ReturnExpression.SourceRange, node.SourceRangeSemicolon);
@@ -2303,9 +2302,9 @@ namespace LibLSLCC.CodeFormatter
                 MinimumExpressionsToWrap = Settings.MinimumExpressionsInIfToWrap
             };
 
-            ExpressionWrappingPush(Settings.IfExpressionWrapping, wrappingContext);
+            Expression_WrappingPush(Settings.IfExpressionWrapping, wrappingContext);
             Visit(node.ConditionExpression);
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             if(canWriteComments)
                 WriteCommentsBetweenRange(node.ConditionExpression.SourceRange, node.SourceRangeCloseParenth);
@@ -2380,9 +2379,9 @@ namespace LibLSLCC.CodeFormatter
             };
 
 
-            ExpressionWrappingPush(Settings.ElseIfExpressionWrapping, wrappingContext);
+            Expression_WrappingPush(Settings.ElseIfExpressionWrapping, wrappingContext);
             Visit(node.ConditionExpression);
-            ExpressionWrappingPop();
+            Expression_WrappingPop();
 
             if(canWriteComments)
                 WriteCommentsBetweenRange(node.ConditionExpression.SourceRange, node.SourceRangeCloseParenth);
@@ -2509,9 +2508,9 @@ namespace LibLSLCC.CodeFormatter
                 }
 
 
-                ExpressionWrappingPush(Settings.DeclarationExpressionWrapping, wrappingContext);
+                Expression_WrappingPush(Settings.DeclarationExpressionWrapping, wrappingContext);
                 Visit(node.DeclarationExpression);
-                ExpressionWrappingPop();
+                Expression_WrappingPop();
 
                 if(!cannotWriteComments)
                     WriteCommentsBetweenRange(node.DeclarationExpression.SourceRange,
@@ -3446,7 +3445,7 @@ namespace LibLSLCC.CodeFormatter
 
 
                 bool wrap = 
-                    ExpressionWrappingListCurrentlyEnabled && 
+                    ExpressionListWrappingEnabled && 
                     CurrentExpressionListWrappingContext.ForceWrapping && 
                     GetCharacterColumnsSinceLastLine() > CurrentExpressionListWrappingContext.MaximumCharactersBeforeWrap;
 
