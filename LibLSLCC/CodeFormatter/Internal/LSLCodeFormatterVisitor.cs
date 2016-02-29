@@ -556,7 +556,8 @@ namespace LibLSLCC.CodeFormatter
 
                 ExpressionListWrappingPush(true, new ExpressionListWrappingContext(first, this)
                 {
-                    MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeListLiteralWrap
+                    MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeListLiteralWrap,
+                    ForceWrapping = true
                 });
             }
 
@@ -590,7 +591,8 @@ namespace LibLSLCC.CodeFormatter
 
                 ExpressionListWrappingPush(true, new ExpressionListWrappingContext(first, this)
                 {
-                    MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeArgumentListWrap
+                    MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeArgumentListWrap,
+                    ForceWrapping = true
                 });
             }
 
@@ -1025,7 +1027,7 @@ namespace LibLSLCC.CodeFormatter
 
 
 
-                ExpressionListWrappingPush(false,
+                ExpressionListWrappingPush(true,
                     new ExpressionListWrappingContext(node.InitExpressionList.Expressions.First(), this));
 
                 VisitExpressionList(node.InitExpressionList);
@@ -1112,7 +1114,7 @@ namespace LibLSLCC.CodeFormatter
 
                 ExpressionWrappingPush(false, null);
 
-                ExpressionListWrappingPush(false,
+                ExpressionListWrappingPush(true,
                     new ExpressionListWrappingContext(node.InitExpressionList.Expressions.First(), this));
 
                 VisitExpressionList(node.AfterthoughtExpressionList);
@@ -3444,7 +3446,8 @@ namespace LibLSLCC.CodeFormatter
 
 
                 bool wrap = 
-                    ExpressionWrappingCurrentlyEnabled && 
+                    ExpressionWrappingListCurrentlyEnabled && 
+                    CurrentExpressionListWrappingContext.ForceWrapping && 
                     GetCharacterColumnsSinceLastLine() > CurrentExpressionListWrappingContext.MaximumCharactersBeforeWrap;
 
                 if (!me.SourceRangesAvailable || !next.SourceRangesAvailable)
@@ -3470,7 +3473,7 @@ namespace LibLSLCC.CodeFormatter
 
                 Write(",");
 
-                //honor any wrapping the user has done by hand.
+                //honor any wrapping the user has done by hand, even if ForceWrapping is false.
                 wrap = wrap || me.SourceRange.LineEnd != next.SourceRange.LineStart;
 
 
@@ -3512,6 +3515,7 @@ namespace LibLSLCC.CodeFormatter
             public int TabsWrittenSinceLastLine { get; private set; }
             public int NonTabsWrittenSinceLastLine { get; private set; }
             public int MaximumCharactersBeforeWrap { get; set; }
+            public bool ForceWrapping { get; set; }
         }
 
         private class ExpressionWrappingContext
