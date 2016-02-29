@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -129,8 +130,11 @@ namespace LibLSLCC.LibraryData
         ///     Generates an object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized. </param>
+        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <see langword="null" />.</exception>
         public void ReadXml(XmlReader reader)
         {
+            if (reader == null) throw new ArgumentNullException("reader");
+
             var lineNumberInfo = (IXmlLineInfo) reader;
 
             reader.MoveToContent();
@@ -198,8 +202,11 @@ namespace LibLSLCC.LibraryData
         ///     Converts an object into its XML representation.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is serialized. </param>
+        /// <exception cref="ArgumentNullException"><paramref name="writer"/> is <see langword="null" />.</exception>
         public void WriteXml(XmlWriter writer)
         {
+            if (writer == null) throw new ArgumentNullException("writer");
+
             writer.WriteAttributeString("Subset", Subset);
             writer.WriteAttributeString("FriendlyName", FriendlyName);
             writer.WriteStartElement("Description");

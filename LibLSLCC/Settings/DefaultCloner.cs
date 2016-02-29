@@ -66,6 +66,8 @@ namespace LibLSLCC.Settings
         /// <returns>The cloned object.</returns>
         public virtual object Clone(object instance)
         {
+            if (instance == null) return null;
+
             var i = instance as ICloneable;
             if (i != null) return i.Clone();
 

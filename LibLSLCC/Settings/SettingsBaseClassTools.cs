@@ -65,8 +65,11 @@ namespace LibLSLCC.Settings
         ///     from it, otherwise <c>null</c>.
         /// </param>
         /// <returns><c>true</c> if the class derives from a form of <see cref="SettingsBaseClass{T}" /></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null" />.</exception>
         public static bool HasSettingsBase(Type type, out Type baseType)
         {
+            if (type == null) throw new ArgumentNullException("type");
+
             var baseSearch = type.BaseType;
 
             bool isSettingsBase = false;

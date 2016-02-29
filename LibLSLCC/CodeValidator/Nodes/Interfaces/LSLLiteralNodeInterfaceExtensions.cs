@@ -61,8 +61,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The integer literal node to test.</param>
         /// <returns>True if the integer literal overflows/underflows a 32 bit integer.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
         public static bool IsIntegerLiteralOverflowed(this ILSLIntegerLiteralNode node)
         {
+            if (node == null) throw new ArgumentNullException("node");
+
             try
             {
                 Convert.ToInt32(node.RawText);
@@ -80,8 +83,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The integer hex node to test.</param>
         /// <returns>True if the hex literal overflows/underflows a 32 bit integer.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
         public static bool IsHexLiteralOverflowed(this ILSLHexLiteralNode node)
         {
+            if (node == null) throw new ArgumentNullException("node");
+
             try
             {
                 Convert.ToInt32(node.RawText, 16);

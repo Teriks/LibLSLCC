@@ -262,8 +262,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="parameter">The <see cref="LSLParameter" /> object to add to the signature.</param>
         /// <exception cref="ArgumentException">Thrown if more than one variadic parameter is added to the function signature.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parameter"/> is <see langword="null" />.</exception>
         public void AddParameter(LSLParameter parameter)
         {
+            if (parameter == null) throw new ArgumentNullException("parameter");
+
             if (parameter.Variadic)
             {
                 if (!HasVariadicParameter)
@@ -292,8 +295,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="otherSignature">The other function signature to compare to</param>
         /// <returns>True if the two signatures are identical</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="otherSignature"/> is <see langword="null" />.</exception>
         public bool SignatureEquivalent(LSLFunctionSignature otherSignature)
         {
+            if (otherSignature == null) throw new ArgumentNullException("otherSignature");
+
             return LSLFunctionSignatureMatcher.SignaturesEquivalent(this, otherSignature);
         }
 

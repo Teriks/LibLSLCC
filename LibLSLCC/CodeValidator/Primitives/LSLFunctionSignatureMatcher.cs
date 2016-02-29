@@ -395,8 +395,12 @@ namespace LibLSLCC.CodeValidator
         /// <param name="left">The first function signature in the comparison.</param>
         /// <param name="right">The other function signature in the comparison.</param>
         /// <returns>True if the two signatures are identical</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null" />.</exception>
         public static bool SignaturesEquivalent(LSLFunctionSignature left, LSLFunctionSignature right)
         {
+            if (left == null) throw new ArgumentNullException("left");
+            if (right == null) throw new ArgumentNullException("right");
+
             if (left.ReturnType != right.ReturnType)
             {
                 return false;
@@ -440,8 +444,12 @@ namespace LibLSLCC.CodeValidator
         ///     True if the two signatures are duplicate definitions of each other, taking static overloading ambiguities into
         ///     account.
         /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null" />.</exception>
         public static bool DefinitionIsDuplicate(LSLFunctionSignature left, LSLFunctionSignature right)
         {
+            if (left == null) throw new ArgumentNullException("left");
+            if (right == null) throw new ArgumentNullException("right");
+
             //Cannot be duplicates of each other if the name is different
             if (left.Name != right.Name) return false;
 
@@ -486,9 +494,15 @@ namespace LibLSLCC.CodeValidator
         ///     A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched
         ///     or did not match the call signature.
         /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="functionSignature"/> or <paramref name="expressions"/> or <paramref name="typeComparer"/> is <see langword="null" />.</exception>
         public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions, Func<LSLParameter, ILSLReadOnlyExprNode, bool> typeComparer)
         {
+            if (functionSignature == null) throw new ArgumentNullException("functionSignature");
+            if (expressions == null) throw new ArgumentNullException("expressions");
+            if (typeComparer == null) throw new ArgumentNullException("typeComparer");
+
+
             int parameterNumber = 0;
             bool parameterTypeMismatch = false;
 

@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -93,8 +94,11 @@ namespace LibLSLCC.CSharp
         /// </summary>
         /// <param name="namespaceName">A string representing the namespace.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="namespaceName"/> is <see langword="null" />.</exception>
         public static CSharpNamespaceValidatorResult Validate(string namespaceName)
         {
+            if (namespaceName == null) throw new ArgumentNullException("namespaceName");
+
             if (DoubleDot.IsMatch(namespaceName))
             {
                 return new CSharpNamespaceValidatorResult(false, "'..' is not valid in a namespace name.");

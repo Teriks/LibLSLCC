@@ -201,8 +201,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="otherSignature">The other event handler signature to compare to.</param>
         /// <returns>True if the two signatures are identical.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="otherSignature"/> is <see langword="null" />.</exception>
         public bool SignatureMatches(LSLEventSignature otherSignature)
         {
+            if (otherSignature == null) throw new ArgumentNullException("otherSignature");
+
             if (Name != otherSignature.Name)
             {
                 return false;
@@ -263,8 +266,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="parameter">The <see cref="LSLParameter" /> object to add.</param>
         /// <exception cref="ArgumentException">Thrown if the added parameter is a variadic parameter.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parameter"/> is <see langword="null" />.</exception>
         public void AddParameter(LSLParameter parameter)
         {
+            if (parameter == null) throw new ArgumentNullException("parameter");
+
             if (parameter.Variadic)
             {
                 throw new ArgumentException(

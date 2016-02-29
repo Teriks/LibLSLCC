@@ -70,6 +70,7 @@ namespace LibLSLCC.CodeValidator
         public LSLPreDefinedFunctionSignature(LSLType returnType, string name, LSLParameterListNode parameters)
             : base(returnType, name, parameters.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)))
         {
+            //TODO validate parameters
             ParameterListNode = parameters;
         }
 

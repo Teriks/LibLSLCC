@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -63,18 +64,21 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Parse a subset list from a string and return all the subset names in an enumerable.
-        ///     Subset names start with characters [a-zA-Z] followed by zero or more of the characters [a-zA-Z_0-9\-]
-        ///     and can be separated into a list of multiple subset names using commas.
+        ///     Parse a subset list from a string and return all the subset names in an enumerable. <para/>
+        ///     Subset names start with characters [a-zA-Z] followed by zero or more of the characters [a-zA-Z_0-9\-] <para/>
+        ///     They can be separated into a list of multiple subset names using commas.
         /// </summary>
         /// <param name="parse">The comma separated subset list to parse, or a single subset name.</param>
         /// <exception cref="LSLInvalidSubsetNameException">
         ///     If a subset name that does not match the pattern
         ///     ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.
         /// </exception>
-        /// <returns></returns>
+        /// <returns>Enumerable of parsed names.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="parse"/> is <see langword="null" />.</exception>
         public static IEnumerable<string> ParseSubsets(string parse)
         {
+            if (parse == null) throw new ArgumentNullException("parse");
+
             return ThrowIfInvalid(parse.Split(','));
         }
 

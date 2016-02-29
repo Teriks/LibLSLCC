@@ -125,6 +125,8 @@ namespace LibLSLCC.CodeFormatter
         public void Format(ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
+            if (compilationUnit == null) throw new ArgumentNullException("compilationUnit");
+
             Format(compilationUnit.Comments, compilationUnit, writer, closeStream);
         }
 
@@ -155,9 +157,10 @@ namespace LibLSLCC.CodeFormatter
         public void Format(string sourceCodeHint, ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
+            if (compilationUnit == null) throw new ArgumentNullException("compilationUnit");
+
             Format(sourceCodeHint, compilationUnit.Comments, compilationUnit, writer, closeStream);
         }
-
 
 
         /// <summary>

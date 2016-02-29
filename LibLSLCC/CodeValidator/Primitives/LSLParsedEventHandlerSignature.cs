@@ -71,6 +71,7 @@ namespace LibLSLCC.CodeValidator
         public LSLParsedEventHandlerSignature(string name, LSLParameterListNode parameters) :
             base(name, parameters.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)))
         {
+            //TODO validate parameters
             ParameterListNode = parameters;
         }
 

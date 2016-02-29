@@ -336,8 +336,11 @@ namespace LibLSLCC.Collections
         ///     Adds a range of elements to the array from an <see cref="IEnumerable{T}" />.
         /// </summary>
         /// <param name="items">The items to add.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="items"/> is <see langword="null" />.</exception>
         public void AddRange(IEnumerable<T> items)
         {
+            if (items == null) throw new ArgumentNullException("items");
+
             foreach (var item in items)
             {
                 Add(item);

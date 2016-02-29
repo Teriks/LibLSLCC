@@ -778,8 +778,11 @@ namespace LibLSLCC.LibraryData.Reflection
         /// </summary>
         /// <param name="info">The <see cref="MethodInfo" /> object to de-serialize from.</param>
         /// <returns>The de-serialized <see cref="LSLLibraryFunctionSignature" /> or <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null" />.</exception>
         public LSLLibraryFunctionSignature DeSerializeMethod(MethodInfo info)
         {
+            if (info == null) throw new ArgumentNullException("info");
+
             var classReturnTypeConverter = LSLLibraryDataSerializableAttribute.GetReturnTypeConverter(info.DeclaringType);
             var classParamTypeConverter = LSLLibraryDataSerializableAttribute.GetParamTypeConverter(info.DeclaringType);
 
@@ -796,9 +799,12 @@ namespace LibLSLCC.LibraryData.Reflection
         ///     Instance properties will be considered <c>null</c> if one is not provided.
         /// </param>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature" /> or <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null" />.</exception>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public LSLLibraryConstantSignature DeSerializeConstant(PropertyInfo info, object optionalInstance = null)
         {
+            if (info == null) throw new ArgumentNullException("info");
+
             var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
             var valueStringConverter = LSLLibraryDataSerializableAttribute.GetValueStringConverter(info.DeclaringType);
 
@@ -821,8 +827,11 @@ namespace LibLSLCC.LibraryData.Reflection
         ///     <see cref="PropertyInfo" /> or <see cref="FieldInfo" />.
         /// </exception>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature" /> or <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null" />.</exception>
         public LSLLibraryConstantSignature DeSerializeConstantGeneric(MemberInfo info, object optionalInstance = null)
         {
+            if (info == null) throw new ArgumentNullException("info");
+
             var prop = info as PropertyInfo;
             var field = info as FieldInfo;
 
@@ -852,9 +861,12 @@ namespace LibLSLCC.LibraryData.Reflection
         ///     Instance fields will be considered <c>null</c> if one is not provided.
         /// </param>
         /// <returns>The de-serialized <see cref="LSLLibraryConstantSignature" /> or <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null" />.</exception>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public LSLLibraryConstantSignature DeSerializeConstant(FieldInfo info, object optionalInstance = null)
         {
+            if (info == null) throw new ArgumentNullException("info");
+
             var constantTypeConverter = LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(info.DeclaringType);
             var valueStringConverter = LSLLibraryDataSerializableAttribute.GetValueStringConverter(info.DeclaringType);
 
@@ -970,8 +982,11 @@ namespace LibLSLCC.LibraryData.Reflection
         ///     An enumerable of de-serialized <see cref="LSLLibraryFunctionSignature" /> generated from the object type's
         ///     methods.
         /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null" />.</exception>
         public IEnumerable<LSLLibraryFunctionSignature> DeSerializeMethods(Type objectType)
         {
+            if (objectType == null) throw new ArgumentNullException("objectType");
+
             var classReturnTypeConverter = LSLLibraryDataSerializableAttribute.GetReturnTypeConverter(objectType);
             var classParamTypeConverter = LSLLibraryDataSerializableAttribute.GetParamTypeConverter(objectType);
 
@@ -1011,9 +1026,12 @@ namespace LibLSLCC.LibraryData.Reflection
         ///     An enumerable of de-serialized <see cref="LSLLibraryConstantSignature" /> generated from the object type's
         ///     fields and properties.
         /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null" />.</exception>
         public IEnumerable<LSLLibraryConstantSignature> DeSerializeConstants(Type objectType,
             object typeInstance = null)
         {
+            if (objectType == null) throw new ArgumentNullException("objectType");
+
             var classConstantTypeConverter =
                 LSLLibraryDataSerializableAttribute.GetConstantTypeConverter(objectType);
 
@@ -1056,8 +1074,11 @@ namespace LibLSLCC.LibraryData.Reflection
         ///     An enumerable of de-serialized <see cref="LSLLibraryConstantSignature" /> generated from the object instances
         ///     fields and properties.
         /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="fieldValueInstance"/> is <see langword="null" />.</exception>
         public IEnumerable<LSLLibraryConstantSignature> DeSerializeConstants(object fieldValueInstance)
         {
+            if (fieldValueInstance == null) throw new ArgumentNullException("fieldValueInstance");
+
             return DeSerializeConstants(fieldValueInstance.GetType(), fieldValueInstance);
         }
 

@@ -47,6 +47,8 @@
 
 #endregion
 
+using System;
+
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
@@ -57,19 +59,22 @@ namespace LibLSLCC.CodeValidator
     {
         /// <summary>
         ///     Construct an <see cref="LSLConstantJumpDescription" /> from another <see cref="LSLConstantJumpDescription" /> and
-        ///     an <see cref="ILSLReadOnlyCodeStatement" /> that
-        ///     represents the actual jump statement in the syntax tree.
-        ///     DeterminingJump in the constructed object is set to originalJump.DeterminingJump.
-        ///     EffectiveJumpStatement in the constructed object is set to the effectedJumpStatement parameter.
+        ///     an <see cref="ILSLReadOnlyCodeStatement" /> that represents the actual jump statement in the syntax tree. <para/>
+        ///     <see cref="DeterminingJump"/> in the constructed object is set to <paramref name="originalJump"/>.DeterminingJump. <para/>
+        ///     <see cref="EffectiveJumpStatement"/> in the constructed object is set to the <paramref name="effectiveJumpStatement"/> parameter.
         /// </summary>
-        /// <param name="originalJump">The LSLConstantJumpDescripton to copy the DeterminingJump property from.</param>
+        /// <param name="originalJump">The <see cref="LSLConstantJumpDescription"/> to copy the DeterminingJump property from.</param>
         /// <param name="effectiveJumpStatement">
         ///     The <see cref="ILSLReadOnlyCodeStatement" /> that represents the jump statement in
         ///     the syntax tree.
         /// </param>
+        /// <exception cref="ArgumentNullException"><paramref name="originalJump"/> or <paramref name="effectiveJumpStatement"/> is <see langword="null" />.</exception>
         public LSLConstantJumpDescription(LSLConstantJumpDescription originalJump,
             ILSLReadOnlyCodeStatement effectiveJumpStatement)
         {
+            if (originalJump == null) throw new ArgumentNullException("originalJump");
+            if (effectiveJumpStatement == null) throw new ArgumentNullException("effectiveJumpStatement");
+
             DeterminingJump = originalJump.DeterminingJump;
             EffectiveJumpStatement = effectiveJumpStatement;
         }

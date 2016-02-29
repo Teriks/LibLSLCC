@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Collections.Generic;
 
 #endregion
@@ -295,8 +296,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a vector literal.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null" />.</exception>
         public bool ValidateVectorContent(ILSLReadOnlyExprNode type)
         {
+            if (type == null) throw new ArgumentNullException("type");
+
             return !type.HasErrors && type.Type == LSLType.Float || type.Type == LSLType.Integer;
         }
 
@@ -306,8 +310,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a rotation literal.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null" />.</exception>
         public bool ValidateRotationContent(ILSLReadOnlyExprNode type)
         {
+            if (type == null) throw new ArgumentNullException("type");
+
             return !type.HasErrors && (type.Type == LSLType.Float || type.Type == LSLType.Integer);
         }
 
@@ -317,8 +324,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a list literal.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null" />.</exception>
         public bool ValidateListContent(ILSLReadOnlyExprNode type)
         {
+            if (type == null) throw new ArgumentNullException("type");
+
             //check for void required, we do not want functions returning void in a list
             return !type.HasErrors && type.Type != LSLType.List && type.Type != LSLType.Void;
         }
@@ -330,8 +340,11 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be used inside of boolean condition area.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null" />.</exception>
         public bool ValidBooleanConditional(ILSLReadOnlyExprNode type)
         {
+            if (type == null) throw new ArgumentNullException("type");
+
             return
                 (type.Type == LSLType.Key) ||
                 (type.Type == LSLType.Integer) ||
@@ -350,10 +363,14 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The parameter definition.</param>
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="parameter"/> or <paramref name="parameterExpressionPassed"/> is <see langword="null" />.</exception>
         public bool ValidateFunctionParameter(
             LSLParameter parameter,
             ILSLReadOnlyExprNode parameterExpressionPassed)
         {
+            if (parameter == null) throw new ArgumentNullException("parameter");
+            if (parameterExpressionPassed == null) throw new ArgumentNullException("parameterExpressionPassed");
+
             if (parameterExpressionPassed.HasErrors)
             {
                 return false;
@@ -384,9 +401,12 @@ namespace LibLSLCC.CodeValidator
         /// <param name="left">The expression to preform the postfix operation on.</param>
         /// <param name="operation">The postfix operation preformed.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> is <see langword="null" />.</exception>
         public LSLExpressionValidatorResult ValidatePostfixOperation(ILSLReadOnlyExprNode left,
             LSLPostfixOperationType operation)
         {
+            if (left == null) throw new ArgumentNullException("left");
+
             if (left.HasErrors)
             {
                 return LSLExpressionValidatorResult.Error;
@@ -408,8 +428,11 @@ namespace LibLSLCC.CodeValidator
         /// <param name="right">The expression to preform the prefix operation on.</param>
         /// <param name="operation">The prefix operation preformed.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="right"/> is <see langword="null" />.</exception>
         public LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLReadOnlyExprNode right)
         {
+            if (right == null) throw new ArgumentNullException("right");
+
             if (right.HasErrors)
             {
                 return LSLExpressionValidatorResult.Error;
@@ -431,8 +454,11 @@ namespace LibLSLCC.CodeValidator
         /// <param name="castedExpression">The expression to preform the cast on.</param>
         /// <param name="castTo">The type that is being casted to.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="castedExpression"/> is <see langword="null" />.</exception>
         public LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLReadOnlyExprNode castedExpression)
         {
+            if (castedExpression == null) throw new ArgumentNullException("castedExpression");
+
             if (castedExpression.HasErrors)
             {
                 return LSLExpressionValidatorResult.Error;
@@ -456,9 +482,13 @@ namespace LibLSLCC.CodeValidator
         /// <param name="operation">The binary operation to preform.</param>
         /// <param name="right">The expression to on the right of the binary operation.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <see langword="null" />.</exception>
         public LSLExpressionValidatorResult ValidateBinaryOperation(ILSLReadOnlyExprNode left, LSLBinaryOperationType operation,
             ILSLReadOnlyExprNode right)
         {
+            if (left == null) throw new ArgumentNullException("left");
+            if (right == null) throw new ArgumentNullException("right");
+
             if (left.HasErrors || right.HasErrors)
             {
                 return LSLExpressionValidatorResult.Error;

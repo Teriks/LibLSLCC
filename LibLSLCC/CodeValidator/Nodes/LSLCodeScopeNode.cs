@@ -76,21 +76,22 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
         /// Sets a labels parent to this <see cref="LSLCodeScopeNode"/>, also sets <see cref="LSLLabelStatementNode.ParentScopeId"/> to this nodes <see cref="ScopeId"/>.
         /// </summary>
         /// <param name="label">The label node to take pre define ownership of.</param>
         /// <returns><paramref name="label"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="label"/> is <see langword="null" />.</exception>
         public LSLLabelStatementNode PreDefineLabel(LSLLabelStatementNode label)
         {
+            if (label == null) throw new ArgumentNullException("label");
+
             if (_preDefinedLabels == null)
             {
                 _preDefinedLabels = new HashSet<LSLLabelStatementNode>(
                     new LambdaEqualityComparer<LSLLabelStatementNode>(ReferenceEquals)
                     );
             }
-
 
             label.Parent = this;
             label.ParentScopeId = ScopeId;
@@ -785,8 +786,11 @@ namespace LibLSLCC.CodeValidator
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <see langword="null" />.</exception>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
+            if (visitor == null) throw new ArgumentNullException("visitor");
+
             return IsSingleStatementScope
                 ? visitor.VisitSingleStatementCodeScope(this)
                 : visitor.VisitMultiStatementCodeScope(this);

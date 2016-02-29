@@ -470,8 +470,11 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLVariableDeclarationNode" /> that represents a parameter.
         /// </summary>
         /// <param name="declarationNode">A parameter node that declares the parameter variable.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="declarationNode"/> is <see langword="null" />.</exception>
         public static LSLVariableDeclarationNode CreateParameter(ILSLParameterNode declarationNode)
         {
+            if (declarationNode == null) throw new ArgumentNullException("declarationNode");
+
             var n = new LSLVariableDeclarationNode
             {
                 VariableNode = LSLVariableNode.CreateParameterReference(declarationNode),
@@ -766,13 +769,12 @@ namespace LibLSLCC.CodeValidator
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <see langword="null" />.</exception>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
-            if (IsGlobal)
-            {
-                return visitor.VisitGlobalVariableDeclaration(this);
-            }
-            return visitor.VisitLocalVariableDeclaration(this);
+            if (visitor == null) throw new ArgumentNullException("visitor");
+
+            return IsGlobal ? visitor.VisitGlobalVariableDeclaration(this) : visitor.VisitLocalVariableDeclaration(this);
         }
 
 

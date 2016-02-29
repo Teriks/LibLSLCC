@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -296,8 +297,11 @@ namespace LibLSLCC.CSharp
         /// </summary>
         /// <param name="signature">The method call signature, without a semi-colon at the end.</param>
         /// <returns>The parse/validation result.  <see cref="CSharpFunctionCallValidationResult" /></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <see langword="null" />.</exception>
         public static CSharpFunctionCallValidationResult Validate(string signature)
         {
+            if (signature == null) throw new ArgumentNullException("signature");
+
             var result = new CSharpFunctionCallValidationResult {Success = true};
 
             var explicitGenericParameters = new GenericArray<CSharpClassNameValidationResult>();

@@ -361,8 +361,11 @@ namespace LibLSLCC.CSharp
         /// </summary>
         /// <param name="input">The inheritance list signature to parse.</param>
         /// <returns>The parse/validation result.  <see cref="CSharpInheritanceListValidationResult" /></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="input"/> is <see langword="null" />.</exception>
         public static CSharpInheritanceListValidationResult Validate(string input)
         {
+            if (input == null) throw new ArgumentNullException("input");
+
             var result = new CSharpInheritanceListValidationResult();
 
             var compareValidatedType = new EquateValidatedTypes();
@@ -849,12 +852,16 @@ namespace LibLSLCC.CSharp
         {
             public bool Equals(CSharpClassNameValidationResult x, CSharpClassNameValidationResult y)
             {
+                if (x == null && y == null) return true;
+                if (x == null || y == null) return false;
+
                 return string.Equals(x.FullSignature, y.FullSignature);
             }
 
 
             public int GetHashCode(CSharpClassNameValidationResult obj)
             {
+                if (obj == null) return -1;
                 return obj.FullSignature.GetHashCode();
             }
         }

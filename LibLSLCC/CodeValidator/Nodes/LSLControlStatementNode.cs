@@ -464,8 +464,11 @@ namespace LibLSLCC.CodeValidator
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <see langword="null" />.</exception>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
+            if (visitor == null) throw new ArgumentNullException("visitor");
+
             return visitor.VisitControlStatement(this);
         }
 
@@ -524,6 +527,9 @@ namespace LibLSLCC.CodeValidator
         {
             public bool Equals(LSLConstantJumpDescription x, LSLConstantJumpDescription y)
             {
+                if (x == null && y == null) return true;
+                if (x == null || y == null) return false;
+
                 return x.DeterminingJump.JumpTarget == y.DeterminingJump.JumpTarget &&
                        x.DeterminingJump.JumpTarget.ParentScopeId == y.DeterminingJump.JumpTarget.ParentScopeId;
             }
@@ -531,6 +537,8 @@ namespace LibLSLCC.CodeValidator
 
             public int GetHashCode(LSLConstantJumpDescription obj)
             {
+                if (obj == null) return -1;
+
                 var hash = 17;
                 hash = hash*31 + obj.DeterminingJump.JumpTarget.ParentScopeId.GetHashCode();
                 hash = hash*31 + obj.DeterminingJump.LabelName.GetHashCode();

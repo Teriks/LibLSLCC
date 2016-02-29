@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using LibLSLCC.Collections;
 
 #endregion
@@ -113,8 +114,11 @@ namespace LibLSLCC.CodeValidator
         ///     Adds an <see cref="ILSLReadOnlyCodeStatement" /> to the <see cref="LSLCodeSegment" /> object.
         /// </summary>
         /// <param name="statement">The <see cref="ILSLReadOnlyCodeStatement" /> to add.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <see langword="null" />.</exception>
         public virtual void AddStatement(ILSLReadOnlyCodeStatement statement)
         {
+            if (statement == null) throw new ArgumentNullException("statement");
+
             EndNode = statement;
             if (StartNode == null)
             {
