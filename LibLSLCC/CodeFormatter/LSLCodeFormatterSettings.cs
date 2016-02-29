@@ -1144,7 +1144,11 @@ namespace LibLSLCC.CodeFormatter
         public int MaximumCharactersBeforeArgumentListWrap
         {
             get { return _maximumCharactersBeforeArgumentListWrap; }
-            set { SetField(ref _maximumCharactersBeforeArgumentListWrap, value, "MaximumCharactersBeforeArgumentListWrap"); }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _maximumCharactersBeforeArgumentListWrap, value, "MaximumCharactersBeforeArgumentListWrap");
+            }
         }
 
         /// <summary>
@@ -1154,7 +1158,11 @@ namespace LibLSLCC.CodeFormatter
         public int MinimumNewLinesBetweenGlobalStatementAndNextComment
         {
             get { return _minimumNewLinesBetweenGlobalStatementAndNextComment; }
-            set { SetField(ref _minimumNewLinesBetweenGlobalStatementAndNextComment,value, "MinimumNewLinesBetweenGlobalStatementAndNextComment"); }
+            set
+            {
+                if (value < 0) value = 0;
+                SetField(ref _minimumNewLinesBetweenGlobalStatementAndNextComment,value, "MinimumNewLinesBetweenGlobalStatementAndNextComment");
+            }
         }
 
         /// <summary>
@@ -1164,7 +1172,11 @@ namespace LibLSLCC.CodeFormatter
         public int MaximumNewLinesBetweenGlobalStatementAndNextComment
         {
             get { return _maximumNewLinesBetweenGlobalStatementAndNextComment; }
-            set { SetField(ref _maximumNewLinesBetweenGlobalStatementAndNextComment, value, "MaximumNewLinesBetweenGlobalStatementAndNextComment"); }
+            set
+            {
+                if (value < 0) value = 0;
+                SetField(ref _maximumNewLinesBetweenGlobalStatementAndNextComment, value, "MaximumNewLinesBetweenGlobalStatementAndNextComment");
+            }
         }
 
         private class ResetIfLessThanOne : IDefaultSettingsValueFactory

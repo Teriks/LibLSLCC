@@ -75,7 +75,7 @@ namespace LibLSLCC.CodeFormatter
         private int _binaryExpressionsSinceNewLine;
         private int _indentLevel;
         private int _nonTabsWrittenSinceLastLine;
-        private string _sourceReference;
+        private string _sourceCodeHint;
         private int _tabsWrittenSinceLastLine;
         private int _writeColumn;
         private int _writeLine;
@@ -139,7 +139,7 @@ namespace LibLSLCC.CodeFormatter
 
 
             _indentLevel = 0;
-            _sourceReference = "";
+            _sourceCodeHint = null;
             _writeColumn = 0;
             _writeLine = 0;
             _tabsWrittenSinceLastLine = 0;
@@ -258,14 +258,14 @@ namespace LibLSLCC.CodeFormatter
 
 
         /// <summary>
-        ///     Formats an <see cref="ILSLCompilationUnitNode" /> to an output writer, <paramref name="sourceReference" /> is only
-        ///     required if you want to keep comments.
+        ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer, with the ability to provide optional source code hint text.
         /// </summary>
-        /// <param name="sourceReference">
-        ///     The source code of the script, only necessary if comments exist.  Passing <c>null</c>
-        ///     will cause all comments to be stripped, regardless of formatter settings.
+        /// <param name="sourceCodeHint">
+        ///     The source code of the script, this can be <c>null</c>.  
+        ///     when provided the formatter can make more intelligent decisions in various places, such as retaining user spacing when comments appear on the same line as a statement.
         /// </param>
-        /// <param name="compilationUnit">The top level <see cref="ILSLCompilationUnitNode" /> syntax tree node to format.</param>
+        /// <param name="sourceComments">Source code comment concurrences.  Optional, may be <c>null</c>.</param>
+        /// <param name="syntaxTree">Syntax tree node to format to output.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream">
         ///     <c>true</c> if this method should close <paramref name="writer" /> when finished.  The
@@ -273,21 +273,21 @@ namespace LibLSLCC.CodeFormatter
         /// </param>
         /// <exception cref="ArgumentException">
         ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
-        ///     <paramref name="compilationUnit" />.
+        ///     <paramref name="syntaxTree" />.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
+        ///     If <paramref name="syntaxTree" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        public void WriteAndFlush(string sourceReference, ILSLCompilationUnitNode compilationUnit, TextWriter writer,
+        public void WriteAndFlush(string sourceCodeHint, IEnumerable<LSLComment> sourceComments, ILSLReadOnlySyntaxTreeNode syntaxTree, TextWriter writer,
             bool closeStream = false)
         {
-            if (compilationUnit == null)
+            if (syntaxTree == null)
             {
-                throw new ArgumentNullException("compilationUnit");
+                throw new ArgumentNullException("syntaxTree");
             }
 
-            if (compilationUnit.HasErrors)
+            if (syntaxTree.HasErrors)
             {
                 throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
                                             ".HasErrors is true, cannot format a tree with syntax errors.");
@@ -300,11 +300,11 @@ namespace LibLSLCC.CodeFormatter
 
             try
             {
-                _sourceReference = sourceReference;
+                _sourceCodeHint = sourceCodeHint;
 
-                if (_sourceReference != null && !Settings.RemoveComments)
+                if (sourceComments != null && !Settings.RemoveComments)
                 {
-                    foreach (var comment in compilationUnit.Comments)
+                    foreach (var comment in sourceComments)
                     {
                         _comments.AddLast(comment);
                     }
@@ -312,7 +312,7 @@ namespace LibLSLCC.CodeFormatter
 
                 Writer = writer;
 
-                Visit(compilationUnit);
+                Visit(syntaxTree);
 
                 Writer.Flush();
             }
@@ -1431,12 +1431,16 @@ namespace LibLSLCC.CodeFormatter
                 {
                     Write(FormatComment("", comment));
                 }
-                else
+                else if (_sourceCodeHint != null)
                 {
-                    var space = _sourceReference.Substring(curNode.SourceRange.StopIndex + 1,
+                    var space = _sourceCodeHint.Substring(curNode.SourceRange.StopIndex + 1,
                         (comment.SourceRange.StartIndex - curNode.SourceRange.StopIndex) - 1);
 
                     Write(space + comment.Text);
+                }
+                else
+                {
+                    Write("\t" + comment.Text);
                 }
 
                 if (commentAheadIndex < comments.Count)
@@ -1495,12 +1499,16 @@ namespace LibLSLCC.CodeFormatter
                 {
                     Write(FormatComment("", comment));
                 }
-                else
+                else if (_sourceCodeHint != null)
                 {
-                    var space = _sourceReference.Substring(node.SourceRange.StopIndex + 1,
+                    var space = _sourceCodeHint.Substring(node.SourceRange.StopIndex + 1,
                         (comment.SourceRange.StartIndex - node.SourceRange.StopIndex) - 1);
 
                     Write(space + comment.Text);
+                }
+                else
+                {
+                    Write("\t" + comment.Text);
                 }
 
 
@@ -3112,12 +3120,16 @@ namespace LibLSLCC.CodeFormatter
                 {
                     Write(FormatComment(indent, comment));
                 }
-                else
+                else if (_sourceCodeHint != null)
                 {
-                    var space = _sourceReference.Substring(node.SourceRange.StopIndex + 1,
+                    var space = _sourceCodeHint.Substring(node.SourceRange.StopIndex + 1,
                         (comment.SourceRange.StartIndex - node.SourceRange.StopIndex) - 1);
 
                     Write(space + comment.Text);
+                }
+                else
+                {
+                    Write("\t" + comment.Text);
                 }
 
                 if (commentAheadIndex < comments.Count)
@@ -3364,12 +3376,16 @@ namespace LibLSLCC.CodeFormatter
                     {
                         Write(FormatComment(indent, comment));
                     }
-                    else
+                    else if (_sourceCodeHint != null)
                     {
-                        var space = _sourceReference.Substring(node.SourceRange.StopIndex + 1,
+                        var space = _sourceCodeHint.Substring(node.SourceRange.StopIndex + 1,
                             (comment.SourceRange.StartIndex - node.SourceRange.StopIndex) - 1);
 
                         Write(space + comment.Text);
+                    }
+                    else
+                    {
+                        Write("\t" + comment.Text);
                     }
 
                     if (commentAheadIndex < comments.Count)

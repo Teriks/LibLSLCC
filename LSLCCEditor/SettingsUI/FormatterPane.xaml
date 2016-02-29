@@ -65,10 +65,11 @@
                         <Setter Property="VerticalAlignment" Value="Center"/>
                     </Style>
                 </ResourceDictionary>
-                <Style TargetType="ItemsControl">
+                <Style TargetType="ItemsControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
                     <Setter Property="BorderBrush" Value="DarkGray" />
                     <Setter Property="Background" Value="White" />
                     <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="Padding" Value="10,5,10,5"></Setter>
                 </Style>
 
             </StackPanel.Resources>
@@ -80,7 +81,7 @@
                           SelectedItem="{Binding Path=SelectedFormatterConfigurationName, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Expander Header="Comments" MinWidth="400">
-                <ItemsControl Padding="0,10,10,0">
+                <ItemsControl>
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -95,7 +96,7 @@
                 </ItemsControl>
             </Expander>
             <Expander Header="Braceless Control Statements" MinWidth="400">
-                <ItemsControl Padding="0,10,10,0">
+                <ItemsControl>
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -113,11 +114,11 @@
                     </CheckBox>
                 </ItemsControl>
             </Expander>
-            <Expander Header="Else-If/Else Breaking" MinWidth="400"  >
+            <Expander Header="Else-If / Else Breaking" MinWidth="400"  >
                 <Expander.Resources>
                     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                 </Expander.Resources>
-                <ItemsControl Padding="0,10,10,0">
+                <ItemsControl>
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -143,7 +144,7 @@
                 </ItemsControl>
             </Expander>
             <Expander Header="Spaces Before Opening Braces" MinWidth="400">
-                <ItemsControl Padding="0,10,10,0">
+                <ItemsControl>
 
                     <ItemsControl.Resources>
                         <ResourceDictionary>
@@ -219,7 +220,7 @@
                 </ItemsControl>
             </Expander>
             <Expander Header="Spaces Before Closing Braces" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ItemsControl Padding="0,10,0,0">
+                <ItemsControl>
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -276,7 +277,7 @@
                 </ItemsControl>
             </Expander>
             <Expander Header="Minimum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ItemsControl Padding="0,10,0,0">
+                <ItemsControl>
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -288,6 +289,11 @@
                         <Label Content="Min Newlines Between Distinct Global Statements:" />
                         <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenDistinctGlobalStatements}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Min Newlines Between Global Statement And Next Comment:" />
+                        <xctk:IntegerUpDown Minimum="0"
+                            Value="{Binding CurrentFormatterSettings.MinimumNewLinesBetweenGlobalStatementAndNextComment}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Min Newlines Between Distinct Local Statements:" />
@@ -302,7 +308,7 @@
                 </ItemsControl>
             </Expander>
             <Expander Header="Maximum Code Spacing" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ItemsControl Padding="0,10,0,0">
+                <ItemsControl>
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -336,14 +342,19 @@
                             Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesBetweenGlobalStatements}" />
                     </StackPanel>
                     <StackPanel>
+                        <Label>Max Newlines Between Global Statement And Next Comment:</Label>
+                        <xctk:IntegerUpDown Minimum="0"
+                            Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesBetweenGlobalStatementAndNextComment}" />
+                    </StackPanel>
+                    <StackPanel>
                         <Label>Max Newlines Between Local Statements:</Label>
                         <xctk:IntegerUpDown Minimum="1"
                             Value="{Binding Path=CurrentFormatterSettings.MaximumNewLinesBetweenLocalStatements}" />
                     </StackPanel>
                 </ItemsControl>
             </Expander>
-            <Expander Header="Expression Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400">
-                <ItemsControl Padding="0,10,10,0">
+            <Expander Header="Binary Expression Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400">
+                <ItemsControl>
                     <ItemsControl.Resources>
                         <ResourceDictionary>
                             <ResourceDictionary.MergedDictionaries>
@@ -424,6 +435,28 @@
                     </StackPanel>
                 </ItemsControl>
             </Expander>
+            <Expander  Header="List / Argument Wrapping" DataContext="{Binding ElementName=_this}" MinWidth="400">
+            <ItemsControl>
+                    <ItemsControl.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <StaticResource ResourceKey="ItemsControlStyles" />
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ItemsControl.Resources>
+                    <StackPanel>
+                        <Label>Max Character Columns Before Wrapping Lists:</Label>
+                        <xctk:IntegerUpDown Minimum="1"
+                            Value="{Binding  Path=CurrentFormatterSettings.MaximumCharactersBeforeListLiteralWrap}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label>Max Character Columns Before Wrapping Function Arguments:</Label>
+                        <xctk:IntegerUpDown Minimum="1"
+                            Value="{Binding  Path=CurrentFormatterSettings.MaximumCharactersBeforeArgumentListWrap}" />
+                    </StackPanel>
+                </ItemsControl>
+        </Expander>
         </StackPanel>
+
     </Grid>
 </UserControl>
