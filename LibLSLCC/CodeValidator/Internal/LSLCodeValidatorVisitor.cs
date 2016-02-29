@@ -290,7 +290,7 @@ namespace LibLSLCC.CodeValidator
             {
                 var expression = VisitTopOfExpression((LSLParser.ExpressionContext) expressionContexts[i]);
 
-                result.AddExpression(expression);
+                result.Add(expression);
 
                 if (!expression.HasErrors && !ExpressionValidator.ValidateListContent(expression))
                 {
@@ -368,7 +368,7 @@ namespace LibLSLCC.CodeValidator
                     }
                 }
 
-                result.AddExpression(expression);
+                result.Add(expression);
 
                 expressionIndex++;
             }
@@ -439,7 +439,7 @@ namespace LibLSLCC.CodeValidator
                     }
                 }
 
-                result.AddExpression(expression);
+                result.Add(expression);
 
                 expressionIndex++;
             }
@@ -504,7 +504,7 @@ namespace LibLSLCC.CodeValidator
                 {
                     result.HasErrors = true;
                 }
-                result.AddExpression(expression);
+                result.Add(expression);
             }
 
 
@@ -577,7 +577,7 @@ namespace LibLSLCC.CodeValidator
                     //prevent global variable declarations from being added
                     //to the global variable pool, they are effectively undefined if there is an error
                     //in their definition
-                    result.AddVariable(child);
+                    result.Add(child);
                 }
             }
 
@@ -599,7 +599,7 @@ namespace LibLSLCC.CodeValidator
 
                 //function definitions are guaranteed not to have duplicate definitions in a pre-pass
                 //also guaranteed to have syntactically correct parameter definitions
-                result.AddFunction(child);
+                result.Add(child);
             }
 
 
@@ -637,7 +637,7 @@ namespace LibLSLCC.CodeValidator
                     result.HasErrors = true;
                 }
 
-                result.AddState(child);
+                result.Add(child);
             }
 
             ScopingManager.ExitCompilationUnit();
@@ -902,7 +902,7 @@ namespace LibLSLCC.CodeValidator
                 }
 
 
-                result.AddEventHandler(child);
+                result.Add(child);
             }
 
             return ReturnFromVisit(context, result);
@@ -948,7 +948,7 @@ namespace LibLSLCC.CodeValidator
                 }
 
 
-                result.AddEventHandler(child);
+                result.Add(child);
             }
 
 
@@ -2362,7 +2362,7 @@ namespace LibLSLCC.CodeValidator
             }
 
             throw new InvalidOperationException(
-                "Internal error VisitExpressionContent in LSLCodeValidationVisitor returned a non " +
+                "Internal error VisitExpressionContent in " + typeof(LSLCodeValidatorVisitor).Name + " returned a non " +
                 typeof (ILSLExprNode).Name);
         }
 
@@ -2943,7 +2943,7 @@ namespace LibLSLCC.CodeValidator
         private bool ValidateFunctionCallSignatureMatch(
             LSLParser.Expr_FunctionCallContext context,
             LSLFunctionSignature functionSignature,
-            IReadOnlyGenericArray<ILSLExprNode> expressions)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions)
         {
             var location = new LSLSourceCodeRange(context);
 
@@ -2987,7 +2987,7 @@ namespace LibLSLCC.CodeValidator
         private LSLLibraryFunctionSignature ValidateLibraryFunctionCallSignatureMatch(
             LSLParser.Expr_FunctionCallContext context,
             IReadOnlyGenericArray<LSLLibraryFunctionSignature> functionSignatures,
-            IReadOnlyGenericArray<ILSLExprNode> expressions)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions)
         {
             if (functionSignatures.Count() == 1)
             {
@@ -3450,8 +3450,8 @@ namespace LibLSLCC.CodeValidator
 
         #region ExpressionValidationStubs
 
-        private LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, string operation,
-            ILSLExprNode right, LSLSourceCodeRange location)
+        private LSLExpressionValidatorResult ValidateBinaryOperation(ILSLReadOnlyExprNode left, string operation,
+            ILSLReadOnlyExprNode right, LSLSourceCodeRange location)
         {
             if (left.HasErrors || right.HasErrors)
             {
@@ -3472,7 +3472,7 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        private LSLExpressionValidatorResult ValidatePrefixOperation(string operation, ILSLExprNode right,
+        private LSLExpressionValidatorResult ValidatePrefixOperation(string operation, ILSLReadOnlyExprNode right,
             LSLSourceCodeRange location)
         {
             if (right.HasErrors)
@@ -3495,7 +3495,7 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        private LSLExpressionValidatorResult ValidatePostfixOperation(ILSLExprNode left, string operation,
+        private LSLExpressionValidatorResult ValidatePostfixOperation(ILSLReadOnlyExprNode left, string operation,
             LSLSourceCodeRange location)
         {
             if (left.HasErrors)
@@ -3517,7 +3517,7 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        private LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode from,
+        private LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLReadOnlyExprNode from,
             LSLSourceCodeRange location)
         {
             if (from.HasErrors)

@@ -134,7 +134,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        public LSLParameterNode(LSLParameterNode other)
+        public LSLParameterNode(ILSLParameterNode other)
         {
             if (other == null) throw new ArgumentNullException("other");
 
@@ -179,7 +179,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The zero based index of the parameter definition in its parent <see cref="ILSLParameterListNode" />.
         /// </summary>
-        public int ParameterIndex { get; internal set; }
+        public int ParameterIndex { get; set; }
 
         /// <summary>
         ///     The source code range of the parameter name.

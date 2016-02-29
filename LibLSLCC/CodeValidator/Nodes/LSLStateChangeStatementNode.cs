@@ -77,7 +77,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="state">The state node representing the state to change to.</param>
         /// <exception cref="ArgumentNullException"><paramref name="state" /> is <c>null</c>.</exception>
-        public LSLStateChangeStatementNode(LSLStateScopeNode state)
+        public LSLStateChangeStatementNode(ILSLStateScopeNode state)
         {
             if (state == null)
             {

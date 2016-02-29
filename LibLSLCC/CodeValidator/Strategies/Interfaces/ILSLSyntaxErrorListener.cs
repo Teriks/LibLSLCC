@@ -96,7 +96,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="left">The left expression.</param>
         /// <param name="operation">The binary operation that was attempted on the two expressions.</param>
         /// <param name="right">The right expression.</param>
-        void InvalidBinaryOperation(LSLSourceCodeRange location, ILSLExprNode left, string operation, ILSLExprNode right);
+        void InvalidBinaryOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode left, string operation, ILSLReadOnlyExprNode right);
 
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The prefix operation that was attempted on the expression.</param>
         /// <param name="right">The expression the prefix operation was used on.</param>
-        void InvalidPrefixOperation(LSLSourceCodeRange location, string operation, ILSLExprNode right);
+        void InvalidPrefixOperation(LSLSourceCodeRange location, string operation, ILSLReadOnlyExprNode right);
 
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The postfix operation that was attempted on the expression.</param>
         /// <param name="left">The expression the postfix operation was used on.</param>
-        void InvalidPostfixOperation(LSLSourceCodeRange location, ILSLExprNode left, string operation);
+        void InvalidPostfixOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode left, string operation);
 
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="castTo">The type that the cast operation attempted to cast the expression to.</param>
         /// <param name="fromExpression">The expression that the cast was attempted on.</param>
-        void InvalidCastOperation(LSLSourceCodeRange location, LSLType castTo, ILSLExprNode fromExpression);
+        void InvalidCastOperation(LSLSourceCodeRange location, LSLType castTo, ILSLReadOnlyExprNode fromExpression);
 
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="variableType">The actual type of the variable attempting to be initialized.</param>
         /// <param name="assignedExpression">The invalid expression that was assigned in the variable declaration.</param>
         void TypeMismatchInVariableDeclaration(LSLSourceCodeRange location, LSLType variableType,
-            ILSLExprNode assignedExpression);
+            ILSLReadOnlyExprNode assignedExpression);
 
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="component">The vector component of the initializer that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid vector initializer content.</param>
         void InvalidVectorContent(LSLSourceCodeRange location, LSLVectorComponent component,
-            ILSLExprNode invalidExpressionContent);
+            ILSLReadOnlyExprNode invalidExpressionContent);
 
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="index">The index in the initializer list that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid list initializer content.</param>
-        void InvalidListContent(LSLSourceCodeRange location, int index, ILSLExprNode invalidExpressionContent);
+        void InvalidListContent(LSLSourceCodeRange location, int index, ILSLReadOnlyExprNode invalidExpressionContent);
 
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="component">The rotation component of the initializer that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid rotation initializer content.</param>
         void InvalidRotationContent(LSLSourceCodeRange location, LSLRotationComponent component,
-            ILSLExprNode invalidExpressionContent);
+            ILSLReadOnlyExprNode invalidExpressionContent);
 
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         void ReturnedValueFromVoidFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
-            ILSLExprNode attemptedReturnExpression);
+            ILSLReadOnlyExprNode attemptedReturnExpression);
 
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         void TypeMismatchInReturnValue(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
-            ILSLExprNode attemptedReturnExpression);
+            ILSLReadOnlyExprNode attemptedReturnExpression);
 
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="functionSignature">The function signature of the defined function attempting to be called.</param>
         /// <param name="parameterExpressionsGiven">The expressions given to the function call.</param>
         void ImproperParameterCountInFunctionCall(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature, ILSLExprNode[] parameterExpressionsGiven);
+            LSLFunctionSignature functionSignature, ILSLReadOnlyExprNode[] parameterExpressionsGiven);
 
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        void InvalidTupleComponentAccessOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
+        void InvalidTupleComponentAccessOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode exprLvalue,
             string memberAccessed);
 
 
@@ -265,7 +265,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the if statement.</param>
-        void IfConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+        void IfConditionNotValidType(LSLSourceCodeRange location, ILSLReadOnlyExprNode attemptedConditionExpression);
 
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the else-if statement.</param>
-        void ElseIfConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+        void ElseIfConditionNotValidType(LSLSourceCodeRange location, ILSLReadOnlyExprNode attemptedConditionExpression);
 
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the do-loop.</param>
-        void DoLoopConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+        void DoLoopConditionNotValidType(LSLSourceCodeRange location, ILSLReadOnlyExprNode attemptedConditionExpression);
 
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the while-loop.</param>
-        void WhileLoopConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+        void WhileLoopConditionNotValidType(LSLSourceCodeRange location, ILSLReadOnlyExprNode attemptedConditionExpression);
 
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the for-loop.</param>
-        void ForLoopConditionNotValidType(LSLSourceCodeRange location, ILSLExprNode attemptedConditionExpression);
+        void ForLoopConditionNotValidType(LSLSourceCodeRange location, ILSLReadOnlyExprNode attemptedConditionExpression);
 
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="calledFunction">The defined/library function that was attempting to be called.</param>
         /// <param name="parameterExpressionsGiven">The parameter expressions given for the function call.</param>
         void ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location, int parameterNumberWithError,
-            LSLFunctionSignature calledFunction, ILSLExprNode[] parameterExpressionsGiven);
+            LSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven);
 
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace LibLSLCC.CodeValidator
         ///     function.
         /// </param>
         void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions);
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions);
 
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace LibLSLCC.CodeValidator
         /// </param>
         void CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location, string functionName,
             IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches,
-            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions);
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions);
 
 
         /// <summary>

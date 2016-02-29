@@ -277,7 +277,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="returnType">The return type of the function the expression is being returned from.</param>
         /// <param name="returnedExpression">The expression attempting to be returned.</param>
         /// <returns>True if the expression is allowed to be returned from the function given the expression type and return type.</returns>
-        public bool ValidateReturnTypeMatch(LSLType returnType, ILSLExprNode returnedExpression)
+        public bool ValidateReturnTypeMatch(LSLType returnType, ILSLReadOnlyExprNode returnedExpression)
         {
             var left = new LSLDummyExpr
             {
@@ -295,7 +295,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a vector literal.</returns>
-        public bool ValidateVectorContent(ILSLExprNode type)
+        public bool ValidateVectorContent(ILSLReadOnlyExprNode type)
         {
             return !type.HasErrors && type.Type == LSLType.Float || type.Type == LSLType.Integer;
         }
@@ -306,7 +306,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a rotation literal.</returns>
-        public bool ValidateRotationContent(ILSLExprNode type)
+        public bool ValidateRotationContent(ILSLReadOnlyExprNode type)
         {
             return !type.HasErrors && (type.Type == LSLType.Float || type.Type == LSLType.Integer);
         }
@@ -317,7 +317,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be inside of a list literal.</returns>
-        public bool ValidateListContent(ILSLExprNode type)
+        public bool ValidateListContent(ILSLReadOnlyExprNode type)
         {
             //check for void required, we do not want functions returning void in a list
             return !type.HasErrors && type.Type != LSLType.List && type.Type != LSLType.Void;
@@ -330,7 +330,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The type of expression that is attempting to be used.</param>
         /// <returns>True if the expression can be used inside of boolean condition area.</returns>
-        public bool ValidBooleanConditional(ILSLExprNode type)
+        public bool ValidBooleanConditional(ILSLReadOnlyExprNode type)
         {
             return
                 (type.Type == LSLType.Key) ||
@@ -352,7 +352,7 @@ namespace LibLSLCC.CodeValidator
         /// <returns></returns>
         public bool ValidateFunctionParameter(
             LSLParameter parameter,
-            ILSLExprNode parameterExpressionPassed)
+            ILSLReadOnlyExprNode parameterExpressionPassed)
         {
             if (parameterExpressionPassed.HasErrors)
             {
@@ -384,7 +384,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="left">The expression to preform the postfix operation on.</param>
         /// <param name="operation">The postfix operation preformed.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
-        public LSLExpressionValidatorResult ValidatePostfixOperation(ILSLExprNode left,
+        public LSLExpressionValidatorResult ValidatePostfixOperation(ILSLReadOnlyExprNode left,
             LSLPostfixOperationType operation)
         {
             if (left.HasErrors)
@@ -408,7 +408,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="right">The expression to preform the prefix operation on.</param>
         /// <param name="operation">The prefix operation preformed.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
-        public LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLExprNode right)
+        public LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLReadOnlyExprNode right)
         {
             if (right.HasErrors)
             {
@@ -431,7 +431,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="castedExpression">The expression to preform the cast on.</param>
         /// <param name="castTo">The type that is being casted to.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
-        public LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode castedExpression)
+        public LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLReadOnlyExprNode castedExpression)
         {
             if (castedExpression.HasErrors)
             {
@@ -456,8 +456,8 @@ namespace LibLSLCC.CodeValidator
         /// <param name="operation">The binary operation to preform.</param>
         /// <param name="right">The expression to on the right of the binary operation.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> object</returns>
-        public LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, LSLBinaryOperationType operation,
-            ILSLExprNode right)
+        public LSLExpressionValidatorResult ValidateBinaryOperation(ILSLReadOnlyExprNode left, LSLBinaryOperationType operation,
+            ILSLReadOnlyExprNode right)
         {
             if (left.HasErrors || right.HasErrors)
             {

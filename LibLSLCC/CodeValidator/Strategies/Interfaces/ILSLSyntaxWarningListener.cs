@@ -108,7 +108,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">The location in the source code.</param>
         /// <param name="expression">The offending expression.</param>
         /// <param name="conditionalStatementType">The type of conditional statement the expression was used in.</param>
-        void ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLExprNode expression,
+        void ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLReadOnlyExprNode expression,
             LSLConditionalStatementType conditionalStatementType);
 
 
@@ -144,7 +144,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="expressionCountTotal">
         ///     The number of expressions used in the for loop afterthought expression list.
         /// </param>
-        void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
+        void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLReadOnlyExprNode expression, int expressionIndex,
             int expressionCountTotal);
 
 
@@ -162,7 +162,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="expressionCountTotal">
         ///     The number of expressions used in the for loop init expression list.
         /// </param>
-        void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression, int expressionIndex,
+        void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLReadOnlyExprNode expression, int expressionIndex,
             int expressionCountTotal);
 
 
@@ -229,7 +229,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The signature of the parameter that hides the global variable.</param>
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
-            LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable);
+            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable);
 
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The signature of the parameter that hides the global variable.</param>
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLEventSignature eventHandlerSignature,
-            LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable);
+            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable);
 
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="localVariable">The variable declaration node of the local variable that hides the parameter.</param>
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         void LocalVariableHidesParameter(LSLSourceCodeRange location, LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, LSLParameterNode parameter);
+            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter);
 
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         void LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature, LSLVariableDeclarationNode localVariable,
-            LSLParameterNode parameter);
+            ILSLParameterNode parameter);
 
 
         /// <summary>
@@ -373,6 +373,6 @@ namespace LibLSLCC.CodeValidator
         /// <param name="eventSignature">The signature of the event handler this warning occurred in.</param>
         /// <param name="returnExpression">The return expression.</param>
         void ReturnedValueFromEventHandler(LSLSourceCodeRange location, LSLEventSignature eventSignature,
-            ILSLExprNode returnExpression);
+            ILSLReadOnlyExprNode returnExpression);
     }
 }

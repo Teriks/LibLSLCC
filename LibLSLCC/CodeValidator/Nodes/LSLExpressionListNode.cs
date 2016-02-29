@@ -46,6 +46,7 @@
 #region Imports
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLExpressionListNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLExpressionListNode : ILSLExpressionListNode
+    public sealed class LSLExpressionListNode : ILSLExpressionListNode, IEnumerable<ILSLReadOnlyExprNode>
     {
         private readonly GenericArray<ILSLExprNode> _expressions = new GenericArray<ILSLExprNode>();
         private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
@@ -93,7 +94,7 @@ namespace LibLSLCC.CodeValidator
 
             foreach (var expression in expressions)
             {
-                AddExpression(expression);
+                Add(expression);
             }
         }
 
@@ -108,7 +109,7 @@ namespace LibLSLCC.CodeValidator
 
             foreach (var expression in expressions)
             {
-                AddExpression(expression);
+                Add(expression);
             }
         }
 
@@ -128,9 +129,9 @@ namespace LibLSLCC.CodeValidator
             ListType = other.ListType;
 
 
-            foreach (var expr in other.Expressions)
+            foreach (var expr in other._expressions)
             {
-                AddExpression(expr.Clone());
+                Add(expr.Clone());
             }
 
             SourceRangesAvailable = other.SourceRangesAvailable;
@@ -162,7 +163,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
         /// </summary>
-        public IReadOnlyGenericArray<ILSLExprNode> Expressions
+        public IReadOnlyGenericArray<ILSLReadOnlyExprNode> Expressions
         {
             get { return _expressions; }
         }
@@ -234,7 +235,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to add to the expression list.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is <c>null</c>.</exception>
-        public void AddExpression(ILSLExprNode node)
+        public void Add(ILSLExprNode node)
         {
             if (node == null)
             {
@@ -363,5 +364,28 @@ namespace LibLSLCC.CodeValidator
         }
 
         #endregion
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="ILSLReadOnlyExprNode"/>'s in this expression list.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<ILSLReadOnlyExprNode> GetEnumerator()
+        {
+            return _expressions.GetEnumerator();
+        }
+
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

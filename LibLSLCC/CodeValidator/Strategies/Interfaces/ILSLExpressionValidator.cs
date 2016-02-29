@@ -215,7 +215,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="left">The expression on the left of the postfix operation.</param>
         /// <param name="operation">The postfix operation preformed.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> containing the validation results.</returns>
-        LSLExpressionValidatorResult ValidatePostfixOperation(ILSLExprNode left, LSLPostfixOperationType operation);
+        LSLExpressionValidatorResult ValidatePostfixOperation(ILSLReadOnlyExprNode left, LSLPostfixOperationType operation);
 
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="right">The expression on the right of the prefix operation.</param>
         /// <param name="operation">The prefix operation preformed.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> containing the validation results.</returns>
-        LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLExprNode right);
+        LSLExpressionValidatorResult ValidatePrefixOperation(LSLPrefixOperationType operation, ILSLReadOnlyExprNode right);
 
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="castTo">The type being casted to.</param>
         /// <param name="castedExpression">The expression being casted.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> containing the validation results.</returns>
-        LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLExprNode castedExpression);
+        LSLExpressionValidatorResult ValidateCastOperation(LSLType castTo, ILSLReadOnlyExprNode castedExpression);
 
 
         /// <summary>
@@ -249,8 +249,8 @@ namespace LibLSLCC.CodeValidator
         /// <param name="operation">The binary operation preformed.</param>
         /// <param name="right">The expression on the left of the binary operation.</param>
         /// <returns>An <see cref="LSLExpressionValidatorResult" /> containing the validation results.</returns>
-        LSLExpressionValidatorResult ValidateBinaryOperation(ILSLExprNode left, LSLBinaryOperationType operation,
-            ILSLExprNode right);
+        LSLExpressionValidatorResult ValidateBinaryOperation(ILSLReadOnlyExprNode left, LSLBinaryOperationType operation,
+            ILSLReadOnlyExprNode right);
 
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace LibLSLCC.CodeValidator
         ///     True if the given expression is of a valid type to be returned from a function with the given return type,
         ///     false if otherwise.
         /// </returns>
-        bool ValidateReturnTypeMatch(LSLType returnType, ILSLExprNode returnedExpression);
+        bool ValidateReturnTypeMatch(LSLType returnType, ILSLReadOnlyExprNode returnedExpression);
 
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace LibLSLCC.CodeValidator
         ///     literal.
         /// </param>
         /// <returns>True if the expression can be used in a vector literal initializer list, false if otherwise.</returns>
-        bool ValidateVectorContent(ILSLExprNode type);
+        bool ValidateVectorContent(ILSLReadOnlyExprNode type);
 
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace LibLSLCC.CodeValidator
         ///     literal.
         /// </param>
         /// <returns>True if the expression can be used in a rotation literal initializer list, false if otherwise.</returns>
-        bool ValidateRotationContent(ILSLExprNode type);
+        bool ValidateRotationContent(ILSLReadOnlyExprNode type);
 
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="type">The expression the user is attempting to use to initialize a list literal element.</param>
         /// <returns>True if the expression can be used in a list literal initializer list, false if otherwise.</returns>
-        bool ValidateListContent(ILSLExprNode type);
+        bool ValidateListContent(ILSLReadOnlyExprNode type);
 
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace LibLSLCC.CodeValidator
         ///     statement.
         /// </param>
         /// <returns>True if the expression can be used as a boolean conditional, false if otherwise.</returns>
-        bool ValidBooleanConditional(ILSLExprNode type);
+        bool ValidBooleanConditional(ILSLReadOnlyExprNode type);
 
 
         /// <summary>
@@ -316,6 +316,6 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
         /// <returns></returns>
         bool ValidateFunctionParameter(LSLParameter parameter,
-            ILSLExprNode parameterExpressionPassed);
+            ILSLReadOnlyExprNode parameterExpressionPassed);
     }
 }

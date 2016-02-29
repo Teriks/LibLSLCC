@@ -81,7 +81,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        public LSLVariableNode(LSLVariableNode other)
+        public LSLVariableNode(ILSLVariableNode other)
         {
             if (other == null)
             {
@@ -261,7 +261,7 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLVariableNode" /> that references a local parameter node.
         /// </summary>
         /// <param name="declarationNode">A parameter node that declares the parameter variable.</param>
-        internal static LSLVariableNode CreateParameterReference(LSLParameterNode declarationNode)
+        internal static LSLVariableNode CreateParameterReference(ILSLParameterNode declarationNode)
         {
             var v = new LSLVariableNode
             {

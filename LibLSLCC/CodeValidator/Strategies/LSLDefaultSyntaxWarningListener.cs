@@ -179,7 +179,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="expressionCountTotal">
         ///     The number of expressions used in the for loop afterthought expression list.
         /// </param>
-        public virtual void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression,
+        public virtual void ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location, ILSLReadOnlyExprNode expression,
             int expressionIndex,
             int expressionCountTotal)
         {
@@ -209,7 +209,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="expressionCountTotal">
         ///     The number of expressions used in the for loop init expression list.
         /// </param>
-        public virtual void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLExprNode expression,
+        public virtual void ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location, ILSLReadOnlyExprNode expression,
             int expressionIndex,
             int expressionCountTotal)
         {
@@ -318,7 +318,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         public virtual void ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
                 string.Format(
@@ -337,7 +337,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         public virtual void ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLEventSignature eventHandlerSignature,
-            LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
                 string.Format(
@@ -356,7 +356,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         public virtual void LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
+            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             OnWarning(location, string.Format("Local variable \"{0}\" in function \"{1}\" hides parameter \"{2}\".",
                 localVariable.Name, functionSignature.Name, parameter.Name));
@@ -373,7 +373,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         public virtual void LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
-            LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
+            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             OnWarning(location,
                 string.Format("Local variable \"{0}\" in event handler \"{1}\" hides parameter \"{2}\".",
@@ -544,7 +544,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="eventSignature">The signature of the event handler this warning occurred in.</param>
         /// <param name="returnExpression">The return expression.</param>
         public void ReturnedValueFromEventHandler(LSLSourceCodeRange location, LSLEventSignature eventSignature,
-            ILSLExprNode returnExpression)
+            ILSLReadOnlyExprNode returnExpression)
         {
             OnWarning(location,
                 string.Format(
@@ -559,7 +559,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">The location in the source code.</param>
         /// <param name="expression">The offending expression.</param>
         /// <param name="conditionalStatementType">The type of conditional statement the expression was used in.</param>
-        public virtual void ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLExprNode expression,
+        public virtual void ConditionalExpressionIsConstant(LSLSourceCodeRange location, ILSLReadOnlyExprNode expression,
             LSLConditionalStatementType conditionalStatementType)
         {
             if (conditionalStatementType == LSLConditionalStatementType.If)

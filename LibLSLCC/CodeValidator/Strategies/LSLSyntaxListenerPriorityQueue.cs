@@ -169,9 +169,9 @@ namespace LibLSLCC.CodeValidator
         /// <param name="left">The left expression.</param>
         /// <param name="operation">The binary operation that was attempted on the two expressions.</param>
         /// <param name="right">The right expression.</param>
-        void ILSLSyntaxErrorListener.InvalidBinaryOperation(LSLSourceCodeRange location, ILSLExprNode left,
+        void ILSLSyntaxErrorListener.InvalidBinaryOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode left,
             string operation,
-            ILSLExprNode right)
+            ILSLReadOnlyExprNode right)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.InvalidBinaryOperation(location, left, operation, right));
@@ -185,7 +185,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="operation">The prefix operation that was attempted on the expression.</param>
         /// <param name="right">The expression the prefix operation was used on.</param>
         void ILSLSyntaxErrorListener.InvalidPrefixOperation(LSLSourceCodeRange location, string operation,
-            ILSLExprNode right)
+            ILSLReadOnlyExprNode right)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.InvalidPrefixOperation(location, operation, right));
@@ -198,7 +198,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The postfix operation that was attempted on the expression.</param>
         /// <param name="left">The expression the postfix operation was used on.</param>
-        void ILSLSyntaxErrorListener.InvalidPostfixOperation(LSLSourceCodeRange location, ILSLExprNode left,
+        void ILSLSyntaxErrorListener.InvalidPostfixOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode left,
             string operation)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
@@ -213,7 +213,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="castTo">The type that the cast operation attempted to cast the expression to.</param>
         /// <param name="fromExpression">The expression that the cast was attempted on.</param>
         void ILSLSyntaxErrorListener.InvalidCastOperation(LSLSourceCodeRange location, LSLType castTo,
-            ILSLExprNode fromExpression)
+            ILSLReadOnlyExprNode fromExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.InvalidCastOperation(location, castTo, fromExpression));
@@ -227,7 +227,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="variableType">The actual type of the variable attempting to be initialized.</param>
         /// <param name="assignedExpression">The invalid expression that was assigned in the variable declaration.</param>
         void ILSLSyntaxErrorListener.TypeMismatchInVariableDeclaration(LSLSourceCodeRange location, LSLType variableType,
-            ILSLExprNode assignedExpression)
+            ILSLReadOnlyExprNode assignedExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -256,7 +256,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="component">The vector component of the initializer that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid vector initializer content.</param>
         void ILSLSyntaxErrorListener.InvalidVectorContent(LSLSourceCodeRange location, LSLVectorComponent component,
-            ILSLExprNode invalidExpressionContent)
+            ILSLReadOnlyExprNode invalidExpressionContent)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.InvalidVectorContent(location, component, invalidExpressionContent));
@@ -270,7 +270,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="index">The index in the initializer list that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid list initializer content.</param>
         void ILSLSyntaxErrorListener.InvalidListContent(LSLSourceCodeRange location, int index,
-            ILSLExprNode invalidExpressionContent)
+            ILSLReadOnlyExprNode invalidExpressionContent)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.InvalidListContent(location, index, invalidExpressionContent));
@@ -284,7 +284,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="component">The rotation component of the initializer that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid rotation initializer content.</param>
         void ILSLSyntaxErrorListener.InvalidRotationContent(LSLSourceCodeRange location, LSLRotationComponent component,
-            ILSLExprNode invalidExpressionContent)
+            ILSLReadOnlyExprNode invalidExpressionContent)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.InvalidRotationContent(location, component, invalidExpressionContent));
@@ -299,7 +299,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         void ILSLSyntaxErrorListener.ReturnedValueFromVoidFunction(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            ILSLExprNode attemptedReturnExpression)
+            ILSLReadOnlyExprNode attemptedReturnExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -316,7 +316,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         void ILSLSyntaxErrorListener.TypeMismatchInReturnValue(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            ILSLExprNode attemptedReturnExpression)
+            ILSLReadOnlyExprNode attemptedReturnExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -370,7 +370,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameterExpressionsGiven">The expressions given to the function call.</param>
         void ILSLSyntaxErrorListener.ImproperParameterCountInFunctionCall(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            ILSLExprNode[] parameterExpressionsGiven)
+            ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -416,7 +416,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
         void ILSLSyntaxErrorListener.InvalidTupleComponentAccessOperation(LSLSourceCodeRange location,
-            ILSLExprNode exprLvalue,
+            ILSLReadOnlyExprNode exprLvalue,
             string memberAccessed)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
@@ -430,7 +430,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the if statement.</param>
         void ILSLSyntaxErrorListener.IfConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.IfConditionNotValidType(location, attemptedConditionExpression));
@@ -443,7 +443,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the else-if statement.</param>
         void ILSLSyntaxErrorListener.ElseIfConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.ElseIfConditionNotValidType(location, attemptedConditionExpression));
@@ -456,7 +456,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the do-loop.</param>
         void ILSLSyntaxErrorListener.DoLoopConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.DoLoopConditionNotValidType(location, attemptedConditionExpression));
@@ -469,7 +469,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the while-loop.</param>
         void ILSLSyntaxErrorListener.WhileLoopConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.WhileLoopConditionNotValidType(location, attemptedConditionExpression));
@@ -482,7 +482,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the for-loop.</param>
         void ILSLSyntaxErrorListener.ForLoopConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.ForLoopConditionNotValidType(location, attemptedConditionExpression));
@@ -498,7 +498,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameterExpressionsGiven">The parameter expressions given for the function call.</param>
         void ILSLSyntaxErrorListener.ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location,
             int parameterNumberWithError,
-            LSLFunctionSignature calledFunction, ILSLExprNode[] parameterExpressionsGiven)
+            LSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -764,7 +764,7 @@ namespace LibLSLCC.CodeValidator
         /// </param>
         void ILSLSyntaxErrorListener.NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location,
             string functionName,
-            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -786,7 +786,7 @@ namespace LibLSLCC.CodeValidator
         void ILSLSyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location,
             string functionName,
             IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches,
-            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -958,7 +958,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.ForLoopAfterthoughtHasNoEffect(LSLSourceCodeRange location,
-            ILSLExprNode expression, int expressionIndex,
+            ILSLReadOnlyExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -969,7 +969,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.ForLoopInitExpressionHasNoEffect(LSLSourceCodeRange location,
-            ILSLExprNode expression, int expressionIndex,
+            ILSLReadOnlyExprNode expression, int expressionIndex,
             int expressionCountTotal)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -1031,7 +1031,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -1042,7 +1042,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLEventSignature eventHandlerSignature,
-            LSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -1053,7 +1053,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
+            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -1064,7 +1064,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
-            LSLVariableDeclarationNode localVariable, LSLParameterNode parameter)
+            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -1161,7 +1161,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.ReturnedValueFromEventHandler(LSLSourceCodeRange location,
-            LSLEventSignature eventSignature, ILSLExprNode returnExpression)
+            LSLEventSignature eventSignature, ILSLReadOnlyExprNode returnExpression)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -1170,7 +1170,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.ConditionalExpressionIsConstant(LSLSourceCodeRange location,
-            ILSLExprNode expression,
+            ILSLReadOnlyExprNode expression,
             LSLConditionalStatementType conditionalStatementType)
         {
             _warningActionQueue.Enqueue(location.StartIndex,

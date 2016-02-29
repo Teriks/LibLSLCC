@@ -217,14 +217,6 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     <see cref="ILSLParameterListNode.Parameters" /> taken from <see cref="ParameterList" />
-        /// </summary>
-        public IReadOnlyGenericArray<LSLParameterNode> ParameterNodes
-        {
-            get { return ParameterList.Parameters; }
-        }
-
-        /// <summary>
         ///     A list of function call nodes that reference this function definition, or an empty list.
         /// </summary>
         public IReadOnlyGenericArray<LSLFunctionCallNode> References

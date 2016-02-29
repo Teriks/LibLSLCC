@@ -470,7 +470,7 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLVariableDeclarationNode" /> that represents a parameter.
         /// </summary>
         /// <param name="declarationNode">A parameter node that declares the parameter variable.</param>
-        public static LSLVariableDeclarationNode CreateParameter(LSLParameterNode declarationNode)
+        public static LSLVariableDeclarationNode CreateParameter(ILSLParameterNode declarationNode)
         {
             var n = new LSLVariableDeclarationNode
             {

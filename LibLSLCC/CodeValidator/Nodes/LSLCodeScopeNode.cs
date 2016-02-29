@@ -46,6 +46,7 @@
 #region Imports
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLCodeScopeNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLCodeScopeNode : ILSLCodeScopeNode, ILSLCodeStatement
+    public sealed class LSLCodeScopeNode : ILSLCodeScopeNode, ILSLCodeStatement, IEnumerable<ILSLReadOnlyCodeStatement>
     {
         HashSet<LSLLabelStatementNode> _preDefinedLabels = new HashSet<LSLLabelStatementNode>(
             new LambdaEqualityComparer<LSLLabelStatementNode>(ReferenceEquals));
@@ -86,7 +87,8 @@ namespace LibLSLCC.CodeValidator
             if (_preDefinedLabels == null)
             {
                 _preDefinedLabels = new HashSet<LSLLabelStatementNode>(
-            new LambdaEqualityComparer<LSLLabelStatementNode>(ReferenceEquals));
+                    new LambdaEqualityComparer<LSLLabelStatementNode>(ReferenceEquals)
+                    );
             }
 
 
@@ -98,8 +100,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Create a <see cref="LSLCodeScopeNode" /> with the given <see cref="ScopeId" /> and
-        ///     <see cref="LSLCodeScopeType" />.
+        ///     Create a <see cref="LSLCodeScopeNode" /> with the given scope ID.
         /// </summary>
         /// <param name="scopeId">The <see cref="ParentScopeId"/>.</param>
         public LSLCodeScopeNode(int scopeId)
@@ -109,22 +110,66 @@ namespace LibLSLCC.CodeValidator
 
 
 
+
+
+
+
         /// <summary>
-        ///     Create a single statement <see cref="LSLCodeScopeNode" /> with the given
-        ///     <see cref="ScopeId" /> and <see cref="LSLCodeScopeType" />.
-        ///     <see cref="IsSingleStatementScope" /> will be <c>true</c>, you will not be able to add more statements with
-        ///     <see cref="AddStatement" />.
+        ///     Construct an  <see cref="LSLCodeScopeNode" /> with the given scope ID and statements. <para/>
+        ///     <see cref="EndScope" /> is called after adding the statements in the enumerable, you will not be able to add more statements with <see cref="AddStatement(ILSLCodeStatement)" />. <para/>
+        ///     If only a single statement is added <see cref="IsSingleStatementScope"/> will be <c>true</c>.
         /// </summary>
         /// <param name="scopeId">The <see cref="ParentScopeId"/>.</param>
-        /// <param name="statement">The statement in the single statement code scope.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="statement" /> is <c>null</c>.</exception>
-        public LSLCodeScopeNode(int scopeId, ILSLCodeStatement statement)
+        /// <param name="statements">The statements to add to the code scope.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="statements" /> is <c>null</c>.</exception>
+        public LSLCodeScopeNode(int scopeId, IEnumerable<ILSLCodeStatement> statements)
         {
-            if (statement == null) throw new ArgumentNullException("statement");
+            if (statements == null) throw new ArgumentNullException("statements");
 
             ScopeId = scopeId;
-            AddStatement(statement);
-            IsSingleStatementScope = true;
+
+            int single = 0;
+            foreach (var stat in statements)
+            {
+                AddStatement(stat);
+                if (single < 2) single++;
+            }
+
+            IsSingleStatementScope = single == 1;
+
+            EndScope();
+        }
+
+
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLCodeScopeNode" /> with the given scope ID and expressions as statements.  <para/>
+        ///     An <see cref="LSLExpressionStatementNode"/> is implicitly created for each <see cref="ILSLExprNode"/>. <para/>
+        ///     <see cref="EndScope" /> is called after adding the statements, you will not be able to add more statements with <see cref="AddStatement(ILSLCodeStatement)" />. <para/>
+        ///     If only a single expression is added <see cref="IsSingleStatementScope"/> will be <c>true</c>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ParentScopeId"/>.</param>
+        /// <param name="expressions">The expressions to use as statements in the single statement code scope.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="expressions" /> is <c>null</c>.</exception>
+        public LSLCodeScopeNode(int scopeId, params ILSLExprNode[] expressions)
+            : this(scopeId, expressions.Select(x => new LSLExpressionStatementNode(x)))
+        {
+
+        }
+
+
+        /// <summary>
+        ///     Construct an <see cref="LSLCodeScopeNode" /> with the given scope ID and statements. <para/>
+        ///     <see cref="EndScope" /> is called after adding the statements, you will not be able to add more statements with <see cref="AddStatement(ILSLCodeStatement)" />. <para/>
+        ///     If only a single statement is added <see cref="IsSingleStatementScope"/> will be <c>true</c>.
+        /// </summary>
+        /// <param name="scopeId">The <see cref="ParentScopeId"/>.</param>
+        /// <param name="statements">The statements to add to the code scope.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="statements" /> is <c>null</c>.</exception>
+        public LSLCodeScopeNode(int scopeId, params ILSLCodeStatement[] statements) : this(scopeId, statements.AsEnumerable())
+        {
+            
         }
 
 
@@ -408,10 +453,7 @@ namespace LibLSLCC.CodeValidator
         /// </remarks>
         /// <param name="statement">The statement to add to the code scope</param>
         /// <exception cref="ArgumentNullException"><paramref name="statement" /> is <c>null</c>.</exception>
-        /// <exception cref="InvalidOperationException">
-        ///     When <see cref="IsSingleStatementScope" /> is <c>true</c> and the code
-        ///     scope already contains a statement.
-        /// </exception>
+        /// <exception cref="InvalidOperationException"><see cref="EndScope"/> has already been called.</exception>
         /// <seealso cref="EndScope" />
         public void AddStatement(ILSLCodeStatement statement)
         {
@@ -420,10 +462,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("statement");
             }
 
-            if (IsSingleStatementScope && _codeStatements.Count == 1)
+            if (_endScope)
             {
                 throw new InvalidOperationException(
-                    "Cannot add more than one code statement when IsSingleStatementScope is true.");
+                    "EndScope has already been called, cannot add any more statements.");
             }
 
 
@@ -659,12 +701,21 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
         /// <summary>
-        ///     Must be called after all statements have been added to the code scope, in order to
-        ///     tell the on-line dead code detection algorithm that the end of the scope has been reached.
+        ///     Must be called after all statements have been added to the code scope; in order to
+        ///     tell the dead code detection algorithm that the end of the scope has been reached.
         /// </summary>
+        /// <exception cref="InvalidOperationException"><see cref="EndScope"/> has already been called.</exception>
         public void EndScope()
         {
+            if (_endScope)
+            {
+                throw new InvalidOperationException("EndScope had already been called.");
+            }
+
+
+            _endScope = true;
             _insideDeadCode = false;
             _inDeadJumpedOverCode = false;
             _deadCodeJumpOverEnding = -1;
@@ -675,6 +726,7 @@ namespace LibLSLCC.CodeValidator
                 _deadCodeSegments.Add(_deadCodeSegmentsStack.Pop());
             }
         }
+
 
         #region Nested type: Err
 
@@ -791,7 +843,32 @@ namespace LibLSLCC.CodeValidator
         private bool _insideDeadCodeAfterReturnPath;
         private bool _afterLabelJumpDownOverReturn;
         private ILSLSyntaxTreeNode _parent;
+        private bool _endScope;
 
         #endregion
+
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="ILSLReadOnlyCodeStatement"/>'s in the code scope.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<ILSLReadOnlyCodeStatement> GetEnumerator()
+        {
+            return CodeStatements.GetEnumerator();
+        }
+
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

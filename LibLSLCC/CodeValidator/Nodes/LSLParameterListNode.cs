@@ -46,6 +46,7 @@
 #region Imports
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Antlr4.Runtime;
@@ -59,7 +60,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLParameterListNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLParameterListNode : ILSLParameterListNode
+    public sealed class LSLParameterListNode : ILSLParameterListNode, IEnumerable<ILSLParameterNode>
     {
         private readonly HashMap<string, LSLParameterNode> _parameters = new HashMap<string, LSLParameterNode>();
         private readonly GenericArray<LSLSourceCodeRange> _sourceRangeCommaList = new GenericArray<LSLSourceCodeRange>();
@@ -106,7 +107,7 @@ namespace LibLSLCC.CodeValidator
 
             foreach (var v in parameters)
             {
-                AddParameterNode(v);
+                Add(v);
             }
         }
 
@@ -124,7 +125,7 @@ namespace LibLSLCC.CodeValidator
 
             foreach (var v in parameters)
             {
-                AddParameterNode(v);
+                Add(v);
             }
         }
 
@@ -147,9 +148,9 @@ namespace LibLSLCC.CodeValidator
                 _sourceRangeCommaList = other.SourceRangeCommaList.ToGenericArray();
             }
 
-            foreach (var param in other.Parameters)
+            foreach (var param in other._parameters.Values)
             {
-                AddParameterNode(param.Clone());
+                Add(param.Clone());
             }
 
             HasErrors = other.HasErrors;
@@ -159,7 +160,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The <see cref="LSLParameterNode" /> objects that are children of this node, or an empty list.
         /// </summary>
-        public IReadOnlyGenericArray<LSLParameterNode> Parameters
+        public IReadOnlyGenericArray<ILSLParameterNode> Parameters
         {
             get { return _parameters.Values.ToGenericArray(); }
         }
@@ -359,7 +360,7 @@ namespace LibLSLCC.CodeValidator
                         ParameterIndex = parameterIndex
                     };
 
-                    result.AddParameterNode(addition);
+                    result.Add(addition);
 
                     parameterIndex++;
                 }
@@ -373,14 +374,13 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Add a parameter definition node to this parameter list node.
-        ///     This method does not check for duplicate parameter names.
         /// </summary>
         /// <param name="node">The parameter definition node to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the 'node' parameter is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
         ///     If a parameter with the same name already exists.
         /// </exception>
-        public void AddParameterNode(LSLParameterNode node)
+        public void Add(LSLParameterNode node)
         {
             if (node == null)
             {
@@ -394,6 +394,7 @@ namespace LibLSLCC.CodeValidator
             }
 
             node.Parent = this;
+            node.ParameterIndex = _parameters.Count;
             _parameters.Add(node.Name, node);
         }
 
@@ -401,6 +402,30 @@ namespace LibLSLCC.CodeValidator
         private enum Err
         {
             Err
+        }
+
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="ILSLParameterNode"/>'s in this parameter list.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<ILSLParameterNode> GetEnumerator()
+        {
+            return Parameters.GetEnumerator();
+        }
+
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

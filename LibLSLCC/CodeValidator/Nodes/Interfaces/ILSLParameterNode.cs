@@ -50,7 +50,7 @@
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     AST node interface for parameter function and event handler parameter definitions.
+    ///     Readonly AST node interface for parameter function and event handler parameter definitions.
     /// </summary>
     public interface ILSLParameterNode : ILSLReadOnlySyntaxTreeNode
     {
@@ -91,5 +91,6 @@ namespace LibLSLCC.CodeValidator
         ///     <c>null</c>.
         /// </remarks>
         LSLSourceCodeRange SourceRangeType { get; }
+
     }
 }

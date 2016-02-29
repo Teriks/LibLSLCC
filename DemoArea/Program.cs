@@ -323,10 +323,10 @@ namespace DemoArea
 
         private static void ReflectAndCompileExample()
         {
-            Console.WriteLine("");
-            Console.WriteLine("Library data reflect and compile test.");
+            Console.WriteLine();
+            Console.WriteLine("Library data reflect and compiler example.");
             Console.WriteLine("======================");
-            Console.WriteLine("");
+            Console.WriteLine();
 
 
             var x = new LSLLibraryDataReflectionSerializer
@@ -533,78 +533,155 @@ default{
         }
 
 
+
+
         /// ===============================
 
 
         private static void PrettyPrintExample()
         {
-            Console.WriteLine("Pretty Print DOM Test.");
+            Console.WriteLine("Pretty Print DOM Example.");
             Console.WriteLine("======================");
             Console.WriteLine("");
 
             LSLCompilationUnitNode program = new LSLCompilationUnitNode();
 
-            var gv = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Rotation, "rot",
+            var globalVar1 = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Rotation, "rot",
                 new LSLRotationLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
                     new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f))
                 );
 
-            var gv2 = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Vector, "vec",
+            var globalVar2 = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Vector, "vec",
                 new LSLVectorLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
                     new LSLFloatLiteralNode(3.0f))
                 );
 
-            program.AddVariable(gv);
-            program.AddVariable(gv2);
+            var globalVar3 = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Integer, "int", new LSLIntegerLiteralNode(0));
+
+            program.Add(globalVar1);
+            program.Add(globalVar2);
+            program.Add(globalVar3);
 
             var llSay = LSLFunctionSignature.Parse("llSay(integer chan, string msg);");
 
+            var callSay = new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(0),
+                new LSLStringLiteralNode("hello world"));
 
-            var funCode = new LSLCodeScopeNode(0);
+            var callSay2 = new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(0),
+                new LSLStringLiteralNode("HELLO WORLD"));
 
-            funCode.AddStatement(new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(3), new LSLStringLiteralNode("test")));
+            int scopeId = 0;
+            var funCode = new LSLCodeScopeNode(++scopeId);
 
-            var myFunc = new LSLFunctionDeclarationNode(LSLType.Void, "myfunc", funCode);
-            program.AddFunction(myFunc);
-
-
-            var eventCode = new LSLCodeScopeNode(0);
-
-            var v = LSLVariableDeclarationNode.CreateLocalVar(LSLType.List, "test",
-                new LSLListLiteralNode(new LSLIntegerLiteralNode(3), new LSLIntegerLiteralNode(4))
-                );
-
-            var fun = new LSLFunctionCallNode(llSay, new LSLHexLiteralNode(0x332), new LSLStringLiteralNode("hello world"));
-
-
-            eventCode.AddStatement(v);
-
-            var label = new LSLLabelStatementNode("test");
-            eventCode.PreDefineLabel(label);
-
-            var ic = new LSLCodeScopeNode(1);
+            {
+                var init = new LSLBinaryExpressionNode(LSLType.Integer, globalVar3.CreateReference(),
+                    LSLBinaryOperationType.Assign, new LSLIntegerLiteralNode(0));
+                var cond = new LSLBinaryExpressionNode(LSLType.Integer, globalVar3.CreateReference(),
+                    LSLBinaryOperationType.LessThan, new LSLIntegerLiteralNode(100));
+                var after = new LSLPostfixOperationNode(LSLType.Integer, globalVar3.CreateReference(),
+                    LSLPostfixOperationType.Increment);
 
 
-            ic.AddStatement(new LSLJumpStatementNode(label));
+                funCode.AddStatement(
+                    new LSLForLoopNode(init, cond, after,
+                        new LSLCodeScopeNode(++scopeId, callSay.Clone()))
+                    );
 
-            ic.AddStatement(fun);
-            ic.AddStatement(new LSLFunctionCallNode(myFunc));
-            ic.AddStatement(fun.Clone());
+                funCode.AddStatement(
+                    new LSLDoLoopNode(
+                        new LSLCodeScopeNode(++scopeId, callSay2.Clone()),
+                        cond.Clone())
+                    );
+            }
 
-            ic.EndScope();
+
+            var myFunc = new LSLFunctionDeclarationNode(LSLType.Void, "my_function", funCode);
+            program.Add(myFunc);
 
 
+            scopeId = 0;
+            var eventCode = new LSLCodeScopeNode(++scopeId);
+            {
+
+
+
+                eventCode.AddStatement(LSLVariableDeclarationNode.CreateLocalVar(LSLType.List, "localVar",
+                    new LSLListLiteralNode(new LSLIntegerLiteralNode(3), new LSLIntegerLiteralNode(4))
+                    ));
+
+                var label = new LSLLabelStatementNode("label");
+                eventCode.PreDefineLabel(label);
+
+                var ic = new LSLCodeScopeNode(++scopeId);
+                {
+                    ic.AddStatement(new LSLJumpStatementNode(label));
+                    ic.AddStatement(callSay.Clone());
+                    ic.AddStatement(new LSLFunctionCallNode(myFunc));
+                    ic.AddStatement(callSay.Clone());
+                    ic.EndScope();
+                }
+
+
+                eventCode.AddStatement(ic);
+                eventCode.AddStatement(label);
+            }
             eventCode.EndScope();
-
-
-            eventCode.AddStatement(ic);
-
-            eventCode.AddStatement(label);
 
 
             var e = new LSLEventHandlerNode("state_entry", eventCode);
 
-            program.DefaultState.AddEventHandler(e);
+            program.DefaultState.Add(e);
+
+
+            var constant = LSLVariableDeclarationNode.CreateLibraryConstant(LSLType.Integer, "TRUE");
+
+
+            scopeId = 0;
+            program.Add(
+                new LSLStateScopeNode("my_state")
+            {
+                new LSLEventHandlerNode("state_entry",
+                    new LSLCodeScopeNode(++scopeId, 
+                    
+                        new LSLExpressionStatementNode(new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(0), new LSLStringLiteralNode("hello world"))),
+
+                        new LSLDoLoopNode(
+                            new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc)),
+                            constant.CreateReference()
+                            ),
+
+                        new LSLWhileLoopNode(
+                             constant.CreateReference(),
+                             new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc))
+                            ),
+
+                        new LSLControlStatementNode(
+                                new LSLIfStatementNode(constant.CreateReference(),
+                                new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc))
+                                )
+                            ),
+
+                        new LSLControlStatementNode(
+                            new LSLIfStatementNode(constant.CreateReference(),
+                                new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc)
+                            )),
+                            new []
+                            {
+                                new LSLElseIfStatementNode(globalVar3.CreateReference(),
+                                    new LSLCodeScopeNode(++scopeId, new LSLFunctionCallNode(myFunc), new LSLFunctionCallNode(myFunc))
+                                )
+                            },
+                            new LSLElseStatementNode(
+                                new LSLCodeScopeNode(++scopeId, 
+                                    new LSLPrefixOperationNode(LSLType.Integer, LSLPrefixOperationType.Increment, globalVar3.CreateReference()
+                                    )
+                                 )
+                            )
+                        )
+                    )
+                )
+            });
+
 
             LSLCodeFormatter formatter = new LSLCodeFormatter();
 

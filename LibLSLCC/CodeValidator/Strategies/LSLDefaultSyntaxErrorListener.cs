@@ -108,8 +108,8 @@ namespace LibLSLCC.CodeValidator
         /// <param name="left">The left expression.</param>
         /// <param name="operation">The binary operation that was attempted on the two expressions.</param>
         /// <param name="right">The right expression.</param>
-        public virtual void InvalidBinaryOperation(LSLSourceCodeRange location, ILSLExprNode left, string operation,
-            ILSLExprNode right)
+        public virtual void InvalidBinaryOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode left, string operation,
+            ILSLReadOnlyExprNode right)
         {
             OnError(location, string.Format(
                 "{0} {1} {2} is not a valid operation, operator cannot handle these types. (missing a cast?)",
@@ -123,7 +123,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The prefix operation that was attempted on the expression.</param>
         /// <param name="right">The expression the prefix operation was used on.</param>
-        public virtual void InvalidPrefixOperation(LSLSourceCodeRange location, string operation, ILSLExprNode right)
+        public virtual void InvalidPrefixOperation(LSLSourceCodeRange location, string operation, ILSLReadOnlyExprNode right)
         {
             OnError(location, string.Format(
                 "{0}{1} is not a valid operation, operator cannot handle this type. (missing a cast?)", operation,
@@ -137,7 +137,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The postfix operation that was attempted on the expression.</param>
         /// <param name="left">The expression the postfix operation was used on.</param>
-        public virtual void InvalidPostfixOperation(LSLSourceCodeRange location, ILSLExprNode left, string operation)
+        public virtual void InvalidPostfixOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode left, string operation)
         {
             OnError(location, string.Format(
                 "{0}{1} is not a valid operation, operator cannot handle this type. (missing a cast?)",
@@ -153,7 +153,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="castTo">The type that the cast operation attempted to cast the expression to.</param>
         /// <param name="fromExpression">The expression that the cast was attempted on.</param>
         public virtual void InvalidCastOperation(LSLSourceCodeRange location, LSLType castTo,
-            ILSLExprNode fromExpression)
+            ILSLReadOnlyExprNode fromExpression)
         {
             OnError(location, string.Format(
                 "Cannot cast to {0} from {1}.", castTo, fromExpression.DescribeType()));
@@ -167,7 +167,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="variableType">The actual type of the variable attempting to be initialized.</param>
         /// <param name="assignedExpression">The invalid expression that was assigned in the variable declaration.</param>
         public virtual void TypeMismatchInVariableDeclaration(LSLSourceCodeRange location, LSLType variableType,
-            ILSLExprNode assignedExpression)
+            ILSLReadOnlyExprNode assignedExpression)
         {
             OnError(location, string.Format(
                 "Type mismatch in variable declaration, {0} cannot be assigned to a {1} variable.",
@@ -196,7 +196,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="component">The vector component of the initializer that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid vector initializer content.</param>
         public virtual void InvalidVectorContent(LSLSourceCodeRange location, LSLVectorComponent component,
-            ILSLExprNode invalidExpressionContent)
+            ILSLReadOnlyExprNode invalidExpressionContent)
         {
             OnError(location,
                 string.Format("Vectors '{0}' component is not a float or integer, erroneous type is {1}.",
@@ -212,7 +212,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="index">The index in the initializer list that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid list initializer content.</param>
         public virtual void InvalidListContent(LSLSourceCodeRange location, int index,
-            ILSLExprNode invalidExpressionContent)
+            ILSLReadOnlyExprNode invalidExpressionContent)
         {
             OnError(location,
                 string.Format("Lists cannot contain the type '{0}', encountered invalid type at list index {1}.",
@@ -227,7 +227,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="component">The rotation component of the initializer that contained the invalid expression.</param>
         /// <param name="invalidExpressionContent">The expression that was considered to be invalid rotation initializer content.</param>
         public virtual void InvalidRotationContent(LSLSourceCodeRange location, LSLRotationComponent component,
-            ILSLExprNode invalidExpressionContent)
+            ILSLReadOnlyExprNode invalidExpressionContent)
         {
             OnError(location,
                 string.Format("Rotations '{0}' component is not a float or integer, erroneous type is {1}.",
@@ -244,7 +244,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         public virtual void ReturnedValueFromVoidFunction(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            ILSLExprNode attemptedReturnExpression)
+            ILSLReadOnlyExprNode attemptedReturnExpression)
         {
             OnError(location, string.Format(
                 "Cannot return {0} value from function \"{1}\" because it does not specify a return type.",
@@ -260,7 +260,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
         public virtual void TypeMismatchInReturnValue(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            ILSLExprNode attemptedReturnExpression)
+            ILSLReadOnlyExprNode attemptedReturnExpression)
         {
             OnError(location, string.Format(
                 "Type mismatch in return type for function \"{0}\", expected {1} and got {2}.",
@@ -315,7 +315,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="functionSignature">The function signature of the defined function attempting to be called.</param>
         /// <param name="parameterExpressionsGiven">The expressions given to the function call.</param>
         public virtual void ImproperParameterCountInFunctionCall(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature, ILSLExprNode[] parameterExpressionsGiven)
+            LSLFunctionSignature functionSignature, ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             var length = parameterExpressionsGiven.Length == 0
                 ? (object) "no"
@@ -513,7 +513,7 @@ namespace LibLSLCC.CodeValidator
         ///     function.
         /// </param>
         public virtual void NoSuitableLibraryFunctionOverloadFound(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions)
         {
             OnError(location,
                 string.Format("Overloads of \"{0}\" exist, but no overloads match the given parameters expressions.",
@@ -533,7 +533,7 @@ namespace LibLSLCC.CodeValidator
         /// </param>
         public virtual void CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location, string functionName,
             IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches,
-            IReadOnlyGenericArray<ILSLExprNode> givenParameterExpressions)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions)
         {
             OnError(location,
                 string.Format(
@@ -653,7 +653,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        public virtual void InvalidTupleComponentAccessOperation(LSLSourceCodeRange location, ILSLExprNode exprLvalue,
+        public virtual void InvalidTupleComponentAccessOperation(LSLSourceCodeRange location, ILSLReadOnlyExprNode exprLvalue,
             string memberAccessed)
         {
             OnError(location,
@@ -667,7 +667,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the if statement.</param>
         public virtual void IfConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             OnError(location, string.Format(
                 "If condition must evaluate to an Integer, Key, Vector, Rotation or List" +
@@ -682,7 +682,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the else-if statement.</param>
         public virtual void ElseIfConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             OnError(location, string.Format(
                 "Else If condition must evaluate to an Integer, Key, Vector, Rotation or List" +
@@ -697,7 +697,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the do-loop.</param>
         public virtual void DoLoopConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             OnError(location, string.Format(
                 "Do loop condition must evaluate to an Integer, Key, Vector, Rotation or List" +
@@ -711,7 +711,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the while-loop.</param>
         public virtual void WhileLoopConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             OnError(location, string.Format(
                 "While loop condition must evaluate to an Integer, Key, Vector, Rotation or List" +
@@ -726,7 +726,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the for-loop.</param>
         public virtual void ForLoopConditionNotValidType(LSLSourceCodeRange location,
-            ILSLExprNode attemptedConditionExpression)
+            ILSLReadOnlyExprNode attemptedConditionExpression)
         {
             OnError(location, string.Format(
                 "For loop condition must evaluate to an Integer, Key, Vector, Rotation or List" +
@@ -744,7 +744,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameterExpressionsGiven">The parameter expressions given for the function call.</param>
         public virtual void ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location,
             int parameterNumberWithError,
-            LSLFunctionSignature calledFunction, ILSLExprNode[] parameterExpressionsGiven)
+            LSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             var message = calledFunction.HasVariadicParameter
                 ? "Type Mismatch in call to Variadic Function \"{0}\" at Parameter #{1} ({2}), expected {3} and got {4}."
@@ -942,7 +942,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="lvalueLiteral">The literal on the left of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        public virtual void TupleAccessorOnLiteral(LSLSourceCodeRange location, ILSLExprNode lvalueLiteral,
+        public virtual void TupleAccessorOnLiteral(LSLSourceCodeRange location, ILSLReadOnlyExprNode lvalueLiteral,
             string memberAccessed)
         {
             OnError(location,
@@ -958,7 +958,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="lvalueCompound">The compound expression on the left side of the dot operator.</param>
         /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        public virtual void TupleAccessorOnCompoundExpression(LSLSourceCodeRange location, ILSLExprNode lvalueCompound,
+        public virtual void TupleAccessorOnCompoundExpression(LSLSourceCodeRange location, ILSLReadOnlyExprNode lvalueCompound,
             string memberAccessed)
         {
             OnError(location,

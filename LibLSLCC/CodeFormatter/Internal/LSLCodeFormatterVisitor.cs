@@ -1063,24 +1063,25 @@ namespace LibLSLCC.CodeFormatter
 
             bool canWriteComments = node.SourceRangesAvailable && node.InitExpressionList.SourceRangesAvailable;
 
-            if (canWriteComments)
+            
+            if (node.HasInitExpressions)
             {
-
-                if (node.HasInitExpressions)
-                {
+                if (canWriteComments)
                     WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.InitExpressionList.SourceRange);
 
-                    ExpressionWrappingPush(false, null);
-                    Visit(node.InitExpressionList);
-                    ExpressionWrappingPop();
+                ExpressionWrappingPush(false, null);
+                Visit(node.InitExpressionList);
+                ExpressionWrappingPop();
 
+                if (canWriteComments)
                     WriteCommentsBetweenRange(node.InitExpressionList.SourceRange, node.SourceRangeFirstSemicolon);
-                }
-                else
-                {
-                    WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.SourceRangeFirstSemicolon);
-                }
             }
+            else
+            {
+                if (canWriteComments)
+                    WriteCommentsBetweenRange(node.SourceRangeOpenParenth, node.SourceRangeFirstSemicolon);
+            }
+            
 
 
             if (node.HasConditionExpression)

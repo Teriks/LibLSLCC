@@ -46,6 +46,7 @@
 #region Imports
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using LibLSLCC.AntlrParser;
@@ -59,7 +60,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Default <see cref="ILSLStateScopeNode" /> implementation used by <see cref="LSLCodeValidator" />
     /// </summary>
-    public sealed class LSLStateScopeNode : ILSLStateScopeNode, ILSLSyntaxTreeNode
+    public sealed class LSLStateScopeNode : ILSLStateScopeNode, ILSLSyntaxTreeNode, IEnumerable<ILSLEventHandlerNode>
     {
         private readonly GenericArray<LSLEventHandlerNode> _eventHandlers = new GenericArray<LSLEventHandlerNode>();
         private ILSLSyntaxTreeNode _parent;
@@ -159,7 +160,7 @@ namespace LibLSLCC.CodeValidator
 
             foreach (var lslEventHandlerNode in eventHandlers)
             {
-                AddEventHandler(lslEventHandlerNode);
+                Add(lslEventHandlerNode);
             }
 
             StateName = "default";
@@ -189,7 +190,7 @@ namespace LibLSLCC.CodeValidator
 
             foreach (var lslEventHandlerNode in eventHandlers)
             {
-                AddEventHandler(lslEventHandlerNode);
+                Add(lslEventHandlerNode);
             }
 
             SourceRange = new LSLSourceCodeRange(context);
@@ -286,7 +287,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The event handler node to add.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void AddEventHandler(LSLEventHandlerNode node)
+        public void Add(LSLEventHandlerNode node)
         {
             if (node == null)
             {
@@ -413,5 +414,28 @@ namespace LibLSLCC.CodeValidator
         }
 
         #endregion
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the  <see cref="ILSLEventHandlerNode"/>'s in the state scope.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<ILSLEventHandlerNode> GetEnumerator()
+        {
+            return _eventHandlers.GetEnumerator();
+        }
+
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

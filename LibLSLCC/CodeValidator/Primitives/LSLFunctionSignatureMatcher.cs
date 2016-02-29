@@ -210,7 +210,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
         /// <returns>A matching <see cref="LSLFunctionSignature" /> overload or null.</returns>
         public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures,
-            IReadOnlyGenericArray<ILSLExprNode> expressionNodes, ILSLExpressionValidator expressionValidator)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressionNodes, ILSLExpressionValidator expressionValidator)
             where T : LSLFunctionSignature
         {
             return MatchOverloads(functionSignatures, expressionNodes, (expressionValidator.ValidateFunctionParameter));
@@ -230,7 +230,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
         /// <returns>A matching <see cref="LSLFunctionSignature" /> overload or null.</returns>
         public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures,
-            IReadOnlyGenericArray<ILSLExprNode> expressionNodes, Func<LSLParameter, ILSLExprNode, bool> typeComparer)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressionNodes, Func<LSLParameter, ILSLReadOnlyExprNode, bool> typeComparer)
             where T : LSLFunctionSignature
         {
             //discover candidates 'applicable' functions, using a typeComparer function/lambda to compare the signature parameters to the passed expression nodes.
@@ -382,7 +382,7 @@ namespace LibLSLCC.CodeValidator
         ///     or did not match the call signature.
         /// </returns>
         public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
-            IReadOnlyGenericArray<ILSLExprNode> expressions, ILSLExpressionValidator expressionValidator)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions, ILSLExpressionValidator expressionValidator)
         {
             return TryMatch(functionSignature, expressions, (expressionValidator.ValidateFunctionParameter));
         }
@@ -487,7 +487,7 @@ namespace LibLSLCC.CodeValidator
         ///     or did not match the call signature.
         /// </returns>
         public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
-            IReadOnlyGenericArray<ILSLExprNode> expressions, Func<LSLParameter, ILSLExprNode, bool> typeComparer)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions, Func<LSLParameter, ILSLReadOnlyExprNode, bool> typeComparer)
         {
             int parameterNumber = 0;
             bool parameterTypeMismatch = false;
