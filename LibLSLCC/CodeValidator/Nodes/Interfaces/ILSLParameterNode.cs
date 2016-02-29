@@ -50,7 +50,7 @@
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     Readonly AST node interface for parameter function and event handler parameter definitions.
+    ///     AST node interface for function parameter and event handler parameter definitions.
     /// </summary>
     public interface ILSLParameterNode : ILSLReadOnlySyntaxTreeNode
     {
