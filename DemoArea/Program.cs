@@ -685,10 +685,20 @@ default{
 
             LSLCodeFormatter formatter = new LSLCodeFormatter();
 
+            formatter.Settings.ConvertBracelessControlStatements = true;
 
+            Console.WriteLine("Print Compilation Unit:");
+            Console.WriteLine();
             formatter.Format(program, Console.Out);
+            Console.WriteLine();
 
-            Console.WriteLine("");
+            Console.WriteLine();
+            Console.WriteLine("Print Specific Node:");
+            Console.WriteLine();
+            formatter.Format(program.DefaultState.EventHandlers.First(), Console.Out);
+            Console.WriteLine();
+
+            Console.WriteLine();
             Console.WriteLine("======================");
         }
     }

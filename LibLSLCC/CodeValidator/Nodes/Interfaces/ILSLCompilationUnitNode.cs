@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator
     {
         /// <summary>
         ///     A list of objects describing the comments found in the source code and their position/range.
-        ///     Will always be non null, even if there are no comments.
+        ///     Should never be <c>null</c>, even if there are no comments.
         /// </summary>
         IReadOnlyGenericArray<LSLComment> Comments { get; }
 

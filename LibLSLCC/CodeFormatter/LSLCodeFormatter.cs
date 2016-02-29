@@ -159,11 +159,11 @@ namespace LibLSLCC.CodeFormatter
         }
 
 
+
         /// <summary>
-        ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer, with the ability to provide optional
-        ///     source code hint text.
+        ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer. <para/>
+        ///     Comments are discarded.
         /// </summary>
-        /// <param name="sourceComments">Source code comment concurrences.  Optional, may be <c>null</c>.</param>
         /// <param name="syntaxTree">Syntax tree node to format to output.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream">
@@ -179,7 +179,8 @@ namespace LibLSLCC.CodeFormatter
         ///     <c>null</c>.
         /// </exception>
         /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
-        public void Format(IEnumerable<LSLComment> sourceComments, ILSLReadOnlySyntaxTreeNode syntaxTree,
+        public void Format(
+            ILSLReadOnlySyntaxTreeNode syntaxTree,
             TextWriter writer,
             bool closeStream = false)
         {
@@ -190,10 +191,64 @@ namespace LibLSLCC.CodeFormatter
 
             if (syntaxTree.HasErrors)
             {
+                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name +
+                                            ".HasErrors is true, cannot format a tree with syntax errors.");
+            }
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
+
+            if (Settings == null)
+            {
+                throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
+            }
+
+            var formatter = new LSLCodeFormatterVisitor(Settings);
+            formatter.WriteAndFlush(null, null, syntaxTree, writer, closeStream);
+        }
+
+
+
+        /// <summary>
+        ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer.
+        /// </summary>
+        /// <param name="sourceComments">Source code comment concurrences.</param>
+        /// <param name="syntaxTree">Syntax tree node to format to output.</param>
+        /// <param name="writer">The writer to write the formated source code to.</param>
+        /// <param name="closeStream">
+        ///     <c>true</c> if this method should close <paramref name="writer" /> when finished.  The
+        ///     default value is <c>false</c>.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
+        ///     <paramref name="syntaxTree" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="sourceComments"/> or <paramref name="syntaxTree" /> or <paramref name="writer" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        public void Format(
+            IEnumerable<LSLComment> sourceComments, 
+            ILSLReadOnlySyntaxTreeNode syntaxTree,
+            TextWriter writer,
+            bool closeStream = false)
+        {
+            if (sourceComments == null)
+            {
+                throw new ArgumentNullException("sourceComments");
+            }
+            if (syntaxTree == null)
+            {
+                throw new ArgumentNullException("syntaxTree");
+            }
+
+            if (syntaxTree.HasErrors)
+            {
                 throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
                                             ".HasErrors is true, cannot format a tree with syntax errors.");
             }
-
             if (writer == null)
             {
                 throw new ArgumentNullException("writer");
@@ -210,14 +265,13 @@ namespace LibLSLCC.CodeFormatter
 
 
         /// <summary>
-        ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer, with the ability to provide optional
-        ///     source code hint text.
+        ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer, with the ability to provide source code hint text. <para/>
+        ///     Comments are discarded.
         /// </summary>
         /// <param name="sourceCodeHint">
         ///     When provided the formatter can make more intelligent decisions in various places, such as retaining user spacing
         ///     when comments appear on the same line as a statement.
         /// </param>
-        /// <param name="sourceComments">Source code comment concurrences.  Optional, may be <c>null</c>.</param>
         /// <param name="syntaxTree">Syntax tree node to format to output.</param>
         /// <param name="writer">The writer to write the formated source code to.</param>
         /// <param name="closeStream">
@@ -233,26 +287,87 @@ namespace LibLSLCC.CodeFormatter
         ///     <c>null</c>.
         /// </exception>
         /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
-        public void Format(string sourceCodeHint, IEnumerable<LSLComment> sourceComments,
-            ILSLReadOnlySyntaxTreeNode syntaxTree, TextWriter writer,
+        public void Format(
+            string sourceCodeHint,
+            ILSLReadOnlySyntaxTreeNode syntaxTree, 
+            TextWriter writer,
             bool closeStream = false)
         {
             if (sourceCodeHint == null)
             {
                 throw new ArgumentNullException("sourceCodeHint");
             }
-
             if (syntaxTree == null)
             {
                 throw new ArgumentNullException("syntaxTree");
             }
+            if (syntaxTree.HasErrors)
+            {
+                throw new ArgumentException(typeof(ILSLCompilationUnitNode).Name +
+                                            ".HasErrors is true, cannot format a tree with syntax errors.");
+            }
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
 
+            if (Settings == null)
+            {
+                throw new InvalidOperationException(typeof(LSLCodeFormatter).Name + ".Settings cannot be null.");
+            }
+
+            var formatter = new LSLCodeFormatterVisitor(Settings);
+            formatter.WriteAndFlush(sourceCodeHint, null, syntaxTree, writer, closeStream);
+        }
+
+
+        /// <summary>
+        ///     Formats an <see cref="ILSLReadOnlySyntaxTreeNode" /> to an output writer, with the ability to provide source code hint text.
+        /// </summary>
+        /// <param name="sourceCodeHint">
+        ///     When provided the formatter can make more intelligent decisions in various places, such as retaining user spacing
+        ///     when comments appear on the same line as a statement.
+        /// </param>
+        /// <param name="sourceComments">Source code comment concurrences.</param>
+        /// <param name="syntaxTree">Syntax tree node to format to output.</param>
+        /// <param name="writer">The writer to write the formated source code to.</param>
+        /// <param name="closeStream">
+        ///     <c>true</c> if this method should close <paramref name="writer" /> when finished.  The
+        ///     default value is <c>false</c>.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.HasErrors" /> is <c>true</c> in
+        ///     <paramref name="syntaxTree" />.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="sourceCodeHint" /> or <paramref name="sourceComments"/> or <paramref name="syntaxTree" /> or <paramref name="writer" /> is
+        ///     <c>null</c>.
+        /// </exception>
+        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        public void Format(
+            string sourceCodeHint, 
+            IEnumerable<LSLComment> sourceComments,
+            ILSLReadOnlySyntaxTreeNode syntaxTree, 
+            TextWriter writer,
+            bool closeStream = false)
+        {
+            if (sourceCodeHint == null)
+            {
+                throw new ArgumentNullException("sourceCodeHint");
+            }
+            if (sourceComments == null)
+            {
+                throw new ArgumentNullException("sourceComments");
+            }
+            if (syntaxTree == null)
+            {
+                throw new ArgumentNullException("syntaxTree");
+            }
             if (syntaxTree.HasErrors)
             {
                 throw new ArgumentException(typeof (ILSLCompilationUnitNode).Name +
                                             ".HasErrors is true, cannot format a tree with syntax errors.");
             }
-
             if (writer == null)
             {
                 throw new ArgumentNullException("writer");

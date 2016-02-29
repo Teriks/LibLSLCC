@@ -201,7 +201,6 @@ namespace LibLSLCC.CodeValidator
 
             var lexer = new LSLLexer(inputStream);
             lexer.RemoveErrorListeners();
-            //lexer.AddErrorListener(_antlrLexerErrorHandler);
 
             var tokenStream = new CommonTokenStream(lexer);
 
@@ -214,7 +213,7 @@ namespace LibLSLCC.CodeValidator
             var parseTree = parser.compilationUnit();
 
 
-            if (parser.NumberOfSyntaxErrors > 0 /*|| _antlrLexerErrorHandler.HasErrors*/)
+            if (parser.NumberOfSyntaxErrors > 0)
             {
                 HasSyntaxErrors = true;
                 return null;
@@ -222,7 +221,7 @@ namespace LibLSLCC.CodeValidator
 
             try
             {
-                var tree = _validatorVisitor.ValidateAndBuildTree(parseTree);
+                var tree = _validatorVisitor.ValidateAndBuildTree(parseTree, lexer.Comments);
 
                 if (_validatorVisitor.HasSyntaxWarnings)
                 {
@@ -234,8 +233,6 @@ namespace LibLSLCC.CodeValidator
                     HasSyntaxErrors = true;
                     return null;
                 }
-
-                tree.Comments = lexer.Comments;
 
                 return tree;
             }

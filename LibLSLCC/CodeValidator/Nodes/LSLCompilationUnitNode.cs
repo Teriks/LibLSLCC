@@ -72,6 +72,8 @@ namespace LibLSLCC.CodeValidator
         private int _addCounter;
         private LSLStateScopeNode _defaultState;
         private ILSLSyntaxTreeNode _parent;
+        private readonly IReadOnlyGenericArray<LSLComment> _comments;
+
 // ReSharper disable UnusedParameter.Local
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "err")]
         private LSLCompilationUnitNode(LSLSourceCodeRange sourceRange, Err err)
@@ -88,6 +90,8 @@ namespace LibLSLCC.CodeValidator
         public LSLCompilationUnitNode()
         {
             DefaultState = new LSLStateScopeNode("default");
+
+            _comments = new GenericArray<LSLComment>();
         }
 
 
@@ -106,11 +110,13 @@ namespace LibLSLCC.CodeValidator
             }
 
             DefaultState = defaultState;
+
+            _comments = new GenericArray<LSLComment>();
         }
 
 
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
-        internal LSLCompilationUnitNode(LSLParser.CompilationUnitContext context)
+        internal LSLCompilationUnitNode(LSLParser.CompilationUnitContext context, IReadOnlyGenericArray<LSLComment> comments)
         {
             if (context == null)
             {
@@ -120,6 +126,8 @@ namespace LibLSLCC.CodeValidator
             SourceRange = new LSLSourceCodeRange(context);
 
             SourceRangesAvailable = true;
+
+            _comments = comments;
         }
 
 
@@ -212,7 +220,10 @@ namespace LibLSLCC.CodeValidator
         ///     A list of objects describing the comments found in the source code and their position/range.
         ///     Will always be non null, even if there are no comments.
         /// </summary>
-        public IReadOnlyGenericArray<LSLComment> Comments { get; set; }
+        public IReadOnlyGenericArray<LSLComment> Comments
+        {
+            get { return _comments; }
+        }
 
         ILSLReadOnlySyntaxTreeNode ILSLReadOnlySyntaxTreeNode.Parent
         {

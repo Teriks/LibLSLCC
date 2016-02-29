@@ -64,6 +64,7 @@ namespace LibLSLCC.CodeValidator
         private readonly ILSLCodeValidatorStrategies _validatorStrategies;
         private ILSLSyntaxErrorListener _syntaxErrorListenerOveride;
         private ILSLSyntaxWarningListener _syntaxWarningListenerOveride;
+        private IReadOnlyGenericArray<LSLComment> _lexerComments; 
 
 
         /// <exception cref="ArgumentException">An <see cref="LSLCodeValidatorStrategies" /> property was null</exception>
@@ -212,8 +213,10 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        public LSLCompilationUnitNode ValidateAndBuildTree(LSLParser.CompilationUnitContext tree)
+        public LSLCompilationUnitNode ValidateAndBuildTree(LSLParser.CompilationUnitContext tree, IReadOnlyGenericArray<LSLComment> lexerComments)
         {
+            _lexerComments = lexerComments;
+
             var x = VisitCompilationUnit(tree) as LSLCompilationUnitNode;
 
             if (x == null)
@@ -548,7 +551,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            var result = new LSLCompilationUnitNode(context);
+            var result = new LSLCompilationUnitNode(context, _lexerComments);
 
 
             var syntaxMessagePrioritizer = new LSLSyntaxListenerPriorityQueue(SyntaxErrorListener, SyntaxWarningListener);

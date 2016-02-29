@@ -96,10 +96,15 @@ namespace LibLSLCC.CodeFormatter
         private bool _ifExpressionWrapping = true;
         private bool _ifStatementBracesOnNewLine = true;
         private bool _indentBracelessControlStatements = true;
+        private int _maximumCharactersBeforeArgumentListWrap = 90;
+        private int _maximumCharactersBeforeListLiteralWrap = 90;
         private int _maximumNewLinesAtBeginingOfCodeScope = 2;
         private int _maximumNewLinesAtBeginingOfStateScope = 2;
         private int _maximumNewLinesAtEndOfCodeScope = 2;
         private int _maximumNewLinesAtEndOfStateScope = 2;
+        private int _maximumNewLinesBetweenGlobalStatementAndNextComment = 8;
+        private int _maximumNewLinesBetweenGlobalStatements = 8;
+        private int _maximumNewLinesBetweenLocalStatements = 8;
         private int _minimumExpressionsInDeclarationToWrap = 2;
         private int _minimumExpressionsInDoWhileToWrap = 2;
         private int _minimumExpressionsInElseIfToWrap = 2;
@@ -110,6 +115,7 @@ namespace LibLSLCC.CodeFormatter
         private int _minimumNewLinesBetweenDistinctGlobalStatements = 3;
         private int _minimumNewLinesBetweenDistinctLocalStatements = 2;
         private int _minimumNewLinesBetweenEventHandlers = 2;
+        private int _minimumNewLinesBetweenGlobalStatementAndNextComment = 3;
         private string _newlineSequence = "\n";
         private bool _removeComments;
         private bool _returnExpressionWrapping = true;
@@ -138,12 +144,6 @@ namespace LibLSLCC.CodeFormatter
         private string _tabString = "\t";
         private bool _whileExpressionWrapping = true;
         private bool _whileLoopBracesOnNewLine = true;
-        private int _maximumNewLinesBetweenLocalStatements = 8;
-        private int _maximumNewLinesBetweenGlobalStatements = 8;
-        private int _maximumCharactersBeforeListLiteralWrap = 90;
-        private int _maximumCharactersBeforeArgumentListWrap = 90;
-        private int _minimumNewLinesBetweenGlobalStatementAndNextComment = 3;
-        private int _maximumNewLinesBetweenGlobalStatementAndNextComment = 8;
 
         /// <summary>
         ///     Whether or not the formatter should strip all comments from the source code.
@@ -791,7 +791,8 @@ namespace LibLSLCC.CodeFormatter
         }
 
         /// <summary>
-        ///     Whether or not to indent control statements (branches and loops) that do not use braces.
+        ///     Whether or not to indent control statements (branches and loops) that do not use braces. (single statement scopes)
+        ///     <para />
         ///     Setting this to <c>true</c> will make <see cref="ConvertBracelessControlStatements" /> <c>false</c>.
         /// </summary>
         /// <seealso cref="ConvertBracelessControlStatements" />
@@ -807,6 +808,8 @@ namespace LibLSLCC.CodeFormatter
 
         /// <summary>
         ///     Whether or not to add braces to control statements (branches and loops) that were not previously using braces.
+        ///     (single statement scopes)
+        ///     <para />
         ///     Setting this to <c>true</c> will make <see cref="IndentBracelessControlStatements" /> <c>false</c>.
         /// </summary>
         /// <seealso cref="IndentBracelessControlStatements" />
@@ -1098,7 +1101,7 @@ namespace LibLSLCC.CodeFormatter
         /// <summary>
         ///     The maximum amount of newlines that can appear between local code statements.
         /// </summary>
-        [DefaultValueFactory(typeof(ResetIfLessThanOne))]
+        [DefaultValueFactory(typeof (ResetIfLessThanOne))]
         public int MaximumNewLinesBetweenLocalStatements
         {
             get { return _maximumNewLinesBetweenLocalStatements; }
@@ -1126,7 +1129,7 @@ namespace LibLSLCC.CodeFormatter
         /// <summary>
         ///     The maximum amount of character columns that can appear in a list literal before it wraps.
         /// </summary>
-        [DefaultValueFactory(typeof(ResetIfLessThanOne))]
+        [DefaultValueFactory(typeof (ResetIfLessThanOne))]
         public int MaximumCharactersBeforeListLiteralWrap
         {
             get { return _maximumCharactersBeforeListLiteralWrap; }
@@ -1140,7 +1143,7 @@ namespace LibLSLCC.CodeFormatter
         /// <summary>
         ///     The maximum amount of character columns that can appear in an argument list before it wraps.
         /// </summary>
-        [DefaultValueFactory(typeof(ResetIfLessThanOne))]
+        [DefaultValueFactory(typeof (ResetIfLessThanOne))]
         public int MaximumCharactersBeforeArgumentListWrap
         {
             get { return _maximumCharactersBeforeArgumentListWrap; }
@@ -1161,7 +1164,8 @@ namespace LibLSLCC.CodeFormatter
             set
             {
                 if (value < 0) value = 0;
-                SetField(ref _minimumNewLinesBetweenGlobalStatementAndNextComment,value, "MinimumNewLinesBetweenGlobalStatementAndNextComment");
+                SetField(ref _minimumNewLinesBetweenGlobalStatementAndNextComment, value,
+                    "MinimumNewLinesBetweenGlobalStatementAndNextComment");
             }
         }
 
@@ -1175,7 +1179,8 @@ namespace LibLSLCC.CodeFormatter
             set
             {
                 if (value < 0) value = 0;
-                SetField(ref _maximumNewLinesBetweenGlobalStatementAndNextComment, value, "MaximumNewLinesBetweenGlobalStatementAndNextComment");
+                SetField(ref _maximumNewLinesBetweenGlobalStatementAndNextComment, value,
+                    "MaximumNewLinesBetweenGlobalStatementAndNextComment");
             }
         }
 
