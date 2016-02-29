@@ -325,6 +325,7 @@ namespace DemoArea
         {
             Console.WriteLine();
             Console.WriteLine("Library data reflect and compiler example.");
+            Console.WriteLine();
             Console.WriteLine("======================");
             Console.WriteLine();
 
@@ -546,8 +547,9 @@ default{
 
 
             Console.WriteLine("Pretty Print DOM Example.");
+            Console.WriteLine();
             Console.WriteLine("======================");
-            Console.WriteLine("");
+            Console.WriteLine();
 
             LSLCompilationUnitNode program = new LSLCompilationUnitNode();
 
