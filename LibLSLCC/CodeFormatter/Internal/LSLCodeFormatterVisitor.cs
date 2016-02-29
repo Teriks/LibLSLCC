@@ -68,6 +68,10 @@ namespace LibLSLCC.CodeFormatter
         private readonly Stack<Tuple<bool, ExpressionWrappingContext>> _expressionContextStack =
             new Stack<Tuple<bool, ExpressionWrappingContext>>();
 
+
+        private readonly Stack<Tuple<bool, ExpressionListWrappingContext>> _expressionListContextStack =
+            new Stack<Tuple<bool, ExpressionListWrappingContext>>();
+
         private int _binaryExpressionsSinceNewLine;
         private int _indentLevel;
         private int _nonTabsWrittenSinceLastLine;
@@ -80,6 +84,11 @@ namespace LibLSLCC.CodeFormatter
         private bool _wroteCommentAfterFunctionDeclarationParameterList;
         private bool _wroteCommentBeforeControlStatementCode;
 
+
+        private int GetCharacterColumnsSinceLastLine()
+        {
+            return (Settings.TabString.Length*_tabsWrittenSinceLastLine) + _nonTabsWrittenSinceLastLine;
+        }
 
         /// <summary>
         ///     Default constructor for the formatting visitor.
@@ -113,6 +122,18 @@ namespace LibLSLCC.CodeFormatter
         }
 
 
+
+
+        private ExpressionListWrappingContext CurrentExpressionListWrappingContext
+        {
+            get { return _expressionListContextStack.Count > 0 ? _expressionListContextStack.Peek().Item2 : null; }
+        }
+
+        private bool ExpressionWrappingListCurrentlyEnabled
+        {
+            get { return _expressionListContextStack.Count > 0 && _expressionListContextStack.Peek().Item1; }
+        }
+
         private void Reset()
         {
             _expressionContextStack.Clear();
@@ -142,11 +163,26 @@ namespace LibLSLCC.CodeFormatter
         }
 
 
+        private void ExpressionListWrappingPush(bool enabled, ExpressionListWrappingContext context)
+        {
+            if (enabled && context == null)
+            {
+                throw new ArgumentNullException("context",
+                    "ExpressionListWrappingContext cannot be null if 'enabled' is true!.");
+            }
+
+            _expressionListContextStack.Push(Tuple.Create(enabled, context));
+        }
+
+
         private Tuple<bool, ExpressionWrappingContext> ExpressionWrappingPop()
         {
             return _expressionContextStack.Pop();
         }
-
+        private Tuple<bool, ExpressionListWrappingContext> ExpressionListWrappingPop()
+        {
+            return _expressionListContextStack.Pop();
+        }
 
         private string GenIndent(int add = 0)
         {
@@ -507,70 +543,28 @@ namespace LibLSLCC.CodeFormatter
         {
             ExpressionWrappingPush(false, null);
 
+
             var nodeCount = node.Expressions.Count;
 
 
-            int sourceStart, sourceLen;
+            ExpressionWrappingPush(false, null);
+
 
             if (nodeCount > 0)
             {
                 var first = node.Expressions[0];
 
-                if (first.SourceRangesAvailable && node.Parent.SourceRangesAvailable)
-                {
-                    sourceStart = node.Parent.SourceRange.StartIndex + 1;
-                    sourceLen = node.Expressions[0].SourceRange.StartIndex - sourceStart;
-
-                    Write(_sourceReference.Substring(sourceStart, sourceLen));
-                }
-            }
-            else
-            {
-                if (!node.Parent.SourceRangesAvailable) return true;
-
-                sourceStart = node.Parent.SourceRange.StartIndex + 1;
-                sourceLen = node.Parent.SourceRange.StopIndex - sourceStart;
-
-                Write(_sourceReference.Substring(sourceStart, sourceLen));
-
-                return true;
+                ExpressionListWrappingPush(true, new ExpressionListWrappingContext(first, this) { MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeListLiteralWrap });
             }
 
-            for (var nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
-            {
-                var nodeAheadIndex = nodeIndex + 1;
 
-                Visit(node.Expressions[nodeIndex]);
 
-                if ((nodeIndex + 1) >= nodeCount) continue;
+            VisitExpressionList(node);
 
-                var me = node.Expressions[nodeIndex];
-                var next = node.Expressions[nodeAheadIndex];
-
-                if (!me.SourceRangesAvailable || !next.SourceRangesAvailable)
-                {
-                    Write(", ");
-                    continue;
-                }
-
-                sourceStart = node.Expressions[nodeIndex].SourceRange.StopIndex + 1;
-
-                sourceLen = node.Expressions[nodeAheadIndex].SourceRange.StartIndex - sourceStart;
-
-                Write(_sourceReference.Substring(sourceStart, sourceLen));
-            }
 
             if (nodeCount > 0)
             {
-                var lastExpr = node.Expressions.Last();
-
-                if (lastExpr.SourceRangesAvailable && node.Parent.SourceRangesAvailable)
-                {
-                    sourceStart = lastExpr.SourceRange.StopIndex + 1;
-                    sourceLen = node.Parent.SourceRange.StopIndex - sourceStart;
-
-                    Write(_sourceReference.Substring(sourceStart, sourceLen));
-                }
+                ExpressionListWrappingPop();
             }
 
             ExpressionWrappingPop();
@@ -586,70 +580,22 @@ namespace LibLSLCC.CodeFormatter
 
             ExpressionWrappingPush(false, null);
 
-            var parent = (ILSLFunctionCallNode) node.Parent;
-            int sourceStart, sourceLen;
 
             if (nodeCount > 0)
             {
                 var first = node.Expressions[0];
 
-                if (first.SourceRangesAvailable && parent.SourceRangesAvailable)
-                {
-
-                    sourceStart = parent.SourceRangeOpenParenth.StartIndex + 1;
-                    sourceLen = node.Expressions[0].SourceRange.StartIndex - sourceStart;
-
-                    Write(_sourceReference.Substring(sourceStart, sourceLen));
-                }
-            }
-            else
-            {
-                if (!parent.SourceRangesAvailable) return true;
-
-                sourceStart = parent.SourceRangeOpenParenth.StartIndex + 1;
-                sourceLen = parent.SourceRangeCloseParenth.StopIndex - sourceStart;
-
-                Write(_sourceReference.Substring(sourceStart, sourceLen));
-
-                return true;
+                ExpressionListWrappingPush(true, new ExpressionListWrappingContext(first, this) {MaximumCharactersBeforeWrap = Settings.MaximumCharactersBeforeArgumentListWrap});
             }
 
 
-            for (var nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
-            {
-                var nodeAheadIndex = nodeIndex + 1;
 
-                Visit(node.Expressions[nodeIndex]);
-
-                if (nodeAheadIndex >= nodeCount) continue;
-
-                var me = node.Expressions[nodeIndex];
-                var ahead = node.Expressions[nodeAheadIndex];
-
-                if (!me.SourceRangesAvailable || !ahead.SourceRangesAvailable)
-                {
-                    Write(", ");
-                    continue;
-                }
-
-                sourceStart = node.Expressions[nodeIndex].SourceRange.StopIndex + 1;
-
-                sourceLen = node.Expressions[nodeAheadIndex].SourceRange.StartIndex - sourceStart;
-                Write(_sourceReference.Substring(sourceStart, sourceLen));
-            }
+            VisitExpressionList(node);
 
 
             if (nodeCount > 0)
             {
-                var lastExpr = node.Expressions.Last();
-
-                if (lastExpr.SourceRangesAvailable && parent.SourceRangesAvailable)
-                {
-                    sourceStart = lastExpr.SourceRange.StopIndex + 1;
-                    sourceLen = parent.SourceRangeCloseParenth.StopIndex - sourceStart;
-
-                    Write(_sourceReference.Substring(sourceStart, sourceLen));
-                }
+                ExpressionListWrappingPop();
             }
 
             ExpressionWrappingPop();
@@ -1344,7 +1290,7 @@ namespace LibLSLCC.CodeFormatter
             }
 
             IList<LSLComment> comments =
-                GetComments(curNode.SourceRange.StopIndex, _sourceReference.Length).ToList();
+                GetComments(curNode.SourceRange.StopIndex, int.MaxValue).ToList();
 
             if (comments.Count > 0)
             {
@@ -1498,13 +1444,18 @@ namespace LibLSLCC.CodeFormatter
             var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                     node.SourceRange.LineEnd);
 
-            if (linesBetweenNodeAndFirstComment <= 2 && linesBetweenNodeAndFirstComment > 0)
+            if (linesBetweenNodeAndFirstComment < Settings.MinimumNewLinesBetweenGlobalStatementAndNextComment)
             {
                 if ((nextNode is ILSLFunctionDeclarationNode || nextNode is ILSLStateScopeNode)
                     && (node is ILSLFunctionDeclarationNode || node is ILSLVariableDeclarationNode))
                 {
-                    linesBetweenNodeAndFirstComment = 3;
+                    linesBetweenNodeAndFirstComment = Settings.MinimumNewLinesBetweenGlobalStatementAndNextComment;
                 }
+            }
+
+            if (linesBetweenNodeAndFirstComment > Settings.MaximumNewLinesBetweenGlobalStatementAndNextComment)
+            {
+                linesBetweenNodeAndFirstComment = Settings.MaximumNewLinesBetweenGlobalStatementAndNextComment;
             }
 
 
@@ -1608,6 +1559,8 @@ namespace LibLSLCC.CodeFormatter
             {
                 var linesBetweenNodeAndFirstComment = (comments[0].SourceRange.LineStart -
                                                        unitNode.SourceRange.LineStart);
+
+
 
 
                 Write(LSLFormatTools.CreateNewLinesString(linesBetweenNodeAndFirstComment - 1));
@@ -3453,38 +3406,88 @@ namespace LibLSLCC.CodeFormatter
 
         public override bool VisitExpressionList(ILSLExpressionListNode node)
         {
-            var expressionCount = node.Expressions.Count;
+            var nodeCount = node.Expressions.Count;
 
-            for (var expressionIndex = 0; expressionIndex < expressionCount; expressionIndex++)
+            for (var nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             {
-                var expressionAheadIndex = expressionIndex + 1;
+                var nodeAheadIndex = nodeIndex + 1;
 
-                Visit(node.Expressions[expressionIndex]);
+                Visit(node.Expressions[nodeIndex]);
 
-                if (expressionAheadIndex < expressionCount)
+                if (nodeAheadIndex >= nodeCount) continue;
+
+                var me = node.Expressions[nodeIndex];
+                var next = node.Expressions[nodeAheadIndex];
+
+
+                bool wrap = ExpressionWrappingListCurrentlyEnabled && GetCharacterColumnsSinceLastLine() > CurrentExpressionListWrappingContext.MaximumCharactersBeforeWrap;
+
+                if (!me.SourceRangesAvailable || !next.SourceRangesAvailable)
                 {
-                    var me = node.Expressions[expressionIndex];
-                    var ahead = node.Expressions[expressionAheadIndex];
-
-                    if (!me.SourceRangesAvailable || !ahead.SourceRangesAvailable)
+                    if (wrap)
                     {
-                        if (expressionAheadIndex != expressionCount)
-                        {
-                            Write(", ");
-                        }
-                        continue;
+                        string indent =
+                            LSLFormatTools.CreateTabsString(
+                                CurrentExpressionListWrappingContext.TabsWrittenSinceLastLine) +
+                            LSLFormatTools.CreateSpacesString(
+                                CurrentExpressionListWrappingContext.NonTabsWrittenSinceLastLine);
+
+                        Write(",\n" + indent);
                     }
+                    else
+                    {
+                        Write(", ");
+                    }
+                    continue;
+                }
 
-                    var start = node.Expressions[expressionIndex].SourceRange.StopIndex + 1;
+                WriteCommentsBetweenRange(me.SourceRange.LastCharRange, node.SourceRangeCommaList[nodeIndex]);
 
-                    var len = node.Expressions[expressionAheadIndex].SourceRange.StartIndex - start;
+                Write(",");
 
-                    Write(_sourceReference.Substring(start, len));
+                //honor any wrapping the user has done by hand.
+                wrap = wrap || me.SourceRange.LineEnd != next.SourceRange.LineStart;
+
+
+                if (!WriteCommentsBetweenRange(node.SourceRangeCommaList[nodeIndex], next.SourceRange.FirstCharRange, wrap ? 1 : 0) && !wrap)
+                {
+                    Write(" ");
+                }
+
+                if (wrap)
+                {
+                    string indent =
+                        LSLFormatTools.CreateTabsString(
+                            CurrentExpressionListWrappingContext.TabsWrittenSinceLastLine) +
+                        LSLFormatTools.CreateSpacesString(
+                            CurrentExpressionListWrappingContext.NonTabsWrittenSinceLastLine);
+
+                    Write("\n" + indent);
                 }
             }
+
             return true;
         }
 
+
+        private class ExpressionListWrappingContext
+        {
+            public ExpressionListWrappingContext(ILSLReadOnlySyntaxTreeNode firstExpression, LSLCodeFormatterVisitor parent)
+            {
+                FirstExpression = firstExpression;
+                WriteColumn = parent._writeColumn;
+                WriteLine = parent._writeLine;
+                TabsWrittenSinceLastLine = parent._tabsWrittenSinceLastLine;
+                NonTabsWrittenSinceLastLine = parent._nonTabsWrittenSinceLastLine;
+            }
+
+            public ILSLReadOnlySyntaxTreeNode FirstExpression { get; private set; }
+            public int WriteColumn { get; private set; }
+            public int WriteLine { get; private set; }
+            public int TabsWrittenSinceLastLine { get; private set; }
+            public int NonTabsWrittenSinceLastLine { get; private set; }
+            public int MaximumCharactersBeforeWrap { get; set; }
+        }
 
         private class ExpressionWrappingContext
         {

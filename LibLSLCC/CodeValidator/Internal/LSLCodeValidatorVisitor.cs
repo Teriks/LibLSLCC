@@ -2553,19 +2553,18 @@ namespace LibLSLCC.CodeValidator
                     GenSyntaxWarning().UseOfDeprecatedLibraryConstant(
                         variableCodeRange, librarySignature);
                 }
-            }
-            else
-            {
-                declaration = ScopingManager.ResolveVariable(idText);
 
-                if (declaration != null) return declaration.CreateReference(variableCodeRange);
-
-                GenSyntaxError().UndefinedVariableReference(variableCodeRange, idText);
-
-                return LSLVariableNode.GetError(variableCodeRange);
+                return declaration.CreateReference(variableCodeRange);
             }
 
-            return declaration.CreateReference(variableCodeRange);
+
+            declaration = ScopingManager.ResolveVariable(idText);
+
+            if (declaration != null) return declaration.CreateReference(variableCodeRange);
+
+            GenSyntaxError().UndefinedVariableReference(variableCodeRange, idText);
+
+            return LSLVariableNode.GetError(variableCodeRange);
         }
 
 

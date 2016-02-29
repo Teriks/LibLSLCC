@@ -266,7 +266,7 @@ namespace LibLSLCC.CodeValidator
             var v = VariableNode.Clone();
 
             v.SourceRange = new LSLSourceCodeRange(referenceToken);
-            SourceRangesAvailable = true;
+
             _references.Add(v);
 
             return v;
@@ -291,7 +291,7 @@ namespace LibLSLCC.CodeValidator
             var v = VariableNode.Clone();
 
             v.SourceRange = range;
-            SourceRangesAvailable = true;
+
             _references.Add(v);
 
             return v;

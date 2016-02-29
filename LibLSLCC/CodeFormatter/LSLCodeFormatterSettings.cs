@@ -140,6 +140,10 @@ namespace LibLSLCC.CodeFormatter
         private bool _whileLoopBracesOnNewLine = true;
         private int _maximumNewLinesBetweenLocalStatements = 8;
         private int _maximumNewLinesBetweenGlobalStatements = 8;
+        private int _maximumCharactersBeforeListLiteralWrap = 90;
+        private int _maximumCharactersBeforeArgumentListWrap = 90;
+        private int _minimumNewLinesBetweenGlobalStatementAndNextComment = 3;
+        private int _maximumNewLinesBetweenGlobalStatementAndNextComment = 8;
 
         /// <summary>
         ///     Whether or not the formatter should strip all comments from the source code.
@@ -1117,6 +1121,50 @@ namespace LibLSLCC.CodeFormatter
                 if (value < 1) value = 1;
                 SetField(ref _maximumNewLinesBetweenGlobalStatements, value, "MaximumNewLinesBetweenGlobalStatements");
             }
+        }
+
+        /// <summary>
+        ///     The maximum amount of character columns that can appear in a list literal before it wraps.
+        /// </summary>
+        [DefaultValueFactory(typeof(ResetIfLessThanOne))]
+        public int MaximumCharactersBeforeListLiteralWrap
+        {
+            get { return _maximumCharactersBeforeListLiteralWrap; }
+            set
+            {
+                if (value < 1) value = 1;
+                SetField(ref _maximumCharactersBeforeListLiteralWrap, value, "MaximumExpressionsBeforeListLiteralWrap");
+            }
+        }
+
+        /// <summary>
+        ///     The maximum amount of character columns that can appear in an argument list before it wraps.
+        /// </summary>
+        [DefaultValueFactory(typeof(ResetIfLessThanOne))]
+        public int MaximumCharactersBeforeArgumentListWrap
+        {
+            get { return _maximumCharactersBeforeArgumentListWrap; }
+            set { SetField(ref _maximumCharactersBeforeArgumentListWrap, value, "MaximumCharactersBeforeArgumentListWrap"); }
+        }
+
+        /// <summary>
+        ///     The minimum amount of new lines between a global statement and a comment that follows after it.
+        /// </summary>
+        [DefaultValueFactory(typeof (ResetIfLessThanZero))]
+        public int MinimumNewLinesBetweenGlobalStatementAndNextComment
+        {
+            get { return _minimumNewLinesBetweenGlobalStatementAndNextComment; }
+            set { SetField(ref _minimumNewLinesBetweenGlobalStatementAndNextComment,value, "MinimumNewLinesBetweenGlobalStatementAndNextComment"); }
+        }
+
+        /// <summary>
+        ///     The maximum amount of new lines between a global statement and a comment that follows after it.
+        /// </summary>
+        [DefaultValueFactory(typeof (ResetIfLessThanZero))]
+        public int MaximumNewLinesBetweenGlobalStatementAndNextComment
+        {
+            get { return _maximumNewLinesBetweenGlobalStatementAndNextComment; }
+            set { SetField(ref _maximumNewLinesBetweenGlobalStatementAndNextComment, value, "MaximumNewLinesBetweenGlobalStatementAndNextComment"); }
         }
 
         private class ResetIfLessThanOne : IDefaultSettingsValueFactory

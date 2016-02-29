@@ -88,12 +88,8 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("other");
             }
 
-            SourceRangesAvailable = other.SourceRangesAvailable;
 
-            if (SourceRangesAvailable)
-            {
-                SourceRange = other.SourceRange;
-            }
+            SourceRange = other.SourceRange;
 
             Name = other.Name;
             Type = other.Type;
@@ -177,6 +173,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="declarationNode">A global declaration node.</param>
         /// <param name="variableName">The name of the global variable.</param>
         /// <param name="type">The type of the global variable.</param>
+        /// <param name="sourceRange">Optional source range for the area the reference exists in.</param>
         /// <returns>A new variable node representing a reference to <paramref name="declarationNode" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="declarationNode" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
@@ -184,7 +181,7 @@ namespace LibLSLCC.CodeValidator
         ///     <paramref name="variableName" /> contains characters that are not valid in an LSL ID token.
         /// </exception>
         internal static LSLVariableNode CreateGlobalVarReference(LSLType type, string variableName,
-            ILSLVariableDeclarationNode declarationNode)
+            ILSLVariableDeclarationNode declarationNode, LSLSourceCodeRange sourceRange = null)
         {
             if (declarationNode == null)
             {
@@ -209,7 +206,9 @@ namespace LibLSLCC.CodeValidator
                 Type = type,
                 IsConstant = false,
                 Declaration = declarationNode,
-                ExpressionType = LSLExpressionType.GlobalVariable
+                ExpressionType = LSLExpressionType.GlobalVariable,
+                SourceRange = sourceRange
+                
             };
         }
 
@@ -220,6 +219,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="declarationNode">A variable declaration node.</param>
         /// <param name="variableName">The name of the local variable.</param>
         /// <param name="type">The type of the local variable.</param>
+        /// <param name="sourceRange">Optional source range for the area the reference exists in.</param>
         /// <returns>A new variable node representing a reference to <paramref name="declarationNode" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="declarationNode" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
@@ -227,7 +227,7 @@ namespace LibLSLCC.CodeValidator
         ///     <paramref name="variableName" /> contains characters that are not valid in an LSL ID token.
         /// </exception>
         internal static LSLVariableNode CreateLocalVarReference(LSLType type, string variableName,
-            ILSLVariableDeclarationNode declarationNode)
+            ILSLVariableDeclarationNode declarationNode, LSLSourceCodeRange sourceRange = null)
         {
             if (declarationNode == null)
             {
@@ -252,7 +252,8 @@ namespace LibLSLCC.CodeValidator
                 Type = type,
                 IsConstant = false,
                 Declaration = declarationNode,
-                ExpressionType = LSLExpressionType.LocalVariable
+                ExpressionType = LSLExpressionType.LocalVariable,
+                SourceRange = sourceRange
             };
         }
 
@@ -261,36 +262,34 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLVariableNode" /> that references a local parameter node.
         /// </summary>
         /// <param name="declarationNode">A parameter node that declares the parameter variable.</param>
-        internal static LSLVariableNode CreateParameterReference(ILSLParameterNode declarationNode)
+        /// <param name="sourceRange">Optional source range for the area the reference exists in.</param>
+        internal static LSLVariableNode CreateParameterReference(ILSLParameterNode declarationNode, LSLSourceCodeRange sourceRange = null)
         {
-            var v = new LSLVariableNode
+            return new LSLVariableNode
             {
                 Name = declarationNode.Name,
                 TypeName = declarationNode.Type.ToLSLTypeName(),
                 Type = declarationNode.Type,
                 ExpressionType = LSLExpressionType.ParameterVariable,
-                IsConstant = false
+                IsConstant = false,
+                SourceRange = sourceRange
 
             };
-
-            if (!declarationNode.SourceRangesAvailable) return v;
-
-            v.SourceRange = declarationNode.SourceRangeName;
-            v.SourceRangesAvailable = true;
-
-            return v;
         }
 
 
         /// <summary>
         ///     Construct an <see cref="LSLVariableNode" /> that references a library constant.
         /// </summary>
+        /// <param name="type">The constants type.</param>
+        /// <param name="constantName">The constants name.</param>
+        /// <param name="sourceRange">Optional source range for the area the reference exists in.</param>
         /// <exception cref="ArgumentNullException"><paramref name="constantName" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
         ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
         ///     <paramref name="constantName" /> is contains characters that are invalid in an LSL ID token.
         /// </exception>
-        internal static LSLVariableNode CreateLibraryConstantReference(LSLType type, string constantName)
+        internal static LSLVariableNode CreateLibraryConstantReference(LSLType type, string constantName, LSLSourceCodeRange sourceRange = null)
         {
             if (constantName == null)
             {
@@ -317,7 +316,7 @@ namespace LibLSLCC.CodeValidator
                 Type = type,
                 ExpressionType = LSLExpressionType.LibraryConstant,
                 IsConstant = true,
-                SourceRangesAvailable = false
+                SourceRange = sourceRange
             };
         }
 
@@ -344,8 +343,7 @@ namespace LibLSLCC.CodeValidator
                 ExpressionType = LSLExpressionType.GlobalVariable,
                 IsConstant = false,
                 SourceRange = new LSLSourceCodeRange(context),
-                Declaration = declaration,
-                SourceRangesAvailable = true
+                Declaration = declaration
             };
         }
 
@@ -372,8 +370,7 @@ namespace LibLSLCC.CodeValidator
                 ExpressionType = LSLExpressionType.LocalVariable,
                 IsConstant = false,
                 SourceRange = new LSLSourceCodeRange(context),
-                Declaration = declaration,
-                SourceRangesAvailable = true
+                Declaration = declaration
             };
         }
 
@@ -457,7 +454,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Should return true if source code ranges are available/set to meaningful values for this node.
         /// </summary>
-        public bool SourceRangesAvailable { get; private set; }
+        public bool SourceRangesAvailable { get { return SourceRange != null; } }
 
 
         /// <summary>

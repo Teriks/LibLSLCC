@@ -300,6 +300,7 @@ namespace LibLSLCC.CodeValidator
                     //parameter references are implicitly not constant
                     var parameterRef = LSLVariableDeclarationNode.CreateParameter(parameter);
 
+
                     _parameterScopeVariables.Add(parameter.Name, parameterRef);
                 }
             }
