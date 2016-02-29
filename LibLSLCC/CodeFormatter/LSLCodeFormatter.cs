@@ -55,7 +55,7 @@ using LibLSLCC.CodeValidator;
 namespace LibLSLCC.CodeFormatter
 {
     /// <summary>
-    ///     Implements a code formatter that can format an <see cref="ILSLCompilationUnitNode" />.
+    ///     Implements a code formatter that can format LibLSLCC syntax tree nodes.
     /// </summary>
     public sealed class LSLCodeFormatter
     {
