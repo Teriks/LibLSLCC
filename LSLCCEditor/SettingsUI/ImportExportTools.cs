@@ -68,14 +68,13 @@ namespace LSLCCEditor.SettingsUI
 
             var settings = new XmlReaderSettings()
             {
-                CloseInput = false,
+                CloseInput = true,
                 IgnoreWhitespace = false
             };
 
             try
             {
-                using (var f = openDialog.OpenFile())
-                using (var file = XmlReader.Create(f, settings))
+                using (var file = XmlReader.Create(openDialog.OpenFile(), settings))
                 {
                     serialize(file);
                 }
@@ -109,7 +108,7 @@ namespace LSLCCEditor.SettingsUI
 
             var settings = new XmlWriterSettings()
             {
-                CloseOutput = false,
+                CloseOutput = true,
                 Encoding = Encoding.Unicode,
                 Indent = true,
                 NewLineHandling = NewLineHandling.Entitize
@@ -117,11 +116,9 @@ namespace LSLCCEditor.SettingsUI
 
             try
             {
-                using (var f = saveDialog.OpenFile())
-                using (var file = XmlWriter.Create(f, settings))
+                using (var file = XmlWriter.Create(saveDialog.OpenFile(), settings))
                 {
                     serialize(file);
-                    f.Flush();
                 }
             }
             catch (Exception ex)

@@ -150,6 +150,7 @@ namespace LibLSLCC.LibraryData
         ///     If the embedded library data could not be loaded from the assembly
         ///     manifest.
         /// </exception>
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public LSLEmbeddedLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering,
             LSLLibraryDataLoadOptions loadOptions = LSLLibraryDataLoadOptions.All) : base(activeSubsets, liveFiltering)
         {
@@ -161,8 +162,10 @@ namespace LibLSLCC.LibraryData
                         "Could not locate manifest resource LibLSLCC.LibraryData.default.xml");
                 }
 
+                // ReSharper disable once ExceptionNotDocumented
                 using (var reader = XmlReader.Create(libraryData))
                 {
+                    // ReSharper disable once ExceptionNotDocumented
                     FillFromXml(reader, loadOptions);
                 }
             }

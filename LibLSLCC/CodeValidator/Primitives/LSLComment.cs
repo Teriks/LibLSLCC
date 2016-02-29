@@ -47,13 +47,84 @@
 
 #endregion
 
+using System;
+
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     A container for LSL source code comment strings.
     /// </summary>
-    public struct LSLComment
+    public struct LSLComment : IEquatable<LSLComment>
     {
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        /// <param name="other">An object to compare with this object.</param>
+        public bool Equals(LSLComment other)
+        {
+            return _type == other._type && _sourceRange.Equals(other._sourceRange) && string.Equals(_text, other._text);
+        }
+
+
+        /// <summary>
+        /// Indicates whether this instance and a specified object are equal.
+        /// </summary>
+        /// <returns>
+        /// true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise, false.
+        /// </returns>
+        /// <param name="obj">Another object to compare to. </param>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is LSLComment && Equals((LSLComment) obj);
+        }
+
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A 32-bit signed integer that is the hash code for this instance.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (int) _type;
+                hashCode = (hashCode*397) ^ _sourceRange.GetHashCode();
+                hashCode = (hashCode*397) ^ _text.GetHashCode();
+                return hashCode;
+            }
+        }
+
+
+        /// <summary>
+        /// Compare comments for equality.
+        /// </summary>
+        /// <param name="left">The comment object on the left.</param>
+        /// <param name="right">The comment object on the right.</param>
+        /// <returns><c>true</c> if equal.</returns>
+        public static bool operator ==(LSLComment left, LSLComment right)
+        {
+            return left.Equals(right);
+        }
+
+
+        /// <summary>
+        /// Compare comments for inequality.
+        /// </summary>
+        /// <param name="left">The comment object on the left.</param>
+        /// <param name="right">The comment object on the right.</param>
+        /// <returns><c>true</c> if inequal.</returns>
+        public static bool operator !=(LSLComment left, LSLComment right)
+        {
+            return !left.Equals(right);
+        }
+
+
         private readonly string _text;
         private readonly LSLSourceCodeRange _sourceRange;
         private readonly LSLCommentType _type;
@@ -65,8 +136,12 @@ namespace LibLSLCC.CodeValidator
         /// <param name="text">The text that up the entire comment, including the special comment start/end sequences.</param>
         /// <param name="type">The comment type.  <see cref="LSLCommentType" /></param>
         /// <param name="sourceRange">The source code range that the comment occupies.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="text"/> or <paramref name="sourceRange"/> is <see langword="null" />.</exception>
         public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceRange)
         {
+            if (text == null) throw new ArgumentNullException("text");
+            if (sourceRange == null) throw new ArgumentNullException("sourceRange");
+
             _text = text;
             _type = type;
             _sourceRange = sourceRange;

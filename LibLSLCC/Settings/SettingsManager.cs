@@ -124,14 +124,12 @@ namespace LibLSLCC.Settings
                 Indent = true,
                 Encoding = Encoding.Unicode,
                 NewLineHandling = NewLineHandling.Entitize,
-                CloseOutput = false,
+                CloseOutput = true,
             };
 
-            using (var f = File.Create(file))
-            using (var writer = XmlWriter.Create(f, writerSettings))
+            using (var writer = XmlWriter.Create(File.Create(file), writerSettings))
             {
                 serializer.Serialize(writer, Settings);
-                f.Flush(true);
             }
         }
 
@@ -201,11 +199,10 @@ namespace LibLSLCC.Settings
             var settings = new XmlReaderSettings()
             {
                 IgnoreWhitespace = false,
-                CloseInput = false
+                CloseInput = true
             };
 
-            using (var f = File.OpenRead(file))
-            using (var reader = XmlReader.Create(f, settings))
+            using (var reader = XmlReader.Create(File.OpenRead(file), settings))
             {
                 Settings = (T) serializer.Deserialize(reader);
             }

@@ -131,10 +131,10 @@ namespace LibraryDataScrapingTools
 
                 dialog.ShowDialog();
 
+                var xmlReaderSettings = new XmlReaderSettings() {CloseInput = true};
                 foreach (var filename in dialog.FileNames)
                 {
-                    using (var f = File.OpenRead(filename))
-                    using (var reader = XmlReader.Create(f))
+                    using (var reader = XmlReader.Create(File.OpenRead(filename), xmlReaderSettings))
                     {
                         firestormScriptLibraries.Add(ScriptLibrary.Read(reader));
                     }
@@ -498,7 +498,7 @@ namespace LibraryDataScrapingTools
             {
                 Indent = true,
                 Encoding = Encoding.Unicode,
-                CloseOutput = false,
+                CloseOutput = true
             };
 
 
@@ -529,11 +529,9 @@ namespace LibraryDataScrapingTools
             {
                 libraryDataOutputFilePath = saveGeneratedLibraryDataDialog.FileName;
 
-                using (var strm = saveGeneratedLibraryDataDialog.OpenFile())
-                using (var file = XmlWriter.Create(strm, libraryDataWritterSettings))
+                using (var file = XmlWriter.Create(saveGeneratedLibraryDataDialog.OpenFile(), libraryDataWritterSettings))
                 {
                     provider.WriteXml(file, true);
-                    strm.Flush();
                 }
             }
 
@@ -622,8 +620,9 @@ namespace LibraryDataScrapingTools
             var rightDiffLibraryDataProvider = new LSLXmlLibraryDataProvider(activeLibrarySubsets);
             rightDiffLibraryDataProvider.AddSubsetDescriptions(SubsetDescriptions);
 
-            using (var f = selectRightDialog.OpenFile())
-            using (var file = XmlReader.Create(f))
+
+            using (var file = XmlReader.Create(selectRightDialog.OpenFile(), 
+                new XmlReaderSettings() {CloseInput = true}))
             {
                 rightDiffLibraryDataProvider.FillFromXml(file);
             }
@@ -681,11 +680,9 @@ namespace LibraryDataScrapingTools
                 }
                 else
                 {
-                    using (var strm = saveFileLibraryData.OpenFile())
-                    using (var file = XmlWriter.Create(strm, libraryDataWritterSettings))
+                    using (var file = XmlWriter.Create(saveFileLibraryData.OpenFile(), libraryDataWritterSettings))
                     {
                         diff.NotInRight.WriteXml(file, true);
-                        strm.Flush();
                     }
                 }
             }
@@ -741,11 +738,9 @@ namespace LibraryDataScrapingTools
                 }
                 else
                 {
-                    using (var strm = saveFileLibraryData.OpenFile())
-                    using (var file = XmlWriter.Create(strm, libraryDataWritterSettings))
+                    using (var file = XmlWriter.Create(saveFileLibraryData.OpenFile(), libraryDataWritterSettings))
                     {
                         diff.NotInLeft.WriteXml(file, true);
-                        strm.Flush();
                     }
                 }
             }

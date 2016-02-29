@@ -202,6 +202,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The syntax tree node to create the <see cref="LSLSourceCodeRange" /> from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="node" /> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable"/> == <c>false</c>.</exception>
         public LSLSourceCodeRange(ILSLReadOnlySyntaxTreeNode node)
         {
             if (node == null)
@@ -211,7 +212,7 @@ namespace LibLSLCC.CodeValidator
 
             if (!node.SourceRangesAvailable)
             {
-                throw new ArgumentException("node.SourceRangesAvailable == false", "start");
+                throw new ArgumentException("node.SourceRangesAvailable == false.", "node");
             }
 
             LineStart = node.SourceRange.LineStart;

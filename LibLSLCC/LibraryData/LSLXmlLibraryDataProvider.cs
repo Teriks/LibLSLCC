@@ -352,11 +352,11 @@ namespace LibLSLCC.LibraryData
 
             var settings = new XmlReaderSettings()
             {
-                IgnoreWhitespace = false
+                IgnoreWhitespace = false,
+                CloseInput = true,
             };
 
-            using (var streamReader = new StreamReader(filename, true))
-            using (var reader = XmlReader.Create(streamReader, settings))
+            using (var reader = XmlReader.Create(new StreamReader(filename, true), settings))
             {
                 reader.ReadStartElement(RootElementName);
 
@@ -535,11 +535,11 @@ namespace LibLSLCC.LibraryData
 
             var settings = new XmlReaderSettings()
             {
-                IgnoreWhitespace = false
+                IgnoreWhitespace = false,
+                CloseInput = true
             };
 
-            using (var streamReader = new StreamReader(filename, true))
-            using (var reader = XmlReader.Create(streamReader, settings))
+            using (var reader = XmlReader.Create(new StreamReader(filename, true), settings))
             {
                 reader.ReadStartElement(RootElementName);
 

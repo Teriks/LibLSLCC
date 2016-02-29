@@ -137,6 +137,7 @@ namespace LibLSLCC.CodeValidator
             /// <summary>
             ///     Dummy member
             /// </summary>
+            [SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
             Err
         }
 
