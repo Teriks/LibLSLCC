@@ -144,7 +144,7 @@ namespace LibLSLCC.CodeValidator
         public LSLForLoopNode(LSLExpressionListNode initExpressions, ILSLExprNode condition,
             LSLExpressionListNode afterthoughtExpressions, LSLCodeScopeNode code)
         {
-            if (initExpressions == null) throw new ArgumentNullException("initExpression");
+            if (initExpressions == null) throw new ArgumentNullException("initExpressions");
             if (afterthoughtExpressions == null) throw new ArgumentNullException("afterthoughtExpressions");
             if (code == null) throw new ArgumentNullException("code");
 
@@ -167,39 +167,20 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="context" /> or <paramref name="initExpression" /> or
         ///     <paramref name="afterthoughtExpressionsList" /> or <paramref name="code" /> is <c>null</c>.
         /// </exception>
         internal LSLForLoopNode(LSLParser.ForLoopContext context, LSLExpressionListNode initExpression,
             ILSLExprNode conditionExpression,
-            LSLExpressionListNode afterthoughtExpressionsList, LSLCodeScopeNode code)
+            LSLExpressionListNode afterthoughtExpressionsList, LSLCodeScopeNode code) 
+            : this(initExpression, conditionExpression, afterthoughtExpressionsList, code)
         {
             if (context == null)
             {
                 throw new ArgumentNullException("context");
             }
-
-            if (afterthoughtExpressionsList == null)
-            {
-                throw new ArgumentNullException("afterthoughtExpressionsList");
-            }
-
-            if (code == null)
-            {
-                throw new ArgumentNullException("code");
-            }
-
-            if (initExpression == null)
-            {
-                throw new ArgumentNullException("initExpression");
-            }
-
-            InitExpressionList = initExpression;
-            InitExpressionList.Parent = this;
-
-            AfterthoughtExpressionList = afterthoughtExpressionsList;
-            AfterthoughtExpressionList.Parent = this;
 
             SourceRange = new LSLSourceCodeRange(context);
             SourceRangeFirstSemicolon = new LSLSourceCodeRange(context.first_semi_colon);
@@ -210,17 +191,6 @@ namespace LibLSLCC.CodeValidator
 
 
             SourceRangesAvailable = true;
-
-            Code = code;
-            Code.Parent = this;
-            Code.CodeScopeType = LSLCodeScopeType.ForLoop;
-
-            ConditionExpression = conditionExpression;
-
-            if (ConditionExpression != null)
-            {
-                ConditionExpression.Parent = this;
-            }
         }
 
 
