@@ -381,6 +381,17 @@ namespace LibLSLCC.CodeValidator
             return false;
         }
 
+        /// <summary>
+        /// Convenience method to add a new <seealso cref="LSLExpressionStatementNode"/> via <seealso cref="AddStatement(ILSLCodeStatement)"/>.
+        /// </summary>
+        /// <seealso cref="AddStatement(ILSLCodeStatement)"/>
+        /// <seealso cref="LSLExpressionStatementNode"/>
+        /// <param name="expression"></param>
+        public void AddStatement(ILSLExprNode expression)
+        {
+            AddStatement(new LSLExpressionStatementNode(expression));
+        }
+
 
         /// <summary>
         ///     Add a code statement to the code scope, the dead code detection algorithm is encapsulated inside

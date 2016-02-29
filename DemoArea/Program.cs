@@ -311,89 +311,18 @@ namespace DemoArea
     {
         static void Main(string[] args)
         {
-            {
-                Console.WriteLine("Pretty Print DOM Test.");
-                Console.WriteLine("======================");
-                Console.WriteLine("");
+            PrettyPrintExample();
 
-                LSLCompilationUnitNode program = new LSLCompilationUnitNode();
 
-                var gv = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Rotation, "rot",
-                    new LSLRotationLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
-                        new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f))
-                    );
-
-                var gv2 = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Vector, "vec",
-                    new LSLVectorLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
-                        new LSLFloatLiteralNode(3.0f))
-                    );
-
-                program.AddVariable(gv);
-                program.AddVariable(gv2);
-
-                var llSay = LSLFunctionSignature.Parse("llSay(integer chan, string msg);");
+            ReflectAndCompileExample();
+        }
 
 
 
 
-                var funCode = new LSLCodeScopeNode(0);
 
-                funCode.AddStatement(new LSLExpressionStatementNode(new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(3), new LSLStringLiteralNode("test"))));
-
-                program.AddFunction(new LSLFunctionDeclarationNode(LSLType.Void, "myfunc", funCode));
-
-
-                var eventCode = new LSLCodeScopeNode(0);
-
-                var v = LSLVariableDeclarationNode.CreateLocalVar(LSLType.List, "test",
-                    new LSLListLiteralNode(new LSLIntegerLiteralNode(3), new LSLIntegerLiteralNode(4))
-                    );
-
-                var fun = new LSLFunctionCallNode(llSay, new LSLHexLiteralNode(0x332), new LSLStringLiteralNode("hello world"));
-
-
-              
-                eventCode.AddStatement(v);
-
-                var label = new LSLLabelStatementNode("test");
-                eventCode.PreDefineLabel(label);
-
-                var ic = new LSLCodeScopeNode(1);
-
-
-                ic.AddStatement(new LSLJumpStatementNode(label));
-
-                ic.AddStatement(new LSLExpressionStatementNode(fun));
-                ic.AddStatement(new LSLExpressionStatementNode(fun.Clone()));
-                ic.AddStatement(new LSLExpressionStatementNode(fun.Clone()));
-
-                ic.EndScope();
-
-
-
-                eventCode.EndScope();
-
-
-                eventCode.AddStatement(ic);
-
-                eventCode.AddStatement(label);
-
-
-                var e = new LSLEventHandlerNode("state_entry", eventCode);
-
-                program.DefaultState.AddEventHandler(e);
-
-                LSLCodeFormatter formatter = new LSLCodeFormatter();
-
-
-                formatter.Format(program, Console.Out);
-
-                Console.WriteLine("");
-                Console.WriteLine("======================");
-            }
-
-
-
+        private static void ReflectAndCompileExample()
+        {
             Console.WriteLine("");
             Console.WriteLine("Library data reflect and compile test.");
             Console.WriteLine("======================");
@@ -403,13 +332,14 @@ namespace DemoArea
             var x = new LSLLibraryDataReflectionSerializer
             {
                 PropertyBindingFlags =
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly,
-
+                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public |
+                    BindingFlags.DeclaredOnly,
                 FieldBindingFlags =
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly,
-
-                MethodBindingFlags = 
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly,
+                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public |
+                    BindingFlags.DeclaredOnly,
+                MethodBindingFlags =
+                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public |
+                    BindingFlags.DeclaredOnly,
 
                 //a fall back value string converter used by the serializer
                 //or null.. not really used since the class we are reflecting
@@ -446,33 +376,31 @@ namespace DemoArea
                 //we can converter non attributed parameter types, for sure.
                 //don't exclude them from the de-serialized signatures.
                 AttributedParametersOnly = false,
-
-                
             };
 
-            
 
             //a provider with no live filtering enabled, only load functions with the subset "my-lsl"
-            LSLLibraryDataProvider myProvider = new LSLLibraryDataProvider(new [] {"my-lsl"}, false);
-
+            LSLLibraryDataProvider myProvider = new LSLLibraryDataProvider(new[] {"my-lsl"}, false);
 
 
             //declare the subset my-lsl for use.
             myProvider.AddSubsetDescription(new LSLLibrarySubsetDescription("my-lsl", "My LSL Demo"));
 
 
-
-
             //define an event with no parameters, make sure its subsets are set so that it gets put in the "my-lsl" subset.
-            myProvider.DefineEventHandler(new LSLLibraryEventSignature("my_event") {Subsets = { "my-lsl" } });
+            myProvider.DefineEventHandler(new LSLLibraryEventSignature("my_event") {Subsets = {"my-lsl"}});
 
-            myProvider.DefineEventHandler(new LSLLibraryEventSignature("my_deprecated_event") { Subsets = { "my-lsl" }, Deprecated = true });
+            myProvider.DefineEventHandler(new LSLLibraryEventSignature("my_deprecated_event")
+            {
+                Subsets = {"my-lsl"},
+                Deprecated = true
+            });
 
 
             Console.WriteLine("Methods....\n\n");
 
 
-            var methods = x.DeSerializeMethods(typeof(AttributeReflectionTestClass)).ToList();
+            var methods = x.DeSerializeMethods(typeof (AttributeReflectionTestClass)).ToList();
 
 
             foreach (var c in methods)
@@ -484,7 +412,6 @@ namespace DemoArea
 
                 Console.WriteLine(c.ToString());
             }
-
 
 
             Console.WriteLine("\n\nWithout instance provided....\n\n");
@@ -505,7 +432,8 @@ namespace DemoArea
 
             Console.WriteLine("\n\nWith instance provided....\n\n");
 
-            constants = x.DeSerializeConstants(typeof(AttributeReflectionTestClass), new AttributeReflectionTestClass()).ToList();
+            constants =
+                x.DeSerializeConstants(typeof (AttributeReflectionTestClass), new AttributeReflectionTestClass()).ToList();
 
             foreach (var c in constants)
             {
@@ -514,8 +442,6 @@ namespace DemoArea
                 //to the serializer.
                 Console.WriteLine(c.ToString());
             }
-
-
 
 
             //Set up the implementations LSLCodeValidator relies on's
@@ -537,10 +463,8 @@ namespace DemoArea
             LSLCodeValidator validator = new LSLCodeValidator(validatorStrategies);
 
 
-
-
             StringReader strReader = new StringReader(
- @"
+                @"
 
 default{
 
@@ -606,7 +530,89 @@ default{
 
                 Console.WriteLine(Encoding.Default.GetString(memStream.ToArray()));
             }
+        }
 
+
+        /// ===============================
+
+
+        private static void PrettyPrintExample()
+        {
+            Console.WriteLine("Pretty Print DOM Test.");
+            Console.WriteLine("======================");
+            Console.WriteLine("");
+
+            LSLCompilationUnitNode program = new LSLCompilationUnitNode();
+
+            var gv = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Rotation, "rot",
+                new LSLRotationLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
+                    new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f))
+                );
+
+            var gv2 = LSLVariableDeclarationNode.CreateGlobalVar(LSLType.Vector, "vec",
+                new LSLVectorLiteralNode(new LSLFloatLiteralNode(3.0f), new LSLFloatLiteralNode(3.0f),
+                    new LSLFloatLiteralNode(3.0f))
+                );
+
+            program.AddVariable(gv);
+            program.AddVariable(gv2);
+
+            var llSay = LSLFunctionSignature.Parse("llSay(integer chan, string msg);");
+
+
+            var funCode = new LSLCodeScopeNode(0);
+
+            funCode.AddStatement(new LSLFunctionCallNode(llSay, new LSLIntegerLiteralNode(3), new LSLStringLiteralNode("test")));
+
+            var myFunc = new LSLFunctionDeclarationNode(LSLType.Void, "myfunc", funCode);
+            program.AddFunction(myFunc);
+
+
+            var eventCode = new LSLCodeScopeNode(0);
+
+            var v = LSLVariableDeclarationNode.CreateLocalVar(LSLType.List, "test",
+                new LSLListLiteralNode(new LSLIntegerLiteralNode(3), new LSLIntegerLiteralNode(4))
+                );
+
+            var fun = new LSLFunctionCallNode(llSay, new LSLHexLiteralNode(0x332), new LSLStringLiteralNode("hello world"));
+
+
+            eventCode.AddStatement(v);
+
+            var label = new LSLLabelStatementNode("test");
+            eventCode.PreDefineLabel(label);
+
+            var ic = new LSLCodeScopeNode(1);
+
+
+            ic.AddStatement(new LSLJumpStatementNode(label));
+
+            ic.AddStatement(fun);
+            ic.AddStatement(new LSLFunctionCallNode(myFunc));
+            ic.AddStatement(fun.Clone());
+
+            ic.EndScope();
+
+
+            eventCode.EndScope();
+
+
+            eventCode.AddStatement(ic);
+
+            eventCode.AddStatement(label);
+
+
+            var e = new LSLEventHandlerNode("state_entry", eventCode);
+
+            program.DefaultState.AddEventHandler(e);
+
+            LSLCodeFormatter formatter = new LSLCodeFormatter();
+
+
+            formatter.Format(program, Console.Out);
+
+            Console.WriteLine("");
+            Console.WriteLine("======================");
         }
     }
 }

@@ -87,7 +87,7 @@ namespace LibLSLCC.CodeValidator
             if (argumentList == null) throw new ArgumentNullException("argumentList");
 
 
-            Name = Definition.Name;
+            Name = definition.Name;
 
             ArgumentExpressionList = argumentList;
             ArgumentExpressionList.Parent = this;
