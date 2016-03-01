@@ -275,7 +275,7 @@ namespace LibLSLCC.CodeValidator
         ///     The parent node of this syntax tree node.
         /// </summary>
         /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
-        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <c>null</c>.</exception>
         public ILSLSyntaxTreeNode Parent
         {
             get { return _parent; }
@@ -349,7 +349,7 @@ namespace LibLSLCC.CodeValidator
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <c>null</c>.</exception>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (visitor == null) throw new ArgumentNullException("visitor");

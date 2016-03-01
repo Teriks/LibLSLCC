@@ -108,7 +108,7 @@ namespace LibLSLCC.CodeValidator
         ///     Throw <see cref="ArgumentNullException" /> if assigned null.
         /// </remarks>
         /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
-        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <c>null</c>.</exception>
         new ILSLSyntaxTreeNode Parent { get; set; }
     }
 }

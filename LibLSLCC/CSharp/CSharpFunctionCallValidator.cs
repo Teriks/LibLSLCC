@@ -297,7 +297,7 @@ namespace LibLSLCC.CSharp
         /// </summary>
         /// <param name="signature">The method call signature, without a semi-colon at the end.</param>
         /// <returns>The parse/validation result.  <see cref="CSharpFunctionCallValidationResult" /></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <c>null</c>.</exception>
         public static CSharpFunctionCallValidationResult Validate(string signature)
         {
             if (signature == null) throw new ArgumentNullException("signature");

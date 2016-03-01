@@ -115,7 +115,7 @@ namespace LibLSLCC.CodeValidator
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <c>null</c>.</exception>
         public override T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (visitor == null) throw new ArgumentNullException("visitor");

@@ -94,7 +94,7 @@ namespace LibLSLCC.CSharp
         /// </summary>
         /// <param name="namespaceName">A string representing the namespace.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="namespaceName"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="namespaceName"/> is <c>null</c>.</exception>
         public static CSharpNamespaceValidatorResult Validate(string namespaceName)
         {
             if (namespaceName == null) throw new ArgumentNullException("namespaceName");

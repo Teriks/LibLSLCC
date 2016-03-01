@@ -68,7 +68,7 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an event signature by cloning another <see cref="LSLEventSignature" /> object.
         /// </summary>
         /// <param name="other">The  <see cref="LSLEventSignature" /> to copy construct from.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>
         public LSLEventSignature(LSLEventSignature other)
         {
             if (other == null)
@@ -201,7 +201,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="otherSignature">The other event handler signature to compare to.</param>
         /// <returns>True if the two signatures are identical.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="otherSignature"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="otherSignature"/> is <c>null</c>.</exception>
         public bool SignatureMatches(LSLEventSignature otherSignature)
         {
             if (otherSignature == null) throw new ArgumentNullException("otherSignature");
@@ -266,7 +266,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="parameterSignature">The <see cref="LSLParameterSignature" /> object to add.</param>
         /// <exception cref="ArgumentException">Thrown if the added parameter is a variadic parameter.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="parameterSignature"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parameterSignature"/> is <c>null</c>.</exception>
         public void AddParameter(LSLParameterSignature parameterSignature)
         {
             if (parameterSignature == null) throw new ArgumentNullException("parameterSignature");

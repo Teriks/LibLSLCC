@@ -70,7 +70,7 @@ namespace LibLSLCC.Utility
         ///     The number of space characters required to match the length of all the whitespace characters at the end of the
         ///     string (except newlines)
         /// </returns>
-        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <c>null</c>.</exception>
         public static int GetStringSpacesIndented(this string str, int tabSize = 4)
         {
             if (str == null) throw new ArgumentNullException("str");
@@ -105,7 +105,7 @@ namespace LibLSLCC.Utility
         /// <param name="str">Input string to get the length in spaces of</param>
         /// <param name="tabSize">Tab size in spaces, defaults to 4</param>
         /// <returns>Number of spaces required to match the length of the string</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <c>null</c>.</exception>
         public static int GetStringSpacesEquivalent(this string str, int tabSize = 4)
         {
             if (str == null) throw new ArgumentNullException("str");

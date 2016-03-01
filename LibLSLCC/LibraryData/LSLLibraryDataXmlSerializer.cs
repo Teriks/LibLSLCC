@@ -225,7 +225,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="reader">The XmlReader object to read XML from.</param>
         /// <exception cref="LSLLibraryDataXmlSyntaxException">If a syntax error was detected in the Library Data XML.</exception>
         /// <exception cref="XmlException">An error occurred while parsing the XML. </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="reader"/> is <c>null</c>.</exception>
         public void Parse(XmlReader reader)
         {
             if (reader == null) throw new ArgumentNullException("reader");
@@ -317,7 +317,7 @@ namespace LibLSLCC.LibraryData
         ///     signatures, or to just write the signatures without putting them in a root element.
         /// </param>
         /// <exception cref="InvalidOperationException"><paramref name="writer" /> is closed.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="dataProvider"/> or <paramref see="writer"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="dataProvider"/> or <paramref see="writer"/> is <c>null</c>.</exception>
         public static void WriteXml(ILSLLibraryDataProvider dataProvider,
             XmlWriter writer,
             bool writeRootElement = true)

@@ -73,7 +73,7 @@ namespace LibLSLCC.Settings
         ///     Thrown if <paramref name="factoryType" /> does not implement
         ///     <see cref="IDefaultSettingsValueFactory" />.
         /// </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <c>null</c>.</exception>
         public DefaultValueFactoryAttribute(Type factoryType, int initOrder = 0)
         {
             if (factoryType == null) throw new ArgumentNullException("factoryType");

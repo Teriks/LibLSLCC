@@ -313,7 +313,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Creates a global variable declaration node with the given <see cref="LSLType" /> and name.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <c>null</c>.</exception>
         /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID
         ///     token.
@@ -342,7 +342,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Creates a local variable declaration node with the given <see cref="LSLType" /> and name.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <c>null</c>.</exception>
         /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID
         ///     token.
@@ -373,7 +373,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
-        ///     is <see langword="null" />.
+        ///     is <c>null</c>.
         /// </exception>
         /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID token.
@@ -411,7 +411,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
-        ///     is <see langword="null" />.
+        ///     is <c>null</c>.
         /// </exception>
         /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID token.
@@ -448,7 +448,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Construct an <see cref="LSLVariableDeclarationNode" /> that references a library constant.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="constantName" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="constantName" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
         ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
         ///     <paramref name="constantName" /> is contains characters that are invalid in an LSL ID token.
@@ -470,7 +470,7 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLVariableDeclarationNode" /> that represents a parameter.
         /// </summary>
         /// <param name="declarationNode">A parameter node that declares the parameter variable.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="declarationNode"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="declarationNode"/> is <c>null</c>.</exception>
         public static LSLVariableDeclarationNode CreateParameter(ILSLParameterNode declarationNode)
         {
             if (declarationNode == null) throw new ArgumentNullException("declarationNode");
@@ -656,7 +656,7 @@ namespace LibLSLCC.CodeValidator
         ///     The parent node of this syntax tree node.
         /// </summary>
         /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
-        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <c>null</c>.</exception>
         public ILSLSyntaxTreeNode Parent
         {
             get { return _parent; }
@@ -771,7 +771,7 @@ namespace LibLSLCC.CodeValidator
         /// <typeparam name="T">The visitors return type.</typeparam>
         /// <param name="visitor">The visitor instance.</param>
         /// <returns>The value returned from this method in the visitor used to visit this node.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="visitor"/> is <c>null</c>.</exception>
         public T AcceptVisitor<T>(ILSLValidatorNodeVisitor<T> visitor)
         {
             if (visitor == null) throw new ArgumentNullException("visitor");

@@ -188,7 +188,7 @@ namespace LibLSLCC.CodeValidator
         ///     The parent node of this syntax tree node.
         /// </summary>
         /// <exception cref="InvalidOperationException" accessor="set">If Parent has already been set.</exception>
-        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException" accessor="set"><paramref name="value" /> is <c>null</c>.</exception>
         public ILSLSyntaxTreeNode Parent
         {
             get { return _parent; }

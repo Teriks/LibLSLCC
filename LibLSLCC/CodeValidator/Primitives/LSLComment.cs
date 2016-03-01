@@ -136,7 +136,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="text">The text that up the entire comment, including the special comment start/end sequences.</param>
         /// <param name="type">The comment type.  <see cref="LSLCommentType" /></param>
         /// <param name="sourceRange">The source code range that the comment occupies.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="text"/> or <paramref name="sourceRange"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="text"/> or <paramref name="sourceRange"/> is <c>null</c>.</exception>
         public LSLComment(string text, LSLCommentType type, LSLSourceCodeRange sourceRange)
         {
             if (text == null) throw new ArgumentNullException("text");

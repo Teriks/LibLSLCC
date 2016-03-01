@@ -68,7 +68,7 @@ namespace LibLSLCC.CodeValidator
         ///     The <see cref="ILSLReadOnlyCodeStatement" /> that represents the jump statement in
         ///     the syntax tree.
         /// </param>
-        /// <exception cref="ArgumentNullException"><paramref name="originalJump"/> or <paramref name="effectiveJumpStatement"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="originalJump"/> or <paramref name="effectiveJumpStatement"/> is <c>null</c>.</exception>
         public LSLConstantJumpDescription(LSLConstantJumpDescription originalJump,
             ILSLReadOnlyCodeStatement effectiveJumpStatement)
         {

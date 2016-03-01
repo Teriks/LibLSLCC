@@ -61,7 +61,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a code literal.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsLiteral(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -81,7 +81,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a compound expression.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsCompoundExpression(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -99,7 +99,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a function call to either a user defined or library defined function.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsFunctionCall(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -114,7 +114,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a function call to a library defined function.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsLibraryFunctionCall(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -128,7 +128,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a function call to a user defined function.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsUserFunctionCall(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -142,7 +142,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to either a global or local variable.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsVariable(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -160,7 +160,7 @@ namespace LibLSLCC.CodeValidator
         ///     True if the expression node represents a reference to a vector or rotation variable component via the dot
         ///     operator.
         /// </returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsVectorOrRotationComponent(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -188,7 +188,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to either a global/local variable or parameter reference.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsVariableOrParameter(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -204,7 +204,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to a local variable.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsLocalVariable(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -219,7 +219,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to a local parameter.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsLocalParameter(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
@@ -234,7 +234,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The expression node to test.</param>
         /// <returns>True if the expression node represents a reference to a global variable.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
         public static bool IsGlobalVariable(this ILSLReadOnlyExprNode node)
         {
             if (node == null) throw new ArgumentNullException("node");

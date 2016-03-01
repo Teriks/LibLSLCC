@@ -74,7 +74,7 @@ namespace LibLSLCC.LibraryData
         ///     ([a-zA-Z]+[a-zA-Z_0-9\\-]*) is encountered.
         /// </exception>
         /// <returns>Enumerable of parsed names.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="parse"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parse"/> is <c>null</c>.</exception>
         public static IEnumerable<string> ParseSubsets(string parse)
         {
             if (parse == null) throw new ArgumentNullException("parse");

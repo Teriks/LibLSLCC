@@ -487,7 +487,7 @@ namespace LibLSLCC.LibraryData
         ///     of the function or one of its overloads,
         ///     and the function/overload is not shared across those subsets.
         /// </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="signatureToTest"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="signatureToTest"/> is <c>null</c>.</exception>
         public LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest)
         {
             if (signatureToTest == null) throw new ArgumentNullException("signatureToTest");
@@ -615,7 +615,7 @@ namespace LibLSLCC.LibraryData
         ///     exists.
         /// </exception>
         /// <param name="description">The subset description to add.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="description"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="description"/> is <c>null</c>.</exception>
         public void AddSubsetDescription(LSLLibrarySubsetDescription description)
         {
             if (description == null) throw new ArgumentNullException("description");
@@ -654,7 +654,7 @@ namespace LibLSLCC.LibraryData
         ///     exists.
         /// </exception>
         /// <param name="descriptions">The subset descriptions to add.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="descriptions"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="descriptions"/> is <c>null</c>.</exception>
         public void AddSubsetDescriptions(IEnumerable<LSLLibrarySubsetDescription> descriptions)
         {
             if (descriptions == null) throw new ArgumentNullException("descriptions");
@@ -679,7 +679,7 @@ namespace LibLSLCC.LibraryData
         ///     If the event handler could not be defined because it's name existed in
         ///     the same subset already.
         /// </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <c>null</c>.</exception>
         public void DefineEventHandler(LSLLibraryEventSignature signature)
         {
             if (signature == null) throw new ArgumentNullException("signature");
@@ -744,7 +744,7 @@ namespace LibLSLCC.LibraryData
         ///     Define all the event handlers from the given enumerable.
         /// </summary>
         /// <param name="eventHandlersSignatures">The event handler signatures to define.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="eventHandlersSignatures"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="eventHandlersSignatures"/> is <c>null</c>.</exception>
         public void DefineEventHandlers(IEnumerable<LSLLibraryEventSignature> eventHandlersSignatures)
         {
             if (eventHandlersSignatures == null) throw new ArgumentNullException("eventHandlersSignatures");
@@ -760,7 +760,7 @@ namespace LibLSLCC.LibraryData
         ///     Define all the function signatures from the given enumerable.
         /// </summary>
         /// <param name="functionSignatures">The function signatures to define.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="functionSignatures"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="functionSignatures"/> is <c>null</c>.</exception>
         public void DefineFunctions(IEnumerable<LSLLibraryFunctionSignature> functionSignatures)
         {
             if (functionSignatures == null) throw new ArgumentNullException("functionSignatures");
@@ -776,7 +776,7 @@ namespace LibLSLCC.LibraryData
         ///     Defines all the constant signatures from the given enumerable.
         /// </summary>
         /// <param name="constantSignatures">The constant signatures to define.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="constantSignatures"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="constantSignatures"/> is <c>null</c>.</exception>
         public void DefineConstants(IEnumerable<LSLLibraryConstantSignature> constantSignatures)
         {
             if (constantSignatures == null) throw new ArgumentNullException("constantSignatures");
@@ -801,7 +801,7 @@ namespace LibLSLCC.LibraryData
         ///     If the constant could not be defined because it's name existed in the
         ///     same subset already.
         /// </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <c>null</c>.</exception>
         public void DefineConstant(LSLLibraryConstantSignature signature)
         {
             if (signature == null) throw new ArgumentNullException("signature");
@@ -873,7 +873,7 @@ namespace LibLSLCC.LibraryData
         ///     If the function could not be defined because a duplicate or ambiguous
         ///     definition existed in the same subset already.
         /// </exception>
-        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <c>null</c>.</exception>
         public void DefineFunction(LSLLibraryFunctionSignature signature)
         {
             if (signature == null) throw new ArgumentNullException("signature");
