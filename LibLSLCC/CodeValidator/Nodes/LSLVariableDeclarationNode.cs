@@ -311,8 +311,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Creates a global variable declaration node with the given <see cref="LSLType" /> and name.
+        ///     Creates a global variable declaration node with the given <see cref="LSLType" /> and name, without a declaration expression.
         /// </summary>
+        /// <param name="type">The type of the global variable.</param>
+        /// <param name="variableName">The name of the global variable.</param>
         /// <returns>The created variable declaration node.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <c>null</c>.</exception>
         /// <exception cref="LSLInvalidSymbolNameException">
@@ -341,8 +343,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Creates a local variable declaration node with the given <see cref="LSLType" /> and name.
+        ///     Creates a local variable declaration node with the given <see cref="LSLType" /> and name, without a declaration expression.
         /// </summary>
+        /// <param name="type">The type of the local variable.</param>
+        /// <param name="variableName">The name of the local variable.</param>
         /// <returns>The created variable declaration node.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <c>null</c>.</exception>
         /// <exception cref="LSLInvalidSymbolNameException">
@@ -373,6 +377,9 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Creates a local variable declaration node with the given <see cref="LSLType" />, name, and declaration expression.
         /// </summary>
+        /// <param name="type">The type of the local variable.</param>
+        /// <param name="variableName">The name of the local variable.</param>
+        /// <param name="declarationExpression">The declaration expression used in the local variables definition.</param>
         /// <returns>The created variable declaration node.</returns>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
@@ -412,6 +419,9 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Creates a global variable declaration node with the given <see cref="LSLType" />, name, and declaration expression.
         /// </summary>
+        /// <param name="type">The type of the global variable.</param>
+        /// <param name="variableName">The name of the global variable.</param>
+        /// <param name="declarationExpression">The declaration expression used in the global variables definition.</param>
         /// <returns>The created variable declaration node.</returns>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
@@ -448,10 +458,11 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
         /// <summary>
         ///     Construct an <see cref="LSLVariableDeclarationNode" /> that references a library constant.
         /// </summary>
+        /// <param name="type">The type of the library constant.</param>
+        /// <param name="constantName">The name of the library constant.</param>
         /// <returns>The created variable declaration node.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="constantName" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
