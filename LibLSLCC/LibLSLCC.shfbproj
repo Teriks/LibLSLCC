@@ -32,7 +32,7 @@
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
     <NamingMethod>Guid</NamingMethod>
-    <HelpTitle>LibLSLCC, LSL parsing and compilating framework.</HelpTitle>
+    <HelpTitle>LibLSLCC, LSL parsing and compilation framework.</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
       <DocumentationSource sourceFile="bin\AnyCPU\Release\LibLSLCC.dll" />
