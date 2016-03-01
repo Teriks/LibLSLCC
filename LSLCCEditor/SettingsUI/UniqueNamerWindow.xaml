@@ -11,6 +11,7 @@
         Icon="../lsl_script_icon.ico" Style="{StaticResource MetroWindowStyle}"
         ResizeMode="NoResize"
         SizeToContent="Width"
+        Topmost="True"
         WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.Resources>
