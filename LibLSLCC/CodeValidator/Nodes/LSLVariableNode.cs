@@ -178,8 +178,8 @@ namespace LibLSLCC.CodeValidator
         /// <exception cref="ArgumentNullException"><paramref name="declarationNode" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
         ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
-        ///     <paramref name="variableName" /> contains characters that are not valid in an LSL ID token.
         /// </exception>
+        /// <exception cref="LSLInvalidSymbolNameException"><paramref name="variableName" /> contains characters that are not valid in an LSL ID token.</exception>
         internal static LSLVariableNode CreateGlobalVarReference(LSLType type, string variableName,
             ILSLVariableDeclarationNode declarationNode, LSLSourceCodeRange sourceRange = null)
         {
@@ -193,10 +193,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentException("global variable type cannot be LSLType.Void", "type");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(variableName))
             {
-                throw new ArgumentException(
-                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new LSLInvalidSymbolNameException(
+                    "variableName provided contained characters not allowed in an LSL ID token.");
             }
 
             return new LSLVariableNode
@@ -224,8 +224,8 @@ namespace LibLSLCC.CodeValidator
         /// <exception cref="ArgumentNullException"><paramref name="declarationNode" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
         ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
-        ///     <paramref name="variableName" /> contains characters that are not valid in an LSL ID token.
         /// </exception>
+        /// <exception cref="LSLInvalidSymbolNameException"><paramref name="variableName" /> contains characters that are not valid in an LSL ID token.</exception>
         internal static LSLVariableNode CreateLocalVarReference(LSLType type, string variableName,
             ILSLVariableDeclarationNode declarationNode, LSLSourceCodeRange sourceRange = null)
         {
@@ -239,10 +239,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentException("local variable type cannot be LSLType.Void", "type");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(variableName))
             {
-                throw new ArgumentException(
-                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new LSLInvalidSymbolNameException(
+                    "variableName provided contained characters not allowed in an LSL ID token.");
             }
 
             return new LSLVariableNode
@@ -286,9 +286,9 @@ namespace LibLSLCC.CodeValidator
         /// <param name="sourceRange">Optional source range for the area the reference exists in.</param>
         /// <exception cref="ArgumentNullException"><paramref name="constantName" /> is <see langword="null" />.</exception>
         /// <exception cref="ArgumentException">
-        ///     <paramref name="type" /> is <see cref="LSLType.Void" /> or
-        ///     <paramref name="constantName" /> is contains characters that are invalid in an LSL ID token.
+        ///     <paramref name="type" /> is <see cref="LSLType.Void" />.
         /// </exception>
+        /// <exception cref="LSLInvalidSymbolNameException"><paramref name="constantName" /> is contains characters that are invalid in an LSL ID token.</exception>
         internal static LSLVariableNode CreateLibraryConstantReference(LSLType type, string constantName, LSLSourceCodeRange sourceRange = null)
         {
             if (constantName == null)
@@ -302,11 +302,10 @@ namespace LibLSLCC.CodeValidator
                     typeof(LSLVariableNode).Name + ".CreateLibraryConstant:  type cannot be LSLType.Void.", "type");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(constantName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(constantName))
             {
-                throw new ArgumentException(
-                    typeof(LSLVariableNode).Name + ".CreateLibraryConstant:  name contains invalid ID characters.",
-                    "constantName");
+                throw new LSLInvalidSymbolNameException(
+                    typeof(LSLVariableNode).Name + ".CreateLibraryConstant:  name contains invalid ID characters.");
             }
 
             return new LSLVariableNode

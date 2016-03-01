@@ -314,7 +314,7 @@ namespace LibLSLCC.CodeValidator
         ///     Creates a global variable declaration node with the given <see cref="LSLType" /> and name.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID
         ///     token.
         /// </exception>
@@ -325,10 +325,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("variableName");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(variableName))
             {
-                throw new ArgumentException(
-                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new LSLInvalidSymbolNameException(
+                    "variableName provided contained characters not allowed in an LSL ID token.");
             }
 
             var n = new LSLVariableDeclarationNode();
@@ -343,7 +343,7 @@ namespace LibLSLCC.CodeValidator
         ///     Creates a local variable declaration node with the given <see cref="LSLType" /> and name.
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="variableName" /> is <see langword="null" />.</exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID
         ///     token.
         /// </exception>
@@ -354,10 +354,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("variableName");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(variableName))
             {
-                throw new ArgumentException(
-                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new LSLInvalidSymbolNameException(
+                    "variableName provided contained characters not allowed in an LSL ID token.");
             }
 
             var n = new LSLVariableDeclarationNode();
@@ -375,7 +375,7 @@ namespace LibLSLCC.CodeValidator
         ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
         ///     is <see langword="null" />.
         /// </exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID token.
         /// </exception>
         public static LSLVariableDeclarationNode CreateLocalVar(LSLType type, string variableName,
@@ -390,10 +390,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("declarationExpression");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(variableName))
             {
-                throw new ArgumentException(
-                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new LSLInvalidSymbolNameException(
+                    "variableName provided contained characters not allowed in an LSL ID token.");
             }
 
             var n = new LSLVariableDeclarationNode();
@@ -413,7 +413,7 @@ namespace LibLSLCC.CodeValidator
         ///     <paramref name="variableName" /> or <paramref name="declarationExpression" />
         ///     is <see langword="null" />.
         /// </exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="variableName" /> contained characters not allowed in an LSL ID token.
         /// </exception>
         public static LSLVariableDeclarationNode CreateGlobalVar(LSLType type, string variableName,
@@ -428,10 +428,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("declarationExpression");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(variableName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(variableName))
             {
-                throw new ArgumentException(
-                    "variableName provided contained characters not allowed in an LSL ID token.", "variableName");
+                throw new LSLInvalidSymbolNameException(
+                    "variableName provided contained characters not allowed in an LSL ID token.");
             }
 
             var n = new LSLVariableDeclarationNode();

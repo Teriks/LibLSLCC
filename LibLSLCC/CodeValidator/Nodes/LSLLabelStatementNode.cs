@@ -78,7 +78,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="labelName">The <see cref="LabelName" /></param>
         /// <exception cref="ArgumentNullException"><paramref name="labelName" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="labelName" /> contained characters not allowed in an LSL ID token.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException"><paramref name="labelName" /> contained characters not allowed in an LSL ID token.</exception>
         public LSLLabelStatementNode(string labelName)
         {
             if (labelName == null)
@@ -86,10 +86,9 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("labelName");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(labelName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(labelName))
             {
-                throw new ArgumentException("labelName provided contained characters not allowed in an LSL ID token.",
-                    "labelName");
+                throw new LSLInvalidSymbolNameException("labelName provided contained characters not allowed in an LSL ID token.");
             }
 
             LabelName = labelName;

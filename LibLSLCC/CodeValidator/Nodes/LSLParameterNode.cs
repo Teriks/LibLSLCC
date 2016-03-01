@@ -78,8 +78,8 @@ namespace LibLSLCC.CodeValidator
         /// <exception cref="ArgumentNullException"><paramref name="parameterName" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
         ///     if <paramref name="type" /> is <see cref="LSLType.Void" /> or
-        ///     <paramref name="parameterName" /> contains characters that are invalid in an LSL ID token.
         /// </exception>
+        /// <exception cref="LSLInvalidSymbolNameException"><paramref name="parameterName" /> contains characters that are invalid in an LSL ID token.</exception>
         public LSLParameterNode(LSLType type, string parameterName)
         {
             if (parameterName == null)
@@ -92,10 +92,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentException("parameter type cannot be LSLType.Void.", "type");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(parameterName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(parameterName))
             {
-                throw new ArgumentException(
-                    "parameterName provided contained characters not allowed in an LSL ID token.", "parameterName");
+                throw new LSLInvalidSymbolNameException(
+                    "parameterName provided contained characters not allowed in an LSL ID token.");
             }
 
             Name = parameterName;

@@ -128,7 +128,7 @@ namespace LibLSLCC.CodeValidator
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="functionName" /> or <paramref name="parameterList" /> or <paramref name="code" /> is <c>null</c>.
         /// </exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="LSLInvalidSymbolNameException">
         ///     if <paramref name="functionName" /> contains invalid characters for an LSL ID
         ///     token.
         /// </exception>
@@ -148,10 +148,10 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("functionName");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(functionName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(functionName))
             {
-                throw new ArgumentException(
-                    "functionName provided contained characters not allowed in an LSL ID token.", "functionName");
+                throw new LSLInvalidSymbolNameException(
+                    "functionName provided contained characters not allowed in an LSL ID token.");
             }
 
             Name = functionName;

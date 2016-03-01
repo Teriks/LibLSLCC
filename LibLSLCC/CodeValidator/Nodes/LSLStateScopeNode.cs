@@ -82,7 +82,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="stateName">The name of the state.</param>
         /// <exception cref="ArgumentNullException"><paramref name="stateName" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="stateName" /> contained characters not allowed in an LSL ID token.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException"><paramref name="stateName" /> contained characters not allowed in an LSL ID token.</exception>
         public LSLStateScopeNode(string stateName)
         {
             if (stateName == null)
@@ -90,10 +90,9 @@ namespace LibLSLCC.CodeValidator
                 throw new ArgumentNullException("stateName");
             }
 
-            if (!LSLTokenTools.IDRegex.IsMatch(stateName))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(stateName))
             {
-                throw new ArgumentException("stateName provided contained characters not allowed in an LSL ID token.",
-                    "stateName");
+                throw new LSLInvalidSymbolNameException("stateName provided contained characters not allowed in an LSL ID token.");
             }
 
             StateName = stateName;

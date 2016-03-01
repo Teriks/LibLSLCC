@@ -81,16 +81,16 @@ namespace LibLSLCC.CodeValidator
         ///     if <paramref name="name" /> or <paramref name="parameterList" /> or
         ///     <paramref name="code" /> is <c>null</c>.
         /// </exception>
-        /// <exception cref="ArgumentException"><paramref name="name" /> contained characters not allowed in an LSL ID token.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException"><paramref name="name" /> contained characters not allowed in an LSL ID token.</exception>
         public LSLEventHandlerNode(string name, LSLParameterListNode parameterList, LSLCodeScopeNode code)
         {
             if (name == null) throw new ArgumentNullException("name");
             if (parameterList == null) throw new ArgumentNullException("parameterList");
             if (code == null) throw new ArgumentNullException("code");
 
-            if (!LSLTokenTools.IDRegex.IsMatch(name))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(name))
             {
-                throw new ArgumentException("name provided contained characters not allowed in an LSL ID token.", "name");
+                throw new LSLInvalidSymbolNameException("name provided contained characters not allowed in an LSL ID token.");
             }
 
             ParameterList = parameterList;
@@ -110,7 +110,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="name">The event handler name.</param>
         /// <param name="code">The code body.</param>
         /// <exception cref="ArgumentNullException">if <paramref name="name" /> or <paramref name="code" /> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="LSLInvalidSymbolNameException">
         ///     <paramref name="name" /> provided contained characters not allowed in an LSL ID
         ///     token.
         /// </exception>
@@ -119,9 +119,9 @@ namespace LibLSLCC.CodeValidator
             if (name == null) throw new ArgumentNullException("name");
             if (code == null) throw new ArgumentNullException("code");
 
-            if (!LSLTokenTools.IDRegex.IsMatch(name))
+            if (!LSLTokenTools.IDRegexAnchored.IsMatch(name))
             {
-                throw new ArgumentException("name provided contained characters not allowed in an LSL ID token.", "name");
+                throw new LSLInvalidSymbolNameException("name provided contained characters not allowed in an LSL ID token.");
             }
 
             ParameterList = new LSLParameterListNode();
