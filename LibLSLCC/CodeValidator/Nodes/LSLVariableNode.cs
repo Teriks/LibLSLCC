@@ -81,7 +81,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        public LSLVariableNode(ILSLVariableNode other)
+        private LSLVariableNode(ILSLVariableNode other)
         {
             if (other == null)
             {

@@ -72,7 +72,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        public LSLStringLiteralNode(LSLStringLiteralNode other) : base(other)
+        private LSLStringLiteralNode(LSLStringLiteralNode other) : base(other)
         {
             PreProcessedText = other.PreProcessedText;
         }

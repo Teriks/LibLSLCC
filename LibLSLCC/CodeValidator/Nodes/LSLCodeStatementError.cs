@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        public LSLCodeStatementError(LSLCodeStatementError other)
+        private LSLCodeStatementError(LSLCodeStatementError other)
         {
             SourceRangesAvailable = other.SourceRangesAvailable;
             if (SourceRangesAvailable)

@@ -119,7 +119,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        public LSLExpressionListNode(LSLExpressionListNode other)
+        private LSLExpressionListNode(LSLExpressionListNode other)
         {
             if (other == null)
             {

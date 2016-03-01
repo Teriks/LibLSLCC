@@ -74,7 +74,7 @@ namespace LibLSLCC.CodeValidator
         ///     Create an <see cref="LSLBinaryExpressionNode" /> by cloning from another.
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
-        public LSLBinaryExpressionNode(LSLBinaryExpressionNode other)
+        private LSLBinaryExpressionNode(LSLBinaryExpressionNode other)
         {
             Type = other.Type;
             LeftExpression = other.LeftExpression.Clone();

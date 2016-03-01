@@ -175,7 +175,7 @@ namespace LibLSLCC.CodeValidator
         ///     Clone this <see cref="LSLCodeScopeNode" /> from another.
         /// </summary>
         /// <param name="other">The other node.</param>
-        public LSLCodeScopeNode(LSLCodeScopeNode other)
+        private LSLCodeScopeNode(LSLCodeScopeNode other)
         {
             SourceRangesAvailable = other.SourceRangesAvailable;
 

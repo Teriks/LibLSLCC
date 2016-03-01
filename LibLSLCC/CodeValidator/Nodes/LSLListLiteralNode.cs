@@ -139,7 +139,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        public LSLListLiteralNode(LSLListLiteralNode other)
+        private LSLListLiteralNode(LSLListLiteralNode other)
         {
             if (other == null)
             {
