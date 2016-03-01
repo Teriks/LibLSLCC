@@ -156,7 +156,7 @@ namespace LibLSLCC.Compilers
         /// </exception>
         /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer" />.</exception>
         /// <exception cref="ObjectDisposedException">If <paramref name="writer" /> is already disposed.</exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLOpenSimCompiler.Settings" /> is <c>null</c>.</exception>
         public void Compile(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = false)
         {
             if (compilationUnit == null)

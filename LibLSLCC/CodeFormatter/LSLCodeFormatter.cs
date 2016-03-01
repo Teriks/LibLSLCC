@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeFormatter
         /// <summary>
         ///     The code formatter settings.
         /// </summary>
-        /// <exception cref="ArgumentNullException">Thrown if <see cref="Settings" /> is set to <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <see cref="LSLCodeFormatter.Settings" /> is set to <c>null</c>.</exception>
         public LSLCodeFormatterSettings Settings
         {
             get { return _settings; }
@@ -121,7 +121,7 @@ namespace LibLSLCC.CodeFormatter
         ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLCodeFormatter.Settings" /> is <c>null</c>.</exception>
         public void Format(ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
@@ -153,7 +153,7 @@ namespace LibLSLCC.CodeFormatter
         ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLCodeFormatter.Settings" /> is <c>null</c>.</exception>
         public void Format(string sourceCodeHint, ILSLCompilationUnitNode compilationUnit, TextWriter writer,
             bool closeStream = false)
         {
@@ -181,7 +181,7 @@ namespace LibLSLCC.CodeFormatter
         ///     If <paramref name="syntaxTree" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLCodeFormatter.Settings" /> is <c>null</c>.</exception>
         public void Format(
             ILSLReadOnlySyntaxTreeNode syntaxTree,
             TextWriter writer,
@@ -231,7 +231,7 @@ namespace LibLSLCC.CodeFormatter
         ///     If <paramref name="sourceComments"/> or <paramref name="syntaxTree" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLCodeFormatter.Settings" /> is <c>null</c>.</exception>
         public void Format(
             IEnumerable<LSLComment> sourceComments, 
             ILSLReadOnlySyntaxTreeNode syntaxTree,
@@ -289,7 +289,7 @@ namespace LibLSLCC.CodeFormatter
         ///     If <paramref name="sourceCodeHint" /> or <paramref name="syntaxTree" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLCodeFormatter.Settings" /> is <c>null</c>.</exception>
         public void Format(
             string sourceCodeHint,
             ILSLReadOnlySyntaxTreeNode syntaxTree, 
@@ -346,7 +346,7 @@ namespace LibLSLCC.CodeFormatter
         ///     If <paramref name="sourceCodeHint" /> or <paramref name="sourceComments"/> or <paramref name="syntaxTree" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLCodeFormatter.Settings" /> is <c>null</c>.</exception>
         public void Format(
             string sourceCodeHint, 
             IEnumerable<LSLComment> sourceComments,

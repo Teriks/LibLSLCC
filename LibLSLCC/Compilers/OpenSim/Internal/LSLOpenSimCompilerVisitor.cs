@@ -217,7 +217,7 @@ private static class UTILITIES
         ///     If <paramref name="compilationUnit" /> or <paramref name="writer" /> is
         ///     <c>null</c>.
         /// </exception>
-        /// <exception cref="InvalidOperationException"><see cref="Settings" /> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException"><see cref="LSLOpenSimCompilerVisitor.Settings" /> is <c>null</c>.</exception>
         /// <exception cref="IOException">When an IO Error occurs while writing to <paramref name="writer" />.</exception>
         /// <exception cref="ObjectDisposedException">If <paramref name="writer" /> is already disposed.</exception>
         public void WriteAndFlush(ILSLCompilationUnitNode compilationUnit, TextWriter writer, bool closeStream = true)
