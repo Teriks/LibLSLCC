@@ -718,9 +718,10 @@ namespace LibLSLCC.AutoComplete
 
         /// <summary>
         ///     Get an enumerable of <see cref="LSLAutoCompleteLocalLabel" /> objects representing local labels
-        ///     that are currently accessible at <see cref="ParseToOffset" />.
-        ///     <param name="sourceCode">The source code of the entire script.</param>
+        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.
         /// </summary>
+        /// <param name="sourceCode">The source code of the entire script.</param>
+        /// <returns>An enumerable of <see cref="LSLAutoCompleteLocalLabel" /> objects that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.</returns>
         /// <exception cref="InvalidOperationException">If <see cref="Parse" /> has not been called first.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <c>null</c>.</exception>
         public IEnumerable<LSLAutoCompleteLocalLabel> GetLocalLabels(string sourceCode)
@@ -760,9 +761,10 @@ namespace LibLSLCC.AutoComplete
 
         /// <summary>
         ///     Get an enumerable of <see cref="LSLAutoCompleteLocalJump" /> objects representing local jump statements
-        ///     that are currently accessible at <see cref="ParseToOffset" />.
-        ///     <param name="sourceCode">The source code of the entire script.</param>
+        ///     that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />. 
         /// </summary>
+        /// <param name="sourceCode">The source code of the entire script.</param>
+        /// <returns>An enumerable of <see cref="LSLAutoCompleteLocalJump" /> objects that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.</returns>
         /// <exception cref="InvalidOperationException">If <see cref="Parse" /> has not been called first.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceCode" /> is <c>null</c>.</exception>
         public IEnumerable<LSLAutoCompleteLocalJump> GetLocalJumps(string sourceCode)

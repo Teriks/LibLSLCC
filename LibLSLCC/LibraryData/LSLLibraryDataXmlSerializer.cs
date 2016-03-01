@@ -65,7 +65,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Constructs the event args around a given <see cref="LSLLibraryConstantSignature" /> that was just read.
         /// </summary>
-        /// <paramref name="constantSignature">The <see cref="LSLLibraryConstantSignature" /> that was just read.</paramref>
+        /// <param name="constantSignature">The <see cref="LSLLibraryConstantSignature" /> that was just read.</param>
         public SerializeConstantSignatureEventArgs(LSLLibraryConstantSignature constantSignature)
         {
             Signature = constantSignature;
@@ -87,7 +87,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Constructs the event args around a given <see cref="LSLLibraryEventSignature" /> that was just read.
         /// </summary>
-        /// <paramref name="eventSignature">The <see cref="LSLLibraryEventSignature" /> that was just read.</paramref>
+        /// <param name="eventSignature">The <see cref="LSLLibraryEventSignature" /> that was just read.</param>
         public SerializeEventHandlerSignatureEventArgs(LSLLibraryEventSignature eventSignature)
         {
             EventSignature = eventSignature;
@@ -109,7 +109,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Constructs the event args around a given <see cref="LSLLibraryFunctionSignature" /> that was just read.
         /// </summary>
-        /// <paramref name="functionSignature">The <see cref="LSLLibraryFunctionSignature" /> that was just read.</paramref>
+        /// <param name="functionSignature">The <see cref="LSLLibraryFunctionSignature" /> that was just read.</param>
         public SerializeFunctionSignatureEventArgs(LSLLibraryFunctionSignature functionSignature)
         {
             FunctionSignature = functionSignature;
@@ -131,7 +131,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Constructs the event args around a given <see cref="LSLLibrarySubsetDescription" /> that was just read.
         /// </summary>
-        /// <paramref name="subsetDescription">The <see cref="LSLLibrarySubsetDescription" /> that was just read.</paramref>
+        /// <param name="subsetDescription">The <see cref="LSLLibrarySubsetDescription" /> that was just read.</param>
         public SerializeSubsetDescriptionEventArgs(LSLLibrarySubsetDescription subsetDescription)
         {
             SubsetDescription = subsetDescription;

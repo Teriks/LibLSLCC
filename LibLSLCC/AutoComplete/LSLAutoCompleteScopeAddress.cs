@@ -43,20 +43,89 @@
 
 #endregion
 
+using System;
+
 namespace LibLSLCC.AutoComplete
 {
     /// <summary>
     ///     Represents a scope address within the auto complete parser.
     /// </summary>
-    public sealed class LSLAutoCompleteScopeAddress
+    public struct LSLAutoCompleteScopeAddress : IEquatable<LSLAutoCompleteScopeAddress>
     {
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        /// <param name="other">An object to compare with this object.</param>
+        public bool Equals(LSLAutoCompleteScopeAddress other)
+        {
+            return CodeAreaId == other.CodeAreaId && ScopeLevel == other.ScopeLevel && ScopeId == other.ScopeId;
+        }
+
+
+        /// <summary>
+        /// Indicates whether this instance and a specified object are equal.
+        /// </summary>
+        /// <returns>
+        /// true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise, false.
+        /// </returns>
+        /// <param name="obj">Another object to compare to. </param>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is LSLAutoCompleteScopeAddress && Equals((LSLAutoCompleteScopeAddress) obj);
+        }
+
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A 32-bit signed integer that is the hash code for this instance.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = CodeAreaId;
+                hashCode = (hashCode*397) ^ ScopeLevel;
+                hashCode = (hashCode*397) ^ ScopeId;
+                return hashCode;
+            }
+        }
+
+        /// <summary>
+        /// Test two <see cref="LSLAutoCompleteScopeAddress"/> for equality, uses: <see cref="CodeAreaId"/>, <see cref="ScopeId"/> and <see cref="ScopeLevel"/>.
+        /// </summary>
+        /// <param name="left">The left scope address.</param>
+        /// <param name="right">The right scope address.</param>
+        /// <returns><c>true</c> if both objects have equal properties; otherwise <c>false</c></returns>
+        public static bool operator ==(LSLAutoCompleteScopeAddress left, LSLAutoCompleteScopeAddress right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Test two <see cref="LSLAutoCompleteScopeAddress"/> for inequality, uses: <see cref="CodeAreaId"/>, <see cref="ScopeId"/> and <see cref="ScopeLevel"/>.
+        /// </summary>
+        /// <param name="left">The left scope address.</param>
+        /// <param name="right">The right scope address.</param>
+        /// <returns><c>true</c> if both objects have inequal properties; otherwise <c>false</c></returns>
+        public static bool operator !=(LSLAutoCompleteScopeAddress left, LSLAutoCompleteScopeAddress right)
+        {
+            return !left.Equals(right);
+        }
+
+
         /// <summary>
         ///     Construct a new scope address given a code area ID, scope ID and scope level.
         /// </summary>
         /// <param name="codeAreaId">The code area ID of the address.</param>
         /// <param name="scopeId">The scope ID of the address.</param>
         /// <param name="scopeLevel">The cope level of the address.</param>
-        public LSLAutoCompleteScopeAddress(int codeAreaId, int scopeId, int scopeLevel)
+        public LSLAutoCompleteScopeAddress(int codeAreaId, int scopeId, int scopeLevel) : this()
         {
             CodeAreaId = codeAreaId;
             ScopeId = scopeId;
@@ -90,6 +159,7 @@ namespace LibLSLCC.AutoComplete
         ///     Returns a string that represents the scope address.
         ///     The format is: "(CodeAreaID: 0, ScopeID: 0, ScopeLevel: 0)"
         /// </summary>
+        /// <returns>A string in the format: "(CodeAreaID: 0, ScopeID: 0, ScopeLevel: 0)".</returns>
         public override string ToString()
         {
             return string.Format("(CodeAreaID: {0}, ScopeId: {1}, ScopeLevel: {2})", CodeAreaId, ScopeId, ScopeLevel);
