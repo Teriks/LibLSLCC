@@ -86,7 +86,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Construct a library function signature by cloning another LSLLibraryFunctionSignature object.
         /// </summary>
-        /// <param name="other">The LSLLibraryFunctionSignature to clone from.</param>
+        /// <param name="other">The <see cref="LSLLibraryFunctionSignature"/> to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
         public LSLLibraryFunctionSignature(LSLLibraryFunctionSignature other)
             : base(other)
@@ -109,7 +109,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="returnType">The return type associated with the function signature.</param>
         /// <param name="name">The name of the function.</param>
-        /// <param name="parameters">An optional enumerable of LSLParameters to initialize the function signature with.</param>
+        /// <param name="parameters">An optional enumerable of <see cref="LSLParameterSignature"/> to initialize the function signature with.</param>
         public LSLLibraryFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameterSignature> parameters = null)
             :
                 base(returnType, name, parameters)
