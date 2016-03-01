@@ -84,10 +84,14 @@ namespace LibLSLCC.CodeFormatter
         private bool _wroteCommentAfterFunctionDeclarationParameterList;
         private bool _wroteCommentBeforeControlStatementCode;
 
+        private int GetCharacterColumnsSinceLastLine(int tabsWritten, int nonTabsWritten)
+        {
+            return (Settings.TabString.Length * tabsWritten) + nonTabsWritten;
+        }
 
         private int GetCharacterColumnsSinceLastLine()
         {
-            return (Settings.TabString.Length*_tabsWrittenSinceLastLine) + _nonTabsWrittenSinceLastLine;
+            return GetCharacterColumnsSinceLastLine(_tabsWrittenSinceLastLine, _nonTabsWrittenSinceLastLine);
         }
 
         /// <summary>
@@ -3447,6 +3451,9 @@ namespace LibLSLCC.CodeFormatter
         public override bool VisitExpressionList(ILSLExpressionListNode node)
         {
             var nodeCount = node.Expressions.Count;
+            
+
+            var columnsSinceStart = GetCharacterColumnsSinceLastLine();
 
             for (var nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             {
@@ -3460,10 +3467,12 @@ namespace LibLSLCC.CodeFormatter
                 var next = node.Expressions[nodeAheadIndex];
 
 
+                
+
                 bool wrap = 
                     ExpressionListWrappingEnabled && 
-                    CurrentExpressionListWrappingContext.ForceWrapping && 
-                    GetCharacterColumnsSinceLastLine() > CurrentExpressionListWrappingContext.MaximumCharactersBeforeWrap;
+                    CurrentExpressionListWrappingContext.ForceWrapping &&
+                    (GetCharacterColumnsSinceLastLine()-columnsSinceStart) > CurrentExpressionListWrappingContext.MaximumCharactersBeforeWrap;
 
                 if (!me.SourceRangesAvailable || !next.SourceRangesAvailable)
                 {
