@@ -85,7 +85,7 @@ namespace LibLSLCC.CodeValidator
         ///     This is used in some syntax error messages, Ideally you should enclose your description in
         ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
-        /// <returns>A use friendly description of the node.</returns>
+        /// <returns>A use friendly description of the node's <see cref="Type"/>.</returns>
         string DescribeType();
 
 
