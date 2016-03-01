@@ -53,7 +53,7 @@ using LibLSLCC.Settings;
 namespace LibLSLCC.CodeFormatter
 {
     /// <summary>
-    ///     Settings object for <see cref="LSLCodeFormatter" />.
+    ///     The settings object for <see cref="LSLCodeFormatter" />.
     /// </summary>
     public class LSLCodeFormatterSettings : SettingsBaseClass<LSLCodeFormatterSettings>
     {

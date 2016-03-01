@@ -86,7 +86,7 @@ namespace LibLSLCC.CodeFormatter
 
 
         /// <summary>
-        ///     The code formatter settings.
+        ///     The code formatter configuration.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <see cref="LSLCodeFormatter.Settings" /> is set to <c>null</c>.</exception>
         public LSLCodeFormatterSettings Settings

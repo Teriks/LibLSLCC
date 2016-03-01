@@ -117,7 +117,7 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     Settings for the OpenSim CSharp Compiler
+        ///     OpenSim CSharp Compiler settings.
         /// </summary>
         /// <exception cref="ArgumentNullException">If the value is set to null.</exception>
         public LSLOpenSimCompilerSettings Settings
