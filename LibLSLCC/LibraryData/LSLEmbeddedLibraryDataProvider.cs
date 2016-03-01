@@ -302,9 +302,9 @@ namespace LibLSLCC.LibraryData
     public static class LSLLibraryDataAdditionEnumExtensions
     {
         /// <summary>
-        ///     Converts LSLLibraryDataAdditions to the corresponding subset string
+        ///     Converts an <see cref="LSLLibraryDataAdditions"/> flags enum to the corresponding set of subset names.
         /// </summary>
-        /// <param name="dataAdditionFlags"></param>
+        /// <param name="dataAdditionFlags">The additional library data flags.</param>
         /// <returns>a string representation of the subset</returns>
         public static IEnumerable<string> ToSubsetNames(this LSLLibraryDataAdditions dataAdditionFlags)
         {
@@ -364,9 +364,9 @@ namespace LibLSLCC.LibraryData
     public static class LSLLibraryBaseDataEnumExtensions
     {
         /// <summary>
-        ///     Converts LSLLibraryBaseData to the corresponding subset string
+        ///     Converts <see cref="LSLLibraryBaseData"/>to the corresponding subset string.
         /// </summary>
-        /// <param name="baseDataOption"></param>
+        /// <param name="baseDataOption">The base data option.</param>
         /// <returns>a string representation of the subset</returns>
         public static string ToSubsetName(this LSLLibraryBaseData baseDataOption)
         {

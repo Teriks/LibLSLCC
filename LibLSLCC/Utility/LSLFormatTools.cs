@@ -209,7 +209,7 @@ namespace LibLSLCC.Utility
         /// </summary>
         /// <param name="repeats">The number of times the 'content' string should repeat.</param>
         /// <param name="content">The content string to repeat.</param>
-        /// <returns></returns>
+        /// <returns><paramref name="content"/> concatenated <paramref name="repeats"/> number of times.</returns>
         public static string CreateRepeatingString(int repeats, string content)
         {
             var result = "";

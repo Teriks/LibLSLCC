@@ -183,10 +183,11 @@ namespace LibLSLCC.CSharp
         /// <summary>
         ///     Determines if a string is a built in type alias reference such as int.
         /// </summary>
+        /// <param name="str">The string.</param>
         /// <returns><c>true</c> if the given string contains a built in type alias name; otherwise <c>false</c>.</returns>
-        public static bool IsTypeAliasKeyword(string keywordTypeName)
+        public static bool IsTypeAliasKeyword(string str)
         {
-            return BuiltInTypeMap.ContainsKey(keywordTypeName);
+            return BuiltInTypeMap.ContainsKey(str);
         }
 
 
@@ -194,7 +195,7 @@ namespace LibLSLCC.CSharp
         ///     Determines whether a string is a non contextual CSharp keyword/reserved word.
         /// </summary>
         /// <param name="str">The string.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if <paramref name="str"/> is a non contextual CSharp keyword.</returns>
         public static bool IsNonContextualKeyword(string str)
         {
             return NonContextualKeywordSet.Contains(str);

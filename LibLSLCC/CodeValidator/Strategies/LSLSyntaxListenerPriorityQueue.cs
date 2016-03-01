@@ -950,10 +950,10 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        void ILSLSyntaxWarningListener.ExpressionStatementHasNoEffect(LSLSourceCodeRange location)
+        void ILSLSyntaxWarningListener.ExpressionStatementHasNoEffect(LSLSourceCodeRange location, ILSLReadOnlyExprNode statementExpression)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxWarningListener.ExpressionStatementHasNoEffect(location));
+                () => SyntaxWarningListener.ExpressionStatementHasNoEffect(location, statementExpression));
         }
 
 

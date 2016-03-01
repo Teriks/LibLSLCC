@@ -55,11 +55,12 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Base class for constant literal nodes.
     /// </summary>
+    /// <typeparam name="TDerivedType">This should be the type that is inheriting this generic class.</typeparam>
     /// <seealso cref="LSLIntegerLiteralNode" />
     /// <seealso cref="LSLHexLiteralNode" />
     /// <seealso cref="LSLFloatLiteralNode" />
     /// <seealso cref="LSLStringLiteralNode" />
-    public abstract class LSLConstantLiteralNode<CType> : ILSLExprNode where CType : ILSLExprNode
+    public abstract class LSLConstantLiteralNode<TDerivedType> : ILSLExprNode where TDerivedType : ILSLExprNode
     {
         private ILSLSyntaxTreeNode _parent;
 // ReSharper disable UnusedParameter.Local
@@ -83,7 +84,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The other node to clone from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        protected LSLConstantLiteralNode(LSLConstantLiteralNode<CType> other)
+        protected LSLConstantLiteralNode(LSLConstantLiteralNode<TDerivedType> other)
         {
             if (other == null)
             {
@@ -255,7 +256,7 @@ namespace LibLSLCC.CodeValidator
         ///     When cloned, the parent node reference should be left <c>null</c>.
         /// </summary>
         /// <returns>A deep clone of this expression tree node.</returns>
-        public abstract CType Clone();
+        public abstract TDerivedType Clone();
 
 
         ILSLExprNode ILSLExprNode.Clone()
@@ -265,11 +266,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Should produce a user friendly description of the expressions return type.
+        ///     Should produce a user friendly description of the expressions return type. <para/>
         ///     This is used in some syntax error messages, Ideally you should enclose your description in
         ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A use friendly description of the node.</returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");

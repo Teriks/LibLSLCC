@@ -112,7 +112,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="visitFunctionName">The name of the function the exception is going to be thrown from.</param>
         /// <param name="prePass">Whether or not this exception was thrown in the pre-compile pass over the source code.</param>
         /// <returns>The constructed exception object.</returns>
-        public static LSLCodeValidatorInternalException VisitContextInvalidState(string visitFunctionName,
+        internal static LSLCodeValidatorInternalException VisitContextInvalidState(string visitFunctionName,
             bool prePass = false)
         {
             if (prePass)
@@ -134,7 +134,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="contextType">The type of the ANTLR context being visited.</param>
         /// <param name="prePass">Whether or not this exception was thrown in the pre-compile pass over the source code.</param>
         /// <returns>The constructed exception object.</returns>
-        public static LSLCodeValidatorInternalException VisitContextInInvalidState(string visitFunctionName,
+        internal static LSLCodeValidatorInternalException VisitContextInInvalidState(string visitFunctionName,
             MemberInfo contextType,
             bool prePass = false)
         {
@@ -160,7 +160,7 @@ namespace LibLSLCC.CodeValidator
         ///     expectation.
         /// </param>
         /// <returns></returns>
-        public static LSLCodeValidatorInternalException VisitReturnTypeException(string visitFunctionName,
+        internal static LSLCodeValidatorInternalException VisitReturnTypeException(string visitFunctionName,
             MemberInfo expectedReturnType)
         {
             return new LSLCodeValidatorInternalException(

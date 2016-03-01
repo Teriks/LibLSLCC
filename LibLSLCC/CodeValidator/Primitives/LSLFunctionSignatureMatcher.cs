@@ -202,6 +202,7 @@ namespace LibLSLCC.CodeValidator
         ///     Find a matching overload from a list of function signatures, given the parameter expressions. return null if none
         ///     is found.
         /// </summary>
+        /// <typeparam name="T">The type of <see cref="LSLFunctionSignature"/> derived object to preform matching against.</typeparam>
         /// <param name="expressionValidator">
         ///     The expression validator, which is used to determine if an expression can be passed
         ///     into a parameter of a certain type.
@@ -221,6 +222,7 @@ namespace LibLSLCC.CodeValidator
         ///     Find a matching overload from a list of function signatures, given the parameter expressions. return null if none
         ///     is found.
         /// </summary>
+        /// <typeparam name="T">The type of <see cref="LSLFunctionSignature"/> derived object to preform matching against.</typeparam>
         /// <param name="typeComparer">
         ///     A function used to compare an <see cref="LSLParameterSignature" /> to another <see cref="ILSLExprNode" /> to check for a
         ///     match.
@@ -378,7 +380,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="functionSignature">The function signature of the functions your passing the parameter expressions to.</param>
         /// <param name="expressions">The expressions we want to test against this function signatures defined parameters.</param>
         /// <returns>
-        ///     A LSLFunctionCallSignatureMatcher.MatchStatus object containing information about how the parameters matched
+        ///     A <see cref="LSLFunctionSignatureMatch"/> object containing information about how the parameters matched
         ///     or did not match the call signature.
         /// </returns>
         public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,

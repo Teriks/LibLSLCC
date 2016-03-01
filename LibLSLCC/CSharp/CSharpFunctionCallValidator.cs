@@ -144,7 +144,7 @@ namespace LibLSLCC.CSharp
         /// <summary>
         ///     Calculate a hash for the parameter signature using <see cref="ParameterText" /> and <see cref="Modifier" />
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The generated hash code.</returns>
         public override int GetHashCode()
         {
             return (ParameterText != null ? ParameterText.GetHashCode() : 0);
@@ -152,9 +152,10 @@ namespace LibLSLCC.CSharp
 
 
         /// <summary>
-        ///     Test equality using <see cref="ParameterText" /> and <see cref="Modifier" />
+        ///     Test equality using <see cref="ParameterText" /> and <see cref="Modifier" /> <para/>
+        ///     If <paramref name="obj"/> is not a <see cref="CSharpParameterSignature"/> the result will be false.
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">The other <see cref="CSharpParameterSignature"/> to test for equality with.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -296,7 +297,7 @@ namespace LibLSLCC.CSharp
         ///     Parses and validates a string as a CSharp method call.
         /// </summary>
         /// <param name="signature">The method call signature, without a semi-colon at the end.</param>
-        /// <returns>The parse/validation result.  <see cref="CSharpFunctionCallValidationResult" /></returns>
+        /// <returns>A parse/validation results object.  <see cref="CSharpFunctionCallValidationResult" /></returns>
         /// <exception cref="ArgumentNullException"><paramref name="signature"/> is <c>null</c>.</exception>
         public static CSharpFunctionCallValidationResult Validate(string signature)
         {

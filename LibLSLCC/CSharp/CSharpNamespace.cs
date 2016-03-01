@@ -137,7 +137,7 @@ namespace LibLSLCC.CSharp
         ///     Implicitly converts a string into a CSharpNamespace.
         /// </summary>
         /// <param name="name">The name string to convert from.</param>
-        /// <returns></returns>
+        /// <returns>A new <see cref="CSharpNamespace"/> implicitly converted from a string.</returns>
         public static implicit operator CSharpNamespace(string name)
         {
             return new CSharpNamespace(name);

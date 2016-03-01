@@ -1177,10 +1177,10 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Returns the hash code of the LSLConstantSignature object.  The Type and Name properties are used to generate the
-        ///     hash code.
+        ///     Returns the hash code of the <see cref="LSLLibraryConstantSignature"/> object.  <para/>
+        ///     The <see cref="Type"/> and <see cref="Name"/> properties are used to generate the hash code.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The generated hash code.</returns>
         public override int GetHashCode()
         {
             unchecked

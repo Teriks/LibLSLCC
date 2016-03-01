@@ -108,6 +108,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Constructs the event args around a given <see cref="LSLLibraryFunctionSignature" /> that was just read.
         /// </summary>
+        /// <param name="functionSignature">the function signature to construct this <see cref="LSLLibraryFunctionSignature"/> with.</param>
         public SerializeFunctionSignatureEventArgs(LSLLibraryFunctionSignature functionSignature)
         {
             FunctionSignature = functionSignature;
@@ -181,6 +182,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     This event is fired when a function definition has been retrieved from XML markup.
         /// </summary>
+        /// <param name="sig">The function signature that was parsed from markup.</param>
         protected virtual void OnReadLibraryFunctionDefinition(LSLLibraryFunctionSignature sig)
         {
             var handler = ReadLibraryFunctionDefinition;
@@ -191,6 +193,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     This event is fired when an event handler definition has been retrieved from XML markup.
         /// </summary>
+        /// <param name="sig">The event signature that was parsed from markup.</param>
         protected virtual void OnReadLibraryEventHandlerDefinition(LSLLibraryEventSignature sig)
         {
             var handler = ReadLibraryEventHandlerDefinition;
@@ -201,6 +204,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     This event is fired when a constant definition has been retrieved from XML markup.
         /// </summary>
+        /// <param name="sig">The library constant that was parsed from markup.</param>
         protected virtual void OnReadLibraryConstantDefinition(LSLLibraryConstantSignature sig)
         {
             var handler = ReadLibraryConstantDefinition;
@@ -211,6 +215,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     This event is fired when a library subset description has been retrieved from XML markup.
         /// </summary>
+        /// <param name="desc">The library subset description that was parsed from markup.</param>
         protected virtual void OnReadLibrarySubsetDescription(LSLLibrarySubsetDescription desc)
         {
             var handler = ReadLibrarySubsetDescription;

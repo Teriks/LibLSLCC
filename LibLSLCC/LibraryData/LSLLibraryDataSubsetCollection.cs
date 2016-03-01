@@ -536,10 +536,11 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Fired when a subset string that does not already exist is added.
         /// </summary>
-        protected virtual void OnSubsetAddedEvent(string arg2)
+        /// <param name="subsetName">The name of the subset added.</param>
+        protected virtual void OnSubsetAddedEvent(string subsetName)
         {
             var handler = OnSubsetAdded;
-            if (handler != null) handler(this, new LibraryDataSubsetAddedEventArgs(arg2));
+            if (handler != null) handler(this, new LibraryDataSubsetAddedEventArgs(subsetName));
         }
 
 
@@ -547,10 +548,11 @@ namespace LibLSLCC.LibraryData
         ///     Fired when an existing subset string is removed. This is not called
         ///     when clear is called.
         /// </summary>
-        protected virtual void OnSubsetRemovedEvent(string arg2)
+        /// <param name="subsetName">The name of the subset removed.</param>
+        protected virtual void OnSubsetRemovedEvent(string subsetName)
         {
             var handler = OnSubsetRemoved;
-            if (handler != null) handler(this, new LibraryDataSubsetRemovedEventArgs(arg2));
+            if (handler != null) handler(this, new LibraryDataSubsetRemovedEventArgs(subsetName));
         }
 
 

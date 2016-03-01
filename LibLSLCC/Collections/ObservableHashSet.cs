@@ -90,8 +90,9 @@ namespace LibLSLCC.Collections
 
 
         /// <summary>
-        ///     Creates a shallow copy of this ObservableHashSet.
+        ///     Creates a shallow copy of this <see cref="ObservableHashSet{T}"/>.
         /// </summary>
+        /// <returns>A shallow copy of this <see cref="ObservableHashSet{T}"/>.</returns>
         public virtual object Clone()
         {
             return new ObservableHashSet<T>(_hashSet);

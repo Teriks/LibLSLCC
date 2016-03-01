@@ -93,7 +93,7 @@ namespace LibLSLCC.CSharp
         ///     Parses and validates a given CSharp namespace string.
         /// </summary>
         /// <param name="namespaceName">A string representing the namespace.</param>
-        /// <returns></returns>
+        /// <returns>A parse/validation results object.  <see cref="CSharpNamespaceValidatorResult" /></returns>
         /// <exception cref="ArgumentNullException"><paramref name="namespaceName"/> is <c>null</c>.</exception>
         public static CSharpNamespaceValidatorResult Validate(string namespaceName)
         {

@@ -98,7 +98,7 @@ namespace LibLSLCC.CSharp
         /// </summary>
         /// <param name="value">The <see cref="MemberAccessibilityLevel" /> to convert.</param>
         /// <param name="addTrailingSpace">if set to <c>true</c>, add a trailing space to the converted string when its not empty.</param>
-        /// <returns></returns>
+        /// <returns><paramref name="value"/>'s corresponding CSharp keyword.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">
         ///     If the given enum value is not convertible to a string (will not
         ///     occur).

@@ -89,6 +89,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         /// <param name="names">An enumerable containing subset names to check.</param>
         /// <exception cref="LSLInvalidSubsetNameException">If an invalid subset name is encountered in the enumerable.</exception>
+        /// <returns>an enumerable over <paramref name="names"/>.</returns>
         public static IEnumerable<string> ThrowIfInvalid(IEnumerable<string> names)
         {
             foreach (var name in names.Select(item => item.Trim()))

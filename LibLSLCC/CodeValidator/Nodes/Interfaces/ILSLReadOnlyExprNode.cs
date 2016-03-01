@@ -79,12 +79,13 @@ namespace LibLSLCC.CodeValidator
         bool HasPossibleSideEffects { get; }
 
 
+
         /// <summary>
-        ///     Should produce a user friendly description of the expressions return type.
+        ///     Should produce a user friendly description of the expressions return type. <para/>
         ///     This is used in some syntax error messages, Ideally you should enclose your description in
         ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A use friendly description of the node.</returns>
         string DescribeType();
 
 

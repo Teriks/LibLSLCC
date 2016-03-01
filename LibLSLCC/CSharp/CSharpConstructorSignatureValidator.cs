@@ -153,7 +153,7 @@ namespace LibLSLCC.CSharp
         ///     The validate type callback, used for additional custom validation of parameter types
         ///     in the constructor signature.
         /// </param>
-        /// <returns></returns>
+        /// <returns>A parse/validation results object.  <see cref="CSharpConstructorSignatureValidationResult" /></returns>
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="input" /> is <c>null</c>.</exception>
         public static CSharpConstructorSignatureValidationResult Validate(string input,
             CSharpParsedTypeValidateTypeCallback validateTypeCallback = null)

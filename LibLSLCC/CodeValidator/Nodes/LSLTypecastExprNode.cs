@@ -361,13 +361,12 @@ namespace LibLSLCC.CodeValidator
             get { return CastedExpression != null && CastedExpression.HasPossibleSideEffects; }
         }
 
-
         /// <summary>
-        ///     Should produce a user friendly description of the expressions return type.
+        ///     Should produce a user friendly description of the expressions return type. <para/>
         ///     This is used in some syntax error messages, Ideally you should enclose your description in
         ///     parenthesis or something that will make it stand out in a string.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A use friendly description of the node.</returns>
         public string DescribeType()
         {
             return "(" + Type + (this.IsLiteral() ? " Literal)" : ")");

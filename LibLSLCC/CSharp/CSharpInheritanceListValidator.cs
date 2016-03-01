@@ -360,7 +360,7 @@ namespace LibLSLCC.CSharp
         ///     colon if there is one.
         /// </summary>
         /// <param name="input">The inheritance list signature to parse.</param>
-        /// <returns>The parse/validation result.  <see cref="CSharpInheritanceListValidationResult" /></returns>
+        /// <returns>A parse/validation results object.  <see cref="CSharpInheritanceListValidationResult" /></returns>
         /// <exception cref="ArgumentNullException"><paramref name="input"/> is <c>null</c>.</exception>
         public static CSharpInheritanceListValidationResult Validate(string input)
         {

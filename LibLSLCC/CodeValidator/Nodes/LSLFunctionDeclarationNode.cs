@@ -112,6 +112,9 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLFunctionDeclarationNode" /> with the given return type, and code body.
         ///     The function declaration will have an empty parameter list node.
         /// </summary>
+        /// <param name="returnType">The return type of the function.</param>
+        /// <param name="functionName">The name of the function.</param>
+        /// <param name="code">The code scope that makes up the function's code body.</param>
         /// <exception cref="ArgumentException">
         ///     if <paramref name="functionName" /> contains invalid characters for an LSL ID
         ///     token.
@@ -125,6 +128,10 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Construct an <see cref="LSLFunctionDeclarationNode" /> with the given return type, parameter list, and code body.
         /// </summary>
+        /// <param name="returnType">The return type of the function.</param>
+        /// <param name="functionName">The name of the function.</param>
+        /// <param name="parameterList">The parameter list node representing the list of parameter definitions for the function.</param>
+        /// <param name="code">The code scope that makes up the function's code body.</param>
         /// <exception cref="ArgumentNullException">
         ///     <paramref name="functionName" /> or <paramref name="parameterList" /> or <paramref name="code" /> is <c>null</c>.
         /// </exception>

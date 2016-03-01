@@ -71,7 +71,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Construct with a message.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">The exception message.</param>
         public LSLMissingSubsetDescriptionException(string message)
             : base(message)
         {

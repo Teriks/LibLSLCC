@@ -138,7 +138,7 @@ namespace LibLSLCC.CodeValidator
         ///     are considered modifying operations.
         /// </summary>
         /// <param name="type">If the prefix operation modifies the expression to its right.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if <paramref name="type"/> is <see cref="LSLPrefixOperationType.Decrement" /> or <see cref="LSLPrefixOperationType.Increment" />.</returns>
         public static bool IsModifying(this LSLPrefixOperationType type)
         {
             return type == LSLPrefixOperationType.Decrement || type == LSLPrefixOperationType.Increment;

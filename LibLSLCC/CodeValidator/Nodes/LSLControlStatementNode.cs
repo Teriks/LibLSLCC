@@ -486,11 +486,12 @@ namespace LibLSLCC.CodeValidator
         ///     The label that this control statement jumps to can be found with DeterminingJump.JumpTarget.
         ///     EffectiveJumpStatement is mostly useful for its statement index information
         /// </summary>
+        /// <returns>An object describing the constant jump, if one exists; otherwise <c>null</c>.</returns>
         /// <seealso cref="LSLConstantJumpDescription.DeterminingJump" />
         /// <seealso cref="LSLConstantJumpDescription.EffectiveJumpStatement" />
         /// <seealso cref="LSLConstantJumpDescription.JumpTarget" />
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public LSLConstantJumpDescription GetConstantJump()
+        internal LSLConstantJumpDescription GetConstantJump()
         {
             if (!HasElseIfStatements && !HasElseStatement)
             {

@@ -98,7 +98,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Converts a string into an <see cref="LSLRotationComponent" />.
         /// </summary>
-        /// <param name="name">The component name to parse, without the dot operator in front.</param>
+        /// <param name="name">The name of the component ("x", "y", "z" or "s").</param>
         /// <exception cref="ArgumentException">Thrown if 'name' was not: "x", "y", "z" or "s"</exception>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
         /// <returns>The corresponding <see cref="LSLRotationComponent" />.</returns>

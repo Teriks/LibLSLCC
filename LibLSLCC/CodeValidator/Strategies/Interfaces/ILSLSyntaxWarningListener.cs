@@ -126,8 +126,9 @@ namespace LibLSLCC.CodeValidator
         ///     For example, reference a counter but forget to add an increment or decrement operator to it.
         ///     It would compile but it might be an error.
         /// </summary>
-        /// <param name="location"></param>
-        void ExpressionStatementHasNoEffect(LSLSourceCodeRange location);
+        /// <param name="location">The source code location of the expression statement.</param>
+        /// <param name="statementExpression">The offending expression used as a statement.</param>
+        void ExpressionStatementHasNoEffect(LSLSourceCodeRange location, ILSLReadOnlyExprNode statementExpression);
 
 
         /// <summary>

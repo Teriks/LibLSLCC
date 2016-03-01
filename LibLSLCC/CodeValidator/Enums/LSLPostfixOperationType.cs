@@ -110,7 +110,7 @@ namespace LibLSLCC.CodeValidator
         ///     modifying operations.
         /// </summary>
         /// <param name="type">If the postfix operation modifies the expression to its left.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if <paramref name="type"/> is <see cref="LSLPrefixOperationType.Decrement" /> or <see cref="LSLPrefixOperationType.Increment" />.</returns>
         public static bool IsModifying(this LSLPostfixOperationType type)
         {
             return type == LSLPostfixOperationType.Decrement || type == LSLPostfixOperationType.Increment;

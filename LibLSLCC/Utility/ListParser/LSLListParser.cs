@@ -114,10 +114,10 @@ namespace LibLSLCC.Utility.ListParser
         /// <param name="list">The string containing the list.</param>
         /// <param name="expressions">
         ///     The resulting expression list will be put at this location if the parse succeeded, otherwise
-        ///     it will be null.
+        ///     it will be <c>null</c>.
         /// </param>
         /// <param name="parsingFlags">Optional parsing flags.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the string representation of the LSL list was successfully parsed; otherwise <c>false</c>.</returns>
         public static bool TryParseList(string list, out List<ILSLListExpr> expressions,
             LSLListParsingFlags parsingFlags = LSLListParsingFlags.None)
         {
@@ -142,7 +142,7 @@ namespace LibLSLCC.Utility.ListParser
         ///     if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV
         ///     list content.
         /// </param>
-        /// <returns></returns>
+        /// <returns>The formatted LSL list representation of the given enumerable of expression nodes.</returns>
         public static string Format(IEnumerable<ILSLListExpr> expressions, bool brackets = true)
         {
             return (brackets ? "[" : "") + string.Join(", ", expressions.Select(x => x.ValueString)) +
@@ -159,7 +159,7 @@ namespace LibLSLCC.Utility.ListParser
         ///     if set to <c>true</c> place brackets around the formated list, otherwise just return the CSV
         ///     list content.
         /// </param>
-        /// <returns></returns>
+        /// <returns>The formatted LSL list representation of the given enumerable of expression nodes.</returns>
         public static string Format(string listString, bool brackets = true)
         {
             return Format(ParseList(listString), brackets);
@@ -205,7 +205,7 @@ namespace LibLSLCC.Utility.ListParser
         /// </summary>
         /// <param name="list">The string containing the list.</param>
         /// <param name="parsingFlags">Optional parsing flags.</param>
-        /// <returns></returns>
+        /// <returns>An enumerable of <see cref="ILSLListExpr"/> nodes parsed from the list string.</returns>
         /// <exception cref="LSLListParserOptionsConstraintException">
         ///     When an
         ///     <see cref="LSLListParsingFlags" /> constraint is violated.

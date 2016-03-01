@@ -97,6 +97,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Construct an <see cref="LSLParameterListNode" /> with the parameter nodes in <paramref name="parameters" />.
         /// </summary>
+        /// <param name="parameters">The parameters to fill this parameter list node with.</param>
         /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
         ///     If two parameters with the same name exist in <paramref name="parameters" />.
@@ -115,6 +116,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Construct an <see cref="LSLParameterListNode" /> with the parameter nodes in <paramref name="parameters" />.
         /// </summary>
+        /// <param name="parameters">The parameters to fill this parameter list node with.</param>
         /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">
         ///     If two parameters with the same name exist in <paramref name="parameters" />.

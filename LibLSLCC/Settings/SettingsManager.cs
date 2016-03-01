@@ -58,7 +58,7 @@ namespace LibLSLCC.Settings
     /// <summary>
     ///     Manages loading a serializable settings object to and from disk.  <see cref="SettingsBaseClass{T}" />
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of settings object to manage; typically an object derived from <see cref="SettingsBaseClass{T}" />.</typeparam>
     public sealed class SettingsManager<T> where T : new()
     {
         /// <summary>

@@ -2106,7 +2106,7 @@ namespace LibLSLCC.CodeValidator
 
             if (!expression.HasErrors && !expression.HasPossibleSideEffects)
             {
-                GenSyntaxWarning().ExpressionStatementHasNoEffect(new LSLSourceCodeRange(context));
+                GenSyntaxWarning().ExpressionStatementHasNoEffect(new LSLSourceCodeRange(context), expression);
             }
 
 

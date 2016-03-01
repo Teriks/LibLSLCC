@@ -70,7 +70,7 @@ namespace LibLSLCC.Settings
         /// <param name="member">The member of the settings field/property being checked for a necessary reset.</param>
         /// <param name="objectInstance">The object instance the settings field/property belongs to.</param>
         /// <param name="settingValue">The value of the settings field/property being checked.</param>
-        /// <returns></returns>
+        /// <returns>Whether or not <paramref name="settingValue"/> equals <c>null</c>.</returns>
         public virtual bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue)
         {
             return settingValue == null;

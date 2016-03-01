@@ -454,7 +454,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Generates a hash code for this <see cref="LSLSourceCodeRange" /> using all of its properties.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The generated hash code.</returns>
         public override int GetHashCode()
         {
             unchecked

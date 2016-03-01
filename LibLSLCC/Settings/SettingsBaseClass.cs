@@ -538,14 +538,14 @@ namespace LibLSLCC.Settings
         ///     A tool for implementing the property changed/changing interface that goes in a public properties set handler.
         ///     This should be used in properties that wish to abide by the property changed/changing interface.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The fields type.</typeparam>
         /// <param name="field">The backing field of the property.</param>
         /// <param name="value">The new value the property is being set to.</param>
         /// <param name="propertyName">Name of the property being set.</param>
         /// <returns></returns>
-        protected bool SetField<T>(ref T field, T value, string propertyName)
+        protected void SetField<T>(ref T field, T value, string propertyName)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
 
             var curValue = field;
 
@@ -558,8 +558,6 @@ namespace LibLSLCC.Settings
             OnPropertyChanging(propertyName, curValue, value);
             field = value;
             OnPropertyChanged(propertyName, curValue, value);
-
-            return true;
         }
 
 
@@ -716,9 +714,9 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        ///     Assign all settings properties
+        ///     Assign all settings properties with a naive memberwise assignment.
         /// </summary>
-        /// <param name="other"></param>
+        /// <param name="other">The other object to attempt a memberwise assign from.</param>
         public void MemberwiseAssign(TSetting other)
         {
             var myType = GetType();

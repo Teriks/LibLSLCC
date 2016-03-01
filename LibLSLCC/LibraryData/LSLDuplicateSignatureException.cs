@@ -70,7 +70,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Construct with a message.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">The exception message.</param>
         public LSLDuplicateSignatureException(string message)
             : base(message)
         {

@@ -142,7 +142,7 @@ namespace LibLSLCC.CodeValidator
         ///     Returns a hash code for the <see cref="LSLParameterSignature" /> object.
         ///     The hash code is generated from the parameter Type, Name, ParameterIndex and Variadic status.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The generated hash code.</returns>
         public override int GetHashCode()
         {
             unchecked

@@ -65,6 +65,7 @@ namespace LibLSLCC.CodeFormatter
         /// <summary>
         ///     Construct a new <see cref="LSLCodeFormatter"/> with the given settings object.
         /// </summary>
+        /// <param name="settings">The <see cref="LSLCodeFormatterSettings"/> object to use for the formatter.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="settings" /> is <c>null</c>.</exception>
         public LSLCodeFormatter(LSLCodeFormatterSettings settings)
         {

@@ -95,8 +95,8 @@ namespace LibLSLCC.LibraryData.Reflection
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLReflectionTypeMappingException" /> class.
-        ///     <param name="missingType">The type that was missing a mapping to convert it into an <see cref="LSLType" /></param>
         /// </summary>
+        /// <param name="missingType">The type that was missing a mapping to convert it into an <see cref="LSLType" /></param>
         public LSLReflectionTypeMappingException(Type missingType)
         {
             MissingType = missingType;

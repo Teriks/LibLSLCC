@@ -125,6 +125,7 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default(ILSLBasicLibraryDataProvider)" /> to initialize
         ///     the <see cref="ValidatorStrategies" /> property.
         /// </summary>
+        /// <param name="libraryDataProvider">The library data provider to use.</param>
         /// <seealso cref="LSLCodeValidatorStrategies.Default()"/>
         public LSLCodeValidator(ILSLBasicLibraryDataProvider libraryDataProvider)
         {
@@ -140,6 +141,9 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default(ILSLBasicLibraryDataProvider, ILSLSyntaxErrorListener, ILSLSyntaxWarningListener)" /> to initialize
         ///     the <see cref="ValidatorStrategies" /> property.
         /// </summary>
+        /// <param name="libraryDataProvider">The library data provider to use.</param>
+        /// <param name="errorListener">The syntax error listener to use.</param>
+        /// <param name="warningListener">The warning error listener to use.</param>
         /// <seealso cref="LSLCodeValidatorStrategies.Default()"/>
         public LSLCodeValidator(ILSLBasicLibraryDataProvider libraryDataProvider, ILSLSyntaxErrorListener errorListener, ILSLSyntaxWarningListener warningListener)
         {
@@ -154,6 +158,8 @@ namespace LibLSLCC.CodeValidator
         ///     Construct an <see cref="LSLCodeValidator" /> using <see cref="LSLCodeValidatorStrategies.Default(ILSLSyntaxErrorListener, ILSLSyntaxWarningListener)" /> to initialize
         ///     the <see cref="ValidatorStrategies" /> property.
         /// </summary>
+        /// <param name="errorListener">The syntax error listener to use.</param>
+        /// <param name="warningListener">The warning error listener to use.</param>
         /// <seealso cref="LSLCodeValidatorStrategies.Default()"/>
         public LSLCodeValidator(ILSLSyntaxErrorListener errorListener, ILSLSyntaxWarningListener warningListener)
         {

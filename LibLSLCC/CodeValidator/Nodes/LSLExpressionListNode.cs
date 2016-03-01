@@ -87,6 +87,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Create an <see cref="LSLExpressionListNode" /> with the given expressions.
         /// </summary>
+        /// <param name="expressions">The expressions to fill the expression list node with.</param>
         /// <exception cref="ArgumentNullException"><paramref name="expressions" /> is <c>null</c>.</exception>
         public LSLExpressionListNode(IEnumerable<ILSLExprNode> expressions)
         {
@@ -102,6 +103,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Create an <see cref="LSLExpressionListNode" /> with the given expressions.
         /// </summary>
+        /// <param name="expressions">The expressions to fill the expression list node with.</param>
         /// <exception cref="ArgumentNullException"><paramref name="expressions" /> is <c>null</c>.</exception>
         public LSLExpressionListNode(params ILSLExprNode[] expressions)
         {

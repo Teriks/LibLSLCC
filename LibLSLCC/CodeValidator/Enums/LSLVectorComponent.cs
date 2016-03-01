@@ -82,8 +82,8 @@ namespace LibLSLCC.CodeValidator
         ///     Converts the <see cref="LSLVectorComponent" /> into a name reference that could be used on the right side of the
         ///     dot operator in LSL.
         /// </summary>
-        /// <param name="component"></param>
-        /// <returns></returns>
+        /// <param name="component">The component to convert to a string.</param>
+        /// <returns>The lowercase name of the component from the enum.</returns>
         public static string ToComponentName(this LSLVectorComponent component)
         {
             return component.ToString().ToLower();
@@ -93,7 +93,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Converts a string into an <see cref="LSLVectorComponent" />.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The name of the component ("x", "y" or "z").</param>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if 'name' is not one of: "x", "y" or "z".  (Case Sensitive)</exception>
         /// <returns></returns>

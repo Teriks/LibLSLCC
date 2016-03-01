@@ -222,9 +222,7 @@ namespace LibLSLCC.CSharp
         ///     a type, even generic types.
         /// </remarks>
         /// <param name="input">The input string containing the proposed type value.</param>
-        /// <returns>
-        ///     <see cref="CSharpClassNameValidationResult" />
-        /// </returns>
+        /// <returns>A parse/validation results object.  <see cref="CSharpClassNameValidationResult" /></returns>
         public static CSharpClassNameValidationResult ValidateDeclaration(string input)
         {
             return _Validate(input, ClassSigType.Declaration, false, null, 0);
@@ -241,9 +239,7 @@ namespace LibLSLCC.CSharp
         ///     as they are parsed.
         /// </param>
         /// <param name="allowBuiltInAliases">Allow built in aliases such as 'int' or 'char' to pass as class names</param>
-        /// <returns>
-        ///     <see cref="CSharpClassNameValidationResult" />
-        /// </returns>
+        /// <returns>A parse/validation results object.  <see cref="CSharpClassNameValidationResult" /></returns>
         public static CSharpClassNameValidationResult ValidateInitialization(string input, bool allowBuiltInAliases,
             CSharpParsedTypeValidateTypeCallback validateTypeCallback = null)
         {

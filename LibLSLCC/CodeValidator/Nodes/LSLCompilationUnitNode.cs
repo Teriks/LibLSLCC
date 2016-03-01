@@ -98,6 +98,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Construct an <see cref="LSLCompilationUnitNode" /> with the provided default state node.
         /// </summary>
+        /// <param name="defaultState">The default state node to use for the default state.</param>
         /// <exception cref="ArgumentNullException"><paramref name="defaultState" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="defaultState" />.IsDefaultState is <c>false</c>.</exception>
         public LSLCompilationUnitNode(LSLStateScopeNode defaultState)

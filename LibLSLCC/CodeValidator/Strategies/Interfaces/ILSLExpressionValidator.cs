@@ -314,7 +314,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="parameterSignature">The parameter definition.</param>
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if <paramref name="parameterExpressionPassed"/> can be passed to the given parameter signature.</returns>
         bool ValidateFunctionParameter(LSLParameterSignature parameterSignature,
             ILSLReadOnlyExprNode parameterExpressionPassed);
     }
