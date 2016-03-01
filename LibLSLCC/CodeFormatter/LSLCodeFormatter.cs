@@ -63,7 +63,7 @@ namespace LibLSLCC.CodeFormatter
 
 
         /// <summary>
-        ///     Construct a new LSLCodeFormatter.
+        ///     Construct a new <see cref="LSLCodeFormatter"/> with the given settings object.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="settings" /> is <c>null</c>.</exception>
         public LSLCodeFormatter(LSLCodeFormatterSettings settings)
@@ -77,7 +77,7 @@ namespace LibLSLCC.CodeFormatter
 
 
         /// <summary>
-        ///     Construct a new LSLCodeFormatter.
+        ///     Construct a new <see cref="LSLCodeFormatter"/>.
         /// </summary>
         public LSLCodeFormatter()
         {
@@ -86,7 +86,7 @@ namespace LibLSLCC.CodeFormatter
 
 
         /// <summary>
-        ///     The code formatter configuration.
+        ///     The code formatter settings.
         /// </summary>
         /// <exception cref="ArgumentNullException">Thrown if <see cref="LSLCodeFormatter.Settings" /> is set to <c>null</c>.</exception>
         public LSLCodeFormatterSettings Settings
