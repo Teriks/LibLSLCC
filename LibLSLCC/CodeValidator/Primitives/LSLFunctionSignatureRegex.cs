@@ -161,7 +161,7 @@ namespace LibLSLCC.CodeValidator
                         foreach (var p in ps)
                         {
                             var prm = p.Trim().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-                            sig.AddParameter(new LSLParameter(LSLTypeTools.FromLSLTypeName(prm[0]), prm[1], false));
+                            sig.AddParameter(new LSLParameterSignature(LSLTypeTools.FromLSLTypeName(prm[0]), prm[1], false));
                         }
                         yield return sig;
                     }

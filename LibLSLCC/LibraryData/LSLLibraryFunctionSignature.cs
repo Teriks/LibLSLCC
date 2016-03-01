@@ -110,7 +110,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="returnType">The return type associated with the function signature.</param>
         /// <param name="name">The name of the function.</param>
         /// <param name="parameters">An optional enumerable of LSLParameters to initialize the function signature with.</param>
-        public LSLLibraryFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null)
+        public LSLLibraryFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameterSignature> parameters = null)
             :
                 base(returnType, name, parameters)
         {
@@ -387,7 +387,7 @@ namespace LibLSLCC.LibraryData
                     }
 
                     parameterNames.Add(pName);
-                    AddParameter(new LSLParameter(pType, pName, isVariadic));
+                    AddParameter(new LSLParameterSignature(pType, pName, isVariadic));
 
                     canRead = reader.Read();
                 }

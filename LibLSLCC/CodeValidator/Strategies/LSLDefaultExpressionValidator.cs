@@ -360,15 +360,15 @@ namespace LibLSLCC.CodeValidator
         ///     Validates that an expression can be passed into the parameter slot of a function.
         ///     IE: That the passed expression matches up with or can be converted to the parameter type.
         /// </summary>
-        /// <param name="parameter">The parameter definition.</param>
+        /// <param name="parameterSignature">The parameter definition.</param>
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="parameter"/> or <paramref name="parameterExpressionPassed"/> is <see langword="null" />.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="parameterSignature"/> or <paramref name="parameterExpressionPassed"/> is <see langword="null" />.</exception>
         public bool ValidateFunctionParameter(
-            LSLParameter parameter,
+            LSLParameterSignature parameterSignature,
             ILSLReadOnlyExprNode parameterExpressionPassed)
         {
-            if (parameter == null) throw new ArgumentNullException("parameter");
+            if (parameterSignature == null) throw new ArgumentNullException("parameterSignature");
             if (parameterExpressionPassed == null) throw new ArgumentNullException("parameterExpressionPassed");
 
             if (parameterExpressionPassed.HasErrors)
@@ -376,7 +376,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            if (parameter.Variadic && parameter.Type == LSLType.Void)
+            if (parameterSignature.Variadic && parameterSignature.Type == LSLType.Void)
             {
                 return true;
             }
@@ -384,7 +384,7 @@ namespace LibLSLCC.CodeValidator
 
             var left = new LSLDummyExpr
             {
-                Type = parameter.Type,
+                Type = parameterSignature.Type,
                 ExpressionType = LSLExpressionType.ParameterVariable
             };
 

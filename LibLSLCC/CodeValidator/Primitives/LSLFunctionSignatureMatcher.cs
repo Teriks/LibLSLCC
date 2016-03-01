@@ -222,15 +222,15 @@ namespace LibLSLCC.CodeValidator
         ///     is found.
         /// </summary>
         /// <param name="typeComparer">
-        ///     A function used to compare an <see cref="LSLParameter" /> to another <see cref="ILSLExprNode" /> to check for a
+        ///     A function used to compare an <see cref="LSLParameterSignature" /> to another <see cref="ILSLExprNode" /> to check for a
         ///     match.
-        ///     Should return true if the <see cref="ILSLExprNode" /> can be passed into the <see cref="LSLParameter" />.
+        ///     Should return true if the <see cref="ILSLExprNode" /> can be passed into the <see cref="LSLParameterSignature" />.
         /// </param>
         /// <param name="functionSignatures">The function signatures to search through.</param>
         /// <param name="expressionNodes">The expression nodes of the function parameters we want to pass and find an overload for.</param>
         /// <returns>A matching <see cref="LSLFunctionSignature" /> overload or null.</returns>
         public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures,
-            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressionNodes, Func<LSLParameter, ILSLReadOnlyExprNode, bool> typeComparer)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressionNodes, Func<LSLParameterSignature, ILSLReadOnlyExprNode, bool> typeComparer)
             where T : LSLFunctionSignature
         {
             //discover candidates 'applicable' functions, using a typeComparer function/lambda to compare the signature parameters to the passed expression nodes.
@@ -496,7 +496,7 @@ namespace LibLSLCC.CodeValidator
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="functionSignature"/> or <paramref name="expressions"/> or <paramref name="typeComparer"/> is <see langword="null" />.</exception>
         public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
-            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions, Func<LSLParameter, ILSLReadOnlyExprNode, bool> typeComparer)
+            IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions, Func<LSLParameterSignature, ILSLReadOnlyExprNode, bool> typeComparer)
         {
             if (functionSignature == null) throw new ArgumentNullException("functionSignature");
             if (expressions == null) throw new ArgumentNullException("expressions");
@@ -527,7 +527,7 @@ namespace LibLSLCC.CodeValidator
             //if the variadic parameter is Void than anything can go in it, so it is not even checked
             for (; parameterNumber < expressions.Count; parameterNumber++)
             {
-                LSLParameter compareWithThisSignatureParameter;
+                LSLParameterSignature compareWithThisSignatureParameter;
 
                 if (parameterNumber > (functionSignature.ParameterCount - 1))
                 {

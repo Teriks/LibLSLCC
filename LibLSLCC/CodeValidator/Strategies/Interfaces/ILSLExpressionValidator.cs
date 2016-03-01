@@ -312,10 +312,10 @@ namespace LibLSLCC.CodeValidator
         ///     Validates that an expression can be passed into the parameter slot of a function.
         ///     IE: That the passed expression matches up with or can be converted to the parameter type.
         /// </summary>
-        /// <param name="parameter">The parameter definition.</param>
+        /// <param name="parameterSignature">The parameter definition.</param>
         /// <param name="parameterExpressionPassed">The expression the user has attempting to pass into the parameter.</param>
         /// <returns></returns>
-        bool ValidateFunctionParameter(LSLParameter parameter,
+        bool ValidateFunctionParameter(LSLParameterSignature parameterSignature,
             ILSLReadOnlyExprNode parameterExpressionPassed);
     }
 }

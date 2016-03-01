@@ -317,7 +317,7 @@ namespace LibLSLCC.CodeValidator
         public LSLFunctionSignature CreateSignature()
         {
             return new LSLFunctionSignature(ReturnType, Name,
-                ParameterList.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)));
+                ParameterList.Parameters.Select(x => new LSLParameterSignature(x.Type, x.Name, false)));
         }
 
         #region Nested type: Err

@@ -53,7 +53,7 @@ namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Represents and event handler signature parsed from source code.
-    ///     This object derives from <see cref="LSLEventSignature " /> and adds an <see cref="LSLParameterListNode" />
+    ///     This object derives from <see cref="LSLEventSignature" /> and adds an <see cref="LSLParameterListNode" />
     ///     property that contains a parameter list node from the syntax tree.
     /// </summary>
     public sealed class LSLParsedEventHandlerSignature : LSLEventSignature
@@ -69,7 +69,7 @@ namespace LibLSLCC.CodeValidator
         ///     handlers parsed parameters.
         /// </param>
         public LSLParsedEventHandlerSignature(string name, LSLParameterListNode parameters) :
-            base(name, parameters.Parameters.Select(x => new LSLParameter(x.Type, x.Name, false)))
+            base(name, parameters.Parameters.Select(x => new LSLParameterSignature(x.Type, x.Name, false)))
         {
             //TODO validate parameters
             ParameterListNode = parameters;

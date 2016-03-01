@@ -60,7 +60,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public class LSLEventSignature
     {
-        private readonly GenericArray<LSLParameter> _parameters;
+        private readonly GenericArray<LSLParameterSignature> _parameters;
         private string _name;
 
 
@@ -77,7 +77,7 @@ namespace LibLSLCC.CodeValidator
             }
 
             Name = other.Name;
-            _parameters = new GenericArray<LSLParameter>(other._parameters);
+            _parameters = new GenericArray<LSLParameterSignature>(other._parameters);
         }
 
 
@@ -86,27 +86,27 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         protected LSLEventSignature()
         {
-            _parameters = new GenericArray<LSLParameter>();
+            _parameters = new GenericArray<LSLParameterSignature>();
         }
 
 
         /// <summary>
         ///     Construct and event signature with the provide parameters by providing a name and an enumerable containing
-        ///     <see cref="LSLParameter" /> objects.
+        ///     <see cref="LSLParameterSignature" /> objects.
         /// </summary>
         /// <param name="name">The name of the event signature.</param>
         /// <param name="parameters">The parameters to include in the signature.</param>
-        public LSLEventSignature(string name, IEnumerable<LSLParameter> parameters)
+        public LSLEventSignature(string name, IEnumerable<LSLParameterSignature> parameters)
         {
             Name = name;
 
             if (parameters == null)
             {
-                _parameters = new GenericArray<LSLParameter>();
+                _parameters = new GenericArray<LSLParameterSignature>();
             }
             else
             {
-                _parameters = new GenericArray<LSLParameter>();
+                _parameters = new GenericArray<LSLParameterSignature>();
                 foreach (var lslParameter in parameters)
                 {
                     AddParameter(lslParameter);
@@ -122,7 +122,7 @@ namespace LibLSLCC.CodeValidator
         protected LSLEventSignature(string name)
         {
             Name = name;
-            _parameters = new GenericArray<LSLParameter>();
+            _parameters = new GenericArray<LSLParameterSignature>();
         }
 
 
@@ -164,7 +164,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Indexable list of objects describing the event handlers parameters
         /// </summary>
-        public IReadOnlyGenericArray<LSLParameter> Parameters
+        public IReadOnlyGenericArray<LSLParameterSignature> Parameters
         {
             get { return _parameters; }
         }
@@ -262,23 +262,23 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Add an <see cref="LSLParameter" /> object to this event signatures
+        ///     Add an <see cref="LSLParameterSignature" /> object to this event signatures
         /// </summary>
-        /// <param name="parameter">The <see cref="LSLParameter" /> object to add.</param>
+        /// <param name="parameterSignature">The <see cref="LSLParameterSignature" /> object to add.</param>
         /// <exception cref="ArgumentException">Thrown if the added parameter is a variadic parameter.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="parameter"/> is <see langword="null" />.</exception>
-        public void AddParameter(LSLParameter parameter)
+        /// <exception cref="ArgumentNullException"><paramref name="parameterSignature"/> is <see langword="null" />.</exception>
+        public void AddParameter(LSLParameterSignature parameterSignature)
         {
-            if (parameter == null) throw new ArgumentNullException("parameter");
+            if (parameterSignature == null) throw new ArgumentNullException("parameterSignature");
 
-            if (parameter.Variadic)
+            if (parameterSignature.Variadic)
             {
                 throw new ArgumentException(
-                    GetType().FullName + ": Cannot add variadic parameters to an event signature", "parameter");
+                    GetType().FullName + ": Cannot add variadic parameters to an event signature", "parameterSignature");
             }
 
-            parameter.ParameterIndex = _parameters.Count;
-            _parameters.Add(parameter);
+            parameterSignature.ParameterIndex = _parameters.Count;
+            _parameters.Add(parameterSignature);
         }
 
 

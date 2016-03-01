@@ -927,7 +927,7 @@ namespace LibLSLCC.LibraryData.Reflection
                         info.Name), info.ReturnType);
             }
 
-            var parameters = new List<LSLParameter>();
+            var parameters = new List<LSLParameterSignature>();
 
             var infoParameters = info.GetParameters().AsEnumerable();
 
@@ -962,7 +962,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
                 var name = param.Name;
 
-                parameters.Add(new LSLParameter(parameterType, name, isVariadic));
+                parameters.Add(new LSLParameterSignature(parameterType, name, isVariadic));
             }
 
             var signature = new LSLLibraryFunctionSignature(returnType, info.Name, parameters);

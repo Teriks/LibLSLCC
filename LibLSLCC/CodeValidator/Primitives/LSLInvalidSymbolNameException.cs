@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Thrown when <see cref="LSLLibraryConstantSignature" />, <see cref="LSLFunctionSignature" />,
-    ///     <see cref="LSLEventSignature" /> or <see cref="LSLParameter" />
+    ///     <see cref="LSLEventSignature" /> or <see cref="LSLParameterSignature" />
     ///     have their Name set to a value that does not conform the LSL's symbol naming convention.
     /// </summary>
     [Serializable]

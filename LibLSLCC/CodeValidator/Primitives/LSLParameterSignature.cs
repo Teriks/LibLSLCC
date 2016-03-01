@@ -55,7 +55,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Represents a basic parameter that belongs to either an event handler or function signature.
     /// </summary>
-    public sealed class LSLParameter
+    public sealed class LSLParameterSignature
     {
         /// <summary>
         ///     Construct a parameter object
@@ -68,7 +68,7 @@ namespace LibLSLCC.CodeValidator
         ///     conventions for parameters.
         /// </exception>
         /// <exception cref="ArgumentException">Thrown if type is <see cref="LSLType.Void" /> and variadic is false.</exception>
-        public LSLParameter(LSLType type, string name, bool variadic)
+        public LSLParameterSignature(LSLType type, string name, bool variadic)
         {
             if (type == LSLType.Void && variadic == false)
             {
@@ -112,7 +112,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     The parameter index, which gets set when the parameter is added to an <see cref="LSLFunctionSignature" /> or
-        ///     <see cref="LSLEventSignature " />
+        ///     <see cref="LSLEventSignature" />
         /// </summary>
         public int ParameterIndex { get; set; }
 
@@ -139,7 +139,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Returns a hash code for the <see cref="LSLParameter" /> object.
+        ///     Returns a hash code for the <see cref="LSLParameterSignature" /> object.
         ///     The hash code is generated from the parameter Type, Name, ParameterIndex and Variadic status.
         /// </summary>
         /// <returns></returns>
@@ -159,19 +159,19 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Determines if the <see cref="Type" />, <see cref="Name" />, <see cref="ParameterIndex" /> and
-        ///     <see cref="Variadic" /> status are of equal values in another <see cref="LSLParameter" /> object.
-        ///     If obj is not actually an <see cref="LSLParameter" /> object, or derived from one, than this function will always
+        ///     <see cref="Variadic" /> status are of equal values in another <see cref="LSLParameterSignature" /> object.
+        ///     If obj is not actually an <see cref="LSLParameterSignature" /> object, or derived from one, than this function will always
         ///     return false.
         /// </summary>
-        /// <param name="obj">The <see cref="LSLParameter" /> object to compare this one to.</param>
+        /// <param name="obj">The <see cref="LSLParameterSignature" /> object to compare this one to.</param>
         /// <returns>
-        ///     True if 'obj' is an <see cref="LSLParameter" /> object or derived type; And <see cref="Type" />,
+        ///     True if 'obj' is an <see cref="LSLParameterSignature" /> object or derived type; And <see cref="Type" />,
         ///     <see cref="Name" />, <see cref="ParameterIndex" /> and <see cref="Variadic" /> status are of equal values in both
         ///     objects.
         /// </returns>
         public override bool Equals(object obj)
         {
-            var o = obj as LSLParameter;
+            var o = obj as LSLParameterSignature;
             if (o == null)
             {
                 return false;

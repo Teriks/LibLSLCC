@@ -74,10 +74,10 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Construct an LSLLibraryEventSignature by copying the signature details from an <see cref="LSLEventSignature " />
+        ///     Construct an LSLLibraryEventSignature by copying the signature details from an <see cref="LSLEventSignature" />
         ///     object.
         /// </summary>
-        /// <param name="sig">The <see cref="LSLEventSignature " /> object to copy signatures details from.</param>
+        /// <param name="sig">The <see cref="LSLEventSignature" /> object to copy signatures details from.</param>
         public LSLLibraryEventSignature(LSLEventSignature sig)
             : base(sig)
         {
@@ -106,12 +106,12 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Construct an LSLLibraryEventSignature by providing a Name and a list of <see cref="LSLParameter" /> objects that
+        ///     Construct an LSLLibraryEventSignature by providing a Name and a list of <see cref="LSLParameterSignature" /> objects that
         ///     belong to the signature.
         /// </summary>
         /// <param name="name">The name of the event handler.</param>
         /// <param name="parameters">The list of parameters that belong to this signature.</param>
-        public LSLLibraryEventSignature(string name, IEnumerable<LSLParameter> parameters)
+        public LSLLibraryEventSignature(string name, IEnumerable<LSLParameterSignature> parameters)
             : base(name, parameters)
         {
             DocumentationString = "";
@@ -326,7 +326,7 @@ namespace LibLSLCC.LibraryData
                     }
 
                     parameterNames.Add(pName);
-                    AddParameter(new LSLParameter(pType, pName, false));
+                    AddParameter(new LSLParameterSignature(pType, pName, false));
 
                     canRead = reader.Read();
                 }

@@ -204,7 +204,7 @@
     <Compile Include="LibraryData\LSLLibraryFunctionSignature.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureRegex.cs" />
     <Compile Include="CodeValidator\Primitives\LSLEventSignatureRegex.cs" />
-    <Compile Include="CodeValidator\Primitives\LSLParameter.cs" />
+    <Compile Include="CodeValidator\Primitives\LSLParameterSignature.cs" />
     <Compile Include="CodeValidator\Primitives\LSLParsedEventHandlerSignature.cs" />
     <Compile Include="CodeValidator\Primitives\LSLPreDefinedFunctionSignature.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLBinaryExpressionNode.cs" />

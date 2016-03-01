@@ -231,7 +231,7 @@ namespace LibraryDataScrapingTools
 
             //meh
             openSim.FunctionSet.Add(new LSLLibraryFunctionSignature(LSLType.Integer, "llAttachToAvatarTemp",
-                new[] {new LSLParameter(LSLType.Integer, "attachmentPoint", false)}));
+                new[] {new LSLParameterSignature(LSLType.Integer, "attachmentPoint", false)}));
 
 
             List<string> activeLibrarySubsets  = SubsetDescriptions.Select(x => x.Subset).ToList();

@@ -268,7 +268,7 @@ namespace LibLSLCC.LibraryData.Reflection
                     {
                         result.Variadic = true;
                     }
-                    result.Parameters.Add(new LSLParameter(pType, param.Name, isVariadic));
+                    result.Parameters.Add(new LSLParameterSignature(pType, param.Name, isVariadic));
                 }
                 else
                 {
@@ -302,7 +302,7 @@ namespace LibLSLCC.LibraryData.Reflection
                     }
 
 
-                    result.Parameters.Add(new LSLParameter(pType, param.Name, isVariadic));
+                    result.Parameters.Add(new LSLParameterSignature(pType, param.Name, isVariadic));
                 }
             }
 
@@ -315,7 +315,7 @@ namespace LibLSLCC.LibraryData.Reflection
         {
             public Info()
             {
-                Parameters = new List<LSLParameter>();
+                Parameters = new List<LSLParameterSignature>();
             }
 
 
@@ -324,7 +324,7 @@ namespace LibLSLCC.LibraryData.Reflection
             public bool Variadic { get; set; }
             public bool ExplicitReturnTypePresent { get; set; }
             public LSLType ReturnType { get; set; }
-            public List<LSLParameter> Parameters { get; set; }
+            public List<LSLParameterSignature> Parameters { get; set; }
             public ILSLReturnTypeConverter ReturnTypeConverter { get; set; }
             public ILSLParamTypeConverter ParamTypeConverter { get; set; }
         }

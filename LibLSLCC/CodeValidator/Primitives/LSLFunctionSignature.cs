@@ -60,7 +60,7 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public class LSLFunctionSignature
     {
-        private readonly GenericArray<LSLParameter> _parameters;
+        private readonly GenericArray<LSLParameterSignature> _parameters;
         private string _name;
 
 
@@ -70,7 +70,7 @@ namespace LibLSLCC.CodeValidator
         protected LSLFunctionSignature()
         {
             ReturnType = LSLType.Void;
-            _parameters = new GenericArray<LSLParameter>();
+            _parameters = new GenericArray<LSLParameterSignature>();
             VariadicParameterIndex = -1;
         }
 
@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator
             }
 
             Name = other.Name;
-            _parameters = new GenericArray<LSLParameter>(other._parameters);
+            _parameters = new GenericArray<LSLParameterSignature>(other._parameters);
             ReturnType = other.ReturnType;
             HasVariadicParameter = other.HasVariadicParameter;
             VariadicParameterIndex = other.VariadicParameterIndex;
@@ -97,13 +97,13 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Construct a function signature by providing an associated <see cref="LSLType" /> for the return type, a function
-        ///     Name and an optional enumerable of <see cref="LSLParameter" /> objects.
+        ///     Name and an optional enumerable of <see cref="LSLParameterSignature" /> objects.
         /// </summary>
         /// <param name="returnType"></param>
         /// <param name="name"></param>
         /// <param name="parameters"></param>
         /// <exception cref="ArgumentException">Thrown if more than one variadic parameter is added to the function signature.</exception>
-        public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameter> parameters = null)
+        public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameterSignature> parameters = null)
         {
             ReturnType = returnType;
             Name = name;
@@ -111,11 +111,11 @@ namespace LibLSLCC.CodeValidator
 
             if (parameters == null)
             {
-                _parameters = new GenericArray<LSLParameter>();
+                _parameters = new GenericArray<LSLParameterSignature>();
             }
             else
             {
-                _parameters = new GenericArray<LSLParameter>();
+                _parameters = new GenericArray<LSLParameterSignature>();
                 foreach (var lslParameter in parameters)
                 {
                     AddParameter(lslParameter);
@@ -177,7 +177,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Indexable list of objects describing the functions parameters
         /// </summary>
-        public IReadOnlyGenericArray<LSLParameter> Parameters
+        public IReadOnlyGenericArray<LSLParameterSignature> Parameters
         {
             get { return _parameters; }
         }
@@ -185,7 +185,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     An enumerable of all non-variadic parameters in the function signature.
         /// </summary>
-        public IEnumerable<LSLParameter> ConcreteParameters
+        public IEnumerable<LSLParameterSignature> ConcreteParameters
         {
             get { return Parameters.Take(ConcreteParameterCount); }
         }
@@ -260,14 +260,14 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Add a new parameter to the function signature object
         /// </summary>
-        /// <param name="parameter">The <see cref="LSLParameter" /> object to add to the signature.</param>
+        /// <param name="parameterSignature">The <see cref="LSLParameterSignature" /> object to add to the signature.</param>
         /// <exception cref="ArgumentException">Thrown if more than one variadic parameter is added to the function signature.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="parameter"/> is <see langword="null" />.</exception>
-        public void AddParameter(LSLParameter parameter)
+        /// <exception cref="ArgumentNullException"><paramref name="parameterSignature"/> is <see langword="null" />.</exception>
+        public void AddParameter(LSLParameterSignature parameterSignature)
         {
-            if (parameter == null) throw new ArgumentNullException("parameter");
+            if (parameterSignature == null) throw new ArgumentNullException("parameterSignature");
 
-            if (parameter.Variadic)
+            if (parameterSignature.Variadic)
             {
                 if (!HasVariadicParameter)
                 {
@@ -278,14 +278,14 @@ namespace LibLSLCC.CodeValidator
                 {
                     throw new ArgumentException(
                         GetType().FullName + ": Signature already has a variadic parameter, cannot add another",
-                        "parameter");
+                        "parameterSignature");
                 }
             }
 
 
-            parameter.ParameterIndex = _parameters.Count;
+            parameterSignature.ParameterIndex = _parameters.Count;
 
-            _parameters.Add(parameter);
+            _parameters.Add(parameterSignature);
         }
 
 
@@ -328,7 +328,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     This implementation of GetHashCode() uses the name of the <see cref="LSLFunctionSignature" />, the
-        ///     <see cref="ReturnType" /> and the <see cref="LSLParameter.Type" />/<see cref="LSLParameter.Variadic" /> status of
+        ///     <see cref="ReturnType" /> and the <see cref="LSLParameterSignature.Type" />/<see cref="LSLParameterSignature.Variadic" /> status of
         ///     the parameters, this means the Hash Code is linked the Function name, return Type and the Types/Variadic'ness of
         ///     all its parameters.
         ///     Inherently, uniqueness is also determined by the number of parameters.

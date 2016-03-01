@@ -245,7 +245,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 }
 
 
-                func.AddParameter(new LSLParameter(
+                func.AddParameter(new LSLParameterSignature(
                     LSLTypeTools.FromLSLTypeName(paramDetails["type"].AsString()), argName, false));
             }
 
@@ -347,7 +347,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     }
 
 
-                    ev.AddParameter(new LSLParameter(
+                    ev.AddParameter(new LSLParameterSignature(
                         LSLTypeTools.FromLSLTypeName(paramDetails["type"].AsString()), argName, false));
                 }
             }

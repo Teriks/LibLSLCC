@@ -56,7 +56,7 @@ using LibLSLCC.LibraryData;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     Regex tools for parsing <see cref="LSLEventSignature " /> objects from strings.
+    ///     Regex tools for parsing <see cref="LSLEventSignature" /> objects from strings.
     /// </summary>
     public sealed class LSLEventSignatureRegex
     {
@@ -112,10 +112,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Parse an <see cref="LSLEventSignature " /> signature from a string.
+        ///     Parse an <see cref="LSLEventSignature" /> signature from a string.
         /// </summary>
-        /// <param name="inString">The string to parse the <see cref="LSLEventSignature " /> from.</param>
-        /// <returns>The parsed <see cref="LSLEventSignature " />.</returns>
+        /// <param name="inString">The string to parse the <see cref="LSLEventSignature" /> from.</param>
+        /// <returns>The parsed <see cref="LSLEventSignature" />.</returns>
         public LSLEventSignature GetSignature(string inString)
         {
             return GetSignatures(inString).FirstOrDefault();
@@ -123,10 +123,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Returns all <see cref="LSLEventSignature " /> that could be parsed out of a given string.
+        ///     Returns all <see cref="LSLEventSignature" /> that could be parsed out of a given string.
         /// </summary>
-        /// <param name="inString">The string to parse <see cref="LSLEventSignature " /> objects from.</param>
-        /// <returns>An enumerable of <see cref="LSLEventSignature " /> objects that were successfully parsed from the string.</returns>
+        /// <param name="inString">The string to parse <see cref="LSLEventSignature" /> objects from.</param>
+        /// <returns>An enumerable of <see cref="LSLEventSignature" /> objects that were successfully parsed from the string.</returns>
         public IEnumerable<LSLEventSignature> GetSignatures(string inString)
         {
             var matches = Regex.Matches(inString);
@@ -151,7 +151,7 @@ namespace LibLSLCC.CodeValidator
                     foreach (var p in ps)
                     {
                         var prm = p.Trim().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-                        sig.AddParameter(new LSLParameter(LSLTypeTools.FromLSLTypeName(prm[0]), prm[1], false));
+                        sig.AddParameter(new LSLParameterSignature(LSLTypeTools.FromLSLTypeName(prm[0]), prm[1], false));
                     }
                     yield return sig;
                 }

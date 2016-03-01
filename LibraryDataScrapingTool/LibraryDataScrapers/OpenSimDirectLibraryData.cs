@@ -470,14 +470,14 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
                 var returnType = LslTypeFromCsharpType(v.ReturnType);
 
-                var pTypes = new GenericArray<LSLParameter>();
+                var pTypes = new GenericArray<LSLParameterSignature>();
 
                 foreach (var p in v.GetParameters())
                 {
                     var isVariadic = IsParams(p);
                     if (p.ParameterType == (typeof (object[])) && isVariadic)
                     {
-                        pTypes.Add(new LSLParameter(LSLType.Void, p.Name, true));
+                        pTypes.Add(new LSLParameterSignature(LSLType.Void, p.Name, true));
                         goto omitRestOfParameters;
                     }
 
@@ -492,7 +492,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     var type = LslTypeFromCsharpParameterType(p.ParameterType);
                     if (type != null)
                     {
-                        pTypes.Add(new LSLParameter(type.Value, p.Name, false));
+                        pTypes.Add(new LSLParameterSignature(type.Value, p.Name, false));
                     }
                     else
                     {
@@ -549,14 +549,14 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                 var returnType = LslTypeFromCsharpType(v.ReturnType);
 
 
-                var pTypes = new GenericArray<LSLParameter>();
+                var pTypes = new GenericArray<LSLParameterSignature>();
 
                 foreach (var p in v.GetParameters().Skip(2))
                 {
                     var isVariadic = IsParams(p);
                     if (p.ParameterType == (typeof (object[])) && isVariadic)
                     {
-                        pTypes.Add(new LSLParameter(LSLType.Void, p.Name, true));
+                        pTypes.Add(new LSLParameterSignature(LSLType.Void, p.Name, true));
                         goto omitRestOfParameters;
                     }
                     if (isVariadic)
@@ -570,7 +570,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     var type = LslTypeFromCsharpParameterType(p.ParameterType);
                     if (type != null)
                     {
-                        pTypes.Add(new LSLParameter(type.Value, p.Name, false));
+                        pTypes.Add(new LSLParameterSignature(type.Value, p.Name, false));
                     }
                     else
                     {
