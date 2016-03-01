@@ -89,7 +89,7 @@ namespace LibLSLCC.Collections
         ///     Determines whether this <see cref="HashMap{TKey,TValue}" /> contains the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if this <see cref="HashMap{TKey,TValue}" /> contains the specified <paramref name="key"/>; otherwise <c>false</c>.</returns>
         bool ContainsKey(TKey key);
 
 

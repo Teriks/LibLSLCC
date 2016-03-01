@@ -63,7 +63,7 @@ namespace LibLSLCC.Settings
         /// <param name="member">The <see cref="MemberInfo" /> of the field/property.</param>
         /// <param name="objectInstance">The object instance that owns the field/property.</param>
         /// <param name="settingValue">The current value of the field/property.</param>
-        /// <returns></returns>
+        /// <returns>Whether or not a given field/property needs to be reset to a default value.</returns>
         bool CheckForNecessaryResets(MemberInfo member, object objectInstance, object settingValue);
 
 

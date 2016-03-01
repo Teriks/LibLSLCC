@@ -118,8 +118,9 @@ namespace LibLSLCC.Settings
 
 
         /// <summary>
-        ///     Creates a shallow copy of this ObservableSettingsHashSet.
+        ///     Creates a shallow copy of this <see cref="ObservableSettingsHashSet{T}"/>..
         /// </summary>
+        /// <returns>A shallow copy of this <see cref="ObservableSettingsHashSet{T}"/>.</returns>
         public override object Clone()
         {
             return new ObservableSettingsHashSet<T>(this);

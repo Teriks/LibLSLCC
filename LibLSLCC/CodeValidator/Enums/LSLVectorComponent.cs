@@ -96,7 +96,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="name">The name of the component ("x", "y" or "z").</param>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if 'name' is not one of: "x", "y" or "z".  (Case Sensitive)</exception>
-        /// <returns></returns>
+        /// <returns>The corresponding <see cref="LSLVectorComponent" /> for <paramref name="name"/>.</returns>
         public static LSLVectorComponent ParseComponentName(string name)
         {
             if (string.IsNullOrEmpty(name))

@@ -457,6 +457,7 @@ namespace LibLSLCC.Collections
         ///     <see cref="IDictionary{TKey, TValue}" />.
         /// </summary>
         /// <param name="items">The items.</param>
+        /// <returns>A <see cref="HashMap{TKey, TValue}" /> wrapper around <paramref name="items"/>.</returns>
         [SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static HashMap<TKey, TValue> CreateWrapper(IDictionary<TKey, TValue> items)
         {

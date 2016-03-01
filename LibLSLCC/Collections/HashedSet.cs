@@ -349,6 +349,7 @@ namespace LibLSLCC.Collections
         ///     Create a new instance of an <see cref="HashedSet{T}" /> class by wrapping an <see cref="ISet{T}" />.
         /// </summary>
         /// <param name="items">The items.</param>
+        /// <returns>A <see cref="HashedSet{T}" /> wrapper around <paramref name="items"/>.</returns>
         [SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
         public static ISet<T> CreateWrapper(ISet<T> items)
         {

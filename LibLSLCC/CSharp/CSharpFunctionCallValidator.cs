@@ -156,7 +156,7 @@ namespace LibLSLCC.CSharp
         ///     If <paramref name="obj"/> is not a <see cref="CSharpParameterSignature"/> the result will be false.
         /// </summary>
         /// <param name="obj">The other <see cref="CSharpParameterSignature"/> to test for equality with.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if <paramref name="obj"/> is an <see cref="CSharpParameterSignature"/> that is equal to this object; otherwise <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
             var o = obj as CSharpParameterSignature;

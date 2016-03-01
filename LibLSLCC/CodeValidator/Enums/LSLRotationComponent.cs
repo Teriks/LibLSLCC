@@ -101,7 +101,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="name">The name of the component ("x", "y", "z" or "s").</param>
         /// <exception cref="ArgumentException">Thrown if 'name' was not: "x", "y", "z" or "s"</exception>
         /// <exception cref="ArgumentNullException">Thrown if 'name' is <c>null</c>.</exception>
-        /// <returns>The corresponding <see cref="LSLRotationComponent" />.</returns>
+        /// <returns>The corresponding <see cref="LSLRotationComponent" /> for <paramref name="name"/>.</returns>
         public static LSLRotationComponent ParseComponentName(string name)
         {
             if (string.IsNullOrEmpty(name))

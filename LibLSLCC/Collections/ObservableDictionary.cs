@@ -125,7 +125,7 @@ namespace LibLSLCC.Collections
         /// <summary>
         ///     Returns an enumerator over the key value pairs in this dictionary.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An enumerator over the key value pairs in this dictionary.</returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return _keyed.Select(x => x).GetEnumerator();
@@ -335,7 +335,7 @@ namespace LibLSLCC.Collections
         /// <summary>
         ///     This event is raised when this dictionary's item collection is changed.
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">The collection changed event arguments.</param>
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             if (CollectionChanged != null)
@@ -348,6 +348,7 @@ namespace LibLSLCC.Collections
         /// <summary>
         ///     This event is raised when a property of this dictionary changes. (such as Count, Item[], Values, or Keys)
         /// </summary>
+        /// <param name="propertyName">The name of the property that changed.</param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             var handler = PropertyChanged;
