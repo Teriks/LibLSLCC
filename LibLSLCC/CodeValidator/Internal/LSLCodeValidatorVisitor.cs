@@ -648,7 +648,8 @@ namespace LibLSLCC.CodeValidator
 
             foreach (var fun in result.FunctionDeclarations.Where(x => x.References.Count == 0))
             {
-                GenSyntaxWarning().FunctionNeverUsed(fun.SourceRangeName, fun);
+                var range = fun.HasErrors ? fun.SourceRange : fun.SourceRangeName;
+                GenSyntaxWarning().FunctionNeverUsed(range, fun);
             }
 
             foreach (var gvar in result.GlobalVariableDeclarations.Where(x => x.References.Count == 0))
@@ -1646,7 +1647,7 @@ namespace LibLSLCC.CodeValidator
                 //this should never happen at this point but check anyway when we enter the function
                 //declaration a second time
                 return ReturnFromVisit(context, LSLFunctionDeclarationNode
-                    .GetError(new LSLSourceCodeRange(context)));
+                    .GetError(new LSLSourceCodeRange(context.function_name)));
             }
 
 
@@ -1674,7 +1675,7 @@ namespace LibLSLCC.CodeValidator
                 HasSyntaxErrors = true;
                 ScopingManager.ExitFunctionScope();
                 return ReturnFromVisit(context, LSLFunctionDeclarationNode
-                    .GetError(new LSLSourceCodeRange(context)));
+                    .GetError(new LSLSourceCodeRange(context.function_name)));
             }
 
             if (functionPrePass.HasSyntaxWarnings)
@@ -1701,6 +1702,7 @@ namespace LibLSLCC.CodeValidator
             {
                 HasErrors = codeScope.HasErrors
             };
+
 
             currentFunctionPredefinition.GiveDefinition(result);
 
