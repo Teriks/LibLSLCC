@@ -15,7 +15,7 @@
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>
-    <HtmlHelpName>Documentation</HtmlHelpName>
+    <HtmlHelpName>LibLSLCC Documentation</HtmlHelpName>
     <Language>en-US</Language>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
@@ -32,7 +32,7 @@
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
     <NamingMethod>Guid</NamingMethod>
-    <HelpTitle>A Sandcastle Documented Class Library</HelpTitle>
+    <HelpTitle>LibLSLCC, LSL parsing and compilating framework.</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
       <DocumentationSource sourceFile="bin\AnyCPU\Release\LibLSLCC.dll" />
@@ -41,17 +41,18 @@
     <BuildLogFile>sandcastle.log</BuildLogFile>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="LibLSLCC.AntlrParser" isDocumented="False">All auto generated ANTLR parsing classes.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.AutoComplete" isDocumented="True">Auto complete parser for implementing context sensitive autocomplete.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.CodeFormatter" isDocumented="True">Code formatter and syntax tree pretty printer.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.CodeValidator" isDocumented="True">Abstract syntax tree builder/syntax checker, and LSL syntax tree nodes/Code DOM.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.Collections" isDocumented="True">Various specialized collections, most of which support covariant read only interfaces in .NET 4.0.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.Compilers" isDocumented="True">Syntax tree compiler, currently only contains an OpenSim code generator implementation.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.CSharp" isDocumented="True">Utilities for parsing/validating CSharp class names, method signatures (etc..) in strings.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.LibraryData" isDocumented="True">Classes for serializing/deserializing LSL standard library data.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.LibraryData.Reflection" isDocumented="True">Classes for generating library data from C sharp classes via runtime reflection.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.Settings" isDocumented="True">Bindable/Observable settings object tools, used for class configuration objects.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.Utility" isDocumented="True">Misc utilities, mostly string processing/formatting tools.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="LibLSLCC.Utility.ListParser" isDocumented="True">Classes implementing parsing/validation of LSL style list literals in strings.</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="LibLSLCC.AutoComplete" isDocumented="True">Auto complete parser for implementing context sensitive autocomplete.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.CodeFormatter" isDocumented="True">Code formatter and syntax tree pretty printer.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.CodeValidator" isDocumented="True">Abstract syntax tree builder/syntax checker, and LSL syntax tree nodes/Code DOM.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.Collections" isDocumented="True">Various specialized collections, most of which support covariant read only interfaces in .NET 4.0.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.Compilers" isDocumented="True">Syntax tree compiler, currently only contains an OpenSim code generator implementation.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.CSharp" isDocumented="True">Utilities for parsing/validating CSharp class names, method signatures (etc..) in strings.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.LibraryData" isDocumented="True">Classes for serializing/deserializing LSL standard library data.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.LibraryData.Reflection" isDocumented="True">Classes for generating library data from C sharp classes via runtime reflection.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.Settings" isDocumented="True">Bindable/Observable settings object tools, used for class configuration objects.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.Utility" isDocumented="True">Misc utilities, mostly string processing/formatting tools.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="LibLSLCC.Utility.ListParser" isDocumented="True">Classes implementing parsing/validation of LSL style list literals in strings.</NamespaceSummaryItem>
+    </NamespaceSummaries>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
