@@ -263,12 +263,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     True if this syntax tree node contains syntax errors.
+        ///     True if this syntax tree node contains syntax errors. <para/>
+        ///     <see cref="SourceRange"/> should point to a more specific error location when this is <c>true</c>. <para/>
+        ///     Other source ranges will not be available.
         /// </summary>
-        /// <remarks>
-        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> this property will be
-        ///     <c>null</c>.
-        /// </remarks>
         public bool HasErrors { get; internal set; }
 
 
