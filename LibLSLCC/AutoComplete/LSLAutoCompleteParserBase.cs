@@ -274,9 +274,9 @@ namespace LibLSLCC.AutoComplete
         ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is inside of a binary expression/prefix
         ///     expression/postfix expression or parenthesized expression.
         /// </summary>
-        public bool InBasicExpressionTree
+        public bool InExpressionTree
         {
-            get { return ParserState.InBasicExpressionTree; }
+            get { return ParserState.InExpressionTree; }
         }
 
         /// <summary>

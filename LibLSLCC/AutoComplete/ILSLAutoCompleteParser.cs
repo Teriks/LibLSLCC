@@ -74,7 +74,6 @@ namespace LibLSLCC.AutoComplete
         /// <returns>An enumerable of <see cref="LSLAutoCompleteLocalJump" /> objects that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.</returns>
         IEnumerable<LSLAutoCompleteLocalJump> GetLocalJumps(string sourceCode);
 
-
         /// <summary>
         ///     Preforms an auto-complete parse on the specified stream of LSL source code, up to an arbitrary offset.
         /// </summary>

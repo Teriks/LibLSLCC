@@ -183,7 +183,7 @@ namespace LibLSLCC.AutoComplete
         ///     <c>true</c> if <see cref="ParseToOffset" /> is inside of a binary expression/prefix expression/postfix expression
         ///     or parenthesized expression.
         /// </summary>
-        bool InBasicExpressionTree { get; }
+        bool InExpressionTree { get; }
 
         /// <summary>
         ///     <c>true</c> if <see cref="ParseToOffset" /> is to the right of the dot in a dot member accessor expression.

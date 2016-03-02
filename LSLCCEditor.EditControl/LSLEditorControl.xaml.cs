@@ -43,6 +43,8 @@
 
 #endregion
 
+#define DEBUG_AUTO_COMPLETE
+
 #region Imports
 
 using System;
@@ -477,7 +479,7 @@ namespace LSLCCEditor.EditControl
             Editor.TextArea.Options.EnableRectangularSelection = true;
 
 
-#if DEBUG_AUTOCOMPLETE_PARSER
+#if DEBUG_AUTO_COMPLETE
             _debugObjectView.Show();
 #endif
         }
@@ -1094,7 +1096,7 @@ namespace LSLCCEditor.EditControl
 
                 _autoCompleteParser.Parse(new StringReader(Editor.Text), caretOffset == 0 ? 0 : caretOffset - 1);
 
-#if DEBUG_AUTOCOMPLETE_PARSER
+#if DEBUG_AUTO_COMPLETE
     _debugObjectView.ViewObject("", _autoCompleteParser);
 #endif
 
