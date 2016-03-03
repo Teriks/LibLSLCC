@@ -69,7 +69,7 @@ namespace LibLSLCC.AutoComplete
 
         //An auto complete parse only takes place if the character preceding the inserted text
         //matches one of these
-        private static readonly HashSet<string> ValidSuggestionPrefixes = new HashSet<string>
+        private static readonly HashSet<string> _validSuggestionPrefixes = new HashSet<string>
         {
             "\t", //after a word break
             "\r", // ^
@@ -104,7 +104,7 @@ namespace LibLSLCC.AutoComplete
         //Used when something is being inserted over a selection.
         //an auto complete parse only takes place if character after the end of the selection
         //matches one of these.
-        private static readonly HashSet<string> ValidSuggestionSuffixes = new HashSet<string>
+        private static readonly HashSet<string> _validSuggestionSuffixes = new HashSet<string>
         {
             "\t", //before a word break
             "\r", // ^
@@ -130,6 +130,9 @@ namespace LibLSLCC.AutoComplete
             "%", //before modulus or modulus assign
             "" //before the end of the file
         };
+
+
+
 
 
         private static string FindKeywordWordBehindOffset(string text, int caretOffset)
@@ -175,7 +178,7 @@ namespace LibLSLCC.AutoComplete
 
             if (keywordBehindOffset == null) return false;
 
-            return IsValidSuggestionKeywordPrefix(keywordBehindOffset);
+            return !IsInvalidSuggestionKeywordPrefix(keywordBehindOffset);
         }
 
 
@@ -260,15 +263,15 @@ namespace LibLSLCC.AutoComplete
 
 
         /// <summary>
-        /// Determine if autocomplete can continue if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
-        /// In otherwords, can autocomplete continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
+        /// Determine if autocomplete should be blocked if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
+        /// In other words, autocomplete cannot continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
         /// </summary>
         /// <param name="keyword">The keyword or character sequence to test.</param>
-        /// <returns><c>true</c> if the keyword/sequence does not block autocomplete.</returns>
+        /// <returns><c>true</c> if the keyword/sequence blocks autocomplete.</returns>
         /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix"/>
         /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
         /// <exception cref="ArgumentNullException"><paramref name="keyword"/> is <see langword="null" />.</exception>
-        public override bool IsValidSuggestionKeywordPrefix(string keyword)
+        public override bool IsInvalidSuggestionKeywordPrefix(string keyword)
         {
             if (keyword == null) throw new ArgumentNullException("keyword");
 
@@ -302,7 +305,7 @@ namespace LibLSLCC.AutoComplete
         {
             if (character == null) throw new ArgumentNullException("character");
 
-            return ValidSuggestionPrefixes.Contains(character);
+            return _validSuggestionPrefixes.Contains(character);
         }
 
 
@@ -316,7 +319,25 @@ namespace LibLSLCC.AutoComplete
         {
             if (character == null) throw new ArgumentNullException("character");
 
-            return ValidSuggestionSuffixes.Contains(character);
+            return _validSuggestionSuffixes.Contains(character);
+        }
+
+
+        /// <summary>
+        /// Returns a hashset copy of all valid suggestion suffixes.  see: <see cref="IsValidSuggestionSuffix"/>
+        /// </summary>
+        public static HashSet<string> ValidSuggestionSuffixes
+        {
+            get { return new HashSet<string>(_validSuggestionSuffixes); }
+        }
+
+
+        /// <summary>
+        /// Returns a hashset copy of all valid suggestion prefixes.  see: <see cref="IsValidSuggestionPrefix"/>
+        /// </summary>
+        public static HashSet<string> ValidSuggestionPrefixes
+        {
+            get { return new HashSet<string>(_validSuggestionPrefixes); }
         }
     }
 }

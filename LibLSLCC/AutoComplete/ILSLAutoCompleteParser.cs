@@ -73,7 +73,7 @@ namespace LibLSLCC.AutoComplete
 
         /// <summary>
         /// Block autocomplete if a invalid prefix keyword is found before <see cref="ILSLAutoCompleteParserState.ParseToOffset"/>. <para/>
-        /// Invalid prefixes are determined by <see cref="ILSLAutoCompleteParser.IsValidSuggestionKeywordPrefix"/>. <para/>
+        /// Invalid prefixes are determined by <see cref="ILSLAutoCompleteParser.IsInvalidSuggestionKeywordPrefix"/>. <para/>
         /// An invalid keyword followed only by space before the ParseToOffset will cause autocomplete to be blocked.
         /// </summary>
         /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
@@ -113,14 +113,14 @@ namespace LibLSLCC.AutoComplete
 
 
         /// <summary>
-        /// Determine if autocomplete can continue if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
-        /// In otherwords, can autocomplete continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
+        /// Determine if autocomplete should be blocked if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
+        /// In other words, autocomplete cannot continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
         /// </summary>
         /// <param name="keyword">The keyword or character sequence to test.</param>
-        /// <returns><c>true</c> if the keyword/sequence does not block autocomplete.</returns>
+        /// <returns><c>true</c> if the keyword/sequence blocks autocomplete.</returns>
         /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix"/>
         /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
-        bool IsValidSuggestionKeywordPrefix(string keyword);
+        bool IsInvalidSuggestionKeywordPrefix(string keyword);
 
         /// <summary>
         /// Determine if a given character can come immediately before an autocomplete suggestion.  An empty string represents the begining of the source code.

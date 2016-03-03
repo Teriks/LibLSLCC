@@ -862,14 +862,14 @@ namespace LibLSLCC.AutoComplete
 
 
         /// <summary>
-        /// Determine if autocomplete can continue if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
-        /// In otherwords, can autocomplete continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
+        /// Determine if autocomplete should be blocked if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
+        /// In other words, autocomplete cannot continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
         /// </summary>
         /// <param name="keyword">The keyword or character sequence to test.</param>
-        /// <returns><c>true</c> if the keyword/sequence does not block autocomplete.</returns>
+        /// <returns><c>true</c> if the keyword/sequence blocks autocomplete.</returns>
         /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix"/>
         /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
-        public abstract bool IsValidSuggestionKeywordPrefix(string keyword);
+        public abstract bool IsInvalidSuggestionKeywordPrefix(string keyword);
 
 
         /// <summary>

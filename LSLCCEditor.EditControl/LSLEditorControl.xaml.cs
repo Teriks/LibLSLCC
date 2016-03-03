@@ -49,7 +49,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -74,9 +73,9 @@ using LibLSLCC.Utility;
 using LSLCCEditor.Utility.Binding;
 using LSLCCEditor.Utility.Xml;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
-
 #if DEBUG_AUTO_COMPLETE
 using LSLCCEditor.Utility;
+
 #endif
 
 #endregion
@@ -88,23 +87,185 @@ namespace LSLCCEditor.EditControl
     /// </summary>
     public sealed partial class LSLEditorControl : UserControl
     {
+        public delegate void TextChangedEventHandler(object sender, EventArgs e);
+
+        public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(
+            "Theme", typeof (LSLEditorControlTheme), typeof (LSLEditorControl),
+            new PropertyMetadata(default(LSLEditorControlTheme), ThemePropertyChangedCallback));
+
+        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
+            "Settings", typeof (LSLEditorControlSettings), typeof (LSLEditorControl),
+            new PropertyMetadata(default(LSLEditorControlSettings), SettingsPropertyChangedCallback));
+
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+            "Text", typeof (string), typeof (LSLEditorControl),
+            new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                TextPropertyChangedCallback));
+
+        public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
+            "LibraryDataProvider", typeof (ILSLLibraryDataProvider), typeof (LSLEditorControl),
+            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                LibraryDataProviderPropertyChangedCallback));
+
+        private readonly ILSLAutoCompleteParser _autoCompleteParser = new LSLAutoCompleteParser();
+        private readonly object _completionLock = new object();
+
+        private readonly HashSet<string> _controlStatementIndentBreakTriggers = new HashSet<string>
+        {
+            ";",
+            "{",
+            "}"
+        };
+
 #if DEBUG_AUTO_COMPLETE
         private readonly DebugObjectView _debugObjectView = new DebugObjectView();
 #endif
 
-        private readonly ILSLAutoCompleteParser _autoCompleteParser = new LSLAutoCompleteParser();
+        private readonly HashSet<string> _eventIndentBreakTriggers = new HashSet<string>
+        {
+            "{",
+            "}"
+        };
 
+        private readonly object _propertyChangingLock = new object();
+
+        private readonly HashSet<string> _singleStatementScopeIndentBreakTriggers = new HashSet<string>
+        {
+            "do",
+            "else",
+            ")", //after a control statement condition
+        };
+
+        private readonly ToolTip _symbolHoverToolTip = new ToolTip();
+        private readonly object _userChangingTextLock = new object();
+        //suggestion prefixes and suffixes are used to rule out the need for a parse
+        //up to the caret.  In some situations we can determine that auto-complete is not
+        //needed or will not produce results.
+
+        //An auto complete parse only takes place if the character preceding the inserted text
+        //matches one of these
+        private readonly HashSet<string> _validSuggestionPrefixes = new HashSet<string>
+        {
+            "\t", //after a word break
+            "\r", // ^
+            "\n", // ^
+            " ", // ^
+            //".",  //member accessor (not used yet)
+            "{", //after the start of a scope
+            "}", //after a scope
+            "[", //after the start of a list literal
+            "(", //after the start of a parenthesized expression group, cast, parameter list, ect..
+            ")", //after a single statement code scope starts
+            "<", //after comparison, vectors start and left shift operator
+            ">", //after right shift, and comparison
+            "&", //after logical and bitwise and
+            "^", //after xor
+            "|", //after logical and bitwise or
+            "~", //after bitwise not
+            "!", //after logical not
+            ",", //after a comma in an expression list
+            ";", //after a statement terminator
+            "=", //after all types of assignment
+            "+", //after addition operator or prefix increment
+            "-", //after negation, subtraction operator or prefix decrement
+            "*", //after multiplication operator
+            "/", //after division operator
+            "%", //after modulus operator
+            "@", //after a label name prefix
+            "" //at the beginning of the file
+        };
+
+        private LSLAutoCompleteGlobalFunction _contextMenuFunction;
+        private LSLAutoCompleteLocalParameter _contextMenuLocalParam;
+        private LSLAutoCompleteLocalVariable _contextMenuLocalVar;
+        private TextViewPosition? _contextMenuOpenPosition;
+        private LSLAutoCompleteGlobalVariable _contextMenuVar;
         private CompletionWindow _currentCompletionWindow;
+        private bool _textPropertyChangingText;
+        private bool _userChangingText;
+
+
+        public LSLEditorControl()
+        {
+            AutoCompleteUserDefined = new RelayCommand(AutoCompleteUserDefinedCommand);
+            AutoCompleteLibraryFunctions = new RelayCommand(AutoCompleteLibraryFunctionsCommand);
+            AutoCompleteLibraryConstants = new RelayCommand(AutoCompleteLibraryConstantsCommand);
+
+            InitializeComponent();
+
+
+            Editor.TextArea.TextEntering += TextArea_TextEntering;
+            Editor.MouseHover += TextEditor_MouseHover;
+            Editor.MouseHover += TextEditor_MouseHoverStopped;
+
+            Editor.TextArea.IndentationStrategy =
+                new LSLIndentStrategy();
+
+
+            Settings = new LSLEditorControlSettings();
+
+            Theme = new LSLEditorControlTheme();
+
+            Settings.CaseInsensitiveAutoCompleteMatching = true;
+
+            Settings.ConstantCompletionFirstCharIsCaseSensitive = true;
+
+            Editor.TextArea.Options.EnableRectangularSelection = true;
+
+
+#if DEBUG_AUTO_COMPLETE
+            _debugObjectView.Show();
+#endif
+        }
+
 
         public TextEditor Editor
         {
             get { return AvalonEditor; }
         }
 
+        public LSLEditorControlTheme Theme
+        {
+            get { return (LSLEditorControlTheme) GetValue(ThemeProperty); }
+            set { SetValue(ThemeProperty, value); }
+        }
 
-        public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(
-            "Theme", typeof (LSLEditorControlTheme), typeof (LSLEditorControl),
-            new PropertyMetadata(default(LSLEditorControlTheme), ThemePropertyChangedCallback));
+        public LSLEditorControlSettings Settings
+        {
+            get { return (LSLEditorControlSettings) GetValue(SettingsProperty); }
+            set { SetValue(SettingsProperty, value); }
+        }
+
+        public ICommand AutoCompleteUserDefined { get; set; }
+        public ICommand AutoCompleteLibraryConstants { get; set; }
+        public ICommand AutoCompleteLibraryFunctions { get; set; }
+
+        public string Text
+        {
+            get { return (string) GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        public IEnumerable<LSLLibraryConstantSignature> ConstantSignatures
+        {
+            get { return LibraryDataProvider.LibraryConstants; }
+        }
+
+        public IEnumerable<LSLLibraryEventSignature> EventSignatures
+        {
+            get { return LibraryDataProvider.LibraryEvents; }
+        }
+
+        public IEnumerable<string> LibraryFunctionNames
+        {
+            get { return LibraryDataProvider.LibraryFunctions.Where(x => x.Count > 0).Select(x => x.First().Name); }
+        }
+
+        public ILSLLibraryDataProvider LibraryDataProvider
+        {
+            get { return (ILSLLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
+            set { SetValue(LibraryDataProviderProperty, value); }
+        }
 
 
         private static void ThemePropertyChangedCallback(DependencyObject dependencyObject,
@@ -252,17 +413,6 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        public LSLEditorControlTheme Theme
-        {
-            get { return (LSLEditorControlTheme) GetValue(ThemeProperty); }
-            set { SetValue(ThemeProperty, value); }
-        }
-
-        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register(
-            "Settings", typeof (LSLEditorControlSettings), typeof (LSLEditorControl),
-            new PropertyMetadata(default(LSLEditorControlSettings), SettingsPropertyChangedCallback));
-
-
         private static void SettingsPropertyChangedCallback(DependencyObject dependencyObject,
             DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
@@ -292,198 +442,6 @@ namespace LSLCCEditor.EditControl
                 args => self.Editor.Options.ShowEndOfLine = (bool) args.NewValue);
             n.SubscribePropertyChanged(self, "ShowSpaces", args => self.Editor.Options.ShowSpaces = (bool) args.NewValue);
             n.SubscribePropertyChanged(self, "ShowTabs", args => self.Editor.Options.ShowTabs = (bool) args.NewValue);
-        }
-
-
-        public LSLEditorControlSettings Settings
-        {
-            get { return (LSLEditorControlSettings) GetValue(SettingsProperty); }
-            set { SetValue(SettingsProperty, value); }
-        }
-
-
-        public delegate void TextChangedEventHandler(object sender, EventArgs e);
-
-
-        private readonly object _completionLock = new object();
-        private readonly ToolTip _symbolHoverToolTip = new ToolTip();
-
-
-        private readonly object _propertyChangingLock = new object();
-
-
-        private readonly HashSet<string> _eventIndentBreakTriggers = new HashSet<string>
-        {
-            "{",
-            "}"
-        };
-
-        private readonly HashSet<string> _controlStatementIndentBreakTriggers = new HashSet<string>
-        {
-            ";",
-            "{",
-            "}"
-        };
-
-        private readonly HashSet<string> _singleStatementScopeIndentBreakTriggers = new HashSet<string>
-        {
-            "do",
-            "else",
-            ")", //after a control statement condition
-        };
-
-        private readonly object _userChangingTextLock = new object();
-
-
-        //suggestion prefixes and suffixes are used to rule out the need for a parse
-        //up to the caret.  In some situations we can determine that auto-complete is not
-        //needed or will not produce results.
-
-        //An auto complete parse only takes place if the character preceding the inserted text
-        //matches one of these
-        private readonly HashSet<string> _validSuggestionPrefixes = new HashSet<string>
-        {
-            "\t", //after a word break
-            "\r", // ^
-            "\n", // ^
-            " ", // ^
-            //".",  //member accessor (not used yet)
-            "{", //after the start of a scope
-            "}", //after a scope
-            "[", //after the start of a list literal
-            "(", //after the start of a parenthesized expression group, cast, parameter list, ect..
-            ")", //after a single statement code scope starts
-            "<", //after comparison, vectors start and left shift operator
-            ">", //after right shift, and comparison
-            "&", //after logical and bitwise and
-            "^", //after xor
-            "|", //after logical and bitwise or
-            "~", //after bitwise not
-            "!", //after logical not
-            ",", //after a comma in an expression list
-            ";", //after a statement terminator
-            "=", //after all types of assignment
-            "+", //after addition operator or prefix increment
-            "-", //after negation, subtraction operator or prefix decrement
-            "*", //after multiplication operator
-            "/", //after division operator
-            "%", //after modulus operator
-            "@", //after a label name prefix
-            "" //at the beginning of the file
-        };
-
-
-        private bool _textPropertyChangingText;
-        private bool _userChangingText;
-
-
-        private class LSLIndentStrategy :
-            IIndentationStrategy
-        {
-            public void IndentLine(TextDocument document, DocumentLine line)
-            {
-                if (document == null)
-                    throw new ArgumentNullException("document");
-                if (line == null)
-                    throw new ArgumentNullException("line");
-                var previousLine = line.PreviousLine;
-                if (previousLine != null)
-                {
-                    var indentationSegment = TextUtilities.GetWhitespaceAfter(document, previousLine.Offset);
-                    var indentation = document.GetText(indentationSegment);
-                    var offset = line.Offset - 1;
-                    while (offset > 0 && offset >= previousLine.Offset)
-                    {
-                        var lastChar = document.GetText(offset, 1);
-                        if (lastChar == "{")
-                        {
-                            indentation += "\t";
-                            break;
-                        }
-                        if (!string.IsNullOrWhiteSpace(lastChar))
-                        {
-                            break;
-                        }
-                        offset--;
-                    }
-
-                    // copy indentation to line
-                    indentationSegment = TextUtilities.GetWhitespaceAfter(document, line.Offset);
-
-                    document.Replace(indentationSegment, indentation);
-                }
-            }
-
-
-            public void IndentLines(TextDocument document, int beginLine, int endLine)
-            {
-            }
-        }
-
-
-        public LSLEditorControl()
-        {
-            AutoCompleteUserDefined = new RelayCommand(AutoCompleteUserDefinedCommand);
-            AutoCompleteLibraryFunctions = new RelayCommand(AutoCompleteLibraryFunctionsCommand);
-            AutoCompleteLibraryConstants = new RelayCommand(AutoCompleteLibraryConstantsCommand);
-
-            InitializeComponent();
-
-
-            Editor.TextArea.TextEntering += TextArea_TextEntering;
-            Editor.MouseHover += TextEditor_MouseHover;
-            Editor.MouseHover += TextEditor_MouseHoverStopped;
-
-            Editor.TextArea.IndentationStrategy =
-                new LSLIndentStrategy();
-
-
-            Settings = new LSLEditorControlSettings();
-
-            Theme = new LSLEditorControlTheme();
-
-            Settings.CaseInsensitiveAutoCompleteMatching = true;
-
-            Settings.ConstantCompletionFirstCharIsCaseSensitive = true;
-
-            Editor.TextArea.Options.EnableRectangularSelection = true;
-
-
-#if DEBUG_AUTO_COMPLETE
-            _debugObjectView.Show();
-#endif
-        }
-
-
-        public ICommand AutoCompleteUserDefined { get; set; }
-        public ICommand AutoCompleteLibraryConstants { get; set; }
-        public ICommand AutoCompleteLibraryFunctions { get; set; }
-
-        public string Text
-        {
-            get { return (string) GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
-
-        public IEnumerable<LSLLibraryConstantSignature> ConstantSignatures
-        {
-            get { return LibraryDataProvider.LibraryConstants; }
-        }
-
-        public IEnumerable<LSLLibraryEventSignature> EventSignatures
-        {
-            get { return LibraryDataProvider.LibraryEvents; }
-        }
-
-        public IEnumerable<string> LibraryFunctionNames
-        {
-            get { return LibraryDataProvider.LibraryFunctions.Where(x => x.Count > 0).Select(x => x.First().Name); }
-        }
-
-        public ILSLLibraryDataProvider LibraryDataProvider
-        {
-            get { return (ILSLLibraryDataProvider) GetValue(LibraryDataProviderProperty); }
-            set { SetValue(LibraryDataProviderProperty, value); }
         }
 
 
@@ -910,9 +868,6 @@ namespace LSLCCEditor.EditControl
         }
 
 
-
-
-
         // ReSharper disable once FunctionComplexityOverflow
         private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
         {
@@ -995,10 +950,9 @@ namespace LSLCCEditor.EditControl
 
             lock (_completionLock)
             {
-
-                _autoCompleteParser.Parse(Editor.Text, caretOffset, 
-                    LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix | 
-                    LSLAutoCompleteParseOptions.BlockOnInvalidPrefix); 
+                _autoCompleteParser.Parse(Editor.Text, caretOffset,
+                    LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix |
+                    LSLAutoCompleteParseOptions.BlockOnInvalidPrefix);
 
 #if DEBUG_AUTO_COMPLETE
                 _debugObjectView.ViewObject("", _autoCompleteParser);
@@ -1006,14 +960,12 @@ namespace LSLCCEditor.EditControl
 
 
                 if (_autoCompleteParser.InComment ||
-                    _autoCompleteParser.InString || 
+                    _autoCompleteParser.InString ||
                     _autoCompleteParser.InvalidPrefix ||
                     _autoCompleteParser.InvalidKeywordPrefix)
                 {
                     return;
                 }
-                
-
 
 
                 IList<ICompletionData> data = null;
@@ -1177,7 +1129,8 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForLocalVariableOrParameter(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
+        private bool TryCompletionForLocalVariableOrParameter(string insertedText,
+            ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
             if (!autoCompleteState.CanSuggestLocalVariableOrParameter) return false;
@@ -1232,7 +1185,8 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForUserDefinedFunction(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
+        private bool TryCompletionForUserDefinedFunction(string insertedText,
+            ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
             if (!autoCompleteState.CanSuggestFunction) return false;
@@ -1264,7 +1218,8 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private bool TryCompletionForUserGlobalVariable(string insertedText, ILSLAutoCompleteParserState autoCompleteState,
+        private bool TryCompletionForUserGlobalVariable(string insertedText,
+            ILSLAutoCompleteParserState autoCompleteState,
             ref IList<ICompletionData> data)
         {
             if (!autoCompleteState.CanSuggestGlobalVariable) return false;
@@ -2457,7 +2412,8 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private LSLCompletionData CreateCompletionData_StateChangeStatement(ILSLAutoCompleteParserState autoCompleteParser)
+        private LSLCompletionData CreateCompletionData_StateChangeStatement(
+            ILSLAutoCompleteParserState autoCompleteParser)
         {
             var data = new LSLCompletionData("state", "state", 0)
             {
@@ -2956,8 +2912,7 @@ namespace LSLCCEditor.EditControl
                 }
 
 
-  
-                _autoCompleteParser.Parse(Editor.Text, caretOffset, 
+                _autoCompleteParser.Parse(Editor.Text, caretOffset,
                     LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix |
                     LSLAutoCompleteParseOptions.BlockOnInvalidPrefix);
 
@@ -3015,12 +2970,10 @@ namespace LSLCCEditor.EditControl
                     }
                 }
 
-               
 
-                _autoCompleteParser.Parse(Editor.Text, caretOffset, 
+                _autoCompleteParser.Parse(Editor.Text, caretOffset,
                     LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix |
                     LSLAutoCompleteParseOptions.BlockOnInvalidPrefix);
-
 
 
 #if DEBUG_AUTO_COMPLETE
@@ -3137,7 +3090,9 @@ namespace LSLCCEditor.EditControl
         private IHighlightingDefinition LoadXSHD()
         {
             var settings = new XmlReaderSettings() {CloseInput = true};
-            using (var reader = XmlReader.Create(GetType().Assembly.GetManifestResourceStream(GetType().Namespace + ".LSL.xshd")))
+            using (
+                var reader =
+                    XmlReader.Create(GetType().Assembly.GetManifestResourceStream(GetType().Namespace + ".LSL.xshd")))
             {
                 return HighlightingLoader.Load(reader, HighlightingManager.Instance);
             }
@@ -3217,17 +3172,6 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-            "Text", typeof (string), typeof (LSLEditorControl),
-            new FrameworkPropertyMetadata(default(string), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                TextPropertyChangedCallback));
-
-        public static readonly DependencyProperty LibraryDataProviderProperty = DependencyProperty.Register(
-            "LibraryDataProvider", typeof (ILSLLibraryDataProvider), typeof (LSLEditorControl),
-            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                LibraryDataProviderPropertyChangedCallback));
-
-
         private void EditorContext_ClickSuggestUserDefinedOrEvent(object sender, RoutedEventArgs e)
         {
             SuggestUserDefinedOrEvent();
@@ -3244,13 +3188,6 @@ namespace LSLCCEditor.EditControl
         {
             SuggestLibraryConstants();
         }
-
-
-        private TextViewPosition? _contextMenuOpenPosition;
-        private LSLAutoCompleteGlobalFunction _contextMenuFunction;
-        private LSLAutoCompleteGlobalVariable _contextMenuVar;
-        private LSLAutoCompleteLocalVariable _contextMenuLocalVar;
-        private LSLAutoCompleteLocalParameter _contextMenuLocalParam;
 
 
         private void TextArea_ContextMenu_GotoDefinitionClick(object sender, RoutedEventArgs e)
@@ -3389,6 +3326,50 @@ namespace LSLCCEditor.EditControl
             _contextMenuVar = null;
             _contextMenuLocalVar = null;
             _contextMenuLocalParam = null;
+        }
+
+
+        private class LSLIndentStrategy :
+            IIndentationStrategy
+        {
+            public void IndentLine(TextDocument document, DocumentLine line)
+            {
+                if (document == null)
+                    throw new ArgumentNullException("document");
+                if (line == null)
+                    throw new ArgumentNullException("line");
+                var previousLine = line.PreviousLine;
+                if (previousLine != null)
+                {
+                    var indentationSegment = TextUtilities.GetWhitespaceAfter(document, previousLine.Offset);
+                    var indentation = document.GetText(indentationSegment);
+                    var offset = line.Offset - 1;
+                    while (offset > 0 && offset >= previousLine.Offset)
+                    {
+                        var lastChar = document.GetText(offset, 1);
+                        if (lastChar == "{")
+                        {
+                            indentation += "\t";
+                            break;
+                        }
+                        if (!string.IsNullOrWhiteSpace(lastChar))
+                        {
+                            break;
+                        }
+                        offset--;
+                    }
+
+                    // copy indentation to line
+                    indentationSegment = TextUtilities.GetWhitespaceAfter(document, line.Offset);
+
+                    document.Replace(indentationSegment, indentation);
+                }
+            }
+
+
+            public void IndentLines(TextDocument document, int beginLine, int endLine)
+            {
+            }
         }
     }
 }
