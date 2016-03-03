@@ -176,7 +176,7 @@
     <Compile Include="Utility\ListParser\LSLListVectorExpr.cs" />
     <Compile Include="Utility\LSLTokenTools.cs" />
     <Compile Include="Utility\LSLFormatTools.cs" />
-    <Compile Include="AutoComplete\LSLCommentStringSkipper.cs" />
+    <Compile Include="AutoComplete\LSLCommentAndStringDetector.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteParser.cs" />
     <Compile Include="CodeValidator\Primitives\LSLBinaryOperationSignature.cs" />
     <Compile Include="CodeValidator\Strategies\Interfaces\ILSLExpressionValidator.cs" />

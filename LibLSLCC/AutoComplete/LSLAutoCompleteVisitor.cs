@@ -50,6 +50,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
+using Antlr4.Runtime;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
@@ -194,6 +195,11 @@ namespace LibLSLCC.AutoComplete
         ///     This includes being within the name or parameter definitions.
         /// </summary>
         public bool InEventSourceRange { get; private set; }
+
+        /// <summary>
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset"/> is inside of a string literal.
+        /// </summary>
+        public bool InString { get; internal set; }
 
         /// <summary>
         ///     <c>true</c> if <see cref="ParseToOffset" /> is anywhere inside the code body of an event handler.
@@ -768,6 +774,21 @@ namespace LibLSLCC.AutoComplete
         /// </summary>
         public LSLType CurrentFunctionReturnType { get; private set; }
 
+        /// <summary>
+        ///     <see cref="InLineComment"/> or <see cref="InBlockComment"/>
+        /// </summary>
+        public bool InComment { get; internal set; }
+
+
+        /// <summary>
+        ///     <c>true</c> if <see cref="ParseToOffset"/> is inside of a line style comment.
+        /// </summary>
+        public bool InLineComment { get; internal set; }
+
+        /// <summary>
+        ///     <c>true</c> if <see cref="ParseToOffset"/> is inside of a multi line block style comment.
+        /// </summary>
+        public bool InBlockComment { get; internal set; }
 
         private static T SafeStackPeek<T>(Stack<T> stack)
         {
@@ -807,6 +828,24 @@ namespace LibLSLCC.AutoComplete
 
 
 
+        public override bool VisitExpr_Atom(LSLParser.Expr_AtomContext context)
+        {
+
+            if (GreaterThanParseOffset(context.Start.StartIndex)) return true;
+
+            if (context.string_literal != null)
+            {
+
+                InString = LessThanOrEqParseOffset(context.string_literal.StartIndex) &&
+                                  GreaterThanOrEqParseOffset(context.string_literal.StopIndex);
+
+            }
+
+
+            return base.VisitExpr_Atom(context);
+        }
+
+
         public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
         {
             if (GreaterThanParseOffset(context.Start.StartIndex)) return true;
@@ -814,7 +853,7 @@ namespace LibLSLCC.AutoComplete
             if (context.label_prefix == null) return true;
  
             if ((LessThanParseOffset(context.label_prefix.StartIndex) &&
-                 GreaterThanEqParseOffset(context.Stop.StopIndex)) ||
+                 GreaterThanOrEqParseOffset(context.Stop.StopIndex)) ||
                 (context.label_prefix.StopIndex == context.Stop.StopIndex))
             {
                 InLabelDefinitionNameArea = true;
@@ -826,11 +865,11 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitJumpStatement(LSLParser.JumpStatementContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
             if (context.jump_keyword == null) return true;
 
             if ((LessThanParseOffset(context.jump_keyword.StopIndex) &&
-                 GreaterThanEqParseOffset(context.Stop.StopIndex)) ||
+                 GreaterThanOrEqParseOffset(context.Stop.StopIndex)) ||
                 (context.jump_keyword.StopIndex == context.Stop.StopIndex))
             {
                 InJumpStatementLabelNameArea = true;
@@ -842,12 +881,12 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitStateChangeStatement(LSLParser.StateChangeStatementContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
             if (context.state_keyword == null) return true;
 
 
             if ((LessThanParseOffset(context.state_keyword.StopIndex) &&
-                 GreaterThanEqParseOffset(context.Stop.StopIndex)) ||
+                 GreaterThanOrEqParseOffset(context.Stop.StopIndex)) ||
                 (context.state_keyword.StopIndex == context.Stop.StopIndex))
             {
                 InStateChangeStatementStateNameArea = true;
@@ -859,7 +898,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitListLiteral(LSLParser.ListLiteralContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             _nestableExpressionElementStack.Push(NestableExpressionElementType.List);
 
@@ -867,7 +906,7 @@ namespace LibLSLCC.AutoComplete
 
             if (context.Stop.Text != "]") return true;
 
-            if (GreaterThanEqParseOffset(context.Stop.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Stop.StartIndex)) return true;
 
             SafeStackPop(_nestableExpressionElementStack);
 
@@ -878,7 +917,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitVectorLiteral(LSLParser.VectorLiteralContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
 
             _nestableExpressionElementStack.Push(NestableExpressionElementType.Vector);
@@ -888,7 +927,7 @@ namespace LibLSLCC.AutoComplete
 
             if (context.Stop.Text != ">") return true;
 
-            if (GreaterThanEqParseOffset(context.Stop.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Stop.StartIndex)) return true;
 
             SafeStackPop(_nestableExpressionElementStack);
 
@@ -899,7 +938,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitRotationLiteral(LSLParser.RotationLiteralContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             _nestableExpressionElementStack.Push(NestableExpressionElementType.Rotation);
 
@@ -907,7 +946,7 @@ namespace LibLSLCC.AutoComplete
             base.VisitRotationLiteral(context);
 
             if (context.Stop.Text != ">") return true;
-            if (GreaterThanEqParseOffset(context.Stop.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Stop.StartIndex)) return true;
 
 
             SafeStackPop(_nestableExpressionElementStack);
@@ -980,7 +1019,7 @@ namespace LibLSLCC.AutoComplete
         }
 
 
-        private bool GreaterThanEqParseOffset(int offset)
+        private bool GreaterThanOrEqParseOffset(int offset)
         {
             return offset >= _parseToOffset;
         }
@@ -989,7 +1028,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_Assignment(LSLParser.Expr_AssignmentContext context)
         {
             if (context.operation != null && LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                ((GreaterThanEqParseOffset(context.Stop.StopIndex)) ||
+                ((GreaterThanOrEqParseOffset(context.Stop.StopIndex)) ||
                  (context.operation.StopIndex == context.Stop.StopIndex)))
             {
                 if (context.expr_lvalue == null) return true;
@@ -1031,7 +1070,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_ModifyingAssignment(LSLParser.Expr_ModifyingAssignmentContext context)
         {
             if (context.operation != null && LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                ((GreaterThanEqParseOffset(context.Stop.StopIndex)) ||
+                ((GreaterThanOrEqParseOffset(context.Stop.StopIndex)) ||
                  (context.operation.StopIndex == context.Stop.StopIndex)))
             {
                 if (context.expr_lvalue == null) return true;
@@ -1072,12 +1111,12 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitReturnStatement(LSLParser.ReturnStatementContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             if (InFunctionCodeBody && context.return_expression != null && context.return_keyword != null)
             {
                 if (LessThanParseOffset(context.return_keyword.StopIndex) &&
-                    ((GreaterThanEqParseOffset(context.Stop.StopIndex)) || context.Stop.Text == "return"))
+                    ((GreaterThanOrEqParseOffset(context.Stop.StopIndex)) || context.Stop.Text == "return"))
                 {
                     InFunctionReturnExpression = true;
                 }
@@ -1097,7 +1136,7 @@ namespace LibLSLCC.AutoComplete
 
         private bool VisitElseIfStatement(LSLParser.ControlStructureContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
 
             if (context.open_parenth != null && context.open_parenth.Text == "(" &&
@@ -1109,23 +1148,22 @@ namespace LibLSLCC.AutoComplete
             if (context.open_parenth != null &&
                 context.close_parenth != null &&
                 context.close_parenth.Text == ")" &&
-                LessThanOrEqParseOffset(context.close_parenth.StartIndex))
+                LessThanParseOffset(context.close_parenth.StartIndex))
             {
-                if (context.open_parenth.StartIndex != context.close_parenth.StartIndex)
-                {
-                    _nestableExpressionElementStack.Clear();
-                    InElseIfConditionExpression = false;
 
-                    if (context.code != null && context.code.code_scope != null &&
-                        context.code.code_scope.open_brace.Text == "{")
-                    {
-                        InSingleStatementCodeScopeTopLevel = false;
-                    }
-                    else
-                    {
-                        EnterSingleStatementCodeScope();
-                    }
+                _nestableExpressionElementStack.Clear();
+                InElseIfConditionExpression = false;
+
+                if (context.code != null && context.code.code_scope != null &&
+                    context.code.code_scope.open_brace.Text == "{")
+                {
+                    InSingleStatementCodeScopeTopLevel = false;
                 }
+                else
+                {
+                    EnterSingleStatementCodeScope();
+                }
+                
             }
 
 
@@ -1157,7 +1195,7 @@ namespace LibLSLCC.AutoComplete
             if (context.else_statement == null) return true;
 
             if (LessThanOrEqParseOffset(context.code.Stop.StopIndex) &&
-                GreaterThanEqParseOffset(context.else_statement.Start.StartIndex))
+                GreaterThanOrEqParseOffset(context.else_statement.Start.StartIndex))
             {
                 InMultiStatementCodeScopeTopLevel = false;
                 InSingleStatementCodeScopeTopLevel = false;
@@ -1172,7 +1210,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitElseStatement(LSLParser.ElseStatementContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             if (context.code != null && context.code.control_structure != null)
             {
@@ -1217,7 +1255,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitControlStructure(LSLParser.ControlStructureContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             ControlStructureNestingDepth++;
             InControlStatementSourceRange = true;
@@ -1232,23 +1270,20 @@ namespace LibLSLCC.AutoComplete
 
 
             if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
-                LessThanOrEqParseOffset(context.close_parenth.StartIndex))
+                LessThanParseOffset(context.close_parenth.StartIndex))
             {
-                if (context.close_parenth.StartIndex != context.open_parenth.StartIndex)
+                _nestableExpressionElementStack.Clear();
+                InIfConditionExpression = false;
+
+
+                if (context.code != null && context.code.code_scope != null &&
+                    context.code.code_scope.open_brace.Text == "{")
                 {
-                    _nestableExpressionElementStack.Clear();
-                    InIfConditionExpression = false;
-
-
-                    if (context.code != null && context.code.code_scope != null &&
-                        context.code.code_scope.open_brace.Text == "{")
-                    {
-                        InSingleStatementCodeScopeTopLevel = false;
-                    }
-                    else
-                    {
-                        EnterSingleStatementCodeScope();
-                    }
+                    InSingleStatementCodeScopeTopLevel = false;
+                }
+                else
+                {
+                    EnterSingleStatementCodeScope();
                 }
             }
 
@@ -1280,7 +1315,7 @@ namespace LibLSLCC.AutoComplete
             if (context.else_statement != null)
             {
                 if (LessThanOrEqParseOffset(context.code.Stop.StopIndex)
-                    && GreaterThanEqParseOffset(context.else_statement.Start.StartIndex))
+                    && GreaterThanOrEqParseOffset(context.else_statement.Start.StartIndex))
                 {
                     InMultiStatementCodeScopeTopLevel = false;
                     InSingleStatementCodeScopeTopLevel = false;
@@ -1307,7 +1342,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitWhileLoop(LSLParser.WhileLoopContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
 
             ControlStructureNestingDepth++;
@@ -1360,7 +1395,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitForLoop(LSLParser.ForLoopContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
 
             ControlStructureNestingDepth++;
@@ -1416,7 +1451,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitDoLoop(LSLParser.DoLoopContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
 
             ControlStructureNestingDepth++;
@@ -1474,7 +1509,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitExpr_FunctionCall(LSLParser.Expr_FunctionCallContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             if (context.open_parenth != null && context.open_parenth.Text == "(" &&
                 LessThanOrEqParseOffset(context.open_parenth.StartIndex))
@@ -1488,7 +1523,7 @@ namespace LibLSLCC.AutoComplete
                 context.open_parenth == null ||
                 context.close_parenth == null ||
                 context.close_parenth.Text != ")" ||
-                GreaterThanParseOffset(context.close_parenth.StartIndex)) return true;
+                GreaterThanOrEqParseOffset(context.close_parenth.StartIndex)) return true;
 
             if (context.expression_list != null && context.expression_list.Stop.Text == ",")
             {
@@ -1507,7 +1542,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitLocalVariableDeclaration(LSLParser.LocalVariableDeclarationContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             if (context.variable_name == null || context.variable_type == null) return true;
 
@@ -1586,7 +1621,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitFunctionDeclaration(LSLParser.FunctionDeclarationContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             var returnTypeText = context.return_type == null ? "" : context.return_type.Text;
 
@@ -1644,7 +1679,7 @@ namespace LibLSLCC.AutoComplete
             }
 
 
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             InGlobalScope = false;
 
@@ -1703,7 +1738,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitEventHandler(LSLParser.EventHandlerContext context)
         {
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             
             InEventSourceRange = true;
@@ -1789,7 +1824,7 @@ namespace LibLSLCC.AutoComplete
         {
             DefaultState = new LSLAutoCompleteStateBlock("default", new LSLSourceCodeRange(context));
 
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             InGlobalScope = false;
 
@@ -1840,7 +1875,7 @@ namespace LibLSLCC.AutoComplete
                 new LSLSourceCodeRange(context)));
 
 
-            if (GreaterThanEqParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             if (context.open_brace == null) return true;
 
@@ -1898,25 +1933,23 @@ namespace LibLSLCC.AutoComplete
 
             if (singleStatement)
             {
-                if (LessThanOrEqParseOffset(context.Start.StartIndex))
-                {
-                    if (LessThanOrEqParseOffset(context.Start.StartIndex) && context.Stop.Text == ";")
-                    {
-                        InControlStatementSourceRange = false;
 
-                        CodeScopeLevel--;
-                        ScopeLevel--;
-                        InSingleStatementCodeScopeTopLevel = false;
-                    }
-                    else if (GreaterThanEqParseOffset(context.Start.StartIndex))
-                    {
-                        InSingleStatementCodeScopeTopLevel = false;
-                    }
+                var p = context.Parent as ParserRuleContext;
+                if (LessThanOrEqParseOffset(context.Stop.StopIndex) && context.Stop.Text == ";")
+                {
+                    InControlStatementSourceRange = false;
+
+                    CodeScopeLevel--;
+                    ScopeLevel--;
+                    InSingleStatementCodeScopeTopLevel = false;
                 }
+                else if (LessThanParseOffset(context.Stop.StopIndex) && context.Stop.StopIndex != p.Stop.StopIndex)
+                {
+                    InSingleStatementCodeScopeTopLevel = false;
+                }
+                
 
                 base.VisitCodeStatement(context);
-
-                //InSingleStatementCodeScopeTopLevel = prevSign;
             }
             else
             {
@@ -1932,7 +1965,7 @@ namespace LibLSLCC.AutoComplete
 
                 base.VisitCodeStatement(context);
 
-                if (GreaterThanParseOffset(context.Stop.StopIndex) || context.Stop.Text != ";") return true;
+                if (GreaterThanOrEqParseOffset(context.Stop.StopIndex) || context.Stop.Text != ";") return true;
 
 
                 _nestableExpressionElementStack.Clear();
@@ -2037,7 +2070,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_AddSub(LSLParser.Expr_AddSubContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2049,7 +2082,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_BitwiseAnd(LSLParser.Expr_BitwiseAndContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2061,7 +2094,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_BitwiseOr(LSLParser.Expr_BitwiseOrContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2073,7 +2106,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_BitwiseShift(LSLParser.Expr_BitwiseShiftContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2085,7 +2118,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_BitwiseXor(LSLParser.Expr_BitwiseXorContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2097,7 +2130,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_Logical_And_Or(LSLParser.Expr_Logical_And_OrContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2109,7 +2142,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_LogicalCompare(LSLParser.Expr_LogicalCompareContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2120,7 +2153,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_LogicalEquality(LSLParser.Expr_LogicalEqualityContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2131,7 +2164,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_MultDivMod(LSLParser.Expr_MultDivModContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2142,7 +2175,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_PrefixOperation(LSLParser.Expr_PrefixOperationContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2153,7 +2186,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_TypeCast(LSLParser.Expr_TypeCastContext context)
         {
             if (context.close_parenth != null && LessThanOrEqParseOffset(context.close_parenth.StartIndex) &&
-                (context.expr_rvalue == null || GreaterThanEqParseOffset(context.expr_rvalue.Start.StartIndex)))
+                (context.expr_rvalue == null || GreaterThanOrEqParseOffset(context.expr_rvalue.Start.StartIndex)))
             {
                 InExpressionTree = true;
             }
@@ -2166,7 +2199,7 @@ namespace LibLSLCC.AutoComplete
         {
             if (context.open_parenth != null && LessThanOrEqParseOffset(context.open_parenth.StartIndex) &&
                 context.close_parenth != null && context.close_parenth.Text == ")" &&
-                GreaterThanEqParseOffset(context.close_parenth.StartIndex))
+                GreaterThanOrEqParseOffset(context.close_parenth.StartIndex))
             {
                 InExpressionTree = true;
             }
@@ -2179,7 +2212,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitDotAccessorExpr(LSLParser.DotAccessorExprContext context)
         {
             if (LessThanOrEqParseOffset(context.operation.StopIndex) &&
-                (context.member == null || GreaterThanEqParseOffset(context.member.StartIndex)))
+                (context.member == null || GreaterThanOrEqParseOffset(context.member.StartIndex)))
             {
                 RightOfDotAccessor = true;
             }

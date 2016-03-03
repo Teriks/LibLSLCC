@@ -127,6 +127,38 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset"/> is inside of a string literal.
+        /// </summary>
+        public bool InString
+        {
+            get { return ParserState.InString; }
+        }
+
+        /// <summary>
+        ///     <see cref="ILSLAutoCompleteParserState.InLineComment"/> or <see cref="ILSLAutoCompleteParserState.InBlockComment"/>
+        /// </summary>
+        public bool InComment
+        {
+            get { return ParserState.InComment; }
+        }
+
+        /// <summary>
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset"/> is inside of a line style comment.
+        /// </summary>
+        public bool InLineComment
+        {
+            get { return ParserState.InLineComment; }
+        }
+
+        /// <summary>
+        ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset"/> is inside of a multi line block style comment.
+        /// </summary>
+        public bool InBlockComment
+        {
+            get { return ParserState.InBlockComment; }
+        }
+
+        /// <summary>
         ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is anywhere inside the code body of an
         ///     event handler.
         /// </summary>
@@ -804,8 +836,8 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         ///     Preforms an auto-complete parse on the specified stream of LSL source code, up to an arbitrary offset.
         /// </summary>
-        /// <param name="stream">The input source code stream.</param>
+        /// <param name="code">The input source code.</param>
         /// <param name="toOffset">To offset to parse up to (the cursor offset).</param>
-        public abstract void Parse(TextReader stream, int toOffset);
+        public abstract void Parse(string code, int toOffset);
     }
 }

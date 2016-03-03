@@ -94,6 +94,27 @@ namespace LibLSLCC.AutoComplete
         bool InEventSourceRange { get; }
 
         /// <summary>
+        ///     <c>true</c> if <see cref="ParseToOffset"/> is inside of a string literal.
+        /// </summary>
+        bool InString { get; }
+
+        /// <summary>
+        ///     <see cref="InLineComment"/> or <see cref="InBlockComment"/>
+        /// </summary>
+        bool InComment { get; }
+
+
+        /// <summary>
+        ///     <c>true</c> if <see cref="ParseToOffset"/> is inside of a line style comment.
+        /// </summary>
+        bool InLineComment { get; }
+
+        /// <summary>
+        ///     <c>true</c> if <see cref="ParseToOffset"/> is inside of a multi line block style comment.
+        /// </summary>
+        bool InBlockComment { get; }
+
+        /// <summary>
         ///     <c>true</c> if <see cref="ParseToOffset" /> is  anywhere inside the code body of an event handler.
         /// </summary>
         bool InEventCodeBody { get; }

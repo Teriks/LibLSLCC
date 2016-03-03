@@ -630,7 +630,7 @@ namespace LSLCCEditor.EditControl
             var mouseOffset = document.GetOffset(line, column);
 
 
-            var parser = new LSLCommentStringSkipper();
+            var parser = new LSLCommentAndStringDetector();
             parser.ParseUpTo(Editor.Text, mouseOffset);
             if (parser.InComment || parser.InString)
             {
@@ -787,7 +787,7 @@ namespace LSLCCEditor.EditControl
             }
             else
             {
-                _autoCompleteParser.Parse(new StringReader(Editor.Text), hoveredSegment.EndOffset);
+                _autoCompleteParser.Parse(Editor.Text, hoveredSegment.EndOffset);
 
 
                 LSLAutoCompleteGlobalVariable globalVariable;
@@ -1085,20 +1085,21 @@ namespace LSLCCEditor.EditControl
 
             lock (_completionLock)
             {
-                var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
+
+                _autoCompleteParser.Parse(Editor.Text, caretOffset);
+
+#if DEBUG_AUTO_COMPLETE
+                _debugObjectView.ViewObject("", _autoCompleteParser);
+#endif
 
 
-                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
+                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
                 {
                     return;
                 }
+                
 
 
-                _autoCompleteParser.Parse(new StringReader(Editor.Text), caretOffset == 0 ? 0 : caretOffset - 1);
-
-#if DEBUG_AUTO_COMPLETE
-    _debugObjectView.ViewObject("", _autoCompleteParser);
-#endif
 
                 IList<ICompletionData> data = null;
 
@@ -2731,15 +2732,16 @@ namespace LSLCCEditor.EditControl
                 if (!_validSuggestionPrefixes.Contains(behind)) return;
 
 
-                var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
+                _autoCompleteParser.Parse(Editor.Text, caretOffset);
 
-                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
+#if DEBUG_AUTO_COMPLETE
+                _debugObjectView.ViewObject("", _autoCompleteParser);
+#endif
+
+                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
                 {
                     return;
                 }
-
-
-                _autoCompleteParser.Parse(new StringReader(Editor.Text), caretOffset);
 
 
                 if (TryCompletionForEventHandler(_autoCompleteParser)) return;
@@ -3040,15 +3042,17 @@ namespace LSLCCEditor.EditControl
                 if (!_validSuggestionPrefixes.Contains(behind)) return;
 
 
-                var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
+                _autoCompleteParser.Parse(Editor.Text, caretOffset);
 
-                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
+#if DEBUG_AUTO_COMPLETE
+                _debugObjectView.ViewObject("", _autoCompleteParser);
+#endif
+
+                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
                 {
                     return;
                 }
-
-                _autoCompleteParser.Parse(new StringReader(Editor.Text), caretOffset);
 
 
                 var possibleGlobalFunctions = TryCompletionForLibraryFunction(_autoCompleteParser);
@@ -3098,16 +3102,17 @@ namespace LSLCCEditor.EditControl
                 if (!_validSuggestionPrefixes.Contains(behind)) return;
 
 
-                var commentSkipper = new LSLCommentStringSkipper(Editor.Text, caretOffset);
 
+                _autoCompleteParser.Parse(Editor.Text, caretOffset);
 
-                if (commentSkipper.InComment || commentSkipper.InString || KeywordPriorBlocksCompletion(caretOffset))
+#if DEBUG_AUTO_COMPLETE
+                _debugObjectView.ViewObject("", _autoCompleteParser);
+#endif
+
+                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
                 {
                     return;
                 }
-
-
-                _autoCompleteParser.Parse(new StringReader(Editor.Text), caretOffset);
 
 
                 var possibleLibraryConstants = TryCompletionForLibraryConstant(_autoCompleteParser);
@@ -3383,17 +3388,24 @@ namespace LSLCCEditor.EditControl
             }
 
 
-            _autoCompleteParser.Parse(new StringReader(Editor.Text),
-                Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location));
-
             var segment = GetIdSegmentUnderMouse(Editor.Document, _contextMenuOpenPosition.Value);
+
             if (segment == null)
             {
                 _contextMenuOpenPosition = null;
                 return;
             }
 
+            _autoCompleteParser.Parse(Editor.Text,
+                Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location));
+
+#if DEBUG_AUTO_COMPLETE
+            _debugObjectView.ViewObject("", _autoCompleteParser);
+#endif
+
+
             var wordHovered = Editor.Document.GetText(segment.StartOffset, segment.Length);
+
 
             _autoCompleteParser.GlobalFunctionsDictionary.TryGetValue(wordHovered, out _contextMenuFunction);
             _contextMenuLocalVar = _autoCompleteParser.LocalVariables.FirstOrDefault(y => y.Name == wordHovered);

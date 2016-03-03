@@ -77,8 +77,8 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         ///     Preforms an auto-complete parse on the specified stream of LSL source code, up to an arbitrary offset.
         /// </summary>
-        /// <param name="stream">The input source code stream.</param>
+        /// <param name="code">The input source code.</param>
         /// <param name="toOffset">To offset to parse up to (the cursor offset).</param>
-        void Parse(TextReader stream, int toOffset);
+        void Parse(string code, int toOffset);
     }
 }

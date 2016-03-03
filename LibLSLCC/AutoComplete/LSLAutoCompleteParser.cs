@@ -47,6 +47,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.Remoting;
 using Antlr4.Runtime;
 using LibLSLCC.AntlrParser;
 
@@ -54,6 +55,60 @@ using LibLSLCC.AntlrParser;
 
 namespace LibLSLCC.AutoComplete
 {
+    internal class LimitedTextReader : TextReader
+    {
+        private readonly TextReader _baseReader;
+        private readonly int _maxOffset;
+        private int _position;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseReader"></param>
+        /// <param name="maxOffset"></param>
+        public LimitedTextReader(TextReader baseReader, int maxOffset)
+        {
+            _baseReader = baseReader;
+            _maxOffset = maxOffset;
+        }
+
+
+        /// <summary>
+        /// Reads the next character from the input stream and advances the character position by one character.
+        /// </summary>
+        /// <returns>
+        /// The next character from the input stream, or -1 if no more characters are available. The default implementation returns -1.
+        /// </returns>
+        /// <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.IO.TextReader"/> is closed. </exception><exception cref="T:System.IO.IOException">An I/O error occurs. </exception><filterpriority>1</filterpriority>
+        public override int Read()
+        {
+
+
+            if (_position > _maxOffset) return -1;
+
+            
+
+            _position++;
+            return _baseReader.Read();
+        }
+
+
+        /// <summary>
+        /// Reads the next character without changing the state of the reader or the character source. Returns the next available character without actually reading it from the input stream.
+        /// </summary>
+        /// <returns>
+        /// An integer representing the next character to be read, or -1 if no more characters are available or the stream does not support seeking.
+        /// </returns>
+        /// <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.IO.TextReader"/> is closed. </exception><exception cref="T:System.IO.IOException">An I/O error occurs. </exception><filterpriority>1</filterpriority>
+        public override int Peek()
+        {
+            if (_position > _maxOffset) return -1;
+
+            return _baseReader.Peek();
+        }
+    }
+
+
     /// <summary>
     ///     An LSL parser that can help with implementing context aware auto-complete inside of code editors.
     /// </summary>
@@ -62,15 +117,15 @@ namespace LibLSLCC.AutoComplete
         /// <summary>
         ///     Preforms an auto-complete parse on the specified stream of LSL source code, up to an arbitrary offset.
         /// </summary>
-        /// <param name="stream">The input source code stream.</param>
+        /// <param name="code">The input source code.</param>
         /// <param name="toOffset">To offset to parse up to (the cursor offset).</param>
         /// <exception cref="ArgumentOutOfRangeException">if <paramref name="toOffset" /> is not greater than zero.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="stream" /> is <c>null</c>.</exception>
-        public override void Parse(TextReader stream, int toOffset)
+        /// <exception cref="ArgumentNullException"><paramref name="code" /> is <c>null</c>.</exception>
+        public override void Parse(string code, int toOffset)
         {
-            if (stream == null)
+            if (code == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException("code");
             }
 
             if (toOffset < 0)
@@ -78,11 +133,25 @@ namespace LibLSLCC.AutoComplete
                 throw new ArgumentOutOfRangeException("toOffset", "toOffset cannot be less than zero.");
             }
 
+            var detectInStringOrComment = new LSLCommentAndStringDetector(code, toOffset);
 
-            var inputStream = new AntlrInputStream(stream);
+            var visitor = new LSLAutoCompleteVisitor(toOffset);
+
+            ParserState = visitor;
+
+            if (detectInStringOrComment.InComment || detectInStringOrComment.InString)
+            {
+                visitor.InString = detectInStringOrComment.InString;
+                visitor.InComment = detectInStringOrComment.InComment;
+                visitor.InLineComment = detectInStringOrComment.InLineComment;
+                visitor.InBlockComment = detectInStringOrComment.InBlockComment;
+                return;
+            }
+
+
+            var inputStream = new AntlrInputStream(new StringReader(code), toOffset);
 
             var lexer = new LSLLexer(inputStream);
-
 
             var tokenStream = new CommonTokenStream(lexer);
 
@@ -91,10 +160,6 @@ namespace LibLSLCC.AutoComplete
 
             parser.RemoveErrorListeners();
             lexer.RemoveErrorListeners();
-
-            var visitor = new LSLAutoCompleteVisitor(toOffset);
-
-            ParserState = visitor;
 
             visitor.Parse(parser.compilationUnit());
         }
