@@ -372,36 +372,6 @@ namespace LSLCCEditor.EditControl
             "" //at the beginning of the file
         };
 
-        //Used when something is being inserted over a selection.
-        //an auto complete parse only takes place if character after the end of the selection
-        //matches one of these.
-        private readonly HashSet<string> _validSuggestionSuffixes = new HashSet<string>
-        {
-            "\t", //before a word break
-            "\r", // ^
-            "\n", // ^
-            " ", // ^
-            "{", //ending point is at the start of an anonymous scope
-            "}", //for when a selection ending point is at the end of a scope
-            "]", //before the end of a list literal
-            "(", //before a cast or parenthesized expression
-            ")", //at end of function parameters, cast, parenthesized expr, etc..
-            "<", //before comparison or left shift
-            ">", //before comparison or right shift
-            "&", //before logical or bitwise and
-            "^", //before xor
-            "|", //before or or bitwise or
-            ",", //before a comma in an expression list
-            ";", //before a statement terminator
-            "=", //before direct assignment
-            "+", //before addition, add assign or postfix increment
-            "-", //before subtraction, subtract assign or postfix decrement
-            "*", //before multiply or multiply assign
-            "/", //before divide or divide assign
-            "%", //before modulus or modulus assign
-            "" //before the end of the file
-        };
-
 
         private bool _textPropertyChangingText;
         private bool _userChangingText;
@@ -787,7 +757,7 @@ namespace LSLCCEditor.EditControl
             }
             else
             {
-                _autoCompleteParser.Parse(Editor.Text, hoveredSegment.EndOffset);
+                _autoCompleteParser.Parse(Editor.Text, hoveredSegment.EndOffset, LSLAutoCompleteParseOptions.None);
 
 
                 LSLAutoCompleteGlobalVariable globalVariable;
@@ -940,67 +910,7 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        private string FindKeywordWordBehindOffset(string text, int caretOffset)
-        {
-            var behindOffset = caretOffset > 1 ? caretOffset - 1 : -1;
 
-            var inWord = false;
-            var word = "";
-            while (behindOffset >= 0)
-            {
-                var c = text[behindOffset];
-
-                if (char.IsWhiteSpace(c) && inWord == false)
-                {
-                    behindOffset--;
-                    continue;
-                }
-
-
-                inWord = true;
-
-
-                //take advantage of the fact LSL keywords have no special symbols in them
-                if (char.IsLetter(c))
-                {
-                    word = c + word;
-                }
-                else
-                {
-                    return word == "" ? null : word;
-                }
-
-                behindOffset--;
-            }
-
-            return word == "" ? null : word;
-        }
-
-
-        private bool KeywordPriorBlocksCompletion(int caretOffset)
-        {
-            var keywordBehindOffset = FindKeywordWordBehindOffset(Editor.Text, caretOffset);
-
-            if (keywordBehindOffset == null) return false;
-
-            //prune out a full parse up to the cursor using context clues, the word behind the cursor.
-            //right now, typing stuff after these keywords should not result in a suggestion
-            switch (keywordBehindOffset)
-            {
-                case "integer":
-                case "float":
-                case "string":
-                case "vector":
-                case "rotation":
-                case "key":
-                case "list":
-                case "default":
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
 
 
         // ReSharper disable once FunctionComplexityOverflow
@@ -1037,7 +947,7 @@ namespace LSLCCEditor.EditControl
                 var characterAfterSelection = LookAheadCaretOffset(Math.Max(selectionStartOffset, selectionEndOffset), 0,
                     1);
 
-                if (!_validSuggestionSuffixes.Contains(characterAfterSelection))
+                if (!_autoCompleteParser.IsValidSuggestionSuffix(characterAfterSelection))
                 {
                     return;
                 }
@@ -1052,7 +962,7 @@ namespace LSLCCEditor.EditControl
             if (DoAutoDedentOnTextEntering(e, caretOffset)) return;
 
 
-            if (_validSuggestionPrefixes.Contains(e.Text))
+            if (_autoCompleteParser.IsValidSuggestionPrefix(e.Text))
             {
                 lock (_completionLock)
                 {
@@ -1077,7 +987,7 @@ namespace LSLCCEditor.EditControl
             var behind = LookBehindCaretOffset(caretOffset, 1, 1);
 
 
-            if (!_validSuggestionPrefixes.Contains(behind))
+            if (!_autoCompleteParser.IsValidSuggestionPrefix(behind))
             {
                 return;
             }
@@ -1086,14 +996,19 @@ namespace LSLCCEditor.EditControl
             lock (_completionLock)
             {
 
-                _autoCompleteParser.Parse(Editor.Text, caretOffset);
+                _autoCompleteParser.Parse(Editor.Text, caretOffset, 
+                    LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix | 
+                    LSLAutoCompleteParseOptions.BlockOnInvalidPrefix); 
 
 #if DEBUG_AUTO_COMPLETE
                 _debugObjectView.ViewObject("", _autoCompleteParser);
 #endif
 
 
-                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
+                if (_autoCompleteParser.InComment ||
+                    _autoCompleteParser.InString || 
+                    _autoCompleteParser.InvalidPrefix ||
+                    _autoCompleteParser.InvalidKeywordPrefix)
                 {
                     return;
                 }
@@ -2729,16 +2644,21 @@ namespace LSLCCEditor.EditControl
                 var behind = LookBehindCaretOffset(caretOffset, 1, 1);
 
 
-                if (!_validSuggestionPrefixes.Contains(behind)) return;
+                if (!_autoCompleteParser.IsValidSuggestionPrefix(behind)) return;
 
 
-                _autoCompleteParser.Parse(Editor.Text, caretOffset);
+                _autoCompleteParser.Parse(Editor.Text, caretOffset,
+                    LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix |
+                    LSLAutoCompleteParseOptions.BlockOnInvalidPrefix);
 
 #if DEBUG_AUTO_COMPLETE
                 _debugObjectView.ViewObject("", _autoCompleteParser);
 #endif
 
-                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
+                if (_autoCompleteParser.InComment ||
+                    _autoCompleteParser.InString ||
+                    _autoCompleteParser.InvalidPrefix ||
+                    _autoCompleteParser.InvalidKeywordPrefix)
                 {
                     return;
                 }
@@ -3036,20 +2956,19 @@ namespace LSLCCEditor.EditControl
                 }
 
 
-                var behind = LookBehindCaretOffset(caretOffset, 1, 1);
-
-
-                if (!_validSuggestionPrefixes.Contains(behind)) return;
-
-
-
-                _autoCompleteParser.Parse(Editor.Text, caretOffset);
+  
+                _autoCompleteParser.Parse(Editor.Text, caretOffset, 
+                    LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix |
+                    LSLAutoCompleteParseOptions.BlockOnInvalidPrefix);
 
 #if DEBUG_AUTO_COMPLETE
                 _debugObjectView.ViewObject("", _autoCompleteParser);
 #endif
 
-                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
+                if (_autoCompleteParser.InComment ||
+                    _autoCompleteParser.InString ||
+                    _autoCompleteParser.InvalidPrefix ||
+                    _autoCompleteParser.InvalidKeywordPrefix)
                 {
                     return;
                 }
@@ -3096,20 +3015,22 @@ namespace LSLCCEditor.EditControl
                     }
                 }
 
-                var behind = LookBehindCaretOffset(caretOffset, 1, 1);
+               
+
+                _autoCompleteParser.Parse(Editor.Text, caretOffset, 
+                    LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix |
+                    LSLAutoCompleteParseOptions.BlockOnInvalidPrefix);
 
 
-                if (!_validSuggestionPrefixes.Contains(behind)) return;
-
-
-
-                _autoCompleteParser.Parse(Editor.Text, caretOffset);
 
 #if DEBUG_AUTO_COMPLETE
                 _debugObjectView.ViewObject("", _autoCompleteParser);
 #endif
 
-                if (_autoCompleteParser.InComment || _autoCompleteParser.InString || KeywordPriorBlocksCompletion(caretOffset))
+                if (_autoCompleteParser.InComment ||
+                    _autoCompleteParser.InString ||
+                    _autoCompleteParser.InvalidPrefix ||
+                    _autoCompleteParser.InvalidKeywordPrefix)
                 {
                     return;
                 }
@@ -3397,7 +3318,9 @@ namespace LSLCCEditor.EditControl
             }
 
             _autoCompleteParser.Parse(Editor.Text,
-                Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location));
+                Editor.Document.GetOffset(_contextMenuOpenPosition.Value.Location),
+                LSLAutoCompleteParseOptions.None);
+
 
 #if DEBUG_AUTO_COMPLETE
             _debugObjectView.ViewObject("", _autoCompleteParser);

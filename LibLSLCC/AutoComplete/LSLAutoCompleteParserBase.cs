@@ -151,6 +151,24 @@ namespace LibLSLCC.AutoComplete
         }
 
         /// <summary>
+        ///     <c>true</c> if auto complete could not take place because the character preceding the given <see cref="ILSLAutoCompleteParserState.ParseToOffset"/>
+        ///     was not a valid suggestion prefix.
+        /// </summary>
+        public bool InvalidPrefix
+        {
+            get { return ParserState.InvalidPrefix; }
+        }
+
+        /// <summary>
+        ///     <c>true</c> if auto complete could not take place because the keyword preceding the given <see cref="ILSLAutoCompleteParserState.ParseToOffset"/>
+        ///     prevented a suggestion.
+        /// </summary>
+        public bool InvalidKeywordPrefix
+        {
+            get { return ParserState.InvalidKeywordPrefix; }
+        }
+
+        /// <summary>
         ///     <c>true</c> if <see cref="ILSLAutoCompleteParserState.ParseToOffset"/> is inside of a multi line block style comment.
         /// </summary>
         public bool InBlockComment
@@ -833,11 +851,44 @@ namespace LibLSLCC.AutoComplete
         }
 
 
+
         /// <summary>
         ///     Preforms an auto-complete parse on the specified stream of LSL source code, up to an arbitrary offset.
         /// </summary>
         /// <param name="code">The input source code.</param>
         /// <param name="toOffset">To offset to parse up to (the cursor offset).</param>
-        public abstract void Parse(string code, int toOffset);
+        /// <param name="options">Parse options.</param>
+        public abstract void Parse(string code, int toOffset, LSLAutoCompleteParseOptions options);
+
+
+        /// <summary>
+        /// Determine if autocomplete can continue if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
+        /// In otherwords, can autocomplete continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
+        /// </summary>
+        /// <param name="keyword">The keyword or character sequence to test.</param>
+        /// <returns><c>true</c> if the keyword/sequence does not block autocomplete.</returns>
+        /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix"/>
+        /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
+        public abstract bool IsValidSuggestionKeywordPrefix(string keyword);
+
+
+        /// <summary>
+        /// Determine if a given character can come immediately before an autocomplete suggestion.  An empty string represents the begining of the source code.
+        /// </summary>
+        /// <param name="character">The character to test, or an empty string.</param>
+        /// <returns><c>true</c> if the given character can appear before a suggestion.</returns>
+        /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidPrefix"/>
+        /// <seealso cref="ILSLAutoCompleteParserState.InvalidPrefix"/>
+        public abstract bool IsValidSuggestionPrefix(string character);
+
+
+        /// <summary>
+        /// Determine if a given character can come immediately after an autocomplete suggestion.  An empty string represents the end of the source code.
+        /// </summary>
+        /// <param name="character">The character to test, or an empty string.</param>
+        /// <returns><c>true</c> if the given character can appear after a suggestion.</returns>
+        public abstract bool IsValidSuggestionSuffix(string character);
+
+
     }
 }

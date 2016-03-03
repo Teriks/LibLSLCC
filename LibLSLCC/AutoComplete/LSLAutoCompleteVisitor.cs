@@ -790,6 +790,21 @@ namespace LibLSLCC.AutoComplete
         /// </summary>
         public bool InBlockComment { get; internal set; }
 
+
+        /// <summary>
+        ///     <c>true</c> if auto complete could not take place because the character preceding the given <see cref="ParseToOffset"/>
+        ///     was not a valid suggestion prefix.
+        /// </summary>
+        public bool InvalidPrefix { get; internal set; }
+
+
+        /// <summary>
+        ///     <c>true</c> if auto complete could not take place because the keyword preceding the given <see cref="ParseToOffset"/>
+        ///     prevented a suggestion.
+        /// </summary>
+        public bool InvalidKeywordPrefix { get; internal set; }
+
+
         private static T SafeStackPeek<T>(Stack<T> stack)
         {
             if (stack.Count == 0)
@@ -1358,7 +1373,7 @@ namespace LibLSLCC.AutoComplete
             }
 
             if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
-                LessThanOrEqParseOffset(context.close_parenth.StartIndex))
+                LessThanParseOffset(context.close_parenth.StartIndex))
             {
                 if (context.close_parenth.StartIndex != context.open_parenth.StartIndex)
                 {
@@ -1413,7 +1428,7 @@ namespace LibLSLCC.AutoComplete
             //TODO separate out the clauses into flags, so that the nested element stack cannot get messed up if syntax errors occur
             //in the expressions preceding the one the cursor is in 
             if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
-                LessThanOrEqParseOffset(context.close_parenth.StartIndex))
+                LessThanParseOffset(context.close_parenth.StartIndex))
             {
                 if (context.close_parenth.StartIndex != context.open_parenth.StartIndex)
                 {
@@ -1477,7 +1492,7 @@ namespace LibLSLCC.AutoComplete
             }
 
             if (context.open_parenth != null && context.close_parenth != null && context.close_parenth.Text == ")" &&
-                LessThanOrEqParseOffset(context.close_parenth.StartIndex))
+                LessThanParseOffset(context.close_parenth.StartIndex))
             {
                 if (context.open_parenth.StartIndex != context.close_parenth.StartIndex)
                 {

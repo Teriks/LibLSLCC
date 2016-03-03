@@ -109,6 +109,21 @@ namespace LibLSLCC.AutoComplete
         /// </summary>
         bool InLineComment { get; }
 
+
+        /// <summary>
+        ///     <c>true</c> if auto complete could not take place because the character preceding the given <see cref="ParseToOffset"/>
+        ///     was not a valid suggestion prefix.
+        /// </summary>
+        bool InvalidPrefix { get; }
+
+
+        /// <summary>
+        ///     <c>true</c> if auto complete could not take place because the keyword preceding the given <see cref="ParseToOffset"/>
+        ///     prevented a suggestion.
+        /// </summary>
+        bool InvalidKeywordPrefix { get; }
+
+
         /// <summary>
         ///     <c>true</c> if <see cref="ParseToOffset"/> is inside of a multi line block style comment.
         /// </summary>

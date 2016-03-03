@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -52,6 +53,33 @@ using System.IO;
 
 namespace LibLSLCC.AutoComplete
 {
+    /// <summary>
+    /// Autocompleter options.
+    /// </summary>
+    [Flags]
+    public enum LSLAutoCompleteParseOptions
+    {
+        /// <summary>
+        /// Specify no options.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Block autocomplete if a invalid prefix character is found before <see cref="ILSLAutoCompleteParserState.ParseToOffset"/>. <para/>
+        /// Invalid prefixes are determined by <see cref="ILSLAutoCompleteParser.IsValidSuggestionPrefix"/>.
+        /// </summary>
+        /// <seealso cref="ILSLAutoCompleteParserState.InvalidPrefix"/>
+        BlockOnInvalidPrefix = 1,
+
+        /// <summary>
+        /// Block autocomplete if a invalid prefix keyword is found before <see cref="ILSLAutoCompleteParserState.ParseToOffset"/>. <para/>
+        /// Invalid prefixes are determined by <see cref="ILSLAutoCompleteParser.IsValidSuggestionKeywordPrefix"/>. <para/>
+        /// An invalid keyword followed only by space before the ParseToOffset will cause autocomplete to be blocked.
+        /// </summary>
+        /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
+        BlockOnInvalidKeywordPrefix = 2,
+    }
+
     /// <summary>
     ///     Interface for auto complete parsers.
     /// </summary>
@@ -74,11 +102,40 @@ namespace LibLSLCC.AutoComplete
         /// <returns>An enumerable of <see cref="LSLAutoCompleteLocalJump" /> objects that are accessible at <see cref="ILSLAutoCompleteParserState.ParseToOffset" />.</returns>
         IEnumerable<LSLAutoCompleteLocalJump> GetLocalJumps(string sourceCode);
 
+
         /// <summary>
         ///     Preforms an auto-complete parse on the specified stream of LSL source code, up to an arbitrary offset.
         /// </summary>
         /// <param name="code">The input source code.</param>
         /// <param name="toOffset">To offset to parse up to (the cursor offset).</param>
-        void Parse(string code, int toOffset);
+        /// <param name="options">Parse options.</param>
+        void Parse(string code, int toOffset, LSLAutoCompleteParseOptions options);
+
+
+        /// <summary>
+        /// Determine if autocomplete can continue if the only thing separating a given keyword from <see cref="ILSLAutoCompleteParserState.ParseToOffset" /> is whitespace. <para/>
+        /// In otherwords, can autocomplete continue if <paramref name="keyword"/> comes before the cursor with only whitespace inbetween.
+        /// </summary>
+        /// <param name="keyword">The keyword or character sequence to test.</param>
+        /// <returns><c>true</c> if the keyword/sequence does not block autocomplete.</returns>
+        /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix"/>
+        /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
+        bool IsValidSuggestionKeywordPrefix(string keyword);
+
+        /// <summary>
+        /// Determine if a given character can come immediately before an autocomplete suggestion.  An empty string represents the begining of the source code.
+        /// </summary>
+        /// <param name="character">The character to test, or an empty string.</param>
+        /// <returns><c>true</c> if the given character can appear before a suggestion.</returns>
+        /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidPrefix"/>
+        /// <seealso cref="ILSLAutoCompleteParserState.InvalidPrefix"/>
+        bool IsValidSuggestionPrefix(string character);
+
+        /// <summary>
+        /// Determine if a given character can come immediately after an autocomplete suggestion.  An empty string represents the end of the source code.
+        /// </summary>
+        /// <param name="character">The character to test, or an empty string.</param>
+        /// <returns><c>true</c> if the given character can appear after a suggestion.</returns>
+        bool IsValidSuggestionSuffix(string character);
     }
 }
