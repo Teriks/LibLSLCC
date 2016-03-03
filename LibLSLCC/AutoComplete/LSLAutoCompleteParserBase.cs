@@ -869,6 +869,7 @@ namespace LibLSLCC.AutoComplete
         /// <returns><c>true</c> if the keyword/sequence blocks autocomplete.</returns>
         /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix"/>
         /// <seealso cref="ILSLAutoCompleteParserState.InvalidKeywordPrefix"/>
+        /// <exception cref="ArgumentNullException"><paramref name="keyword"/> is <see langword="null" />.</exception>
         public abstract bool IsInvalidSuggestionKeywordPrefix(string keyword);
 
 
@@ -879,6 +880,7 @@ namespace LibLSLCC.AutoComplete
         /// <returns><c>true</c> if the given character can appear before a suggestion.</returns>
         /// <seealso cref="LSLAutoCompleteParseOptions.BlockOnInvalidPrefix"/>
         /// <seealso cref="ILSLAutoCompleteParserState.InvalidPrefix"/>
+        /// <exception cref="ArgumentNullException"><paramref name="character"/> is <see langword="null" />.</exception>
         public abstract bool IsValidSuggestionPrefix(string character);
 
 
@@ -887,6 +889,7 @@ namespace LibLSLCC.AutoComplete
         /// </summary>
         /// <param name="character">The character to test, or an empty string.</param>
         /// <returns><c>true</c> if the given character can appear after a suggestion.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="character"/> is <see langword="null" />.</exception>
         public abstract bool IsValidSuggestionSuffix(string character);
 
 

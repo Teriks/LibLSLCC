@@ -602,7 +602,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Occurs with an expression that is left of an assignment type operator is not assignable.
-        ///     This includes compound assignment operators such as: +=
+        ///     This includes compound assignment operators such as: += <para/>
         ///     This error occurs only for left expressions that are not library constants.
         ///     There is a separate error for library constants, see <see cref="ModifiedLibraryConstant" />.
         /// </summary>
