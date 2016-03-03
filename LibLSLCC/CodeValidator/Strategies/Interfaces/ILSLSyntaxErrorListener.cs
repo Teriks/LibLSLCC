@@ -53,7 +53,7 @@ using LibLSLCC.LibraryData;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     Interface for a syntax error listener, this called into by the code validator
+    ///     Interface for a syntax error listener, this is called into by the code validator
     ///     when syntax errors occur.
     /// </summary>
     public interface ILSLSyntaxErrorListener
