@@ -2207,7 +2207,7 @@ namespace LibLSLCC.CodeValidator
             {
                 var ctx = (LSLParser.LocalVariableDeclarationContext) context.children[0];
 
-                GenSyntaxError().DefinedVariableInNonScopeBlock(new LSLSourceCodeRange(ctx));
+                GenSyntaxError().DefinedVariableInBracelessScope(new LSLSourceCodeRange(ctx));
                 return false;
             }
 

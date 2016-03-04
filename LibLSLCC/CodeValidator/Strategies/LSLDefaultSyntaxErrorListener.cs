@@ -102,7 +102,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A binary operation was encountered that had incorrect expression types on either or both sides.
+        ///     A binary operation was encountered that had expressions with incorrect return types on either or both sides.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="left">The left expression.</param>
@@ -118,7 +118,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A prefix operation was attempted on an invalid type.
+        ///     A prefix operation was attempted on expression with an invalid return type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The prefix operation that was attempted on the expression.</param>
@@ -132,7 +132,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A postfix operation was attempted on an invalid type.
+        ///     A postfix operation was attempted on expression with an invalid return type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="operation">The postfix operation that was attempted on the expression.</param>
@@ -147,7 +147,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     An invalid cast was preformed on some expression
+        ///     An invalid cast was preformed on an expression.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="castTo">The type that the cast operation attempted to cast the expression to.</param>
@@ -253,7 +253,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Attempted to return an invalid expression type from a function with a defined return type.
+        ///     Type mismatch between the expression returned from a function and the functions actual return type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
@@ -271,7 +271,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     An empty return statement was encountered in a non void function. (A function with a defined return type)
+        ///     An empty return statement was encountered in a non void function. <para/>
+        ///     In other words, the function required an expression to be returned but none was provided.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
@@ -367,7 +368,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A code label was considered a redefinition of an already defined code label, given the scope of the new definition.
+        ///     A code label was considered a redefinition, given the scope of the new definition.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="labelName">The name of the label being redefined.</param>
@@ -403,8 +404,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A function with a non-void return type lacks a necessary return statement.
-        ///     Not all code paths return a value.
+        ///     A function with a non-void return type lacks a necessary return statement. <para/>
+        ///     There is a path that leads to the end of the function without it returning a value.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="inFunction">The signature of the function in question.</param>
@@ -415,7 +416,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A code state does not declare the use of any event handlers at all. (This is not allowed)
+        ///     A code state does not declare any event handlers at all; this is not allowed.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="stateName">The name of the state in which this error occurred.</param>
@@ -428,7 +429,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A conditional expression is missing from an IF, ELSE IF, or WHILE/DO-WHILE statement;
+        ///     A conditional expression is missing from an IF, ELSE IF, or WHILE/DO-WHILE statement.  <para/>
         ///     FOR loops can have a missing condition expression, but other control statements cannot.
         /// </summary>
         /// <param name="location">Location in source code.</param>
@@ -441,23 +442,23 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Attempted to define a variable inside of a single statement block.  Such as inside of an IF statement which does
-        ///     not
-        ///     use braces.  This applies to other statements that can use brace-less single statement blocks as well.
+        ///     Attempted to define a variable inside of a braceless scope. <para/>
+        ///     For example, inside of an IF statement which does not use braces in its code area. (a single statement is used) <para/>
+        ///     This applies to other control/loop statements that can use braceless scopes as well.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        public virtual void DefinedVariableInNonScopeBlock(LSLSourceCodeRange location)
+        public virtual void DefinedVariableInBracelessScope(LSLSourceCodeRange location)
         {
             OnError(location, "Declaration requires a new scope, use { and }.");
         }
 
 
         /// <summary>
-        ///     An illegal character was found inside of a string literal according to the current ILSLStringPreProccessor
-        ///     instance.
+        ///     An illegal character was found inside of a string literal according to the current
+        ///     <see cref="ILSLStringPreProcessor" /> instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
+        /// <param name="err">The generated character error object from the <see cref="ILSLStringPreProcessor" /> instance.</param>
         public virtual void IllegalStringCharacter(LSLSourceCodeRange location, LSLStringCharacterError err)
         {
             OnError(location,
@@ -471,7 +472,7 @@ namespace LibLSLCC.CodeValidator
         ///     <see cref="ILSLStringPreProcessor" /> instance.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="err">The generated character error object from the ILSLStringPreProccessor instance.</param>
+        /// <param name="err">The generated character error object from the <see cref="ILSLStringPreProcessor" /> instance.</param>
         public virtual void InvalidStringEscapeCode(LSLSourceCodeRange location, LSLStringCharacterError err)
         {
             OnError(location,
@@ -485,7 +486,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="eventHandlerName">The name of the event handler which was used more than once.</param>
-        /// <param name="stateName">The name of the code state in which the error occurred.</param>
+        /// <param name="stateName">The name of the code state in which the error occured.</param>
         public virtual void RedefinedEventHandler(LSLSourceCodeRange location, string eventHandlerName, string stateName)
         {
             OnError(location,
@@ -522,7 +523,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A call to an overloaded library function matches up with one or more overloads.
+        ///     The arguments passed to an overloaded library function match up with more than one defined overload.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the overloaded library function that the user attempted to call.</param>
@@ -543,8 +544,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The dot operator used to access the tuple component members of vectors and rotations was used on a library
-        ///     constant.
+        ///     The dot operator used to access the components of vectors and rotations was used on a library constant.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="libraryConstantReferenceNode">The variable reference node on the left side of the dot operator.</param>
@@ -563,8 +563,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A call to function was attempted in a static context.  For example, inside of a global variables declaration
-        ///     expression.
+        ///     A call to function was attempted in a static context.  <para/>
+        ///     (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">Location in source code.</param>
         public virtual void CallToFunctionInStaticContext(LSLSourceCodeRange location)
@@ -574,7 +574,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A binary operator was used in a static context (a global variable declaration expression)
+        ///     A binary operator was used in a static context.  <para/>
+        ///     (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         public virtual void BinaryOperatorInStaticContext(LSLSourceCodeRange location)
@@ -584,7 +585,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A parenthesized expression was used in a static context (a global variable declaration expression)
+        ///     A parenthesized expression was used in a static context.  <para/>
+        ///     (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         public virtual void ParenthesizedExpressionInStaticContext(LSLSourceCodeRange location)
@@ -594,7 +596,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A postfix expression was used in a static context (a global variable declaration expression)
+        ///     A postfix expression was used in a static context.  <para/>
+        ///     (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         public virtual void PostfixOperationInStaticContext(LSLSourceCodeRange location)
@@ -604,7 +607,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     An invalid prefix expression was used in a static context (a global variable declaration expression)
+        ///     An invalid prefix expression was used in a static context (a global variable declaration expression) <para/>
+        ///     Negate is the only prefix operator allowed in a static context, and only on literals and not variables.
         /// </summary>
         /// <param name="location">The location of the error.</param>
         /// <param name="type">The operation type.</param>
@@ -617,8 +621,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A prefix expression with a global variable on the right was used in a static context. (a global variable
-        ///     declaration expression)
+        ///     A prefix operator was used on a global variable reference in a static context.  <para/>
+        ///     (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         /// <param name="type">The operation type.</param>
@@ -645,10 +649,9 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A '.' member access was attempted on an invalid variable type, or the variable type did not contain the given
-        ///     component.
-        ///     Valid component names for vectors are:  x,y and z
-        ///     Valid component names for rotations are:  x,y,z and s
+        ///     A '.' member access operation was attempted on an invalid variable type, or the variable type did not contain the given member.  <para/>
+        ///     Valid member names for vectors are:  "x", "y" and "z" <para/>
+        ///     Valid member names for rotations are:  "x", "y", "z" and "s" <para/>
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="exprLvalue">The variable expression on the left side of the dot operator.</param>
@@ -662,7 +665,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The return type of the expression present in an if statements condition is not a valid type.
+        ///     The return type of an expression used in an if statement condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the if statement.</param>
@@ -677,7 +680,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The return type of the expression present in an else-if statements condition is not a valid type.
+        ///     The return type of an expression used in an else-if statement condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the else-if statement.</param>
@@ -692,7 +695,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The return type of the expression present in a do-loops condition is not a valid type.
+        ///     The return type of an expression used in a do-loops condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the do-loop.</param>
@@ -706,7 +709,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The return type of the expression present in a while-loops condition is not a valid type.
+        ///     The return type of an expression used in a while-loops condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the while-loop.</param>
@@ -721,7 +724,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The return type of the expression present in a for-loops condition is not a valid type.
+        ///     The return type of an expression used in a for-loops condition is not a valid type.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="attemptedConditionExpression">The invalid expression in the condition area of the for-loop.</param>
@@ -736,7 +739,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A parameter type mismatch was encountered when trying to call a user defined or library function.
+        ///     A parameter type mismatch occured when trying to call a user defined or library function.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="parameterNumberWithError">The index of the parameter with the type mismatch. (Zero based)</param>
@@ -772,7 +775,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     An event handler which was not defined in the library data provider was used in the program.
+        ///     An event handler was declared that was not defined in the library data provider.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="givenEventHandlerSignature">The signature of the event handler attempting to be used.</param>
@@ -785,9 +788,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     An event handler was used in the program which was defined in the library data provider, but the given call
-        ///     signature in the program
-        ///     was incorrect.
+        ///     An event handler was declared in the program with a call signature differing from its definition in the library data provider.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="givenEventHandlerSignature">The invalid signature used for the event handler in the source code.</param>
@@ -821,7 +822,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A library function that exist in the library data provider was redefined by the user as a user defined function.
+        ///     A library function that exist in the library data provider was redefined by the user.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionName">The name of the library function the user attempted to redefine.</param>
@@ -839,7 +840,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A state change statement was encountered that attempted to change states to an undefined state name.
+        ///     A state change statement was encountered that referenced an undefined state name.
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="stateName">The undefined state name referenced.</param>
@@ -889,8 +890,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The negate prefix operator was used on a non float or integer literal in a static context.
-        ///     IE, a global variable declaration.
+        ///     The negate prefix operator was used on a vector literal in a static context. <para/>
+        ///      (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         public virtual void NegateOperationOnVectorLiteralInStaticContext(LSLSourceCodeRange location)
@@ -900,8 +901,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The negate prefix operator was used on a rotation literal in a static context.
-        ///     IE, a global variable declaration.
+        ///     The negate prefix operator was used on a rotation literal in a static context. <para/>
+        ///     (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         public virtual void NegateOperationOnRotationLiteralInStaticContext(LSLSourceCodeRange location)
@@ -911,7 +912,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A cast expression was used inside of a static context, IE during the declaration of a global variable.
+        ///     A cast expression was used inside of a static context. <para/>
+        ///     (in a global variable declaration expression)
         /// </summary>
         /// <param name="location">The location of the error.</param>
         public virtual void CastExpressionInStaticContext(LSLSourceCodeRange location)
@@ -922,10 +924,9 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Occurs with an expression that is left of an assignment type operator is not assignable.
-        ///     This includes compound assignment operators such as: +=
+        ///     This includes compound assignment operators such as: += ... <para/>
         ///     This error occurs only for left expressions that are not library constants.
-        ///     There is a separate error for library constants, see <see cref="ILSLSyntaxErrorListener.ModifiedLibraryConstant" />
-        ///     .
+        ///     There is a separate error for library constants, see <see cref="ILSLSyntaxErrorListener.ModifiedLibraryConstant" />.
         /// </summary>
         /// <param name="location">The source code range of the assignment operator used.</param>
         /// <param name="assignmentOperatorUsed">The assignment operator used.</param>
@@ -935,82 +936,6 @@ namespace LibLSLCC.CodeValidator
                 "Expression left of assignment operator '" + assignmentOperatorUsed + "' is not assignable.");
         }
 
-
-        /// <summary>
-        ///     A vector or rotation component accessor was used on a vector or rotation literal. (This is not allowed)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="lvalueLiteral">The literal on the left of the dot operator.</param>
-        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        public virtual void TupleAccessorOnLiteral(LSLSourceCodeRange location, ILSLReadOnlyExprNode lvalueLiteral,
-            string memberAccessed)
-        {
-            OnError(location,
-                string.Format("\".{0}\" member access operator cannot be used on Literals.", memberAccessed));
-        }
-
-
-        /// <summary>
-        ///     A vector or rotation component accessor was used on a non simple expression.
-        ///     Doing something like: (float x = llGetPos().x;) is not valid, neither is (float x = (vector_var+vector_var).x;)
-        ///     component access is only valid directly on a variable names.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="lvalueCompound">The compound expression on the left side of the dot operator.</param>
-        /// <param name="memberAccessed">The member/component name on the right side of the dot operator.</param>
-        public virtual void TupleAccessorOnCompoundExpression(LSLSourceCodeRange location, ILSLReadOnlyExprNode lvalueCompound,
-            string memberAccessed)
-        {
-            OnError(location,
-                string.Format("\".{0}\" member access operator cannot be used on compound expressions.", memberAccessed));
-        }
-
-
-        /// <summary>
-        ///     A modifying assignment was attempted on a non variable expression.  Something like: ((a+b) += 3;) occurred, or even
-        ///     (llAbs(2.3) *= 3;)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="operation">The modifying assignment expression used.</param>
-        public virtual void ModifyingAssignmentToCompoundExpression(LSLSourceCodeRange location, string operation)
-        {
-            OnError(location,
-                string.Format("'{0}' Operator cannot have a compound expression as a left operand.", operation));
-        }
-
-
-        /// <summary>
-        ///     A plain assignment was attempted on a non variable expression.  Something like: ((a+b) = 3;) occurred, or even
-        ///     (llAbs(2.3) = 3;)
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        public virtual void AssignmentToCompoundExpression(LSLSourceCodeRange location)
-        {
-            OnError(location, "Cannot assign value to a compound expression.");
-        }
-
-
-        /// <summary>
-        ///     An assignment expression was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; = llGetPos()) or
-        ///     even ([1,2,...] = list_var;) occurred.
-        /// </summary>
-        /// <param name="location"></param>
-        public virtual void AssignmentToLiteral(LSLSourceCodeRange location)
-        {
-            OnError(location, "Cannot assign value to a literal.");
-        }
-
-
-        /// <summary>
-        ///     A modifying assignment was attempted on a literal initializer.  Something like: (&lt;0,0,0&gt; *= llGetPos()) or
-        ///     even ([1,2,...] += list_var;) occurred.
-        /// </summary>
-        /// <param name="location">Location in source code.</param>
-        /// <param name="operation">The modifying assignment expression used.</param>
-        public virtual void ModifyingAssignmentToLiteral(LSLSourceCodeRange location, string operation)
-        {
-            OnError(location, string.Format("'{0}' Operator cannot have a literal as a left operand.", operation));
-        }
 
 
         /// <summary>

@@ -685,10 +685,10 @@ namespace LibLSLCC.CodeValidator
         ///     use braces.  This applies to other statements that can use brace-less single statement blocks as well.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        void ILSLSyntaxErrorListener.DefinedVariableInNonScopeBlock(LSLSourceCodeRange location)
+        void ILSLSyntaxErrorListener.DefinedVariableInBracelessScope(LSLSourceCodeRange location)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
-                () => SyntaxErrorListener.DefinedVariableInNonScopeBlock(location));
+                () => SyntaxErrorListener.DefinedVariableInBracelessScope(location));
         }
 
 

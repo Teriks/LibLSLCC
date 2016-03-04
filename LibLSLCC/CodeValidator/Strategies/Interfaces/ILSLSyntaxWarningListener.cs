@@ -59,31 +59,34 @@ namespace LibLSLCC.CodeValidator
     {
         /// <summary>
         ///     Warns about the occurrence of multiple list or list variable assignments occurring inside of a single expression.
+        /// </summary>
+        /// <remarks>
         ///     This sort of thing was a common optimization for LSL when LSO was used instead of Mono.
         ///     It can result in unexpected behavior in some LSL compilers such as OpenSims default compiler.
         ///     The code generator provided with this library can handle old LSO optimizations such as this one, but it is good
         ///     to warn about it since the optimization is completely unnecessary now days and may even make your code slower on
         ///     Mono.
-        /// </summary>
+        /// </remarks>
         /// <param name="location">The location in the source code.</param>
         void MultipleListAssignmentsInExpression(LSLSourceCodeRange location);
 
 
         /// <summary>
-        ///     Warns about the occurrence of multiple string or string variable assignments occurring inside of a single
-        ///     expression.
+        ///     Warns about the occurrence of multiple string or string variable assignments occurring inside of a single expression.
+        /// </summary>
+        /// <remarks>
         ///     This sort of thing was a common optimization for LSL when LSO was used instead of Mono.
         ///     It can result in unexpected behavior in some LSL compilers such as OpenSims default compiler.
         ///     The code generator provided with this library can handle old LSO optimizations such as this one, but it is good
         ///     to warn about it since the optimization is completely unnecessary now days and may even make your code slower on
         ///     Mono.
-        /// </summary>
+        /// </remarks>
         /// <param name="location">The location in the source code.</param>
         void MultipleStringAssignmentsInExpression(LSLSourceCodeRange location);
 
 
         /// <summary>
-        ///     Dead code was detected, but it was not an error because it was in a function with a void return type.
+        ///     Dead code was detected, but it was not an error because it was inside a function with a void return type.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
         /// <param name="currentFunction">The signature of the function that dead code was detected in.</param>
@@ -93,7 +96,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Dead code was detected, but it was not an error because it was in an event handler.
+        ///     Dead code was detected, but it was not an error because it was inside an event handler.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
         /// <param name="currentEvent">The signature of the event handler that dead code was detected in.</param>
@@ -121,10 +124,9 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     An expression statement has no effect.  This can happen if you simply reference a variable as an expression
-        ///     statement and do nothing to it.
-        ///     For example, reference a counter but forget to add an increment or decrement operator to it.
-        ///     It would compile but it might be an error.
+        ///     An expression statement has no effect; this can happen if you simply reference a variable as an expression statement and do nothing to it. <para/>
+        ///     As an example, referencing a counter but forgetting to add an increment or decrement operator to it would cause this. <para/>
+        ///     It will compile but it might be an error.
         /// </summary>
         /// <param name="location">The source code location of the expression statement.</param>
         /// <param name="statementExpression">The offending expression used as a statement.</param>
@@ -132,8 +134,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The expression in the 'after thought' of a for loop has no affect, for example: If its just a variable reference.
-        ///     This can happen if you forget to add an increment or decrement operator to a loop counter.
+        ///     The expression in the 'after thought' of a for loop has no affect. <para/>
+        ///     As an example, this can happen if you forget to add an increment or decrement operator to a loop counter variable.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
         /// <param name="expression">The offending expression.</param>
@@ -150,8 +152,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The expression in the 'init section' of a for loop has no affect, for example: If its just a variable reference.
-        ///     This can happen if you forget to assign a starting value to a loop counter.
+        ///     The expression in the 'init section' of a for loop has no affect, for example: If its just a variable reference.  <para/>
+        ///     As an example, this can happen if you forget to assign a starting value to a loop counter.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
         /// <param name="expression">The offending expression.</param>
@@ -168,8 +170,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A cast is considered redundant because the expression the user is attempting to cast is already
-        ///     of the same type being cast to.
+        ///     A cast is considered redundant because the expression the user casted already has the same return type as the cast-to type.
         /// </summary>
         /// <param name="location">The location in the source code.</param>
         /// <param name="castType">The type the user attempted to cast the expression to.</param>
@@ -317,7 +318,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect...
+        ///     A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect... <para/>
         ///     This is not an error, but bad practice. This function handles the warning case inside function declarations.
         /// </summary>
         /// <param name="location">The source code range of the new variable declaration.</param>
@@ -334,7 +335,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect...
+        ///     A local variable was re-declared inside of a nested scope, such as an if statement or for loop, ect... <para/>
         ///     This is not an error, but bad practice.  This function handles the warning case inside event handlers.
         /// </summary>
         /// <param name="location">The source code range of the new variable declaration.</param>
@@ -367,7 +368,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Occurs when a return value inside of an event handler returns an expression instead of nothing.
+        ///     Occurs when a return value inside of an event handler returns an expression instead of nothing.  <para/>
         ///     The return value of the expression is simply discarded in this case.
         /// </summary>
         /// <param name="location">The location.</param>

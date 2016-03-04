@@ -14,11 +14,11 @@
     <Name>Documentation</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
-    <OutputPath>Documentation\</OutputPath>
+    <OutputPath>Documentation\sandcastle\</OutputPath>
     <HtmlHelpName>LibLSLCC Documentation</HtmlHelpName>
     <Language>en-US</Language>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <IndentHtml>False</IndentHtml>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -53,6 +53,10 @@
       <NamespaceSummaryItem name="LibLSLCC.Utility" isDocumented="True">Misc utilities, mostly string processing/formatting tools.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="LibLSLCC.Utility.ListParser" isDocumented="True">Classes implementing parsing/validation of LSL style list literals in strings.</NamespaceSummaryItem>
     </NamespaceSummaries>
+    <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
+    <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
+    <IncludeFavorites>False</IncludeFavorites>
+    <BinaryTOC>False</BinaryTOC>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
