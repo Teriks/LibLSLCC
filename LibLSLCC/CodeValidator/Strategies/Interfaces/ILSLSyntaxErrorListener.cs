@@ -453,11 +453,12 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     A call to function was attempted in a static context.  <para/>
-        ///     (in a global variable declaration expression)
+        ///     A call to function was attempted in a static context. (in a global variable declaration expression) <para/>
+        ///     This will occur even for undeclared functions.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        void CallToFunctionInStaticContext(LSLSourceCodeRange location);
+        /// <param name="functionName">The name of the function.</param>
+        void CallToFunctionInStaticContext(LSLSourceCodeRange location, string functionName);
 
 
         /// <summary>

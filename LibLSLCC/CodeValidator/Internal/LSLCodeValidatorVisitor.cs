@@ -3032,7 +3032,7 @@ namespace LibLSLCC.CodeValidator
 
             if (ScopingManager.InGlobalScope)
             {
-                GenSyntaxError().CallToFunctionInStaticContext(location);
+                GenSyntaxError().CallToFunctionInStaticContext(location, context.function_name.Text);
 
                 return ReturnFromVisit(context, LSLFunctionCallNode.GetError(location));
             }

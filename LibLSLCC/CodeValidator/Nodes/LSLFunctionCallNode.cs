@@ -71,9 +71,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list and definition reference.
-        ///     This represents a call to a user defined function.  <paramref name="definition" /> receives this node
-        ///     as a new reference via <see cref="LSLFunctionDeclarationNode.AddReference" />.
+        ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list and definition reference. <para/>
+        ///     <paramref name="definition" /> receives this node as a new reference in <see cref="LSLFunctionDeclarationNode.References" />.
         /// </summary>
         /// <param name="argumentList">The argument list node.</param>
         /// <param name="definition">The function definition node.</param>
@@ -101,8 +100,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Construct an <see cref="LSLFunctionCallNode" /> with an arguments list and definition reference.
-        ///     This represents a call to a user defined function.  <paramref name="definition" /> receives this node
-        ///     as a new reference via <see cref="LSLFunctionDeclarationNode.AddReference" />.
+        ///     <paramref name="definition" /> receives this node as a new reference in <see cref="LSLFunctionDeclarationNode.References" />.
         /// </summary>
         /// <param name="argumentList">The list of expression arguments.</param>
         /// <param name="definition">The function definition node.</param>
