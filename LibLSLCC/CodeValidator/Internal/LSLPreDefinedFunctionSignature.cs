@@ -1,7 +1,7 @@
 #region FileInfo
 
 // 
-// File: LSLParsedEventHandlerSignature.cs
+// File: LSLPreDefinedFunctionSignature.cs
 // 
 // 
 // ============================================================
@@ -45,6 +45,7 @@
 
 #region Imports
 
+using System;
 using System.Linq;
 
 #endregion
@@ -52,33 +53,59 @@ using System.Linq;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     Represents and event handler signature parsed from source code.
-    ///     This object derives from <see cref="LSLEventSignature" /> and adds an <see cref="LSLParameterListNode" />
-    ///     property that contains a parameter list node from the syntax tree.
+    ///     Represents a function signature that was parsed during the pre-pass that occurs during code validation.
     /// </summary>
-    public sealed class LSLParsedEventHandlerSignature : LSLEventSignature
+    internal sealed class LSLPreDefinedFunctionSignature : LSLFunctionSignature
     {
         /// <summary>
-        ///     Construct an  <see cref="LSLParsedEventHandlerSignature" /> from an event handler name and a
-        ///     <see cref="LSLParameterListNode" /> from
-        ///     an LSL Syntax tree.
+        ///     Construct an <see cref="LSLPreDefinedFunctionSignature" /> from an <see cref="LSLType" /> representing the return
+        ///     type, a function name and an <see cref="LSLParameterListNode" />
+        ///     from an LSL Syntax tree.
         /// </summary>
-        /// <param name="name">The name of the event handler.</param>
+        /// <param name="returnType">The return type of the function signature.</param>
+        /// <param name="name">The name of the function.</param>
         /// <param name="parameters">
-        ///     The <see cref="LSLParameterListNode" /> from the syntax tree that represents the event
-        ///     handlers parsed parameters.
+        ///     The <see cref="LSLParameterListNode" /> from an LSL syntax tree that represents the function
+        ///     signatures parameters.
         /// </param>
-        public LSLParsedEventHandlerSignature(string name, LSLParameterListNode parameters) :
-            base(name, parameters.Parameters.Select(x => new LSLParameterSignature(x.Type, x.Name, false)))
+        /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null" />.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException">
+        ///     Thrown if the function name does not follow LSL symbol naming conventions.
+        /// </exception>
+        public LSLPreDefinedFunctionSignature(LSLType returnType, string name, LSLParameterListNode parameters)
+            : base(returnType, name)
         {
-            //TODO validate parameters
+            if (parameters == null) throw new ArgumentNullException("parameters");
+
+            foreach (var param in parameters)
+            {
+                AddParameter(param.CreateSignature());
+            }
+
             ParameterListNode = parameters;
         }
 
 
         /// <summary>
-        ///     A parameter list node from an LSL syntax tree that represents this event handler signatures parameters.
+        ///     The LSLParameterListNOde from an LSL syntax tree the represents the function signatures parameters.
         /// </summary>
         public LSLParameterListNode ParameterListNode { get; private set; }
+
+        /// <summary>
+        ///     The <see cref="LSLFunctionDeclarationNode" /> in the syntax tree that this function signature belongs
+        ///     to/represents.
+        /// </summary>
+        public LSLFunctionDeclarationNode DefinitionNode { get; private set; }
+
+
+        /// <summary>
+        ///     Internal method that sets the DefinitionNode property, this method is named this way to bring clarity to the source
+        ///     code where it is used.
+        /// </summary>
+        /// <param name="definition"></param>
+        internal void GiveDefinition(LSLFunctionDeclarationNode definition)
+        {
+            DefinitionNode = definition;
+        }
     }
 }

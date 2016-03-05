@@ -125,7 +125,7 @@ namespace LibLSLCC.CodeValidator
         ///     <paramref name="functionSignature" /> or <paramref name="argumentList" /> is
         ///     <c>null</c>.
         /// </exception>
-        public LSLFunctionCallNode(LSLFunctionSignature functionSignature, LSLExpressionListNode argumentList)
+        public LSLFunctionCallNode(ILSLFunctionSignature functionSignature, LSLExpressionListNode argumentList)
         {
             if (functionSignature == null) throw new ArgumentNullException("functionSignature");
             if (argumentList == null) throw new ArgumentNullException("argumentList");
@@ -154,7 +154,7 @@ namespace LibLSLCC.CodeValidator
         ///     <paramref name="functionSignature" /> or <paramref name="argumentList" /> is
         ///     <c>null</c>.
         /// </exception>
-        public LSLFunctionCallNode(LSLFunctionSignature functionSignature, params ILSLExprNode[] argumentList)
+        public LSLFunctionCallNode(ILSLFunctionSignature functionSignature, params ILSLExprNode[] argumentList)
             : this(functionSignature, new LSLExpressionListNode(argumentList))
         {
         }
@@ -208,7 +208,7 @@ namespace LibLSLCC.CodeValidator
         /// </exception>
         internal LSLFunctionCallNode(
             LSLParser.Expr_FunctionCallContext context,
-            LSLFunctionSignature signature,
+            ILSLFunctionSignature signature,
             LSLExpressionListNode argumentExpressionList)
         {
             if (context == null)
@@ -342,7 +342,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The function signature of the function that was called, as it was defined by either the user or library.
         /// </summary>
-        public LSLFunctionSignature Signature { get; private set; }
+        public ILSLFunctionSignature Signature { get; private set; }
 
         ILSLExpressionListNode ILSLFunctionCallNode.ArgumentExpressionList
         {

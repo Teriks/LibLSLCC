@@ -49,6 +49,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -73,7 +74,7 @@ namespace LibLSLCC.CodeValidator
 
         {
             var types = "(?:" + string.Join("|", dataTypes) + ")";
-            const string id = "[a-zA-Z]+[a-zA-Z0-9_]*";
+            string id = LSLTokenTools.IDRegexString;
             Regex =
                 new Regex(before + "(?:(" + types + ")\\s+)?(" + id + ")\\((\\s*(?:\\s*" + types + "\\s+" + id +
                           "\\s*(?:\\s*,\\s*" + types + "\\s+" + id + "\\s*)*)?)\\)" + after);

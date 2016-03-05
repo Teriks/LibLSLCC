@@ -180,7 +180,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
-        void ReturnedValueFromVoidFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
+        void ReturnedValueFromVoidFunction(LSLSourceCodeRange location, ILSLFunctionSignature functionSignature,
             ILSLReadOnlyExprNode attemptedReturnExpression);
 
 
@@ -190,7 +190,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
         /// <param name="attemptedReturnExpression">The expression that was attempted to be returned.</param>
-        void TypeMismatchInReturnValue(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
+        void TypeMismatchInReturnValue(LSLSourceCodeRange location, ILSLFunctionSignature functionSignature,
             ILSLReadOnlyExprNode attemptedReturnExpression);
 
 
@@ -200,7 +200,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="functionSignature">The signature of the function the return was attempted from.</param>
-        void ReturnedVoidFromNonVoidFunction(LSLSourceCodeRange location, LSLFunctionSignature functionSignature);
+        void ReturnedVoidFromNonVoidFunction(LSLSourceCodeRange location, ILSLFunctionSignature functionSignature);
 
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="functionSignature">The function signature of the defined function attempting to be called.</param>
         /// <param name="parameterExpressionsGiven">The expressions given to the function call.</param>
         void ImproperParameterCountInFunctionCall(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature, ILSLReadOnlyExprNode[] parameterExpressionsGiven);
+            ILSLFunctionSignature functionSignature, ILSLReadOnlyExprNode[] parameterExpressionsGiven);
 
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace LibLSLCC.CodeValidator
         ///     The signature of the previously defined function that is considered a
         ///     duplicated to the new definition.
         /// </param>
-        void RedefinedFunction(LSLSourceCodeRange location, LSLFunctionSignature previouslyDefinedSignature);
+        void RedefinedFunction(LSLSourceCodeRange location, ILSLFunctionSignature previouslyDefinedSignature);
 
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="calledFunction">The defined/library function that was attempting to be called.</param>
         /// <param name="parameterExpressionsGiven">The parameter expressions given for the function call.</param>
         void ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location, int parameterNumberWithError,
-            LSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven);
+            ILSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven);
 
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="givenEventHandlerSignature">The signature of the event handler attempting to be used.</param>
         void UnknownEventHandlerDeclared(LSLSourceCodeRange location,
-            LSLEventSignature givenEventHandlerSignature);
+            ILSLEventSignature givenEventHandlerSignature);
 
 
         /// <summary>
@@ -334,12 +334,11 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="givenEventHandlerSignature">The invalid signature used for the event handler in the source code.</param>
         /// <param name="correctEventHandlerSignature">
-        ///     The actual valid signature for the event handler from the library data
-        ///     provider.
+        ///     The correct signature for for the event handler; the one that was expected.
         /// </param>
         void IncorrectEventHandlerSignature(LSLSourceCodeRange location,
-            LSLEventSignature givenEventHandlerSignature,
-            LSLLibraryEventSignature correctEventHandlerSignature);
+            ILSLEventSignature givenEventHandlerSignature,
+            ILSLEventSignature correctEventHandlerSignature);
 
 
         /// <summary>
@@ -363,7 +362,7 @@ namespace LibLSLCC.CodeValidator
         ///     no overloads actually exist.
         /// </param>
         void RedefinedStandardLibraryFunction(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads);
+            IReadOnlyGenericArray<ILSLFunctionSignature> libraryFunctionSignatureOverloads);
 
 
         /// <summary>
@@ -395,8 +394,8 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">Location in source code.</param>
         /// <param name="inFunction">The signature of the function the dead code was detected in.</param>
         /// <param name="deadSegment">An object describing the location an span of the dead code segment.</param>
-        void DeadCodeAfterReturnPath(LSLSourceCodeRange location, LSLFunctionSignature inFunction,
-            ILSLReadOnlyDeadCodeSegment deadSegment);
+        void DeadCodeAfterReturnPath(LSLSourceCodeRange location, ILSLFunctionSignature inFunction,
+            ILSLDeadCodeSegment deadSegment);
 
 
         /// <summary>
@@ -405,7 +404,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">Location in source code.</param>
         /// <param name="inFunction">The signature of the function in question.</param>
-        void NotAllCodePathsReturnAValue(LSLSourceCodeRange location, LSLFunctionSignature inFunction);
+        void NotAllCodePathsReturnAValue(LSLSourceCodeRange location, ILSLFunctionSignature inFunction);
 
 
         /// <summary>
@@ -500,7 +499,7 @@ namespace LibLSLCC.CodeValidator
         ///     function.
         /// </param>
         void CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches,
+            IReadOnlyGenericArray<ILSLFunctionSignature> ambiguousMatches,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions);
 
 

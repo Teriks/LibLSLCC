@@ -2943,7 +2943,7 @@ namespace LibLSLCC.CodeValidator
         /// <returns>True if the function call signature matches the provided arguments,  False if it does not.</returns>
         private bool ValidateFunctionCallSignatureMatch(
             LSLParser.Expr_FunctionCallContext context,
-            LSLFunctionSignature functionSignature,
+            ILSLFunctionSignature functionSignature,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions)
         {
             var location = new LSLSourceCodeRange(context);

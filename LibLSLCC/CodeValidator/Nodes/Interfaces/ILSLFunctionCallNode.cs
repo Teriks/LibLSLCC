@@ -62,7 +62,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The function signature of the function that was called, as it was defined by either the user or library.
         /// </summary>
-        LSLFunctionSignature Signature { get; }
+        ILSLFunctionSignature Signature { get; }
 
         /// <summary>
         ///     The parameter list node containing the expressions used to call this function, this will never be null even if the

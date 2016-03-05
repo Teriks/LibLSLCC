@@ -74,11 +74,11 @@ namespace LibLSLCC.LibraryData
 
 
         /// <summary>
-        ///     Construct an LSLLibraryEventSignature by copying the signature details from an <see cref="LSLEventSignature" />
+        ///     Construct an LSLLibraryEventSignature by copying the signature details from an <see cref="ILSLEventSignature" />
         ///     object.
         /// </summary>
-        /// <param name="sig">The <see cref="LSLEventSignature" /> object to copy signatures details from.</param>
-        public LSLLibraryEventSignature(LSLEventSignature sig)
+        /// <param name="sig">The <see cref="ILSLEventSignature" /> object to copy signatures details from.</param>
+        public LSLLibraryEventSignature(ILSLEventSignature sig)
             : base(sig)
         {
             DocumentationString = "";

@@ -52,7 +52,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     A read only interface for <see cref="LSLDeadCodeSegment"/>.
     /// </summary>
-    public interface ILSLReadOnlyDeadCodeSegment : ILSLReadOnlyCodeSegment
+    public interface ILSLDeadCodeSegment : ILSLCodeSegment
     {
         /// <summary>
         ///     The type of dead code that this <see cref="LSLDeadCodeSegment" /> represents.
@@ -65,7 +65,7 @@ namespace LibLSLCC.CodeValidator
     ///     a <see cref="LSLDeadCodeType"/> enum property is provided to describe what caused the code to be dead
     /// </summary>
     /// <seealso cref="LSLCodeSegment"/>
-    public sealed class LSLDeadCodeSegment : LSLCodeSegment, ILSLReadOnlyDeadCodeSegment
+    public sealed class LSLDeadCodeSegment : LSLCodeSegment, ILSLDeadCodeSegment
     {
         /// <summary>
         ///     Construct an <see cref="LSLDeadCodeSegment" /> with the given <see cref="LSLDeadCodeType" />

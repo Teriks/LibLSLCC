@@ -1,7 +1,7 @@
 #region FileInfo
 
 // 
-// File: LSLPreDefinedFunctionSignature.cs
+// File: LSLParsedEventHandlerSignature.cs
 // 
 // 
 // ============================================================
@@ -52,23 +52,24 @@ using System.Linq;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     Represents a function signature that was parsed during the pre-pass that occurs during code validation.
+    ///     Represents and event handler signature parsed from source code.
+    ///     This object derives from <see cref="LSLEventSignature" /> and adds an <see cref="LSLParameterListNode" />
+    ///     property that contains a parameter list node from the syntax tree.
     /// </summary>
-    public sealed class LSLPreDefinedFunctionSignature : LSLFunctionSignature
+    internal sealed class LSLParsedEventHandlerSignature : LSLEventSignature
     {
         /// <summary>
-        ///     Construct an <see cref="LSLPreDefinedFunctionSignature" /> from an <see cref="LSLType" /> representing the return
-        ///     type, a function name and an <see cref="LSLParameterListNode" />
-        ///     from an LSL Syntax tree.
+        ///     Construct an  <see cref="LSLParsedEventHandlerSignature" /> from an event handler name and a
+        ///     <see cref="LSLParameterListNode" /> from
+        ///     an LSL Syntax tree.
         /// </summary>
-        /// <param name="returnType">The return type of the function signature.</param>
-        /// <param name="name">The name of the function.</param>
+        /// <param name="name">The name of the event handler.</param>
         /// <param name="parameters">
-        ///     The <see cref="LSLParameterListNode" /> from an LSL syntax tree that represents the function
-        ///     signatures parameters.
+        ///     The <see cref="LSLParameterListNode" /> from the syntax tree that represents the event
+        ///     handlers parsed parameters.
         /// </param>
-        public LSLPreDefinedFunctionSignature(LSLType returnType, string name, LSLParameterListNode parameters)
-            : base(returnType, name, parameters.Parameters.Select(x => new LSLParameterSignature(x.Type, x.Name, false)))
+        public LSLParsedEventHandlerSignature(string name, LSLParameterListNode parameters) :
+            base(name, parameters.Parameters.Select(x => new LSLParameterSignature(x.Type, x.Name, false)))
         {
             //TODO validate parameters
             ParameterListNode = parameters;
@@ -76,25 +77,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The LSLParameterListNOde from an LSL syntax tree the represents the function signatures parameters.
+        ///     A parameter list node from an LSL syntax tree that represents this event handler signatures parameters.
         /// </summary>
         public LSLParameterListNode ParameterListNode { get; private set; }
-
-        /// <summary>
-        ///     The <see cref="LSLFunctionDeclarationNode" /> in the syntax tree that this function signature belongs
-        ///     to/represents.
-        /// </summary>
-        public LSLFunctionDeclarationNode DefinitionNode { get; private set; }
-
-
-        /// <summary>
-        ///     Internal method that sets the DefinitionNode property, this method is named this way to bring clarity to the source
-        ///     code where it is used.
-        /// </summary>
-        /// <param name="definition"></param>
-        internal void GiveDefinition(LSLFunctionDeclarationNode definition)
-        {
-            DefinitionNode = definition;
-        }
     }
 }

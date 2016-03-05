@@ -488,7 +488,7 @@ namespace LibLSLCC.LibraryData
         ///     and the function/overload is not shared across those subsets.
         /// </exception>
         /// <exception cref="ArgumentNullException"><paramref name="signatureToTest"/> is <c>null</c>.</exception>
-        public LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest)
+        public LSLLibraryFunctionSignature GetLibraryFunctionSignature(ILSLFunctionSignature signatureToTest)
         {
             if (signatureToTest == null) throw new ArgumentNullException("signatureToTest");
 

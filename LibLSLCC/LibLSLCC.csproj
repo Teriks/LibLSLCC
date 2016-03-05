@@ -73,11 +73,15 @@
     <Compile Include="CodeValidator\Internal\LSLLabelCollectorPrePass.cs" />
     <Compile Include="CodeValidator\Internal\LSLCodeValidatorVisitorScopeTracker.cs" />
     <Compile Include="CodeValidator\Internal\LSLStatementNodeTools.cs" />
+    <Compile Include="CodeValidator\Nodes\Interfaces\Extensions\LSLCreateSignatureExtensions.cs" />
+    <Compile Include="CodeValidator\Primitives\ILSLCodeSegment.cs" />
+    <Compile Include="CodeValidator\Primitives\ILSLEventSignature.cs" />
+    <Compile Include="CodeValidator\Primitives\ILSLFunctionSignature.cs" />
     <Compile Include="CodeValidator\Strategies\Interfaces\ILSLCodeValidatorStrategiesExtensions.cs" />
     <Compile Include="CodeValidator\Strategies\LSLCodeValidatorStrategies.cs" />
     <Compile Include="CodeValidator\Strategies\LSLDefaultExpressionValidator.cs" />
     <Compile Include="CodeValidator\Internal\LSLAntlrErrorHandler.cs" />
-    <Compile Include="CodeValidator\Nodes\Interfaces\LSLLiteralNodeInterfaceExtensions.cs" />
+    <Compile Include="CodeValidator\Nodes\Interfaces\Extensions\LSLLiteralNodeInterfaceExtensions.cs" />
     <Compile Include="CodeValidator\Enums\LSLExpressionListType.cs" />
     <Compile Include="CodeValidator\Enums\LSLParameterListType.cs" />
     <Compile Include="Collections\CloneableExtensions.cs" />
@@ -158,7 +162,7 @@
     <Compile Include="CodeValidator\ILSLCodeValidator.cs" />
     <Compile Include="LibraryData\LSLLibraryDataProvider.cs" />
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureMatcher.cs" />
-    <Compile Include="CodeValidator\Nodes\Interfaces\LSLExprNodeInterfaceExtensions.cs" />
+    <Compile Include="CodeValidator\Nodes\Interfaces\Extensions\LSLExprNodeInterfaceExtensions.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\GenericArray.cs" />
     <Compile Include="Collections\GenericArrayExtensions.cs" />
@@ -205,8 +209,8 @@
     <Compile Include="CodeValidator\Primitives\LSLFunctionSignatureRegex.cs" />
     <Compile Include="CodeValidator\Primitives\LSLEventSignatureRegex.cs" />
     <Compile Include="CodeValidator\Primitives\LSLParameterSignature.cs" />
-    <Compile Include="CodeValidator\Primitives\LSLParsedEventHandlerSignature.cs" />
-    <Compile Include="CodeValidator\Primitives\LSLPreDefinedFunctionSignature.cs" />
+    <Compile Include="CodeValidator\Internal\LSLParsedEventHandlerSignature.cs" />
+    <Compile Include="CodeValidator\Internal\LSLPreDefinedFunctionSignature.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLBinaryExpressionNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLExpressionListNode.cs" />
     <Compile Include="CodeValidator\Nodes\Interfaces\ILSLExprNode.cs" />

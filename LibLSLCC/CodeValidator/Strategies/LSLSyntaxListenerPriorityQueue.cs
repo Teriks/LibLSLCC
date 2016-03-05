@@ -217,7 +217,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.ReturnedValueFromVoidFunction(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature,
+            ILSLFunctionSignature functionSignature,
             ILSLReadOnlyExprNode attemptedReturnExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
@@ -228,7 +228,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.TypeMismatchInReturnValue(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature,
+            ILSLFunctionSignature functionSignature,
             ILSLReadOnlyExprNode attemptedReturnExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
@@ -239,7 +239,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.ReturnedVoidFromNonVoidFunction(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature)
+            ILSLFunctionSignature functionSignature)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.ReturnedVoidFromNonVoidFunction(location, functionSignature));
@@ -261,7 +261,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.ImproperParameterCountInFunctionCall(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature,
+            ILSLFunctionSignature functionSignature,
             ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
@@ -272,7 +272,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.RedefinedFunction(LSLSourceCodeRange location,
-            LSLFunctionSignature previouslyDefinedSignature)
+            ILSLFunctionSignature previouslyDefinedSignature)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.RedefinedFunction(location, previouslyDefinedSignature));
@@ -336,7 +336,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxErrorListener.ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location,
             int parameterNumberWithError,
-            LSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven)
+            ILSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -353,7 +353,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.UnknownEventHandlerDeclared(LSLSourceCodeRange location,
-            LSLEventSignature givenEventHandlerSignature)
+            ILSLEventSignature givenEventHandlerSignature)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.UnknownEventHandlerDeclared(location, givenEventHandlerSignature));
@@ -361,8 +361,8 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.IncorrectEventHandlerSignature(LSLSourceCodeRange location,
-            LSLEventSignature givenEventHandlerSignature,
-            LSLLibraryEventSignature correctEventHandlerSignature)
+            ILSLEventSignature givenEventHandlerSignature,
+            ILSLEventSignature correctEventHandlerSignature)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -383,7 +383,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.RedefinedStandardLibraryFunction(LSLSourceCodeRange location, string functionName,
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> libraryFunctionSignatureOverloads)
+            IReadOnlyGenericArray<ILSLFunctionSignature> libraryFunctionSignatureOverloads)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -413,7 +413,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.DeadCodeAfterReturnPath(LSLSourceCodeRange location,
-            LSLFunctionSignature inFunction, ILSLReadOnlyDeadCodeSegment deadSegment)
+            ILSLFunctionSignature inFunction, ILSLDeadCodeSegment deadSegment)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.DeadCodeAfterReturnPath(location, inFunction, deadSegment));
@@ -421,7 +421,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.NotAllCodePathsReturnAValue(LSLSourceCodeRange location,
-            LSLFunctionSignature inFunction)
+            ILSLFunctionSignature inFunction)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.NotAllCodePathsReturnAValue(location, inFunction));
@@ -498,7 +498,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxErrorListener.CallToOverloadedLibraryFunctionIsAmbiguous(LSLSourceCodeRange location,
             string functionName,
-            IReadOnlyGenericArray<LSLLibraryFunctionSignature> ambiguousMatches,
+            IReadOnlyGenericArray<ILSLFunctionSignature> ambiguousMatches,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> givenParameterExpressions)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
@@ -622,7 +622,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.DeadCodeDetected(LSLSourceCodeRange location,
-            LSLFunctionSignature currentFunction, ILSLReadOnlyDeadCodeSegment deadSegment)
+            ILSLFunctionSignature currentFunction, ILSLDeadCodeSegment deadSegment)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.DeadCodeDetected(location, currentFunction, deadSegment));
@@ -630,7 +630,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.DeadCodeDetected(LSLSourceCodeRange location,
-            LSLEventSignature currentEvent, ILSLReadOnlyDeadCodeSegment deadSegment)
+            ILSLEventSignature currentEvent, ILSLDeadCodeSegment deadSegment)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.DeadCodeDetected(location, currentEvent, deadSegment));
@@ -698,7 +698,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableNeverUsed(LSLSourceCodeRange location,
             ILSLVariableDeclarationNode variable,
-            LSLFunctionSignature inFunction)
+            ILSLFunctionSignature inFunction)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.LocalVariableNeverUsed(location, variable, inFunction));
@@ -707,7 +707,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableNeverUsed(LSLSourceCodeRange location,
             ILSLVariableDeclarationNode variable,
-            LSLEventSignature inEvent)
+            ILSLEventSignature inEvent)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.LocalVariableNeverUsed(location, variable, inEvent));
@@ -716,7 +716,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.FunctionParameterNeverUsed(LSLSourceCodeRange location,
             ILSLVariableDeclarationNode parameter,
-            LSLFunctionSignature inFunction)
+            ILSLFunctionSignature inFunction)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.FunctionParameterNeverUsed(location, parameter, inFunction));
@@ -724,7 +724,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
-            LSLFunctionSignature functionSignature,
+            ILSLFunctionSignature functionSignature,
             ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -735,7 +735,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
-            LSLEventSignature eventHandlerSignature,
+            ILSLEventSignature eventHandlerSignature,
             ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -746,7 +746,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
-            LSLPreDefinedFunctionSignature functionSignature,
+            ILSLFunctionSignature functionSignature,
             ILSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -757,7 +757,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
-            LSLParsedEventHandlerSignature eventHandlerSignature,
+            ILSLEventSignature eventHandlerSignature,
             ILSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -768,7 +768,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
-            LSLPreDefinedFunctionSignature functionSignature,
+            ILSLFunctionSignature functionSignature,
             ILSLVariableDeclarationNode localVariable, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -779,7 +779,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
-            LSLParsedEventHandlerSignature eventHandlerSignature,
+            ILSLEventSignature eventHandlerSignature,
             ILSLVariableDeclarationNode localVariable, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -790,7 +790,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryFunction(LSLSourceCodeRange location,
-            LSLLibraryFunctionSignature functionSignature)
+            ILSLFunctionSignature functionSignature)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -808,7 +808,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryEventHandler(LSLSourceCodeRange location,
-            LSLLibraryEventSignature eventSignature)
+            ILSLEventSignature eventSignature)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -817,7 +817,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
-            LSLFunctionSignature currentFunctionBodySignature,
+            ILSLFunctionSignature currentFunctionBodySignature,
             ILSLVariableDeclarationNode newDeclarationNode, ILSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -828,7 +828,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
-            LSLEventSignature currentEventBodySignature,
+            ILSLEventSignature currentEventBodySignature,
             ILSLVariableDeclarationNode newDeclarationNode, ILSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
@@ -855,7 +855,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.ReturnedValueFromEventHandler(LSLSourceCodeRange location,
-            LSLEventSignature eventSignature, ILSLReadOnlyExprNode returnExpression)
+            ILSLEventSignature eventSignature, ILSLReadOnlyExprNode returnExpression)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>

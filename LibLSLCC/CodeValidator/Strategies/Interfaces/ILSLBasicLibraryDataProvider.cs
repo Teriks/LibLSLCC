@@ -57,7 +57,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Return a <see cref="LSLLibraryFunctionSignature" /> from this object where
-        ///     <see cref="LSLFunctionSignature.SignatureEquivalent" /> is true for the given <see cref="LSLFunctionSignature" />,
+        ///     <see cref="ILSLFunctionSignature.SignatureEquivalent" /> is true for the given <see cref="ILSLFunctionSignature" />,
         ///     or null if no such <see cref="LSLLibraryFunctionSignature" /> exists in this provider.
         /// </summary>
         /// <remarks>
@@ -67,7 +67,7 @@ namespace LibLSLCC.CodeValidator
         /// <returns>
         ///     An <see cref="LSLFunctionSignature" /> which has the same signature of signatureToTest, or null if none exist.
         /// </returns>
-        LSLLibraryFunctionSignature GetLibraryFunctionSignature(LSLFunctionSignature signatureToTest);
+        LSLLibraryFunctionSignature GetLibraryFunctionSignature(ILSLFunctionSignature signatureToTest);
 
 
         /// <summary>

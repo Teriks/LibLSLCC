@@ -317,16 +317,6 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        /// <summary>
-        ///     Build a <see cref="LSLFunctionSignature" /> object based off the signature of this function declaration node.
-        /// </summary>
-        /// <returns>The created <see cref="LSLFunctionSignature" />.</returns>
-        public LSLFunctionSignature CreateSignature()
-        {
-            return new LSLFunctionSignature(ReturnType, Name,
-                ParameterList.Parameters.Select(x => new LSLParameterSignature(x.Type, x.Name, false)));
-        }
-
         #region Nested type: Err
 
         private enum Err

@@ -113,7 +113,7 @@ namespace LibLSLCC.CodeValidator
     ///     Represents the status of an attempted overload resolution match against parameter expressions.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class LSLFunctionOverloadMatches<T> where T : LSLFunctionSignature
+    public class LSLFunctionOverloadMatches<T> where T : class, ILSLFunctionSignature
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="LSLFunctionOverloadMatches{T}" /> class with an
@@ -173,12 +173,15 @@ namespace LibLSLCC.CodeValidator
         public IReadOnlyGenericArray<T> Matches { get; private set; }
 
         /// <summary>
-        ///     If multiple matches were found (Ambiguous is set to true) then this will be null
-        ///     This will also be null if no matches were found at all
+        ///     If multiple matches were found (Ambiguous is set to true) then this will be <c>null</c>.
+        ///     This will also be <c>null</c> if no matches were found at all
         /// </summary>
         public T MatchingOverload
         {
-            get { return Ambiguous ? null : Matches.FirstOrDefault(); }
+            get
+            {
+                return Ambiguous ? null : Matches.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -212,7 +215,7 @@ namespace LibLSLCC.CodeValidator
         /// <returns>A matching <see cref="LSLFunctionSignature" /> overload or null.</returns>
         public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressionNodes, ILSLExpressionValidator expressionValidator)
-            where T : LSLFunctionSignature
+            where T : class, ILSLFunctionSignature
         {
             return MatchOverloads(functionSignatures, expressionNodes, (expressionValidator.ValidateFunctionParameter));
         }
@@ -233,7 +236,7 @@ namespace LibLSLCC.CodeValidator
         /// <returns>A matching <see cref="LSLFunctionSignature" /> overload or null.</returns>
         public static LSLFunctionOverloadMatches<T> MatchOverloads<T>(IReadOnlyGenericArray<T> functionSignatures,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressionNodes, Func<LSLParameterSignature, ILSLReadOnlyExprNode, bool> typeComparer)
-            where T : LSLFunctionSignature
+            where T : class, ILSLFunctionSignature
         {
             //discover candidates 'applicable' functions, using a typeComparer function/lambda to compare the signature parameters to the passed expression nodes.
             //anything that could possibly match the signature as an individual non-overloaded function is considered an overload match candidate. (see the TryMatch function of this class)
@@ -383,7 +386,7 @@ namespace LibLSLCC.CodeValidator
         ///     A <see cref="LSLFunctionSignatureMatch"/> object containing information about how the parameters matched
         ///     or did not match the call signature.
         /// </returns>
-        public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
+        public static LSLFunctionSignatureMatch TryMatch(ILSLFunctionSignature functionSignature,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions, ILSLExpressionValidator expressionValidator)
         {
             return TryMatch(functionSignature, expressions, (expressionValidator.ValidateFunctionParameter));
@@ -398,7 +401,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="right">The other function signature in the comparison.</param>
         /// <returns>True if the two signatures are identical</returns>
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <c>null</c>.</exception>
-        public static bool SignaturesEquivalent(LSLFunctionSignature left, LSLFunctionSignature right)
+        public static bool SignaturesEquivalent(ILSLFunctionSignature left, ILSLFunctionSignature right)
         {
             if (left == null) throw new ArgumentNullException("left");
             if (right == null) throw new ArgumentNullException("right");
@@ -447,7 +450,7 @@ namespace LibLSLCC.CodeValidator
         ///     account.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="left"/> or <paramref name="right"/> is <c>null</c>.</exception>
-        public static bool DefinitionIsDuplicate(LSLFunctionSignature left, LSLFunctionSignature right)
+        public static bool DefinitionIsDuplicate(ILSLFunctionSignature left, ILSLFunctionSignature right)
         {
             if (left == null) throw new ArgumentNullException("left");
             if (right == null) throw new ArgumentNullException("right");
@@ -497,7 +500,7 @@ namespace LibLSLCC.CodeValidator
         ///     or did not match the call signature.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="functionSignature"/> or <paramref name="expressions"/> or <paramref name="typeComparer"/> is <c>null</c>.</exception>
-        public static LSLFunctionSignatureMatch TryMatch(LSLFunctionSignature functionSignature,
+        public static LSLFunctionSignatureMatch TryMatch(ILSLFunctionSignature functionSignature,
             IReadOnlyGenericArray<ILSLReadOnlyExprNode> expressions, Func<LSLParameterSignature, ILSLReadOnlyExprNode, bool> typeComparer)
         {
             if (functionSignature == null) throw new ArgumentNullException("functionSignature");

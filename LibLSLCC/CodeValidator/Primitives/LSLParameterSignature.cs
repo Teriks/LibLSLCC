@@ -55,20 +55,23 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Represents a basic parameter that belongs to either an event handler or function signature.
     /// </summary>
+    /// <remarks>Immutable.</remarks>
     public sealed class LSLParameterSignature
     {
+
         /// <summary>
-        ///     Construct a parameter object
+        ///     Construct a parameter signature object.
         /// </summary>
         /// <param name="type">The parameter type</param>
         /// <param name="name">The parameter name</param>
         /// <param name="variadic">Is the parameter variadic</param>
+        /// <param name="parameterIndex">The parameter index.</param>
         /// <exception cref="LSLInvalidSymbolNameException">
         ///     Thrown if the parameter name does not follow LSL symbol naming
         ///     conventions for parameters.
         /// </exception>
         /// <exception cref="ArgumentException">Thrown if type is <see cref="LSLType.Void" /> and variadic is false.</exception>
-        public LSLParameterSignature(LSLType type, string name, bool variadic)
+        public LSLParameterSignature(LSLType type, string name, bool variadic, int parameterIndex)
         {
             if (type == LSLType.Void && variadic == false)
             {
@@ -92,6 +95,40 @@ namespace LibLSLCC.CodeValidator
             Type = type;
             Name = name;
             Variadic = variadic;
+            ParameterIndex = parameterIndex;
+        }
+
+
+
+        /// <summary>
+        ///     Construct a prototype parameter signature object without a parameter index.
+        /// </summary>
+        /// <param name="type">The parameter type</param>
+        /// <param name="name">The parameter name</param>
+        /// <param name="variadic">Is the parameter variadic</param>
+        /// <exception cref="LSLInvalidSymbolNameException">
+        ///     Thrown if the parameter name does not follow LSL symbol naming
+        ///     conventions for parameters.
+        /// </exception>
+        /// <exception cref="ArgumentException">Thrown if type is <see cref="LSLType.Void" /> and variadic is false.</exception>
+        public LSLParameterSignature(LSLType type, string name, bool variadic) : this(type, name, variadic, -1)
+        {
+        }
+
+
+        /// <summary>
+        ///     Construct a prototype parameter signature object by cloning another and giving it the specified index.
+        /// </summary>
+        /// <param name="other">The parameter signature to clone from.</param>
+        /// <param name="parameterIndex">The parameter index.</param>
+        /// <exception cref="LSLInvalidSymbolNameException">
+        ///     Thrown if the parameter name does not follow LSL symbol naming
+        ///     conventions for parameters.
+        /// </exception>
+        /// <exception cref="ArgumentException">Thrown if type is <see cref="LSLType.Void" /> and variadic is false.</exception>
+        public LSLParameterSignature(LSLParameterSignature other, int parameterIndex) : 
+            this(other.Type, other.Name, other.Variadic, other.ParameterIndex)
+        {
         }
 
 
@@ -114,7 +151,7 @@ namespace LibLSLCC.CodeValidator
         ///     The parameter index, which gets set when the parameter is added to an <see cref="LSLFunctionSignature" /> or
         ///     <see cref="LSLEventSignature" />
         /// </summary>
-        public int ParameterIndex { get; set; }
+        public int ParameterIndex { get; private set; }
 
         /// <summary>
         ///     Returns the signature string of the parameter.

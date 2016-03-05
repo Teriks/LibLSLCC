@@ -58,7 +58,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Represents a basic LSL function signature.
     /// </summary>
-    public class LSLFunctionSignature
+    public class LSLFunctionSignature : ILSLFunctionSignature
     {
         private readonly GenericArray<LSLParameterSignature> _parameters;
         private string _name;
@@ -80,7 +80,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="other">The <see cref="LSLFunctionSignature" /> object to copy construct from.</param>
         /// <exception cref="ArgumentNullException"><paramref name="other" /> is <c>null</c>.</exception>
-        public LSLFunctionSignature(LSLFunctionSignature other)
+        public LSLFunctionSignature(ILSLFunctionSignature other)
         {
             if (other == null)
             {
@@ -88,7 +88,7 @@ namespace LibLSLCC.CodeValidator
             }
 
             Name = other.Name;
-            _parameters = new GenericArray<LSLParameterSignature>(other._parameters);
+            _parameters = new GenericArray<LSLParameterSignature>(other.Parameters);
             ReturnType = other.ReturnType;
             HasVariadicParameter = other.HasVariadicParameter;
             VariadicParameterIndex = other.VariadicParameterIndex;
@@ -103,6 +103,9 @@ namespace LibLSLCC.CodeValidator
         /// <param name="name"></param>
         /// <param name="parameters"></param>
         /// <exception cref="ArgumentException">Thrown if more than one variadic parameter is added to the function signature.</exception>
+        /// <exception cref="LSLInvalidSymbolNameException">
+        ///     Thrown if the function name does not follow LSL symbol naming conventions.
+        /// </exception>
         public LSLFunctionSignature(LSLType returnType, string name, IEnumerable<LSLParameterSignature> parameters = null)
         {
             ReturnType = returnType;
@@ -125,37 +128,39 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Returns the number of parameters the function signature has including variadic parameters
+        ///     Returns the number of parameters the function signature has including variadic parameters.
         /// </summary>
         public int ParameterCount
         {
             get { return _parameters.Count; }
         }
 
+
         /// <summary>
-        ///     Returns the number of non variadic parameters the function signature has
+        ///     Returns the number of non variadic parameters the function signature has.
         /// </summary>
         public int ConcreteParameterCount
         {
             get { return _parameters.Count - (HasVariadicParameter ? 1 : 0); }
         }
 
-        /// <summary>
-        ///     The functions LSL return type
-        /// </summary>
-        public LSLType ReturnType { get; set; }
 
         /// <summary>
-        ///     The functions name, must follow LSL symbol naming conventions
+        ///     The functions LSL return type.
+        /// </summary>
+        public LSLType ReturnType { get; protected set; }
+
+
+        /// <summary>
+        ///     The functions name, must follow LSL symbol naming conventions.
         /// </summary>
         /// <exception cref="LSLInvalidSymbolNameException" accessor="set">
-        ///     Thrown if the function does not follow LSL symbol naming
-        ///     conventions for functions.
+        ///     Thrown if the function name does not follow LSL symbol naming conventions.
         /// </exception>
         public string Name
         {
             get { return _name; }
-            set
+            protected set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
@@ -174,13 +179,15 @@ namespace LibLSLCC.CodeValidator
             }
         }
 
+
         /// <summary>
-        ///     Indexable list of objects describing the functions parameters
+        ///     Indexable list of objects describing the functions parameters.
         /// </summary>
         public IReadOnlyGenericArray<LSLParameterSignature> Parameters
         {
             get { return _parameters; }
         }
+
 
         /// <summary>
         ///     An enumerable of all non-variadic parameters in the function signature.
@@ -190,13 +197,12 @@ namespace LibLSLCC.CodeValidator
             get { return Parameters.Take(ConcreteParameterCount); }
         }
 
+
         /// <summary>
-        ///     Returns a formated signature string for the function signature without a trailing semi-colon.
-        ///     Such as:  float llAbs(float value)
-        ///     Or: modInvokeN(string fname, params any[] parms)
-        ///     The later being a function from OpenSim's modInvoke API to demonstrate variadic parameter formating.
-        ///     If a parameter is variadic and has a type that is not void, the 'any' keyword will be replaced with the
-        ///     corresponding name for the type.
+        ///     Returns a formated signature string for the function signature without a trailing semi-colon. <para/>
+        ///     Such as:  float llAbs(float value) Or: modInvokeN(string fname, params any[] parms) <para/>
+        ///     The later being a function from OpenSim's modInvoke API to demonstrate variadic parameter formating. <para/>
+        ///     If a parameter is variadic and has a type that is not void, the 'any' keyword will be replaced with the corresponding name for the type.
         /// </summary>
         public string SignatureString
         {
@@ -214,11 +220,13 @@ namespace LibLSLCC.CodeValidator
             }
         }
 
+
         /// <summary>
-        ///     Whether or not a variadic parameter has been added to this function signature.
+        ///     Whether or not a variadic parameter has been added to this function signature. <para/>
         ///     There can only be one variadic parameter.
         /// </summary>
         public bool HasVariadicParameter { get; private set; }
+
 
         /// <summary>
         ///     The index of the variadic parameter in the Parameters list, or -1 if none exists.
@@ -227,7 +235,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Delegates to SignatureString
+        ///     Delegates to SignatureString.
         /// </summary>
         /// <returns>
         ///     SignatureString
@@ -283,9 +291,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            parameterSignature.ParameterIndex = _parameters.Count;
-
-            _parameters.Add(parameterSignature);
+            _parameters.Add(new LSLParameterSignature(parameterSignature, _parameters.Count));
         }
 
 
@@ -296,7 +302,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="otherSignature">The other function signature to compare to</param>
         /// <returns>True if the two signatures are identical</returns>
         /// <exception cref="ArgumentNullException"><paramref name="otherSignature"/> is <c>null</c>.</exception>
-        public bool SignatureEquivalent(LSLFunctionSignature otherSignature)
+        public bool SignatureEquivalent(ILSLFunctionSignature otherSignature)
         {
             if (otherSignature == null) throw new ArgumentNullException("otherSignature");
 
@@ -305,11 +311,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Determines if a given <see cref="LSLFunctionSignature" /> is a duplicate definition of this function signature.
-        ///     The logic behind this is a bit different than SignatureMatches().
+        ///     Determines if a given <see cref="LSLFunctionSignature" /> is a duplicate definition of this function signature. <para/>
+        ///     The logic behind this is a bit different than SignatureMatches(). <para/>
         ///     If the given function signature has the same name, a differing return type and both functions have no parameters;
         ///     than this function will return true
-        ///     and <see cref="SignatureEquivalent(LSLFunctionSignature)" /> will not.
+        ///     and <see cref="ILSLFunctionSignature.SignatureEquivalent" /> will not. <para/>
         ///     If the other signature is an overload that is ambiguous in all cases due to variadic parameters, this function
         ///     returns true.
         /// </summary>
@@ -320,17 +326,16 @@ namespace LibLSLCC.CodeValidator
         ///     True if the two signatures are duplicate definitions of each other, taking static overloading ambiguities into
         ///     account.
         /// </returns>
-        public bool DefinitionIsDuplicate(LSLFunctionSignature otherSignature)
+        public bool DefinitionIsDuplicate(ILSLFunctionSignature otherSignature)
         {
             return LSLFunctionSignatureMatcher.DefinitionIsDuplicate(this, otherSignature);
         }
 
 
         /// <summary>
-        ///     This implementation of GetHashCode() uses the name of the <see cref="LSLFunctionSignature" />, the
-        ///     <see cref="ReturnType" /> and the <see cref="LSLParameterSignature.Type" />/<see cref="LSLParameterSignature.Variadic" /> status of
-        ///     the parameters, this means the Hash Code is linked the Function name, return Type and the Types/Variadic'ness of
-        ///     all its parameters.
+        ///     <see cref="ILSLFunctionSignature.GetHashCode"/> uses <see cref="ILSLFunctionSignature.Name" />, <see cref="LSLFunctionSignature.ReturnType" /> and the 
+        ///     <see cref="LSLParameterSignature.Type" />/<see cref="LSLParameterSignature.Variadic" /> status of the parameters. <para/>
+        ///     this means the Hash Code is linked the Function name, return Type and the Types/Variadic'ness of all its parameters. <para/>
         ///     Inherently, uniqueness is also determined by the number of parameters.
         /// </summary>
         /// <returns>Hash code for this <see cref="LSLFunctionSignature" /></returns>
@@ -353,13 +358,13 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Equals(object obj) delegates to <see cref="SignatureEquivalent(LSLFunctionSignature)" />
+        ///     Equals(object obj) delegates to <see cref="LSLFunctionSignature.SignatureEquivalent" />
         /// </summary>
         /// <param name="obj">The other function signature</param>
         /// <returns>Equality</returns>
         public override bool Equals(object obj)
         {
-            var o = obj as LSLFunctionSignature;
+            var o = obj as ILSLFunctionSignature;
             if (o == null)
             {
                 return false;
