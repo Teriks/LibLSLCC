@@ -335,12 +335,6 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
 
 
-            var name = match.Groups[2].ToString().Replace(' ', '_');
-            if (name == "TOUCH_INVALID_TEXCOORD")
-            {
-                Console.Write(strValue);
-            }
-
             var constantSignature =
                 new LSLLibraryConstantSignature(type,
                     match.Groups[2].ToString().Replace(' ', '_'), strValue) {Deprecated = _deprecatedMarker.IsMatch(page)};
