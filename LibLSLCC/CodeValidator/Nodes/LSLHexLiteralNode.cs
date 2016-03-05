@@ -84,6 +84,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="value">The integer value, it will be converted to a hex string representation.</param>
         public LSLHexLiteralNode(int value) : base("0x" + value.ToString("X"), LSLType.Integer, null)
         {
+
         }
 
 

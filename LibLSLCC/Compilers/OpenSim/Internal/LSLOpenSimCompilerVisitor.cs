@@ -920,7 +920,7 @@ private static class UTILITIES
             var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
 
             bool parentIsUnaryNegate = parentAsPrefixExpression != null &&
-                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negative;
+                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negate;
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
@@ -963,7 +963,9 @@ private static class UTILITIES
                 Writer.Write("new LSL_Types.LSLInteger(");
             }
 
-            Writer.Write(node.IsIntegerLiteralOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
+            
+
+            Writer.Write(node.IsOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
 
             if (box)
             {
@@ -987,7 +989,7 @@ private static class UTILITIES
             var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
 
             bool parentIsUnaryNegate = parentAsPrefixExpression != null &&
-                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negative;
+                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negate;
 
 
             //If the parent is a binary expression, the conversion will happen automagically because
@@ -1000,7 +1002,7 @@ private static class UTILITIES
                 Writer.Write("new LSL_Types.LSLInteger(");
             }
 
-            Writer.Write(node.IsHexLiteralOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
+            Writer.Write(node.IsOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
 
             if (!parentIsNonLogicBinaryOperation)
             {

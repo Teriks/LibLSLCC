@@ -69,12 +69,7 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Prefix negation.
         /// </summary>
-        Negative = 4,
-
-        /// <summary>
-        ///     Positive number prefix.
-        /// </summary>
-        Positive = 3,
+        Negate = 4,
 
         /// <summary>
         ///     Boolean not prefix operator.
@@ -116,10 +111,8 @@ namespace LibLSLCC.CodeValidator
                     return "--";
                 case LSLPrefixOperationType.Increment:
                     return "++";
-                case LSLPrefixOperationType.Negative:
+                case LSLPrefixOperationType.Negate:
                     return "-";
-                case LSLPrefixOperationType.Positive:
-                    return "+";
                 case LSLPrefixOperationType.BooleanNot:
                     return "!";
                 case LSLPrefixOperationType.BitwiseNot:
@@ -169,9 +162,7 @@ namespace LibLSLCC.CodeValidator
                 case "++":
                     return LSLPrefixOperationType.Increment;
                 case "-":
-                    return LSLPrefixOperationType.Negative;
-                case "+":
-                    return LSLPrefixOperationType.Positive;
+                    return LSLPrefixOperationType.Negate;
                 case "!":
                     return LSLPrefixOperationType.BooleanNot;
                 case "~":

@@ -11,15 +11,6 @@
 // Generated from AntlrParser\LSL.g4 by ANTLR 4.5.2
 
 // Unreachable code detected
-
-using System;
-using System.CodeDom.Compiler;
-using System.Text;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -29,8 +20,18 @@ using Antlr4.Runtime.Tree;
 #pragma warning disable 419
 
 namespace LibLSLCC.AntlrParser {
-    [GeneratedCode("ANTLR", "4.5.2")]
-[CLSCompliant(false)]
+using System;
+using System.Text;
+using System.Diagnostics;
+using System.Collections.Generic;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+using DFA = Antlr4.Runtime.Dfa.DFA;
+
+[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5.2")]
+[System.CLSCompliant(false)]
 public partial class LSLParser : Parser {
 	public const int
 		TYPE=1, DO=2, IF=3, ELSE=4, WHILE=5, FOR=6, DEFAULT=7, STATE=8, RETURN=9, 
@@ -419,7 +420,7 @@ public partial class LSLParser : Parser {
 			State = 95; _localctx.open_parenth = Match(O_PAREN);
 			State = 97;
 			_la = TokenStream.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
 				State = 96; _localctx.condition = expression(0);
 				}
@@ -492,7 +493,7 @@ public partial class LSLParser : Parser {
 			State = 108;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TYPE) | (1L << DO) | (1L << IF) | (1L << WHILE) | (1L << FOR) | (1L << STATE) | (1L << RETURN) | (1L << JUMP) | (1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << SEMI_COLON) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACE) | (1L << O_BRACKET) | (1L << LABEL_PREFIX) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TYPE) | (1L << DO) | (1L << IF) | (1L << WHILE) | (1L << FOR) | (1L << STATE) | (1L << RETURN) | (1L << JUMP) | (1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << SEMI_COLON) | (1L << LESS_THAN) | (1L << MINUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACE) | (1L << O_BRACKET) | (1L << LABEL_PREFIX) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
 				{
 				State = 105; codeStatement();
@@ -569,7 +570,7 @@ public partial class LSLParser : Parser {
 			State = 116; _localctx.open_parenth = Match(O_PAREN);
 			State = 118;
 			_la = TokenStream.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
 				State = 117; _localctx.loop_condition = expression(0);
 				}
@@ -637,7 +638,7 @@ public partial class LSLParser : Parser {
 			State = 124; _localctx.open_parenth = Match(O_PAREN);
 			State = 126;
 			_la = TokenStream.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
 				State = 125; _localctx.loop_condition = expression(0);
 				}
@@ -721,7 +722,7 @@ public partial class LSLParser : Parser {
 			State = 134; _localctx.first_semi_colon = Match(SEMI_COLON);
 			State = 136;
 			_la = TokenStream.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
 				State = 135; _localctx.loop_condition = expression(0);
 				}
@@ -896,7 +897,6 @@ public partial class LSLParser : Parser {
 			case QUOTED_STRING:
 			case LESS_THAN:
 			case MINUS:
-			case PLUS:
 			case INCREMENT:
 			case DECREMENT:
 			case O_PAREN:
@@ -1636,7 +1636,6 @@ public partial class LSLParser : Parser {
 		public ITerminalNode INCREMENT() { return GetToken(LSLParser.INCREMENT, 0); }
 		public ITerminalNode DECREMENT() { return GetToken(LSLParser.DECREMENT, 0); }
 		public ITerminalNode MINUS() { return GetToken(LSLParser.MINUS, 0); }
-		public ITerminalNode PLUS() { return GetToken(LSLParser.PLUS, 0); }
 		public ITerminalNode LOGICAL_NOT() { return GetToken(LSLParser.LOGICAL_NOT, 0); }
 		public ITerminalNode BITWISE_NOT() { return GetToken(LSLParser.BITWISE_NOT, 0); }
 		public Expr_PrefixOperationContext(ExpressionContext context) { CopyFrom(context); }
@@ -2139,7 +2138,7 @@ public partial class LSLParser : Parser {
 				State = 224;
 				((Expr_PrefixOperationContext)_localctx).operation = TokenStream.Lt(1);
 				_la = TokenStream.La(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) ) {
 					((Expr_PrefixOperationContext)_localctx).operation = ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -2276,7 +2275,7 @@ public partial class LSLParser : Parser {
 			State = 292;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,17,Context);
-			while ( _alt!=2 && _alt!=ATN.InvalidAltNumber ) {
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( ParseListeners!=null )
 						TriggerExitRuleEvent();
@@ -2510,7 +2509,7 @@ public partial class LSLParser : Parser {
 			{
 			State = 296;
 			_la = TokenStream.La(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << PLUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << HEX_LITERAL) | (1L << INT) | (1L << FLOAT) | (1L << QUOTED_STRING) | (1L << LESS_THAN) | (1L << MINUS) | (1L << INCREMENT) | (1L << DECREMENT) | (1L << O_PAREN) | (1L << O_BRACKET) | (1L << BITWISE_NOT) | (1L << LOGICAL_NOT))) != 0)) {
 				{
 				State = 295; expressionList();
 				}
@@ -3135,7 +3134,7 @@ public partial class LSLParser : Parser {
 		sb.Append("\v \x3 \x3 \x3!\x3!\x3!\a!\x163\n!\f!\xE!\x166\v!\x3!\x3!\x3");
 		sb.Append("!\x2\x3.\"\x2\x4\x6\b\n\f\xE\x10\x12\x14\x16\x18\x1A\x1C\x1E");
 		sb.Append(" \"$&(*,.\x30\x32\x34\x36\x38:<>@\x2\f\x4\x2\t\t\r\r\x6\x2\x1E");
-		sb.Append("\x1F\"#\x34\x34\x36\x36\x4\x2 !\')\x3\x2$&\x3\x2\x1E\x1F\x3");
+		sb.Append("\x1E\"#\x34\x34\x36\x36\x4\x2 !\')\x3\x2$&\x3\x2\x1E\x1F\x3");
 		sb.Append("\x2\x1A\x1B\x3\x2\x16\x19\x3\x2\x14\x15\x3\x2\x37\x38\x3\x2");
 		sb.Append("\"#\x181\x2\x42\x3\x2\x2\x2\x4J\x3\x2\x2\x2\x6U\x3\x2\x2\x2");
 		sb.Append("\b]\x3\x2\x2\x2\n`\x3\x2\x2\x2\fj\x3\x2\x2\x2\xEs\x3\x2\x2\x2");

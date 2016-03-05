@@ -254,12 +254,12 @@ namespace LibLSLCC.CodeValidator
 
 
             //yes, you can negate vectors, try it
-            AddPrefixOperation(LSLPrefixOperationType.Negative, LSLType.Rotation, LSLType.Rotation);
-            AddPrefixOperation(LSLPrefixOperationType.Negative, LSLType.Vector, LSLType.Vector);
+            AddPrefixOperation(LSLPrefixOperationType.Negate, LSLType.Rotation, LSLType.Rotation);
+            AddPrefixOperation(LSLPrefixOperationType.Negate, LSLType.Vector, LSLType.Vector);
 
 
-            AddPrefixOperation(LSLPrefixOperationType.Negative, LSLType.Integer, LSLType.Integer);
-            AddPrefixOperation(LSLPrefixOperationType.Negative, LSLType.Float, LSLType.Float);
+            AddPrefixOperation(LSLPrefixOperationType.Negate, LSLType.Integer, LSLType.Integer);
+            AddPrefixOperation(LSLPrefixOperationType.Negate, LSLType.Float, LSLType.Float);
 
             AddPrefixOperation(LSLPrefixOperationType.Increment, LSLType.Float, LSLType.Float);
             AddPrefixOperation(LSLPrefixOperationType.Decrement, LSLType.Float, LSLType.Float);

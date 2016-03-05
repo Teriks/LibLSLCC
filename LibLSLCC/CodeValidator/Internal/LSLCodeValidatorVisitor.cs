@@ -2592,7 +2592,12 @@ namespace LibLSLCC.CodeValidator
             {
                 var intLiteralNode = new LSLIntegerLiteralNode(context);
 
-                if (intLiteralNode.IsIntegerLiteralOverflowed())
+
+
+                var parentAsPrefix = context.Parent as LSLParser.Expr_PrefixOperationContext;
+                bool negated = parentAsPrefix != null && parentAsPrefix.operation.Text == "-";
+
+                if (intLiteralNode.IsOverflowed(negated))
                 {
                     GenSyntaxWarning()
                         .IntegerLiteralOverflow(new LSLSourceCodeRange(context.integer_literal),
@@ -2608,9 +2613,13 @@ namespace LibLSLCC.CodeValidator
             }
             if (context.hex_literal != null)
             {
+
+                var parentAsPrefix = context.Parent as LSLParser.Expr_PrefixOperationContext;
+                bool negated = parentAsPrefix != null && parentAsPrefix.operation.Text == "-";
+
                 var hexLiteralNode = new LSLHexLiteralNode(context);
 
-                if (hexLiteralNode.IsHexLiteralOverflowed())
+                if (hexLiteralNode.IsOverflowed(negated))
                 {
                     GenSyntaxWarning()
                         .HexLiteralOverflow(new LSLSourceCodeRange(context.hex_literal),
@@ -3201,7 +3210,7 @@ namespace LibLSLCC.CodeValidator
                     result.HasErrors = true;
                     return ReturnFromVisit(context, result);
                 }
-                if (result.Operation != LSLPrefixOperationType.Negative)
+                if (result.Operation != LSLPrefixOperationType.Negate)
                 {
                     GenSyntaxError()
                         .InvalidPrefixOperationUsedInStaticContext(new LSLSourceCodeRange(context), result.Operation);

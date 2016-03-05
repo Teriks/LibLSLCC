@@ -71,18 +71,23 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Construct an <see cref="LSLIntegerLiteralNode" /> from a positive integer value.
         ///     <exception cref="ArgumentOutOfRangeException">
-        ///         if <paramref name="value" /> is not positive; add to a prefix negate
-        ///         node instead.
+        ///         if <paramref name="value" /> is not positive; add to a prefix negate node instead. <para/>
+        ///         if <paramref name="value"/> is greater than 2147483648.
         ///     </exception>
         /// </summary>
         /// <param name="value">The integer value.</param>
-        public LSLIntegerLiteralNode(int value)
+        public LSLIntegerLiteralNode(long value)
             : base(value.ToString(CultureInfo.InvariantCulture), LSLType.Integer, null)
         {
             if (Math.Sign(value) < 0)
             {
                 throw new ArgumentOutOfRangeException("value",
                     "value must positive, add to a prefix negate node instead.");
+            }
+
+            if (value > 2147483648)
+            {
+                throw new ArgumentOutOfRangeException("value may not be greater than 2147483648", "value");
             }
         }
 

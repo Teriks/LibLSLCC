@@ -398,7 +398,7 @@ expression:
 
 |   expr_lvalue=expression operation=(INCREMENT | DECREMENT )                                #Expr_PostfixOperation
 
-|   operation=(INCREMENT | DECREMENT| MINUS | PLUS| LOGICAL_NOT | BITWISE_NOT) expr_rvalue=expression  #Expr_PrefixOperation
+|   operation=(INCREMENT | DECREMENT| MINUS | LOGICAL_NOT | BITWISE_NOT) expr_rvalue=expression  #Expr_PrefixOperation
 
 |   (open_parenth=O_PAREN cast_type=TYPE close_parenth=C_PAREN) expr_rvalue=expression  #Expr_TypeCast
 

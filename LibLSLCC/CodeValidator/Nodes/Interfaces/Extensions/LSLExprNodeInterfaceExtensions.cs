@@ -57,6 +57,19 @@ namespace LibLSLCC.CodeValidator
     public static class LSLExprNodeInterfaceExtensions
     {
         /// <summary>
+        /// Determine if a given expressions parent node is a prefix negate operator.
+        /// </summary>
+        /// <param name="node">The <see cref="ILSLReadOnlyExprNode"/> to test.</param>
+        /// <returns><c>true</c> if <see cref="ILSLReadOnlySyntaxTreeNode.Parent"/> is an <see cref="ILSLPrefixOperationNode"/> where <see cref="ILSLPrefixOperationNode.Operation"/> equals <see cref="LSLPrefixOperationType.Negate"/>.</returns>
+        public static bool IsNegated(this ILSLReadOnlyExprNode node)
+        {
+            var parentAsPrefixOperator = node.Parent as ILSLPrefixOperationNode;
+            return parentAsPrefixOperator != null &&
+                   parentAsPrefixOperator.Operation == LSLPrefixOperationType.Negate;
+        }
+
+
+        /// <summary>
         ///     Determines if the expression node represents a code literal.  Such as a string, vector, rotation or list literal.
         /// </summary>
         /// <param name="node">The expression node to test.</param>
