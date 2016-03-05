@@ -42,9 +42,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
+using LibLSLCC.Utility;
 using LSLCCEditor.Styles;
 
 namespace LSLCCEditor
@@ -71,6 +74,47 @@ namespace LSLCCEditor
             set { SetValue(CopyrightProperty, value); }
         }
 
+
+        private IEnumerable<Assembly> GetDependencies(Assembly assembly, HashSet<Assembly> existingDeps = null)
+        {
+            HashSet<Assembly> visitedDependencies =
+                existingDeps ?? new HashSet<Assembly>(new LambdaEqualityComparer<Assembly>(ComparerAssemblyNames, HashAssemblyNames));
+
+            foreach (var assemblyName in assembly.GetReferencedAssemblies())
+            {
+                
+                var a = Assembly.Load(assemblyName);
+
+                string codeBase = a.CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+
+                if (!Path.GetDirectoryName(path).StartsWith(Environment.CurrentDirectory) || visitedDependencies.Contains(a) || a.IsDynamic) continue;
+
+                visitedDependencies.Add(a);
+
+                foreach (var dep in GetDependencies(a, visitedDependencies))
+                {
+                    visitedDependencies.Add(dep);
+                }
+            }
+
+            return visitedDependencies;
+        }
+
+
+        private int HashAssemblyNames(Assembly assembly)
+        {
+            return assembly.FullName.GetHashCode();
+        }
+
+
+        private bool ComparerAssemblyNames(Assembly left, Assembly right)
+        {
+            return left.FullName == right.FullName;
+        }
+
+
         public About()
         {
             var callingAssembly = Assembly.GetCallingAssembly();
@@ -96,19 +140,14 @@ namespace LSLCCEditor
 
             var thisAssembliesName = Assembly.GetEntryAssembly().GetName();
 
-            foreach (var assembly in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+            foreach (var assembly in GetDependencies(Assembly.GetExecutingAssembly()).OrderBy(x=>x.FullName))
             {
-                var loadedAssy = Assembly.Load(assembly);
 
-                if (loadedAssy.IsDynamic || assembly.FullName == thisAssembliesName.FullName) continue;
+                if (assembly.FullName == thisAssembliesName.FullName) continue;
 
-                string codeBase = loadedAssy.CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
+                var name = assembly.GetName();
 
-                if(!Path.GetDirectoryName(path).StartsWith(Environment.CurrentDirectory)) continue;
-
-                LoadedAssembliesBox.Items.Add(assembly.Name + " v"+ assembly.Version);
+                LoadedAssembliesBox.Items.Add(name.Name + " v"+ name.Version);
             }
 
             try
