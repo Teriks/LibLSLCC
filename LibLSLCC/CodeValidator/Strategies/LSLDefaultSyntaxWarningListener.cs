@@ -525,6 +525,19 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
+        ///     Occurs when an integer literal present in the source code is less than the minimum value of a 32 bit LSL integer.
+        /// </summary>
+        /// <param name="location">The source code range of the integer literal.</param>
+        /// <param name="literalText">The text representing the integer literal.</param>
+        public void IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText)
+        {
+            OnWarning(location,
+                string.Format("Integer literal \"-{0}\" underflows LSL's integer type, it will compile to 1.",
+                    literalText));
+        }
+
+
+        /// <summary>
         ///     Occurs when a hex literal present in the source code is greater than the max value of a 32 bit LSL integer.
         /// </summary>
         /// <param name="location">The source code range of the hex literal.</param>
@@ -533,6 +546,19 @@ namespace LibLSLCC.CodeValidator
         {
             OnWarning(location,
                 string.Format("Hex literal \"{0}\" overflows LSL's integer type, it will compile to -1.",
+                    literalText));
+        }
+
+
+        /// <summary>
+        ///     Occurs when a hex literal present in the source code is less than the minimum value of a 32 bit LSL integer.
+        /// </summary>
+        /// <param name="location">The source code range of the hex literal.</param>
+        /// <param name="literalText">The text representing the hex literal.</param>
+        public void HexLiteralUnderflow(LSLSourceCodeRange location, string literalText)
+        {
+            OnWarning(location,
+                string.Format("Hex literal \"-{0}\" underflows LSL's integer type, it will compile to 1.",
                     literalText));
         }
 

@@ -845,11 +845,29 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
+        void ILSLSyntaxWarningListener.IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.IntegerLiteralUnderflow(location, literalText));
+        }
+
+
         void ILSLSyntaxWarningListener.HexLiteralOverflow(LSLSourceCodeRange location, string literalText)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.HexLiteralOverflow(location, literalText));
+        }
+
+
+
+        void ILSLSyntaxWarningListener.HexLiteralUnderflow(LSLSourceCodeRange location, string literalText)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.HexLiteralUnderflow(location, literalText));
         }
 
 

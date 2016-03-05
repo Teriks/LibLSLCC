@@ -2599,9 +2599,18 @@ namespace LibLSLCC.CodeValidator
 
                 if (intLiteralNode.IsOverflowed(negated))
                 {
-                    GenSyntaxWarning()
-                        .IntegerLiteralOverflow(new LSLSourceCodeRange(context.integer_literal),
-                            context.integer_literal.Text);
+                    if (negated)
+                    {
+                        GenSyntaxWarning()
+                            .IntegerLiteralUnderflow(new LSLSourceCodeRange(parentAsPrefix),
+                                context.integer_literal.Text);
+                    }
+                    else
+                    {
+                        GenSyntaxWarning()
+                            .IntegerLiteralOverflow(new LSLSourceCodeRange(context.integer_literal),
+                                context.integer_literal.Text);
+                    }
                 }
 
 
@@ -2621,9 +2630,18 @@ namespace LibLSLCC.CodeValidator
 
                 if (hexLiteralNode.IsOverflowed(negated))
                 {
-                    GenSyntaxWarning()
-                        .HexLiteralOverflow(new LSLSourceCodeRange(context.hex_literal),
-                            context.hex_literal.Text);
+                    if (negated)
+                    {
+                        GenSyntaxWarning()
+                            .HexLiteralUnderflow(new LSLSourceCodeRange(parentAsPrefix),
+                                context.hex_literal.Text);
+                    }
+                    else
+                    {
+                        GenSyntaxWarning()
+                            .HexLiteralOverflow(new LSLSourceCodeRange(context.hex_literal),
+                                context.hex_literal.Text);
+                    }
                 }
 
                 return ReturnFromVisit(context, hexLiteralNode);
