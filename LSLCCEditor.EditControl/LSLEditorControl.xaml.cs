@@ -781,7 +781,7 @@ namespace LSLCCEditor.EditControl
         }
 
 
-        public void CloseCurrentCompletionWindow()
+        private void CloseCurrentCompletionWindow()
         {
             lock (_completionLock)
             {
