@@ -306,6 +306,7 @@ namespace LibraryDataScrapingTools
                     func.Subsets.AddSubsets("os-lsl");
                 }
 
+                func.DocumentationString = docProvider.DocumentFunction(func);
                 provider.DefineFunction(func);
             }
 
@@ -354,6 +355,7 @@ namespace LibraryDataScrapingTools
                     con.Subsets.AddSubsets("os-lsl");
                 }
 
+                con.DocumentationString = docProvider.DocumentConstant(con);
                 provider.DefineConstant(con);
             }
 
@@ -397,6 +399,8 @@ namespace LibraryDataScrapingTools
                     ev.Subsets.AddSubsets("os-lsl");
                 }
 
+
+                ev.DocumentationString = docProvider.DocumentEvent(ev);
                 provider.DefineEventHandler(ev);
             }
 
