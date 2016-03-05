@@ -813,7 +813,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
+            valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3];
 
             errMessage = null;
             return true;

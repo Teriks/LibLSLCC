@@ -335,6 +335,12 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             }
 
 
+            var name = match.Groups[2].ToString().Replace(' ', '_');
+            if (name == "TOUCH_INVALID_TEXCOORD")
+            {
+                Console.Write(strValue);
+            }
+
             var constantSignature =
                 new LSLLibraryConstantSignature(type,
                     match.Groups[2].ToString().Replace(' ', '_'), strValue) {Deprecated = _deprecatedMarker.IsMatch(page)};
@@ -345,7 +351,7 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
             constantSignature.Subsets.SetSubsets(_subsets);
 
             Log.WriteLineWithHeader(
-                "[SecondlifeWikiLibraryData]: ", "Retrieved" + (constantSignature.Deprecated ? " (DEPRECATED) " : "") +
+                "[SecondlifeWikiLibraryData]: ", "Retrieved " + (constantSignature.Deprecated ? " (DEPRECATED) " : "") +
                 "constant {0}; from {1}",
                 constantSignature.SignatureString, url);
 
