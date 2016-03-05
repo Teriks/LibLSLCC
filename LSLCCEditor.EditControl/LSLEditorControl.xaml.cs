@@ -43,8 +43,6 @@
 
 #endregion
 
-#define DEBUG_AUTO_COMPLETE
-
 #region Imports
 
 using System;
@@ -73,9 +71,9 @@ using LibLSLCC.Utility;
 using LSLCCEditor.Utility.Binding;
 using LSLCCEditor.Utility.Xml;
 using CompletionWindow = LSLCCEditor.CompletionUI.CompletionWindow;
+
 #if DEBUG_AUTO_COMPLETE
 using LSLCCEditor.Utility;
-
 #endif
 
 #endregion
