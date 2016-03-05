@@ -51,9 +51,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Antlr4.Runtime;
+using LibLSLCC.AntlrParser;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
-using LibLSLCC.AntlrParser;
 
 #endregion
 

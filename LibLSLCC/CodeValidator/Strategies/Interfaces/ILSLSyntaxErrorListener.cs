@@ -46,7 +46,6 @@
 #region Imports
 
 using LibLSLCC.Collections;
-using LibLSLCC.LibraryData;
 
 #endregion
 

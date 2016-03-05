@@ -1,6 +1,3 @@
-using System;
-using LibLSLCC.LibraryData;
-
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>

@@ -47,7 +47,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using LibLSLCC.AntlrParser;
 using LibLSLCC.Collections;
 using LibLSLCC.Utility;

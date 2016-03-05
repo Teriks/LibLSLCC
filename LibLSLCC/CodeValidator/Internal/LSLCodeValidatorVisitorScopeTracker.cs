@@ -47,8 +47,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using LibLSLCC.Collections;
 using LibLSLCC.AntlrParser;
+using LibLSLCC.Collections;
 
 #endregion
 

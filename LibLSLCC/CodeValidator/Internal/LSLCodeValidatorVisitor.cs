@@ -51,9 +51,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using LibLSLCC.AntlrParser;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
-using LibLSLCC.AntlrParser;
 
 #endregion
 
