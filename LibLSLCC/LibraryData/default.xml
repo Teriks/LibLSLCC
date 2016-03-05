@@ -5869,4 +5869,82 @@
     <DocumentationString />
     <Property Name="Expand" Value="true"/>
   </LibraryConstant>
+  <LibraryConstant Name="LSL_XP_ERROR_REQUEST_PERM_TIMEOUT" Type="Integer" Value="18" Subsets="lsl">
+    <DocumentationString>The request for experience permissions was ignored and timed out.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_OMEGA" Type="Integer" Value="29" Subsets="lsl">
+    <DocumentationString>Gets an object's angular velocity.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_PRIM_COUNT" Type="Integer" Value="30" Subsets="lsl">
+    <DocumentationString>Gets the prim count of the object.  The script and target object  must be owned by the same owner</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_REZZER_KEY" Type="Integer" Value="32" Subsets="lsl">
+    <DocumentationString></DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_TOTAL_INVENTORY_COUNT" Type="Integer" Value="31" Subsets="lsl">
+    <DocumentationString>Gets the total inventory count of the object.  The script and target object must be owned by the same owner</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="REGION_FLAG_BLOCK_FLYOVER" Type="Integer" Value="134217728" Subsets="lsl">
+    <DocumentationString></DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_EXPERIENCES_DISABLED" Type="Integer" Value="2" Subsets="lsl">
+    <DocumentationString>The region currently has experiences disabled.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_EXPERIENCE_DISABLED" Type="Integer" Value="8" Subsets="lsl">
+    <DocumentationString>The experience owner has temporarily disabled the experience.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_EXPERIENCE_SUSPENDED" Type="Integer" Value="9" Subsets="lsl">
+    <DocumentationString>The experience has been suspended by Linden Customer Support.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_INVALID_EXPERIENCE" Type="Integer" Value="7" Subsets="lsl">
+    <DocumentationString>The script is associated with an experience that no longer exists.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_INVALID_PARAMETERS" Type="Integer" Value="3" Subsets="lsl">
+    <DocumentationString>One of the string arguments was too big to fit in the key-value store.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_KEY_NOT_FOUND" Type="Integer" Value="14" Subsets="lsl">
+    <DocumentationString>The requested key does not exist.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_MATURITY_EXCEEDED" Type="Integer" Value="16" Subsets="lsl">
+    <DocumentationString>The content rating of the experience exceeds that of the region.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_NONE" Type="Integer" Value="0" Subsets="lsl">
+    <DocumentationString>No error was detected.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_NOT_FOUND" Type="Integer" Value="6" Subsets="lsl">
+    <DocumentationString>The sim was unable to verify the validity of the experience. Retrying after a short wait is advised.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_NOT_PERMITTED" Type="Integer" Value="4" Subsets="lsl">
+    <DocumentationString>This experience is not allowed to run by the requested agent.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_NOT_PERMITTED_LAND" Type="Integer" Value="17" Subsets="lsl">
+    <DocumentationString>This experience is not allowed to run on the current region.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_NO_EXPERIENCE" Type="Integer" Value="5" Subsets="lsl">
+    <DocumentationString>This script is not associated with an experience.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_QUOTA_EXCEEDED" Type="Integer" Value="11" Subsets="lsl">
+    <DocumentationString>An attempted write data to the key-value store failed due to the data quota being met.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_RETRY_UPDATE" Type="Integer" Value="15" Subsets="lsl">
+    <DocumentationString>A checked update failed due to an out of date request.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_STORAGE_EXCEPTION" Type="Integer" Value="13" Subsets="lsl">
+    <DocumentationString>Unable to communicate with the key-value store.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_STORE_DISABLED" Type="Integer" Value="12" Subsets="lsl">
+    <DocumentationString>The key-value store is currently disabled on this region.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_THROTTLED" Type="Integer" Value="1" Subsets="lsl">
+    <DocumentationString>The call failed due to too many recent calls.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="XP_ERROR_UNKNOWN_ERROR" Type="Integer" Value="10" Subsets="lsl">
+    <DocumentationString>Other unknown error.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="CLICK_ACTION_ZOOM" Type="Integer" Value="7" Subsets="os-lsl">
+    <DocumentationString></DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OS_NPC_OBJECT_GROUP" Type="Integer" Value="8" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
 </LSLLibraryData>
