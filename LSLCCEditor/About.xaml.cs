@@ -77,7 +77,7 @@ namespace LSLCCEditor
 
         private IEnumerable<Assembly> GetDependencies(Assembly assembly, HashSet<Assembly> existingDeps = null)
         {
-            HashSet<Assembly> visitedDependencies =
+            var visitedDependencies =
                 existingDeps ?? new HashSet<Assembly>(new LambdaEqualityComparer<Assembly>(ComparerAssemblyNames, HashAssemblyNames));
 
             foreach (var assemblyName in assembly.GetReferencedAssemblies())
