@@ -222,7 +222,7 @@ namespace LibLSLCC.CodeValidator
         void FunctionParameterNeverUsed(LSLSourceCodeRange location, ILSLVariableDeclarationNode parameter,
             LSLFunctionSignature inFunction);
 
-
+        
         /// <summary>
         ///     A parameter name of a user defined function hides the definition of a global variable.
         /// </summary>
@@ -231,7 +231,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The signature of the parameter that hides the global variable.</param>
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLFunctionSignature functionSignature,
-            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable);
+            ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable);
 
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The signature of the parameter that hides the global variable.</param>
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         void ParameterHidesGlobalVariable(LSLSourceCodeRange location, LSLEventSignature eventHandlerSignature,
-            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable);
+            ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable);
 
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="localVariable">The variable declaration node of the local variable that hides the parameter.</param>
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         void LocalVariableHidesParameter(LSLSourceCodeRange location, LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter);
+            ILSLVariableDeclarationNode localVariable, ILSLParameterNode parameter);
 
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="localVariable">The variable declaration node of the local variable that hides the parameter.</param>
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         void LocalVariableHidesParameter(LSLSourceCodeRange location,
-            LSLParsedEventHandlerSignature eventHandlerSignature, LSLVariableDeclarationNode localVariable,
+            LSLParsedEventHandlerSignature eventHandlerSignature, ILSLVariableDeclarationNode localVariable,
             ILSLParameterNode parameter);
 
 
@@ -277,8 +277,8 @@ namespace LibLSLCC.CodeValidator
         /// <param name="localVariable">The variable declaration node of the local variable that hides the global variable.</param>
         /// <param name="globalVariable">The variable declaration node of the user defined global variable that was hidden.</param>
         void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
-            LSLPreDefinedFunctionSignature functionSignature, LSLVariableDeclarationNode localVariable,
-            LSLVariableDeclarationNode globalVariable);
+            LSLPreDefinedFunctionSignature functionSignature, ILSLVariableDeclarationNode localVariable,
+            ILSLVariableDeclarationNode globalVariable);
 
 
         /// <summary>
@@ -289,8 +289,8 @@ namespace LibLSLCC.CodeValidator
         /// <param name="localVariable">The variable declaration node of the local variable that hides the global variable.</param>
         /// <param name="globalVariable">The variable declaration node of the user defined global variable that was hidden.</param>
         void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
-            LSLParsedEventHandlerSignature eventHandlerSignature, LSLVariableDeclarationNode localVariable,
-            LSLVariableDeclarationNode globalVariable);
+            LSLParsedEventHandlerSignature eventHandlerSignature, ILSLVariableDeclarationNode localVariable,
+            ILSLVariableDeclarationNode globalVariable);
 
 
         /// <summary>
@@ -330,8 +330,8 @@ namespace LibLSLCC.CodeValidator
         /// </param>
         void VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
             LSLFunctionSignature currentFunctionBodySignature,
-            LSLVariableDeclarationNode newDeclarationNode,
-            LSLVariableDeclarationNode previousDeclarationNode);
+            ILSLVariableDeclarationNode newDeclarationNode,
+            ILSLVariableDeclarationNode previousDeclarationNode);
 
 
         /// <summary>
@@ -347,8 +347,8 @@ namespace LibLSLCC.CodeValidator
         /// </param>
         void VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
             LSLEventSignature currentEventBodySignature,
-            LSLVariableDeclarationNode newDeclarationNode,
-            LSLVariableDeclarationNode previousDeclarationNode);
+            ILSLVariableDeclarationNode newDeclarationNode,
+            ILSLVariableDeclarationNode previousDeclarationNode);
 
 
         /// <summary>

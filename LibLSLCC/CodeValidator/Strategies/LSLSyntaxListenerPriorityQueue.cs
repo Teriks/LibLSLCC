@@ -725,7 +725,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -736,7 +736,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLEventSignature eventHandlerSignature,
-            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -747,7 +747,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
+            ILSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -758,7 +758,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
-            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
+            ILSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -769,7 +769,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
+            ILSLVariableDeclarationNode localVariable, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -780,7 +780,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
-            LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
+            ILSLVariableDeclarationNode localVariable, ILSLVariableDeclarationNode globalVariable)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -818,7 +818,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
             LSLFunctionSignature currentFunctionBodySignature,
-            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+            ILSLVariableDeclarationNode newDeclarationNode, ILSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -829,7 +829,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxWarningListener.VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
             LSLEventSignature currentEventBodySignature,
-            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+            ILSLVariableDeclarationNode newDeclarationNode, ILSLVariableDeclarationNode previousDeclarationNode)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>

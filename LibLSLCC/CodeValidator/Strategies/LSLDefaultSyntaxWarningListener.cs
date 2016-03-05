@@ -320,7 +320,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         public virtual void ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLFunctionSignature functionSignature,
-            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
                 string.Format(
@@ -339,7 +339,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="globalVariable">The variable declaration node of the global variable that was hidden.</param>
         public virtual void ParameterHidesGlobalVariable(LSLSourceCodeRange location,
             LSLEventSignature eventHandlerSignature,
-            ILSLParameterNode parameter, LSLVariableDeclarationNode globalVariable)
+            ILSLParameterNode parameter, ILSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
                 string.Format(
@@ -358,7 +358,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         public virtual void LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
+            ILSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             OnWarning(location, string.Format("Local variable \"{0}\" in function \"{1}\" hides parameter \"{2}\".",
                 localVariable.Name, functionSignature.Name, parameter.Name));
@@ -375,7 +375,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="parameter">The parameter node of the parameter that was hidden.</param>
         public virtual void LocalVariableHidesParameter(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
-            LSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
+            ILSLVariableDeclarationNode localVariable, ILSLParameterNode parameter)
         {
             OnWarning(location,
                 string.Format("Local variable \"{0}\" in event handler \"{1}\" hides parameter \"{2}\".",
@@ -392,7 +392,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="globalVariable">The variable declaration node of the user defined global variable that was hidden.</param>
         public virtual void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLPreDefinedFunctionSignature functionSignature,
-            LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
+            ILSLVariableDeclarationNode localVariable, ILSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
                 string.Format(
@@ -411,7 +411,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="globalVariable">The variable declaration node of the user defined global variable that was hidden.</param>
         public virtual void LocalVariableHidesGlobalVariable(LSLSourceCodeRange location,
             LSLParsedEventHandlerSignature eventHandlerSignature,
-            LSLVariableDeclarationNode localVariable, LSLVariableDeclarationNode globalVariable)
+            ILSLVariableDeclarationNode localVariable, ILSLVariableDeclarationNode globalVariable)
         {
             OnWarning(location,
                 string.Format(
@@ -479,7 +479,7 @@ namespace LibLSLCC.CodeValidator
         /// </param>
         public virtual void VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
             LSLFunctionSignature currentFunctionBodySignature,
-            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+            ILSLVariableDeclarationNode newDeclarationNode, ILSLVariableDeclarationNode previousDeclarationNode)
         {
             OnWarning(location,
                 string.Format(
@@ -502,7 +502,7 @@ namespace LibLSLCC.CodeValidator
         /// </param>
         public virtual void VariableRedeclaredInInnerScope(LSLSourceCodeRange location,
             LSLEventSignature currentEventBodySignature,
-            LSLVariableDeclarationNode newDeclarationNode, LSLVariableDeclarationNode previousDeclarationNode)
+            ILSLVariableDeclarationNode newDeclarationNode, ILSLVariableDeclarationNode previousDeclarationNode)
         {
             OnWarning(location,
                 string.Format(
