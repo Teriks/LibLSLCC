@@ -127,7 +127,7 @@ namespace LibLSLCC.CodeValidator
         /// </exception>
         /// <exception cref="ArgumentException">Thrown if type is <see cref="LSLType.Void" /> and variadic is false.</exception>
         public LSLParameterSignature(LSLParameterSignature other, int parameterIndex) : 
-            this(other.Type, other.Name, other.Variadic, other.ParameterIndex)
+            this(other.Type, other.Name, other.Variadic, parameterIndex)
         {
         }
 
