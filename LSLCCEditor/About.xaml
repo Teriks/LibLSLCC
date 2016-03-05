@@ -35,7 +35,7 @@
                     <RichTextBox Name="LicenseText" IsReadOnly="True"/>
             </Expander>
             <GridSplitter Grid.Row="2" Background="DarkGray" Height="4" HorizontalAlignment="Stretch"/>
-            <Expander Grid.Row="3" Margin="8" Header="Loaded Assemblies">
+            <Expander Grid.Row="3" Margin="8" Header="Dependencies">
                     <ListBox Name="LoadedAssembliesBox">
                         <ListBox.Template>
                             <ControlTemplate>

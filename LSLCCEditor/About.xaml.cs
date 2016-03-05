@@ -94,13 +94,21 @@ namespace LSLCCEditor
                 Copyright = attribute.Copyright;
             }
 
-            foreach (var assy in AppDomain.CurrentDomain.GetAssemblies())
+            var thisAssembliesName = Assembly.GetEntryAssembly().GetName();
+
+            foreach (var assembly in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
             {
-                var name = assy.GetName();
+                var loadedAssy = Assembly.Load(assembly);
 
-                if(name.Name == "Microsoft.GeneratedCode") continue;
+                if (loadedAssy.IsDynamic || assembly.FullName == thisAssembliesName.FullName) continue;
 
-                LoadedAssembliesBox.Items.Add(name.Name + " v"+name.Version);
+                string codeBase = loadedAssy.CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+
+                if(!Path.GetDirectoryName(path).StartsWith(Environment.CurrentDirectory)) continue;
+
+                LoadedAssembliesBox.Items.Add(assembly.Name + " v"+ assembly.Version);
             }
 
             try
