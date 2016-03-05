@@ -136,42 +136,7 @@ namespace LSLCCEditor.EditControl
 
         private readonly ToolTip _symbolHoverToolTip = new ToolTip();
         private readonly object _userChangingTextLock = new object();
-        //suggestion prefixes and suffixes are used to rule out the need for a parse
-        //up to the caret.  In some situations we can determine that auto-complete is not
-        //needed or will not produce results.
 
-        //An auto complete parse only takes place if the character preceding the inserted text
-        //matches one of these
-        private readonly HashSet<string> _validSuggestionPrefixes = new HashSet<string>
-        {
-            "\t", //after a word break
-            "\r", // ^
-            "\n", // ^
-            " ", // ^
-            //".",  //member accessor (not used yet)
-            "{", //after the start of a scope
-            "}", //after a scope
-            "[", //after the start of a list literal
-            "(", //after the start of a parenthesized expression group, cast, parameter list, ect..
-            ")", //after a single statement code scope starts
-            "<", //after comparison, vectors start and left shift operator
-            ">", //after right shift, and comparison
-            "&", //after logical and bitwise and
-            "^", //after xor
-            "|", //after logical and bitwise or
-            "~", //after bitwise not
-            "!", //after logical not
-            ",", //after a comma in an expression list
-            ";", //after a statement terminator
-            "=", //after all types of assignment
-            "+", //after addition operator or prefix increment
-            "-", //after negation, subtraction operator or prefix decrement
-            "*", //after multiplication operator
-            "/", //after division operator
-            "%", //after modulus operator
-            "@", //after a label name prefix
-            "" //at the beginning of the file
-        };
 
         private LSLAutoCompleteGlobalFunction _contextMenuFunction;
         private LSLAutoCompleteLocalParameter _contextMenuLocalParam;
