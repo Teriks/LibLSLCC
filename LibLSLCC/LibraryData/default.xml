@@ -28,7 +28,6 @@
   <SubsetDescription Subset="os-country" FriendlyName="OS Country">
     <Description>An optional OpenSim god module that allows for detecting an avatars country of origin.</Description>
   </SubsetDescription>
-  
   <LibraryFunction Name="cmDetectedCountry" ReturnType="String" Subsets="os-country">
     <Parameter Name="num" Type="Integer" />
     <DocumentationString>Gets the detected country code of an agent in events where llDetected* functions apply, this is an OpenSim god function.</DocumentationString>
@@ -37,15 +36,12 @@
     <Parameter Name="key" Type="String" />
     <DocumentationString>Gets the country code of an agent given their key, this is an OpenSim god function.</DocumentationString>
   </LibraryFunction>
-  
-  
   <LibraryConstant Name="AGENT_MALE" Type="Integer" Value="8192" Subsets="os-lsl">
     <DocumentationString>An extra flag returned by llGetAgentInfo in OpenSim, indicates an agent has a male avatar.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="CHANGED_POSITION" Type="Integer" Value="32768" Subsets="os-lsl">
     <DocumentationString>An extra flag to the changed event in OpenSim, indicates a change in object position.</DocumentationString>
   </LibraryConstant>
-  
   <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="value" Type="Integer" />
     <DocumentationString>Returns the absolute (positive) version of Value.</DocumentationString>
