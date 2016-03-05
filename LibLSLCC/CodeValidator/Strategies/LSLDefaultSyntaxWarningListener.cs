@@ -101,7 +101,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="currentFunction">The signature of the function that dead code was detected in.</param>
         /// <param name="deadSegment">An object describing the range of code that is considered to be dead.</param>
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLFunctionSignature currentFunction,
-            LSLDeadCodeSegment deadSegment)
+            ILSLReadOnlyDeadCodeSegment deadSegment)
         {
             if (deadSegment.SourceRange.IsSingleLine)
             {
@@ -126,7 +126,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="currentEvent">The signature of the event handler that dead code was detected in.</param>
         /// <param name="deadSegment">An object describing the range of code that is considered to be dead.</param>
         public virtual void DeadCodeDetected(LSLSourceCodeRange location, LSLEventSignature currentEvent,
-            LSLDeadCodeSegment deadSegment)
+            ILSLReadOnlyDeadCodeSegment deadSegment)
         {
             if (deadSegment.SourceRange.IsSingleLine)
             {

@@ -413,7 +413,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.DeadCodeAfterReturnPath(LSLSourceCodeRange location,
-            LSLFunctionSignature inFunction, LSLDeadCodeSegment deadSegment)
+            LSLFunctionSignature inFunction, ILSLReadOnlyDeadCodeSegment deadSegment)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.DeadCodeAfterReturnPath(location, inFunction, deadSegment));
@@ -622,7 +622,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.DeadCodeDetected(LSLSourceCodeRange location,
-            LSLFunctionSignature currentFunction, LSLDeadCodeSegment deadSegment)
+            LSLFunctionSignature currentFunction, ILSLReadOnlyDeadCodeSegment deadSegment)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.DeadCodeDetected(location, currentFunction, deadSegment));
@@ -630,7 +630,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.DeadCodeDetected(LSLSourceCodeRange location,
-            LSLEventSignature currentEvent, LSLDeadCodeSegment deadSegment)
+            LSLEventSignature currentEvent, ILSLReadOnlyDeadCodeSegment deadSegment)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxWarningListener.DeadCodeDetected(location, currentEvent, deadSegment));

@@ -55,6 +55,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Represents a range in LSL source code.
     /// </summary>
+    /// <remarks>Immutable.</remarks>
     public class LSLSourceCodeRange : IEquatable<LSLSourceCodeRange>
     {
         /// <summary>

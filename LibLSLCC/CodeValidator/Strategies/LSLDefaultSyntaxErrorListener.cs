@@ -385,7 +385,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="inFunction">The signature of the function the dead code was detected in.</param>
         /// <param name="deadSegment">An object describing the location an span of the dead code segment.</param>
         public virtual void DeadCodeAfterReturnPath(LSLSourceCodeRange location, LSLFunctionSignature inFunction,
-            LSLDeadCodeSegment deadSegment)
+            ILSLReadOnlyDeadCodeSegment deadSegment)
         {
             if (deadSegment.SourceRange.IsSingleLine)
             {

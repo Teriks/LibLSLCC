@@ -50,15 +50,27 @@
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    ///     A code segment type for housing a range of statement nodes that are considered to be dead.
-    ///     a DeadCodeType enum property is provided to describe what caused the code to be dead
+    ///     A read only interface for <see cref="LSLDeadCodeSegment"/>.
     /// </summary>
-    public sealed class LSLDeadCodeSegment : LSLCodeSegment
+    public interface ILSLReadOnlyDeadCodeSegment : ILSLReadOnlyCodeSegment
+    {
+        /// <summary>
+        ///     The type of dead code that this <see cref="LSLDeadCodeSegment" /> represents.
+        /// </summary>
+        LSLDeadCodeType DeadCodeType { get; }
+    }
+
+    /// <summary>
+    ///     A code segment type for housing a range of statement nodes that are considered to be dead. <para/>
+    ///     a <see cref="LSLDeadCodeType"/> enum property is provided to describe what caused the code to be dead
+    /// </summary>
+    /// <seealso cref="LSLCodeSegment"/>
+    public sealed class LSLDeadCodeSegment : LSLCodeSegment, ILSLReadOnlyDeadCodeSegment
     {
         /// <summary>
         ///     Construct an <see cref="LSLDeadCodeSegment" /> with the given <see cref="LSLDeadCodeType" />
         /// </summary>
-        /// <param name="deadCodeType"></param>
+        /// <param name="deadCodeType">The dead code type the segment represents.</param>
         public LSLDeadCodeSegment(LSLDeadCodeType deadCodeType)
         {
             DeadCodeType = deadCodeType;

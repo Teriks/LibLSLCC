@@ -52,14 +52,63 @@ using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator
 {
+
     /// <summary>
-    ///     Represents a flat code segment, it is basically a write only collection for
-    ///     <see cref="ILSLReadOnlyCodeStatement" /> objects.
-    ///     The object keeps track of the starting and ending <see cref="ILSLReadOnlyCodeStatement" /> in the code segment, as
-    ///     well as the source
-    ///     code range that all of the <see cref="ILSLReadOnlyCodeStatement" /> object occupy.
+    /// Read only interface for code segments.
     /// </summary>
-    public class LSLCodeSegment
+    public interface ILSLReadOnlyCodeSegment
+    {
+        /// <summary>
+        ///     The <see cref="ILSLReadOnlyCodeStatement" /> at the end of the code segment.
+        /// </summary>
+        ILSLReadOnlyCodeStatement EndNode { get; }
+
+
+        /// <summary>
+        ///     The source code range that encompasses all <see cref="ILSLReadOnlyCodeStatement" /> objects in the <see cref="LSLCodeSegment"/>.
+        /// </summary>
+        /// <remarks>
+        ///     If <see cref="ILSLReadOnlySyntaxTreeNode.SourceRangesAvailable" /> is <c>false</c> for any added statements, this property will be <c>null</c>.
+        /// </remarks>
+        LSLSourceCodeRange SourceRange { get; }
+
+        /// <summary>
+        /// <c>true</c> if <see cref="SourceRange"/> could be calculated for this segment and is non <c>null</c>.
+        /// </summary>
+        bool SourceRangeAvailable { get; }
+
+
+        /// <summary>
+        ///     The <see cref="ILSLReadOnlyCodeStatement" /> at the start of the code segment.
+        /// </summary>
+        ILSLReadOnlyCodeStatement StartNode { get; }
+
+        /// <summary>
+        ///     All <see cref="ILSLReadOnlyCodeStatement" /> in the code segment, in order of definition.
+        /// </summary>
+        IReadOnlyGenericArray<ILSLReadOnlyCodeStatement> StatementNodes { get; }
+    }
+
+
+    /// <summary>
+    /// Interface for code segments.  <para/>
+    /// Code segments are used to describe a sequential set of code statement nodes that exist in the same scope.
+    /// </summary>
+    public interface ILSLCodeSegment : ILSLReadOnlyCodeSegment
+    {
+        /// <summary>
+        ///     Adds an <see cref="ILSLReadOnlyCodeStatement" /> to the <see cref="LSLCodeSegment" /> object.
+        /// </summary>
+        /// <param name="statement">The <see cref="ILSLReadOnlyCodeStatement" /> to add.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="statement"/> is <c>null</c>.</exception>
+        void AddStatement(ILSLReadOnlyCodeStatement statement);
+    }
+
+
+    /// <summary>
+    /// Code segments are used to describe a sequential set of code statement nodes that exist in the same scope.
+    /// </summary>
+    public class LSLCodeSegment : ILSLCodeSegment
     {
         private readonly GenericArray<ILSLReadOnlyCodeStatement> _statementNodes;
 

@@ -268,7 +268,7 @@ namespace LibLSLCC.CodeValidator
         ///     Returns descriptions of all dead code segments in the top level of this scope,
         ///     if there are any
         /// </summary>
-        public IEnumerable<LSLDeadCodeSegment> DeadCodeSegments
+        public IEnumerable<ILSLReadOnlyDeadCodeSegment> DeadCodeSegments
         {
             get { return _deadCodeSegments; }
         }
