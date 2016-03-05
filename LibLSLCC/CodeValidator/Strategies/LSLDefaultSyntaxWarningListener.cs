@@ -442,7 +442,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">The location in source code where the deprecated constant was referenced.</param>
         /// <param name="constantSignature">The library constant signature of the deprecated constant that was referenced.</param>
         public virtual void UseOfDeprecatedLibraryConstant(LSLSourceCodeRange location,
-            LSLLibraryConstantSignature constantSignature)
+            ILSLConstantSignature constantSignature)
         {
             OnWarning(location,
                 string.Format(

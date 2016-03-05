@@ -555,7 +555,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="accessedMember">The member the user attempted to access.</param>
         public virtual void TupleComponentAccessOnLibraryConstant(LSLSourceCodeRange location,
             ILSLVariableNode libraryConstantReferenceNode,
-            LSLLibraryConstantSignature libraryConstantSignature, string accessedMember)
+            ILSLConstantSignature libraryConstantSignature, string accessedMember)
         {
             OnError(location,
                 "The member access operator is not allowed on library constants, even if they are vector or rotation constants.");
@@ -813,7 +813,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="redefinitionType">The type used in the re-definition.</param>
         /// <param name="originalSignature">The original signature of the constant taken from the library data provider.</param>
         public virtual void RedefinedStandardLibraryConstant(LSLSourceCodeRange location, LSLType redefinitionType,
-            LSLLibraryConstantSignature originalSignature)
+            ILSLConstantSignature originalSignature)
         {
             OnError(location,
                 "Cannot define variable with name \"" + originalSignature.Name +

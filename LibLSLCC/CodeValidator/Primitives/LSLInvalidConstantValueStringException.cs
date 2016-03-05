@@ -50,7 +50,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace LibLSLCC.LibraryData
+namespace LibLSLCC.CodeValidator
 {
     /// <summary>
     ///     Thrown by functions that deal with subset names, when an invalid format for a subset name is encountered

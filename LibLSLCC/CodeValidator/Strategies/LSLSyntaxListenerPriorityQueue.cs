@@ -373,7 +373,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxErrorListener.RedefinedStandardLibraryConstant(LSLSourceCodeRange location,
             LSLType redefinitionType,
-            LSLLibraryConstantSignature originalSignature)
+            ILSLConstantSignature originalSignature)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -510,7 +510,7 @@ namespace LibLSLCC.CodeValidator
 
         void ILSLSyntaxErrorListener.TupleComponentAccessOnLibraryConstant(LSLSourceCodeRange location,
             ILSLVariableNode libraryConstantReferenceNode,
-            LSLLibraryConstantSignature libraryConstantSignature, string accessedMember)
+            ILSLConstantSignature libraryConstantSignature, string accessedMember)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
@@ -799,7 +799,7 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxWarningListener.UseOfDeprecatedLibraryConstant(LSLSourceCodeRange location,
-            LSLLibraryConstantSignature constantSignature)
+            ILSLConstantSignature constantSignature)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>

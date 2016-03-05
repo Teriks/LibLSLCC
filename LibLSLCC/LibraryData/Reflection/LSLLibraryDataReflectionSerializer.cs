@@ -490,9 +490,11 @@ namespace LibLSLCC.LibraryData.Reflection
         public event EventHandler<AutoFilteredConstantFieldEventArgs> OnFilterValueStringConversionFailureField;
 
 
-        private ValueStringConversionResult TryConvertAndAssignConstantValueString(MemberInfo info,
-            LSLLibraryConstantSignature sig, object value)
+        private ValueStringConversionResult TryConvertConstantValueString(MemberInfo info,
+            LSLType constantType, object value, out string valueString)
         {
+            valueString = null;
+
             var asProperty = info as PropertyInfo;
             var asField = info as FieldInfo;
 
@@ -517,12 +519,12 @@ namespace LibLSLCC.LibraryData.Reflection
             bool conversionSuccess;
             if (isProperty)
             {
-                conversionSuccess = ValueStringConverter.ConvertProperty(asProperty, sig.Type, value,
+                conversionSuccess = ValueStringConverter.ConvertProperty(asProperty, constantType, value,
                     out convertedValueString);
             }
             else
             {
-                conversionSuccess = ValueStringConverter.ConvertField(asField, sig.Type, value,
+                conversionSuccess = ValueStringConverter.ConvertField(asField, constantType, value,
                     out convertedValueString);
             }
 
@@ -567,7 +569,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
             try
             {
-                sig.ValueString = convertedValueString;
+                valueString = convertedValueString;
             }
             catch (LSLInvalidConstantValueStringException e)
             {
@@ -583,13 +585,13 @@ namespace LibLSLCC.LibraryData.Reflection
                             "The {6} value was '{7}' (ToString'd):" +
                             LSLFormatTools.CreateNewLinesString(2) + e.Message,
                             convertedValueString,
-                            sig.Type,
+                            constantType,
                             fieldDescription,
                             info.Name,
                             constantMemberType.Name,
                             info.DeclaringType.Name,
                             fieldDescriptionPossessive,
-                            value));
+                            value), e);
                 }
 
                 InvokeOnFilterInvalidValueString(info);
@@ -749,9 +751,10 @@ namespace LibLSLCC.LibraryData.Reflection
             }
             if (fieldValue != null)
             {
-                result = new LSLLibraryConstantSignature(propertyType, info.Name);
+                
+                string valueString;
 
-                var valueStringConverterResults = TryConvertAndAssignConstantValueString(info, result, fieldValue);
+                var valueStringConverterResults = TryConvertConstantValueString(info, propertyType, fieldValue, out valueString);
 
                 if (valueStringConverterResults != ValueStringConversionResult.Success)
                 {
@@ -759,6 +762,8 @@ namespace LibLSLCC.LibraryData.Reflection
                     //TryConvertAndAssignConstantValueString will throw an appropriate serialization exception
                     return null;
                 }
+
+                result = new LSLLibraryConstantSignature(propertyType, info.Name, valueString);
             }
             else
             {

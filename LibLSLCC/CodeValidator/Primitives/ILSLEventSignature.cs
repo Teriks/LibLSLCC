@@ -1,10 +1,14 @@
+#region Imports
+
 using System;
 using LibLSLCC.Collections;
+
+#endregion
 
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
-    /// A read only interface for <see cref="LSLEventSignature"/>.
+    ///     A read only interface for <see cref="LSLEventSignature" />.
     /// </summary>
     public interface ILSLEventSignature
     {
@@ -16,9 +20,6 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The event handlers name, must follow LSL symbol naming conventions
         /// </summary>
-        /// <exception cref="LSLInvalidSymbolNameException" accessor="set">
-        ///     Thrown if the event handler name does not follow LSL symbol naming conventions.
-        /// </exception>
         string Name { get; }
 
         /// <summary>
@@ -35,9 +36,11 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Delegates to SignatureString
+        ///     Delegates to <see cref="SignatureString" />
         /// </summary>
-        /// <returns>SignatureString</returns>
+        /// <returns>
+        ///     <see cref="SignatureString" />
+        /// </returns>
         string ToString();
 
 
@@ -47,13 +50,16 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="otherSignature">The other event handler signature to compare to.</param>
         /// <returns>True if the two signatures are identical.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="otherSignature"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="otherSignature" /> is <c>null</c>.</exception>
         bool SignatureMatches(ILSLEventSignature otherSignature);
 
 
         /// <summary>
-        ///     <see cref="GetHashCode"/> uses the name of the <see cref="ILSLEventSignature" /> and the LSL Types of the parameters. <para/>
-        ///     This means the Hash Code is determined by the event name, and the Types of all its parameters. <para/>
+        ///     <see cref="GetHashCode" /> uses the name of the <see cref="ILSLEventSignature" /> and the LSL Types of the
+        ///     parameters.
+        ///     <para />
+        ///     This means the Hash Code is determined by the event name, and the Types of all its parameters.
+        ///     <para />
         ///     Inherently, uniqueness is also determined by the number of parameters.
         /// </summary>
         /// <returns>Hash code for this <see cref="ILSLEventSignature" /></returns>
@@ -61,7 +67,7 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     <see cref="Equals(object)"/> delegates to <see cref="ILSLEventSignature.SignatureMatches" />
+        ///     <see cref="Equals(object)" /> delegates to <see cref="ILSLEventSignature.SignatureMatches" />
         /// </summary>
         /// <param name="obj">The other event signature</param>
         /// <returns>Equality</returns>

@@ -54,7 +54,7 @@ namespace LibLSLCC.LibraryData.Reflection
 {
     /// <summary>
     ///     Interface for converting property/field values into strings assignable to
-    ///     <see cref="LSLLibraryConstantSignature.ValueString" />.
+    ///     <see cref="LSLConstantSignature.ValueString" />.
     ///     This interface is for types that are assigned to the attribute property
     ///     <see cref="LSLConstantAttribute.ValueStringConverter" /> using the <c>typeof</c> operator.
     /// </summary>
@@ -62,17 +62,17 @@ namespace LibLSLCC.LibraryData.Reflection
     {
         /// <summary>
         ///     Convert the value taken from a property with the <see cref="LSLConstantAttribute" /> into
-        ///     something that is valid to assign to <see cref="LSLLibraryConstantSignature.ValueString" /> given the specified
-        ///     <see cref="LSLType" /> that is to be assigned to <see cref="LSLLibraryConstantSignature.Type" />.
+        ///     something that is valid to assign to <see cref="LSLConstantSignature.ValueString" /> given the specified
+        ///     <see cref="LSLType" /> that is to be assigned to <see cref="LSLConstantSignature.Type" />.
         /// </summary>
         /// <param name="propertyInfo">The <see cref="PropertyInfo" /> of the property the value was taken from.</param>
         /// <param name="constantType">
-        ///     The <see cref="LSLType" /> being assigned to <see cref="LSLLibraryConstantSignature.Type" />
+        ///     The <see cref="LSLType" /> being assigned to <see cref="LSLConstantSignature.Type" />
         ///     .
         /// </param>
         /// <param name="fieldValue">The value taking from the property or field with an <see cref="LSLConstantAttribute" />.</param>
         /// <param name="valueString">
-        ///     The string to assign to <see cref="LSLLibraryConstantSignature.ValueString" />.
+        ///     The string to assign to <see cref="LSLConstantSignature.ValueString" />.
         ///     this should be a string that <see cref="LSLLibraryConstantSignature" /> is able to parse for the given
         ///     <see cref="LSLType" />.
         ///     You should not assign <c>null</c> to <paramref name="valueString" /> if you intend to return <c>true</c>, this is
@@ -86,17 +86,17 @@ namespace LibLSLCC.LibraryData.Reflection
 
         /// <summary>
         ///     Convert the value taken from a field with the <see cref="LSLConstantAttribute" /> into
-        ///     something that is valid to assign to <see cref="LSLLibraryConstantSignature.ValueString" /> given the specified
-        ///     <see cref="LSLType" /> that is to be assigned to <see cref="LSLLibraryConstantSignature.Type" />.
+        ///     something that is valid to assign to <see cref="LSLConstantSignature.ValueString" /> given the specified
+        ///     <see cref="LSLType" /> that is to be assigned to <see cref="LSLConstantSignature.Type" />.
         /// </summary>
         /// <param name="fieldInfo">The <see cref="FieldInfo" /> of the field the value was taken from.</param>
         /// <param name="constantType">
-        ///     The <see cref="LSLType" /> being assigned to <see cref="LSLLibraryConstantSignature.Type" />
+        ///     The <see cref="LSLType" /> being assigned to <see cref="LSLConstantSignature.Type" />
         ///     .
         /// </param>
         /// <param name="fieldValue">The value taking from the property or field with an <see cref="LSLConstantAttribute" />.</param>
         /// <param name="valueString">
-        ///     The string to assign to <see cref="LSLLibraryConstantSignature.ValueString" />.
+        ///     The string to assign to <see cref="LSLConstantSignature.ValueString" />.
         ///     this should be a string that <see cref="LSLLibraryConstantSignature" /> is able to parse for the given
         ///     <see cref="LSLType" />.
         ///     You should not assign <c>null</c> to <paramref name="valueString" /> if you intend to return <c>true</c>, this is

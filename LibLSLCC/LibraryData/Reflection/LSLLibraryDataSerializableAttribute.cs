@@ -100,7 +100,7 @@ namespace LibLSLCC.LibraryData.Reflection
 
         /// <summary>
         ///     Gets or sets the <see cref="ILSLValueStringConverter" /> used to convert the values taken from fields/properties in
-        ///     given class to strings that can be parsed by <see cref="LSLLibraryConstantSignature.ValueString" />.
+        ///     given class to strings that can be parsed by <see cref="LSLConstantSignature.ValueString" />.
         ///     The value string converter defined in the class attribute can be overridden per field/property by
         ///     <see cref="LSLConstantAttribute.ValueStringConverter" />.
         ///     This property will override <see cref="LSLLibraryDataReflectionSerializer.ValueStringConverter" /> if it is set.

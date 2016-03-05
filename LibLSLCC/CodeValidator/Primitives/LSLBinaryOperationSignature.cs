@@ -53,6 +53,7 @@ namespace LibLSLCC.CodeValidator
     ///     Represents the signature of a binary operation. Includes the types on either side of the expression, and the
     ///     operation type.
     /// </summary>
+    /// <remarks>Immutable.</remarks>
     public sealed class LSLBinaryOperationSignature
     {
         /// <summary>

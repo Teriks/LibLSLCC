@@ -291,7 +291,7 @@ namespace LibLSLCC.LibraryData
                     }
                 }
             }
-            catch (LSLLibraryDataInvalidConstantTypeException e)
+            catch (LSLInvalidConstantTypeException e)
             {
                 throw new LSLLibraryDataXmlSyntaxException(CurrentLineInfo.LineNumber, e.Message, e);
             }

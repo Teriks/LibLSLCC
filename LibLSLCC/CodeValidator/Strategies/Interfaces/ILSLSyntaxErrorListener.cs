@@ -349,7 +349,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="redefinitionType">The type used in the re-definition.</param>
         /// <param name="originalSignature">The original signature of the constant taken from the library data provider.</param>
         void RedefinedStandardLibraryConstant(LSLSourceCodeRange location, LSLType redefinitionType,
-            LSLLibraryConstantSignature originalSignature);
+            ILSLConstantSignature originalSignature);
 
 
         /// <summary>
@@ -515,7 +515,7 @@ namespace LibLSLCC.CodeValidator
         /// <param name="accessedMember">The member the user attempted to access.</param>
         void TupleComponentAccessOnLibraryConstant(LSLSourceCodeRange location,
             ILSLVariableNode libraryConstantReferenceNode,
-            LSLLibraryConstantSignature libraryConstantSignature,
+            ILSLConstantSignature libraryConstantSignature,
             string accessedMember);
 
 

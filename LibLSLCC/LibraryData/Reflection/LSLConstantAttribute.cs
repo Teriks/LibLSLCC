@@ -104,13 +104,13 @@ namespace LibLSLCC.LibraryData.Reflection
         public bool Deprecated { get; set; }
 
         /// <summary>
-        ///     Gets or sets the value string to be assigned to <see cref="LSLLibraryConstantSignature.ValueString" /> if no
+        ///     Gets or sets the value string to be assigned to <see cref="LSLConstantSignature.ValueString" /> if no
         ///     <see cref="ValueStringConverter" /> type is present.
-        ///     You cannot have both an explicit <see cref="LSLLibraryConstantSignature.ValueString" /> and
+        ///     You cannot have both an explicit <see cref="LSLConstantSignature.ValueString" /> and
         ///     <see cref="ValueStringConverter" /> at the same time, this will cause an exception from the serializer.
         /// </summary>
         /// <value>
-        ///     The value string to be assigned to <see cref="LSLLibraryConstantSignature.ValueString" />.
+        ///     The value string to be assigned to <see cref="LSLConstantSignature.ValueString" />.
         /// </value>
         public string ValueString { get; set; }
 
@@ -119,8 +119,8 @@ namespace LibLSLCC.LibraryData.Reflection
         ///         Gets or sets the value string converter <see cref="Type" />, this type should derive from
         ///         <see cref="ILSLValueStringConverter" /> or you will get exceptions from the serializer.
         ///         The value string converter is responsible for converting field/property values into something that is parsable
-        ///         by <see cref="LSLLibraryConstantSignature.ValueString" />.
-        ///         You cannot have both an explicit <see cref="LSLLibraryConstantSignature.ValueString" /> and
+        ///         by <see cref="LSLConstantSignature.ValueString" />.
+        ///         You cannot have both an explicit <see cref="LSLConstantSignature.ValueString" /> and
         ///         <see cref="ValueStringConverter" /> at the same time, this will cause an exception from the serializer.
         ///         This property is only optional if the class is using a defined
         ///         <see cref="LSLLibraryDataSerializableAttribute.ValueStringConverter" /> or

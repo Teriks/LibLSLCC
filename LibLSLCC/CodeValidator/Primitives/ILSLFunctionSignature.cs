@@ -27,9 +27,6 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     The functions name, must follow LSL symbol naming conventions.
         /// </summary>
-        /// <exception cref="LSLInvalidSymbolNameException" accessor="set">
-        ///     Thrown if the function name does not follow LSL symbol naming conventions.
-        /// </exception>
         string Name { get; }
 
         /// <summary>
@@ -63,10 +60,10 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     Delegates to SignatureString.
+        ///     Delegates to <see cref="SignatureString"/>.
         /// </summary>
         /// <returns>
-        ///     SignatureString
+        ///     <see cref="SignatureString"/>
         /// </returns>
         string ToString();
 

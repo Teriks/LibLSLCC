@@ -701,12 +701,8 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
                     .Union(LSLConstantsFromKeywordsAll())
                     .Union(LSLConstantsFromParticlePage())
                     .Union(LSLConstantsFromClickActionPage())
-                    .Union(LSLConstantsFromChangedEventPage()).Select(x =>
-                    {
-
-                        x.Name = x.Name.Replace(' ', '_');
-                        return x;
-                    });
+                    .Union(LSLConstantsFromChangedEventPage())
+                    .Select(x => new LSLLibraryConstantSignature(x.Type, x.Name.Replace(' ', '_'), x.ValueString));
         }
     }
 }
