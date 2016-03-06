@@ -56,19 +56,16 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public interface ILSLParameterListNode : ILSLSyntaxTreeNode
     {
-        /// <summary>
-        ///     True if this parameter list node contains parameter definition nodes.
-        /// </summary>
-        bool HasParameters { get; }
 
         /// <summary>
-        ///     A list of parameter definition nodes that this parameter list node contains, or an empty list.
+        ///     A list of parameter definition nodes that this parameter list node contains, or an empty list. <para/>
+        ///     This will never be <c>null</c>.
         /// </summary>
         IReadOnlyGenericArray<ILSLParameterNode> Parameters { get; }
 
         /// <summary>
-        ///     The source code range for each comma separator that appears in the parameter list in order, or an empty list
-        ///     object.
+        ///     The source code range for each comma separator that appears in the parameter list in order, or an empty list. <para/>
+        ///     This will never be <c>null</c>.
         /// </summary>
         IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList { get; }
 

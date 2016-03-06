@@ -291,7 +291,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public bool HasInitExpressions
         {
-            get { return InitExpressionList != null && InitExpressionList.HasExpressions; }
+            get { return InitExpressionList != null && InitExpressionList.Expressions.Count > 0; }
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         public bool HasAfterthoughtExpressions
         {
-            get { return AfterthoughtExpressionList != null && AfterthoughtExpressionList.HasExpressions; }
+            get { return AfterthoughtExpressionList != null && AfterthoughtExpressionList.Expressions.Count > 0; }
         }
 
         /// <summary>

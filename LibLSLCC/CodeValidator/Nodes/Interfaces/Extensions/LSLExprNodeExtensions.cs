@@ -54,7 +54,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Various extensions for dealing with syntax tree node interfaces.
     /// </summary>
-    public static class LSLExprNodeInterfaceExtensions
+    public static class LSLExprNodeExtensions
     {
         /// <summary>
         /// Determine if a given expressions parent node is a prefix negate operator.

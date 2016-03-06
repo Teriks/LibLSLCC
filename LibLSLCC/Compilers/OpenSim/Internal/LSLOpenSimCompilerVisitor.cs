@@ -536,6 +536,7 @@ private static class UTILITIES
                 return false;
             }
 
+
             //the compiler uses strings for keys unless testing a boolean
             //when a key is used for a boolean condition LSL_Types.key is constructed around the expression
             if ((node.CastToType == LSLType.String || node.CastToType == LSLType.Key) &&
@@ -545,10 +546,7 @@ private static class UTILITIES
                 return false;
             }
 
-
             Writer.Write("(" + LSLAtomType_To_CSharpType(node.CastToType) + ")");
-
-
             Writer.Write("(");
             Visit(node.CastedExpression);
             Writer.Write(")");
@@ -765,29 +763,65 @@ private static class UTILITIES
 
         #region ExpressionLists
 
+
+
+        private bool ShouldBoxAsKeyInListInitializer(ILSLReadOnlyExprNode expr, bool topLevel = true)
+        {
+            if (topLevel && expr.Type != LSLType.Key) return false;
+
+            if (expr.IsVariable()) return true;
+
+            var asTypecast = expr as ILSLTypecastExprNode;
+            if (asTypecast != null &&
+                (asTypecast.CastToType == LSLType.Key ||
+                 ShouldBoxAsKeyInListInitializer(asTypecast.CastedExpression, false))) return true;
+
+
+            var asParenth = expr as ILSLParenthesizedExpressionNode;
+            if (asParenth != null && ShouldBoxAsKeyInListInitializer(asParenth.InnerExpression, false)) return true;
+
+            return false;
+        }
+
+
+
+
         public override bool VisitExpressionList(ILSLExpressionListNode node)
         {
-            if (node.HasExpressions)
+            if (node.Expressions.Count == 0) return false;
+
+            var castKeys = node.ListType == LSLExpressionListType.ListInitializer;
+
+            var i = 0;
+
+            for (; i < node.Expressions.Count - 1; i++)
             {
-                if (node.Expressions.Count == 1)
+                var expression = node.Expressions[i];
+
+                if (castKeys && ShouldBoxAsKeyInListInitializer(expression))
                 {
-                    var expression = node.Expressions[0];
+                    Writer.Write("new LSL_Types.key(");
                     Visit(expression);
-                    return false;
+                    Writer.Write(")");
+                }
+                else
+                {
+                    Visit(expression);
                 }
 
+                Writer.Write(",");
+            }
 
-                var i = 0;
+            var lastExpression = node.Expressions[i];
 
-                for (; i < node.Expressions.Count - 1; i++)
-                {
-                    var expression = node.Expressions[i];
-                    Visit(expression);
-                    Writer.Write(",");
-                }
-
-                var lastExpression = node.Expressions[i];
-
+            if (castKeys && ShouldBoxAsKeyInListInitializer(lastExpression))
+            {
+                Writer.Write("new LSL_Types.key(");
+                Visit(lastExpression);
+                Writer.Write(")");
+            }
+            else
+            {
                 Visit(lastExpression);
             }
 
@@ -1015,7 +1049,7 @@ private static class UTILITIES
 
         public override bool VisitListLiteral(ILSLListLiteralNode node)
         {
-            if (node.ExpressionList.HasExpressions)
+            if (node.ExpressionList.Expressions.Count > 0)
             {
                 Writer.Write("(new LSL_Types.list(");
                 Visit(node.ExpressionList);
@@ -1780,7 +1814,7 @@ private static class UTILITIES
             var handlerName = _currentLslStateNode.StateName + "_event_" + node.Name;
 
 
-            if (node.ParameterList.HasParameters)
+            if (node.ParameterList.Parameters.Count > 0)
             {
                 Writer.Write("public void " + handlerName + "(");
                 Visit(node.ParameterList);
@@ -1825,7 +1859,7 @@ private static class UTILITIES
 
             Writer.Write(functionName + "(");
 
-            if (node.ParameterList.HasParameters)
+            if (node.ParameterList.Parameters.Count > 0)
             {
                 Visit(node.ParameterList);
             }

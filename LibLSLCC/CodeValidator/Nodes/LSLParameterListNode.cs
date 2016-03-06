@@ -186,18 +186,6 @@ namespace LibLSLCC.CodeValidator
             get { return Parent; }
         }
 
-        /// <summary>
-        ///     True if this parameter list node contains parameter definition nodes.
-        /// </summary>
-        public bool HasParameters
-        {
-            get { return _parameters.Count > 0; }
-        }
-
-        IReadOnlyGenericArray<ILSLParameterNode> ILSLParameterListNode.Parameters
-        {
-            get { return _parameters.Values.ToGenericArray(); }
-        }
 
         /// <summary>
         ///     The parent node of this syntax tree node.

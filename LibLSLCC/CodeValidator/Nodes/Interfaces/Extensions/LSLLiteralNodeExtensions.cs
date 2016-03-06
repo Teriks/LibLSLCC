@@ -54,11 +54,11 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     ///     Extensions for LSL literal nodes.
     /// </summary>
-    public static class LSLLiteralNodeInterfaceExtensions
+    public static class LSLLiteralNodeExtensions
     {
         /// <summary>
         ///     Determines whether the integer literal node is a literal value that overflows/underflows a 32 bit integer. <para/>
-        ///     Whether or not the node is negated is determined with <see cref="LSLExprNodeInterfaceExtensions.IsNegated"/>.
+        ///     Whether or not the node is negated is determined with <see cref="LSLExprNodeExtensions.IsNegated"/>.
         /// </summary>
         /// <param name="node">The integer literal node to test.</param>
         /// <returns>True if the integer literal overflows/underflows a 32 bit integer.</returns>
@@ -73,7 +73,7 @@ namespace LibLSLCC.CodeValidator
 
         /// <summary>
         ///     Determines whether the hex literal node is a literal value that overflows/underflows a 32 bit integer. <para/>
-        ///     Whether or not the node is negated is determined with <see cref="LSLExprNodeInterfaceExtensions.IsNegated"/>.
+        ///     Whether or not the node is negated is determined with <see cref="LSLExprNodeExtensions.IsNegated"/>.
         /// </summary>
         /// <param name="node">The integer hex node to test.</param>
         /// <returns>True if the hex literal overflows/underflows a 32 bit integer.</returns>

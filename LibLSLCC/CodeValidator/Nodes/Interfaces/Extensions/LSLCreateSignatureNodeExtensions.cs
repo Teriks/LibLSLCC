@@ -6,7 +6,7 @@ namespace LibLSLCC.CodeValidator
     /// <summary>
     /// Extensions for creating LSL signature primitives from related syntax tree nodes.
     /// </summary>
-    public static class LSLCreateSignatureExtensions
+    public static class LSLCreateSignatureNodeExtensions
     {
         /// <summary>
         ///     Build a <see cref="LSLFunctionSignature" /> object based off the signature of this function declaration node.

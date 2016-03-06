@@ -2117,7 +2117,7 @@ namespace LibLSLCC.CodeFormatter
 
         public override bool VisitParameterDefinitionList(ILSLParameterListNode node)
         {
-            if (!node.HasParameters)
+            if (node.Parameters.Count == 0)
             {
                 return true;
             }

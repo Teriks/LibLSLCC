@@ -64,19 +64,15 @@ namespace LibLSLCC.CodeValidator
         LSLExpressionListType ListType { get; }
 
         /// <summary>
-        ///     A list of expression nodes that belong to this expression list in order of appearance, or an empty list object.
+        ///     A list of expression nodes that belong to this expression list in order of appearance, or an empty list.  <para/>
+        ///     This will never be <c>null</c>.
         /// </summary>
         IReadOnlyGenericArray<ILSLReadOnlyExprNode> Expressions { get; }
 
         /// <summary>
-        ///     The source code range for each comma separator that appears in the expression list in order, or an empty list
-        ///     object.
+        ///     The source code range for each comma separator that appears in the expression list in order, or an empty list.  <para/>
+        ///     This will never be <c>null</c>.
         /// </summary>
         IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList { get; }
-
-        /// <summary>
-        ///     True if this expression list node actually has expression children, False if it is empty.
-        /// </summary>
-        bool HasExpressions { get; }
     }
 }
