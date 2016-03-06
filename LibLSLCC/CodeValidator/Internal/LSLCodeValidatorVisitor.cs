@@ -2938,6 +2938,19 @@ namespace LibLSLCC.CodeValidator
             var exprRvalue = VisitExpressionContent(context.expr_rvalue);
 
 
+            bool castOnCastExpression = false;
+            if (exprRvalue.ExpressionType == LSLExpressionType.TypecastExpression)
+            {
+                var sourceRange = new LSLSourceCodeRange(context);
+
+                //Secondlife's LSL compiler cannot handle a cast directly on another cast.
+                //I think it may be a grammar ambiguity problem.
+                GenSyntaxError().CastOnCastExpression(sourceRange, exprRvalue);
+
+                castOnCastExpression = true;
+            }
+
+
             var castType = LSLTypeTools.FromLSLTypeName(context.cast_type.Text);
 
 
@@ -2951,7 +2964,7 @@ namespace LibLSLCC.CodeValidator
 
             var result = new LSLTypecastExprNode(context, validate.ResultType, exprRvalue)
             {
-                HasErrors = !validate.IsValid
+                HasErrors = !validate.IsValid || castOnCastExpression
             };
 
 

@@ -303,10 +303,10 @@ namespace LibLSLCC.CodeValidator
         ///     A parameter type mismatch occured when trying to call a user defined or library function.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="parameterNumberWithError">The index of the parameter with the type mismatch. (Zero based)</param>
+        /// <param name="parameterIndexWithError">The index of the parameter with the type mismatch. (Zero based)</param>
         /// <param name="calledFunction">The defined/library function that was attempting to be called.</param>
         /// <param name="parameterExpressionsGiven">The parameter expressions given for the function call.</param>
-        void ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location, int parameterNumberWithError,
+        void ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location, int parameterIndexWithError,
             ILSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven);
 
 
@@ -610,5 +610,14 @@ namespace LibLSLCC.CodeValidator
         /// <param name="location">The source code range of the assignment operator used.</param>
         /// <param name="assignmentOperatorUsed">The assignment operator used.</param>
         void AssignmentToNonassignableExpression(LSLSourceCodeRange location, string assignmentOperatorUsed);
+
+
+        /// <summary>
+        ///     A cast expression was used directly on another cast expression without parenthesizing the expression on the right. <para/>
+        ///     LibLSLCC's parser can handle this, but Secondlife's LSL parser cannot; it's ambiguous to it and causes a syntax error.
+        /// </summary>
+        /// <param name="location">The source code range of the offending cast expression.</param>
+        /// <param name="castedExpression">The casted expression, which will be another typecast expression.</param>
+        void CastOnCastExpression(LSLSourceCodeRange location, ILSLReadOnlyExprNode castedExpression);
     }
 }

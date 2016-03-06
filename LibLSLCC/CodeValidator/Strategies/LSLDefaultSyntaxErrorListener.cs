@@ -742,11 +742,11 @@ namespace LibLSLCC.CodeValidator
         ///     A parameter type mismatch occured when trying to call a user defined or library function.
         /// </summary>
         /// <param name="location">Location in source code.</param>
-        /// <param name="parameterNumberWithError">The index of the parameter with the type mismatch. (Zero based)</param>
+        /// <param name="parameterIndexWithError">The index of the parameter with the type mismatch. (Zero based)</param>
         /// <param name="calledFunction">The defined/library function that was attempting to be called.</param>
         /// <param name="parameterExpressionsGiven">The parameter expressions given for the function call.</param>
         public virtual void ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location,
-            int parameterNumberWithError,
+            int parameterIndexWithError,
             ILSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             var message = calledFunction.HasVariadicParameter
@@ -756,10 +756,10 @@ namespace LibLSLCC.CodeValidator
             OnError(location, string.Format(
                 message,
                 calledFunction.Name,
-                parameterNumberWithError,
-                calledFunction.Parameters[parameterNumberWithError].Name,
-                calledFunction.Parameters[parameterNumberWithError].Type,
-                parameterExpressionsGiven[parameterNumberWithError].DescribeType()));
+                parameterIndexWithError+1,
+                calledFunction.Parameters[parameterIndexWithError].Name,
+                calledFunction.Parameters[parameterIndexWithError].Type,
+                parameterExpressionsGiven[parameterIndexWithError].DescribeType()));
         }
 
 
@@ -935,6 +935,18 @@ namespace LibLSLCC.CodeValidator
                 "Expression left of assignment operator '" + assignmentOperatorUsed + "' is not assignable.");
         }
 
+
+        /// <summary>
+        ///     A cast expression was used directly on another cast expression without parenthesizing the expression on the right. <para/>
+        ///     LibLSLCC's parser can handle this, but Secondlife's LSL parser cannot; it's ambiguous to it and causes a syntax error.
+        /// </summary>
+        /// <param name="location">The source code range of the offending cast expression.</param>
+        /// <param name="castedExpression">The casted expression, which will be another typecast expression.</param>
+        public void CastOnCastExpression(LSLSourceCodeRange location, ILSLReadOnlyExprNode castedExpression)
+        {
+            OnError(location,
+                "Cannot use cast operator directly on another cast expression; use parentheses around the second cast.");
+        }
 
 
         /// <summary>

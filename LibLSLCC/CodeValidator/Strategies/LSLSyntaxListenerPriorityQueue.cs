@@ -334,12 +334,12 @@ namespace LibLSLCC.CodeValidator
 
 
         void ILSLSyntaxErrorListener.ParameterTypeMismatchInFunctionCall(LSLSourceCodeRange location,
-            int parameterNumberWithError,
+            int parameterIndexWithError,
             ILSLFunctionSignature calledFunction, ILSLReadOnlyExprNode[] parameterExpressionsGiven)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxErrorListener.ParameterTypeMismatchInFunctionCall(location, parameterNumberWithError,
+                    SyntaxErrorListener.ParameterTypeMismatchInFunctionCall(location, parameterIndexWithError,
                         calledFunction, parameterExpressionsGiven));
         }
 
@@ -594,6 +594,14 @@ namespace LibLSLCC.CodeValidator
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.AssignmentToNonassignableExpression(location, assignmentOperatorUsed));
+        }
+
+
+
+        void ILSLSyntaxErrorListener.CastOnCastExpression(LSLSourceCodeRange location, ILSLReadOnlyExprNode castedExpression)
+        {
+            _errorActionQueue.Enqueue(location.StartIndex,
+                () => SyntaxErrorListener.CastOnCastExpression(location, castedExpression));
         }
 
 
