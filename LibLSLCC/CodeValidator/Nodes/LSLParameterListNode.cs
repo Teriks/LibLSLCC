@@ -160,7 +160,8 @@ namespace LibLSLCC.CodeValidator
 
 
         /// <summary>
-        ///     The <see cref="LSLParameterNode" /> objects that are children of this node, or an empty list.
+        ///     A list of parameter definition nodes that this parameter list node contains, or an empty list. <para/>
+        ///     This will never be <c>null</c>.
         /// </summary>
         public IReadOnlyGenericArray<ILSLParameterNode> Parameters
         {
@@ -168,8 +169,8 @@ namespace LibLSLCC.CodeValidator
         }
 
         /// <summary>
-        ///     The source code range for each comma separator that appears in the parameter list in order, or an empty list
-        ///     object.
+        ///     The source code range for each comma separator that appears in the parameter list in order, or an empty list. <para/>
+        ///     This will never be <c>null</c>.
         /// </summary>
         public IReadOnlyGenericArray<LSLSourceCodeRange> SourceRangeCommaList
         {
