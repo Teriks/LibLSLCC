@@ -767,6 +767,11 @@ private static class UTILITIES
 
         private bool ShouldBoxAsKeyInListInitializer(ILSLReadOnlyExprNode expr, bool topLevel = true)
         {
+
+            //this would only be effective if OpenSims runtime was programmed around expecting LSL_Types.key
+            //types inside of LSL_Types.list;  unfortunately it is not in a few critical places.
+
+            /*
             if (topLevel && expr.Type != LSLType.Key) return false;
 
             if (expr.IsVariable()) return true;
@@ -778,7 +783,7 @@ private static class UTILITIES
 
 
             var asParenth = expr as ILSLParenthesizedExpressionNode;
-            if (asParenth != null && ShouldBoxAsKeyInListInitializer(asParenth.InnerExpression, false)) return true;
+            if (asParenth != null && ShouldBoxAsKeyInListInitializer(asParenth.InnerExpression, false)) return true;*/
 
             return false;
         }
