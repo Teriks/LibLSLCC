@@ -271,7 +271,7 @@ namespace LSLCCEditor.Settings
 
                 var clientCode = new CompilerConfigurationNode
                 {
-                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.CreateOpenSimClientSide()
                 };
 
                 clientCode.OpenSimCompilerSettings.ScriptHeader = ClientSideScriptCompilerHeader;
@@ -280,7 +280,7 @@ namespace LSLCCEditor.Settings
 
                 var clientCodeCoOp = new CompilerConfigurationNode
                 {
-                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimClientUploadable()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.CreateOpenSimClientSide()
                 };
 
                 clientCodeCoOp.OpenSimCompilerSettings.ScriptHeader = ClientSideScriptCompilerHeader;
@@ -292,7 +292,7 @@ namespace LSLCCEditor.Settings
 
                 var serverCode = new CompilerConfigurationNode
                 {
-                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.CreateOpenSimServerSide()
                 };
 
                 serverCode.OpenSimCompilerSettings.ScriptHeader = ServerSideScriptCompilerHeader;
@@ -301,7 +301,7 @@ namespace LSLCCEditor.Settings
 
                 var serverCodeCoOp = new CompilerConfigurationNode
                 {
-                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.OpenSimServerSideDefault()
+                    OpenSimCompilerSettings = LSLOpenSimCompilerSettings.CreateOpenSimServerSide()
                 };
 
                 serverCodeCoOp.OpenSimCompilerSettings.ScriptHeader = ServerSideScriptCompilerHeader;

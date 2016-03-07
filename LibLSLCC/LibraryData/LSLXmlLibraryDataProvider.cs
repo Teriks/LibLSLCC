@@ -174,7 +174,16 @@ namespace LibLSLCC.LibraryData
         [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         void IXmlSerializable.WriteXml(XmlWriter writer)
         {
-            LSLLibraryDataXmlSerializer.WriteXml(this, writer, false);
+            var saveDupCheckStatus = DuplicateCheckingDuringReads;
+            DuplicateCheckingDuringReads = false;
+            try
+            {
+                LSLLibraryDataXmlSerializer.WriteXml(this, writer, false);
+            }
+            finally
+            {
+                DuplicateCheckingDuringReads = saveDupCheckStatus;
+            }
         }
 
 
@@ -251,7 +260,16 @@ namespace LibLSLCC.LibraryData
         /// <param name="writeRootElement">Whether or not to write the root element for this object</param>
         public void WriteXml(XmlWriter writer, bool writeRootElement)
         {
-            LSLLibraryDataXmlSerializer.WriteXml(this, writer, writeRootElement);
+            var saveDupCheckStatus = DuplicateCheckingDuringReads;
+            DuplicateCheckingDuringReads = false;
+            try
+            {
+                LSLLibraryDataXmlSerializer.WriteXml(this, writer, writeRootElement);
+            }
+            finally
+            {
+                DuplicateCheckingDuringReads = saveDupCheckStatus;
+            }
         }
 
 

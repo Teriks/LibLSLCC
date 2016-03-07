@@ -64,18 +64,20 @@ namespace LibraryDataScrapingTools.LibraryDataScrapers
 
         public string DocumentFunction(LSLLibraryFunctionSignature function)
         {
-
-            return LLSDLibraryData.DocumentFunction(_data, function.Name);
+            var v = LLSDLibraryData.DocumentFunction(_data, function.Name);
+            return v;
         }
 
         public string DocumentEvent(LSLLibraryEventSignature eventHandler)
         {
-            return LLSDLibraryData.DocumentEvent(_data, eventHandler.Name);
+            var v = LLSDLibraryData.DocumentEvent(_data, eventHandler.Name);
+            return v;
         }
 
         public string DocumentConstant(LSLLibraryConstantSignature constant)
         {
-            return LLSDLibraryData.DocumentConstant(_data, constant.Name);
+            var v = LLSDLibraryData.DocumentConstant(_data, constant.Name);
+            return v;
         }
     }
 }

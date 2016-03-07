@@ -99,6 +99,7 @@ namespace LibLSLCC.LibraryData
         /// </summary>
         public LSLLibraryDataProvider()
         {
+            DuplicateCheckingDuringReads = true;
             LiveFiltering = true;
             ActiveSubsets = new LSLLibraryDataSubsetCollection();
 
@@ -114,6 +115,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering" /> mode.  Default value is true.</param>
         public LSLLibraryDataProvider(bool liveFiltering)
         {
+            DuplicateCheckingDuringReads = true;
             LiveFiltering = liveFiltering;
             ActiveSubsets = new LSLLibraryDataSubsetCollection();
 
@@ -129,6 +131,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="activeSubsets">The subsets to add to the <see cref="ActiveSubsets" /> collection upon construction.</param>
         public LSLLibraryDataProvider(IEnumerable<string> activeSubsets)
         {
+            DuplicateCheckingDuringReads = true;
             LiveFiltering = true;
             ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
 
@@ -144,6 +147,7 @@ namespace LibLSLCC.LibraryData
         /// <param name="liveFiltering">Whether or not to enable <see cref="LiveFiltering" /> mode.  Default value is true.</param>
         public LSLLibraryDataProvider(IEnumerable<string> activeSubsets, bool liveFiltering)
         {
+            DuplicateCheckingDuringReads = true;
             LiveFiltering = liveFiltering;
             ActiveSubsets = new LSLLibraryDataSubsetCollection(activeSubsets);
 
@@ -151,8 +155,7 @@ namespace LibLSLCC.LibraryData
         }
 
 
-        //The query functions and properties of this class will be optimized
-        //later after I get the correct live filtering behaviors down entirely
+        public bool DuplicateCheckingDuringReads { get; set; }
 
 
         /// <summary>
@@ -264,9 +267,9 @@ namespace LibLSLCC.LibraryData
 
                 foreach (var evnt in events)
                 {
-                    if (!eventNames.Contains(evnt.Name))
+                    if (!DuplicateCheckingDuringReads || !eventNames.Contains(evnt.Name))
                     {
-                        eventNames.Add(evnt.Name);
+                        if(DuplicateCheckingDuringReads) eventNames.Add(evnt.Name);
                         yield return evnt;
                     }
                     else
@@ -329,7 +332,8 @@ namespace LibLSLCC.LibraryData
                                 }
 
                                 //the reference check is to make sure its not shared across subsets.
-                                if (overload.DefinitionIsDuplicate(subsetFunction) &&
+                                if (DuplicateCheckingDuringReads && 
+                                    overload.DefinitionIsDuplicate(subsetFunction) &&
                                     !ReferenceEquals(subsetFunction, overload))
                                 {
                                     throw new LSLDuplicateSignatureException(
@@ -385,9 +389,9 @@ namespace LibLSLCC.LibraryData
 
                 foreach (var cons in constants)
                 {
-                    if (!eventNames.Contains(cons.Name))
+                    if (!DuplicateCheckingDuringReads || !eventNames.Contains(cons.Name))
                     {
-                        eventNames.Add(cons.Name);
+                        if(DuplicateCheckingDuringReads) eventNames.Add(cons.Name);
                         yield return cons;
                     }
                     else
@@ -982,7 +986,7 @@ namespace LibLSLCC.LibraryData
                 {
                     result = evnt;
                 }
-                else if (!ReferenceEquals(result, evnt))
+                else if (DuplicateCheckingDuringReads && !ReferenceEquals(result, evnt))
                 {
                     throw new LSLDuplicateSignatureException(
                         string.Format(
@@ -1013,11 +1017,11 @@ namespace LibLSLCC.LibraryData
                     var duplicate = results.FirstOrDefault(x => x.DefinitionIsDuplicate(overload1));
 
                     //if its a reference to the same object, then the function was added with multiple subsets, its not an error
-                    if (duplicate != null && !ReferenceEquals(overload, duplicate))
+                    if (DuplicateCheckingDuringReads && duplicate != null && !ReferenceEquals(overload, duplicate))
                     {
                         throw new LSLDuplicateSignatureException(
                             string.Format(
-                                "GetLibraryFunctionSignatures for {0} failed because the more than one active subset had a duplicate/ambiguous definition of it, " +
+                                "GetLibraryFunctionSignatures for {0} failed because the than one active subset had a duplicate/ambiguous definition of it, " +
                                 "and the function was not shared across the involved subsets.",
                                 name));
                     }
@@ -1049,7 +1053,7 @@ namespace LibLSLCC.LibraryData
                 {
                     result = constant;
                 }
-                else if (!ReferenceEquals(result, constant))
+                else if (DuplicateCheckingDuringReads && !ReferenceEquals(result, constant))
                 {
                     throw new LSLDuplicateSignatureException(
                         string.Format(

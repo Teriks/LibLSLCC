@@ -46,6 +46,7 @@
 #region Imports
 
 using System.Diagnostics.CodeAnalysis;
+using LibLSLCC.CodeValidator;
 using LibLSLCC.CSharp;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Settings;
@@ -60,12 +61,12 @@ namespace LibLSLCC.Compilers
     public class LSLOpenSimCompilerSettings : SettingsBaseClass<LSLOpenSimCompilerSettings>
         // ReSharper restore InconsistentNaming
     {
-        private CSharpFunctionCall _coOpTerminationFunctionCall = "opensim_reserved_CheckForCoopTermination()";
+        private CSharpFunctionCall _coOpTerminationFunctionCall = DefaultCoOpTerminationFunctionCall;
         private bool _generateClass;
-        private ClassAccessibilityLevel _generatedClassAccessibility;
+        private ClassAccessibilityLevel _generatedClassAccessibility = ClassAccessibilityLevel.Public;
         private CSharpClassDeclarationName _generatedClassName;
         private CSharpNamespace _generatedClassNamespace;
-        private MemberAccessibilityLevel _generatedConstructorAccessibility;
+        private MemberAccessibilityLevel _generatedConstructorAccessibility = MemberAccessibilityLevel.Public;
         private CSharpConstructorSignature _generatedConstructorSignature;
         private CSharpInheritanceList _generatedInheritanceList;
 
@@ -74,6 +75,9 @@ namespace LibLSLCC.Compilers
 
         private bool _insertCoOpTerminationCalls;
         private string _scriptHeader;
+        private bool _keysAreStrings = true;
+        private bool _keyConstantsThatExpandAreStrings = true;
+        private bool _keyElementsInListConstantsThatExpandAreStrings = true;
 
 
         /// <summary>
@@ -88,9 +92,16 @@ namespace LibLSLCC.Compilers
 
 
         /// <summary>
-        ///     The call signature to use for co-op termination calls when InsertCoOpTerminationCalls is set to true
-        ///     it defaults to "opensim_reserved_CheckForCoopTermination()"
-        ///     Note that you should not add a semi-colon to the end of the signature string.
+        /// Default is: "XEngineScript"
+        /// </summary>
+        public const string DefaultCoOpTerminationFunctionCall 
+            = "opensim_reserved_CheckForCoopTermination()";
+
+
+        /// <summary>
+        ///     The call signature to use for co-op termination calls when <see cref="InsertCoOpTerminationCalls"/> is set to <c>true</c>. <para/>
+        ///     Note that you should not add a semi-colon to the end of the signature string.  <para/>
+        ///     If set to <c>null</c>, <see cref="DefaultCoOpTerminationFunctionCall"/> is used.
         /// </summary>
         public CSharpFunctionCall CoOpTerminationFunctionCall
         {
@@ -110,7 +121,7 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     Whether or not to generate a class around the generated code, defaults to false.
+        ///     Whether or not to generate a class around the generated code, defaults to <c>false</c>.
         /// </summary>
         public bool GenerateClass
         {
@@ -129,7 +140,8 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The name of the namespace the class should reside in if GenerateClass is set to true.
+        ///     The name of the namespace the class should reside in if <see cref="GenerateClass "/> is set to <c>true</c>. <para/>
+        ///     Set to <c>null</c> if a the generated class should not be put in a namespace.
         /// </summary>
         public CSharpNamespace GeneratedClassNamespace
         {
@@ -137,8 +149,15 @@ namespace LibLSLCC.Compilers
             set { SetField(ref _generatedClassNamespace, value, "GeneratedClassNamespace"); }
         }
 
+
         /// <summary>
-        ///     The name of the class around the generated code if GeneratedClass is set to true.
+        /// Default is: "XEngineScript"
+        /// </summary>
+        public const string DefaultGeneratedClassName = "XEngineScript";
+
+        /// <summary>
+        ///     The name of the class around the generated code if <see cref="GenerateClass "/> is set to <c>true</c>. <para/>
+        ///     If set to <c>null</c>, <see cref="DefaultGeneratedClassName"/> will be used.
         /// </summary>
         public CSharpClassDeclarationName GeneratedClassName
         {
@@ -147,9 +166,8 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The name of the class the generated class should inherit from if GenerateClass is set to true, or null/empty if you
-        ///     don't want the
-        ///     generated class to derive from anything.
+        ///     The name of the class the generated class should inherit from if <see cref="GenerateClass "/> is set to <c>true</c>.
+        ///     Set to <c>null</c> or <see cref="string.Empty"/> if the generated class should not derive from anything.
         /// </summary>
         public CSharpInheritanceList GeneratedInheritanceList
         {
@@ -157,10 +175,18 @@ namespace LibLSLCC.Compilers
             set { SetField(ref _generatedInheritanceList, value, "GeneratedInheritanceList"); }
         }
 
+
+
         /// <summary>
-        ///     The constructor signature to be inserted into the generated class if GenerateClass is set to true, this string is
-        ///     copied verbatim.
-        ///     example: (int parameter) : base(parameter)
+        /// Default is: "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)"
+        /// </summary>
+        public const string DefaultGeneratedConstructorSignature =
+            "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)";
+
+        /// <summary>
+        ///     The constructor signature to be inserted into the generated class if <see cref="GenerateClass "/> is set to <c>true</c>. <para/>
+        ///     Example: "(int parameter) : base(parameter)"  <para/>
+        ///     If set to <c>null</c>, <see cref="DefaultGeneratedConstructorSignature"/> will be used.
         /// </summary>
         public CSharpConstructorSignature GeneratedConstructorSignature
         {
@@ -169,8 +195,8 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The accessibility level of the class if GenerateClass is set to true.
-        ///     defaults to <see cref="ClassAccessibilityLevel.Default" />.
+        ///     The accessibility level of the class if <see cref="GenerateClass "/> is set to <c>true</c>.
+        ///     Defaults to <see cref="ClassAccessibilityLevel.Default" />.
         /// </summary>
         public ClassAccessibilityLevel GeneratedClassAccessibility
         {
@@ -179,9 +205,8 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The accessibility of the constructor signature to be inserted into the generated class if GenerateClass is set to
-        ///     true.
-        ///     defaults to <see cref="MemberAccessibilityLevel.Public" />.
+        ///     The accessibility level of the constructor in the generated class if <see cref="GenerateClass "/> is set to <c>true</c>.
+        ///     Defaults to <see cref="MemberAccessibilityLevel.Public" />.
         /// </summary>
         public MemberAccessibilityLevel GeneratedConstructorAccessibility
         {
@@ -190,14 +215,55 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     String content to be placed at the very beginning of the generated script, use this to place comments.
-        ///     If its null or empty then the compiler ignores it.
+        ///     String content to be placed at the very beginning of the generated script, use this to place comments. <para/>
+        ///     If it's <c>null</c> or empty then the compiler ignores it.
         /// </summary>
         public string ScriptHeader
         {
             get { return _scriptHeader; }
             set { SetField(ref _scriptHeader, value, "ScriptHeader"); }
         }
+
+
+        /// <summary>
+        ///     If <c>true</c>; user defined variables, function/event parameters and function return types of type 'key' will be
+        ///     declared as the runtime 'string' type in generated code. <para/>
+        ///     
+        ///     'key' type expressions will still be boxed to the runtime key type when they are used in the condition area of a branch or loop statement. <para/>
+        ///     
+        ///     The default value is <c>true</c>.
+        /// </summary>
+        public bool KeysAreStrings
+        {
+            get { return _keysAreStrings; }
+            set { SetField(ref _keysAreStrings, value, "KeysAreStrings"); }
+        }
+
+        /// <summary>
+        ///     If <c>true</c>; library constants that are declared as <see cref="LSLType.Key"/> where <see cref="LSLLibraryConstantSignature.Expand"/> is <c>true</c>
+        ///     will expand into the runtime 'string' type instead of the 'key' type. <para/>
+        /// 
+        ///     The default value is <c>true</c>.
+        /// </summary>
+        public bool KeyConstantsThatExpandAreStrings
+        {
+            get { return _keyConstantsThatExpandAreStrings; }
+            set { SetField(ref _keyConstantsThatExpandAreStrings, value, "KeyConstantsThatExpandAreStrings"); }
+        }
+
+        /// <summary>
+        ///     If <c>true</c>; library constants with the type 'list' where <see cref="LSLLibraryConstantSignature.Expand"/> is <c>true</c> will have 'key' type elements
+        ///     expanded to the runtime 'string' type instead of the 'key' type.  <para/>
+        ///     
+        ///     The default value is <c>true</c>.
+        /// </summary>
+        public bool KeyElementsInListConstantsThatExpandAreStrings
+        {
+            get { return _keyElementsInListConstantsThatExpandAreStrings; }
+            set { SetField(ref _keyElementsInListConstantsThatExpandAreStrings, value, "KeyElementsInListConstantsThatExpandAreStrings"); }
+        }
+
+
 
 
         /// <summary>
@@ -209,15 +275,17 @@ namespace LibLSLCC.Compilers
         ///     namespace imports.
         /// </summary>
         /// <returns>The generated <see cref="LSLOpenSimCompilerSettings" /> settings object.</returns>
-        public static LSLOpenSimCompilerSettings OpenSimServerSideDefault()
+        public static LSLOpenSimCompilerSettings CreateOpenSimServerSide()
         {
             var compilerSettings = new LSLOpenSimCompilerSettings()
             {
                 GenerateClass = true,
                 GeneratedClassNamespace = "SecondLife",
-                GeneratedClassName = "XEngineScript",
+                GeneratedClassName = DefaultGeneratedClassName,
+                GeneratedClassAccessibility = ClassAccessibilityLevel.Public,
                 GeneratedInheritanceList = "OpenSim.Region.ScriptEngine.XEngine.ScriptBase.XEngineScriptBase",
-                GeneratedConstructorSignature = "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)"
+                GeneratedConstructorAccessibility = MemberAccessibilityLevel.Public,
+                GeneratedConstructorSignature = DefaultGeneratedConstructorSignature
             };
 
 
@@ -235,14 +303,16 @@ namespace LibLSLCC.Compilers
         ///     imports.
         /// </summary>
         /// <returns>The generated <see cref="LSLOpenSimCompilerSettings" /> settings object.</returns>
-        public static LSLOpenSimCompilerSettings LibLSLCCRuntimeDefault()
+        public static LSLOpenSimCompilerSettings CreateLibLSLCCRuntime()
         {
             var compilerSettings = new LSLOpenSimCompilerSettings()
             {
                 GenerateClass = true,
                 GeneratedClassNamespace = "SecondLife",
                 GeneratedClassName = "LSLScript",
+                GeneratedClassAccessibility = ClassAccessibilityLevel.Public,
                 GeneratedInheritanceList = "LSLScriptBase",
+                GeneratedConstructorAccessibility = MemberAccessibilityLevel.Public,
                 GeneratedConstructorSignature = "() : base()"
             };
 
@@ -260,7 +330,7 @@ namespace LibLSLCC.Compilers
         ///     enabled)
         /// </summary>
         /// <returns>The generated <see cref="LSLOpenSimCompilerSettings" /> settings object.</returns>
-        public static LSLOpenSimCompilerSettings OpenSimClientUploadable()
+        public static LSLOpenSimCompilerSettings CreateOpenSimClientSide()
         {
             var compilerSettings = new LSLOpenSimCompilerSettings();
             return compilerSettings;

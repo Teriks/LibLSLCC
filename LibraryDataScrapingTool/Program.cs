@@ -242,6 +242,7 @@ namespace LibraryDataScrapingTools
 
 
 
+
             SecondlifeWikiLibraryData wikiData = new SecondlifeWikiLibraryData(new[] { "lsl" });
 
 
@@ -300,14 +301,31 @@ namespace LibraryDataScrapingTools
                         func.SignatureString);
                 }
 
-
-                if (openSim.LSLFunctionExist(func.Name))
+                IReadOnlyGenericArray<LSLLibraryFunctionSignature> overloads;
+                if (openSim.OverloadsHashMap.TryGetValue(func.Name, out overloads))
                 {
-                    func.Subsets.AddSubsets("os-lsl");
+                    if (overloads.Any(x=>x.SignatureEquivalent(func)))
+                    {
+                        func.Subsets.Add("os-lsl");
+                    }
                 }
 
                 func.DocumentationString = docProvider.DocumentFunction(func);
                 provider.DefineFunction(func);
+            }
+
+
+            foreach (var con in openSim.LSLFunctions())
+            {
+                var x = provider.GetLibraryFunctionSignatures(con.Name);
+
+                if (x!=null && x.Any(y=>y.SignatureEquivalent(con))) continue;
+
+                con.DocumentationString = docProvider.DocumentFunction(con);
+
+
+                provider.DefineFunction(con);
+
             }
 
 
@@ -350,11 +368,13 @@ namespace LibraryDataScrapingTools
                     "The constant {0}; was found on the LSL Wiki that was not in the current set of constants, adding it.",
                     con.SignatureString);
 
-                if (openSim.LSLConstantExist(con.Name))
-                {
-                    con.Subsets.AddSubsets("os-lsl");
-                }
+                con.DocumentationString = docProvider.DocumentConstant(con);
+                provider.DefineConstant(con);
+            }
 
+
+            foreach (var con in openSim.LSLConstants())
+            {
                 con.DocumentationString = docProvider.DocumentConstant(con);
                 provider.DefineConstant(con);
             }
@@ -466,7 +486,7 @@ namespace LibraryDataScrapingTools
                 provider.DefineConstant(c);
             }
 
-
+            /*
             //this will work as long as open sim does not start creating function overloads
             //for standard linden functions..
             foreach (var c in openSim.LSLFunctions().ToList())
@@ -488,7 +508,7 @@ namespace LibraryDataScrapingTools
 
                 c.DocumentationString = docProvider.DocumentFunction(c);
                 provider.DefineFunction(c);
-            }
+            }*/
 
 
             MessageBox.Show("Select a place to save the generated LibLSLCC library data.",
@@ -540,7 +560,7 @@ namespace LibraryDataScrapingTools
             }
 
 
-
+            /*
 
             var generateConstantTestScript =
                 MessageBox.Show(
@@ -575,7 +595,7 @@ namespace LibraryDataScrapingTools
                 }
             }
 
-
+            */
 
 
 

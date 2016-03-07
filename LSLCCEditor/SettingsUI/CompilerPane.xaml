@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:LSLCCEditor.Utility.Converters;assembly=LSLCCEditor.Utility"
              xmlns:cSharp="clr-namespace:LibLSLCC.CSharp;assembly=LibLSLCC"
              xmlns:wpf="clr-namespace:LSLCCEditor.Utility.Wpf;assembly=LSLCCEditor.Utility"
+             xmlns:compilers="clr-namespace:LibLSLCC.Compilers;assembly=LibLSLCC"
              mc:Ignorable="d" Name="_this" MinWidth="500" Padding="5"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
@@ -38,6 +39,7 @@
                     <converters:IntegerGreaterThanToBoolConverter GreaterThan="1" x:Key="IntegerGreaterThanOne" />
                 </StackPanel.Resources>
                 <Button Click="New_OnClick">New</Button>
+                <Button Click="CopyConfiguration_OnClick">Copy</Button>
                 <Button Click="Rename_OnClick" IsEnabled="{Binding ElementName=_this, Path=CanEditCurrentConfiguration}">Rename</Button>
                 <Button Click="Save_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Save</Button>
                 <Button Click="Revert_OnClick" IsEnabled="{Binding ElementName=_this, Path=CurrentConfigIsEdited}">Revert</Button>
@@ -68,6 +70,13 @@
                     <Setter Property="Margin" Value="2" />
                 </Style>
                 <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource ExpanderStyle}" />
+                
+                <Style TargetType="ItemsControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
+                    <Setter Property="BorderBrush" Value="DarkGray" />
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="Padding" Value="0,5,10,5"/>
+                </Style>
             </StackPanel.Resources>
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
@@ -125,7 +134,7 @@
                              ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"
                              Width="Auto">
                         <wpf:TextboxHint.Hint>
-                            <TextBlock Padding="2,6,0,0">opensim_reserved_CheckForCoopTermination()</TextBlock>
+                            <TextBlock Padding="2,6,0,0" Text="{Binding Source={x:Static compilers:LSLOpenSimCompilerSettings.DefaultCoOpTerminationFunctionCall}}"/>
                         </wpf:TextboxHint.Hint>
                     </TextBox>
                 </Grid>
@@ -182,7 +191,7 @@
                                  Text="{Binding Path=GeneratedClassName, TargetNullValue ='', ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                                  Width="Auto">
                             <wpf:TextboxHint.Hint>
-                                <TextBlock Padding="2,6,0,0">LSLScript</TextBlock>
+                                <TextBlock Padding="2,6,0,0" Text="{Binding Source={x:Static compilers:LSLOpenSimCompilerSettings.DefaultGeneratedClassName}}"/>
                             </wpf:TextboxHint.Hint>
                         </TextBox>
                     </Grid>
@@ -214,7 +223,7 @@
                              Text="{Binding ElementName=_this, Path=GeneratedConstructorSignature, TargetNullValue ='', ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
                              Width="Auto">
                         <wpf:TextboxHint.Hint>
-                            <TextBlock Padding="2,6,0,0">()</TextBlock>
+                            <TextBlock Padding="2,6,0,0" Text="{Binding Source={x:Static compilers:LSLOpenSimCompilerSettings.DefaultGeneratedConstructorSignature}}"/>
                         </wpf:TextboxHint.Hint>
                     </TextBox>
 
@@ -281,9 +290,34 @@
             </Expander>
 
             <Expander Header="Script Header">
-                <TextBox Height="300" DataContext="{Binding ElementName=_this}"
+                <TextBox Height="300" DataContext="{Binding ElementName=_this}" AcceptsReturn="True" AcceptsTab="True"
                          IsReadOnly="{Binding ElementName=_this, Path=CanEditCurrentConfiguration, Converter={StaticResource InverseBooleanConverter}}"
                          Text="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.ScriptHeader, UpdateSourceTrigger=PropertyChanged}" />
+            </Expander>
+            
+            <Expander Header="Code Gen / Misc">
+                <ItemsControl>
+                    <CheckBox FlowDirection="RightToLeft"
+                    IsEnabled="{Binding ElementName=_this, Path=CanEditCurrentConfiguration}"
+                    DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
+                    IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.KeysAreStrings, UpdateSourceTrigger=PropertyChanged}">
+                        Keys Are Strings
+                    </CheckBox>
+                
+                    <CheckBox FlowDirection="RightToLeft"
+                    IsEnabled="{Binding ElementName=_this, Path=CanEditCurrentConfiguration}"
+                    DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
+                    IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.KeyConstantsThatExpandAreStrings, UpdateSourceTrigger=PropertyChanged}">
+                        Key Constants That Expand Are Strings
+                    </CheckBox>
+
+                    <CheckBox FlowDirection="RightToLeft"
+                    IsEnabled="{Binding ElementName=_this, Path=CanEditCurrentConfiguration}"
+                    DataContext="{Binding ElementName=_this, Path=CurrentCompilerConfiguration}"
+                    IsChecked="{Binding ElementName=_this, Path=CurrentCompilerConfiguration.OpenSimCompilerSettings.KeyElementsInListConstantsThatExpandAreStrings, UpdateSourceTrigger=PropertyChanged}">
+                        Key Elements In List Constants That Expand Are Strings
+                    </CheckBox>
+                </ItemsControl>
             </Expander>
         </StackPanel>
     </Grid>

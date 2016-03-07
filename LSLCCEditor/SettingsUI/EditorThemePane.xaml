@@ -31,6 +31,7 @@
                     </Style>
                 </StackPanel.Resources>
                 <Button Click="NewConfiguration_OnClick">New</Button>
+                <Button Click="CopyConfiguration_OnClick">Copy</Button>
                 <Button Click="RenameConfiguration_OnClick">Rename</Button>
                 <Button Click="DeleteConfiguration_OnClick"
                         IsEnabled="{Binding ElementName=_this, Path=EditorThemeNames.Count, 
@@ -55,7 +56,7 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource ExpanderStyle}" />
 
-                <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker">
+                <Style x:Key="ColorPickers" TargetType="xctk:ColorPicker" >
                     <Setter Property="Width" Value="150" />
                     <Setter Property="UsingAlphaChannel" Value="False" />
                     <Setter Property="ShowStandardColors" Value="False" />
@@ -70,7 +71,7 @@
                     <Setter Property="Padding" Value="5,0,5,0" />
                     <Setter Property="Content" Value="Default" />
                 </Style>
-                <Style TargetType="ItemsControl">
+                <Style TargetType="ItemsControl" >
                     <Setter Property="BorderBrush" Value="DarkGray" />
                     <Setter Property="Background" Value="White" />
                     <Setter Property="BorderThickness" Value="1" />

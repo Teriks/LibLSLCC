@@ -27,6 +27,7 @@
                     <converters:IntegerGreaterThanToBoolConverter GreaterThan="1" x:Key="IntegerGreaterThanOne" />
                 </StackPanel.Resources>
                 <Button Click="New_OnClick">New</Button>
+                <Button Click="Copy_OnClick">Copy</Button>
                 <Button Click="Rename_OnClick">Rename</Button>
                 <Button Click="Delete_OnClick"
                         IsEnabled="{Binding Path=FormatterConfigurationNames.Count, 

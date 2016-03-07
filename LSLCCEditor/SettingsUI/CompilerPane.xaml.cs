@@ -665,5 +665,28 @@ namespace LSLCCEditor.SettingsUI
                     x.Serialize(writer, CurrentCompilerConfiguration);
                 });
         }
+
+
+        private void CopyConfiguration_OnClick(object sender, RoutedEventArgs e)
+        {
+            var name = new UniqueNamerWindow(AppSettings.Settings.CompilerConfigurations.Keys, "My Configuration")
+            {
+                Owner = OwnerSettingsWindow
+            };
+            name.ShowDialog();
+
+            if (name.Canceled) return;
+
+
+            AppSettings.Settings.AddCompilerConfiguration(name.ChosenName);
+
+            CompilerConfigurationNames.Add(name.ChosenName);
+
+            var newTheme = AppSettings.Settings.CompilerConfigurations[name.ChosenName];
+
+            newTheme.MemberwiseAssign(AppSettings.Settings.CompilerConfigurations[SelectedCompilerConfigurationName].Clone());
+
+            CompilerConfigurationCombobox.SelectedIndex = CompilerConfigurationNames.Count - 1;
+        }
     }
 }

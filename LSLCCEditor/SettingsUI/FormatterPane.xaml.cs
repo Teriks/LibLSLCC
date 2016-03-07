@@ -200,5 +200,28 @@ namespace LSLCCEditor.SettingsUI
                 x.Serialize(writer,CurrentFormatterSettings);
             });
         }
+
+
+        private void Copy_OnClick(object sender, RoutedEventArgs e)
+        {
+            var name = new UniqueNamerWindow(AppSettings.Settings.FormatterConfigurations.Keys, "My Configuration")
+            {
+                Owner = OwnerSettingsWindow
+            };
+            name.ShowDialog();
+
+            if (name.Canceled) return;
+
+
+            AppSettings.Settings.AddFormatterConfiguration(name.ChosenName);
+
+            FormatterConfigurationNames.Add(name.ChosenName);
+
+            var newTheme = AppSettings.Settings.FormatterConfigurations[name.ChosenName];
+
+            newTheme.MemberwiseAssign(AppSettings.Settings.FormatterConfigurations[SelectedFormatterConfigurationName].Clone());
+
+            FormatterConfigurationNameCombobox.SelectedIndex = FormatterConfigurationNames.Count - 1;
+        }
     }
 }

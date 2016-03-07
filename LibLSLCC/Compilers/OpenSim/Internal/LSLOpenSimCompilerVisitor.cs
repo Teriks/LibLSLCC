@@ -64,7 +64,8 @@ namespace LibLSLCC.Compilers
     internal sealed class LSLOpenSimCompilerVisitor : LSLValidatorNodeVisitor<bool>
         // ReSharper restore InconsistentNaming
     {
-        private const string UtilityLibrary =
+
+        const string UtilityLibrary =
             @"
 //============================
 //== Compiler Utility Class ==
@@ -73,12 +74,12 @@ private static class UTILITIES
 {
     public static void ForceStatement<T>(T val) {}
 
-    public static bool ToBool(LSL_Types.LSLString str)
+    public static bool ToBool({LSLType.String} str)
     {
         return str.Length != 0;
     }
 
-    public static LSL_Types.Quaternion Negate(LSL_Types.Quaternion rot)
+    public static {LSLType.Rotation} Negate({LSLType.Rotation} rot)
     {
         rot.x=(-rot.x);
         rot.y=(-rot.y);
@@ -86,7 +87,7 @@ private static class UTILITIES
         rot.s=(-rot.s);
         return rot;
     }
-    public static LSL_Types.Vector3 Negate(LSL_Types.Vector3 vec)
+    public static {LSLType.Vector} Negate({LSLType.Vector} vec)
     {
         vec.x=(-vec.x);
         vec.y=(-vec.y);
@@ -95,6 +96,7 @@ private static class UTILITIES
     }
 }
 ";
+
 
         /// <summary>
         ///     Name of the class that will contain global variables
@@ -139,8 +141,6 @@ private static class UTILITIES
         /// </summary>
         private const string FunctionNamePrefix = "FN_";
 
-        private static readonly CSharpClassDeclarationName FallbackClassName = "LSLScript";
-
         /// <summary>
         ///     Keeps track of what binary operations have been used in the script, stubs are dynamically generated for them
         ///     at the end of the class.
@@ -183,6 +183,10 @@ private static class UTILITIES
         public TextWriter Writer { get; private set; }
 
 
+        private bool _writingGlobalVariableContainerClassConstructor;
+
+
+
         private static string GenBinaryOperationStubName(LSLBinaryOperationSignature binOp)
         {
             return "_o" + ((int) binOp.Left) + "" + ((int) binOp.Operation) + "" + ((int) binOp.Right);
@@ -192,7 +196,7 @@ private static class UTILITIES
         private string GetCoOpTerminationCallString()
         {
             return Settings.CoOpTerminationFunctionCall == null
-                ? "opensim_reserved_CheckForCoopTermination()"
+                ? LSLOpenSimCompilerSettings.DefaultCoOpTerminationFunctionCall
                 : Settings.CoOpTerminationFunctionCall.FullSignature;
         }
 
@@ -282,38 +286,16 @@ private static class UTILITIES
 
         public override bool VisitBinaryExpression(ILSLBinaryExpressionNode node)
         {
-            var parenths = !(node.Parent is ILSLExpressionStatementNode || node.Parent is ILSLExpressionListNode);
-
             if (node.Operation == LSLBinaryOperationType.LogicalAnd)
             {
-                Writer.Write("(");
-                Writer.Write("(bool)(");
-                Visit(node.RightExpression);
-                Writer.Write("))");
-
-                Writer.Write("&");
-
-                Writer.Write("(");
-                Writer.Write("(bool)(");
-                Visit(node.LeftExpression);
-                Writer.Write("))");
+                VisitLogicalAnd(node);
 
                 return false;
             }
 
             if (node.Operation == LSLBinaryOperationType.LogicalOr)
             {
-                Writer.Write("(");
-                Writer.Write("(bool)(");
-                Visit(node.RightExpression);
-                Writer.Write("))");
-
-                Writer.Write("|");
-
-                Writer.Write("(");
-                Writer.Write("(bool)(");
-                Visit(node.LeftExpression);
-                Writer.Write("))");
+                VisitLogicalOr(node);
 
                 return false;
             }
@@ -322,23 +304,7 @@ private static class UTILITIES
             {
                 if (node.LeftExpression.Type == LSLType.Integer && node.RightExpression.Type == LSLType.Float)
                 {
-                    if (parenths)
-                    {
-                        Writer.Write("(");
-                    }
-
-                    Visit(node.LeftExpression);
-                    Writer.Write("=new LSL_Types.LSLInteger(System.Math.Round((double)");
-                    Visit(node.LeftExpression);
-                    Writer.Write(") * ");
-                    Visit(node.RightExpression);
-                    Writer.Write(")");
-
-                    if (parenths)
-                    {
-                        Writer.Write(")");
-                    }
-
+                    VisitMultipyAssignIntegerAndFloat(node);
                     return false;
                 }
             }
@@ -346,45 +312,26 @@ private static class UTILITIES
 
             if (node.OperationString == "=")
             {
-                Visit(node.LeftExpression);
-                Writer.Write(node.OperationString);
-                Visit(node.RightExpression);
-
+                VisitPlainAssignmentExpression(node);
                 return false;
             }
-
-            LSLBinaryOperationSignature operationSignature;
 
             if (node.OperationString.EqualsOneOf("*=", "+=", "/=", "%=", "-="))
             {
-                string operation = node.OperationString.Substring(0, 1);
-
-                operationSignature = new LSLBinaryOperationSignature(operation, node.Type,
-                    node.LeftExpression.Type,
-                    node.RightExpression.Type);
-
-                if (!_binOpsUsed.Contains(operationSignature))
-                {
-                    _binOpsUsed.Add(operationSignature);
-                }
-
-                Visit(node.LeftExpression);
-
-                Writer.Write("=");
-
-                Writer.Write(GenBinaryOperationStubName(operationSignature));
-                Writer.Write("(");
-                Visit(node.RightExpression);
-                Writer.Write(",");
-                Visit(node.LeftExpression);
-                Writer.Write(")");
-
-
+                VisitOtherModifyingAssignmentExpression(node);
                 return false;
             }
 
 
-            operationSignature = new LSLBinaryOperationSignature(node.OperationString, node.Type,
+            VisitOtherBinaryExpression(node);
+
+            return false;
+        }
+
+
+        private void VisitOtherBinaryExpression(ILSLBinaryExpressionNode node)
+        {
+            var operationSignature = new LSLBinaryOperationSignature(node.OperationString, node.Type,
                 node.LeftExpression.Type,
                 node.RightExpression.Type);
 
@@ -401,10 +348,111 @@ private static class UTILITIES
             Writer.Write(",");
             Visit(node.LeftExpression);
             Writer.Write(")");
-
-
-            return false;
         }
+
+
+        private void VisitLogicalAnd(ILSLBinaryExpressionNode node)
+        {
+            Writer.Write("((bool)(");
+            Visit(node.RightExpression);
+            Writer.Write("))");
+
+            Writer.Write(" & ");
+
+            Writer.Write("((bool)(");
+            Visit(node.LeftExpression);
+            Writer.Write("))");
+        }
+
+
+        private void VisitLogicalOr(ILSLBinaryExpressionNode node)
+        {
+            Writer.Write("((bool)(");
+            Visit(node.RightExpression);
+            Writer.Write("))");
+
+            Writer.Write(" | ");
+
+            Writer.Write("((bool)(");
+            Visit(node.LeftExpression);
+            Writer.Write("))");
+        }
+
+
+        private void VisitMultipyAssignIntegerAndFloat(ILSLBinaryExpressionNode node)
+        {
+            Visit(node.LeftExpression);
+            Writer.Write(" = new " + LSLType_To_CSharpType(LSLType.Integer) + "(System.Math.Round((double)");
+            Visit(node.LeftExpression);
+            Writer.Write(") * ");
+            Visit(node.RightExpression);
+            Writer.Write(")");
+        }
+
+
+        private void VisitPlainAssignmentExpression(ILSLBinaryExpressionNode node)
+        {
+            Visit(node.LeftExpression);
+
+            Writer.Write(" " + node.OperationString + " ");
+
+            if (Settings.KeysAreStrings)
+            {
+                Visit(node.RightExpression);
+            }
+            else
+            {
+                if (node.LeftExpression.Type == LSLType.Key &&
+                    node.RightExpression.Type == LSLType.String)
+                {
+                    var rightExpressionAsStringLiteral = node.RightExpression as ILSLStringLiteralNode;
+
+                    if (rightExpressionAsStringLiteral != null)
+                    {
+                        Writer.Write(rightExpressionAsStringLiteral.PreProcessedText);
+                    }
+                    else
+                    {
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key) + "(");
+                        Visit(node.RightExpression);
+                        Writer.Write(")");
+                    }
+                }
+                else
+                {
+                    Visit(node.RightExpression);
+                }
+            }
+        }
+
+
+
+        private void VisitOtherModifyingAssignmentExpression(ILSLBinaryExpressionNode node)
+        {
+            string operation = node.OperationString.Substring(0, 1);
+
+            var operationSignature = new LSLBinaryOperationSignature(operation, node.Type,
+                node.LeftExpression.Type,
+                node.RightExpression.Type);
+
+            if (!_binOpsUsed.Contains(operationSignature))
+            {
+                _binOpsUsed.Add(operationSignature);
+            }
+
+            Visit(node.LeftExpression);
+
+            Writer.Write(" = ");
+
+            Writer.Write(GenBinaryOperationStubName(operationSignature));
+            Writer.Write("(");
+            Visit(node.RightExpression);
+            Writer.Write(",");
+            Visit(node.LeftExpression);
+            Writer.Write(")");
+        }
+
+
 
 
         public override bool VisitPostfixOperation(ILSLPostfixOperationNode node)
@@ -539,17 +587,35 @@ private static class UTILITIES
 
             //the compiler uses strings for keys unless testing a boolean
             //when a key is used for a boolean condition LSL_Types.key is constructed around the expression
-            if ((node.CastToType == LSLType.String || node.CastToType == LSLType.Key) &&
-                (node.CastedExpression.Type == LSLType.String || node.CastedExpression.Type == LSLType.Key))
+            if (Settings.KeysAreStrings && (node.CastToType == LSLType.String || node.CastToType == LSLType.Key) &&
+                                           (node.CastedExpression.Type == LSLType.String || node.CastedExpression.Type == LSLType.Key))
             {
                 Visit(node.CastedExpression);
                 return false;
             }
 
-            Writer.Write("(" + LSLAtomType_To_CSharpType(node.CastToType) + ")");
-            Writer.Write("(");
-            Visit(node.CastedExpression);
-            Writer.Write(")");
+            if (node.CastToType == LSLType.Key && node.CastedExpression.Type == LSLType.String)
+            {
+                var asStringLiteral = node.CastedExpression as ILSLStringLiteralNode;
+                if (asStringLiteral != null)
+                {
+                    Writer.Write("(new" + LSLType_To_CSharpType(node.CastToType) + "(" +
+                                 asStringLiteral.PreProcessedText + "))");
+                }
+                else
+                {
+                    Writer.Write("(new " + LSLType_To_CSharpType(LSLType.Key) + "(");
+                    Visit(node.CastedExpression);
+                    Writer.Write("))");
+                }
+            }
+            else
+            {
+                Writer.Write("(" + LSLType_To_CSharpType(node.CastToType) + ")");
+                Writer.Write("(");
+                Visit(node.CastedExpression);
+                Writer.Write(")");
+            }
 
             return false;
         }
@@ -590,6 +656,8 @@ private static class UTILITIES
                 {LSLType.Vector, "modInvokeV"},
                 {LSLType.Rotation, "modInvokeR"}
             };
+
+
 
 
         public override bool VisitLibraryFunctionCall(ILSLFunctionCallNode node)
@@ -645,12 +713,22 @@ private static class UTILITIES
             }
             else
             {
-                //reference them in the globals field, it has an instance of the globals
-                //class since we did not generate a script constructor.
-                //
-                //the user specified not to generate a class so variable initialization cannot
-                //happen in the constructor, since they may not have provided a class name.
-                Writer.Write("this." + GlobalContainerFieldName + "." + GlobalContainerFieldsNamePrefix + node.Name);
+                if (_writingGlobalVariableContainerClassConstructor)
+                {
+                    //creating the global variable container class constructor,
+                    //reference the variables as if they are in the local class.
+                    Writer.Write("this." + GlobalContainerFieldsNamePrefix + node.Name);
+                }
+                else
+                {
+
+                    //reference them in the globals field, it has an instance of the globals
+                    //class since we did not generate a script constructor.
+                    //
+                    //the user specified not to generate a class so variable initialization cannot
+                    //happen in the constructor, since they may not have provided a class name.
+                    Writer.Write("this." + GlobalContainerFieldName + "." + GlobalContainerFieldsNamePrefix + node.Name);
+                }
             }
             return false;
         }
@@ -675,35 +753,33 @@ private static class UTILITIES
         }
 
 
-        private static string GenerateExpandedListConstant(string constantValueString)
+        private string GenerateExpandedListConstant(string constantValueString)
         {
-            return "new LSL_Types.list(" +
+            return "new "+LSLType_To_CSharpType(LSLType.List)+"(" +
                    string.Join(", ", LSLListParser.ParseList("[" + constantValueString + "]").Select(e =>
                    {
                        switch (e.Type)
                        {
                            case LSLType.String:
-                               return ("new LSL_Types.LSLString(\"" +
-                                       LSLFormatTools.ShowControlCodeEscapes(e.ValueString) + "\")");
+                               return ("new " + LSLType_To_CSharpType(LSLType.String) + "(\"" +LSLFormatTools.ShowControlCodeEscapes(e.ValueString) + "\")");
 
                            case LSLType.Key:
-                               return ("new LSL_Types.key(\"" + LSLFormatTools.ShowControlCodeEscapes(e.ValueString) +
-                                       "\")");
+                               return ("new " + LSLType_To_CSharpType(LSLType.Key, Settings.KeyElementsInListConstantsThatExpandAreStrings) + "(\"" + LSLFormatTools.ShowControlCodeEscapes(e.ValueString) + "\")");
 
                            case LSLType.Vector:
-                               return ("new LSL_Types.Vector3(" + e.ValueString + ")");
+                               return ("new " + LSLType_To_CSharpType(LSLType.Vector) + "(" + e.ValueString + ")");
 
                            case LSLType.Rotation:
-                               return ("new LSL_Types.Quaternion(" + e.ValueString + ")");
+                               return ("new " + LSLType_To_CSharpType(LSLType.Rotation) + "(" + e.ValueString + ")");
 
                            case LSLType.Integer:
-                               return ("new LSL_Types.LSLInteger(" + e.ValueString + ")");
+                               return ("new " + LSLType_To_CSharpType(LSLType.Integer) + "(" + e.ValueString + ")");
 
                            case LSLType.Float:
-                               return ("new LSL_Types.LSLFloat(" + e.ValueString + ")");
+                               return ("new " + LSLType_To_CSharpType(LSLType.Float) + "(" + e.ValueString + ")");
 
                            case LSLType.List:
-                               return ("new LSL_Types.list(" + e.ValueString + ")");
+                               return ("new " + LSLType_To_CSharpType(LSLType.List) + "(" + e.ValueString + ")");
                            default:
                                throw new InvalidOperationException(
                                    typeof (LSLOpenSimCompilerVisitor).Name +
@@ -721,22 +797,22 @@ private static class UTILITIES
                 switch (x.Type)
                 {
                     case LSLType.String:
-                        Writer.Write("new LSL_Types.LSLString(" + x.ValueStringAsCodeLiteral + ")");
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.String) + "(" + x.ValueStringAsCodeLiteral + ")");
                         break;
                     case LSLType.Key:
-                        Writer.Write("new LSL_Types.key(" + x.ValueStringAsCodeLiteral + ")");
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key, Settings.KeyConstantsThatExpandAreStrings) + "(" + x.ValueStringAsCodeLiteral + ")");
                         break;
                     case LSLType.Vector:
-                        Writer.Write("new LSL_Types.Vector3(" + x.ValueString + ")");
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.Vector) + "(" + x.ValueString + ")");
                         break;
                     case LSLType.Rotation:
-                        Writer.Write("new LSL_Types.Quaternion(" + x.ValueString + ")");
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.Rotation) + "(" + x.ValueString + ")");
                         break;
                     case LSLType.Integer:
-                        Writer.Write("new LSL_Types.LSLInteger(" + x.ValueString + ")");
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.Integer) + "(" + x.ValueString + ")");
                         break;
                     case LSLType.Float:
-                        Writer.Write("new LSL_Types.LSLFloat(" + x.ValueString + ")");
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.Float) + "(" + x.ValueString + ")");
                         break;
                     case LSLType.List:
                         Writer.Write(GenerateExpandedListConstant(x.ValueString));
@@ -797,15 +873,20 @@ private static class UTILITIES
 
             var castKeys = node.ListType == LSLExpressionListType.ListInitializer;
 
+            var omitExpressionsWithoutEffects = node.ListType == LSLExpressionListType.ForLoopInitExpressions ||
+                                                node.ListType == LSLExpressionListType.ForLoopAfterthoughts;
+
             var i = 0;
 
             for (; i < node.Expressions.Count - 1; i++)
             {
                 var expression = node.Expressions[i];
 
+                if(omitExpressionsWithoutEffects && !expression.HasPossibleSideEffects) continue;
+
                 if (castKeys && ShouldBoxAsKeyInListInitializer(expression))
                 {
-                    Writer.Write("new LSL_Types.key(");
+                    Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key) + "(");
                     Visit(expression);
                     Writer.Write(")");
                 }
@@ -819,9 +900,11 @@ private static class UTILITIES
 
             var lastExpression = node.Expressions[i];
 
+            if (omitExpressionsWithoutEffects && !lastExpression.HasPossibleSideEffects) return false;
+
             if (castKeys && ShouldBoxAsKeyInListInitializer(lastExpression))
             {
-                Writer.Write("new LSL_Types.key(");
+                Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key) + "(");
                 Visit(lastExpression);
                 Writer.Write(")");
             }
@@ -918,7 +1001,7 @@ private static class UTILITIES
 
             if (box)
             {
-                Writer.Write("new LSL_Types.LSLFloat(");
+                Writer.Write("new " + LSLType_To_CSharpType(LSLType.Float) + "(");
             }
 
             var floatText = node.RawText;
@@ -999,7 +1082,7 @@ private static class UTILITIES
 
             if (box)
             {
-                Writer.Write("new LSL_Types.LSLInteger(");
+                Writer.Write("new " + LSLType_To_CSharpType(LSLType.Integer) + "(");
             }
 
             
@@ -1038,7 +1121,7 @@ private static class UTILITIES
             //so it needs to be boxed.
             if (!parentIsNonLogicBinaryOperation)
             {
-                Writer.Write("new LSL_Types.LSLInteger(");
+                Writer.Write("new " + LSLType_To_CSharpType(LSLType.Integer) + "(");
             }
 
             Writer.Write(node.IsOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
@@ -1056,13 +1139,13 @@ private static class UTILITIES
         {
             if (node.ExpressionList.Expressions.Count > 0)
             {
-                Writer.Write("(new LSL_Types.list(");
+                Writer.Write("(new " + LSLType_To_CSharpType(LSLType.List) + "(");
                 Visit(node.ExpressionList);
                 Writer.Write("))");
             }
             else
             {
-                Writer.Write("(new LSL_Types.list())");
+                Writer.Write("(new " + LSLType_To_CSharpType(LSLType.List) + "())");
             }
 
             return false;
@@ -1071,7 +1154,7 @@ private static class UTILITIES
 
         public override bool VisitRotationLiteral(ILSLRotationLiteralNode node)
         {
-            Writer.Write("(new LSL_Types.Quaternion(");
+            Writer.Write("(new " + LSLType_To_CSharpType(LSLType.Rotation) + "(");
             Visit(node.XExpression);
             Writer.Write(", ");
             Visit(node.YExpression);
@@ -1104,6 +1187,10 @@ private static class UTILITIES
                                                       LSLBinaryOperationType.LogicalOr));
 
 
+
+            bool parentIsVariableDeclaration = node.Parent is ILSLVariableDeclarationNode;
+
+
             ILSLFunctionCallNode parentFunctionCallNode = null;
             if (parentExpressionList != null)
             {
@@ -1128,12 +1215,12 @@ private static class UTILITIES
             //the string literal becomes the argument of a stub function
 
             //Except if the parent is a logical operator, in which case a stub is not used.
-            var box = !(parentIsFunctionCall || parentIsNonLogicBinaryOperation) || inModInvokeTopLevel;
+            var box = !(parentIsFunctionCall || parentIsNonLogicBinaryOperation || parentIsVariableDeclaration) || inModInvokeTopLevel;
 
 
             if (box)
             {
-                Writer.Write("new LSL_Types.LSLString(");
+                Writer.Write("new " + LSLType_To_CSharpType(LSLType.String) + "(");
             }
 
             Writer.Write(node.PreProcessedText);
@@ -1149,7 +1236,7 @@ private static class UTILITIES
 
         public override bool VisitVectorLiteral(ILSLVectorLiteralNode node)
         {
-            Writer.Write("(new LSL_Types.Vector3(");
+            Writer.Write("(new " + LSLType_To_CSharpType(LSLType.Vector) + "(");
             Visit(node.XExpression);
             Writer.Write(", ");
             Visit(node.YExpression);
@@ -1164,9 +1251,9 @@ private static class UTILITIES
 
         #region Utilitys
 
-        private static string LSLType_To_CSharpDefaultInitializer(string name)
+        private static string LSLTypeName_To_CSharpDefaultInitializer(string typeName)
         {
-            var type = LSLTypeTools.FromLSLTypeName(name);
+            var type = LSLTypeTools.FromLSLTypeName(typeName);
 
             if (type == LSLType.String || type == LSLType.Key)
             {
@@ -1182,18 +1269,24 @@ private static class UTILITIES
             }
             if (type == LSLType.Rotation)
             {
-                return "new " + LSLAtomType_To_CSharpType(type) + "(0,0,0,1)";
+                return "new " + LSLType_To_CSharpType(type) + "(0,0,0,1)";
             }
             if (type == LSLType.Vector)
             {
-                return "new " + LSLAtomType_To_CSharpType(type) + "(0,0,0)";
+                return "new " + LSLType_To_CSharpType(type) + "(0,0,0)";
             }
 
-            return "new " + LSLAtomType_To_CSharpType(type) + "()";
+            return "new " + LSLType_To_CSharpType(type) + "()";
         }
 
 
-        private static string LSLAtomType_To_CSharpType(LSLType type)
+        private static string LSLType_To_CSharpType(LSLType type)
+        {
+            return LSLType_To_CSharpType(type, false);
+        }
+
+
+        private static string LSLType_To_CSharpType(LSLType type, bool keyAsString)
         {
             switch (type)
             {
@@ -1204,7 +1297,7 @@ private static class UTILITIES
                 case LSLType.List:
                     return "LSL_Types.list";
                 case LSLType.Key:
-                    return "LSL_Types.LSLString";
+                    return keyAsString ? "LSL_Types.LSLString" : "LSL_Types.key";
                 case LSLType.Integer:
                     return "LSL_Types.LSLInteger";
                 case LSLType.String:
@@ -1236,7 +1329,7 @@ private static class UTILITIES
             foreach (var gvar in referencedGlobalVariables)
             {
                 Writer.WriteLine(GenIndent() + "public " +
-                                 LSLAtomType_To_CSharpType(gvar.Type) +
+                                 LSLType_To_CSharpType(gvar.Type, Settings.KeysAreStrings) +
                                  " " + GlobalFieldsNamePrefix + gvar.Name + ";");
             }
 
@@ -1248,16 +1341,16 @@ private static class UTILITIES
 
             //use the fall-back class name if the settings did not specify one
             var className = Settings.GeneratedClassName == null
-                ? FallbackClassName.BaseName
+                ? new CSharpClassDeclarationName(LSLOpenSimCompilerSettings.DefaultGeneratedClassName).BaseName
                 : Settings.GeneratedClassName.BaseName;
 
+
             var constructorSig = Settings.GeneratedConstructorSignature == null
-                ? "()"
+                ? LSLOpenSimCompilerSettings.DefaultGeneratedConstructorSignature
                 : Settings.GeneratedConstructorSignature.FullSignature;
 
 
-            Writer.WriteLine(GenIndent() + Settings.GeneratedConstructorAccessibility.ToCSharpKeyword(true) + className +
-                             constructorSig);
+            Writer.WriteLine(GenIndent() + Settings.GeneratedConstructorAccessibility.ToCSharpKeyword(true) + className + constructorSig);
             Writer.WriteLine(GenIndent() + "{");
 
             _indentLevel++;
@@ -1270,16 +1363,8 @@ private static class UTILITIES
             {
                 Writer.Write(GenIndent() + GlobalFieldsNamePrefix + gvar.Name + " = ");
 
-                if (gvar.HasDeclarationExpression)
-                {
-                    Visit(gvar.DeclarationExpression);
-                    Writer.WriteLine(";");
-                }
-                else
-                {
-                    Writer.Write(LSLType_To_CSharpDefaultInitializer(gvar.TypeName));
-                    Writer.WriteLine(";");
-                }
+                VisitVariableDeclarationExpression(gvar);
+                Writer.WriteLine(";");
             }
 
 
@@ -1326,7 +1411,7 @@ private static class UTILITIES
             foreach (var gvar in referencedGlobalVariables)
             {
                 Writer.WriteLine(GenIndent() + "public " +
-                                 LSLAtomType_To_CSharpType(gvar.Type) +
+                                 LSLType_To_CSharpType(gvar.Type, Settings.KeysAreStrings) +
                                  " " + GlobalContainerFieldsNamePrefix + gvar.Name + ";");
             }
 
@@ -1335,6 +1420,7 @@ private static class UTILITIES
 
             _indentLevel++;
 
+            _writingGlobalVariableContainerClassConstructor = true;
 
             //initialize them in the constructor, as LSL allows its globals to reference each other
             //and CSharp does not allow class members to reference each other when being initialized
@@ -1342,17 +1428,12 @@ private static class UTILITIES
             foreach (var gvar in referencedGlobalVariables)
             {
                 Writer.Write(GenIndent() + "this." + GlobalContainerFieldsNamePrefix + gvar.Name + " = ");
-                if (gvar.HasDeclarationExpression)
-                {
-                    Visit(gvar.DeclarationExpression);
-                    Writer.WriteLine(";");
-                }
-                else
-                {
-                    Writer.Write(LSLType_To_CSharpDefaultInitializer(gvar.TypeName));
-                    Writer.WriteLine(";");
-                }
+
+                VisitVariableDeclarationExpression(gvar);
+                Writer.WriteLine(";");
             }
+
+            _writingGlobalVariableContainerClassConstructor = false;
 
             _indentLevel--;
 
@@ -1370,6 +1451,49 @@ private static class UTILITIES
         }
 
 
+        /// <summary>
+        /// This stub is used for both local variable declaration expressions and global variable.
+        /// declaration expressions.
+        /// </summary>
+        /// <param name="declaration">The declaration.</param>
+        private void VisitVariableDeclarationExpression(ILSLVariableDeclarationNode declaration)
+        {
+            if (!declaration.HasDeclarationExpression)
+            {
+                Writer.Write(LSLTypeName_To_CSharpDefaultInitializer(declaration.TypeName));
+                return;
+            }
+
+            if (Settings.KeysAreStrings)
+            {
+                Visit(declaration.DeclarationExpression);
+            }
+            else
+            {
+                if (declaration.Type == LSLType.Key &&
+                    declaration.DeclarationExpression.Type == LSLType.String)
+                {
+                    var declarationExpressionAsLiteral = declaration.DeclarationExpression as ILSLStringLiteralNode;
+
+                    if (declarationExpressionAsLiteral != null)
+                    {
+                        Writer.Write(declarationExpressionAsLiteral.PreProcessedText);
+                    }
+                    else
+                    {
+                        Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key) + "(");
+                        Visit(declaration.DeclarationExpression);
+                        Writer.Write(")");
+                    }
+                }
+                else
+                {
+                    Visit(declaration.DeclarationExpression);
+                }
+            }
+        }
+
+
         private string GenIndent(int extra = 0)
         {
             var result = "";
@@ -1383,9 +1507,9 @@ private static class UTILITIES
 
         private void WriteBooleanConditionContent(LSLType expressionType, ILSLReadOnlyExprNode conditionExpression)
         {
-            if (expressionType == LSLType.Key)
+            if (Settings.KeysAreStrings && expressionType == LSLType.Key)
             {
-                Writer.Write("new LSL_Types.key(");
+                Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key) + "(");
 
                 var isTypeCast = conditionExpression as ILSLTypecastExprNode;
                 if (isTypeCast != null)
@@ -1428,7 +1552,19 @@ private static class UTILITIES
         /// </summary>
         private void WriteUtilityLibrary()
         {
-            WriteMultiLineIndentedString(UtilityLibrary);
+            var typeReplacer = new Regex(@"\{\s*?LSLType\.([A-z]+?)\s*?\}");
+
+            WriteMultiLineIndentedString(
+                typeReplacer.Replace(UtilityLibrary, match =>
+            {
+                var type = match.Groups[1].ToString();
+                LSLType parsed;
+                if (Enum.TryParse(type, out parsed))
+                {
+                    return LSLType_To_CSharpType(parsed);
+                }
+                throw new LSLCompilerInternalException(string.Format("Unexpected LSLType template \"{0}\" while replacing type templates in compiler utility library.", type));
+            }));
         }
 
 
@@ -1575,11 +1711,11 @@ private static class UTILITIES
                 var variableName = "Var" + node.ParentScopeId + "_" + deadVariableDeclarationNode.Name;
 
                 Writer.Write(GenIndent());
-                Writer.Write(LSLAtomType_To_CSharpType(deadVariableDeclarationNode.Type));
+                Writer.Write(LSLType_To_CSharpType(deadVariableDeclarationNode.Type, Settings.KeysAreStrings));
                 Writer.Write(" ");
                 Writer.Write(variableName);
                 Writer.Write(" = ");
-                Writer.Write(LSLType_To_CSharpDefaultInitializer(deadVariableDeclarationNode.TypeName));
+                Writer.Write(LSLTypeName_To_CSharpDefaultInitializer(deadVariableDeclarationNode.TypeName));
                 Writer.WriteLine(";");
             }
 
@@ -1624,11 +1760,21 @@ private static class UTILITIES
 
             foreach (var binOp in _binOpsUsed)
             {
+                //it's safe to convert any key parameter types to strings here.
+                //key arguments will implicitly convert into string parameters.
+                //the only binary operations allowed on keys are equality, which returns an integer.
+
+                //OpenSim does not support binary operations between its runtime key type and string type.
+                //so all keys must be implicitly converted to strings here for now.
+
+                //the return type generation behavior for expressions that return key depends on Settings.KeysAreStrings.
+                //no binary operation returns a key currently, but if one does in the future than the stub will behave as expected; per settings.
+
                 Writer.WriteLine(GenIndent() + "private " +
-                                 LSLAtomType_To_CSharpType(binOp.Returns) + " " + GenBinaryOperationStubName(binOp) +
+                                 LSLType_To_CSharpType(binOp.Returns, Settings.KeysAreStrings) + " " + GenBinaryOperationStubName(binOp) +
                                  "(" +
-                                 LSLAtomType_To_CSharpType(binOp.Right) + " right, " +
-                                 LSLAtomType_To_CSharpType(binOp.Left) + " left)");
+                                 LSLType_To_CSharpType(binOp.Right, true) + " right, " +
+                                 LSLType_To_CSharpType(binOp.Left, true) + " left)");
 
                 Writer.WriteLine(GenIndent() + "{");
                 _indentLevel++;
@@ -1685,7 +1831,7 @@ private static class UTILITIES
                 }
 
                 var className = Settings.GeneratedClassName == null
-                    ? FallbackClassName.FullSignature
+                    ? LSLOpenSimCompilerSettings.DefaultGeneratedClassName
                     : Settings.GeneratedClassName.FullSignature;
 
                 var classAccessibilityString =
@@ -1852,7 +1998,7 @@ private static class UTILITIES
 
             if (node.ReturnType != LSLType.Void)
             {
-                Writer.Write(LSLAtomType_To_CSharpType(node.ReturnType) + " ");
+                Writer.Write(LSLType_To_CSharpType(node.ReturnType, Settings.KeysAreStrings) + " ");
             }
             else
             {
@@ -1921,7 +2067,7 @@ private static class UTILITIES
 
         public override bool VisitParameterDefinition(ILSLParameterNode node)
         {
-            Writer.Write(LSLAtomType_To_CSharpType(node.Type) + " " + LocalParameterNamePrefix + node.Name);
+            Writer.Write(LSLType_To_CSharpType(node.Type, Settings.KeysAreStrings) + " " + LocalParameterNamePrefix + node.Name);
             return false;
         }
 
@@ -2095,33 +2241,16 @@ private static class UTILITIES
             if (node.IsDeadCode || SafeToPruneLocalVariableDeclaration(node)) return false;
 
 
-            Writer.Write(GenIndent());
-
-
             var variableName = LocalVariableNamePrefix + node.ParentScopeId + "_" + node.Name;
 
+            Writer.Write(GenIndent() + LSLType_To_CSharpType(node.Type, Settings.KeysAreStrings) + " " + variableName + " = ");
 
-            if (!node.HasDeclarationExpression)
-            {
-                Writer.Write(LSLAtomType_To_CSharpType(node.Type));
-                Writer.Write(" ");
-                Writer.Write(variableName);
-                Writer.Write(" = ");
-                Writer.Write(LSLType_To_CSharpDefaultInitializer(node.TypeName));
-                Writer.WriteLine(";");
-            }
-            else
-            {
-                Writer.Write(LSLAtomType_To_CSharpType(node.Type));
-                Writer.Write(" ");
-                Writer.Write(variableName);
-                Writer.Write(" = ");
-                Visit(node.DeclarationExpression);
-                Writer.WriteLine(";");
-            }
+            VisitVariableDeclarationExpression(node);
+            Writer.WriteLine(";");
 
             return false;
         }
+
 
         #endregion
 

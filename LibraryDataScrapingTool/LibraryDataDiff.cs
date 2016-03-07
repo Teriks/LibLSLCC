@@ -69,8 +69,8 @@ namespace LibraryDataScrapingTools
             NotInRight.AddSubsetDescriptions(lslLibrarySubsetDescriptions);
         }
 
-        public ILSLLibraryDataProvider Left { get; set; }
-        public ILSLLibraryDataProvider Right { get; set; }
+        public LSLLibraryDataProvider Left { get; set; }
+        public LSLLibraryDataProvider Right { get; set; }
         public LSLXmlLibraryDataProvider NotInLeft { get; private set; }
         public LSLXmlLibraryDataProvider NotInRight { get; private set; }
 
@@ -218,9 +218,24 @@ namespace LibraryDataScrapingTools
             Log.WriteLine("Starting Library Data DIFF");
             Log.WriteLine("============================");
 
-            DiffConstants();
-            DiffFunctions();
-            DiffEvents();
+
+            var saveLeftDupCheckStatus = Left.DuplicateCheckingDuringReads;
+            var saveRightDupCheckStatus = Right.DuplicateCheckingDuringReads;
+            try
+            {
+
+                Left.DuplicateCheckingDuringReads = false;
+                Right.DuplicateCheckingDuringReads = false;
+
+                DiffConstants();
+                DiffFunctions();
+                DiffEvents();
+            }
+            finally
+            {
+                Left.DuplicateCheckingDuringReads = saveLeftDupCheckStatus;
+                Right.DuplicateCheckingDuringReads = saveRightDupCheckStatus;
+            }
 
             Log.WriteLine("============================");
             Log.WriteLine("Library Data DIFF Finished");

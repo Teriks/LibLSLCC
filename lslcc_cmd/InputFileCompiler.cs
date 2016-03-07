@@ -376,7 +376,7 @@ namespace lslcc
             if (!ClientCode)
             {
                 compilerSettings =
-                    LSLOpenSimCompilerSettings.OpenSimServerSideDefault();
+                    LSLOpenSimCompilerSettings.CreateOpenSimServerSide();
 
                 compilerSettings.ScriptHeader = ServerSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = CoOpStop;
@@ -384,7 +384,7 @@ namespace lslcc
             else
             {
                 compilerSettings =
-                    LSLOpenSimCompilerSettings.OpenSimClientUploadable();
+                    LSLOpenSimCompilerSettings.CreateOpenSimClientSide();
 
                 compilerSettings.ScriptHeader = ClientSideScriptCompilerHeader;
                 compilerSettings.InsertCoOpTerminationCalls = CoOpStop;

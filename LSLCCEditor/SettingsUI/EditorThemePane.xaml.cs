@@ -622,5 +622,28 @@ namespace LSLCCEditor.SettingsUI
                     EditorControlTheme.SelectionForegroundColor = settings.SelectionForegroundColor;
                 });
         }
+
+
+        private void CopyConfiguration_OnClick(object sender, RoutedEventArgs e)
+        {
+            var name = new UniqueNamerWindow(AppSettings.Settings.EditorControlThemes.Keys, "My Theme")
+            {
+                Owner = OwnerSettingsWindow
+            };
+            name.ShowDialog();
+
+            if (name.Canceled) return;
+
+
+            AppSettings.Settings.AddEditorControlTheme(name.ChosenName);
+
+            EditorThemeNames.Add(name.ChosenName);
+
+            var newTheme = AppSettings.Settings.EditorControlThemes[name.ChosenName];
+
+            newTheme.MemberwiseAssign(AppSettings.Settings.EditorControlThemes[SelectedEditorThemeName].Clone());
+
+            EditorThemeCombobox.SelectedIndex = EditorThemeNames.Count - 1;
+        }
     }
 }
