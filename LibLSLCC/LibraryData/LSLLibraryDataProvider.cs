@@ -154,7 +154,11 @@ namespace LibLSLCC.LibraryData
             ActiveSubsets.OnSubsetsChanged += ActiveSubsetsOnSubsetsChanged;
         }
 
-
+        /// <summary>
+        /// Whether or not to throw <see cref="LSLDuplicateSignatureException"/> when <see cref="LiveFiltering"/> is enabled
+        /// and a duplicate signature is detected among the <see cref="ActiveSubsets"/> when querying signatures from this provider. <para/>
+        /// This is <c>true</c> by default.
+        /// </summary>
         public bool DuplicateCheckingDuringReads { get; set; }
 
 
@@ -245,7 +249,7 @@ namespace LibLSLCC.LibraryData
         /// <summary>
         ///     Returns all supported event handler signatures belonging to the current <see cref="ActiveSubsets" />.
         ///     <exception cref="LSLDuplicateSignatureException">
-        ///         If the current ActiveSubsets caused an event with a duplicate name to be loaded.
+        ///         If the current <see cref="ActiveSubsets" /> caused an event with a duplicate name to be loaded.
         ///         And that event was not shared across subsets.  This can only really happen when <see cref="LiveFiltering" /> is
         ///         enabled.
         ///     </exception>
@@ -260,16 +264,24 @@ namespace LibLSLCC.LibraryData
                     return _eventSignaturesBySubsetAndName.TryGetValue(x, out subsetContent)
                         ? subsetContent.Values
                         : new GenericArray<LSLLibraryEventSignature>();
-                })
-                    .Distinct(new LambdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
+                }).Distinct(new LambdaEqualityComparer<LSLLibraryEventSignature>(ReferenceEquals));
+
+                if (!DuplicateCheckingDuringReads)
+                {
+                    foreach (var evnt in events)
+                    {
+                        yield return evnt;
+                    }
+                    yield break;
+                }
 
                 var eventNames = new HashSet<string>();
 
                 foreach (var evnt in events)
                 {
-                    if (!DuplicateCheckingDuringReads || !eventNames.Contains(evnt.Name))
+                    if (!eventNames.Contains(evnt.Name))
                     {
-                        if(DuplicateCheckingDuringReads) eventNames.Add(evnt.Name);
+                        eventNames.Add(evnt.Name);
                         yield return evnt;
                     }
                     else
@@ -332,7 +344,7 @@ namespace LibLSLCC.LibraryData
                                 }
 
                                 //the reference check is to make sure its not shared across subsets.
-                                if (DuplicateCheckingDuringReads && 
+                                if (DuplicateCheckingDuringReads &&
                                     overload.DefinitionIsDuplicate(subsetFunction) &&
                                     !ReferenceEquals(subsetFunction, overload))
                                 {
@@ -355,7 +367,7 @@ namespace LibLSLCC.LibraryData
                         {
                             //add the first overload to the groupings
                             functionGroups.Add(subsetFunction.Name,
-                                new GenericArray<LSLLibraryFunctionSignature> {subsetFunction});
+                                new GenericArray<LSLLibraryFunctionSignature> { subsetFunction });
                         }
                     }
                 }
@@ -385,13 +397,22 @@ namespace LibLSLCC.LibraryData
                 }).Distinct(new LambdaEqualityComparer<LSLLibraryConstantSignature>(ReferenceEquals));
 
 
+                if (!DuplicateCheckingDuringReads)
+                {
+                    foreach (var constant in constants)
+                    {
+                        yield return constant;
+                    }
+                    yield break;
+                }
+
                 var eventNames = new HashSet<string>();
 
                 foreach (var cons in constants)
                 {
-                    if (!DuplicateCheckingDuringReads || !eventNames.Contains(cons.Name))
+                    if (!eventNames.Contains(cons.Name))
                     {
-                        if(DuplicateCheckingDuringReads) eventNames.Add(cons.Name);
+                        eventNames.Add(cons.Name);
                         yield return cons;
                     }
                     else
@@ -942,7 +963,7 @@ namespace LibLSLCC.LibraryData
                 else
                 {
                     _functionSignaturesBySubsetAndName[subset][signature.Name] =
-                        new GenericArray<LSLLibraryFunctionSignature> {signature};
+                        new GenericArray<LSLLibraryFunctionSignature> { signature };
                 }
             }
         }

@@ -364,6 +364,16 @@ namespace LibraryDataScrapingTools
                     continue;
                 }
 
+                if (openSim.LSLConstantExist(con.Name))
+                {
+                    var consant = openSim.LSLConstant(con.Name);
+
+                    if (consant.Type == con.Type && consant.ValueString == con.ValueString)
+                    {
+                        con.Subsets.Add("os-lsl");
+                    }
+                }
+
                 Log.WriteLineWithHeader("[NOTICE, LSL WIKI CONSTANT ADDED]:",
                     "The constant {0}; was found on the LSL Wiki that was not in the current set of constants, adding it.",
                     con.SignatureString);
@@ -375,6 +385,16 @@ namespace LibraryDataScrapingTools
 
             foreach (var con in openSim.LSLConstants())
             {
+                var consant = provider.GetLibraryConstantSignature(con.Name);
+                if (consant != null)
+                {
+                    if (consant.Type == con.Type && consant.ValueString == con.ValueString)
+                    {
+                       continue;
+                    }
+                }
+
+
                 con.DocumentationString = docProvider.DocumentConstant(con);
                 provider.DefineConstant(con);
             }
