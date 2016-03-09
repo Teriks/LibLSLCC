@@ -394,6 +394,9 @@ namespace LSLCCEditor
 
             var subsetName = item.Tag.ToString();
 
+            _libraryDataProvider.ActiveSubsets.Remove(subsetName);
+            tab.ActiveLibraryDataSubsetsCache.Remove(subsetName);
+
 
             var osLslMenuItem =
                 TabLibraryDataMenu.Items.Cast<MenuItem>()
@@ -412,10 +415,6 @@ namespace LSLCCEditor
                 lslMenuItem.IsChecked = true;
             }
 
-
-            _libraryDataProvider.ActiveSubsets.Remove(subsetName);
-            tab.ActiveLibraryDataSubsetsCache.Remove(subsetName);
-
             if (!_uncheckingLibraryDataTabItemProgrammatically)
             {
                 tab.Content.Editor.UpdateHighlightingFromDataProvider();
@@ -430,7 +429,7 @@ namespace LSLCCEditor
             var item = sender as MenuItem;
 
             var tab = (EditorTab) TabControl.SelectedItem;
-
+            
 
             if (item == null) return;
 
