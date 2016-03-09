@@ -47,7 +47,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.Collections;
 
-namespace LibraryDataScrapingTools
+namespace LibraryDataScrapingTool
 {
     public static class Log
     {

@@ -96,8 +96,11 @@ namespace LSLCCEditor.FindReplaceUI
         {
             if (CurrentEditor == null)
                 return null;
-            if (CurrentEditor is IEditor)
-                return CurrentEditor as IEditor;
+
+            var editor = CurrentEditor as IEditor;
+            if (editor != null)
+                return editor;
+
             if (InterfaceConverter == null)
                 return null;
 

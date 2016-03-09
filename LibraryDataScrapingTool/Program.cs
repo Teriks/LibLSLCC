@@ -52,15 +52,15 @@ using System.Xml;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
-using LibraryDataScrapingTools.LibraryDataScrapers;
-using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
-using LibraryDataScrapingTools.OpenSimLibraryReflection;
-using LibraryDataScrapingTools.ScraperInterfaces;
-using LibraryDataScrapingTools.ScraperProxys;
+using LibraryDataScrapingTool.LibraryDataScrapers;
+using LibraryDataScrapingTool.LibraryDataScrapers.FirestormLibraryDataDom;
+using LibraryDataScrapingTool.OpenSimLibraryReflection;
+using LibraryDataScrapingTool.ScraperInterfaces;
+using LibraryDataScrapingTool.ScraperProxys;
 
 #endregion
 
-namespace LibraryDataScrapingTools
+namespace LibraryDataScrapingTool
 {
     internal class Program
     {
@@ -131,7 +131,7 @@ namespace LibraryDataScrapingTools
 
                 dialog.ShowDialog();
 
-                var xmlReaderSettings = new XmlReaderSettings() {CloseInput = true};
+                var xmlReaderSettings = new XmlReaderSettings {CloseInput = true};
                 foreach (var filename in dialog.FileNames)
                 {
                     using (var reader = XmlReader.Create(File.OpenRead(filename), xmlReaderSettings))
@@ -538,7 +538,7 @@ namespace LibraryDataScrapingTools
 
 
 
-            var libraryDataWritterSettings = new XmlWriterSettings()
+            var libraryDataWritterSettings = new XmlWriterSettings
             {
                 Indent = true,
                 Encoding = Encoding.Unicode,
@@ -666,7 +666,7 @@ namespace LibraryDataScrapingTools
 
 
             using (var file = XmlReader.Create(selectRightDialog.OpenFile(), 
-                new XmlReaderSettings() {CloseInput = true}))
+                new XmlReaderSettings {CloseInput = true}))
             {
                 rightDiffLibraryDataProvider.FillFromXml(file);
             }

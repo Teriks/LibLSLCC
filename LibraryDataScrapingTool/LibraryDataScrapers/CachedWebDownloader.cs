@@ -49,7 +49,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 
-namespace LibraryDataScrapingTools.LibraryDataScrapers
+namespace LibraryDataScrapingTool.LibraryDataScrapers
 {
     public class CachedWebDownloader
     {

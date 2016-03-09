@@ -162,13 +162,13 @@ namespace LibLSLCC.AutoComplete
                 }
                 else
                 {
-                    return word == "" ? null : word;
+                    return string.IsNullOrEmpty(word) ? null : word;
                 }
 
                 behindOffset--;
             }
 
-            return word == "" ? null : word;
+            return string.IsNullOrEmpty(word) ? null : word;
         }
 
 

@@ -48,7 +48,7 @@ using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibraryDataScrapingTools
+namespace LibraryDataScrapingTool
 {
     public class LibraryDataDiff
     {

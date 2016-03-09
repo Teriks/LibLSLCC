@@ -87,7 +87,7 @@ namespace LibLSLCC.CodeValidator
 
             if (value > 2147483648)
             {
-                throw new ArgumentOutOfRangeException("value may not be greater than 2147483648", "value");
+                throw new ArgumentOutOfRangeException("value", "value may not be greater than 2147483648");
             }
         }
 

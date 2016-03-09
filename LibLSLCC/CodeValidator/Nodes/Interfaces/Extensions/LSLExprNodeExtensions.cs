@@ -61,6 +61,7 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The <see cref="ILSLReadOnlyExprNode"/> to test.</param>
         /// <returns><c>true</c> if <see cref="ILSLReadOnlySyntaxTreeNode.Parent"/> is an <see cref="ILSLPrefixOperationNode"/> where <see cref="ILSLPrefixOperationNode.Operation"/> equals <see cref="LSLPrefixOperationType.Negate"/>.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static bool IsNegated(this ILSLReadOnlyExprNode node)
         {
             var parentAsPrefixOperator = node.Parent as ILSLPrefixOperationNode;

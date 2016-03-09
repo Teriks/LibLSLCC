@@ -45,11 +45,11 @@
 using System.Collections.Generic;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
-using LibraryDataScrapingTools.ScraperInterfaces;
+using LibraryDataScrapingTool.ScraperInterfaces;
 
 #endregion
 
-namespace LibraryDataScrapingTools.ScraperProxys
+namespace LibraryDataScrapingTool.ScraperProxys
 {
     public class LibraryDataSet : ILibraryData
     {

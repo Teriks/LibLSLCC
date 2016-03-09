@@ -194,12 +194,12 @@ namespace LSLCCEditor
 
         private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+            e.CanExecute = ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip;
         }
 
         private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+            e.CanExecute = ResizeMode != ResizeMode.NoResize;
         }
 
         private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)

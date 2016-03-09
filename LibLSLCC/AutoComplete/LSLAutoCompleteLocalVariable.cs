@@ -56,12 +56,12 @@ namespace LibLSLCC.AutoComplete
     /// </summary>
     public sealed class LSLAutoCompleteLocalVariable
     {
-        internal LSLAutoCompleteLocalVariable(string name, string TypeName, LSLSourceCodeRange range,
+        internal LSLAutoCompleteLocalVariable(string name, string typeName, LSLSourceCodeRange range,
             LSLSourceCodeRange sourceRangeType,
             LSLSourceCodeRange sourceRangeName, LSLAutoCompleteScopeAddress address)
         {
             Name = name;
-            this.TypeName = TypeName;
+            TypeName = typeName;
             SourceRange = range;
             ScopeAddress = address;
             SourceRangeName = sourceRangeName;

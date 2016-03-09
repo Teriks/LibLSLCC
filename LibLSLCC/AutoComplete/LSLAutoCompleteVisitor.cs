@@ -1949,7 +1949,7 @@ namespace LibLSLCC.AutoComplete
             if (singleStatement)
             {
 
-                var p = context.Parent as ParserRuleContext;
+                var p = (ParserRuleContext) context.Parent;
                 if (LessThanOrEqParseOffset(context.Stop.StopIndex) && context.Stop.Text == ";")
                 {
                     InControlStatementSourceRange = false;

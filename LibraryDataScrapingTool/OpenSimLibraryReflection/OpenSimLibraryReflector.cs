@@ -52,7 +52,7 @@ using LibLSLCC.Collections;
 
 #endregion
 
-namespace LibraryDataScrapingTools.OpenSimLibraryReflection
+namespace LibraryDataScrapingTool.OpenSimLibraryReflection
 {
     public interface IReflectedLibraryData
     {

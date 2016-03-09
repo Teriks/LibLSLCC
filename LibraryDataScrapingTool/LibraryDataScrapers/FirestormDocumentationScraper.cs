@@ -46,12 +46,12 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.LibraryData;
-using LibraryDataScrapingTools.LibraryDataScrapers.FirestormLibraryDataDom;
-using LibraryDataScrapingTools.ScraperInterfaces;
+using LibraryDataScrapingTool.LibraryDataScrapers.FirestormLibraryDataDom;
+using LibraryDataScrapingTool.ScraperInterfaces;
 
 #endregion
 
-namespace LibraryDataScrapingTools.LibraryDataScrapers
+namespace LibraryDataScrapingTool.LibraryDataScrapers
 {
     public class FirestormDocumentationScraper : IDocumentationProvider
     {

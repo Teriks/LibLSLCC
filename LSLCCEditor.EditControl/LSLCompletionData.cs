@@ -98,30 +98,29 @@ namespace LSLCCEditor.EditControl
 
         private class MatchString
         {
-            public string value;
-            public int indx;
+            public readonly string Value;
+            public int Indx;
 
             public MatchString(string value)
             {
-                this.value = value;
-                indx = value.Length - 1;
+                Value = value;
+                Indx = value.Length - 1;
             }
 
             public override int GetHashCode()
             {
-                return value.GetHashCode();
+                return Value.GetHashCode();
             }
 
             public override bool Equals(object obj)
             {
                 var o = obj as MatchString;
-                if (o == null) return false;
-                return value.Equals(o.value);
+                return o != null && Value.Equals(o.Value);
             }
 
             public char c()
             {
-                return value[indx];
+                return Value[Indx];
             }
         }
         private static bool MatchOneOfBackwards(HashSet<string> strings, string input, int inputOffset)
@@ -139,16 +138,16 @@ namespace LSLCCEditor.EditControl
 
                     if (a == b)
                     {
-                        v.indx--;
+                        v.Indx--;
 
-                        if (v.indx <= 0)
+                        if (v.Indx <= 0)
                         {
                             return true;
                         }
                     }
                     else
                     {
-                        matches.Remove(v.value);
+                        matches.Remove(v.Value);
                     }
                     
                 }

@@ -841,37 +841,10 @@ private static class UTILITIES
 
 
 
-        private bool ShouldBoxAsKeyInListInitializer(ILSLReadOnlyExprNode expr, bool topLevel = true)
-        {
-
-            //this would only be effective if OpenSims runtime was programmed around expecting LSL_Types.key
-            //types inside of LSL_Types.list;  unfortunately it is not in a few critical places.
-
-            /*
-            if (topLevel && expr.Type != LSLType.Key) return false;
-
-            if (expr.IsVariable()) return true;
-
-            var asTypecast = expr as ILSLTypecastExprNode;
-            if (asTypecast != null &&
-                (asTypecast.CastToType == LSLType.Key ||
-                 ShouldBoxAsKeyInListInitializer(asTypecast.CastedExpression, false))) return true;
-
-
-            var asParenth = expr as ILSLParenthesizedExpressionNode;
-            if (asParenth != null && ShouldBoxAsKeyInListInitializer(asParenth.InnerExpression, false)) return true;*/
-
-            return false;
-        }
-
-
-
 
         public override bool VisitExpressionList(ILSLExpressionListNode node)
         {
             if (node.Expressions.Count == 0) return false;
-
-            var castKeys = node.ListType == LSLExpressionListType.ListInitializer;
 
             var omitExpressionsWithoutEffects = node.ListType == LSLExpressionListType.ForLoopInitExpressions ||
                                                 node.ListType == LSLExpressionListType.ForLoopAfterthoughts;
@@ -884,16 +857,8 @@ private static class UTILITIES
 
                 if(omitExpressionsWithoutEffects && !expression.HasPossibleSideEffects) continue;
 
-                if (castKeys && ShouldBoxAsKeyInListInitializer(expression))
-                {
-                    Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key) + "(");
-                    Visit(expression);
-                    Writer.Write(")");
-                }
-                else
-                {
-                    Visit(expression);
-                }
+                
+                Visit(expression);
 
                 Writer.Write(",");
             }
@@ -902,16 +867,8 @@ private static class UTILITIES
 
             if (omitExpressionsWithoutEffects && !lastExpression.HasPossibleSideEffects) return false;
 
-            if (castKeys && ShouldBoxAsKeyInListInitializer(lastExpression))
-            {
-                Writer.Write("new " + LSLType_To_CSharpType(LSLType.Key) + "(");
-                Visit(lastExpression);
-                Writer.Write(")");
-            }
-            else
-            {
-                Visit(lastExpression);
-            }
+
+            Visit(lastExpression);
 
             return false;
         }

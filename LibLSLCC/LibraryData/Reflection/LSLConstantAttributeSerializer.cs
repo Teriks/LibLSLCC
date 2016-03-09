@@ -405,7 +405,7 @@ namespace LibLSLCC.LibraryData.Reflection
                 result.RetrievedValueString = convertedValueString;
             }
 
-            if (!LSLLibraryConstantSignature.ValidateValueString(result.Type, result.RetrievedValueString))
+            if (!LSLConstantSignature.ValidateValueString(result.Type, result.RetrievedValueString))
             {
                 throw new LSLLibraryDataAttributeException(
                     string.Format(

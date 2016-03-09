@@ -52,13 +52,13 @@ using System.Reflection;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
-using LibraryDataScrapingTools.OpenSimLibraryReflection;
-using LibraryDataScrapingTools.ScraperInterfaces;
-using LibraryDataScrapingTools.ScraperProxys;
+using LibraryDataScrapingTool.OpenSimLibraryReflection;
+using LibraryDataScrapingTool.ScraperInterfaces;
+using LibraryDataScrapingTool.ScraperProxys;
 
 #endregion
 
-namespace LibraryDataScrapingTools.LibraryDataScrapers
+namespace LibraryDataScrapingTool.LibraryDataScrapers
 {
     public class OpenSimDirectLibraryData : ILibraryData
     {

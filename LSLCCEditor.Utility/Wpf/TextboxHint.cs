@@ -144,9 +144,10 @@ namespace LSLCCEditor.Utility.Wpf
 
         private static bool ShouldShowHint(Control c)
         {
-            if (c is TextBox)
+            var box = c as TextBox;
+            if (box != null)
             {
-                return ((TextBox) c).Text == string.Empty;
+                return box.Text == string.Empty;
             }
             return false;
         }

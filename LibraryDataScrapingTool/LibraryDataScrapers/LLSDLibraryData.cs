@@ -49,10 +49,10 @@ using System.Text.RegularExpressions;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
-using LibraryDataScrapingTools.ScraperInterfaces;
+using LibraryDataScrapingTool.ScraperInterfaces;
 using OpenMetaverse.StructuredData;
 
-namespace LibraryDataScrapingTools.LibraryDataScrapers
+namespace LibraryDataScrapingTool.LibraryDataScrapers
 {
     public class LLSDLibraryData : ILibraryData
     {

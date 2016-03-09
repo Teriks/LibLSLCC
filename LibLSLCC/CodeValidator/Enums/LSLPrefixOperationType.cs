@@ -59,17 +59,17 @@ namespace LibLSLCC.CodeValidator
         /// <summary>
         ///     Prefix increment.
         /// </summary>
-        Increment = 6,
+        Increment = 5,
 
         /// <summary>
         ///     Prefix decrement.
         /// </summary>
-        Decrement = 5,
+        Decrement = 4,
 
         /// <summary>
         ///     Prefix negation.
         /// </summary>
-        Negate = 4,
+        Negate = 3,
 
         /// <summary>
         ///     Boolean not prefix operator.

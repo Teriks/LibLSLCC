@@ -914,7 +914,7 @@ namespace LibLSLCC.LibraryData
                     if (duplicate.Subsets.Overlaps(signature.Subsets))
                     {
                         throw new LSLDuplicateSignatureException(
-                            "Cannot define function as it is a duplicate of or ambiguous with another function in the same subset, attempted to add: " +
+                            "Cannot define function as it is a duplicate of; or ambiguous with another function in the same subset, attempted to add: " +
                             signature.SignatureString + ";, but: " + duplicate.SignatureString +
                             "; is considered a duplicate or ambiguous definition.");
                     }

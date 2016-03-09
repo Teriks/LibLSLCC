@@ -338,31 +338,31 @@ namespace LibLSLCC.LibraryData
             }
 
 
-            foreach (var func in dataProvider.SubsetDescriptions.Values)
+            foreach (var desc in dataProvider.SubsetDescriptions.Values)
             {
                 writer.WriteStartElement("SubsetDescription");
-                ((IXmlSerializable) func).WriteXml(writer);
+                desc.WriteXml(writer);
                 writer.WriteEndElement();
             }
 
             foreach (var func in dataProvider.LibraryFunctions.SelectMany(x => x))
             {
                 writer.WriteStartElement("LibraryFunction");
-                ((IXmlSerializable) func).WriteXml(writer);
+                func.WriteXml(writer);
                 writer.WriteEndElement();
             }
 
             foreach (var ev in dataProvider.LibraryEvents)
             {
                 writer.WriteStartElement("EventHandler");
-                ((IXmlSerializable) ev).WriteXml(writer);
+                ev.WriteXml(writer);
                 writer.WriteEndElement();
             }
 
             foreach (var con in dataProvider.LibraryConstants)
             {
                 writer.WriteStartElement("LibraryConstant");
-                ((IXmlSerializable) con).WriteXml(writer);
+                con.WriteXml(writer);
                 writer.WriteEndElement();
             }
 

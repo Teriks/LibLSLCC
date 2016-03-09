@@ -48,7 +48,7 @@ using LibLSLCC.LibraryData;
 
 #endregion
 
-namespace LibraryDataScrapingTools.ScraperInterfaces
+namespace LibraryDataScrapingTool.ScraperInterfaces
 {
     public interface ILibraryData
     {

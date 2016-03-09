@@ -54,12 +54,12 @@ using System.Web;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Collections;
 using LibLSLCC.LibraryData;
-using LibraryDataScrapingTools.ScraperInterfaces;
-using LibraryDataScrapingTools.ScraperProxys;
+using LibraryDataScrapingTool.ScraperInterfaces;
+using LibraryDataScrapingTool.ScraperProxys;
 
 #endregion
 
-namespace LibraryDataScrapingTools.LibraryDataScrapers
+namespace LibraryDataScrapingTool.LibraryDataScrapers
 {
     public class SecondlifeWikiLibraryData : ILibraryData
     {
