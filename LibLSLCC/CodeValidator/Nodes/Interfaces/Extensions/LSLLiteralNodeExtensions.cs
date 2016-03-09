@@ -154,24 +154,17 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            ulong val;
+            int val;
             try
             {
-                val = Convert.ToUInt64(node.RawText, 16);
+                val = Convert.ToInt32(node.RawText, 16);
             }
             catch (OverflowException)
             {
-                return LSLLiteralOverflowType.Overflow;
+                return negative ? LSLLiteralOverflowType.Underflow : LSLLiteralOverflowType.Overflow;
             }
 
-            if (negative && val > 2147483648)
-            {
-                return LSLLiteralOverflowType.Underflow;
-            }
-            if (!negative && val > 2147483647)
-            {
-                return LSLLiteralOverflowType.Overflow;
-            }
+
             return LSLLiteralOverflowType.None;
         }
     }
