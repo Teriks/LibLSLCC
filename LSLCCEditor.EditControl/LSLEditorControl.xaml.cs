@@ -913,6 +913,7 @@ namespace LSLCCEditor.EditControl
 
             lock (_completionLock)
             {
+                var c = Editor.Text[caretOffset];
                 _autoCompleteParser.Parse(Editor.Text, caretOffset,
                     LSLAutoCompleteParseOptions.BlockOnInvalidKeywordPrefix |
                     LSLAutoCompleteParseOptions.BlockOnInvalidPrefix);

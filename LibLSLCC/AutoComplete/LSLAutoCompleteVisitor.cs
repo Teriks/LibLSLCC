@@ -846,7 +846,7 @@ namespace LibLSLCC.AutoComplete
         public override bool VisitExpr_Atom(LSLParser.Expr_AtomContext context)
         {
 
-            if (GreaterThanParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             if (context.string_literal != null)
             {
@@ -863,7 +863,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitLabelStatement(LSLParser.LabelStatementContext context)
         {
-            if (GreaterThanParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
             if (context.label_prefix == null) return true;
  
@@ -1968,7 +1968,7 @@ namespace LibLSLCC.AutoComplete
             }
             else
             {
-                if (GreaterThanParseOffset(context.Start.StartIndex)) return true;
+                if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
 
                 var prevMulti = InMultiStatementCodeScopeTopLevel;
@@ -1995,7 +1995,7 @@ namespace LibLSLCC.AutoComplete
 
         public override bool VisitCodeScope(LSLParser.CodeScopeContext context)
         {
-            if (GreaterThanParseOffset(context.Start.StartIndex)) return true;
+            if (GreaterThanOrEqParseOffset(context.Start.StartIndex)) return true;
 
 
             if (!InSingleStatementCodeScopeTopLevel)
