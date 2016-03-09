@@ -1044,7 +1044,7 @@ private static class UTILITIES
 
             
 
-            Writer.Write(node.IsOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
+            Writer.Write(node.CheckForOverflow() != LSLLiteralOverflowType.None ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
 
             if (box)
             {
@@ -1081,7 +1081,7 @@ private static class UTILITIES
                 Writer.Write("new " + LSLType_To_CSharpType(LSLType.Integer) + "(");
             }
 
-            Writer.Write(node.IsOverflowed() ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
+            Writer.Write(node.CheckForOverflow() != LSLLiteralOverflowType.None ? (parentIsUnaryNegate ? "1" : "-1") : node.RawText);
 
             if (!parentIsNonLogicBinaryOperation)
             {

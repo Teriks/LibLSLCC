@@ -2592,14 +2592,13 @@ namespace LibLSLCC.CodeValidator
             {
                 var intLiteralNode = new LSLIntegerLiteralNode(context);
 
-
-
                 var parentAsPrefix = context.Parent as LSLParser.Expr_PrefixOperationContext;
                 bool negated = parentAsPrefix != null && parentAsPrefix.operation.Text == "-";
 
-                if (intLiteralNode.IsOverflowed(negated))
+                LSLLiteralOverflowType overflowType;
+                if ((overflowType = intLiteralNode.CheckForOverflow(negated)) != LSLLiteralOverflowType.None)
                 {
-                    if (negated)
+                    if (overflowType == LSLLiteralOverflowType.Underflow)
                     {
                         GenSyntaxWarning()
                             .IntegerLiteralUnderflow(new LSLSourceCodeRange(parentAsPrefix),
@@ -2623,24 +2622,29 @@ namespace LibLSLCC.CodeValidator
             if (context.hex_literal != null)
             {
 
+                var hexLiteralNode = new LSLHexLiteralNode(context);
+
                 var parentAsPrefix = context.Parent as LSLParser.Expr_PrefixOperationContext;
                 bool negated = parentAsPrefix != null && parentAsPrefix.operation.Text == "-";
 
-                var hexLiteralNode = new LSLHexLiteralNode(context);
+                var errorRange = parentAsPrefix != null
+                    ? new LSLSourceCodeRange(parentAsPrefix)
+                    : new LSLSourceCodeRange(context.hex_literal); 
 
-                if (hexLiteralNode.IsOverflowed(negated))
+                LSLLiteralOverflowType overflowType;
+                if ((overflowType=hexLiteralNode.CheckForOverflow()) != LSLLiteralOverflowType.None)
                 {
-                    if (negated)
+                    if (overflowType == LSLLiteralOverflowType.Underflow)
                     {
                         GenSyntaxWarning()
-                            .HexLiteralUnderflow(new LSLSourceCodeRange(parentAsPrefix),
-                                context.hex_literal.Text);
+                            .HexLiteralUnderflow(errorRange,
+                                context.hex_literal.Text, negated);
                     }
                     else
                     {
                         GenSyntaxWarning()
-                            .HexLiteralOverflow(new LSLSourceCodeRange(context.hex_literal),
-                                context.hex_literal.Text);
+                            .HexLiteralOverflow(errorRange,
+                                context.hex_literal.Text, negated);
                     }
                 }
 

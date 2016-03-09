@@ -542,11 +542,21 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">The source code range of the hex literal.</param>
         /// <param name="literalText">The text representing the hex literal.</param>
-        public virtual void HexLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        /// <param name="negated">Whether or not a negate operator was applied to the hex literal.</param>
+        public virtual void HexLiteralOverflow(LSLSourceCodeRange location, string literalText, bool negated)
         {
-            OnWarning(location,
-                string.Format("Hex literal \"{0}\" overflows LSL's integer type, it will compile to -1.",
+            if (negated)
+            {
+                OnWarning(location,
+                    string.Format("Negated hex literal \"{0}\" overflows LSL's integer type;  It will compile to \"-(-1)\" or effectively \"1\".",
                     literalText));
+            }
+            else
+            {
+                OnWarning(location,
+                    string.Format("Hex literal \"{0}\" overflows LSL's integer type, it will compile to -1.",
+                        literalText));
+            }
         }
 
 
@@ -555,11 +565,21 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">The source code range of the hex literal.</param>
         /// <param name="literalText">The text representing the hex literal.</param>
-        public void HexLiteralUnderflow(LSLSourceCodeRange location, string literalText)
+        /// <param name="negated">Whether or not a negate operator was applied to the hex literal.</param>
+        public void HexLiteralUnderflow(LSLSourceCodeRange location, string literalText, bool negated)
         {
-            OnWarning(location,
-                string.Format("Hex literal \"-{0}\" underflows LSL's integer type, it will compile to 1.",
+            if (negated)
+            {
+                OnWarning(location,
+                    string.Format("Negated hex literal \"{0}\" underflows LSL's integer type;  It will compile to \"-(-1)\" or effectively \"1\".",
                     literalText));
+            }
+            else
+            {
+                OnWarning(location,
+                    string.Format("Hex literal \"{0}\" underflows LSL's integer type, it will compile to -1.",
+                        literalText));
+            }
         }
 
 

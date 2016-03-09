@@ -52,6 +52,29 @@ using System;
 namespace LibLSLCC.CodeValidator
 {
     /// <summary>
+    /// Represents the type of overflow/underflow that can occur when defining a integer/hex literal.
+    /// </summary>
+    public enum LSLLiteralOverflowType
+    {
+
+        /// <summary>
+        /// No overflow/underflow.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Overflow.
+        /// </summary>
+        Overflow,
+
+        /// <summary>
+        /// Underflow.
+        /// </summary>
+        Underflow
+    }
+
+
+    /// <summary>
     ///     Extensions for LSL literal nodes.
     /// </summary>
     public static class LSLLiteralNodeExtensions
@@ -61,28 +84,13 @@ namespace LibLSLCC.CodeValidator
         ///     Whether or not the node is negated is determined with <see cref="LSLExprNodeExtensions.IsNegated"/>.
         /// </summary>
         /// <param name="node">The integer literal node to test.</param>
-        /// <returns>True if the integer literal overflows/underflows a 32 bit integer.</returns>
+        /// <returns><see cref="LSLLiteralOverflowType"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
-        public static bool IsOverflowed(this ILSLIntegerLiteralNode node)
+        public static LSLLiteralOverflowType CheckForOverflow(this ILSLIntegerLiteralNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 
-            return IsOverflowed(node, node.IsNegated());
-        }
-
-
-        /// <summary>
-        ///     Determines whether the hex literal node is a literal value that overflows/underflows a 32 bit integer. <para/>
-        ///     Whether or not the node is negated is determined with <see cref="LSLExprNodeExtensions.IsNegated"/>.
-        /// </summary>
-        /// <param name="node">The integer hex node to test.</param>
-        /// <returns>True if the hex literal overflows/underflows a 32 bit integer.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
-        public static bool IsOverflowed(this ILSLHexLiteralNode node)
-        {
-            if (node == null) throw new ArgumentNullException("node");
-
-            return IsOverflowed(node, node.IsNegated());
+            return CheckForOverflow(node, node.IsNegated());
         }
 
 
@@ -91,9 +99,9 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="node">The integer literal node to test.</param>
         /// <param name="negated">Whether or not the node is negated.</param>
-        /// <returns>True if the integer literal overflows/underflows a 32 bit integer.</returns>
+        /// <returns><see cref="LSLLiteralOverflowType"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
-        public static bool IsOverflowed(this ILSLIntegerLiteralNode node, bool negated)
+        public static LSLLiteralOverflowType CheckForOverflow(this ILSLIntegerLiteralNode node, bool negated)
         {
             if (node == null) throw new ArgumentNullException("node");
 
@@ -104,18 +112,19 @@ namespace LibLSLCC.CodeValidator
             }
             catch (OverflowException)
             {
-                return true;
+                return LSLLiteralOverflowType.Overflow;
             }
+
 
             if (negated && val > 2147483648)
             {
-                return true;
+                return LSLLiteralOverflowType.Underflow;
             }
             if(!negated && val > 2147483647)
             {
-                return true;
+                return LSLLiteralOverflowType.Overflow;
             }
-            return false;
+            return LSLLiteralOverflowType.None;
         }
 
 
@@ -123,32 +132,47 @@ namespace LibLSLCC.CodeValidator
         ///     Determines whether the hex literal node is a literal value that overflows/underflows a 32 bit integer.
         /// </summary>
         /// <param name="node">The integer hex node to test.</param>
-        /// <param name="negated">Whether or not the node is negated.</param>
-        /// <returns>True if the hex literal overflows/underflows a 32 bit integer.</returns>
+        /// <returns><see cref="LSLLiteralOverflowType"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
-        public static bool IsOverflowed(this ILSLHexLiteralNode node, bool negated)
+        public static LSLLiteralOverflowType CheckForOverflow(this ILSLHexLiteralNode node)
         {
             if (node == null) throw new ArgumentNullException("node");
 
-            long val;
+            bool negative = false;
+            switch (node.RawText.Substring(2, 1).ToLower())
+            {
+                case "8":
+                case "9":
+                case "A":
+                case "B":
+                case "C":
+                case "D":
+                case "E":
+                case "F":
+                    negative = true;
+                    break;
+            }
+
+
+            ulong val;
             try
             {
-                val = Convert.ToInt64(node.RawText, 16);
+                val = Convert.ToUInt64(node.RawText, 16);
             }
             catch (OverflowException)
             {
-                return true;
+                return LSLLiteralOverflowType.Overflow;
             }
 
-            if (negated && val > 2147483648)
+            if (negative && val > 2147483648)
             {
-                return true;
+                return LSLLiteralOverflowType.Underflow;
             }
-            if (!negated && val > 2147483647)
+            if (!negative && val > 2147483647)
             {
-                return true;
+                return LSLLiteralOverflowType.Overflow;
             }
-            return false;
+            return LSLLiteralOverflowType.None;
         }
     }
 }

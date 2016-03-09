@@ -371,14 +371,16 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">The source code range of the hex literal.</param>
         /// <param name="literalText">The text representing the hex literal.</param>
-        void HexLiteralOverflow(LSLSourceCodeRange location, string literalText);
+        /// <param name="negated">Whether or not a negate operator was applied to the hex literal.</param>
+        void HexLiteralOverflow(LSLSourceCodeRange location, string literalText, bool negated);
 
         /// <summary>
         ///     Occurs when a hex literal present in the source code is less than the minimum value of a 32 bit LSL integer.
         /// </summary>
         /// <param name="location">The source code range of the hex literal.</param>
         /// <param name="literalText">The text representing the hex literal.</param>
-        void HexLiteralUnderflow(LSLSourceCodeRange location, string literalText);
+        /// <param name="negated">Whether or not a negate operator was applied to the hex literal.</param>
+        void HexLiteralUnderflow(LSLSourceCodeRange location, string literalText, bool negated);
 
 
         /// <summary>
