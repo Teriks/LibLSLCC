@@ -272,3 +272,22 @@ LibLSLCC is done building its own abstracted tree.
 
 Just a large code cleanup in general.  A few significant public API changes.
 This is why I am still not versioning yet, getting close though.
+
+
+# (3/23/2016 9:15 AM)<br/> Move to v1 and versioning.
+
+A large amount of refactoring to LibLSLCC was done over the past few months.
+It is pretty much completely incompatible with pre-versioning releases, due to different
+namespace organization and tweaks to various interfaces.
+
+The UI for the editor has been reworked to be pretty much identical across versions of Windows.
+
+There have been multiple fixes to the autocomplete parser, to the point where it has nearly been entirely re-written.
+
+Multiple fixes to code generation, including the ability to have the compiler treat 'key' variables
+as their own unique data type instead of just strings.  (The OpenSim runtime cannot handle this yet.)
+
+Fixed handling of overflowed integer and hex constants.
+
+More code formatting options have been added, and many bugs in the code formatter have been resolved.
+
