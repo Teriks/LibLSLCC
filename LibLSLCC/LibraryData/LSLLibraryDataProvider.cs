@@ -155,7 +155,7 @@ namespace LibLSLCC.LibraryData
         }
 
         /// <summary>
-        /// Whether or not to throw <see cref="LSLDuplicateSignatureException"/> when <see cref="LiveFiltering"/> is enabled
+        /// Whether or not to throw <see cref="LSLDuplicateSignatureException"/> when <see cref="LiveFiltering"/> is enabled,
         /// and a duplicate signature is detected among the <see cref="ActiveSubsets"/> when querying signatures from this provider. <para/>
         /// This is <c>true</c> by default.
         /// </summary>

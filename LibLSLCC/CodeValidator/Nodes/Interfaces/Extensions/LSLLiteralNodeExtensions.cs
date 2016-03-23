@@ -154,6 +154,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
+            // ReSharper disable once NotAccessedVariable
             int val;
             try
             {
