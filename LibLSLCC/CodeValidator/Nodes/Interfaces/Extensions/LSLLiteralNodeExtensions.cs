@@ -154,11 +154,10 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            // ReSharper disable once NotAccessedVariable
-            int val;
+
             try
             {
-                val = Convert.ToInt32(node.RawText, 16);
+                Convert.ToInt32(node.RawText, 16);
             }
             catch (OverflowException)
             {

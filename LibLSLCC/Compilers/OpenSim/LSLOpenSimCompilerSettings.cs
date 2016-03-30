@@ -140,7 +140,7 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The name of the namespace the class should reside in if <see cref="GenerateClass "/> is set to <c>true</c>. <para/>
+        ///     The name of the namespace the class should reside in if <see cref="GenerateClass"/> is set to <c>true</c>. <para/>
         ///     Set to <c>null</c> if a the generated class should not be put in a namespace.
         /// </summary>
         public CSharpNamespace GeneratedClassNamespace
@@ -156,7 +156,7 @@ namespace LibLSLCC.Compilers
         public const string DefaultGeneratedClassName = "XEngineScript";
 
         /// <summary>
-        ///     The name of the class around the generated code if <see cref="GenerateClass "/> is set to <c>true</c>. <para/>
+        ///     The name of the class around the generated code if <see cref="GenerateClass"/> is set to <c>true</c>. <para/>
         ///     If set to <c>null</c>, <see cref="DefaultGeneratedClassName"/> will be used.
         /// </summary>
         public CSharpClassDeclarationName GeneratedClassName
@@ -166,7 +166,7 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The name of the class the generated class should inherit from if <see cref="GenerateClass "/> is set to <c>true</c>.
+        ///     The name of the class the generated class should inherit from if <see cref="GenerateClass"/> is set to <c>true</c>.
         ///     Set to <c>null</c> or <see cref="string.Empty"/> if the generated class should not derive from anything.
         /// </summary>
         public CSharpInheritanceList GeneratedInheritanceList
@@ -184,7 +184,7 @@ namespace LibLSLCC.Compilers
             "(System.Threading.WaitHandle coopSleepHandle) : base(coopSleepHandle)";
 
         /// <summary>
-        ///     The constructor signature to be inserted into the generated class if <see cref="GenerateClass "/> is set to <c>true</c>. <para/>
+        ///     The constructor signature to be inserted into the generated class if <see cref="GenerateClass"/> is set to <c>true</c>. <para/>
         ///     Example: "(int parameter) : base(parameter)"  <para/>
         ///     If set to <c>null</c>, <see cref="DefaultGeneratedConstructorSignature"/> will be used.
         /// </summary>
@@ -195,7 +195,7 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The accessibility level of the class if <see cref="GenerateClass "/> is set to <c>true</c>.
+        ///     The accessibility level of the class if <see cref="GenerateClass"/> is set to <c>true</c>.
         ///     Defaults to <see cref="ClassAccessibilityLevel.Default" />.
         /// </summary>
         public ClassAccessibilityLevel GeneratedClassAccessibility
@@ -205,7 +205,7 @@ namespace LibLSLCC.Compilers
         }
 
         /// <summary>
-        ///     The accessibility level of the constructor in the generated class if <see cref="GenerateClass "/> is set to <c>true</c>.
+        ///     The accessibility level of the constructor in the generated class if <see cref="GenerateClass"/> is set to <c>true</c>.
         ///     Defaults to <see cref="MemberAccessibilityLevel.Public" />.
         /// </summary>
         public MemberAccessibilityLevel GeneratedConstructorAccessibility
