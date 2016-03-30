@@ -4,37 +4,37 @@
 		"comment" : 
 		"{commits_since_last_tag} is the number of commits that affected the given project (LibLSLCC here ^) since last_tag.",
 		
-		"last_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits_since_last_tag}"
+		"last_tag" : "1.0.0.199",
+		"version_template" : "1.0.1.{commits_since_last_tag}"
 	},
 	"LibraryDataScrapingTool" :
 	{
-		"last_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "0.1.0.{commits_since_last_tag}"
+		"last_tag" : "1.0.0.199",
+		"version_template" : "0.1.1.{commits_since_last_tag}"
 	},
 	"lslcc_cmd" :
 	{
-		"last_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits_since_last_tag}"
+		"last_tag" : "1.0.0.199",
+		"version_template" : "1.0.1.{commits_since_last_tag}"
 	},
 	"LSLCCEditor" :
 	{
-		"last_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits_since_last_tag}"
+		"last_tag" : "1.0.0.199",
+		"version_template" : "1.0.1.{commits_since_last_tag}"
 	},
 	"LSLCCEditor.CompletionUI" :
 	{
-		"last_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits_since_last_tag}"
+		"last_tag" : "1.0.0.199",
+		"version_template" : "1.0.1.{commits_since_last_tag}"
 	},
 	"LSLCCEditor.EditControl" :
 	{
-		"last_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "1.0.0.{commits_since_last_tag}"
+		"last_tag" : "1.0.0.199",
+		"version_template" : "1.0.1.{commits_since_last_tag}"
 	},
 	"LSLCCEditor.Utility" :
 	{
-		"last_tag" : "snapshot_2_11_2016_11-51PM",
-		"version_template" : "0.1.0.{commits_since_last_tag}"
+		"last_tag" : "1.0.0.199",
+		"version_template" : "0.1.1.{commits_since_last_tag}"
 	}
 }
