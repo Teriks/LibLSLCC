@@ -274,20 +274,108 @@ Just a large code cleanup in general.  A few significant public API changes.
 This is why I am still not versioning yet, getting close though.
 
 
-# (3/23/2016 9:15 AM)<br/> Move to v1 and versioning.
+# (1.0.0.199)<br/> Move to v1 and versioning.
 
-A large amount of refactoring to LibLSLCC was done over the past few months.
-It is pretty much completely incompatible with pre-versioning releases, due to different
-namespace organization and tweaks to various interfaces.
+This release of LibLSLCC contains large changes in namespace organization,
+as well as many tweaks to the general public interface and syntax tree class hierarchy.
 
-The UI for the editor has been reworked to be pretty much identical across versions of Windows.
+This is the result of a lot of refactoring and bug fixes over a period of three months,
+to both the compiler/parsing library and the editor itself.
 
-There have been multiple fixes to the autocomplete parser, to the point where it has nearly been entirely re-written.
+The editor UI now looks uniform across different versions of Windows.
 
-Multiple fixes to code generation, including the ability to have the compiler treat 'key' variables
-as their own unique data type instead of just strings.  (The OpenSim runtime cannot handle this yet.)
+The auto-complete parser has been nearly re-written, as well as the code formatter;
+which has several new formatting options.
 
-Fixed handling of overflowed integer and hex constants.
+The library data distributed with the editor has been updated so that Linden LSL and OpenSim LSL
+have differing return-types, and constant values where necessary. This mostly affects functions that
+return key's in Secondlife but return string's in OpenSim instead.
 
-More code formatting options have been added, and many bugs in the code formatter have been resolved.
+This also affects the value of some string constants such as the JSON_ constants.
+
+===
+
+The entire library has been documented and de-warning-ified.
+
+The XML documentation file for IntelliSense is now properly named and placed next to the LibLSLCC
+binaries in the released zip file, so that documentation tooltips in VisualStudio work for the library.
+
+There are also Doxygen and Sandcastle documentation generator settings/projects in the LibLSLCC
+source tree.
+
+===
+
+All pre-versioning tags except the last one before version one have been deleted from the repo.
+
+That repo history is kinda meaningless to me at this point, and it sorts incorrectly in some cases
+due to the non semantic versioning I was using while working up to something I was comfortable having people depend on.
+
+Versions for assemblies will now be handled as follows:
+
+Major Increment: public API changes
+Minor Increment: backwards compatible features
+Patch Increment: significant bug fixes
+Revision Increment: on commit affecting the assembly
+
+Each assembly and executable has its own version.
+
+The editor installer version is taken from the editor executable, and the zip file containing the LibLSLCC 
+library and lslcc command line compiler has it's name derived from LibLSLCC's assembly version.
+
+
+# (1.0.1.1)<br/> Build system fixes, build Warnings on linux resolved.
+
+
+Build system fixes, MonoDevelop was having issues opening the no-editor solution.
+
+The ToolsVersion in the msbuild file of a few projects mismatched the solution file causing it to complain.
+
+Fixed A few crefs in XML comments that were causing warnings due to having space after the type referenced.
+
+===
+
+version.py build script exception fixed on Linux.
+
+'subprocess.check_output' was being passed a full command instead of a list with the command and it's arguments; that does not work on Linux but it does on Windows.
+
+Reference to non-existent git tag in version.json fixed, revision number is now commits since tag "1.0.0.199" for every assembly.
+
+
+# (1.0.2.1)<br/> Bug fix to hex literal handling.
+
+Fix incorrect hex literal overflow detection.
+
+Issue was more apparent on Linux than Windows, causing it to slip through.
+
+
+# (1.0.3.1)<br/> New editor 'edit' menu, fixes to library data and versioning scheme.
+
+
+Added standard 'Edit' menu to editor.
+
+It contains the usual Undo, Redo, Cut, Copy, Paste, Delete and 'Select All' in button form.
+
+New feature is the reason for the minor version increment on the editor.
+
+There was also a fix to the text editing control for an out of bounds error that could occur while starting to type with the editor completely empty.
+
+===
+
+Fixed an issue with the distributed library data which affected the 'OS Attach Temp' module that is selectable from the editor.
+
+Having it selected while in 'OpenSim LSL' mode had no effect, due to it not belonging to the required library subset 'os-attach-temp'
+
+This meant that llAttachToAvatarTemp was not actually made available by having this module selected in OpenSim mode.
+
+This also affected the command line compiler, which got a patch increment along with LibLSLCC.
+
+===
+
+Revision numbers for each assembly are now calculated by the number of commits to the entire project tree since there was a change to the Major, Minor or Patch number of the specific assembly.
+
+This is so the revision number in the tag always increments even when LibLSLCC received no changes in a new release.
+
+It has to be this way because tag names are derived from the current version of the LibLSLCC assembly. If there are changes elsewhere that do not effect it, or any assembly at for that matter, the tag still needs to increment.
+
+
 
