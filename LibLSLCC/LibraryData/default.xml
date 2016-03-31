@@ -101,7 +101,7 @@
     <Parameter Name="attach_point" Type="Integer" />
     <DocumentationString>Attach to avatar at point AttachmentPoint.&#10;Requires the PERMISSION_ATTACH runtime permission.</DocumentationString>
   </LibraryFunction>
-  <LibraryFunction Name="llAttachToAvatarTemp" ReturnType="Void" Subsets="lsl">
+  <LibraryFunction Name="llAttachToAvatarTemp" ReturnType="Void" Subsets="lsl,os-attach-temp">
     <Parameter Name="attach_point" Type="Integer" />
     <DocumentationString>Follows the same convention as llAttachToAvatar, with the exception that the object will not create new inventory for the user, and will disappear on detach or disconnect.</DocumentationString>
   </LibraryFunction>
