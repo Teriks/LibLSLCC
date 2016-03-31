@@ -138,32 +138,27 @@ namespace LibLSLCC.CodeValidator
         {
             if (node == null) throw new ArgumentNullException("node");
 
+            var hexPart = node.RawText.Substring(2).TrimStart('0');
+
             bool negative = false;
-            switch (node.RawText.Substring(2, 1).ToLower())
+            switch (char.ToUpper(hexPart[0]))
             {
-                case "8":
-                case "9":
-                case "A":
-                case "B":
-                case "C":
-                case "D":
-                case "E":
-                case "F":
+                case '8':
+                case '9':
+                case 'A':
+                case 'B':
+                case 'C':
+                case 'D':
+                case 'E':
+                case 'F':
                     negative = true;
                     break;
             }
 
-
-
-            try
-            {
-                Convert.ToInt32(node.RawText, 16);
-            }
-            catch (OverflowException)
-            {
+            if(hexPart.Length > 8)
+            { 
                 return negative ? LSLLiteralOverflowType.Underflow : LSLLiteralOverflowType.Overflow;
             }
-
 
             return LSLLiteralOverflowType.None;
         }

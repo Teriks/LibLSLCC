@@ -4,8 +4,8 @@
 		"comment" : 
 		"{commits_since_last_tag} is the number of commits that affected the given project (LibLSLCC here ^) since last_tag.",
 		
-		"last_tag" : "1.0.0.199",
-		"version_template" : "1.0.1.{commits_since_last_tag}"
+		"last_tag" : "1.0.1.1",
+		"version_template" : "1.0.2.{commits_since_last_tag}"
 	},
 	"LibraryDataScrapingTool" :
 	{
