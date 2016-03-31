@@ -69,6 +69,17 @@
                           Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}" />
                 <MenuItem Header="Open New Tab" InputGestureText="Ctrl+Alt+O" Click="Open_OnClick" />
             </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Undo" InputGestureText="Ctrl+Z" Click="Edit_UndoOnClick" Name="EditUndoMenuItem" />
+                <MenuItem Header="Redo" InputGestureText="Ctrl+Y" Click="Edit_RedoOnClick" Name="EditRedoMenuItem" />
+                <Separator/>
+                <MenuItem Header="Cut" InputGestureText="Ctrl+X" Click="Edit_CutOnClick"/>
+                <MenuItem Header="Copy" InputGestureText="Ctrl+C" Click="Edit_CopyOnClick"/>
+                <MenuItem Header="Paste" InputGestureText="Ctrl+V" Click="Edit_PasteOnClick"/>
+                <MenuItem Header="Delete" InputGestureText="Del" Click="Edit_DeleteOnClick"/>
+                <Separator/>
+                <MenuItem Header="Select All" InputGestureText="Ctrl+A" Click="Edit_SelectAllOnClick"/>
+            </MenuItem>
             <MenuItem Header="View">
                 <MenuItem IsCheckable="True" Header="Show End Of Line" IsChecked="{Binding ElementName=_this,Path=ShowEndOfLine}"/>
                 <MenuItem IsCheckable="True" Header="Show Tabs" IsChecked="{Binding ElementName=_this,Path=ShowTabs}"/>

@@ -53,6 +53,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Document;
 using LibLSLCC.LibraryData;
 using LSLCCEditor.Utility.Binding;
 using Microsoft.Win32;
@@ -101,7 +103,7 @@ namespace LSLCCEditor.EditorTabUI
 
             Content = new EditorTabContent(this)
             {
-                Editor =
+                EditControl =
                 {
                     LibraryDataProvider = dataProvider
                 }
@@ -437,10 +439,11 @@ namespace LSLCCEditor.EditorTabUI
             return false;
         }
 
-
         private void OpenFile(string fileName)
         {
             Content.SourceCode = File.ReadAllText(fileName);
+
+            Content.EditControl.Editor.Document.UndoStack.ClearAll();
 
             TabName = Path.GetFileName(fileName);
             MemoryOnly = false;

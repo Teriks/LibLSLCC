@@ -81,7 +81,6 @@ namespace LSLCCEditor
     /// </summary>
     public partial class MainWindow : Window, IDisposable
     {
-
         public static readonly RoutedCommand FileNew = new RoutedCommand();
         public static readonly RoutedCommand FileOpen = new RoutedCommand();
         public static readonly RoutedCommand FileOpenNewTab = new RoutedCommand();
@@ -107,20 +106,22 @@ namespace LSLCCEditor
 
 
         public static readonly DependencyProperty ShowEndOfLineProperty = DependencyProperty.Register(
-            "ShowEndOfLine", typeof (bool), typeof (MainWindow), new PropertyMetadata(default(bool), ShowEndOfLinePropertyChanged));
+            "ShowEndOfLine", typeof (bool), typeof (MainWindow),
+            new PropertyMetadata(default(bool), ShowEndOfLinePropertyChanged));
 
 
-        private static void ShowEndOfLinePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private static void ShowEndOfLinePropertyChanged(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var self = (MainWindow) dependencyObject;
 
-            var newValue = (bool)dependencyPropertyChangedEventArgs.NewValue;
+            var newValue = (bool) dependencyPropertyChangedEventArgs.NewValue;
 
             AppSettings.Settings.ShowEndOfLine = newValue;
-            
+
             foreach (var tab in self.EditorTabs)
             {
-                tab.Content.Editor.Settings.ShowEndOfLine = newValue;
+                tab.Content.EditControl.Settings.ShowEndOfLine = newValue;
             }
         }
 
@@ -135,17 +136,18 @@ namespace LSLCCEditor
             "ShowTabs", typeof (bool), typeof (MainWindow), new PropertyMetadata(default(bool), ShowTabsPropertyChanged));
 
 
-        private static void ShowTabsPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private static void ShowTabsPropertyChanged(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var self = (MainWindow)dependencyObject;
+            var self = (MainWindow) dependencyObject;
 
-            var newValue = (bool)dependencyPropertyChangedEventArgs.NewValue;
+            var newValue = (bool) dependencyPropertyChangedEventArgs.NewValue;
 
             AppSettings.Settings.ShowTabs = newValue;
 
             foreach (var tab in self.EditorTabs)
             {
-                tab.Content.Editor.Settings.ShowTabs = newValue;
+                tab.Content.EditControl.Settings.ShowTabs = newValue;
             }
         }
 
@@ -157,20 +159,22 @@ namespace LSLCCEditor
         }
 
         public static readonly DependencyProperty ShowSpacesProperty = DependencyProperty.Register(
-            "ShowSpaces", typeof (bool), typeof (MainWindow), new PropertyMetadata(default(bool), ShowSpacesPropertyChanged));
+            "ShowSpaces", typeof (bool), typeof (MainWindow),
+            new PropertyMetadata(default(bool), ShowSpacesPropertyChanged));
 
 
-        private static void ShowSpacesPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private static void ShowSpacesPropertyChanged(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var self = (MainWindow)dependencyObject;
+            var self = (MainWindow) dependencyObject;
 
-            var newValue = (bool)dependencyPropertyChangedEventArgs.NewValue;
+            var newValue = (bool) dependencyPropertyChangedEventArgs.NewValue;
 
             AppSettings.Settings.ShowSpaces = newValue;
 
             foreach (var tab in self.EditorTabs)
             {
-                tab.Content.Editor.Settings.ShowSpaces = newValue;
+                tab.Content.EditControl.Settings.ShowSpaces = newValue;
             }
         }
 
@@ -188,40 +192,8 @@ namespace LSLCCEditor
 
             MetroWindowStyleInit.Init(this);
 
-
             Initialize();
         }
-
-        private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip;
-        }
-
-        private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = ResizeMode != ResizeMode.NoResize;
-        }
-
-        private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.CloseWindow(this);
-        }
-
-        private void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.MaximizeWindow(this);
-        }
-
-        private void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.MinimizeWindow(this);
-        }
-
-        private void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.RestoreWindow(this);
-        }
-
 
 
         public ObservableCollection<EditorTab> EditorTabs
@@ -245,7 +217,6 @@ namespace LSLCCEditor
             ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
             ShowSpaces = AppSettings.Settings.ShowSpaces;
             ShowTabs = AppSettings.Settings.ShowTabs;
-
 
 
             var entryAssembly = Assembly.GetEntryAssembly();
@@ -336,10 +307,28 @@ namespace LSLCCEditor
 
             SetLibraryMenuFromTab(initialTab);
 
-            FindDialogManager.CurrentEditor = initialTab.Content.Editor.Editor;
+
+            FindDialogManager.CurrentEditor = initialTab.Content.EditControl.Editor;
+
+
+            initialTab.Content.EditControl.Editor.TextChanged += Editor_OnTextChanged;
+
+            EditRedoMenuItem.IsEnabled = initialTab.Content.EditControl.Editor.CanRedo;
+            EditUndoMenuItem.IsEnabled = initialTab.Content.EditControl.Editor.CanUndo;
+
 
             _selectingStartupTabDuringWindowLoad = false;
+        }
 
+
+        private void Editor_OnTextChanged(object sender, EventArgs eventArgs)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab == null) return;
+
+            EditRedoMenuItem.IsEnabled = tab.Content.EditControl.Editor.CanRedo;
+            EditUndoMenuItem.IsEnabled = tab.Content.EditControl.Editor.CanUndo;
         }
 
 
@@ -417,7 +406,7 @@ namespace LSLCCEditor
 
             if (!_uncheckingLibraryDataTabItemProgrammatically)
             {
-                tab.Content.Editor.UpdateHighlightingFromDataProvider();
+                tab.Content.EditControl.UpdateHighlightingFromDataProvider();
             }
         }
 
@@ -429,7 +418,7 @@ namespace LSLCCEditor
             var item = sender as MenuItem;
 
             var tab = (EditorTab) TabControl.SelectedItem;
-            
+
 
             if (item == null) return;
 
@@ -460,7 +449,7 @@ namespace LSLCCEditor
 
             _libraryDataProvider.ActiveSubsets.Add(subsetName);
             tab.ActiveLibraryDataSubsetsCache.Add(subsetName);
-            tab.Content.Editor.UpdateHighlightingFromDataProvider();
+            tab.Content.EditControl.UpdateHighlightingFromDataProvider();
         }
 
 
@@ -472,17 +461,26 @@ namespace LSLCCEditor
 
             foreach (var i in e.RemovedItems)
             {
-                var t = i as EditorTab;
-                if (t != null)
+                var tab = i as EditorTab;
+                if (tab != null)
                 {
-                    t.IsSelected = false;
+                    tab.Content.EditControl.Editor.TextChanged -= Editor_OnTextChanged;
+                    tab.IsSelected = false;
                 }
             }
+
 
             foreach (var i in e.AddedItems)
             {
                 var tab = i as EditorTab;
                 if (tab == null) continue;
+
+
+                EditRedoMenuItem.IsEnabled = tab.Content.EditControl.Editor.CanRedo;
+                EditUndoMenuItem.IsEnabled = tab.Content.EditControl.Editor.CanUndo;
+
+                tab.Content.EditControl.Editor.TextChanged += Editor_OnTextChanged;
+
 
                 _libraryDataProvider.ActiveSubsets.SetSubsets(tab.ActiveLibraryDataSubsetsCache);
 
@@ -490,19 +488,19 @@ namespace LSLCCEditor
 
                 _libraryDataProvider.ActiveSubsets.Clear();
                 _libraryDataProvider.ActiveSubsets.AddSubsets(tab.ActiveLibraryDataSubsetsCache);
-                tab.Content.Editor.UpdateHighlightingFromDataProvider();
+                tab.Content.EditControl.UpdateHighlightingFromDataProvider();
 
 
-                tab.Content.Editor.Editor.Unloaded += (o, args) =>
+                tab.Content.EditControl.Editor.Unloaded += (o, args) =>
                 {
-                    if (ReferenceEquals(FindDialogManager.CurrentEditor, tab.Content.Editor.Editor) &&
+                    if (ReferenceEquals(FindDialogManager.CurrentEditor, tab.Content.EditControl.Editor) &&
                         _droppingTabAfterDragging)
                     {
                         FindDialogManager.CurrentEditor = null;
                     }
                 };
 
-                FindDialogManager.CurrentEditor = tab.Content.Editor.Editor;
+                FindDialogManager.CurrentEditor = tab.Content.EditControl.Editor;
 
                 tab.IsSelected = true;
                 tab.CheckExternalChanges();
@@ -520,10 +518,11 @@ namespace LSLCCEditor
                 ChangesPending = false
             };
 
+            tab.Content.EditControl.Editor.Document.UndoStack.ClearAll();
 
-            tab.Content.Editor.Settings.ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
-            tab.Content.Editor.Settings.ShowSpaces = AppSettings.Settings.ShowSpaces;
-            tab.Content.Editor.Settings.ShowTabs = AppSettings.Settings.ShowTabs;
+            tab.Content.EditControl.Settings.ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
+            tab.Content.EditControl.Settings.ShowSpaces = AppSettings.Settings.ShowSpaces;
+            tab.Content.EditControl.Settings.ShowTabs = AppSettings.Settings.ShowTabs;
 
             return tab;
         }
@@ -558,25 +557,25 @@ namespace LSLCCEditor
             try
             {
 #endif
-            var showDialog = saveDialog.ShowDialog();
-            if (showDialog != null && showDialog.Value)
-            {
-                if (!tab.MemoryOnly)
+                var showDialog = saveDialog.ShowDialog();
+                if (showDialog != null && showDialog.Value)
                 {
-                    try
+                    if (!tab.MemoryOnly)
                     {
-                        tab.SaveTabToFile();
+                        try
+                        {
+                            tab.SaveTabToFile();
+                        }
+                        catch (Exception err)
+                        {
+                            MessageBox.Show(this, err.Message,
+                                "Could Not Save Before Compiling",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
                     }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(this, err.Message,
-                            "Could Not Save Before Compiling",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-                    }
+                    CompileCurrentEditorText(saveDialog.FileName);
                 }
-                CompileCurrentEditorText(saveDialog.FileName);
-            }
 #if !DEBUG
             }
             catch (Exception err)
@@ -660,13 +659,11 @@ namespace LSLCCEditor
                 {
                     MessageBox.Show(this, "Please report this message with the code that caused it: " + error.Message,
                         "Internal Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
                 }
                 catch (Exception error)
                 {
                     MessageBox.Show(this, "Please report this message with the code that caused it: " + error.Message,
                         "Unknown Compiler Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    
                 }
 #else
                 compiler.Compile(validated, new StreamWriter(outfile, Encoding.UTF8));
@@ -677,13 +674,16 @@ namespace LSLCCEditor
 
             if (compileSuccess)
             {
-
-                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice", "Program compiled successfully", false) {Clickable = false});
+                tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
+                    "Program compiled successfully", false) {Clickable = false});
             }
             else
             {
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error",
-                    "An internal compiler exception occurred, please report the code that caused this.", false) { Clickable = false });
+                    "An internal compiler exception occurred, please report the code that caused this.", false)
+                {
+                    Clickable = false
+                });
             }
 
 #else
@@ -926,7 +926,7 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            FindDialogManager.TextToFind = tab.Content.Editor.Editor.SelectedText;
+            FindDialogManager.TextToFind = tab.Content.EditControl.Editor.SelectedText;
 
             FindDialogManager.ShowAsFind(this);
         }
@@ -937,7 +937,7 @@ namespace LSLCCEditor
             var tab = TabControl.SelectedItem as EditorTab;
             if (tab == null) return;
 
-            FindDialogManager.TextToFind = tab.Content.Editor.Editor.SelectedText;
+            FindDialogManager.TextToFind = tab.Content.EditControl.Editor.SelectedText;
 
             FindDialogManager.ShowAsReplace(this);
         }
@@ -1165,6 +1165,68 @@ namespace LSLCCEditor
             {
                 var tab = (EditorTab) _parent.TabControl.SelectedItem;
                 tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.Error, "Error", location, message));
+            }
+        }
+
+        private void Edit_UndoOnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null) tab.Content.EditControl.Editor.Undo();
+        }
+
+        private void Edit_RedoOnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null) tab.Content.EditControl.Editor.Redo();
+        }
+
+        private void Edit_CutOnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null) tab.Content.EditControl.Editor.Cut();
+        }
+
+        private void Edit_CopyOnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null) tab.Content.EditControl.Editor.Copy();
+        }
+
+        private void Edit_PasteOnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null) tab.Content.EditControl.Editor.Paste();
+        }
+
+        private void Edit_DeleteOnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null)
+            {
+                var editor = tab.Content.EditControl.Editor;
+
+                editor.Document.Remove(
+                    editor.SelectionStart,
+                    editor.SelectionLength
+                    );
+            }
+        }
+
+        private void Edit_SelectAllOnClick(object sender, RoutedEventArgs e)
+        {
+            var tab = TabControl.SelectedItem as EditorTab;
+
+            if (tab != null)
+            {
+                var editor = tab.Content.EditControl.Editor;
+                editor.SelectionStart = 0;
+                editor.SelectionLength = editor.Document.TextLength;
             }
         }
     }

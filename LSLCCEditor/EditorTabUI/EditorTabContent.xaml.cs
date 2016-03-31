@@ -77,10 +77,10 @@ namespace LSLCCEditor.EditorTabUI
             InitializeComponent();
             _ownerTab = owner;
 
-            Editor.Settings =
+            EditControl.Settings =
                 AppSettings.Settings.CurrentEditorControlConfiguration.EditorControlSettings;
 
-            Editor.Theme =
+            EditControl.Theme =
                 AppSettings.Settings.CurrentEditorControlTheme.Theme;
 
         }
@@ -88,7 +88,7 @@ namespace LSLCCEditor.EditorTabUI
 
         private void EditorSettingsPropertyChangedHandler(SettingsPropertyChangedEventArgs<AppSettingsNode> settingsPropertyChangedEventArgs)
         {
-            Editor.Settings =
+            EditControl.Settings =
                 AppSettings.Settings.CurrentEditorControlConfiguration.EditorControlSettings;
         }
 
@@ -100,7 +100,7 @@ namespace LSLCCEditor.EditorTabUI
 
         private void EditorThemePropertyChangedHandler(SettingsPropertyChangedEventArgs<AppSettingsNode> obj)
         {
-            Editor.Theme =
+            EditControl.Theme =
                 AppSettings.Settings.CurrentEditorControlTheme.Theme;
         }
 
@@ -145,12 +145,12 @@ namespace LSLCCEditor.EditorTabUI
             var lineend = location.LineEnd == 0 ? 1 : location.LineEnd;
 
 
-            Editor.Editor.ScrollToLine(line);
+            EditControl.Editor.ScrollToLine(line);
 
 
             if (message.CodeLocation.IsSingleLine)
             {
-                Editor.Editor.Select(message.CodeLocation.StartIndex, (message.CodeLocation.StopIndex + 1) - message.CodeLocation.StartIndex);
+                EditControl.Editor.Select(message.CodeLocation.StartIndex, (message.CodeLocation.StopIndex + 1) - message.CodeLocation.StartIndex);
 
                 return;
             }
@@ -159,13 +159,13 @@ namespace LSLCCEditor.EditorTabUI
             var l = 0;
             for (var i = line; i <= lineend; i++)
             {
-                l += Editor.Editor.Document.GetLineByNumber(i).TotalLength;
+                l += EditControl.Editor.Document.GetLineByNumber(i).TotalLength;
             }
 
-            var linestart = Editor.Editor.Document.GetLineByNumber(line);
+            var linestart = EditControl.Editor.Document.GetLineByNumber(line);
 
 
-            Editor.Editor.Select(linestart.Offset, l);
+            EditControl.Editor.Select(linestart.Offset, l);
         }
 
         private void Editor_OnTextChanged(object sender, EventArgs e)

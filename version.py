@@ -55,7 +55,7 @@ for dir in versionFileContent.keys():
     lastTag = versionFileContent[dir]["last_tag"]
 
     commitsSinceLastTag = int(
-        subprocess.check_output(["git", "rev-list", lastTag.rstrip() + "..HEAD", "--count", "--", dir]).decode("utf-8"))
+        subprocess.check_output(["git", "rev-list", lastTag.rstrip() + "..HEAD", "--count"]).decode("utf-8"))
 
     versionTemplate = versionFileContent[dir]["version_template"]
 

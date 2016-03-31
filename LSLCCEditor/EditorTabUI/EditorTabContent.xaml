@@ -14,7 +14,7 @@
             <RowDefinition Height="0.4*" />
         </Grid.RowDefinitions>
 
-        <editControl:LSLEditorControl Grid.Row="0" x:FieldModifier="public" x:Name="Editor" Margin="0,0,0,5" BorderThickness="0,0,0,1" BorderBrush="LightGray"
+        <editControl:LSLEditorControl Grid.Row="0" x:FieldModifier="public" x:Name="EditControl" Margin="0,0,0,5" BorderThickness="0,0,0,1" BorderBrush="LightGray"
                                         Text="{Binding SourceCode}"
                                         LibraryDataProvider="{Binding LibraryDataProvider}"
                                         TextChanged="Editor_OnTextChanged" Loaded="Editor_OnLoaded" Unloaded="Editor_OnUnloaded"/>
