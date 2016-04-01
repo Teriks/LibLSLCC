@@ -399,7 +399,6 @@ namespace DemoArea
                 Deprecated = true
             });
 
-            string tt =  LSLFormatTools.NormalizeFloatString("0e-0f");
             Console.WriteLine("Methods....\n\n");
 
 
