@@ -67,7 +67,7 @@ namespace LibLSLCC.Utility
         ///     A raw string copy of a regex that matches/validates LSL Float tokens, the regex string is not anchored.
         /// </summary>
         public static readonly string FloatRegexString =
-            "(:?\\-?(?![0-9]+[fF])(?=\\.?(:?[0-9][eE]?))(:?[0-9]*\\.?[0-9]*)(:?[eE][-+]?[0-9]+)?[fF]?)";
+            "(:?\\-?(?!(:?[0-9]+[fF])|(:?[0-9]+e[-+]?[0-9]+[fF]))(?=\\.?(:?[0-9][eE]?))(:?[0-9]*\\.?[0-9]*)(:?[eE][-+]?[0-9]+)?[fF]?)";
 
 
         /// <summary>
