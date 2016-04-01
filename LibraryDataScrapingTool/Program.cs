@@ -258,8 +258,6 @@ namespace LibraryDataScrapingTool
             }
 
 
-
-
             foreach (var c in llsdData.LSLFunctions())
             {
                 if (provider.LibraryFunctionExist(c.Name)) continue;
@@ -279,6 +277,7 @@ namespace LibraryDataScrapingTool
 
                 provider.DefineFunction(c);
             }
+
 
             foreach (var c in llsdData.LSLEvents())
             {

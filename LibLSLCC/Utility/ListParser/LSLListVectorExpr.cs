@@ -72,24 +72,27 @@ namespace LibLSLCC.Utility.ListParser
         /// </exception>
         public LSLListVectorExpr(ILSLListExpr x, ILSLListExpr y, ILSLListExpr z)
         {
-            if (!(x is LSLListFloatExpr || x is LSLListVariableExpr))
+            var intX = x as LSLListIntegerExpr;
+            if (!(x is LSLListFloatExpr || x is LSLListVariableExpr || intX != null))
             {
                 throw new ArgumentException("X is not an LSLFloat or LSLVariable.", "x");
             }
 
-            if (!(y is LSLListFloatExpr || y is LSLListVariableExpr))
+            var intY = y as LSLListIntegerExpr;
+            if (!(y is LSLListFloatExpr || y is LSLListVariableExpr || intY != null))
             {
                 throw new ArgumentException("Y is not an LSLFloat or LSLVariable.", "y");
             }
 
-            if (!(z is LSLListFloatExpr || z is LSLListVariableExpr))
+            var intZ = z as LSLListIntegerExpr;
+            if (!(z is LSLListFloatExpr || z is LSLListVariableExpr || intZ != null))
             {
                 throw new ArgumentException("Z is not an LSLFloat or LSLVariable.", "z");
             }
 
-            X = x;
-            Y = y;
-            Z = z;
+            X = intX != null ? new LSLListFloatExpr(intX.ValueString) : x;
+            Y = intY != null ? new LSLListFloatExpr(intY.ValueString) : y;
+            Z = intZ != null ? new LSLListFloatExpr(intZ.ValueString) : z;
         }
 
 
