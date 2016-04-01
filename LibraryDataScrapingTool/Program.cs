@@ -234,15 +234,6 @@ namespace LibraryDataScrapingTool
                     }
                 }
 
-                Log.WriteLineWithHeader("[ADD OPENSIM ONLY CONSTANT]:",
-                    con.Name + " = " + con.ValueStringAsCodeLiteral + ";");
-
-                if (consant != null)
-                {
-                    Log.WriteLineWithHeader("[ADD OPENSIM ONLY CONSTANT]:","CONSTANT EXISTED!");
-                }
-
-
                 con.DocumentationString = docProvider.DocumentConstant(con);
                 provider.DefineConstant(con);
             }
