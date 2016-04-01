@@ -720,7 +720,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            valueString = string.Join(", ", s.Split(',').Select(x=>LSLFormatTools.NormalizeFloatString(x.TrimEnd('f','F','d','D'))));
+            valueString = string.Join(", ", s.Split(',').Select(x=>LSLFormatTools.NormalizeFloatString(x.TrimEnd('f','F'))));
 
             errMessage = null;
             return true;
@@ -810,7 +810,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            valueString = string.Join(", ", s.Split(',').Select(x => LSLFormatTools.NormalizeFloatString(x.TrimEnd('f', 'F', 'd', 'D'))));
+            valueString = string.Join(", ", s.Split(',').Select(x => LSLFormatTools.NormalizeFloatString(x.TrimEnd('f', 'F'))));
 
             errMessage = null;
             return true;
