@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-16"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LSLLibraryData>
   <SubsetDescription Subset="lsl" FriendlyName="Linden LSL">
     <Description>The standard library functions supported by Linden Lab's SecondLife servers.</Description>
