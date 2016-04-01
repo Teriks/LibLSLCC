@@ -698,7 +698,8 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
         public IEnumerable<LSLLibraryConstantSignature> GetLSLConstants()
         {
-            return
+            return  new List<LSLLibraryConstantSignature>();
+            /*return
                 GetLSLConstantPages()
                     .Select(GetSigFromConstantPage)
                     .Where(x => x != null)
@@ -711,7 +712,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
                         var c = new LSLLibraryConstantSignature(x.Type, x.Name.Replace(' ', '_'), x.ValueString);
                         c.Subsets.SetSubsets(_subsets);
                         return c;
-                    });
+                    });*/
         }
     }
 }

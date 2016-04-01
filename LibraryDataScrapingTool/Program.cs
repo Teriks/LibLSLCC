@@ -201,8 +201,8 @@ namespace LibraryDataScrapingTool
                 provider.DefineFunction(con);
             }
 
-
-            foreach (var con in wikiData.LSLConstants())
+            //the wiki is just wrong, the constant values are wrong there to much for comfort.
+            foreach (var con in llsdData.LSLConstants())
             {
                 if (openSim.LSLConstantExist(con.Name))
                 {
@@ -268,20 +268,6 @@ namespace LibraryDataScrapingTool
 
 
 
-
-            foreach (var c in llsdData.LSLConstants())
-            {
-                if (provider.LibraryConstantExist(c.Name)) continue;
-
-                if (openSim.LSLConstantExist(c.Name))
-                {
-                    var constant = openSim.LSLConstant(c.Name);
-                    c.Subsets.AddSubsets(constant.Subsets);
-                    c.Expand = constant.Expand;
-                }
-
-                provider.DefineConstant(c);
-            }
 
             foreach (var c in llsdData.LSLFunctions())
             {
