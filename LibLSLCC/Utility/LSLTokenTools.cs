@@ -64,6 +64,25 @@ namespace LibLSLCC.Utility
         public static readonly string IDRegexString = LSLLexer.IDRegex;
 
         /// <summary>
+        ///     A raw string copy of a regex that matches/validates LSL Float tokens, the regex string is not anchored.
+        /// </summary>
+        public static readonly string FloatRegexString =
+            "(:?\\-?(?![0-9]+[fF])(?=\\.?(:?[0-9][eE]?))(:?[0-9]*\\.?[0-9]*)(:?[eE][-+]?[0-9]+)?[fF]?)";
+
+
+        /// <summary>
+        ///     This regex matches/validates LSL Float Tokens, the regex is not anchord.
+        /// </summary>
+        public static readonly Regex FloatRegex = new Regex(FloatRegexString);
+
+
+        /// <summary>
+        ///     This regex matches/validates LSL Float Tokens.
+        /// </summary>
+        public static readonly Regex FloatRegexAnchored = new Regex("^" + FloatRegexString + "$");
+
+
+        /// <summary>
         ///     This regex matches/validates LSL ID Tokens, IE: variable names, state names, label names, function names
         /// </summary>
         public static readonly Regex IDRegex = new Regex(LSLLexer.IDRegex);

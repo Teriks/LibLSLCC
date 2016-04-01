@@ -51,6 +51,8 @@ using LibLSLCC.CodeValidator;
 using LibLSLCC.Compilers;
 using LibLSLCC.LibraryData;
 using LibLSLCC.LibraryData.Reflection;
+using LibLSLCC.Utility;
+using LibLSLCC.Utility.ListParser;
 
 namespace DemoArea
 {

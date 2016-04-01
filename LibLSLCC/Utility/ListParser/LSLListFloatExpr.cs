@@ -65,7 +65,15 @@ namespace LibLSLCC.Utility.ListParser
         /// <param name="hex">if set to <c>true</c> val is parsed from hexadecimal notation.</param>
         public LSLListFloatExpr(string val, bool hex = false)
         {
-            Value = hex ? Convert.ToInt32(val, 16) : float.Parse(val);
+            if (hex)
+            {
+                Value = Convert.ToInt32(val, 16);
+            }
+            else
+            {
+                var v = LSLFormatTools.NormalizeFloatString(val.TrimEnd('f', 'F'));
+                Value = float.Parse(v);
+            }
         }
 
 

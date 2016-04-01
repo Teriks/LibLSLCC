@@ -961,19 +961,7 @@ private static class UTILITIES
                 Writer.Write("new " + LSLType_To_CSharpType(LSLType.Float) + "(");
             }
 
-            var floatText = node.RawText;
-
-            var match = Regex.Match(floatText, @"^([0-9]+)\.([eE][-+][0-9]+)?[fF]?$");
-            if (match.Success)
-            {
-                //things like 0. or 0.f wont work in CSharp but are allowed in LSL
-
-                Writer.Write(match.Groups[1].Value + ".0" + match.Groups[2]);
-            }
-            else
-            {
-                Writer.Write(node.RawText);
-            }
+            Writer.Write(LSLFormatTools.NormalizeFloatString(node.RawText));
 
             if (box)
             {

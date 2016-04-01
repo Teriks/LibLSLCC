@@ -44,6 +44,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using LibLSLCC.LibraryData;
 using LibLSLCC.Utility;
@@ -58,14 +59,13 @@ namespace LibLSLCC.CodeValidator
     /// </summary>
     public class LSLConstantSignature : ILSLConstantSignature
     {
-        private static string _floatRegexString = "([-+]?[0-9]*(?:\\.[0-9]*))";
 
         private static readonly Regex VectorValidationRegex =
-            new Regex("^" + _floatRegexString + "\\s*,\\s*" + _floatRegexString + "\\s*,\\s*" + _floatRegexString + "$");
+            new Regex("^" + LSLTokenTools.FloatRegexString + "\\s*,\\s*" + LSLTokenTools.FloatRegexString + "\\s*,\\s*" + LSLTokenTools.FloatRegexString + "$");
 
         private static readonly Regex RotationValidationRegex =
-            new Regex("^" + _floatRegexString + "\\s*,\\s*" + _floatRegexString + "\\s*,\\s*" + _floatRegexString +
-                      "\\s*,\\s*" + _floatRegexString + "$");
+            new Regex("^" + LSLTokenTools.FloatRegexString + "\\s*,\\s*" + LSLTokenTools.FloatRegexString + "\\s*,\\s*" + LSLTokenTools.FloatRegexString +
+                      "\\s*,\\s*" + LSLTokenTools.FloatRegexString + "$");
 
         private string _name;
         private LSLType _type;
@@ -468,25 +468,19 @@ namespace LibLSLCC.CodeValidator
 
             valueString = null;
 
-            string stripSpecifiers = value.TrimEnd('f', 'F', 'd', 'D');
+            string stripSpecifiers = value.TrimEnd('f', 'F');
 
-            double f;
-            if (!double.TryParse(stripSpecifiers, out f))
+            try
             {
-                int i;
-                if (!int.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out i))
-                {
-                    errMessage =
-                        string.Format("Float Constant ValueString:  Given string '{0}' is not a valid float value.",
-                            value);
-
-                    return false;
-                }
-                valueString = value;
+                valueString = LSLFormatTools.NormalizeFloatString(stripSpecifiers);
             }
-            else
+            catch (FormatException)
             {
-                valueString = stripSpecifiers;
+                errMessage =
+                    string.Format("Float Constant ValueString:  Given string '{0}' is not a valid LSL float value.",
+                        value);
+
+                return false;
             }
 
             errMessage = null;
@@ -726,7 +720,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3] + ", " + match.Groups[4];
+            valueString = string.Join(", ", s.Split(',').Select(x=>LSLFormatTools.NormalizeFloatString(x.TrimEnd('f','F','d','D'))));
 
             errMessage = null;
             return true;
@@ -756,6 +750,9 @@ namespace LibLSLCC.CodeValidator
                 throw new LSLInvalidConstantValueStringException(msg);
             }
         }
+
+
+
 
 
         /// <summary>
@@ -813,7 +810,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            valueString = match.Groups[1] + ", " + match.Groups[2] + ", " + match.Groups[3];
+            valueString = string.Join(", ", s.Split(',').Select(x => LSLFormatTools.NormalizeFloatString(x.TrimEnd('f', 'F', 'd', 'D'))));
 
             errMessage = null;
             return true;

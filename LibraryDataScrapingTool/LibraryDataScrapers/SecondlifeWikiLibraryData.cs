@@ -95,7 +95,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
         private static readonly Regex _constantSignature =
             new Regex(
-                "Constant: <a href=\"/wiki/.*?\" title=\"(.*?)\" class=\"mw-redirect\">(?:integer|float|vector|string|list|key|quaternion)</a> <strong class=\"selflink\"><span title=\".*?\">(.*?)</span></strong>\\s*=\\s*(.*?); </span>");
+                "Constant: <a href=\"/wiki/.*?\" title=\"(.*?)\"(?: class=\"mw-redirect\")?>(?:integer|float|vector|rotation|string|list|key|quaternion)</a> <strong class=\"selflink\"><span title=\".*?\">(.*?)</span></strong>\\s*=\\s*(.*?); </span>");
 
         private static readonly Regex _deprecatedMarker  = new Regex("<td style=\"color:white;background:#990000; border-width:1px;\" title=\".*?\" width=\"100%\"> <b>Deprecated");
 
@@ -285,7 +285,10 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
             var match = _constantSignature.Match(page);
 
-            if (!match.Success) return null;
+            if (!match.Success)
+            {
+                return null;
+            }
 
 
             var val = match.Groups[3].ToString();
@@ -317,6 +320,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
                                Replace("&gt;", "").
                                Replace("<","").
                                Replace(">","");
+
             }
             else if (type == LSLType.String || type == LSLType.Key)
             {

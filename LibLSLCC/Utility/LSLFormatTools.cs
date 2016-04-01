@@ -49,6 +49,7 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -97,6 +98,117 @@ namespace LibLSLCC.Utility
             }
             return columns;
         }
+
+        private static string FormatFloatExponent(string exponent)
+        {
+            var expSign = exponent[0].ToString();
+
+            expSign = (expSign == "-" || expSign == "+") ? expSign : "";
+
+            var exp = exponent.Substring(expSign == string.Empty ? 0 : 1);
+
+
+            var expLen = exp.TrimEnd('f').Length;
+
+            if (exp[0] == '0' && expLen == 1)
+            {
+                return 'e' + expSign + exp;
+            }
+
+            return 'e' + expSign + exp.TrimStart('0');
+        }
+
+        /// <summary>
+        /// Normalize the appearance of a floating point number string of arbitrary precision, for guaranteed compatiblity with C# float token syntax. <br/>
+        /// <para>
+        /// Example Output:  <br/>
+        /// "-.00" ->  "-0.0", <br/><br/>
+        /// "0.0300" -> "0.03", <br/><br/>
+        /// "-3." -> "-3.0", <br/><br/>
+        /// ".4E04" -> "0.4e4", <br/><br/>
+        /// "4E040" -> "4e40", <br/><br/>
+        /// "56.F" -> "56.0f", <br/><br/>
+        /// etc...
+        /// </para>
+        /// </summary>
+        /// <param name="floatStr"></param>
+        /// <exception cref="FormatException">If <paramref name="floatStr"/> is not a properly formated, LSL float formatting rules apply.</exception>
+        /// <returns>The normalized float string.</returns>
+        public static string NormalizeFloatString(this string floatStr)
+        {
+            if (floatStr == null) throw new ArgumentNullException("floatStr");
+
+            floatStr = floatStr.Trim();
+
+            if (!LSLTokenTools.FloatRegexAnchored.IsMatch(floatStr))
+            {
+                throw new FormatException("\"" + floatStr + "\" is not a properly formated LSL float.");
+            }
+
+            floatStr = floatStr.ToLower();
+
+
+            string[] exponentParts;
+
+            var parts = floatStr.Split('.');
+
+            if (parts.Length != 2)
+            {
+                exponentParts = floatStr.Split('e');
+
+                if (exponentParts.Length > 1)
+                {
+                    return exponentParts[0] + FormatFloatExponent(exponentParts[1]);
+                }
+
+                return floatStr;
+            }
+
+            var front = parts[0];
+            var end = parts[1];
+
+            string negate = "";
+
+            if (front.StartsWith("-"))
+            {
+                negate = "-";
+                front = front.TrimStart('-');
+            }
+
+            front = front.TrimStart('0');
+
+            exponentParts = end.Split('e');
+
+            string exponent = "";
+
+            if (exponentParts.Length > 1)
+            {
+                exponent = FormatFloatExponent(exponentParts[1]);
+
+                end = exponentParts[0];
+            }
+
+            if (front.Length == 0)
+                front = "0";
+
+
+            if (end.Length == 0 || end == "0")
+                return negate + front + ".0" + exponent;
+            if (end == "f")
+                return negate + front + ".0f" + exponent;
+
+
+            string specifier = "";
+
+            if (end.EndsWith("f"))
+            {
+                specifier = "f";
+                end = end.TrimEnd('f');
+            }
+
+            return negate + front + "." + end[0] + end.Substring(1).TrimEnd('0') + exponent + specifier;
+        }
+
 
 
         /// <summary>

@@ -177,7 +177,7 @@ INT
 
 
 FLOAT
-: ((INT '.' INT)|('.' INT)|(INT '.')) (('e'|'E') (PLUS|MINUS) (INT+))? ('f'|'F')?
+: (((INT '.' INT)|('.' INT)|(INT '.')) (('e'|'E') (PLUS|MINUS)? (INT+))? ('f'|'F')?) | (INT ('e'|'E') (PLUS|MINUS)? (INT+))
 ;
 
 QUOTED_STRING :   '"' ( '\\"' | '\\\\' | ~('"') )*? '"';

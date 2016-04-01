@@ -190,7 +190,7 @@ namespace LibLSLCC.Utility.ListParser
             if (c.integer_literal != null)
             {
                 numericPrefix = numericPrefix ?? "";
-                return new LSLListFloatExpr(numericPrefix + c.GetText());
+                return new LSLListIntegerExpr(numericPrefix + c.GetText());
             }
 
             return null;
