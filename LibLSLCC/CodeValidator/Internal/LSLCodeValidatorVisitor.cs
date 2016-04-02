@@ -2581,7 +2581,7 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            var location = new LSLSourceCodeRange(context);
+
 
             if (context.variable != null)
             {
@@ -2592,66 +2592,99 @@ namespace LibLSLCC.CodeValidator
             {
                 var intLiteralNode = new LSLIntegerLiteralNode(context);
 
-                var parentAsPrefix = context.Parent as LSLParser.Expr_PrefixOperationContext;
-                bool negated = parentAsPrefix != null && parentAsPrefix.operation.Text == "-";
+                LSLParser.Expr_PrefixOperationContext parentAsPrefix;
+                bool negated = IsExprAtomNegated(context, out parentAsPrefix);
 
                 LSLLiteralOverflowType overflowType;
-                if ((overflowType = intLiteralNode.CheckForOverflow(negated)) != LSLLiteralOverflowType.None)
-                {
-                    if (overflowType == LSLLiteralOverflowType.Underflow)
-                    {
-                        GenSyntaxWarning()
-                            .IntegerLiteralUnderflow(new LSLSourceCodeRange(parentAsPrefix),
-                                context.integer_literal.Text);
-                    }
-                    else
-                    {
-                        GenSyntaxWarning()
-                            .IntegerLiteralOverflow(new LSLSourceCodeRange(context.integer_literal),
-                                context.integer_literal.Text);
-                    }
-                }
 
+                if ((overflowType = intLiteralNode.CheckForOverflow(negated)) == LSLLiteralOverflowType.None)
+                    return ReturnFromVisit(context, intLiteralNode);
+
+                var errorRange = parentAsPrefix != null
+                    ? new LSLSourceCodeRange(parentAsPrefix)
+                    : new LSLSourceCodeRange(context.hex_literal);
+
+                if (overflowType == LSLLiteralOverflowType.Underflow)
+                {
+                    GenSyntaxWarning()
+                        .IntegerLiteralUnderflow(errorRange,
+                            context.integer_literal.Text, negated);
+                }
+                else
+                {
+                    GenSyntaxWarning()
+                        .IntegerLiteralOverflow(errorRange,
+                            context.integer_literal.Text, negated);
+                }
 
                 return ReturnFromVisit(context, intLiteralNode);
             }
             if (context.float_literal != null)
             {
-                return ReturnFromVisit(context, new LSLFloatLiteralNode(context));
+                var floatLiteralNode = new LSLFloatLiteralNode(context);
+
+                LSLParser.Expr_PrefixOperationContext parentAsPrefix;
+                bool negated = IsExprAtomNegated(context, out parentAsPrefix);
+
+                LSLLiteralOverflowType overflowType;
+
+                if ((overflowType = floatLiteralNode.CheckForOverflow()) == LSLLiteralOverflowType.None)
+                    return ReturnFromVisit(context, floatLiteralNode);
+
+                var warnRange = parentAsPrefix != null
+                    ? new LSLSourceCodeRange(parentAsPrefix)
+                    : new LSLSourceCodeRange(context.hex_literal);
+
+                if (overflowType == LSLLiteralOverflowType.Underflow)
+                {
+                    GenSyntaxWarning()
+                        .FloatLiteralUnderflow(warnRange,
+                            context.float_literal.Text, negated);
+                }
+                else
+                {
+                    GenSyntaxWarning()
+                        .FloatLiteralOverflow(warnRange,
+                            context.float_literal.Text, negated);
+                }
+
+                return ReturnFromVisit(context, floatLiteralNode);
             }
             if (context.hex_literal != null)
             {
-
                 var hexLiteralNode = new LSLHexLiteralNode(context);
 
-                var parentAsPrefix = context.Parent as LSLParser.Expr_PrefixOperationContext;
-                bool negated = parentAsPrefix != null && parentAsPrefix.operation.Text == "-";
-
-                var errorRange = parentAsPrefix != null
-                    ? new LSLSourceCodeRange(parentAsPrefix)
-                    : new LSLSourceCodeRange(context.hex_literal); 
+                LSLParser.Expr_PrefixOperationContext parentAsPrefix;
+                bool negated = IsExprAtomNegated(context, out parentAsPrefix);
 
                 LSLLiteralOverflowType overflowType;
-                if ((overflowType=hexLiteralNode.CheckForOverflow()) != LSLLiteralOverflowType.None)
+
+                if ((overflowType = hexLiteralNode.CheckForOverflow()) == LSLLiteralOverflowType.None)
+                    return ReturnFromVisit(context, hexLiteralNode);
+
+                var warnRange = parentAsPrefix != null
+                    ? new LSLSourceCodeRange(parentAsPrefix)
+                    : new LSLSourceCodeRange(context.hex_literal);
+
+                if (overflowType == LSLLiteralOverflowType.Underflow)
                 {
-                    if (overflowType == LSLLiteralOverflowType.Underflow)
-                    {
-                        GenSyntaxWarning()
-                            .HexLiteralUnderflow(errorRange,
-                                context.hex_literal.Text, negated);
-                    }
-                    else
-                    {
-                        GenSyntaxWarning()
-                            .HexLiteralOverflow(errorRange,
-                                context.hex_literal.Text, negated);
-                    }
+                    GenSyntaxWarning()
+                        .HexLiteralUnderflow(warnRange,
+                            context.hex_literal.Text, negated);
+                }
+                else
+                {
+                    GenSyntaxWarning()
+                        .HexLiteralOverflow(warnRange,
+                            context.hex_literal.Text, negated);
                 }
 
                 return ReturnFromVisit(context, hexLiteralNode);
             }
             if (context.string_literal != null)
             {
+                var location = new LSLSourceCodeRange(context);
+
                 StringLiteralPreProcessor.ProcessString(context.string_literal.Text);
 
                 if (StringLiteralPreProcessor.HasErrors)
@@ -2696,6 +2729,12 @@ namespace LibLSLCC.CodeValidator
 
 
             throw new LSLCodeValidatorInternalException("VisitExpr_Atom unexpected context state");
+        }
+
+        private static bool IsExprAtomNegated(LSLParser.Expr_AtomContext context, out LSLParser.Expr_PrefixOperationContext parentAsPrefix)
+        {
+            parentAsPrefix = context.Parent as LSLParser.Expr_PrefixOperationContext;
+            return parentAsPrefix != null && parentAsPrefix.operation.Text == "-";
         }
 
 

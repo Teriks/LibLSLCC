@@ -597,8 +597,8 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-
-        void ILSLSyntaxErrorListener.CastOnCastExpression(LSLSourceCodeRange location, ILSLReadOnlyExprNode castedExpression)
+        void ILSLSyntaxErrorListener.CastOnCastExpression(LSLSourceCodeRange location,
+            ILSLReadOnlyExprNode castedExpression)
         {
             _errorActionQueue.Enqueue(location.StartIndex,
                 () => SyntaxErrorListener.CastOnCastExpression(location, castedExpression));
@@ -845,20 +845,21 @@ namespace LibLSLCC.CodeValidator
         }
 
 
-        void ILSLSyntaxWarningListener.IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        void ILSLSyntaxWarningListener.IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText,
+            bool negated)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxWarningListener.IntegerLiteralOverflow(location, literalText));
+                    SyntaxWarningListener.IntegerLiteralOverflow(location, literalText, negated));
         }
 
 
-
-        void ILSLSyntaxWarningListener.IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText)
+        void ILSLSyntaxWarningListener.IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText,
+            bool negated)
         {
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
-                    SyntaxWarningListener.IntegerLiteralUnderflow(location, literalText));
+                    SyntaxWarningListener.IntegerLiteralUnderflow(location, literalText, negated));
         }
 
 
@@ -868,7 +869,6 @@ namespace LibLSLCC.CodeValidator
                 () =>
                     SyntaxWarningListener.HexLiteralOverflow(location, literalText, negated));
         }
-
 
 
         void ILSLSyntaxWarningListener.HexLiteralUnderflow(LSLSourceCodeRange location, string literalText, bool negated)
@@ -885,6 +885,22 @@ namespace LibLSLCC.CodeValidator
             _warningActionQueue.Enqueue(location.StartIndex,
                 () =>
                     SyntaxWarningListener.ReturnedValueFromEventHandler(location, eventSignature, returnExpression));
+        }
+
+        void ILSLSyntaxWarningListener.FloatLiteralUnderflow(LSLSourceCodeRange location, string literalText,
+            bool negated)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.FloatLiteralUnderflow(location, literalText, negated));
+        }
+
+        void ILSLSyntaxWarningListener.FloatLiteralOverflow(LSLSourceCodeRange location, string literalText,
+            bool negated)
+        {
+            _warningActionQueue.Enqueue(location.StartIndex,
+                () =>
+                    SyntaxWarningListener.FloatLiteralOverflow(location, literalText, negated));
         }
 
 

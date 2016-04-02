@@ -356,14 +356,16 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">The source code range of the integer literal.</param>
         /// <param name="literalText">The text representing the integer literal.</param>
-        void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText);
+        /// <param name="negated">Whether or not a negate operator was applied to the integer literal.</param>
+        void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText, bool negated);
 
         /// <summary>
         ///     Occurs when an integer literal present in the source code is less than the minimum value of a 32 bit LSL integer.
         /// </summary>
         /// <param name="location">The source code range of the integer literal.</param>
         /// <param name="literalText">The text representing the integer literal.</param>
-        void IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText);
+        /// <param name="negated">Whether or not a negate operator was applied to the integer literal.</param>
+        void IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText, bool negated);
 
 
         /// <summary>
@@ -392,5 +394,22 @@ namespace LibLSLCC.CodeValidator
         /// <param name="returnExpression">The return expression.</param>
         void ReturnedValueFromEventHandler(LSLSourceCodeRange location, ILSLEventSignature eventSignature,
             ILSLReadOnlyExprNode returnExpression);
+
+
+        /// <summary>
+        ///     Occurs when an float literal present in the source code is greater than the max value of a 32 bit LSL float.
+        /// </summary>
+        /// <param name="location">The source code range of the float literal.</param>
+        /// <param name="literalText">The text representing the float literal.</param>
+        /// <param name="negated">Whether or not a negate operator was applied to the float literal.</param>
+        void FloatLiteralUnderflow(LSLSourceCodeRange location, string literalText, bool negated);
+
+        /// <summary>
+        ///     Occurs when an float literal present in the source code is less than the minimum value of a 32 bit LSL float.
+        /// </summary>
+        /// <param name="location">The source code range of the float literal.</param>
+        /// <param name="literalText">The text representing the float literal.</param>
+        /// <param name="negated">Whether or not a negate operator was applied to the float literal.</param>
+        void FloatLiteralOverflow(LSLSourceCodeRange location, string literalText, bool negated);
     }
 }

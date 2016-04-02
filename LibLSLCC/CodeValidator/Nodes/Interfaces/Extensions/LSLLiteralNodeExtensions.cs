@@ -46,6 +46,8 @@
 #region Imports
 
 using System;
+using System.Globalization;
+using LibLSLCC.Utility;
 
 #endregion
 
@@ -94,6 +96,44 @@ namespace LibLSLCC.CodeValidator
         }
 
 
+
+
+        /// <summary>
+        ///     Determines whether the float literal node is a literal value that overflows/underflows a 32 bit float.
+        /// </summary>
+        /// <param name="node">The float literal node to test.</param>
+        /// <returns><see cref="LSLLiteralOverflowType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="node"/> is <c>null</c>.</exception>
+        public static LSLLiteralOverflowType CheckForOverflow(this ILSLFloatLiteralNode node)
+        {
+            if (node == null) throw new ArgumentNullException("node");
+
+            double val;
+            try
+            {
+                val = Convert.ToDouble(
+                    LSLFormatTools.NormalizeFloatString(node.RawText.TrimEnd('f','F')));
+            }
+            catch (OverflowException)
+            {
+                return LSLLiteralOverflowType.Overflow;
+            }
+
+
+            if (val > 3.402823466e+38)
+            {
+                return LSLLiteralOverflowType.Overflow;
+            }
+            if (val < 1.175494351e-38)
+            {
+                return LSLLiteralOverflowType.Underflow;
+            }
+
+            return LSLLiteralOverflowType.None;
+        }
+
+
+
         /// <summary>
         ///     Determines whether the integer literal node is a literal value that overflows/underflows a 32 bit integer.
         /// </summary>
@@ -124,6 +164,7 @@ namespace LibLSLCC.CodeValidator
             {
                 return LSLLiteralOverflowType.Overflow;
             }
+
             return LSLLiteralOverflowType.None;
         }
 

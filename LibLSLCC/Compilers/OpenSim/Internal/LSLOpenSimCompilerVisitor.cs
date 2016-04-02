@@ -961,7 +961,23 @@ private static class UTILITIES
                 Writer.Write("new " + LSLType_To_CSharpType(LSLType.Float) + "(");
             }
 
-            Writer.Write(LSLFormatTools.NormalizeFloatString(node.RawText));
+
+
+            var checkOverFlow = node.CheckForOverflow();
+
+            switch (checkOverFlow)
+            {
+                case LSLLiteralOverflowType.None:
+                    Writer.Write(LSLFormatTools.NormalizeFloatString(node.RawText));
+                    break;
+                case LSLLiteralOverflowType.Overflow:
+                    Writer.Write("float.PositiveInfinity");
+                    break;
+                case LSLLiteralOverflowType.Underflow:
+                    Writer.Write("float.NegativeInfinity");
+                    break;
+            }
+
 
             if (box)
             {
@@ -984,10 +1000,9 @@ private static class UTILITIES
                                                       parentAsBinaryExpression.Operation ==
                                                       LSLBinaryOperationType.LogicalOr));
 
-            var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
 
-            bool parentIsUnaryNegate = parentAsPrefixExpression != null &&
-                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negate;
+            bool parentIsUnaryNegate = node.IsNegated();
+
 
             var parentExpressionList = node.Parent as ILSLExpressionListNode;
 
@@ -1053,10 +1068,8 @@ private static class UTILITIES
                                                       parentAsBinaryExpression.Operation ==
                                                       LSLBinaryOperationType.LogicalOr));
 
-            var parentAsPrefixExpression = node.Parent as ILSLPrefixOperationNode;
 
-            bool parentIsUnaryNegate = parentAsPrefixExpression != null &&
-                                       parentAsPrefixExpression.Operation == LSLPrefixOperationType.Negate;
+            bool parentIsUnaryNegate = node.IsNegated();
 
 
             //If the parent is a binary expression, the conversion will happen automagically because

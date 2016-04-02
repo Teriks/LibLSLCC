@@ -516,7 +516,8 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">The source code range of the integer literal.</param>
         /// <param name="literalText">The text representing the integer literal.</param>
-        public virtual void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText)
+        /// <param name="negated">Whether or not a negate operator was applied to the integer literal.</param>
+        public virtual void IntegerLiteralOverflow(LSLSourceCodeRange location, string literalText, bool negated)
         {
             OnWarning(location,
                 string.Format("Integer literal \"{0}\" overflows LSL's integer type, it will compile to -1.",
@@ -529,7 +530,8 @@ namespace LibLSLCC.CodeValidator
         /// </summary>
         /// <param name="location">The source code range of the integer literal.</param>
         /// <param name="literalText">The text representing the integer literal.</param>
-        public void IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText)
+        /// <param name="negated">Whether or not a negate operator was applied to the integer literal.</param>
+        public void IntegerLiteralUnderflow(LSLSourceCodeRange location, string literalText, bool negated)
         {
             OnWarning(location,
                 string.Format("Integer literal \"-{0}\" underflows LSL's integer type, it will compile to 1.",
@@ -597,6 +599,54 @@ namespace LibLSLCC.CodeValidator
                 string.Format(
                     "Return statement in event handler \"{0}\" returns a value that will be discarded.",
                     eventSignature.Name));
+        }
+
+
+
+        /// <summary>
+        ///     Occurs when an float literal present in the source code is greater than the max value of a 32 bit LSL float.
+        /// </summary>
+        /// <param name="location">The source code range of the float literal.</param>
+        /// <param name="literalText">The text representing the float literal.</param>
+        /// <param name="negated">Whether or not a negate operator was applied to the float literal.</param>
+        public void FloatLiteralUnderflow(LSLSourceCodeRange location, string literalText, bool negated)
+        {
+            if (negated)
+            {
+                OnWarning(location,
+                    string.Format("Negated float literal \"{0}\" underflows LSL's float type;  It will compile to \"-(0.0)\".",
+                    literalText));
+            }
+            else
+            {
+                OnWarning(location,
+                    string.Format("Float literal \"{0}\" underflows LSL's float type, it will compile to -0.0.",
+                        literalText));
+            }
+        }
+
+
+
+        /// <summary>
+        ///     Occurs when an float literal present in the source code is less than the minimum value of a 32 bit LSL float.
+        /// </summary>
+        /// <param name="location">The source code range of the float literal.</param>
+        /// <param name="literalText">The text representing the float literal.</param>
+        /// <param name="negated">Whether or not a negate operator was applied to the float literal.</param>
+        public void FloatLiteralOverflow(LSLSourceCodeRange location, string literalText, bool negated)
+        {
+            if (negated)
+            {
+                OnWarning(location,
+                    string.Format("Negated float literal \"{0}\" overflows LSL's integer type;  It will compile to \"-(Infinity)\".",
+                    literalText));
+            }
+            else
+            {
+                OnWarning(location,
+                    string.Format("Float literal \"{0}\" overflows LSL's integer type, it will compile to Infinity.",
+                        literalText));
+            }
         }
 
 
