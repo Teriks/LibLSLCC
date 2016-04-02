@@ -256,7 +256,7 @@ namespace lslcc
             argParser.AddSwitch(new ArgSwitchDesc("-clientcode")
             {
                 MaxArgs = 0,
-                HelpLine = "subset1;subset2;... (default is just lsl)",
+                HelpLine = "Generate client uploadable code",
                 DescriptionLines =
                 {
                     "Compile client uploadable code that works with all versions of OpenSim starting with 0.8, ",
