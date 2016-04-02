@@ -620,7 +620,7 @@ namespace LibLSLCC.CodeValidator
             else
             {
                 OnWarning(location,
-                    string.Format("Float literal \"{0}\" underflows LSL's float type, it will compile to -0.0.",
+                    string.Format("Float literal \"{0}\" underflows LSL's float type, it will compile to 0.0.",
                         literalText));
             }
         }
@@ -644,7 +644,7 @@ namespace LibLSLCC.CodeValidator
             else
             {
                 OnWarning(location,
-                    string.Format("Float literal \"{0}\" overflows LSL's integer type, it will compile to Infinity.",
+                    string.Format("Float literal \"{0}\" overflows LSL's integer type, it will compile to \"Infinity\".",
                         literalText));
             }
         }
