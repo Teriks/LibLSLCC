@@ -2580,9 +2580,6 @@ namespace LibLSLCC.CodeValidator
                     .VisitContextInvalidState("VisitExpr_Atom");
             }
 
-
-
-
             if (context.variable != null)
             {
                 return ReturnFromVisit(context,

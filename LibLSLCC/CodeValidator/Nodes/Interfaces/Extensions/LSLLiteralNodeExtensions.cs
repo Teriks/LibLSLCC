@@ -155,7 +155,6 @@ namespace LibLSLCC.CodeValidator
                 return LSLLiteralOverflowType.Overflow;
             }
 
-
             if (negated && val > 2147483648)
             {
                 return LSLLiteralOverflowType.Underflow;
