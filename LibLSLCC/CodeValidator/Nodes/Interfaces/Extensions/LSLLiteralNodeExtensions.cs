@@ -111,8 +111,7 @@ namespace LibLSLCC.CodeValidator
             double val;
             try
             {
-                val = Convert.ToDouble(
-                    LSLFormatTools.NormalizeFloatString(node.RawText.TrimEnd('f','F')));
+                val = double.Parse(LSLFormatTools.NormalizeFloatString(node.RawText.TrimEnd('f', 'F')));
             }
             catch (OverflowException)
             {
@@ -120,11 +119,11 @@ namespace LibLSLCC.CodeValidator
             }
 
 
-            if (val > 3.402823466e+38)
+            if (val > 3.402823466E+38)
             {
                 return LSLLiteralOverflowType.Overflow;
             }
-            if (val < 1.175494351e-38)
+            if (val < 1.401298464E-45)
             {
                 return LSLLiteralOverflowType.Underflow;
             }
