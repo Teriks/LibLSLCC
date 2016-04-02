@@ -46,8 +46,6 @@
 #region Imports
 
 using System;
-using System.Globalization;
-using System.Linq;
 using LibLSLCC.Utility;
 
 #endregion

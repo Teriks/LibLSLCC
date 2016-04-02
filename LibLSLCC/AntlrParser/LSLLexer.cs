@@ -11,6 +11,16 @@
 // Generated from AntlrParser\LSL.g4 by ANTLR 4.5.2
 
 // Unreachable code detected
+
+using System;
+using System.CodeDom.Compiler;
+using System.Text;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using LibLSLCC.CodeValidator;
+using LibLSLCC.Collections;
+
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -20,19 +30,8 @@
 #pragma warning disable 419
 
 namespace LibLSLCC.AntlrParser {
-
-	using LibLSLCC.Collections;
-	using LibLSLCC.CodeValidator;
-
-using System;
-using System.Text;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using DFA = Antlr4.Runtime.Dfa.DFA;
-
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5.2")]
-[System.CLSCompliant(false)]
+    [GeneratedCode("ANTLR", "4.5.2")]
+[CLSCompliant(false)]
 public partial class LSLLexer : Lexer {
 	public const int
 		TYPE=1, DO=2, IF=3, ELSE=4, WHILE=5, FOR=6, DEFAULT=7, STATE=8, RETURN=9, 

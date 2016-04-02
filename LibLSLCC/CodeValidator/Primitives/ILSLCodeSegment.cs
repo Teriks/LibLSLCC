@@ -40,6 +40,7 @@
 // 
 // 
 #endregion
+
 using LibLSLCC.Collections;
 
 namespace LibLSLCC.CodeValidator

@@ -49,7 +49,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using LibLSLCC.AntlrParser;
-using LibLSLCC.Utility;
 
 #endregion
 
