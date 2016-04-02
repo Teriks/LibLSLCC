@@ -2602,7 +2602,7 @@ namespace LibLSLCC.CodeValidator
 
                 var errorRange = parentAsPrefix != null
                     ? new LSLSourceCodeRange(parentAsPrefix)
-                    : new LSLSourceCodeRange(context.hex_literal);
+                    : new LSLSourceCodeRange(context.integer_literal);
 
                 if (overflowType == LSLLiteralOverflowType.Underflow)
                 {
@@ -2633,7 +2633,7 @@ namespace LibLSLCC.CodeValidator
 
                 var warnRange = parentAsPrefix != null
                     ? new LSLSourceCodeRange(parentAsPrefix)
-                    : new LSLSourceCodeRange(context.hex_literal);
+                    : new LSLSourceCodeRange(context.float_literal);
 
                 if (overflowType == LSLLiteralOverflowType.Underflow)
                 {
