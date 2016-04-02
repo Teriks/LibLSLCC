@@ -47,6 +47,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using LibLSLCC.Utility;
 
 #endregion
@@ -118,6 +119,8 @@ namespace LibLSLCC.CodeValidator
                 return LSLLiteralOverflowType.Overflow;
             }
 
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if(val == 0.0) return LSLLiteralOverflowType.None;
 
             if (val > 3.402823466E+38)
             {
