@@ -118,7 +118,9 @@ namespace LibLSLCC.Utility
         }
 
         /// <summary>
-        /// Normalize the appearance of a floating point number string of arbitrary precision, for guaranteed compatiblity with C# float token syntax. <br/>
+        /// Format an LSL floating point number string of arbitrary precision from LSL float token format to an equivelant string compatiblity with C# float token syntax. <br/>
+        /// Specifiers such as 'f' and 'e' are guaranteed to be formatted as lower case characters.  A trailing 'f' specifier will remain in the string if present. <br/>
+        /// Type specifiers other than 'f' are not accepted. <br/>
         /// <para>
         /// Example Output:  <br/>
         /// "-.00" ->  "-0.0", <br/><br/>
@@ -130,7 +132,7 @@ namespace LibLSLCC.Utility
         /// etc...
         /// </para>
         /// </summary>
-        /// <param name="floatStr"></param>
+        /// <param name="floatStr">The float string to format.</param>
         /// <exception cref="FormatException">If <paramref name="floatStr"/> is not a properly formated, LSL float formatting rules apply.</exception>
         /// <returns>The normalized float string.</returns>
         public static string NormalizeFloatString(this string floatStr)
