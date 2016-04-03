@@ -378,4 +378,16 @@ This is so the revision number in the tag always increments even when LibLSLCC r
 It has to be this way because tag names are derived from the current version of the LibLSLCC assembly. If there are changes elsewhere that do not effect it, or any assembly at for that matter, the tag still needs to increment.
 
 
+# (1.0.4.29)<br/> Fix handling of float literal overflows/underflows, library data corrections
+
+Float literal overflows/underflows now generate a warning, underflows compile to exactly '0.0' and overflows compile to float.PositiveInfinity.
+
+Various problems with library data fixed.
+
+A few missing constants were added and constants with incorrectly documented values were corrected.
+
+LibraryDataScrapingTool now pulls constants from the specified viewer keywords file instead of the LSL wiki.
+
+
+
 
