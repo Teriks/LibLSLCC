@@ -111,7 +111,7 @@ namespace LibLSLCC.CodeValidator
 
             var normalizedFloatString = LSLFormatTools.NormalizeFloatString(node.RawText.TrimEnd('f', 'F'));
 
-            bool nonZero = normalizedFloatString.Any(x => x != '0' && x != '.' && x != 'e' && x != '-' && x != '+');
+            bool nonZero = normalizedFloatString.TakeWhile(c => c != 'e').Any(c => c != '0' && c != '.' && c != 'f');
 
             if(!nonZero) return LSLLiteralOverflowType.None;
 
