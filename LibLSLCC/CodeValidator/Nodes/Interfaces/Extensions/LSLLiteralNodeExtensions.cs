@@ -46,6 +46,7 @@
 #region Imports
 
 using System;
+using System.Linq;
 using LibLSLCC.Utility;
 
 #endregion
@@ -107,18 +108,23 @@ namespace LibLSLCC.CodeValidator
         {
             if (node == null) throw new ArgumentNullException("node");
 
+
+            var normalizedFloatString = LSLFormatTools.NormalizeFloatString(node.RawText.TrimEnd('f', 'F'));
+
+            bool nonZero = normalizedFloatString.Any(x => x != '0' && x != '.' && x != 'e' && x != '-' && x != '+');
+
+            if(!nonZero) return LSLLiteralOverflowType.None;
+
             double val;
             try
             {
-                val = double.Parse(LSLFormatTools.NormalizeFloatString(node.RawText.TrimEnd('f', 'F')));
+                val = double.Parse(normalizedFloatString);
             }
             catch (OverflowException)
             {
                 return LSLLiteralOverflowType.Overflow;
             }
 
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if(val == 0.0) return LSLLiteralOverflowType.None;
 
             if (val > 3.402823466E+38)
             {
