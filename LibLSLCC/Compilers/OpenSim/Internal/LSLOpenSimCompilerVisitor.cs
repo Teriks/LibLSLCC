@@ -974,7 +974,7 @@ private static class UTILITIES
                     Writer.Write("float.PositiveInfinity");
                     break;
                 case LSLLiteralOverflowType.Underflow:
-                    Writer.Write("float.NegativeInfinity");
+                    Writer.Write("0.0");
                     break;
             }
 
