@@ -109,16 +109,16 @@ namespace LibLSLCC.CodeValidator
             if (node == null) throw new ArgumentNullException("node");
 
 
-            var normalizedFloatString = LSLFormatTools.NormalizeFloatString(node.RawText.TrimEnd('f', 'F'));
+            var formatedFloatString = LSLFormatTools.FormatFloatString(node.RawText.TrimEnd('f', 'F'));
 
-            bool nonZero = normalizedFloatString.TakeWhile(c => c != 'e').Any(c => c != '0' && c != '.' && c != 'f');
+            bool nonZero = formatedFloatString.TakeWhile(c => c != 'e').Any(c => c != '0' && c != '.' && c != 'f');
 
             if(!nonZero) return LSLLiteralOverflowType.None;
 
             double val;
             try
             {
-                val = double.Parse(normalizedFloatString);
+                val = double.Parse(formatedFloatString);
             }
             catch (OverflowException)
             {

@@ -968,7 +968,7 @@ private static class UTILITIES
             switch (checkOverFlow)
             {
                 case LSLLiteralOverflowType.None:
-                    Writer.Write(LSLFormatTools.NormalizeFloatString(node.RawText));
+                    Writer.Write(LSLFormatTools.FormatFloatString(node.RawText));
                     break;
                 case LSLLiteralOverflowType.Overflow:
                     Writer.Write("float.PositiveInfinity");

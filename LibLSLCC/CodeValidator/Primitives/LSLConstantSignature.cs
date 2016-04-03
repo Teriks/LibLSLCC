@@ -472,7 +472,7 @@ namespace LibLSLCC.CodeValidator
 
             try
             {
-                valueString = LSLFormatTools.NormalizeFloatString(stripSpecifiers);
+                valueString = LSLFormatTools.FormatFloatString(stripSpecifiers);
             }
             catch (FormatException)
             {
@@ -720,7 +720,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            valueString = string.Join(", ", s.Split(',').Select(x=>LSLFormatTools.NormalizeFloatString(x.TrimEnd('f','F'))));
+            valueString = string.Join(", ", s.Split(',').Select(x=>LSLFormatTools.FormatFloatString(x.TrimEnd('f','F'))));
 
             errMessage = null;
             return true;
@@ -810,7 +810,7 @@ namespace LibLSLCC.CodeValidator
                 return false;
             }
 
-            valueString = string.Join(", ", s.Split(',').Select(x => LSLFormatTools.NormalizeFloatString(x.TrimEnd('f', 'F'))));
+            valueString = string.Join(", ", s.Split(',').Select(x => LSLFormatTools.FormatFloatString(x.TrimEnd('f', 'F'))));
 
             errMessage = null;
             return true;

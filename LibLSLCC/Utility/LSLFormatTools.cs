@@ -70,7 +70,7 @@ namespace LibLSLCC.Utility
         ///     The number of space characters required to match the length of all the whitespace characters at the end of the
         ///     string (except newlines)
         /// </returns>
-        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="str" /> is <c>null</c>.</exception>
         public static int GetStringSpacesIndented(this string str, int tabSize = 4)
         {
             if (str == null) throw new ArgumentNullException("str");
@@ -118,24 +118,29 @@ namespace LibLSLCC.Utility
         }
 
         /// <summary>
-        /// Format an LSL floating point number string of arbitrary precision from LSL float token format to an equivelant string compatiblity with C# float token syntax. <br/>
-        /// Specifiers such as 'f' and 'e' are guaranteed to be formatted as lower case characters.  A trailing 'f' specifier will remain in the string if present. <br/>
-        /// Type specifiers other than 'f' are not accepted. <br/>
-        /// <para>
-        /// Example Output:  <br/>
-        /// "-.00" ->  "-0.0", <br/><br/>
-        /// "0.0300" -> "0.03", <br/><br/>
-        /// "-3." -> "-3.0", <br/><br/>
-        /// ".4E04" -> "0.4e4", <br/><br/>
-        /// "4E040" -> "4e40", <br/><br/>
-        /// "56.F" -> "56.0f", <br/><br/>
-        /// etc...
-        /// </para>
+        ///     Format an LSL floating point number string of arbitrary precision from LSL float token format to an equivelant
+        ///     string compatiblity with C# float token syntax.<br />
+        ///     Specifiers such as 'f' and 'e' are guaranteed to be formatted as lower case characters.  A trailing 'f' specifier
+        ///     will remain in the string if present.<br />
+        ///     Type specifiers other than 'f' are not accepted.<br />
+        ///     <para>
+        ///         Example Output:<br />
+        ///         "-.00" ->  "-0.0",<br /><br />
+        ///         "0.0300" -> "0.03",<br /><br />
+        ///         "-3." -> "-3.0",<br /><br />
+        ///         ".4E04" -> "0.4e4",<br /><br />
+        ///         "4E040" -> "4e40",<br /><br />
+        ///         "56.F" -> "56.0f",<br /><br />
+        ///         etc...
+        ///     </para>
         /// </summary>
         /// <param name="floatStr">The float string to format.</param>
-        /// <exception cref="FormatException">If <paramref name="floatStr"/> is not a properly formated, LSL float formatting rules apply.</exception>
+        /// <exception cref="FormatException">
+        ///     If <paramref name="floatStr" /> is not a properly formated, LSL float formatting
+        ///     rules apply.
+        /// </exception>
         /// <returns>The normalized float string.</returns>
-        public static string NormalizeFloatString(this string floatStr)
+        public static string FormatFloatString(this string floatStr)
         {
             if (floatStr == null) throw new ArgumentNullException("floatStr");
 
@@ -210,15 +215,13 @@ namespace LibLSLCC.Utility
             return negate + front + "." + end[0] + end.Substring(1).TrimEnd('0') + exponent + specifier;
         }
 
-
-
         /// <summary>
         ///     Gets the number of spaces required to exactly match the length of a given string up to the first new line
         /// </summary>
         /// <param name="str">Input string to get the length in spaces of</param>
         /// <param name="tabSize">Tab size in spaces, defaults to 4</param>
         /// <returns>Number of spaces required to match the length of the string</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="str"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="str" /> is <c>null</c>.</exception>
         public static int GetStringSpacesEquivalent(this string str, int tabSize = 4)
         {
             if (str == null) throw new ArgumentNullException("str");
@@ -261,7 +264,6 @@ namespace LibLSLCC.Utility
             return columns;
         }
 
-
         /// <summary>
         ///     Creates a spacer string using tabs up until spaces are required for alignment.
         ///     Strings less than tabSize end up being only spaces.
@@ -293,7 +295,6 @@ namespace LibLSLCC.Utility
             return space;
         }
 
-
         /// <summary>
         ///     If a string has control codes in it, this will return a string with those control codes
         ///     replaced with their symbolic representation, IE: &#92;n &#92;t ect..
@@ -316,20 +317,18 @@ namespace LibLSLCC.Utility
             }
         }
 
-
         /// <summary>
         ///     Create a repeating string by repeating the content string a number of times.
         /// </summary>
         /// <param name="repeats">The number of times the 'content' string should repeat.</param>
         /// <param name="content">The content string to repeat.</param>
-        /// <returns><paramref name="content"/> concatenated <paramref name="repeats"/> number of times.</returns>
+        /// <returns><paramref name="content" /> concatenated <paramref name="repeats" /> number of times.</returns>
         public static string CreateRepeatingString(int repeats, string content)
         {
             var result = "";
             for (var i = 0; i < repeats; i++) result += content;
             return result;
         }
-
 
         /// <summary>
         ///     Generate a string with N number of spaces in it
@@ -341,7 +340,6 @@ namespace LibLSLCC.Utility
             return CreateRepeatingString(spaces, " ");
         }
 
-
         /// <summary>
         ///     Generate a string with N number of tabs in it
         /// </summary>
@@ -351,7 +349,6 @@ namespace LibLSLCC.Utility
         {
             return CreateRepeatingString(tabs, "\t");
         }
-
 
         /// <summary>
         ///     Generate a string with N number of newlines in it.

@@ -71,7 +71,7 @@ namespace LibLSLCC.Utility.ListParser
             }
             else
             {
-                var v = LSLFormatTools.NormalizeFloatString(val.TrimEnd('f', 'F'));
+                var v = LSLFormatTools.FormatFloatString(val.TrimEnd('f', 'F'));
                 Value = float.Parse(v);
             }
         }
