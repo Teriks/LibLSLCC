@@ -64,11 +64,7 @@ grammar, non grammar level syntax rules, and generated code behavior.
 
 I have integrated LibLSLCC into OpenSim, see here:
 
-https://github.com/Teriks/OpenSim_With_LibLSLCC 
-
-Or:
-
-https://gitlab.com/erihoss/OpenSim_With_LibLSLCC 
+https://github.com/Teriks/OpenSim_With_LibLSLCC
 
 
 ====
