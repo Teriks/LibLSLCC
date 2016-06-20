@@ -89,7 +89,9 @@ namespace LSLCCEditor
                 UriBuilder uri = new UriBuilder(codeBase);
                 string path = Uri.UnescapeDataString(uri.Path);
 
-                if (!Path.GetDirectoryName(path).StartsWith(Environment.CurrentDirectory) || visitedDependencies.Contains(a) || a.IsDynamic) continue;
+                string exeDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+                if (!Path.GetDirectoryName(path).StartsWith(exeDir) || visitedDependencies.Contains(a) || a.IsDynamic) continue;
 
                 visitedDependencies.Add(a);
 
@@ -142,7 +144,6 @@ namespace LSLCCEditor
 
             foreach (var assembly in GetDependencies(Assembly.GetExecutingAssembly()).OrderBy(x=>x.FullName))
             {
-
                 if (assembly.FullName == thisAssembliesName.FullName) continue;
 
                 var name = assembly.GetName();
@@ -152,7 +153,9 @@ namespace LSLCCEditor
 
             try
             {
-                using (var reader = File.OpenRead("license.rtf"))
+                string exeDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+                using (var reader = File.OpenRead(Path.Combine(exeDir, "license.rtf")))
                 {
                     LicenseText.SelectAll();
                     LicenseText.Selection.Load(reader, DataFormats.Rtf);
