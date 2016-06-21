@@ -31,12 +31,13 @@ def get_lslcceditor_version():
 
 
 def zip_dir_relative(path, zip_file, **kwargs):
+
+    into_arch_dir = kwargs.get('archTopDir', None)
+    rel_dir_transform = kwargs.get('archDirTransform', None)
+    file_filter = kwargs.get('fileFilter', None)
+    
     for root, dirs, files in os.walk(path):
         for file in files:
-
-            into_arch_dir = kwargs.get('archTopDir', None)
-            rel_dir_transform = kwargs.get('archDirTransform', None)
-
             full_path = os.path.join(root, file)
             rel_path = os.path.relpath(root, scriptPath)
 
@@ -47,6 +48,10 @@ def zip_dir_relative(path, zip_file, **kwargs):
 
             if into_arch_dir is not None:
                 arc_path = os.path.join(into_arch_dir, rel_path, file)
+                
+            if file_filter is not None:
+                if not file_filter(full_path):
+                    continue
 
             print('Zip:\n\t' + os.path.relpath(full_path, scriptPath) + ' -> ' + arc_path)
             zip_file.write(full_path, arc_path)
@@ -247,27 +252,38 @@ try:
     zipMode = zipfile.ZIP_DEFLATED
 except:
     zipMode = zipfile.ZIP_STORED
+    
+    
+def zip_extension_filter(path):
+    return os.path.splitext(path)[1] != ".tmp"
 
 # make the timestamped binary release zip file
 with zipfile.ZipFile(binariesZipPath, 'w', zipMode) as zip_file:
     if not args.debug_only:
         zip_dir_relative(os.path.join(LibLSLCC_AnyCpu_Path, "Release"), zip_file,
-                         archDirTransform=remove_second_folder_down)
+                         archDirTransform=remove_second_folder_down,
+                         fileFilter=zip_extension_filter)
 
     if not args.release_only:
         zip_dir_relative(os.path.join(LibLSLCC_AnyCpu_Path, "Debug"), zip_file,
-                         archDirTransform=remove_second_folder_down)
+                         archDirTransform=remove_second_folder_down,
+                         fileFilter=zip_extension_filter)
 
-    zip_dir_relative(LibLSLCC_ThirdPartyLicenses_Path, zip_file, archDirTransform=remove_second_folder_down)
+    zip_dir_relative(LibLSLCC_ThirdPartyLicenses_Path, zip_file, 
+                     archDirTransform=remove_second_folder_down, 
+                     fileFilter=zip_extension_filter)
 
-    zip_dir_relative(lslcc_cmd_ThirdPartyLicenses_Path, zip_file, archDirTransform=remove_second_folder_down)
+    zip_dir_relative(lslcc_cmd_ThirdPartyLicenses_Path, zip_file, 
+                     archDirTransform=remove_second_folder_down, 
+                     fileFilter=zip_extension_filter)
 
     lslcc_cmd_Arch_Path = os.path.basename(lslcc_cmd_Path)
 
     # only the release build of lslcc_cmd gets put in the zip
     if args.build_lslcc_cmd and not args.debug_only:
         zip_dir_relative(os.path.join(lslcc_cmd_AnyCpu_Path, "Release"), zip_file,
-                         archDirTransform=remove_second_folder_down)
+                         archDirTransform=remove_second_folder_down,
+                         fileFilter=zip_extension_filter)
 
     zip_file.write(LibLSLCC_Licence_Path, os.path.basename('LICENSE'))
 
