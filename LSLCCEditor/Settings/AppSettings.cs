@@ -100,6 +100,9 @@ namespace LSLCCEditor.Settings
 
         public static void Load()
         {
+
+            bool firstRun = !Directory.Exists(AppDataDir);
+
             try
             {
                 Directory.CreateDirectory(AppDataDir);
@@ -171,37 +174,13 @@ namespace LSLCCEditor.Settings
 
             catch (FileNotFoundException)
             {
-                MessageBox.Show(
-                    "There was a problem with the application settings, the application settings file could not be found."
-                    + Environment.NewLine + Environment.NewLine +
-                    "The file will be created and default settings will be applied.",
-                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                SettingsManager.ApplyDefaults();
-                Save();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                MessageBox.Show(
-                    "There was a problem with the application settings, the applications data directory could not be found."
-                    + Environment.NewLine + Environment.NewLine +
-                    "The directory will be created and default settings will be applied.",
-                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                try
-                {
-                    Directory.CreateDirectory(AppDataDir);
-                }
-                    // ReSharper disable once CatchAllClause
-                catch (Exception e)
+                if (!firstRun)
                 {
                     MessageBox.Show(
-                        "The application settings directory could not be created." + Environment.NewLine +
-                        "The application will now exit." + Environment.NewLine + Environment.NewLine +
-                        "Error: " + e.Message,
+                        "There was a problem with the application settings, the application settings file could not be found."
+                        + Environment.NewLine + Environment.NewLine +
+                        "The file will be created and default settings will be applied.",
                         "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    Environment.Exit(1);
                 }
 
                 SettingsManager.ApplyDefaults();
