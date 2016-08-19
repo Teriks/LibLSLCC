@@ -56,6 +56,12 @@ using LibLSLCC.Utility.ListParser;
 
 namespace DemoArea
 {
+	
+	/*
+		See https://github.com/Teriks/OpenSim_With_LibLSLCC/blob/master/OpenSim/Region/ScriptEngine/Shared/LibLSLCCCompiler/Compiler.cs
+		
+		For more LSLLibraryDataReflectionSerializer serializer usage.
+	*/
 
     
     class MyValueStringConverter : ILSLValueStringConverter
