@@ -1118,7 +1118,7 @@ namespace LibLSLCC.CodeFormatter
                 Expression_WrappingPush(false, null);
 
                 ExpressionList_WrappingPush(true,
-                    new ExpressionListWrappingContext(node.InitExpressionList.Expressions.First(), this));
+                    new ExpressionListWrappingContext(node.AfterthoughtExpressionList.Expressions.First(), this));
 
                 VisitExpressionList(node.AfterthoughtExpressionList);
 

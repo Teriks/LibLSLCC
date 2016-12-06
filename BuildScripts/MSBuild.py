@@ -22,8 +22,8 @@ class Tool:
                     self._MSBUILD = 'C:\\Program Files (x86)\\MSBuild\\14.0\\bin\\amd64\\MSBuild.exe'
         
             if not os.path.isfile(self._MSBUILD):
-                raise Exception('Neither MSBuild 12.0 or 14.0 could not be found, please install Visual Studios 2012+, OR:'
-                                ' MSBuild 12.0 Standalone: https://www.microsoft.com/en-us/download/details.aspx?id=40760\n'
+                raise Exception('Neither MSBuild 12.0 or 14.0 could not be found, please install Visual Studios 2012+, OR: '
+                                'MSBuild 12.0 Standalone: https://www.microsoft.com/en-us/download/details.aspx?id=40760\n'
                                 'MSBuild 14.0 Standalone: https://www.microsoft.com/en-in/download/details.aspx?id=48159')
         else:
             self._MSBUILD = subprocess.check_output(['which', 'xbuild']).strip()
