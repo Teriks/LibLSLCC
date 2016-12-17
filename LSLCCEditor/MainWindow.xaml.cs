@@ -268,6 +268,9 @@ namespace LSLCCEditor
             this.Closing += (sender, args) =>
             {
                 var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.Out);
+
+                pipeClient.Connect();
+
                 var streamWriter = new StreamWriter(pipeClient);
                 streamWriter.WriteLine(":KILL:");
                 streamWriter.Flush();
