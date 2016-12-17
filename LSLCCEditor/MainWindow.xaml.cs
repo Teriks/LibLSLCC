@@ -244,19 +244,22 @@ namespace LSLCCEditor
         private void SendOpenTabPipeMessages(string [] fileNames)
         {
             var pipe = File.ReadAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"));
-            var pipeClient = new NamedPipeClientStream(".", pipe, PipeDirection.Out);
-            var streamWriter = new StreamWriter(pipeClient);
 
-            pipeClient.Connect();
-
-            foreach (var fileName in fileNames)
+            using (var pipeClient = new NamedPipeClientStream(".", pipe, PipeDirection.Out))
             {
-                streamWriter.WriteLine(Path.GetFullPath(fileName));
+                var streamWriter = new StreamWriter(pipeClient);
+
+                pipeClient.Connect();
+
+                foreach (var fileName in fileNames)
+                {
+                    streamWriter.WriteLine(Path.GetFullPath(fileName));
+                }
+
+                streamWriter.WriteLine(":EOF:");
+
+                streamWriter.Flush();
             }
-
-            streamWriter.WriteLine(":EOF:");
-
-            streamWriter.Flush();
         }
 
         private void StartOpenTabPipeServer()
@@ -267,13 +270,14 @@ namespace LSLCCEditor
 
             this.Closing += (sender, args) =>
             {
-                var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.Out);
+                using (var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.Out))
+                {
+                    pipeClient.Connect();
 
-                pipeClient.Connect();
-
-                var streamWriter = new StreamWriter(pipeClient);
-                streamWriter.WriteLine(":KILL:");
-                streamWriter.Flush();
+                    var streamWriter = new StreamWriter(pipeClient);
+                    streamWriter.WriteLine(":KILL:");
+                    streamWriter.Flush();
+                }
             };
         }
 
