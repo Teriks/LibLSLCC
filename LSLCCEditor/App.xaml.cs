@@ -42,6 +42,11 @@
 #endregion
 #region Imports
 
+using System;
+using System.IO;
+using System.IO.Pipes;
+using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using LibLSLCC.Settings;
@@ -69,9 +74,9 @@ namespace LSLCCEditor
         }
 
 
-
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
+
 
 #if !DEBUG
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;

@@ -448,7 +448,7 @@ namespace LSLCCEditor.EditorTabUI
             TabName = Path.GetFileName(fileName);
             MemoryOnly = false;
             ChangesPending = false;
-            FilePath = fileName;
+            FilePath = Path.GetFullPath(fileName);
 
             WatchNewFile(FilePath);
         }
@@ -650,47 +650,46 @@ namespace LSLCCEditor.EditorTabUI
         {
             if (MemoryOnly) return;
 
-            var input = new InputDialog();
-            input.Title = "Rename File";
-            input.InputTextBox.Text = TabName;
+            var input = new InputDialog
+            {
+                Title = "Rename File",
+                InputTextBox = {Text = TabName}
+            };
 
             input.Closed += (sender, args) =>
             {
-                if (input.Accepted)
+                if (!input.Accepted) return;
+
+                var newName = input.InputTextBox.Text;
+
+                if (string.IsNullOrWhiteSpace(newName))
                 {
-                    var newName = input.InputTextBox.Text;
+                    MessageBox.Show(Application.Current.MainWindow, 
+                        "A file name must be provided.", "Could Not Rename File", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
 
-                    if (string.IsNullOrWhiteSpace(newName))
-                    {
-                        MessageBox.Show(Application.Current.MainWindow, 
-                            "A file name must be provided.", "Could Not Rename File", MessageBoxButton.OK,
-                            MessageBoxImage.Error);
-                        return;
-                    }
+                var oldName = Path.GetFileName(FilePath);
 
-                    var oldName = Path.GetFileName(FilePath);
+                if (input.InputTextBox.Text == oldName) return;
 
-                    if (input.InputTextBox.Text != oldName)
-                    {
-                        var dir = Path.GetDirectoryName(FilePath);
+                var dir = Path.GetDirectoryName(FilePath);
 
-                        if (dir != null)
-                        {
-                            var newfile = Path.Combine(dir, newName);
-                            try
-                            {
-                                File.Move(FilePath, newfile);
-                                TabName = newName;
-                                FilePath = newfile;
-                            }
-                            catch (Exception e)
-                            {
-                                MessageBox.Show(Application.Current.MainWindow,
-                                    e.Message, "Could Not Rename File", MessageBoxButton.OK,
-                                    MessageBoxImage.Error);
-                            }
-                        }
-                    }
+                if (dir == null) return;
+
+                var newfile = Path.Combine(dir, newName);
+                try
+                {
+                    File.Move(FilePath, newfile);
+                    TabName = newName;
+                    FilePath = newfile;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(Application.Current.MainWindow,
+                        e.Message, "Could Not Rename File", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             };
 

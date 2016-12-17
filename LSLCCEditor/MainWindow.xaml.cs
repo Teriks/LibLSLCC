@@ -48,15 +48,21 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Text;
-using System.Timers;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using LibLSLCC.CodeFormatter;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Compilers;
@@ -69,6 +75,7 @@ using LSLCCEditor.SettingsUI;
 using LSLCCEditor.Styles;
 using LSLCCEditor.Utility.Wpf;
 using Microsoft.Win32;
+using Timer = System.Timers.Timer;
 
 #endregion
 
@@ -106,7 +113,7 @@ namespace LSLCCEditor
 
 
         public static readonly DependencyProperty ShowEndOfLineProperty = DependencyProperty.Register(
-            "ShowEndOfLine", typeof (bool), typeof (MainWindow),
+            "ShowEndOfLine", typeof(bool), typeof(MainWindow),
             new PropertyMetadata(default(bool), ShowEndOfLinePropertyChanged));
 
 
@@ -133,7 +140,7 @@ namespace LSLCCEditor
         }
 
         public static readonly DependencyProperty ShowTabsProperty = DependencyProperty.Register(
-            "ShowTabs", typeof (bool), typeof (MainWindow), new PropertyMetadata(default(bool), ShowTabsPropertyChanged));
+            "ShowTabs", typeof(bool), typeof(MainWindow), new PropertyMetadata(default(bool), ShowTabsPropertyChanged));
 
 
         private static void ShowTabsPropertyChanged(DependencyObject dependencyObject,
@@ -159,7 +166,7 @@ namespace LSLCCEditor
         }
 
         public static readonly DependencyProperty ShowSpacesProperty = DependencyProperty.Register(
-            "ShowSpaces", typeof (bool), typeof (MainWindow),
+            "ShowSpaces", typeof(bool), typeof(MainWindow),
             new PropertyMetadata(default(bool), ShowSpacesPropertyChanged));
 
 
@@ -188,6 +195,15 @@ namespace LSLCCEditor
 
         public MainWindow()
         {
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1 && IsAlreadyRunning())
+            {
+                SendOpenTabPipeMessages(args.Skip(1).ToArray());
+                Close();
+                return;
+            }
+
+
             InitializeComponent();
 
             MetroWindowStyleInit.Init(this);
@@ -212,8 +228,105 @@ namespace LSLCCEditor
         }
 
 
-        private void Initialize()
+        private static bool IsAlreadyRunning()
         {
+            var currentProcess = Process.GetCurrentProcess();
+            var runningProcess = (from process in Process.GetProcesses()
+                                  where
+                                    process.Id != currentProcess.Id &&
+                                    process.ProcessName.Equals(
+                                      currentProcess.ProcessName,
+                                      StringComparison.Ordinal)
+                                  select process).Any();
+            return runningProcess;
+        }
+
+        private void SendOpenTabPipeMessages(string [] fileNames)
+        {
+            var pipe = File.ReadAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"));
+            var pipeClient = new NamedPipeClientStream(".", pipe, PipeDirection.Out);
+            var streamWriter = new StreamWriter(pipeClient);
+
+            pipeClient.Connect();
+
+            foreach (var fileName in fileNames)
+            {
+                streamWriter.WriteLine(Path.GetFullPath(fileName));
+            }
+
+            streamWriter.WriteLine(":EOF:");
+
+            streamWriter.Flush();
+        }
+
+        private void StartOpenTabPipeServer()
+        {
+            var pipeName = Guid.NewGuid().ToString();
+            File.WriteAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"), pipeName);
+            OpenTabPipeServer(pipeName);
+        }
+
+        private void OpenTabPipeServer(string pipeName)
+        {
+            PipeSecurity ps = new PipeSecurity();
+            ps.AddAccessRule(new PipeAccessRule("Users", PipeAccessRights.ReadWrite | PipeAccessRights.CreateNewInstance, AccessControlType.Allow));
+            ps.AddAccessRule(new PipeAccessRule("SYSTEM", PipeAccessRights.FullControl, AccessControlType.Allow));
+
+            var pipeClientConnection = new NamedPipeServerStream(pipeName, PipeDirection.In, 5,
+                PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024, ps);
+
+
+           CancelEventHandler onClose = (sender, args) =>
+           {
+               if (pipeClientConnection.IsConnected)
+               {
+                   pipeClientConnection.Disconnect();
+               }
+               pipeClientConnection.Close();
+               pipeClientConnection.Dispose();
+           };
+
+            this.Closing += onClose;
+
+            pipeClientConnection.BeginWaitForConnection(asyncResult =>
+            {
+                using (var conn = (NamedPipeServerStream) asyncResult.AsyncState)
+                {
+                    conn.EndWaitForConnection(asyncResult);
+
+                    OpenTabPipeServer(pipeName);
+
+                    var streamReader = new StreamReader(conn);
+
+                    while (true)
+                    {
+                        string file = streamReader.ReadLine();
+                        if (file == ":EOF:") break;
+
+                        Dispatcher.Invoke(() =>
+                        {
+                            var alreadyOpen = EditorTabs.FirstOrDefault(x => x.FilePath == file);
+                            if (alreadyOpen != null)
+                            {
+                                TabControl.SelectedIndex = EditorTabs.IndexOf(alreadyOpen);
+                                return;
+                            }
+
+                            var tab = CreateEditorTab();
+                            if (!tab.OpenFileInteractive(file)) return;
+                            EditorTabs.Add(tab);
+                            TabControl.SelectedIndex = EditorTabs.Count - 1;
+                        });
+                    }
+
+                    this.Closing -= onClose;
+                }
+            }, pipeClientConnection);
+        }
+
+
+        private void Initialize()
+        { 
             ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
             ShowSpaces = AppSettings.Settings.ShowSpaces;
             ShowTabs = AppSettings.Settings.ShowTabs;
@@ -288,14 +401,19 @@ namespace LSLCCEditor
                 for (var i = 1; i < args.Length; i++)
                 {
                     var tab = CreateEditorTab();
-                    tab.OpenFileInteractive(args[i]);
-                    EditorTabs.Add(tab);
+                    if (tab.OpenFileInteractive(args[i]))
+                    {
+                        EditorTabs.Add(tab);
+                    }
                 }
             }
             else
             {
                 EditorTabs.Add(CreateEditorTab());
             }
+
+            StartOpenTabPipeServer();
+
 
             _selectingStartupTabDuringWindowLoad = true;
 
@@ -557,25 +675,25 @@ namespace LSLCCEditor
             try
             {
 #endif
-                var showDialog = saveDialog.ShowDialog();
-                if (showDialog != null && showDialog.Value)
+            var showDialog = saveDialog.ShowDialog();
+            if (showDialog != null && showDialog.Value)
+            {
+                if (!tab.MemoryOnly)
                 {
-                    if (!tab.MemoryOnly)
+                    try
                     {
-                        try
-                        {
-                            tab.SaveTabToFile();
-                        }
-                        catch (Exception err)
-                        {
-                            MessageBox.Show(this, err.Message,
-                                "Could Not Save Before Compiling",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
-                        }
+                        tab.SaveTabToFile();
                     }
-                    CompileCurrentEditorText(saveDialog.FileName);
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(this, err.Message,
+                            "Could Not Save Before Compiling",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                    }
                 }
+                CompileCurrentEditorText(saveDialog.FileName);
+            }
 #if !DEBUG
             }
             catch (Exception err)
@@ -687,7 +805,8 @@ namespace LSLCCEditor
             }
 
 #else
-            tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice", "Program compiled successfully", false) { Clickable = false });
+            tab.CompilerMessages.Add(new CompilerMessage(CompilerMessageType.General, "Notice",
+                "Program compiled successfully", false) {Clickable = false});
 #endif
         }
 
@@ -1046,7 +1165,7 @@ namespace LSLCCEditor
 
             if (tabItemTarget == null) return;
 
-            var tabItemSourceContentPresenter = e.Data.GetData(typeof (ContentPresenter)) as ContentPresenter;
+            var tabItemSourceContentPresenter = e.Data.GetData(typeof(ContentPresenter)) as ContentPresenter;
 
 
             if (tabItemSourceContentPresenter == null) return;
