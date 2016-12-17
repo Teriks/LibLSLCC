@@ -270,6 +270,7 @@ namespace LSLCCEditor
                 var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.Out);
                 var streamWriter = new StreamWriter(pipeClient);
                 streamWriter.WriteLine(":KILL:");
+                streamWriter.Flush();
             };
         }
 
