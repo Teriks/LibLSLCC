@@ -1,4 +1,5 @@
 ﻿#region FileInfo
+
 // 
 // File: EditorTab.cs
 // 
@@ -39,7 +40,9 @@
 // ============================================================
 // 
 // 
+
 #endregion
+
 #region Imports
 
 using System;
@@ -68,22 +71,22 @@ namespace LSLCCEditor.EditorTabUI
     public class EditorTab : DependencyObject, IDisposable
     {
         public static readonly DependencyProperty TabHeaderProperty = DependencyProperty.Register(
-            "TabHeader", typeof (string), typeof (EditorTab), new FrameworkPropertyMetadata("New (Unsaved)"));
+            "TabHeader", typeof(string), typeof(EditorTab), new FrameworkPropertyMetadata("New (Unsaved)"));
 
         public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(
-            "Content", typeof (EditorTabContent), typeof (EditorTab),
+            "Content", typeof(EditorTabContent), typeof(EditorTab),
             new FrameworkPropertyMetadata(default(EditorTabContent)));
 
         public static readonly DependencyProperty ChangesPendingProperty = DependencyProperty.Register(
-            "ChangesPending", typeof (bool), typeof (EditorTab),
+            "ChangesPending", typeof(bool), typeof(EditorTab),
             new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.None,
                 ChangesPendingPropertyChangedCallback));
 
         public static readonly DependencyProperty MemoryOnlyProperty = DependencyProperty.Register(
-            "MemoryOnly", typeof (bool), typeof (EditorTab), new FrameworkPropertyMetadata(default(bool)));
+            "MemoryOnly", typeof(bool), typeof(EditorTab), new FrameworkPropertyMetadata(default(bool)));
 
         public static readonly DependencyProperty FilePathProperty = DependencyProperty.Register(
-            "FilePath", typeof (string), typeof (EditorTab), new FrameworkPropertyMetadata(default(string)));
+            "FilePath", typeof(string), typeof(EditorTab), new FrameworkPropertyMetadata(default(string)));
 
         private readonly TabControl _owner;
         private bool _fileChanged;
@@ -97,8 +100,6 @@ namespace LSLCCEditor.EditorTabUI
             OwnerTabCollection = ownerTabCollection;
 
             ActiveLibraryDataSubsetsCache = new HashSet<string>(dataProvider.ActiveSubsets);
-
-            
 
 
             Content = new EditorTabContent(this)
@@ -120,18 +121,11 @@ namespace LSLCCEditor.EditorTabUI
             CloseAllLeftCommand = new RelayCommand(CloseAllLeftImpl);
 
 
-            
-
-
             TabName = "New Script";
             ChangesPending = false;
             MemoryOnly = true;
             FilePath = null;
-    
-
-           
         }
-
 
 
         public IList<EditorTab> OwnerTabCollection { get; private set; }
@@ -232,8 +226,7 @@ namespace LSLCCEditor.EditorTabUI
         }
 
 
-
-        public HashSet<string> ActiveLibraryDataSubsetsCache { get; private set; } 
+        public HashSet<string> ActiveLibraryDataSubsetsCache { get; private set; }
 
 
         private static void ChangesPendingPropertyChangedCallback(DependencyObject dependencyObject,
@@ -338,7 +331,7 @@ namespace LSLCCEditor.EditorTabUI
             {
                 Dispatcher.Invoke(() =>
                 {
-                    var r = MessageBox.Show(Application.Current.MainWindow, 
+                    var r = MessageBox.Show(Application.Current.MainWindow,
                         "This file was changed outside of this tab, would you like to reload it?",
                         "File Changed", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (r != MessageBoxResult.Yes)
@@ -356,7 +349,7 @@ namespace LSLCCEditor.EditorTabUI
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show(Application.Current.MainWindow, 
+                        MessageBox.Show(Application.Current.MainWindow,
                             "File could not be loaded: " + e.Message, "Error");
                     }
                 });
@@ -433,7 +426,7 @@ namespace LSLCCEditor.EditorTabUI
             }
             catch (Exception e)
             {
-                MessageBox.Show(Application.Current.MainWindow, 
+                MessageBox.Show(Application.Current.MainWindow,
                     e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return false;
@@ -462,7 +455,7 @@ namespace LSLCCEditor.EditorTabUI
             }
             catch (Exception e)
             {
-                MessageBox.Show(Application.Current.MainWindow, 
+                MessageBox.Show(Application.Current.MainWindow,
                     e.Message, "Could Not Open File", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return false;
@@ -510,7 +503,7 @@ namespace LSLCCEditor.EditorTabUI
             }
             catch (Exception e)
             {
-                MessageBox.Show(Application.Current.MainWindow, 
+                MessageBox.Show(Application.Current.MainWindow,
                     e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return false;
@@ -664,7 +657,7 @@ namespace LSLCCEditor.EditorTabUI
 
                 if (string.IsNullOrWhiteSpace(newName))
                 {
-                    MessageBox.Show(Application.Current.MainWindow, 
+                    MessageBox.Show(Application.Current.MainWindow,
                         "A file name must be provided.", "Could Not Rename File", MessageBoxButton.OK,
                         MessageBoxImage.Error);
                     return;
@@ -730,7 +723,7 @@ namespace LSLCCEditor.EditorTabUI
                 MessageBoxResult r;
                 if (MemoryOnly)
                 {
-                    r = MessageBox.Show(Application.Current.MainWindow, 
+                    r = MessageBox.Show(Application.Current.MainWindow,
                         "Would you like to save this tab to a file before closing?", "Save Changes",
                         buttons, MessageBoxImage.Question);
 
@@ -755,7 +748,7 @@ namespace LSLCCEditor.EditorTabUI
                 }
                 else
                 {
-                    r = MessageBox.Show(Application.Current.MainWindow, 
+                    r = MessageBox.Show(Application.Current.MainWindow,
                         "Would you like to save this tab before closing?",
                         "Save Changes To \"" + FilePath + "\"",
                         buttons, MessageBoxImage.Question);
@@ -770,7 +763,7 @@ namespace LSLCCEditor.EditorTabUI
                         }
                         catch (Exception e)
                         {
-                            MessageBox.Show(Application.Current.MainWindow, 
+                            MessageBox.Show(Application.Current.MainWindow,
                                 e.Message, "Could Not Save File", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }

@@ -264,9 +264,16 @@ namespace LSLCCEditor
             var pipeName = Guid.NewGuid().ToString();
             File.WriteAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"), pipeName);
             OpenTabPipeServer(pipeName);
+
+            this.Closing += (sender, args) =>
+            {
+                var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.Out);
+                var streamWriter = new StreamWriter(pipeClient);
+                streamWriter.WriteLine(":KILL:");
+            };
         }
 
-        private void OpenTabPipeServer(string pipeName)
+        private NamedPipeServerStream OpenTabPipeServer(string pipeName)
         {
             PipeSecurity ps = new PipeSecurity();
             ps.AddAccessRule(new PipeAccessRule("Users", PipeAccessRights.ReadWrite | PipeAccessRights.CreateNewInstance, AccessControlType.Allow));
@@ -276,31 +283,40 @@ namespace LSLCCEditor
                 PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024, ps);
 
 
-           CancelEventHandler onClose = (sender, args) =>
-           {
-               if (pipeClientConnection.IsConnected)
-               {
-                   pipeClientConnection.Disconnect();
-               }
-               pipeClientConnection.Close();
-               pipeClientConnection.Dispose();
-           };
-
-            this.Closing += onClose;
-
             pipeClientConnection.BeginWaitForConnection(asyncResult =>
             {
                 using (var conn = (NamedPipeServerStream) asyncResult.AsyncState)
                 {
                     conn.EndWaitForConnection(asyncResult);
 
-                    OpenTabPipeServer(pipeName);
+                    var newServer = OpenTabPipeServer(pipeName);
 
                     var streamReader = new StreamReader(conn);
 
                     while (true)
                     {
                         string file = streamReader.ReadLine();
+
+                        if (file == ":KILL:")
+                        {
+                            if (pipeClientConnection.IsConnected)
+                            {
+                                pipeClientConnection.Disconnect();
+                            }
+
+                            pipeClientConnection.Close();
+                            pipeClientConnection.Dispose();
+
+                            if (newServer.IsConnected)
+                            {
+                                newServer.Disconnect();
+                            }
+
+                            newServer.Close();
+                            newServer.Dispose();
+
+                            Dispatcher.Invoke(Close);
+                        }
                         if (file == ":EOF:") break;
 
                         Dispatcher.Invoke(() =>
@@ -318,10 +334,10 @@ namespace LSLCCEditor
                             TabControl.SelectedIndex = EditorTabs.Count - 1;
                         });
                     }
-
-                    this.Closing -= onClose;
                 }
             }, pipeClientConnection);
+
+            return pipeClientConnection;
         }
 
 
