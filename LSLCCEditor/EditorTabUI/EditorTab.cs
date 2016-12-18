@@ -51,6 +51,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
@@ -115,6 +116,7 @@ namespace LSLCCEditor.EditorTabUI
             SaveAsCommand = new RelayCommand(SaveAsCommandImpl);
             RenameCommand = new RelayCommand(RenameCommandImpl);
             OpenFolderCommand = new RelayCommand(OpenFolderImpl);
+            OpenNewWindowCommand = new RelayCommand(OpenNewWindowImpl);
             CopyFullPathCommand = new RelayCommand(CopyFullFilePathImpl);
             CloseAllExceptMeCommand = new RelayCommand(CloseAllExceptMeImpl);
             CloseAllRightCommand = new RelayCommand(CloseAllRightImpl);
@@ -125,6 +127,26 @@ namespace LSLCCEditor.EditorTabUI
             ChangesPending = false;
             MemoryOnly = true;
             FilePath = null;
+        }
+
+        private void OpenInNewWindow(string fileName)
+        {
+            Process.Start(Assembly.GetEntryAssembly().Location,
+                string.Format("--new-instance \"{0}\"", fileName));
+        }
+
+        private void OpenNewWindowImpl(object obj)
+        {
+            if (ChangesPending)
+            {
+                var result = MessageBox.Show("Would you like to save this tab first?", "Save File", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    SaveOpenFileTab();
+                }
+            }
+            Close();
+            OpenInNewWindow(FilePath);
         }
 
 
@@ -184,6 +206,7 @@ namespace LSLCCEditor.EditorTabUI
             }
         }
 
+        public ICommand OpenNewWindowCommand { get; private set; }
         public ICommand CloseCommand { get; private set; }
         public ICommand CloseAllExceptMeCommand { get; private set; }
         public ICommand CloseAllRightCommand { get; private set; }
@@ -411,11 +434,7 @@ namespace LSLCCEditor.EditorTabUI
 
         public bool SaveTabToFile()
         {
-            if (MemoryOnly)
-            {
-                return SaveMemoryOnlyTab();
-            }
-            return SaveOpenFileTab();
+            return MemoryOnly ? SaveMemoryOnlyTab() : SaveOpenFileTab();
         }
 
         public bool SaveTabToFileInteractive()

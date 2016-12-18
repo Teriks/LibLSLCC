@@ -14,6 +14,7 @@
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileNew}" Executed="NewFile_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileOpen}" Executed="OpenInThisTab_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileOpenNewTab}" Executed="Open_OnClick" />
+        <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileOpenNewWindow}" Executed="OpenNewWindow_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileSave}" Executed="Save_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.FileSaveAs}" Executed="SaveAs_OnClick" />
         <CommandBinding Command="{x:Static lslccEditor:MainWindow.CompileOpenSim}"
@@ -29,6 +30,7 @@
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{x:Static lslccEditor:MainWindow.FileOpen}" />
         <KeyBinding Modifiers="Control+Alt" Key="O" Command="{x:Static lslccEditor:MainWindow.FileOpenNewTab}" />
+        <KeyBinding Modifiers="Control+Shift" Key="O" Command="{x:Static lslccEditor:MainWindow.FileOpenNewWindow}" />
         <KeyBinding Modifiers="Control" Key="N" Command="{x:Static lslccEditor:MainWindow.FileNew}" />
         <KeyBinding Modifiers="Control" Key="S" Command="{x:Static lslccEditor:MainWindow.FileSave}" />
         <KeyBinding Modifiers="Control+Alt" Key="S" Command="{x:Static lslccEditor:MainWindow.FileSaveAs}" />
@@ -68,6 +70,7 @@
                 <MenuItem Header="Open" InputGestureText="Ctrl+O" Click="OpenInThisTab_OnClick"
                           Visibility="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToVisibilityConverter}}" />
                 <MenuItem Header="Open New Tab" InputGestureText="Ctrl+Alt+O" Click="Open_OnClick" />
+                <MenuItem Header="Open New Window" InputGestureText="Ctrl+Shift+O" Click="OpenNewWindow_OnClick" />
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Undo" InputGestureText="Ctrl+Z" Click="Edit_UndoOnClick" Name="EditUndoMenuItem" />
@@ -201,6 +204,8 @@
                                         Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
                                     <MenuItem Header="Copy Full Path" Command="{Binding CopyFullPathCommand}"
+                                              Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                                    <MenuItem Header="Open In New Window" Command="{Binding OpenNewWindowCommand}"
                                               Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
                                     <MenuItem Header="Open Containing Folder" Command="{Binding OpenFolderCommand}"
                                               Visibility="{Binding MemoryOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />

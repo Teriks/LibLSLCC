@@ -46,6 +46,7 @@
 #region Imports
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -87,6 +88,7 @@ namespace LSLCCEditor
         public static readonly RoutedCommand FileNew = new RoutedCommand();
         public static readonly RoutedCommand FileOpen = new RoutedCommand();
         public static readonly RoutedCommand FileOpenNewTab = new RoutedCommand();
+        public static readonly RoutedCommand FileOpenNewWindow = new RoutedCommand();
         public static readonly RoutedCommand FileSave = new RoutedCommand();
         public static readonly RoutedCommand FileSaveAs = new RoutedCommand();
         public static readonly RoutedCommand ToolsFormat = new RoutedCommand();
@@ -106,9 +108,6 @@ namespace LSLCCEditor
         private Timer _tabDragTimer;
         private bool _uncheckingLibraryDataTabItemProgrammatically;
         private LSLCodeValidatorStrategies _codeValidatorStrategies;
-
-        private static readonly Mutex IsRunningMutex = new Mutex(true,
-            "LSLCCEditor-{8877E453-2D1B-4A89-A587-3D4A4573BDFB}");
 
 
         public static readonly DependencyProperty ShowEndOfLineProperty = DependencyProperty.Register(
@@ -192,22 +191,54 @@ namespace LSLCCEditor
         }
 
 
+        private static EventWaitHandle IsRunningWaitHandle;
+        private static string IsRunningWaitHandleGUID = "LSLCCEditor-{51F961D7-9B30-4BD6-B17A-B53C5F6FC746}";
+
         public MainWindow()
         {
-            var args = Environment.GetCommandLineArgs();
-            if (args.Length > 1 && IsAlreadyRunning())
+
+            try
             {
-                SendOpenTabPipeMessages(args.Skip(1).ToArray());
-                Close();
-                return;
+                bool handleCreated;
+                IsRunningWaitHandle = new EventWaitHandle(false,
+                    EventResetMode.ManualReset, IsRunningWaitHandleGUID, out handleCreated);
+
+                var args = Environment.GetCommandLineArgs().Skip(1).ToArray();
+                bool newInstance = false;
+
+                if (args.Contains("--new-instance"))
+                {
+                    args = args.Where(x => x != "--new-instance").ToArray();
+                    newInstance = true;
+
+                    if (!handleCreated)
+                    {
+                        IsRunningWaitHandle.Close();
+                    }
+                }
+                else if (!handleCreated)
+                {
+                    if (args.Length <= 0) return;
+
+                    SendOpenTabPipeMessages(args);
+                    Close();
+                    return;
+                }
+                
+
+                InitializeComponent();
+
+                MetroWindowStyleInit.Init(this);
+
+                Initialize(newInstance, args);
+
             }
-
-
-            InitializeComponent();
-
-            MetroWindowStyleInit.Init(this);
-
-            Initialize();
+            catch (Exception err)
+            {
+                var exceptionView = new ExceptionView(err);
+                exceptionView.ShowDialog();
+                Close();
+            }
         }
 
 
@@ -224,13 +255,6 @@ namespace LSLCCEditor
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        private static bool IsAlreadyRunning()
-        {
-            if (!IsRunningMutex.WaitOne(TimeSpan.Zero, true)) return true;
-            IsRunningMutex.ReleaseMutex();
-            return false;
         }
 
         private void SendOpenTabPipeMessages(string[] fileNames)
@@ -289,6 +313,7 @@ namespace LSLCCEditor
             {
                 using (var conn = (NamedPipeServerStream) asyncResult.AsyncState)
                 {
+
                     conn.EndWaitForConnection(asyncResult);
 
                     var newServer = CreateOpenTabPipeServer(pipeName);
@@ -343,7 +368,7 @@ namespace LSLCCEditor
         }
 
 
-        private void Initialize()
+        private void Initialize(bool newInstance, string[] args)
         {
             ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
             ShowSpaces = AppSettings.Settings.ShowSpaces;
@@ -410,16 +435,12 @@ namespace LSLCCEditor
                 ShowSearchIn = false
             };
 
-
-            var args = Environment.GetCommandLineArgs();
-
-
-            if (args.Length > 1)
+            if (args.Length > 0)
             {
-                for (var i = 1; i < args.Length; i++)
+                foreach (string arg in args)
                 {
                     var tab = CreateEditorTab();
-                    if (tab.OpenFileInteractive(args[i]))
+                    if (tab.OpenFileInteractive(arg))
                     {
                         EditorTabs.Add(tab);
                     }
@@ -430,7 +451,10 @@ namespace LSLCCEditor
                 EditorTabs.Add(CreateEditorTab());
             }
 
-            StartOpenTabPipeServer();
+            if (!newInstance)
+            {
+                StartOpenTabPipeServer();
+            }
 
 
             _selectingStartupTabDuringWindowLoad = true;
@@ -964,35 +988,55 @@ namespace LSLCCEditor
             }
         }
 
+        private OpenFileDialog CreateOpenLSLDialog(bool multiSelect = false)
+        {
+            return new OpenFileDialog
+            {
+                Multiselect = multiSelect,
+                Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt"
+            };
+        }
+
 
         private void OpenInNewTab()
         {
-            var openDialog = new OpenFileDialog
-            {
-                Multiselect = false,
-                Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt"
-            };
+            var openDialog = CreateOpenLSLDialog();
 
 
             var showDialog = openDialog.ShowDialog();
-            if (showDialog != null && showDialog.Value)
+            if (showDialog == null || !showDialog.Value) return;
+            var alreadyOpen = EditorTabs.FirstOrDefault(x => x.FilePath == openDialog.FileName);
+            if (alreadyOpen != null)
             {
-                var alreadyOpen = EditorTabs.FirstOrDefault(x => x.FilePath == openDialog.FileName);
-                if (alreadyOpen != null)
-                {
-                    TabControl.SelectedIndex = EditorTabs.IndexOf(alreadyOpen);
-                    return;
-                }
-
-
-                var tab = CreateEditorTab();
-
-                if (tab.OpenFileInteractive(openDialog.FileName))
-                {
-                    EditorTabs.Add(tab);
-                    TabControl.SelectedIndex = EditorTabs.Count - 1;
-                }
+                TabControl.SelectedIndex = EditorTabs.IndexOf(alreadyOpen);
+                return;
             }
+
+
+            var tab = CreateEditorTab();
+
+            if (!tab.OpenFileInteractive(openDialog.FileName)) return;
+
+            EditorTabs.Add(tab);
+            TabControl.SelectedIndex = EditorTabs.Count - 1;
+        }
+
+
+        private void OpenInNewWindow(string fileName)
+        {
+            System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location,
+                string.Format("--new-instance \"{0}\"", fileName));
+        }
+
+        private void OpenInNewWindow()
+        {
+            var openDialog = CreateOpenLSLDialog();
+
+
+            var showDialog = openDialog.ShowDialog();
+            if (showDialog == null || !showDialog.Value) return;
+
+            OpenInNewWindow(openDialog.FileName);
         }
 
 
@@ -1030,11 +1074,7 @@ namespace LSLCCEditor
             }
 
 
-            var openDialog = new OpenFileDialog
-            {
-                Multiselect = false,
-                Filter = "LSL Scripts (*.lsl *.txt)|*.lsl;*.txt"
-            };
+            var openDialog = CreateOpenLSLDialog();
 
 
             var showDialog = openDialog.ShowDialog();
@@ -1365,6 +1405,11 @@ namespace LSLCCEditor
                 editor.SelectionStart = 0;
                 editor.SelectionLength = editor.Document.TextLength;
             }
+        }
+
+        private void OpenNewWindow_OnClick(object sender, RoutedEventArgs e)
+        {
+            OpenInNewWindow();
         }
     }
 }
