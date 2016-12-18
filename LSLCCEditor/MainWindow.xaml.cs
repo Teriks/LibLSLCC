@@ -48,13 +48,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
@@ -62,7 +59,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using LibLSLCC.CodeFormatter;
 using LibLSLCC.CodeValidator;
 using LibLSLCC.Compilers;
@@ -110,6 +106,9 @@ namespace LSLCCEditor
         private Timer _tabDragTimer;
         private bool _uncheckingLibraryDataTabItemProgrammatically;
         private LSLCodeValidatorStrategies _codeValidatorStrategies;
+
+        private static readonly Mutex IsRunningMutex = new Mutex(true,
+            "LSLCCEditor-{8877E453-2D1B-4A89-A587-3D4A4573BDFB}");
 
 
         public static readonly DependencyProperty ShowEndOfLineProperty = DependencyProperty.Register(
@@ -227,9 +226,6 @@ namespace LSLCCEditor
             GC.SuppressFinalize(this);
         }
 
-
-        static readonly Mutex IsRunningMutex = new Mutex(true, "LSLCCEditor-{8877E453-2D1B-4A89-A587-3D4A4573BDFB}");
-
         private static bool IsAlreadyRunning()
         {
             if (!IsRunningMutex.WaitOne(TimeSpan.Zero, true)) return true;
@@ -237,7 +233,7 @@ namespace LSLCCEditor
             return false;
         }
 
-        private void SendOpenTabPipeMessages(string [] fileNames)
+        private void SendOpenTabPipeMessages(string[] fileNames)
         {
             var pipe = File.ReadAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"));
 
@@ -263,9 +259,9 @@ namespace LSLCCEditor
             var pipeName = Guid.NewGuid().ToString();
             File.WriteAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"), pipeName);
 
-            OpenTabPipeServer(pipeName);
+            CreateOpenTabPipeServer(pipeName);
 
-            this.Closing += (sender, args) =>
+            Closing += (sender, args) =>
             {
                 using (var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.Out))
                 {
@@ -278,10 +274,11 @@ namespace LSLCCEditor
             };
         }
 
-        private NamedPipeServerStream OpenTabPipeServer(string pipeName)
+        private NamedPipeServerStream CreateOpenTabPipeServer(string pipeName)
         {
-            PipeSecurity ps = new PipeSecurity();
-            ps.AddAccessRule(new PipeAccessRule("Users", PipeAccessRights.ReadWrite | PipeAccessRights.CreateNewInstance, AccessControlType.Allow));
+            var ps = new PipeSecurity();
+            ps.AddAccessRule(new PipeAccessRule("Users", PipeAccessRights.ReadWrite | PipeAccessRights.CreateNewInstance,
+                AccessControlType.Allow));
             ps.AddAccessRule(new PipeAccessRule("SYSTEM", PipeAccessRights.FullControl, AccessControlType.Allow));
 
             var pipeClientConnection = new NamedPipeServerStream(pipeName, PipeDirection.In, 5,
@@ -294,7 +291,7 @@ namespace LSLCCEditor
                 {
                     conn.EndWaitForConnection(asyncResult);
 
-                    var newServer = OpenTabPipeServer(pipeName);
+                    var newServer = CreateOpenTabPipeServer(pipeName);
 
                     var streamReader = new StreamReader(conn);
 
@@ -347,7 +344,7 @@ namespace LSLCCEditor
 
 
         private void Initialize()
-        { 
+        {
             ShowEndOfLine = AppSettings.Settings.ShowEndOfLine;
             ShowSpaces = AppSettings.Settings.ShowSpaces;
             ShowTabs = AppSettings.Settings.ShowTabs;
@@ -696,25 +693,25 @@ namespace LSLCCEditor
             try
             {
 #endif
-            var showDialog = saveDialog.ShowDialog();
-            if (showDialog != null && showDialog.Value)
-            {
-                if (!tab.MemoryOnly)
+                var showDialog = saveDialog.ShowDialog();
+                if (showDialog != null && showDialog.Value)
                 {
-                    try
+                    if (!tab.MemoryOnly)
                     {
-                        tab.SaveTabToFile();
+                        try
+                        {
+                            tab.SaveTabToFile();
+                        }
+                        catch (Exception err)
+                        {
+                            MessageBox.Show(this, err.Message,
+                                "Could Not Save Before Compiling",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
                     }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(this, err.Message,
-                            "Could Not Save Before Compiling",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-                    }
+                    CompileCurrentEditorText(saveDialog.FileName);
                 }
-                CompileCurrentEditorText(saveDialog.FileName);
-            }
 #if !DEBUG
             }
             catch (Exception err)

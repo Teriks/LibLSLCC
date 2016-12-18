@@ -1046,10 +1046,10 @@ namespace LibLSLCC.AutoComplete
                 ((GreaterThanOrEqParseOffset(context.Stop.StopIndex)) ||
                  (context.operation.StopIndex == context.Stop.StopIndex)))
             {
-                if (context.expr_lvalue == null) return true;
+                if (context.expr_mod_lvalue == null) return true;
 
-                var variable = context.expr_lvalue.variable;
-                var accessor = context.expr_lvalue.dotAccessorExpr();
+                var variable = context.expr_mod_lvalue.variable;
+                var accessor = context.expr_mod_lvalue.dotAccessorExpr();
 
                 if (variable != null)
                 {
@@ -1088,10 +1088,10 @@ namespace LibLSLCC.AutoComplete
                 ((GreaterThanOrEqParseOffset(context.Stop.StopIndex)) ||
                  (context.operation.StopIndex == context.Stop.StopIndex)))
             {
-                if (context.expr_lvalue == null) return true;
+                if (context.expr_mod_lvalue == null) return true;
 
-                var atom = context.expr_lvalue.variable;
-                var accessor = context.expr_lvalue.dotAccessorExpr();
+                var atom = context.expr_mod_lvalue.variable;
+                var accessor = context.expr_mod_lvalue.dotAccessorExpr();
 
                 if (atom != null)
                 {

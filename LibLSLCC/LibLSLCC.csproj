@@ -40,9 +40,8 @@
     <CodeAnalysisRuleSet>LibLSLCC.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Antlr4.Runtime.dll</HintPath>
+    <Reference Include="Antlr4.Runtime.Standard">
+      <HintPath>.\Antlr4.Runtime.Standard.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +53,12 @@
     <Compile Include="..\versions\LibLSLCC\Version.cs">
       <Link>Version.cs</Link>
     </Compile>
+    <Compile Include="AntlrParser\LSLBaseListener.cs" />
+    <Compile Include="AntlrParser\LSLBaseVisitor.cs" />
+    <Compile Include="AntlrParser\LSLLexer.cs" />
+    <Compile Include="AntlrParser\LSLListener.cs" />
+    <Compile Include="AntlrParser\LSLParser.cs" />
+    <Compile Include="AntlrParser\LSLVisitor.cs" />
     <Compile Include="AutoComplete\ILSLAutoCompleteParser.cs" />
     <Compile Include="AutoComplete\ILSLAutoCompleteParserState.cs" />
     <Compile Include="AutoComplete\LSLAutoCompleteGlobalFunction.cs" />
@@ -316,12 +321,6 @@
     <Compile Include="Compilers\OpenSim\Internal\LSLOpenSimCompilerVisitor.cs" />
     <Compile Include="CodeValidator\LSLCodeValidator.cs" />
     <Compile Include="CodeFormatter\Internal\LSLCodeFormatterVisitor.cs" />
-    <Compile Include="AntlrParser\LSLBaseListener.cs" />
-    <Compile Include="AntlrParser\LSLBaseVisitor.cs" />
-    <Compile Include="AntlrParser\LSLLexer.cs" />
-    <Compile Include="AntlrParser\LSLListener.cs" />
-    <Compile Include="AntlrParser\LSLParser.cs" />
-    <Compile Include="AntlrParser\LSLVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CodeValidator\Internal\Utility.cs" />
     <Compile Include="CSharp\CSharpNamespaceNameValidator.cs" />
@@ -364,7 +363,7 @@
   </PropertyGroup>
   <Target Name="BeforeBuild" Inputs="$(AntlrInput)" Outputs="$(AntlrOutput)">
     <Message Importance="High" Text="Running ANTLR: $(AntlrInput)" />
-    <Exec Command="java -classpath antlr-4.5.2-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.AntlrParser $(AntlrInput)" />
+    <Exec Command="java -classpath antlr-4.6-complete.jar org.antlr.v4.Tool -Dlanguage=CSharp -visitor -listener -package LibLSLCC.AntlrParser $(AntlrInput)" />
   </Target>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(ThirdPartyLicenses)" DestinationFolder="bin\ThirdPartyLicenses" SkipUnchangedFiles="true" />

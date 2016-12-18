@@ -415,9 +415,9 @@ expression:
 |   expr_lvalue=expression (operation=BITWISE_OR) expr_rvalue=expression       #Expr_BitwiseOr
 |   expr_lvalue=expression operation=(LOGICAL_AND|LOGICAL_OR) expr_rvalue=expression      #Expr_Logical_And_Or
 
-|   expr_lvalue=modifiableLeftValue operation=(PLUS_EQUAL|MINUS_EQUAL|MUL_EQUAL|DIV_EQUAL|MOD_EQUAL) expr_rvalue=expression #Expr_ModifyingAssignment
+|   expr_mod_lvalue=modifiableLeftValue operation=(PLUS_EQUAL|MINUS_EQUAL|MUL_EQUAL|DIV_EQUAL|MOD_EQUAL) expr_rvalue=expression #Expr_ModifyingAssignment
 
-|   expr_lvalue=modifiableLeftValue operation=EQUAL expr_rvalue=expression                #Expr_Assignment
+|   expr_mod_lvalue=modifiableLeftValue operation=EQUAL expr_rvalue=expression                #Expr_Assignment
 
 |
     (

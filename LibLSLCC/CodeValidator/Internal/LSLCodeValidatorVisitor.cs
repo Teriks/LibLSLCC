@@ -2371,14 +2371,14 @@ namespace LibLSLCC.CodeValidator
 
         public override ILSLSyntaxTreeNode VisitExpr_Assignment(LSLParser.Expr_AssignmentContext context)
         {
-            if (context == null || Utility.AnyNull(context.expr_lvalue, context.expr_rvalue, context.operation))
+            if (context == null || Utility.AnyNull(context.expr_mod_lvalue, context.expr_rvalue, context.operation))
             {
                 throw LSLCodeValidatorInternalException
                     .VisitContextInvalidState("VisitExpr_Assignment");
             }
 
 
-            ILSLExprNode leftVariable = (ILSLExprNode) Visit(context.expr_lvalue);
+            ILSLExprNode leftVariable = (ILSLExprNode) Visit(context.expr_mod_lvalue);
 
 
             var result = VisitAssignment(
@@ -2401,7 +2401,7 @@ namespace LibLSLCC.CodeValidator
             if (result.LeftExpression.ExpressionType == LSLExpressionType.LibraryConstant)
             {
                 GenSyntaxError().ModifiedLibraryConstant(location,
-                    context.expr_lvalue.GetText());
+                    context.expr_mod_lvalue.GetText());
                 result.HasErrors = true;
             }
 
@@ -2426,14 +2426,14 @@ namespace LibLSLCC.CodeValidator
         public override ILSLSyntaxTreeNode VisitExpr_ModifyingAssignment(
             LSLParser.Expr_ModifyingAssignmentContext context)
         {
-            if (context == null || Utility.AnyNull(context.expr_lvalue, context.expr_rvalue, context.operation))
+            if (context == null || Utility.AnyNull(context.expr_mod_lvalue, context.expr_rvalue, context.operation))
             {
                 throw LSLCodeValidatorInternalException
                     .VisitContextInvalidState("VisitExpr_ModifyingAssignment");
             }
 
 
-            ILSLExprNode leftVariable = (ILSLExprNode) Visit(context.expr_lvalue);
+            ILSLExprNode leftVariable = (ILSLExprNode) Visit(context.expr_mod_lvalue);
 
 
             var result = VisitAssignment(
@@ -2451,7 +2451,7 @@ namespace LibLSLCC.CodeValidator
             if (result.LeftExpression.ExpressionType == LSLExpressionType.LibraryConstant)
             {
                 GenSyntaxError().ModifiedLibraryConstant(location,
-                    context.expr_lvalue.GetText());
+                    context.expr_mod_lvalue.GetText());
 
                 result.HasErrors = true;
             }

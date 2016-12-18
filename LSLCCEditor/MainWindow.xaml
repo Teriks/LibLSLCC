@@ -96,7 +96,8 @@
 
             </MenuItem>
             <MenuItem Name="TabLibraryDataMenu" Header="Tab Library Data"
-                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" />
+                      IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}" 
+                      ToolTip="Library data selection for the current tab."/>
             <MenuItem Header="Compile"
                       IsEnabled="{Binding EditorTabs.Count, Converter={StaticResource IntegerNotZeroToBoolConverter}}"
                       InputGestureText="Ctrl+Alt+C" Click="Compile_OnClick" ToolTip="Ctrl+Alt+C"/>
