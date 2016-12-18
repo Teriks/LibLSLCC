@@ -262,7 +262,6 @@ namespace LSLCCEditor
         {
             var pipeName = Guid.NewGuid().ToString();
             File.WriteAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"), pipeName);
-            File.WriteAllText(Path.Combine(AppSettings.AppDataDir, "pid"), Process.GetCurrentProcess().Id.ToString());
 
             OpenTabPipeServer(pipeName);
 
