@@ -228,27 +228,13 @@ namespace LSLCCEditor
         }
 
 
+        static readonly Mutex IsRunningMutex = new Mutex(true, "LSLCCEditor-{8877E453-2D1B-4A89-A587-3D4A4573BDFB}");
+
         private static bool IsAlreadyRunning()
         {
-            try
-            {
-                var pid = File.ReadAllText(Path.Combine(AppSettings.AppDataDir, "pid"));
-
-                var currentProcess = Process.GetCurrentProcess();
-                var runningProcess = (from process in Process.GetProcesses()
-                    where
-                        process.Id == int.Parse(pid) &&
-                        process.ProcessName.Equals(
-                            currentProcess.ProcessName,
-                            StringComparison.Ordinal)
-                    select process).Any();
-
-                return runningProcess;
-            }
-            catch (FileNotFoundException)
-            {
-                return false;
-            }
+            if (!IsRunningMutex.WaitOne(TimeSpan.Zero, true)) return true;
+            IsRunningMutex.ReleaseMutex();
+            return false;
         }
 
         private void SendOpenTabPipeMessages(string [] fileNames)
