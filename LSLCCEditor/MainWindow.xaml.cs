@@ -230,15 +230,25 @@ namespace LSLCCEditor
 
         private static bool IsAlreadyRunning()
         {
-            var currentProcess = Process.GetCurrentProcess();
-            var runningProcess = (from process in Process.GetProcesses()
-                                  where
-                                    process.Id != currentProcess.Id &&
-                                    process.ProcessName.Equals(
-                                      currentProcess.ProcessName,
-                                      StringComparison.Ordinal)
-                                  select process).Any();
-            return runningProcess;
+            try
+            {
+                var pid = File.ReadAllText(Path.Combine(AppSettings.AppDataDir, "pid"));
+
+                var currentProcess = Process.GetCurrentProcess();
+                var runningProcess = (from process in Process.GetProcesses()
+                    where
+                        process.Id == int.Parse(pid) &&
+                        process.ProcessName.Equals(
+                            currentProcess.ProcessName,
+                            StringComparison.Ordinal)
+                    select process).Any();
+
+                return runningProcess;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
         }
 
         private void SendOpenTabPipeMessages(string [] fileNames)
@@ -266,6 +276,8 @@ namespace LSLCCEditor
         {
             var pipeName = Guid.NewGuid().ToString();
             File.WriteAllText(Path.Combine(AppSettings.AppDataDir, "opentabpipe"), pipeName);
+            File.WriteAllText(Path.Combine(AppSettings.AppDataDir, "pid"), Process.GetCurrentProcess().Id.ToString());
+
             OpenTabPipeServer(pipeName);
 
             this.Closing += (sender, args) =>
