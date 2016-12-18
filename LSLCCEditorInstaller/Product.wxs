@@ -43,7 +43,7 @@
         <File Id="Licence" Source="license.rtf"/>
         <File Id="AvalonEdit" Source="$(var.SourceDir)ICSharpCode.AvalonEdit.dll" />
         <File Id="AvalonEditXml" Source="$(var.SourceDir)ICSharpCode.AvalonEdit.xml" />
-        <File Id="AntlrRuntime" Source="$(var.SourceDir)Antlr4.Runtime.dll" />
+        <File Id="AntlrRuntime" Source="$(var.SourceDir)Antlr4.Runtime.Standard.dll" />
         <File Id="LibLSLCC" Source="$(var.SourceDir)LibLSLCC.dll" />
         <File Id="LSLCCEditor.CompletionUI" Source="$(var.SourceDir)LSLCCEditor.CompletionUI.dll" />
         <File Id="LSLCCEditor.EditControl" Source="$(var.SourceDir)LSLCCEditor.EditControl.dll" />
