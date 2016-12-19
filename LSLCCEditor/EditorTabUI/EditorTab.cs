@@ -139,13 +139,18 @@ namespace LSLCCEditor.EditorTabUI
         {
             if (ChangesPending)
             {
-                var result = MessageBox.Show("Would you like to save this tab first?", "Save File", MessageBoxButton.YesNo);
+                var result = MessageBox.Show(
+                    "There are pending changes in this tab, would you like to "
+                    +"save before re-opening the file in a new window?", 
+                    "Save File", MessageBoxButton.YesNo);
+
                 if (result == MessageBoxResult.Yes)
                 {
                     SaveOpenFileTab();
                 }
             }
-            Close();
+
+            CloseSilently();
             OpenInNewWindow(FilePath);
         }
 
@@ -718,6 +723,36 @@ namespace LSLCCEditor.EditorTabUI
             SaveTabToFileInteractive();
         }
 
+        public void CloseSilently()
+        {
+            var lastSelectedIndex = _owner.SelectedIndex;
+            var removingIndex = 0;
+
+            for (var i = 0; i < OwnerTabCollection.Count; i++)
+            {
+                if (!ReferenceEquals(OwnerTabCollection[i], this)) continue;
+
+                removingIndex = i;
+                break;
+            }
+
+            _owner.SelectedIndex = removingIndex;
+
+
+            if (removingIndex > lastSelectedIndex)
+            {
+                _owner.SelectedIndex = lastSelectedIndex;
+            }
+            else
+            {
+                _owner.SelectedIndex = lastSelectedIndex - 1;
+            }
+
+            IsSelected = false;
+            RemoveFileWatcher();
+            OwnerTabCollection.Remove(this);
+        }
+
         public bool Close(bool canCancel = true)
         {
             var lastSelectedIndex = _owner.SelectedIndex;
@@ -725,11 +760,10 @@ namespace LSLCCEditor.EditorTabUI
 
             for (var i = 0; i < OwnerTabCollection.Count; i++)
             {
-                if (ReferenceEquals(OwnerTabCollection[i], this))
-                {
-                    removingIndex = i;
-                    break;
-                }
+                if (!ReferenceEquals(OwnerTabCollection[i], this)) continue;
+
+                removingIndex = i;
+                break;
             }
 
             _owner.SelectedIndex = removingIndex;
@@ -794,23 +828,22 @@ namespace LSLCCEditor.EditorTabUI
             }
 
 
-            if (!canceled)
-            {
-                if (removingIndex > lastSelectedIndex)
-                {
-                    _owner.SelectedIndex = lastSelectedIndex;
-                }
-                else
-                {
-                    _owner.SelectedIndex = lastSelectedIndex - 1;
-                }
+            if (canceled) return false;
 
-                IsSelected = false;
-                RemoveFileWatcher();
-                OwnerTabCollection.Remove(this);
+            if (removingIndex > lastSelectedIndex)
+            {
+                _owner.SelectedIndex = lastSelectedIndex;
+            }
+            else
+            {
+                _owner.SelectedIndex = lastSelectedIndex - 1;
             }
 
-            return !canceled;
+            IsSelected = false;
+            RemoveFileWatcher();
+            OwnerTabCollection.Remove(this);
+
+            return true;
         }
 
         private void CloseCommandImpl(object o)
