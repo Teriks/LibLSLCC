@@ -157,7 +157,7 @@ You should not need to add any binaries yourself.
 
 ===
 
-The LibLSLCC library itself depends on the **CSharp ANTLR 4.5.1 Runtime**.
+The LibLSLCC library itself depends on the **CSharp ANTLR 4 Runtime**.
 
 You can find a license for ANTLR 4 in the **ThirdPartyLicenses** folder
 of the build directory.
