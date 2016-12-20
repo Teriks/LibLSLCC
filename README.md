@@ -148,9 +148,10 @@ LSLCCEditor features:
 
 ===
 
-A few images of the editor small enough to squeeze into this readme...  This dark color scheme can be found here: https://github.com/Teriks/LSLCCEditorThemes
+A few images of the editor small enough to squeeze into this readme...  
 
-===
+This dark color scheme can be found here: https://github.com/Teriks/LSLCCEditorThemes
+
 
 ![LSLCCEditor](http://imgur.com/qOoVhjK.png)
 
