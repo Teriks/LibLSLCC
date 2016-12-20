@@ -112,8 +112,7 @@ A few notable code validator/OpenSim code generator features:
 
 
 
-# About LibLSLCCEditor
-
+# About LSLCCEditor
 
 The project also includes an LSL Editor that was originally built to test the compiler library.
 It has since developed into a full featured multi-tabbed IDE that is built on top of LibLSLCC's parsing framework.
@@ -147,7 +146,15 @@ LSLCCEditor features:
  * Compilation to CSharp code for OpenSim as either
     client uploadable code or plain server side code. 
 
+===
 
+A few images of the editor small enough to squeeze into this readme...  This dark color scheme can be found here: https://github.com/Teriks/LSLCCEditorThemes
+
+===
+
+![LSLCCEditor](http://imgur.com/qOoVhjK.png)
+
+![LSLCCEditor](http://imgur.com/hwIOHAf.png)
 
 
 # Project Dependencies
