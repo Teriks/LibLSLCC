@@ -257,7 +257,7 @@ The projects in the **LibLSLCC-NoEditor.sln** solution have been tested with VS2
 build with every version of Visual Studio starting with VS2010.
 
 
-# Building LibLSLCC on *Nix Platforms with mono/xbuild from the shell
+# Building LibLSLCC on *Nix Platforms with mono/xbuild
 
 
 To build LibLSLCC from the command line using mono/xbuild on nix platforms, first install Mono (complete) 
