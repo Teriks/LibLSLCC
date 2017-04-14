@@ -123,8 +123,8 @@ support's targeting the .NET 4.5 framework.
 
 
 
-VS2015 is your best bet, its what I use personally.  However if your version of Visual Studio's
-support's .NET 4.5, you will probably be able to build the Editor project files with it.
+VS2015+ is your best bet for building, however if your version of Visual Studio's
+support's .NET 4.5 you will probably be able to build the Editor project files with it.
 
 
 LSLCCEditor features:
@@ -205,7 +205,7 @@ http://avalonedit.net/
 
 Important thing to note:
 
- * Building **LibLSLCC-WithEditor-WithInstaller.sln** is only tested in **VS2015**.
+ * Building **LibLSLCC-WithEditor-WithInstaller.sln** should work with **VS2015 and up**.
 
  * Building **LibLSLCC-WithEditor-NoInstaller.sln** should work with **VS2012 and up**.
 
@@ -223,13 +223,14 @@ Fortunately installing java itself sets this up for you by default.
 
 
 In order to build the **LibLSLCC-WithEditor-WithInstaller.sln** solution on Windows you must 
-install the WiX Installer Toolset from http://wixtoolset.org/.  WiX will integrate with Visual Studio 
-and allow you to load the WiX Project type, so you can build the **LSLCCEditorInstaller** project that
-is part of this particular solution file.
+install the latest WiX Installer Toolset from http://wixtoolset.org/releases/.
 
-Please make note that WiX will only integrate with Visual Studio if it is installed **after**
-you install the version of Visual Studio your going to use.  See http://wixtoolset.org/ for 
-all versions of Visual Studio that WiX it is compatible with.
+You must also install the WiX Toolset Extension for your version of Visual Studio, which can
+also be found at http://wixtoolset.org/releases/.
+
+Installing the extension will allow you to load the WiX Project type, so you can build the 
+**LSLCCEditorInstaller** project that is part of the **LibLSLCC-WithEditor-WithInstaller.sln** solution file.
+
 
 **LibLSLCC-WithEditor-WithInstaller.sln** will only build the installer project when building for
 **x64** or **x86** in **Release** mode.  The WiX installer build will not be triggered if you have the
@@ -245,10 +246,9 @@ that support targeting the .NET 4.5 framework. (VS2012+)
 
 
 I have not tested other versions of Visual Studio besides VS2010 with the **LSLCCEditor** portion of the build.
-VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.5) that is too high for it to target, 
-and WiX v3.10.1 does not support integration with VS2010.
+VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.5) that is too high for it to target.
 
-If you happen to be using a version of Visual Studio that is incompatible with **WiX** or the **LSLCCEditor** portion of the
+If you happen to be using a version of Visual Studio that is incompatible with the **LSLCCEditor** portion of the
 build, and you just want to build the library portion of the project;  Then you should use **LibLSLCC-NoEditor.sln**.
 
 
@@ -305,7 +305,7 @@ target the v4.5 framework, with:
 
 # Python Build Scripts
 
-The Python build scripts require python 2.7.* or 3.* to be installed.  You must also have an appropriate version of 
+The Python build scripts require python 3.* to be installed.  You must also have an appropriate version of 
 Visual Studios installed on Windows, or the Mono development package if your on *nix.
 
 If your using Windows, you must install python and add it to your path if you want to call this script from the command line.
