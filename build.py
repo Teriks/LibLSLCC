@@ -9,7 +9,7 @@ try:
     import msbuildpy
 except ImportError:
     import pip
-    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@0.2.0.0', '--target', os.path.join(scriptPath, 'BuildScriptLibs')])
+    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@0.2.1.0', '--target', os.path.join(scriptPath, 'BuildScriptLibs')])
     import msbuildpy
 
 import msbuildpy.inspect
