@@ -9,9 +9,6 @@ Changing the highlighting color of URL's in source code from the theme editor pa
 Its at: `Settings -> Editor Theme -> Syntax Highlighting / Editor Color -> Urls`
 
 
-=======
-
-
 # (1/31/2016 ...)<br/> Fix to code formatter
 
 Fixed an issue with formatting braceless conditional/loop expressions containing comments before the
@@ -43,15 +40,9 @@ preceding the body expression are now forcefully indented regardless of the inde
 settings for braceless control/loop statements.
 
 
-=======
-
-
 # (1/31/2016 ...)<br/> Code generation change
 
 Remove unnecessary code generation for implicit boolean conversions of vector/rotation/list and string.
-
-
-=======
 
 
 # (2/4/2016 7:44AM)<br/> Fix improper code generation issue
@@ -89,8 +80,6 @@ function that does nothing.
 public static void ForceStatement<T>(T value){}
 
 
-=======
-
 # (2/4/2016 11:44PM)<br/> Give logical AND and OR equal precedence
 
 In Linden LSL `(0 && 0 || 1) == TRUE`, and `(1 || 0 && 0) == FALSE`
@@ -106,7 +95,6 @@ Adjust code generation for boolean conversion of strings in condition statements
 Added back `UTILITES.ToBool` to generated code for string expressions in conditional statements.
 Because some string constants may be defined as a CSharp built in string instead of an OpenSim runtime string, which cannot implicitly convert to bool.
 
-=======
 
 # (2/5/2016 11:58AM)<br/> Make modifiable LValues part of grammar
 
@@ -137,7 +125,6 @@ expression: ... expression stuff ...
     | lvalue ALL_MOD_ASSIGN_OPS expression
     | lvalue '=' expression
     
-	
 ```
 
 Helps monumentally...
@@ -169,9 +156,6 @@ Behavior has been changed to simply replace the invalid escape code with the cod
 character that comes after the slash, as in Linden LSL.
 
 
-=======
-
-
 # (2/7/2016 4:26AM)<br/> Factor grammar to remove control statement ambiguity
 
 
@@ -181,9 +165,6 @@ if-elseif-else chains, sometimes to the point of putting the parser in an infini
 This has been fixed by simplifying the grammar and refactoring the code validator class and autocomplete parser.
 
 The abstracted tree LibLSLCC produces still retains the same structure.
-
-
-========
 
 
 # (2/8/2016 2:58AM)<br/> Added built in input file globbing to lslcc_cmd
