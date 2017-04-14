@@ -5,7 +5,13 @@ import os
 scriptPath = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(scriptPath, 'BuildScriptLibs'))
 
-import msbuildpy
+try:
+    import msbuildpy
+except ImportError:
+    import pip
+    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@0.1.0.0', '--target', os.path.join(scriptPath, 'BuildScriptLibs')])
+    import msbuildpy
+
 import msbuildpy.inspect
 
 import zipfile

@@ -1,3 +1,0 @@
-[submodule "BuildScriptLibs/msbuildpy"]
-	path = BuildScriptLibs/msbuildpy
-	url = https://github.com/EriHoss/msbuildpy
