@@ -1,17 +1,23 @@
 #!/usr/bin/python3
+import sys
+import os
+
+scriptPath = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(scriptPath, 'BuildScriptLibs'))
+
+import msbuildpy
+import msbuildpy.inspect
 
 import zipfile
-import os
 import datetime
 import shutil
 import platform
 import subprocess
-import BuildScripts.MSBuild
 import re
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
 
-scriptPath = os.path.dirname(os.path.realpath(__file__))
+
 
 
 def get_liblslcc_version():
@@ -162,7 +168,23 @@ if args.make_binary_release:
     args.build_scraper = False
     args.build_demo_area = False
 
-MSBuild = BuildScripts.MSBuild.Tool()
+if msbuildpy.inspect.is_windows():
+    MSBuild = msbuildpy.get_msbuild_paths('msbuild >=12.*')
+    if len(MSBuild) == 0:
+        print('Could not find a compatible version of msbuild')
+        
+    # get the most recent major version
+    MSBuild = MSBuild[0]
+else:
+    MSBuild = msbuildpy.get_msbuild_paths('xbuild >=12.*')
+    if len(MSBuild) == 0:
+        print('Could not find a compatible version of xbuild')
+        
+    # get the most recent major version
+    MSBuild = MSBuild[0]
+
+def call_msbuild(*args):
+    subprocess.call([MSBuild.path]+list(args))
 
 no_editor_solution = os.path.join(scriptPath, 'LibLSLCC-NoEditor.sln')
 editor_solution = os.path.join(scriptPath, 'LibLSLCC-WithEditor-WithInstaller.sln')
@@ -170,8 +192,11 @@ editor_solution = os.path.join(scriptPath, 'LibLSLCC-WithEditor-WithInstaller.sl
 LSLCCEditorTargetFramework = "/p:TargetFrameworkVersion=4.5"
 LibLSLCCTargetFramework = "/p:TargetFrameworkVersion=v4.0"
 
+
+mono_vm = msbuildpy.inspect.get_mono_vm()
+
 # mono 4.x / xbuild seems to have issues with project files targeting .NET 4.0
-if args.liblslcc_net_45 or MSBuild.is_mono() and MSBuild.mono_ver()[0] > 3:
+if args.liblslcc_net_45 or (not msbuildpy.inspect.is_windows() and mono_vm.version[0] > 3):
     LibLSLCCTargetFramework = "/p:TargetFrameworkVersion=v4.5"
 
 LibLSLCCBuildTargets = "/t:LibLSLCC"
@@ -186,31 +211,31 @@ if args.build_demo_area:
     LibLSLCCBuildTargets += ";DemoArea"
 
 if not args.release_only:
-    MSBuild.run(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Debug', '/p:Platform=Any CPU',
+    call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Debug', '/p:Platform=Any CPU',
                 LibLSLCCTargetFramework)
 
 if not args.debug_only:
-    MSBuild.run(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Release', '/p:Platform=Any CPU',
+    call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Release', '/p:Platform=Any CPU',
                 LibLSLCCTargetFramework)
 
 # build the installers on windows
-if MSBuild.is_windows() and args.build_installer and args.build_editor:
+if msbuildpy.inspect.is_windows() and args.build_installer and args.build_editor:
     if not args.release_only:
-        MSBuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+        call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
                     LSLCCEditorTargetFramework)
 
-    MSBuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86',
+    call_msbuild(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x86',
                 '/p:Version=' + LSLCCEditor_Version, LSLCCEditorTargetFramework)
-    MSBuild.run(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
+    call_msbuild(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
                 '/p:Version=' + LSLCCEditor_Version, LSLCCEditorTargetFramework)
 
-if MSBuild.is_windows() and not args.build_installer and args.build_editor:
+if msbuildpy.inspect.is_windows() and not args.build_installer and args.build_editor:
     if not args.release_only:
-        MSBuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
+        call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
                     LSLCCEditorTargetFramework)
 
     if not args.debug_only:
-        MSBuild.run(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Release', '/p:Platform=Any CPU',
+        call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Release', '/p:Platform=Any CPU',
                     LSLCCEditorTargetFramework)
 
 if not args.make_binary_release:
@@ -288,7 +313,7 @@ with zipfile.ZipFile(binariesZipPath, 'w', zipMode) as zip_file:
     zip_file.write(LibLSLCC_Licence_Path, os.path.basename('LICENSE'))
 
 # copy and time stamp the installers when on windows
-if MSBuild.is_windows():
+if msbuildpy.inspect.is_windows():
     x64_installer = os.path.relpath(
         os.path.join(installerPath, 'bin', 'x64', 'Release', installerBasicName + installerExtension), scriptPath)
     x86_installer = os.path.relpath(
