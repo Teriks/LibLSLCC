@@ -201,7 +201,7 @@ LibLSLCCTargetFramework = "/p:TargetFrameworkVersion=v4.0"
 
 mono_vm = msbuildpy.inspect.get_mono_vm()
 
-# mono 4.x / xbuild seems to have issues with project files targeting .NET 4.0
+# mono 4.x / cannot build v4.0 assemblies
 if args.liblslcc_net_45 or (not msbuildpy.inspect.is_windows() and mono_vm.version[0] > 3):
     LibLSLCCTargetFramework = "/p:TargetFrameworkVersion=v4.5"
 
