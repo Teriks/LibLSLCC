@@ -438,4 +438,19 @@ When opening a tab with unsaved changes to a new window, if you clicked "No" whe
 The tab now closes silently and opens in a new window when you click "No".
 
 
+# (1.0.5.25)
+
+Add missing Antlr4.Runtime.Standard.dll dependency back to LibLSLCC, as well as missing the antlr-4.6-complete.jar which is a used for building the ANTLR parser.
+
+Had not noticed these missing for a probably embarrassingly long time while not being so active.
+
+===
+
+Python build scripts now pull in https://github.com/Teriks/msbuildpy on first run and install it under BuildScriptLibs.
+
+It is a small but more complete library for finding msbuild, xbuild and various info about what mono version is available during build.
+
+I wrote it specificly so the python build scripts in this project could support Visual Studio 2017 as well as what they previously supported.  (MSBuild/xbuild 12+)
+
+
 
