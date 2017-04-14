@@ -389,5 +389,53 @@ A few missing constants were added and constants with incorrectly documented val
 LibraryDataScrapingTool now pulls constants from the specified viewer keywords file instead of the LSL wiki.
 
 
+# (1.0.4.34)<br/> Minor fix to the editors Help -> About window.
+
+The working directory change when opening via Windows file association (clicking an .lsl file) was not being accounted for, which caused the license.rtf to not load, and loaded dependencies to not display in the About window.
+
+
+# (1.0.4.37)
+
+Removed "missing settings file..." dialog on the first start up of LSLCCEditor
+
+
+# (1.0.4.39)
+
+Build script fixes.
+
+
+# (1.0.5.1)
+
+Fixed for loop code formatting exception when loop initializer was left blank.
+
+Bug affected editor and library.
+
+
+# (1.0.5.12)
+
+1.)
+
+LibLSLCC has been upgraded to use ANTLR 4.6, there were no breaking changes to LibLSLCC's API.
+
+
+===
+
+2.)
+
+When opening a new file, LSLCCEditor will now open it inside of a new tab instead of a new window.
+
+Tabs can be moved to a new window by right clicking the tab and selecting "Open In New Window".
+
+A new window can also be opened by clicking: File -> Open New Window, doing so will prompt you to select a file.
+
+
+# (1.0.5.14)
+
+Single bugfix to LSLCCEditor.
+
+When opening a tab with unsaved changes to a new window, if you clicked "No" when asked if you wanted to save your changes first, you would be prompted to save a second time with a similar message.
+
+The tab now closes silently and opens in a new window when you click "No".
+
 
 
