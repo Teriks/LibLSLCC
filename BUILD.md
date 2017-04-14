@@ -1,8 +1,211 @@
+# Binary Releases
+
+If you don't want to build the Library or Editor to use it,
+I release the latest binaries for the project in each GitHub release.
+
+https://github.com/Teriks/LibLSLCC/releases
+
+
+Each release contains an AnyCPU Release/Debug version of LibLSLCC,
+an AnyCPU binary copy of lslcc (The command line compiler), and an XML documentation 
+file generated for the library by Visual Studio/MSBuild.
+
+Releases also include platform specific installers for LSLCCEditor.
+
+However, the only difference between each installer is the install directory that they default too.
+The installers for both x64 and x86 platforms use platform independent AnyCPU binaries.
+
+
+# About LibLSLCC 
+
+
+LibLSLCC is a framework for writing LSL compilers.
+
+The LibLSLCC code validator/syntax tree builder provides full front end syntax checking of LSL.
+It even includes extended warnings that you would find in most compilers for other languages,
+but that are not implemented in either the Linden compiler or current OpenSim compiler.
+
+
+Warnings for things such as: 
+
+ * Constant expressions in conditional/loop statements.
+
+ * Un-used variables.
+
+ * Dead code.
+
+ * Deprecated function usage.
+
+
+That's not everything, just some common ones; the list is pretty long.
+I suggest you mess around with the editor releases to discover what all 
+LibLSLCC can tell you about your code.
+
+
+LibLSLCC can also be used for general purpose LSL parsing tasks, it provides
+its own rich syntax tree that has been completely abstracted from ANTLR.
+
+The syntax tree is tailored specifically for dealing with LSL, and there is an interface for every node 
+so that you can implement your own code DOM to feed to compilers/formatters if you want to.
+
+
+====
+
+
+LibLSLCC includes a CSharp code generator that targets the OpenSim runtime.
+
+The code validator (parser/tree builder) and OpenSim code generator in LibLSLCC have both been designed
+with the intent of implementing Linden LSL with near perfect cross compatibility.
+
+The project is basically a complete reverse engineering of the Linden compiler's
+grammar, non grammar level syntax rules, and generated code behavior.
+
+
+
+I have integrated LibLSLCC into OpenSim, see here:
+
+https://github.com/Teriks/OpenSim_With_LibLSLCC
+
+
+====
+
+A few notable code validator/OpenSim code generator features:
+
+ * Full front end Syntax Checking, including dead code detection.  
+   Esoteric CSharp compiler errors and line mapping have been eliminated.
+
+ * Dead code elimination from generated code where applicable.
+   This includes un-used functions and global variables, as well
+   as any dead code in a function/event body that does not cause a compile 
+   error and is safe to remove given its context.
+
+ * Correct code generation for global variables that reference each other
+   while still maintaining full support for script resets in server generated code.
+
+ * Symbol name mangling specific to globals/parameters/local variables/labels and 
+   user defined functions.  This completely abstracts variable scoping rules from the CSharp 
+   compiler underneath.  All variable scoping rules are handled by the front end LibLSLCC code validator
+   and are implemented in a fashion that is true to Linden LSL.  Symbol mangling also removes the possibility 
+   of causing a CSharp syntax error by using a keyword/Class name as a variable or function name.
+
+
+ * Correct Code generation for jumps over variable declarations.  Jumping over a variable declaration
+   will leave said variable with a default value instead of null.  Leaving these variables null is 
+   something both the Linden compiler and current OpenSim compiler do, which is a step out of the LSL
+   SandBox, as null variables are not supported elsewhere in LSL and generally not expected as a function parameter.
+
+ * Labels no longer require a "NoOp()" after every label, the OpenSim code generator 
+   in LibLSLCC simply detects when they are the last statement in a scope, then adds a semi-colon
+   immediately after them in the generated code.
+
+ * Full and optimized support for the CO-OP script stop strategy in OpenSim.
+
+ * Correct order of operations via the use of operator function stubs
+   that are generated on demand.  Old mono list optimizations will now
+   port over without breaking, as well as other odd scripts that rely
+   on Right to Left evaluation being the norm.
+
+
+ * Negatable vectors and rotations.
+
+ * Support for certain unicode characters in script symbols. (Same characters the linden Compiler allows)
+
+
+
+# About LSLCCEditor
+
+The project also includes an LSL Editor that was originally built to test the compiler library.
+It has since developed into a full featured multi-tabbed IDE that is built on top of LibLSLCC's parsing framework.
+
+Please take note that LSLCCEditor and its related projects are **Windows Only**, and you can 
+only build the __LibLSLCC-WithEditor*.sln__ solution's on Windows using a version of Visual Studio that
+support's targeting the .NET 4.5 framework.
+
+
+
+VS2015+ is your best bet for building, however if your version of Visual Studio's
+support's .NET 4.5 you will probably be able to build the Editor project files with it.
+
+
+LSLCCEditor features:
+
+ * Tabbed multi script editing.
+
+ * Syntax highlighting.
+
+ * Documentation tooltips.
+
+ * Context aware auto complete.
+
+ * Go to definition (navigation by symbol).
+
+ * Code formatting.
+
+ * Library data for both Linden and Opensim SecondLife servers. 
+
+ * Compilation to CSharp code for OpenSim as either
+    client uploadable code or plain server side code. 
+
+===
+
+A few images of the editor small enough to squeeze into this readme...  
+
+This dark color scheme can be found here: https://github.com/Teriks/LSLCCEditorThemes
+
+
+![LSLCCEditor](http://imgur.com/qOoVhjK.png)
+
+![LSLCCEditor](http://imgur.com/hwIOHAf.png)
+
+
+# Project Dependencies
+
+All binary dependencies are distributed with the build.
+You should not need to add any binaries yourself.
+
+===
+
+The LibLSLCC library itself depends on the **CSharp ANTLR 4 Runtime**.
+
+You can find a license for ANTLR 4 in the **ThirdPartyLicenses** folder
+of the build directory.
+
+For more information about **ANTLR** go here:
+
+http://www.antlr.org/index.html
+
+
+===
+
+The **LibraryDataScrapingTool** project depends on **System.Data.SQLite**
+when compiled on Windows.  When its compiled on mono it uses **Mono.Data.Sqlite**.
+
+see here: 
+
+https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki
+
+
+===
+
+The LSLCCEditor application depends on **AvalonEdit**, and a few pieces
+of code forked from **AvalonEdit**.  You can also find a license for **AvalonEdit**
+in the **ThirdPartyLicenses** folder of the build directory.
+
+ 
+For more information about **AvalonEdit** go here:
+
+http://avalonedit.net/
+
+
+=== 
+
+
+ 
 # Building LibLSLCC and LSLCCEditor On Windows
 
 Important thing to note:
 
- * Building **LibLSLCC-WithEditor-WithInstaller.sln** is only tested in **VS2015**.
+ * Building **LibLSLCC-WithEditor-WithInstaller.sln** should work with **VS2015 and up**.
 
  * Building **LibLSLCC-WithEditor-NoInstaller.sln** should work with **VS2012 and up**.
 
@@ -20,13 +223,14 @@ Fortunately installing java itself sets this up for you by default.
 
 
 In order to build the **LibLSLCC-WithEditor-WithInstaller.sln** solution on Windows you must 
-install the WiX Installer Toolset from http://wixtoolset.org/.  WiX will integrate with Visual Studio 
-and allow you to load the WiX Project type, so you can build the **LSLCCEditorInstaller** project that
-is part of this particular solution file.
+install the latest WiX Installer Toolset from http://wixtoolset.org/releases/.
 
-Please make note that WiX will only integrate with Visual Studio if it is installed **after**
-you install the version of Visual Studio your going to use.  See http://wixtoolset.org/ for 
-all versions of Visual Studio that WiX it is compatible with.
+You must also install the WiX Toolset Extension for your version of Visual Studio, which can
+also be found at http://wixtoolset.org/releases/.
+
+Installing the extension will allow you to load the WiX Project type, so you can build the 
+**LSLCCEditorInstaller** project that is part of the **LibLSLCC-WithEditor-WithInstaller.sln** solution file.
+
 
 **LibLSLCC-WithEditor-WithInstaller.sln** will only build the installer project when building for
 **x64** or **x86** in **Release** mode.  The WiX installer build will not be triggered if you have the
@@ -42,10 +246,9 @@ that support targeting the .NET 4.5 framework. (VS2012+)
 
 
 I have not tested other versions of Visual Studio besides VS2010 with the **LSLCCEditor** portion of the build.
-VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.5) that is too high for it to target, 
-and WiX v3.10.1 does not support integration with VS2010.
+VS2010 for sure **does not work**, as the editor uses a .NET framework level (4.5) that is too high for it to target.
 
-If you happen to be using a version of Visual Studio that is incompatible with **WiX** or the **LSLCCEditor** portion of the
+If you happen to be using a version of Visual Studio that is incompatible with the **LSLCCEditor** portion of the
 build, and you just want to build the library portion of the project;  Then you should use **LibLSLCC-NoEditor.sln**.
 
 
@@ -102,7 +305,7 @@ target the v4.5 framework, with:
 
 # Python Build Scripts
 
-The Python build scripts require python 2.7.* or 3.* to be installed.  You must also have an appropriate version of 
+The Python build scripts require python 3.* to be installed.  You must also have an appropriate version of 
 Visual Studios installed on Windows, or the Mono development package if your on *nix.
 
 If your using Windows, you must install python and add it to your path if you want to call this script from the command line.
