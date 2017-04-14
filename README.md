@@ -257,30 +257,11 @@ The projects in the **LibLSLCC-NoEditor.sln** solution have been tested with VS2
 build with every version of Visual Studio starting with VS2010.
 
 
-# Building LibLSLCC on *Nix Platforms with monodevelop 
+# Building LibLSLCC on *Nix Platforms with mono/xbuild from the shell
 
 
-Use **LibLSLCC-NoEditor.sln** when building for Mono.
-
-Only the **LibLSLCC**, **LibraryDataScrapingTools**, **lslcc_cmd** and **DemoArea** projects are buildable on Mono 
-and the **LibLSLCC-NoEditor.sln** includes only these projects for convenience.
-
-Java is also required when building on *Nix platforms so that the ANTRL 4 tool can run.  
-Make sure you have the latest version of Java available for your distribution installed and
-that it is runnable from the command line.
-
-You can open the provided **LibLSLCC-NoEditor.sln** solution on Linux using the latest version of MonoDevelop,
-Or you can build it from the command line using the xbuild command (See the next section).
-
-Other than some of the projects in the solution being un-buildable under Mono, the build on *Nix platforms behaves
-the exact same way under xbuild/monodevelop as it does under MSBuild on Windows.
-
-
-# Building LibLSLCC on *Nix Platforms with xbuild from the shell
-
-
-To build LibLSLCC from the command line using mono and xbuild on nix platforms, first install Mono 
-for your distribution then CD into the LibLSLCC source tree where **LibLSLCC-NoEditor.sln** resides.
+To build LibLSLCC from the command line using mono/xbuild on nix platforms, first install Mono (complete) 
+for your distribution and then CD into the LibLSLCC source tree where **LibLSLCC-NoEditor.sln** resides.
 
 enter the command:
 
@@ -303,7 +284,7 @@ If your building using 4.* version of mono you need to force all projects to tar
 The python build script will do that for you behind the scenes.
 
 
-# Python Build Scripts
+# Cross Platform Python Build Scripts
 
 The Python build scripts require python 3.* to be installed.  You must also have an appropriate version of 
 Visual Studios installed on Windows, or the Mono development package if your on *nix.
