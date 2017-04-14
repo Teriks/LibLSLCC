@@ -9,7 +9,7 @@ try:
     import msbuildpy
 except ImportError:
     import pip
-    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@0.1.0.0', '--target', os.path.join(scriptPath, 'BuildScriptLibs')])
+    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@0.2.0.0', '--target', os.path.join(scriptPath, 'BuildScriptLibs')])
     import msbuildpy
 
 import msbuildpy.inspect
@@ -175,14 +175,14 @@ if args.make_binary_release:
     args.build_demo_area = False
 
 if msbuildpy.inspect.is_windows():
-    MSBuild = msbuildpy.get_msbuild_paths('msbuild >=12.*')
+    MSBuild = msbuildpy.find_msbuild('msbuild >=12.*')
     if len(MSBuild) == 0:
         print('Could not find a compatible version of msbuild')
         
     # get the most recent major version
     MSBuild = MSBuild[0]
 else:
-    MSBuild = msbuildpy.get_msbuild_paths('xbuild >=12.*')
+    MSBuild = msbuildpy.find_msbuild('xbuild >=12.*')
     if len(MSBuild) == 0:
         print('Could not find a compatible version of xbuild')
         
