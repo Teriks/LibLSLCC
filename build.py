@@ -2,8 +2,8 @@
 import sys
 import os
 
-scriptPath = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(scriptPath, 'BuildScriptLibs'))
+script_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(script_path, 'BuildScriptLibs'))
 
 msbuildpy_version = '0.3.1.0'
 
@@ -12,7 +12,7 @@ try:
     if msbuildpy.__version__ != msbuildpy_version: raise ImportError()
 except ImportError:
     import pip
-    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version, '--upgrade', '--target', os.path.join(scriptPath, 'BuildScriptLibs')])
+    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version, '--upgrade', '--target', os.path.join(script_path, 'BuildScriptLibs')])
     import msbuildpy
 
 import msbuildpy.inspect
@@ -23,14 +23,78 @@ import shutil
 import platform
 import subprocess
 import re
+import json
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
 
 
+def set_version(file, version):
+    with open(file, 'r') as content_file:
+        content = content_file.read();
+
+    match = re.search(r'\[assembly: AssemblyVersion\("([^"]*)"\)\]', content)
+
+    was = match.group(1)
+
+    if was == version:
+        return was
+
+    content = re.sub(r'\[assembly: AssemblyVersion\("[^"]*"\)\]',
+                     r'[assembly: AssemblyVersion("' + version + '")]', content)
+
+    content = re.sub(r'\[assembly: AssemblyFileVersion\("[^"]*"\)\]',
+                     r'[assembly: AssemblyFileVersion("' + version + '")]', content)
+
+    tempfile = file + ".tmp";
+
+    with open(tempfile, 'w+') as content_file:
+        content_file.write(content)
+
+    # if theres an exception prior, the temp file will not move over.
+    # an exception above will likely cause the temp file to be blank.
+    # blanking the source file would be bad.
+    shutil.move(tempfile, file)
+    return was
+
+    
+def update_assembly_versions():
+    print("")
+    print("Updating assembly versions...")
+    print("")
+
+    scriptDir = os.path.dirname(os.path.realpath(__file__));
+
+    versionsDir = os.path.join(scriptDir, "versions")
+
+    with open("version.json", 'r') as content_file:
+        versionFileContent = json.load(content_file)
+
+    for dir in versionFileContent.keys():
+
+        versionFile = os.path.join(versionsDir, dir, "Version.cs")
+
+        lastTag = versionFileContent[dir]["last_tag"]
+
+        commitsSinceLastTag = int(
+            subprocess.check_output(["git", "rev-list", lastTag.rstrip() + "..HEAD", "--count"]).decode("utf-8"))
+
+        versionTemplate = versionFileContent[dir]["version_template"]
+
+        versionTemplate = versionTemplate.replace("{commits_since_last_tag}", str(commitsSinceLastTag))
+
+        was = set_version(versionFile, versionTemplate)
+
+        if versionTemplate != was:
+            print(dir + " = " + versionTemplate + " was " + was)
+        else:
+            print(dir + " version already up to date.")
+
+
+    print("")
 
 
 def get_liblslcc_version():
-    with open(os.path.join(scriptPath, "versions", "LibLSLCC", "Version.cs"), 'r') as content_file:
+    with open(os.path.join(script_path, "versions", "LibLSLCC", "Version.cs"), 'r') as content_file:
         content = content_file.read()
 
     match = re.search(r'\[assembly: AssemblyVersion\("([^"]*)"\)\]', content)
@@ -38,7 +102,7 @@ def get_liblslcc_version():
 
 
 def get_lslcceditor_version():
-    with open(os.path.join(scriptPath, "versions", "LSLCCEditor", "Version.cs"), 'r') as content_file:
+    with open(os.path.join(script_path, "versions", "LSLCCEditor", "Version.cs"), 'r') as content_file:
         content = content_file.read()
 
     match = re.search(r'\[assembly: AssemblyVersion\("([^"]*)"\)\]', content)
@@ -54,7 +118,7 @@ def zip_dir_relative(path, zip_file, **kwargs):
     for root, dirs, files in os.walk(path):
         for file in files:
             full_path = os.path.join(root, file)
-            rel_path = os.path.relpath(root, scriptPath)
+            rel_path = os.path.relpath(root, script_path)
 
             arc_path = os.path.join(rel_path, file)
 
@@ -68,7 +132,7 @@ def zip_dir_relative(path, zip_file, **kwargs):
                 if not file_filter(full_path):
                     continue
 
-            print('Zip:\n\t' + os.path.relpath(full_path, scriptPath) + ' -> ' + arc_path)
+            print('Zip:\n\t' + os.path.relpath(full_path, script_path) + ' -> ' + arc_path)
             zip_file.write(full_path, arc_path)
 
 
@@ -159,23 +223,28 @@ args_parser.add_argument(
 args_parser.add_argument(
     '--binary-release-dir',
     metavar='PATH',
-    default=os.path.join(scriptPath, 'BinaryRelease'),
+    default=os.path.join(script_path, 'BinaryRelease'),
     dest='binary_release_dir',
     help='The folder to create and place the binary release files in.'
 )
 
+args_parser.add_argument(
+    '--clean',
+    action='store_true',
+    dest='clean_build',
+    help='Clean the build.'
+)
+
+args_parser.add_argument(
+    '--update-versions',
+    action='store_true',
+    dest='update_versions',
+    help='Update assembly versions in accordance with version.json.'
+)
+
+
 args = args_parser.parse_args()
 
-if args.only_build_liblslcc:
-    args.build_scraper = False
-    args.build_lslcc_cmd = False
-    args.build_demo_area = False
-    args.build_installer = False
-    args.build_editor = False
-
-if args.make_binary_release:
-    args.build_scraper = False
-    args.build_demo_area = False
 
 if msbuildpy.inspect.is_windows():
     MSBuild = msbuildpy.find_msbuild('msbuild >=12.*')
@@ -192,17 +261,55 @@ else:
     # get the most recent major version
     MSBuild = MSBuild[0]
 
+
 def call_msbuild(*args):
     subprocess.call([MSBuild.path]+list(args))
 
-no_editor_solution = os.path.join(scriptPath, 'LibLSLCC-NoEditor.sln')
-editor_solution = os.path.join(scriptPath, 'LibLSLCC-WithEditor-WithInstaller.sln')
+
+if args.update_versions:
+    update_assembly_versions()
+    exit()
+
+
+if args.clean_build:
+    if msbuildpy.inspect.is_windows():
+        solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.sln')
+    else:
+        solution = os.path.join(script_path, 'LibLSLCC-NoEditor.sln')
+
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=Any CPU',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=Any CPU',)
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x86',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x86',)
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x64',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x64',)
+    exit()
+
+
+if args.only_build_liblslcc:
+    args.build_scraper = False
+    args.build_lslcc_cmd = False
+    args.build_demo_area = False
+    args.build_installer = False
+    args.build_editor = False
+
+
+if args.make_binary_release:
+    args.build_scraper = False
+    args.build_demo_area = False
+
+
+no_editor_solution = os.path.join(script_path, 'LibLSLCC-NoEditor.sln')
+editor_solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.sln')
 
 LSLCCEditorTargetFramework = "/p:TargetFrameworkVersion=4.5"
 LibLSLCCTargetFramework = "/p:TargetFrameworkVersion=v4.0"
 
-
 mono_vm = msbuildpy.inspect.get_mono_vm()
+
 
 # mono 4.x / cannot build v4.0 assemblies
 if args.liblslcc_net_45 or (not msbuildpy.inspect.is_windows() and mono_vm.version[0] > 3):
@@ -213,19 +320,24 @@ LibLSLCCBuildTargets = "/t:LibLSLCC"
 if args.build_lslcc_cmd:
     LibLSLCCBuildTargets += ";lslcc_cmd"
 
+
 if args.build_scraper:
     LibLSLCCBuildTargets += ";LibraryDataScrapingTool"
 
+
 if args.build_demo_area:
     LibLSLCCBuildTargets += ";DemoArea"
+
 
 if not args.release_only:
     call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Debug', '/p:Platform=Any CPU',
                 LibLSLCCTargetFramework)
 
+
 if not args.debug_only:
     call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Release', '/p:Platform=Any CPU',
                 LibLSLCCTargetFramework)
+
 
 # build the installers on windows
 if msbuildpy.inspect.is_windows() and args.build_installer and args.build_editor:
@@ -238,6 +350,7 @@ if msbuildpy.inspect.is_windows() and args.build_installer and args.build_editor
     call_msbuild(editor_solution, '/t:LSLCCEditorInstaller', '/p:Configuration=Release', '/p:Platform=x64',
                 '/p:Version=' + LSLCCEditor_Version, LSLCCEditorTargetFramework)
 
+
 if msbuildpy.inspect.is_windows() and not args.build_installer and args.build_editor:
     if not args.release_only:
         call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
@@ -246,6 +359,7 @@ if msbuildpy.inspect.is_windows() and not args.build_installer and args.build_ed
     if not args.debug_only:
         call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Release', '/p:Platform=Any CPU',
                     LSLCCEditorTargetFramework)
+
 
 if not args.make_binary_release:
     exit(0)
@@ -261,11 +375,11 @@ binaryReleaseOutputDir = args.binary_release_dir
 
 binariesZipPath = os.path.join(binaryReleaseOutputDir, 'LibLSLCC_Binaries_' + LibLSLCC_Version + '.zip')
 
-LibLSLCC_Path = os.path.join(scriptPath, 'LibLSLCC')
+LibLSLCC_Path = os.path.join(script_path, 'LibLSLCC')
 
-lslcc_cmd_Path = os.path.join(scriptPath, 'lslcc_cmd')
+lslcc_cmd_Path = os.path.join(script_path, 'lslcc_cmd')
 
-installerPath = os.path.join(scriptPath, 'LSLCCEditorInstaller')
+installerPath = os.path.join(script_path, 'LSLCCEditorInstaller')
 
 LibLSLCC_AnyCpu_Path = os.path.join(LibLSLCC_Path, 'bin', 'AnyCPU')
 
@@ -324,16 +438,16 @@ with zipfile.ZipFile(binariesZipPath, 'w', zipMode) as zip_file:
 # copy and time stamp the installers when on windows
 if msbuildpy.inspect.is_windows():
     x64_installer = os.path.relpath(
-        os.path.join(installerPath, 'bin', 'x64', 'Release', installerBasicName + installerExtension), scriptPath)
+        os.path.join(installerPath, 'bin', 'x64', 'Release', installerBasicName + installerExtension), script_path)
     x86_installer = os.path.relpath(
-        os.path.join(installerPath, 'bin', 'x86', 'Release', installerBasicName + installerExtension), scriptPath)
+        os.path.join(installerPath, 'bin', 'x86', 'Release', installerBasicName + installerExtension), script_path)
 
     x64_installerDest = os.path.relpath(
         os.path.join(binaryReleaseOutputDir, installerBasicName + '_x64_' + LSLCCEditor_Version + installerExtension),
-        scriptPath)
+        script_path)
     x86_installerDest = os.path.relpath(
         os.path.join(binaryReleaseOutputDir, installerBasicName + '_x86_' + LSLCCEditor_Version + installerExtension),
-        scriptPath)
+        script_path)
 
     if args.build_installer:
         print('\n')

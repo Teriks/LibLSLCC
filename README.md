@@ -313,5 +313,13 @@ To build and package up a version stamped release in the BinaryRelease folder:
 
 	python build.py --binary-release
 
+To clean the entire build:
 
-**clean.py** simply cleans all configurations/platforms of the build when you run it.
+	python build.py --clean
+
+To update assembly versions (according to version.json):
+
+	python build.py --update-versions
+
+
+build.py --update-versions is meant to be used as a pre-commit hook.
