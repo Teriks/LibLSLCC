@@ -5,7 +5,7 @@ import os
 script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(script_path, 'BuildScriptLibs'))
 
-msbuildpy_version = '0.3.1.0'
+msbuildpy_version = '0.3.3.1'
 
 try:
     import msbuildpy
