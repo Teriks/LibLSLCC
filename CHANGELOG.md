@@ -434,4 +434,9 @@ It is a small but more complete library for finding msbuild, xbuild and various 
 I wrote it specificly so the python build scripts in this project could support Visual Studio 2017 as well as what they previously supported.  (MSBuild/xbuild 12+)
 
 
+# (1.0.5.37)
+
+Streamline build scripts, move all functionality into build.py
+
+
 
