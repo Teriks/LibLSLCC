@@ -1,0 +1,5 @@
+#!/bin/sh
+
+python build.py --update-versions
+
+git add versions
