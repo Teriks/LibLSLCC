@@ -9,22 +9,10 @@ if sys.version_info[0] == 2:
 script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(script_path, 'BuildScriptLibs'))
 
+
 msbuildpy_version = '0.5.0.0'
+msbuildpy_pip_install_target = 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version
 
-try:
-    import msbuildpy
-    if msbuildpy.__version__ != msbuildpy_version: raise ImportError()
-except ImportError:
-    try:
-        import pip
-    except ImportError:
-        print('Please install pip package manager for python3, the pip module was not found on your system')
-        exit()
-
-    pip.main(['install', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version])
-    import msbuildpy
-
-import msbuildpy.sysinspect
 
 import zipfile
 import datetime
@@ -255,6 +243,45 @@ args_parser.add_argument(
 args = args_parser.parse_args()
 
 
+if args.update_versions:
+    update_assembly_versions()
+    exit()
+
+
+try:
+    import msbuildpy
+    import msbuildpy.sysinspect
+    if msbuildpy.__version__ != msbuildpy_version: 
+        raise ImportError()
+except ImportError:
+    try:
+        import pip
+    except ImportError:
+        print('Please install pip package manager for python3, the pip module was not found on your system')
+        exit()
+
+    pip.main(['install', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', msbuildpy_pip_install_target])
+    subprocess.call([sys.executable]+sys.argv, shell=True)
+    exit()
+
+if args.clean_build:
+    if msbuildpy.sysinspect.is_windows():
+        solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.sln')
+    else:
+        solution = os.path.join(script_path, 'LibLSLCC-NoEditor.sln')
+
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=Any CPU',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=Any CPU',)
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x86',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x86',)
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x64',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x64',)
+    exit()
+    
+    
 if msbuildpy.sysinspect.is_windows():
     MSBuild = msbuildpy.find_msbuild('msbuild >=12.*')
     if len(MSBuild) == 0:
@@ -273,29 +300,6 @@ else:
 
 def call_msbuild(*args):
     subprocess.call([MSBuild.path]+list(args))
-
-
-if args.update_versions:
-    update_assembly_versions()
-    exit()
-
-
-if args.clean_build:
-    if msbuildpy.sysinspect.is_windows():
-        solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.sln')
-    else:
-        solution = os.path.join(script_path, 'LibLSLCC-NoEditor.sln')
-
-
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=Any CPU',)
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=Any CPU',)
-
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x86',)
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x86',)
-
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x64',)
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x64',)
-    exit()
 
 
 if args.only_build_liblslcc:
