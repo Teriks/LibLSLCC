@@ -9,7 +9,7 @@ if sys.version_info[0] == 2:
 script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(script_path, 'BuildScriptLibs'))
 
-msbuildpy_version = '0.4.0.2'
+msbuildpy_version = '0.5.0.0'
 
 try:
     import msbuildpy
