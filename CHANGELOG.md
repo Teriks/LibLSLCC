@@ -439,4 +439,9 @@ I wrote it specificly so the python build scripts in this project could support 
 Streamline build scripts, move all functionality into build.py
 
 
+# (1.0.5.40)
+
+Update version of msbuildpy used in build.py
+
+
 
