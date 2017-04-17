@@ -5,7 +5,7 @@ import os
 script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(script_path, 'BuildScriptLibs'))
 
-msbuildpy_version = '0.3.3.3'
+msbuildpy_version = '0.4.0.1'
 
 try:
     import msbuildpy
@@ -15,7 +15,7 @@ except ImportError:
     pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version, '--upgrade', '--target', os.path.join(script_path, 'BuildScriptLibs')])
     import msbuildpy
 
-import msbuildpy.inspect
+import msbuildpy.sysinspect
 
 import zipfile
 import datetime
@@ -246,7 +246,7 @@ args_parser.add_argument(
 args = args_parser.parse_args()
 
 
-if msbuildpy.inspect.is_windows():
+if msbuildpy.sysinspect.is_windows():
     MSBuild = msbuildpy.find_msbuild('msbuild >=12.*')
     if len(MSBuild) == 0:
         print('Could not find a compatible version of msbuild')
@@ -272,7 +272,7 @@ if args.update_versions:
 
 
 if args.clean_build:
-    if msbuildpy.inspect.is_windows():
+    if msbuildpy.sysinspect.is_windows():
         solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.sln')
     else:
         solution = os.path.join(script_path, 'LibLSLCC-NoEditor.sln')
@@ -308,11 +308,11 @@ editor_solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.s
 LSLCCEditorTargetFramework = "/p:TargetFrameworkVersion=4.5"
 LibLSLCCTargetFramework = "/p:TargetFrameworkVersion=v4.0"
 
-mono_vm = msbuildpy.inspect.get_mono_vm()
+mono_vm = msbuildpy.sysinspect.get_mono_vm()
 
 
 # mono 4.x / cannot build v4.0 assemblies
-if args.liblslcc_net_45 or (not msbuildpy.inspect.is_windows() and mono_vm.version[0] > 3):
+if args.liblslcc_net_45 or (not msbuildpy.sysinspect.is_windows() and mono_vm.version[0] > 3):
     LibLSLCCTargetFramework = "/p:TargetFrameworkVersion=v4.5"
 
 LibLSLCCBuildTargets = "/t:LibLSLCC"
@@ -340,7 +340,7 @@ if not args.debug_only:
 
 
 # build the installers on windows
-if msbuildpy.inspect.is_windows() and args.build_installer and args.build_editor:
+if msbuildpy.sysinspect.is_windows() and args.build_installer and args.build_editor:
     if not args.release_only:
         call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
                     LSLCCEditorTargetFramework)
@@ -351,7 +351,7 @@ if msbuildpy.inspect.is_windows() and args.build_installer and args.build_editor
                 '/p:Version=' + LSLCCEditor_Version, LSLCCEditorTargetFramework)
 
 
-if msbuildpy.inspect.is_windows() and not args.build_installer and args.build_editor:
+if msbuildpy.sysinspect.is_windows() and not args.build_installer and args.build_editor:
     if not args.release_only:
         call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Debug', '/p:Platform=Any CPU',
                     LSLCCEditorTargetFramework)
@@ -436,7 +436,7 @@ with zipfile.ZipFile(binariesZipPath, 'w', zipMode) as zip_file:
     zip_file.write(LibLSLCC_Licence_Path, os.path.basename('LICENSE'))
 
 # copy and time stamp the installers when on windows
-if msbuildpy.inspect.is_windows():
+if msbuildpy.sysinspect.is_windows():
     x64_installer = os.path.relpath(
         os.path.join(installerPath, 'bin', 'x64', 'Release', installerBasicName + installerExtension), script_path)
     x86_installer = os.path.relpath(
