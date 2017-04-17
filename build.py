@@ -9,13 +9,18 @@ if sys.version_info[0] == 2:
 script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(script_path, 'BuildScriptLibs'))
 
-msbuildpy_version = '0.4.0.1'
+msbuildpy_version = '0.4.0.2'
 
 try:
     import msbuildpy
     if msbuildpy.__version__ != msbuildpy_version: raise ImportError()
 except ImportError:
-    import pip
+    try:
+        import pip
+    except ImportError:
+        print('Please install pip package manager for python3, the pip module was not found on your system')
+        exit()
+
     pip.main(['install', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version])
     import msbuildpy
 
