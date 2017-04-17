@@ -261,7 +261,7 @@ except ImportError:
         exit()
 
     pip.main(['install', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', msbuildpy_pip_install_target])
-    subprocess.call([sys.executable]+sys.argv, shell=True)
+    subprocess.call([sys.executable]+[os.path.realpath(__file__)]+sys.argv[1:])
     exit()
 
 if args.clean_build:
