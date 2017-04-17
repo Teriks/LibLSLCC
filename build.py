@@ -16,7 +16,7 @@ try:
     if msbuildpy.__version__ != msbuildpy_version: raise ImportError()
 except ImportError:
     import pip
-    pip.main(['install', 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version, '--upgrade', '--target', os.path.join(script_path, 'BuildScriptLibs')])
+    pip.main(['install', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version])
     import msbuildpy
 
 import msbuildpy.sysinspect
