@@ -2,6 +2,10 @@
 import sys
 import os
 
+if sys.version_info[0] == 2:
+    print('Please use python3 to run this script, preferably version 3.4+')
+    exit()
+
 script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(script_path, 'BuildScriptLibs'))
 
