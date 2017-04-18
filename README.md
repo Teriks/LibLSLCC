@@ -291,7 +291,7 @@ Visual Studios+WiX installed on Windows, or the Mono (complete) development pack
 
 pip is installed with Python on Windows by default when using the offical installer package, on Linux or other platforms you may need to install it manually.  If you do not have pip (As indicated by the error produced when running build.py for the first time without pip installed), you should download the pip bootstrap script from <https://bootstrap.pypa.io/get-pip.py> and run it with python3 under admin or super user privileges.  If your distro has a python3-pip package already, you can also install using your package manager.
 
-If your using Windows, you must install python and add it to your path if you want to call this script from the command line.
+If your using Windows, you must install python and add it to your path if you want to call this script from the command line (There is an option to do this automatically from the installer dialog).
 When installing python on Windows there is an option to associate .py files with the python executable, so that clicking on .py
 files inside the file explorer will run them as well.
 
