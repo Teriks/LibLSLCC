@@ -260,28 +260,12 @@ except ImportError:
         print('Please install pip package manager for python3, the pip module was not found on your system')
         exit()
 
+    print('msbuildpy needs to be installed local to the project or updated, installing/updating now...'+os.linesep)
     pip.main(['install', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', msbuildpy_pip_install_target])
-    subprocess.call([sys.executable]+[os.path.realpath(__file__)]+sys.argv[1:])
+    print(os.linesep+'msbuildpy has been installed or updated, you can now run this script again')
     exit()
 
-if args.clean_build:
-    if msbuildpy.sysinspect.is_windows():
-        solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.sln')
-    else:
-        solution = os.path.join(script_path, 'LibLSLCC-NoEditor.sln')
 
-
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=Any CPU',)
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=Any CPU',)
-
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x86',)
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x86',)
-
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x64',)
-    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x64',)
-    exit()
-    
-    
 if msbuildpy.sysinspect.is_windows():
     MSBuild = msbuildpy.find_msbuild('msbuild >=12.*')
     if len(MSBuild) == 0:
@@ -300,6 +284,24 @@ else:
 
 def call_msbuild(*args):
     subprocess.call([MSBuild.path]+list(args))
+
+
+if args.clean_build:
+    if msbuildpy.sysinspect.is_windows():
+        solution = os.path.join(script_path, 'LibLSLCC-WithEditor-WithInstaller.sln')
+    else:
+        solution = os.path.join(script_path, 'LibLSLCC-NoEditor.sln')
+
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=Any CPU',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=Any CPU',)
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x86',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x86',)
+
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Release','/p:Platform=x64',)
+    call_msbuild(solution, '/t:clean', '/p:Configuration=Debug','/p:Platform=x64',)
+    exit()
 
 
 if args.only_build_liblslcc:

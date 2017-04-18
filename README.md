@@ -286,14 +286,18 @@ The python build script will do that for you behind the scenes.
 
 # Cross Platform Python Build Scripts
 
-The Python build scripts require python 3.* to be installed.  You must also have an appropriate version of 
-Visual Studios installed on Windows, or the Mono (complete) development package if your on *nix.
+The Python build scripts require python 3.* and the pip package manager for python3 to be installed.  You must also have an appropriate version of 
+Visual Studios+WiX installed on Windows, or the Mono (complete) development package if your on *nix.
+
+pip is installed with Python on Windows by default when using the offical installer package, on Linux or other platforms you may need to install it manually.  If you do not have pip (As indicated by the error produced when running build.py for the first time without pip installed), you should download the pip bootstrap script from <https://bootstrap.pypa.io/get-pip.py> and run it with python3 under admin or super user privileges.  If your distro has a python3-pip package already, you can also install using your package manager.
 
 If your using Windows, you must install python and add it to your path if you want to call this script from the command line.
 When installing python on Windows there is an option to associate .py files with the python executable, so that clicking on .py
 files inside the file explorer will run them as well.
 
 **build.py** can be used to build the library and optionally create a timestamped binary release zip file.
+
+When build.py first runs, it will download any dependencies it needs to the 'BuildScriptLibs' folder in the project tree.  After that is done, you can run the script again to use it normally.
 
 Simply running `python build.py` will build Release and Debug versions of all projects that are buildable on your platform.
 
