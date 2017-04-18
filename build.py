@@ -263,7 +263,7 @@ try:
     globals()['msbuildpy'] = importlib.import_module('msbuildpy')
     if msbuildpy.__version__ != msbuildpy_version: 
         install_deps()
-        importlib.reload(msbuildpy)
+        globals()['msbuildpy'] = importlib.reload(msbuildpy)
 except ImportError:
     install_deps()
     globals()['msbuildpy'] = importlib.import_module('msbuildpy')
