@@ -255,6 +255,7 @@ def install_deps():
         import pip
     except ImportError:
         print('Please install pip package manager for python3, see README.md for help')
+        exit()
     pip.main(['install', '--upgrade', '--target', os.path.join(script_path, 'BuildScriptLibs'), msbuildpy_pip_install_target])    
 
 
