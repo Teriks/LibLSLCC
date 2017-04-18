@@ -21,6 +21,7 @@ import platform
 import subprocess
 import re
 import json
+import importlib
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
 
@@ -248,22 +249,26 @@ if args.update_versions:
     exit()
 
 
-try:
-    import msbuildpy
-    import msbuildpy.sysinspect
-    if msbuildpy.__version__ != msbuildpy_version: 
-        raise ImportError()
-except ImportError:
+
+def install_deps():
     try:
         import pip
     except ImportError:
-        print('Please install pip package manager for python3, the pip module was not found on your system')
-        exit()
+        print('Please install pip package manager for python3, see README.md for help')
+    pip.main(['install', '--upgrade', '--target', os.path.join(script_path, 'BuildScriptLibs'), msbuildpy_pip_install_target])    
 
-    print('msbuildpy needs to be installed local to the project or updated, installing/updating now...'+os.linesep)
-    pip.main(['install', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', msbuildpy_pip_install_target])
-    print(os.linesep+'msbuildpy has been installed or updated, you can now run this script again')
-    exit()
+
+try:
+    globals()['msbuildpy'] = importlib.import_module('msbuildpy')
+    if msbuildpy.__version__ != msbuildpy_version: 
+        install_deps()
+        importlib.reload(msbuildpy)
+except ImportError:
+    install_deps()
+    globals()['msbuildpy'] = importlib.import_module('msbuildpy')
+
+
+import msbuildpy.sysinspect
 
 
 if msbuildpy.sysinspect.is_windows():

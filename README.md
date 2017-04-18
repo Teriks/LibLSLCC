@@ -297,7 +297,7 @@ files inside the file explorer will run them as well.
 
 **build.py** can be used to build the library and optionally create a timestamped binary release zip file.
 
-When build.py first runs, it will download any dependencies it needs to the 'BuildScriptLibs' folder in the project tree.  After that is done, you can run the script again to use it normally.
+When build.py first runs it will download any dependencies it needs to the 'BuildScriptLibs' folder in the project tree, after that is done it will continue doing anythin you requested it to do.
 
 Simply running `python build.py` will build Release and Debug versions of all projects that are buildable on your platform.
 
