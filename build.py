@@ -10,7 +10,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, os.path.join(script_path, 'BuildScriptLibs'))
 
 
-msbuildpy_version = '0.5.0.0'
+msbuildpy_version = '0.5.1.0'
 msbuildpy_pip_install_target = 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version
 
 
