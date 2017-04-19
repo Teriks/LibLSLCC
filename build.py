@@ -22,6 +22,7 @@ import subprocess
 import re
 import json
 import importlib
+import time
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
 
@@ -259,14 +260,20 @@ def install_deps():
     pip.main(['install', '--upgrade', '--target', os.path.join(script_path, 'BuildScriptLibs'), msbuildpy_pip_install_target])    
 
 
+def re_run():
+    time.sleep(1)
+    subprocess.call([sys.executable, os.path.realpath(__file__)]+sys.argv[1:])
+    exit()
+
+
 try:
-    globals()['msbuildpy'] = importlib.import_module('msbuildpy')
+    import msbuildpy
     if msbuildpy.__version__ != msbuildpy_version: 
         install_deps()
-        globals()['msbuildpy'] = importlib.reload(msbuildpy)
+        re_run()
 except ImportError:
     install_deps()
-    globals()['msbuildpy'] = importlib.import_module('msbuildpy')
+    re_run()
 
 
 import msbuildpy.sysinspect
