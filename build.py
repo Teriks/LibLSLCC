@@ -257,7 +257,8 @@ def install_deps():
     except ImportError:
         print('Please install pip package manager for python3, see README.md for help')
         exit()
-    pip.main(['install', '--upgrade', '--target', os.path.join(script_path, 'BuildScriptLibs'), msbuildpy_pip_install_target])    
+    # --system works around a bug.  --target cannot be used with --user, and --user is default on some systems.
+    pip.main(['install', '--system', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', msbuildpy_pip_install_target])    
 
 
 def re_run():
@@ -283,6 +284,7 @@ if msbuildpy.sysinspect.is_windows():
     MSBuild = msbuildpy.find_msbuild('msbuild >=12.*')
     if len(MSBuild) == 0:
         print('Could not find a compatible version of msbuild')
+        exit(1)
         
     # get the most recent major version
     MSBuild = MSBuild[0]
@@ -290,7 +292,8 @@ else:
     MSBuild = msbuildpy.find_msbuild('xbuild >=12.*')
     if len(MSBuild) == 0:
         print('Could not find a compatible version of xbuild')
-        
+        exit(1)
+
     # get the most recent major version
     MSBuild = MSBuild[0]
 
