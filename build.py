@@ -74,8 +74,11 @@ def update_assembly_versions():
 
         lastTag = versionFileContent[dir]["last_tag"]
 
-        commitsSinceLastTag = int(
-            subprocess.check_output(["git", "rev-list", lastTag.rstrip() + "..HEAD", "--count"]).decode("utf-8"))
+        try:
+            commitsSinceLastTag = int(
+                subprocess.check_output(["git", "rev-list", lastTag.rstrip() + "..HEAD", "--count"]).decode("utf-8"))
+        except subprocess.CalledProcessError:
+            commitsSinceLastTag = 0
 
         versionTemplate = versionFileContent[dir]["version_template"]
 
