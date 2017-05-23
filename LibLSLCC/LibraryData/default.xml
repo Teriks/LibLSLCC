@@ -62,8 +62,8 @@
   <LibraryFunction Name="llAgentInExperience" ReturnType="Integer" Subsets="lsl">
     <Parameter Name="agent" Type="Key" />
     <DocumentationString>
-               Returns TRUE if the agent is in the Experience and the Experience can run in the current location.
-            </DocumentationString>
+      Returns TRUE if the agent is in the Experience and the Experience can run in the current location.
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llAllowInventoryDrop" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="add" Type="Integer" />
@@ -364,8 +364,10 @@
   </LibraryFunction>
   <LibraryFunction Name="llEscapeURL" ReturnType="String" Subsets="lsl,os-lsl">
     <Parameter Name="url" Type="String" />
-    <DocumentationString>Returns an escaped/encoded version of url, replacing spaces with %20 etc.&#10;Returns the string that is the URL-escaped version of URL (replacing spaces with %20, etc.).&#10;
-			This function returns the UTF-8 encoded escape codes for selected characters.</DocumentationString>
+    <DocumentationString>
+      Returns an escaped/encoded version of url, replacing spaces with %20 etc.&#10;Returns the string that is the URL-escaped version of URL (replacing spaces with %20, etc.).&#10;
+      This function returns the UTF-8 encoded escape codes for selected characters.
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llEuler2Rot" ReturnType="Rotation" Subsets="lsl,os-lsl">
     <Parameter Name="v" Type="Vector" />
@@ -414,13 +416,17 @@
   </LibraryFunction>
   <LibraryFunction Name="llGetAgentInfo" ReturnType="Integer" Subsets="lsl">
     <Parameter Name="id" Type="Key" />
-    <DocumentationString>Returns an integer bit-field containing the agent information about id.&#10;
-				Returns AGENT_FLYING, AGENT_ATTACHMENTS, AGENT_SCRIPTED, AGENT_SITTING, AGENT_ON_OBJECT, AGENT_MOUSELOOK, AGENT_AWAY, AGENT_BUSY, AGENT_TYPING, AGENT_CROUCHING, AGENT_ALWAYS_RUN, AGENT_WALKING and/or AGENT_IN_AIR.&#10;Returns information about the given agent ID as a bit-field of agent info constants.</DocumentationString>
+    <DocumentationString>
+      Returns an integer bit-field containing the agent information about id.&#10;
+      Returns AGENT_FLYING, AGENT_ATTACHMENTS, AGENT_SCRIPTED, AGENT_SITTING, AGENT_ON_OBJECT, AGENT_MOUSELOOK, AGENT_AWAY, AGENT_BUSY, AGENT_TYPING, AGENT_CROUCHING, AGENT_ALWAYS_RUN, AGENT_WALKING and/or AGENT_IN_AIR.&#10;Returns information about the given agent ID as a bit-field of agent info constants.
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetAgentInfo" ReturnType="Integer" Subsets="os-lsl">
     <Parameter Name="id" Type="String" />
-    <DocumentationString>Returns an integer bit-field containing the agent information about id.&#10;
-				Returns AGENT_FLYING, AGENT_ATTACHMENTS, AGENT_SCRIPTED, AGENT_SITTING, AGENT_ON_OBJECT, AGENT_MOUSELOOK, AGENT_AWAY, AGENT_BUSY, AGENT_TYPING, AGENT_CROUCHING, AGENT_ALWAYS_RUN, AGENT_WALKING and/or AGENT_IN_AIR.&#10;Returns information about the given agent ID as a bit-field of agent info constants.</DocumentationString>
+    <DocumentationString>
+      Returns an integer bit-field containing the agent information about id.&#10;
+      Returns AGENT_FLYING, AGENT_ATTACHMENTS, AGENT_SCRIPTED, AGENT_SITTING, AGENT_ON_OBJECT, AGENT_MOUSELOOK, AGENT_AWAY, AGENT_BUSY, AGENT_TYPING, AGENT_CROUCHING, AGENT_ALWAYS_RUN, AGENT_WALKING and/or AGENT_IN_AIR.&#10;Returns information about the given agent ID as a bit-field of agent info constants.
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetAgentLanguage" ReturnType="String" Subsets="lsl">
     <Parameter Name="avatar" Type="Key" />
@@ -533,7 +539,7 @@
   </LibraryFunction>
   <LibraryFunction Name="llGetExperienceErrorMessage" ReturnType="String" Subsets="lsl">
     <Parameter Name="error" Type="Integer" />
-<DocumentationString>Returns a list with the following Experience properties: [Experience Name, Owner ID, Group ID, Experience ID, State, State Message].&#10;State is an integer corresponding to one of the constants XP_ERROR_... and State Message is the string returned by llGetExperienceErrorMessage for that integer.</DocumentationString>
+    <DocumentationString>Returns a list with the following Experience properties: [Experience Name, Owner ID, Group ID, Experience ID, State, State Message].&#10;State is an integer corresponding to one of the constants XP_ERROR_... and State Message is the string returned by llGetExperienceErrorMessage for that integer.</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llGetForce" ReturnType="Vector" Subsets="lsl,os-lsl">
     <DocumentationString>Returns the force (if the script is physical).&#10;Returns the current force if the script is physical.</DocumentationString>
@@ -1577,8 +1583,8 @@
     <Parameter Name="agent" Type="Key" />
     <Parameter Name="name" Type="String" />
     <DocumentationString>
-               Ask the agent for permission to participate in an experience.&#10;This request is similar to llRequestPermissions with the following permissions: PERMISSION_TAKE_CONTROLS, PERMISSION_TRIGGER_ANIMATION, PERMISSION_ATTACH, PERMISSION_TRACK_CAMERA, PERMISSION_CONTROL_CAMERA and PERMISSION_TELEPORT.&#10;However, unlike llRequestPermissions the decision to allow or block the request is persistent and applies to all scripts using the experience grid wide.&#10;Subsequent calls to llRequestExperiencePermissions from scripts in the experience will receive the same response automatically with no user interaction.&#10;One of experience_permissions or experience_permissions_denied will be generated in response to this call.&#10;Outstanding permission requests will be lost if the script is derezzed, moved to another region or reset.
-            </DocumentationString>
+      Ask the agent for permission to participate in an experience.&#10;This request is similar to llRequestPermissions with the following permissions: PERMISSION_TAKE_CONTROLS, PERMISSION_TRIGGER_ANIMATION, PERMISSION_ATTACH, PERMISSION_TRACK_CAMERA, PERMISSION_CONTROL_CAMERA and PERMISSION_TELEPORT.&#10;However, unlike llRequestPermissions the decision to allow or block the request is persistent and applies to all scripts using the experience grid wide.&#10;Subsequent calls to llRequestExperiencePermissions from scripts in the experience will receive the same response automatically with no user interaction.&#10;One of experience_permissions or experience_permissions_denied will be generated in response to this call.&#10;Outstanding permission requests will be lost if the script is derezzed, moved to another region or reset.
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llRequestInventoryData" ReturnType="Key" Subsets="lsl">
     <Parameter Name="name" Type="String" />
@@ -2115,6 +2121,11 @@
     <Parameter Name="rot" Type="Rotation" />
     <DocumentationString>Set the sit location for this object.&#10;If offset == ZERO_VECTOR, clears the sit target.</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llSitOnLink" ReturnType="Integer" Subsets="lsl">
+    <Parameter Name="agent_id" Type="Key" />
+    <Parameter Name="link" Type="Integer" />
+    <DocumentationString>The avatar specified by agent_id is forced to sit on the sit target of the prim indicated by the link parameter. If the specified link is already occupied, the simulator searches down the chain of prims in the link set looking for an available sit target.  See SIT_* constants for return values.</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="llSleep" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="sec" Type="Float" />
     <DocumentationString>Put script to sleep for Time seconds.</DocumentationString>
@@ -2312,8 +2323,8 @@
     <Parameter Name="checked" Type="Integer" />
     <Parameter Name="original_value" Type="String" />
     <DocumentationString>
-               Starts an asychronous transaction to update the value associated with the key given.&#10;The dataserver callback will be executed with the key returned from this call and a string describing the result.&#10;The result is a two element commma-delimited list.&#10;The first item is an integer specifying if the transaction succeeded (1) or not (0).&#10;In the failure case, the second item will be an integer corresponding to one of the XP_ERROR_... constants.&#10;In the success case the second item will be the value associated with the key.&#10;If Checked is 1 the existing value in the data store must match the OriginalValue passed or XP_ERROR_RETRY_UPDATE will be returned.&#10;If Checked is 0 the key will be created if necessary.
-            </DocumentationString>
+      Starts an asychronous transaction to update the value associated with the key given.&#10;The dataserver callback will be executed with the key returned from this call and a string describing the result.&#10;The result is a two element commma-delimited list.&#10;The first item is an integer specifying if the transaction succeeded (1) or not (0).&#10;In the failure case, the second item will be an integer corresponding to one of the XP_ERROR_... constants.&#10;In the success case the second item will be the value associated with the key.&#10;If Checked is 1 the existing value in the data store must match the OriginalValue passed or XP_ERROR_RETRY_UPDATE will be returned.&#10;If Checked is 0 the key will be created if necessary.
+    </DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="llVecDist" ReturnType="Float" Subsets="lsl,os-lsl">
     <Parameter Name="vec_a" Type="Vector" />
@@ -2393,6 +2404,84 @@
     <Parameter Name="UUID" Type="String" />
     <Parameter Name="SpeedModifier" Type="Float" />
     <DocumentationString>Modify the speed of movement for the given avatar</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osSetHealth" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="avatar" Type="String" />
+    <Parameter Name="health" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osSetHealRate" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="avatar" Type="String" />
+    <Parameter Name="health" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetHealRate" ReturnType="Float" Subsets="ossl">
+    <Parameter Name="avatar" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osCollisionSound" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="impact_sound" Type="String" />
+    <Parameter Name="impact_volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osVolumeDetect" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="detect" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetInertiaData" ReturnType="List" Subsets="ossl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osClearInertia" ReturnType="Void" Subsets="ossl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osSetInertiaAsBox" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="mass" Type="Float" />
+    <Parameter Name="boxSize" Type="Vector" />
+    <Parameter Name="centerOfMass" Type="Vector" />
+    <Parameter Name="rot" Type="Rotation" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osSetInertiaAsSphere" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="mass" Type="Float" />
+    <Parameter Name="radius" Type="Float" />
+    <Parameter Name="centerOfMass" Type="Vector" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osSetInertiaAsCylinder" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="mass" Type="Float" />
+    <Parameter Name="radius" Type="Float" />
+    <Parameter Name="lenght" Type="Float" />
+    <Parameter Name="centerOfMass" Type="Vector" />
+    <Parameter Name="lslrot" Type="Rotation" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osTeleportObject" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="objectUUID" Type="String" />
+    <Parameter Name="targetPos" Type="Vector" />
+    <Parameter Name="targetrotation" Type="Rotation" />
+    <Parameter Name="flags" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetLinkNumber" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="name" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetPhysicsEngineName" ReturnType="String" Subsets="ossl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osDie" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="objectUUID" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osNpcSetProfileAbout" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="npc" Type="String" />
+    <Parameter Name="about" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osNpcSetProfileImage" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="npc" Type="String" />
+    <Parameter Name="image" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="osGetHealth" ReturnType="Float" Subsets="ossl">
     <Parameter Name="avatar" Type="String" />
@@ -3551,9 +3640,11 @@
   </EventHandler>
   <EventHandler Name="touch" Subsets="lsl,os-lsl">
     <Parameter Name="num_detected" Type="Integer" />
-    <DocumentationString>This event is raised while a user is touching the object the script is attached to.
-			The number of touching objects is passed to the script in the parameter.
-			Information on those objects may be gathered via the llDetected* library functions.</DocumentationString>
+    <DocumentationString>
+      This event is raised while a user is touching the object the script is attached to.
+      The number of touching objects is passed to the script in the parameter.
+      Information on those objects may be gathered via the llDetected* library functions.
+    </DocumentationString>
   </EventHandler>
   <EventHandler Name="touch_end" Subsets="lsl,os-lsl">
     <Parameter Name="num_detected" Type="Integer" />
@@ -3694,6 +3785,51 @@
   </LibraryConstant>
   <LibraryConstant Name="ATTACH_LHAND" Type="Integer" Value="5" Subsets="lsl,os-lsl">
     <DocumentationString>Attach to the avatar's left hand.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_LHAND_RING1" Type="Integer" Value="41" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's left ring finger.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_RHAND_RING1" Type="Integer" Value="42" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's right ring finger.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_TAIL_BASE" Type="Integer" Value="43" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's tail base.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_TAIL_TIP" Type="Integer" Value="44" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's tail tip.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_LWING" Type="Integer" Value="45" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's left wing.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_RWING" Type="Integer" Value="46" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's right wing.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_FACE_JAW" Type="Integer" Value="47" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's jaw.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_FACE_LEAR" Type="Integer" Value="48" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's left ear (extended).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_FACE_REAR" Type="Integer" Value="49" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's right ear (extended).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_FACE_LEYE" Type="Integer" Value="50" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's left eye (extended).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_FACE_REYE" Type="Integer" Value="51" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's right eye (extended).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_FACE_TONGUE" Type="Integer" Value="52" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's tongue.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_GROIN" Type="Integer" Value="53" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's groin.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_HIND_LFOOT" Type="Integer" Value="54" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's left hind foot.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="ATTACH_HIND_RFOOT" Type="Integer" Value="55" Subsets="lsl,os-lsl">
+    <DocumentationString>Attach to the avatar's right hind foot.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="ATTACH_LHIP" Type="Integer" Value="25" Subsets="lsl,os-lsl">
     <DocumentationString>Attach to the avatar's left hip.</DocumentationString>
@@ -4379,7 +4515,7 @@
     <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_REZZER_KEY" Type="Integer" Value="32" Subsets="lsl">
-    <DocumentationString />
+    <DocumentationString>See: llGetObjectDetails.  Gets the key of the object that rezzed this object be it an object or an avatar.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="OBJECT_ROOT" Type="Integer" Value="18" Subsets="lsl,os-lsl">
     <DocumentationString>Gets the id of the root prim of the object requested.&#10;If id is an avatar, return the id of the root prim of the linkset the avatar is sitting on (or the avatar's own id if the avatar is not sitting on an object within the region).</DocumentationString>
@@ -4671,6 +4807,24 @@
   </LibraryConstant>
   <LibraryConstant Name="PRIM_ALPHA_MODE_NONE" Type="Integer" Value="0" Subsets="lsl">
     <DocumentationString>Prim parameter setting for PRIM_ALPHA_MODE.&#10;Indicates that the diffuse texture's alpha channel should be ignored.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_ALLOW_UNSIT" Type="Integer" Value="39" Subsets="lsl,os-lsl">
+    <DocumentationString>When set FALSE on a prim that is running a script as part of an experience an avatar that is seated on the sit target and has agreed to participate in the experience will be unable to stand or select another prim to sit on.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_SCRIPTED_SIT_ONLY" Type="Integer" Value="40" Subsets="lsl,os-lsl">
+    <DocumentationString>If set TRUE, agents may only be seated on this prim using llSitOnLink. Attempts to do a manual sit will fail. This flag applies even outside of an experience enabled region.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PRIM_SIT_TARGET" Type="Integer" Value="41" Subsets="lsl,os-lsl">
+    <DocumentationString>The sit target, if any defined for this prim. If the active value is 0 the sit target is deactivated. If it is nonzero the prim's sit target is set to the indicated offset and rotation. As with llLinkSitTarget(), these values are relative to the prim. However, unlike llLinkSitTarget() an offset of &lt;0.0, 0.0, 0.0&gt; may be explicitly set.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_GROUP_TAG" Type="Integer" Value="33" Subsets="lsl,os-lsl">
+    <DocumentationString>See: llGetObjectDetails.  Gets the avatar's group tag text.  If id is not an avatar, an empty string is returned.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_TEMP_ATTACHED" Type="Integer" Value="34" Subsets="lsl,os-lsl">
+    <DocumentationString>See: llGetObjectDetails.  Gets the integer boolean detailing if the object is temporarily attached.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OBJECT_ATTACHED_SLOTS_AVAILABLE" Type="Integer" Value="35" Subsets="lsl,os-lsl">
+    <DocumentationString>See: llGetObjectDetails.  Gets the avatar's available attachment slot count.  If id is not an avatar, 0 is returned.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PRIM_BUMP_BARK" Type="Integer" Value="4" Subsets="lsl,os-lsl">
     <DocumentationString />
@@ -5115,8 +5269,10 @@
     <DocumentationString>Minimum speed that a particle should be moving.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_INNERANGLE" Type="Integer" Value="10" Subsets="lsl,os-lsl">
-    <DocumentationString>Specifies the inner angle of the arc created by the PSYS_SRC_PATTERN_ANGLE or PSYS_SRC_PATTERN_ANGLE_CONE source pattern.
-			The area specified will NOT have particles in it.</DocumentationString>
+    <DocumentationString>
+      Specifies the inner angle of the arc created by the PSYS_SRC_PATTERN_ANGLE or PSYS_SRC_PATTERN_ANGLE_CONE source pattern.
+      The area specified will NOT have particles in it.
+    </DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="PSYS_SRC_MAX_AGE" Type="Integer" Value="19" Subsets="lsl,os-lsl">
     <DocumentationString>How long this particle system should last, 0.0 means forever.</DocumentationString>
@@ -5310,6 +5466,27 @@
   <LibraryConstant Name="SIM_STAT_PCT_CHARS_STEPPED" Type="Integer" Value="0" Subsets="lsl">
     <DocumentationString>Returns the % of pathfinding characters skipped each frame, averaged over the last minute.&#10;The returned value corresponds to the "Characters Updated" stat in the viewer's Statistics Bar.</DocumentationString>
   </LibraryConstant>
+  <LibraryConstant Name="SIT_NOT_EXPERIENCE" Type="Integer" Value="-1" Subsets="lsl">
+    <DocumentationString>See: llSitOnLink.  The script is not running as part of an experience with a valid experience key.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="SIT_NO_EXPERIENCE_PERMISSION" Type="Integer" Value="-2" Subsets="lsl">
+    <DocumentationString>See: llSitOnLink.  The agent has not granted permission.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="SIT_NO_SIT_TARGET" Type="Integer" Value="-3" Subsets="lsl">
+    <DocumentationString>See: llSitOnLink.  Unable to find an open sit target.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="SIT_INVALID_AGENT" Type="Integer" Value="-4" Subsets="lsl">
+    <DocumentationString>See: llSitOnLink.  Unable to find specified agent.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="SIT_INVALID_LINK" Type="Integer" Value="-5" Subsets="lsl">
+    <DocumentationString>See: llSitOnLink.  Unable to find specified link or the link constant would return multiple prims.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="SIT_NO_ACCESS" Type="Integer" Value="-6" Subsets="lsl">
+    <DocumentationString>See: llSitOnLink.  The avatar does not have access to the parcel that the prim running this script is located in.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="SIT_INVALID_OBJECT" Type="Integer" Value="-7" Subsets="lsl">
+    <DocumentationString>See: llSitOnLink.  This value is returned if the llSitOnLink is trying to force the user to sit on something that cannot be sat upon (such as an attachment).</DocumentationString>
+  </LibraryConstant>
   <LibraryConstant Name="SMOOTH" Type="Integer" Value="16" Subsets="lsl,os-lsl">
     <DocumentationString>Slide in the X direction, instead of playing separate frames.</DocumentationString>
   </LibraryConstant>
@@ -5458,8 +5635,10 @@
     <DocumentationString>The time-scale for exponential success of linear deflection deflection.&#10;Its another way to specify the strength of the vehicles tendency to reorient itself so that its preferred axis of motion agrees with its true velocity.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_ANGULAR_FRICTION_TIMESCALE" Type="Integer" Value="17" Subsets="lsl,os-lsl">
-    <DocumentationString>A vector of timescales for exponential decay of the vehicles angular velocity about its preferred axes of motion (at, left, up).
-			Range = [0.07, inf) seconds for each element of the vector.</DocumentationString>
+    <DocumentationString>
+      A vector of timescales for exponential decay of the vehicles angular velocity about its preferred axes of motion (at, left, up).
+      Range = [0.07, inf) seconds for each element of the vector.
+    </DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_ANGULAR_MOTOR_DECAY_TIMESCALE" Type="Integer" Value="35" Subsets="lsl,os-lsl">
     <DocumentationString>The timescale for exponential decay of the angular motors magnitude.</DocumentationString>
@@ -5532,15 +5711,19 @@
     <DocumentationString>The timescale for exponential success of linear deflection deflection.&#10;It is another way to specify how much time it takes for the vehicles linear velocity to be redirected to its preferred axis of motion.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_LINEAR_FRICTION_TIMESCALE" Type="Integer" Value="16" Subsets="lsl,os-lsl">
-    <DocumentationString>A vector of timescales for exponential decay of the vehicles linear velocity along its preferred axes of motion (at, left, up).
-			Range = [0.07, inf) seconds for each element of the vector.</DocumentationString>
+    <DocumentationString>
+      A vector of timescales for exponential decay of the vehicles linear velocity along its preferred axes of motion (at, left, up).
+      Range = [0.07, inf) seconds for each element of the vector.
+    </DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_LINEAR_MOTOR_DECAY_TIMESCALE" Type="Integer" Value="35" Subsets="lsl">
     <DocumentationString>The timescale for exponential decay of the linear motors magnitude.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_LINEAR_MOTOR_DIRECTION" Type="Integer" Value="18" Subsets="lsl,os-lsl">
-    <DocumentationString>The direction and magnitude (in preferred frame) of the vehicles linear motor.&#10;The vehicle will accelerate (or decelerate if necessary) to match its velocity to its motor.
-			Range of magnitude = [0, 30] meters/second.</DocumentationString>
+    <DocumentationString>
+      The direction and magnitude (in preferred frame) of the vehicles linear motor.&#10;The vehicle will accelerate (or decelerate if necessary) to match its velocity to its motor.
+      Range of magnitude = [0, 30] meters/second.
+    </DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="VEHICLE_LINEAR_MOTOR_OFFSET" Type="Integer" Value="20" Subsets="lsl,os-lsl">
     <DocumentationString />
@@ -5836,6 +6019,18 @@
   <LibraryConstant Name="OS_ATTACH_MSG_SCRIPT_CREATOR" Type="Integer" Value="4" Subsets="os-lsl">
     <DocumentationString>Send only to those have the same CreatorID with sender script CreatorID</DocumentationString>
   </LibraryConstant>
+  <LibraryConstant Name="OSTPOBJ_NONE" Type="Integer" Value="0" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OSTPOBJ_STOPATTARRGET" Type="Integer" Value="1" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OSTPOBJ_STOPONFAIL" Type="Integer" Value="2" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OSTPOBJ_SETROT" Type="Integer" Value="4" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
   <LibraryConstant Name="DATA_SIM_RELEASE" Type="Integer" Value="128" Subsets="os-lsl">
     <DocumentationString />
   </LibraryConstant>
@@ -5879,8 +6074,10 @@
     <DocumentationString>1.57079633 - The number of radians in a quarter circle.</DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="DEG_TO_RAD" Type="Float" Value="0.0174532923847437" Subsets="os-lsl">
-    <DocumentationString>0.01745329 - Number of radians per degree.
-			You can use this to convert degrees to radians by multiplying the degrees by this number.</DocumentationString>
+    <DocumentationString>
+      0.01745329 - Number of radians per degree.
+      You can use this to convert degrees to radians by multiplying the degrees by this number.
+    </DocumentationString>
   </LibraryConstant>
   <LibraryConstant Name="RAD_TO_DEG" Type="Float" Value="57.2957801818848" Subsets="os-lsl">
     <DocumentationString>57.2957795 - Number of degrees per radian.&#10;You can use this number to convert radians to degrees by multiplying the radians by this number.</DocumentationString>

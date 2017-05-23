@@ -97,7 +97,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
             new Regex(
                 "Constant: <a href=\"/wiki/.*?\" title=\"(.*?)\"(?: class=\"mw-redirect\")?>(?:integer|float|vector|rotation|string|list|key|quaternion)</a> <strong class=\"selflink\"><span title=\".*?\">(.*?)</span></strong>\\s*=\\s*(.*?); </span>");
 
-        private static readonly Regex _deprecatedMarker  = new Regex("<td style=\"color:white;background:#990000; border-width:1px;\" title=\".*?\" width=\"100%\"> <b>Deprecated");
+        private static readonly Regex _deprecatedMarker = new Regex("<td style=\"color:white;background:#990000; border-width:1px;\" title=\".*?\" width=\"100%\"> <b>Deprecated");
 
 
         private static readonly Regex _eventPageNavigation =
@@ -157,7 +157,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
         public SecondlifeWikiLibraryData(IDocumentationProvider documentationProvider, IEnumerable<string> subsets)
         {
-            
+
             _client = new CachedWebDownloader(WebCacheFileDirectory);
 
             _subsets = subsets.ToList();
@@ -187,7 +187,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
                 else
                 {
                     _functions.Add(lslLibraryFunctionSignature.Name,
-                        new GenericArray<LSLLibraryFunctionSignature> {lslLibraryFunctionSignature});
+                        new GenericArray<LSLLibraryFunctionSignature> { lslLibraryFunctionSignature });
                 }
             }
 
@@ -281,7 +281,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
         {
             var page = _client.DownloadString(url);
 
-            
+
 
             var match = _constantSignature.Match(page);
 
@@ -318,14 +318,14 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
             {
                 strValue = val.Replace("&lt;", "").
                                Replace("&gt;", "").
-                               Replace("<","").
-                               Replace(">","");
+                               Replace("<", "").
+                               Replace(">", "");
 
             }
             else if (type == LSLType.String || type == LSLType.Key)
             {
                 strValue = val.Replace("&quot;", "").
-                               Replace("\"","");
+                               Replace("\"", "");
 
                 var specialUnicode = _matchConstantllUnescapeUrl.Match(strValue);
                 if (specialUnicode.Success)
@@ -341,7 +341,8 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
             var constantSignature =
                 new LSLLibraryConstantSignature(type,
-                    match.Groups[2].ToString().Replace(' ', '_'), strValue) {Deprecated = _deprecatedMarker.IsMatch(page)};
+                    match.Groups[2].ToString().Replace(' ', '_'), strValue)
+                { Deprecated = _deprecatedMarker.IsMatch(page) };
 
 
 
@@ -470,7 +471,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
             {
                 var searchContent = _mwPagesContent.Match(page);
 
-                foreach (Match linkMatch in  _hrefLink.Matches(searchContent.Value))
+                foreach (Match linkMatch in _hrefLink.Matches(searchContent.Value))
                 {
                     var linkRel = linkMatch.Groups[1].ToString();
 
@@ -603,7 +604,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
                     if (type == LSLType.String || type == LSLType.Key)
                     {
-                        strVal = webVal.Replace("&quot;", "").Replace("\"","");
+                        strVal = webVal.Replace("&quot;", "").Replace("\"", "");
                     }
 
                     LSLLibraryConstantSignature result;
@@ -698,7 +699,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
         public IEnumerable<LSLLibraryConstantSignature> GetLSLConstants()
         {
-            return  new List<LSLLibraryConstantSignature>();
+            return new List<LSLLibraryConstantSignature>();
             /*return
                 GetLSLConstantPages()
                     .Select(GetSigFromConstantPage)
