@@ -349,7 +349,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
             constantSignature.Subsets.SetSubsets(_subsets);
 
             Log.WriteLineWithHeader(
-                "[SecondlifeWikiLibraryData]: ", "Retrieved " + (constantSignature.Deprecated ? " (DEPRECATED) " : "") +
+                "[SecondlifeWikiLibraryData]: ", "Retrieved" + (constantSignature.Deprecated ? " (DEPRECATED) " : " ") +
                 "constant {0}; from {1}",
                 constantSignature.SignatureString, url);
 
@@ -378,7 +378,7 @@ namespace LibraryDataScrapingTool.LibraryDataScrapers
 
 
                 Log.WriteLineWithHeader(
-                "[SecondlifeWikiLibraryData]: ", "Retrieved" + (functionSignature.Deprecated ? " (DEPRECATED) " : "") +
+                "[SecondlifeWikiLibraryData]: ", "Retrieved" + (functionSignature.Deprecated ? " (DEPRECATED) " : " ") +
                     "function {0}; from {1}",
                     functionSignature.SignatureString,
                     url);
