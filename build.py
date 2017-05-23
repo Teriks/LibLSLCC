@@ -76,7 +76,8 @@ def update_assembly_versions():
 
         try:
             commitsSinceLastTag = int(
-                subprocess.check_output(["git", "rev-list", lastTag.rstrip() + "..HEAD", "--count"]).decode("utf-8"))
+                subprocess.check_output(["git", "rev-list", lastTag.rstrip() + "..HEAD", "--count"], 
+                                        stderr=subprocess.DEVNULL).decode("utf-8"))
         except subprocess.CalledProcessError:
             commitsSinceLastTag = 0
 
