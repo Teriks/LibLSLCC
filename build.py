@@ -7,7 +7,9 @@ if sys.version_info[0] == 2:
     exit()
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, os.path.join(script_path, 'BuildScriptLibs'))
+build_script_librarys_path = os.path.join(script_path, 'BuildScriptLibs')
+
+sys.path.insert(0, build_script_librarys_path)
 
 
 msbuildpy_version = '0.5.1.0'
@@ -261,8 +263,13 @@ def install_deps():
     except ImportError:
         print('Please install pip package manager for python3, see README.md for help')
         exit()
-    # --system works around a bug.  --target cannot be used with --user, and --user is default on some systems.
-    pip.main(['install', '--system', '--target', os.path.join(script_path, 'BuildScriptLibs'), '--upgrade', msbuildpy_pip_install_target])    
+
+    if os.name == 'nt':
+        # avoid --system on windows
+        pip.main(['install', '--target', build_script_librarys_path, '--upgrade', msbuildpy_pip_install_target])
+    else:
+        # --system works around a bug.  --target cannot be used with --user, and --user is default on some systems.
+        pip.main(['install', '--system', '--target', build_script_librarys_path, '--upgrade', msbuildpy_pip_install_target])
 
 
 def re_run():
