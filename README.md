@@ -87,8 +87,7 @@ A few notable code validator/OpenSim code generator features:
    compiler underneath.  All variable scoping rules are handled by the front end LibLSLCC code validator
    and are implemented in a fashion that is true to Linden LSL.  Symbol mangling also removes the possibility 
    of causing a CSharp syntax error by using a keyword/Class name as a variable or function name.
-
-
+   
  * Correct Code generation for jumps over variable declarations.  Jumping over a variable declaration
    will leave said variable with a default value instead of null.  Leaving these variables null is 
    something both the Linden compiler and current OpenSim compiler do, which is a step out of the LSL
@@ -100,15 +99,12 @@ A few notable code validator/OpenSim code generator features:
 
  * Full and optimized support for the CO-OP script stop strategy in OpenSim.
 
- * Correct order of operations via the use of operator function stubs
+ * Correct order of evaluation via the use of operator function stubs
    that are generated on demand.  Old mono list optimizations will now
    port over without breaking, as well as other odd scripts that rely
    on Right to Left evaluation being the norm.
 
-
- * Negatable vectors and rotations.
-
- * Support for certain unicode characters in script symbols. (Same characters the linden Compiler allows)
+ * Support for certain unicode characters in script symbols. (Most of the same characters the linden compiler allows)
 
 
 
