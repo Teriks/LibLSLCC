@@ -268,8 +268,8 @@ def install_deps():
 
 def re_run():
     time.sleep(1)
-    subprocess.call([sys.executable, os.path.realpath(__file__)]+sys.argv[1:])
-    exit()
+    os.execv(sys.executable, ['python', os.path.realpath(__file__)]+sys.argv[1:])
+    # os.execv never returns
 
 
 try:
