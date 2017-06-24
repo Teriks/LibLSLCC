@@ -264,13 +264,7 @@ def install_deps():
         print('Please install pip package manager for python3, see README.md for help')
         exit()
 
-    if os.name == 'nt':
-        # avoid --system on windows
-        pip.main(['install', '--target', build_script_librarys_path, '--upgrade', msbuildpy_pip_install_target])
-    else:
-        # --system works around a bug.  --target cannot be used with --user, and --user is default on some systems.
-        pip.main(['install',  '--target', build_script_librarys_path, '--upgrade', msbuildpy_pip_install_target])
-
+    pip.main(['install', '--target', build_script_librarys_path, '--upgrade', msbuildpy_pip_install_target])
 
 def re_run():
     time.sleep(1)
