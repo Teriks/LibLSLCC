@@ -11,11 +11,8 @@ build_script_librarys_path = os.path.join(script_path, 'BuildScriptLibs')
 
 sys.path.insert(0, build_script_librarys_path)
 
-
-msbuildpy_version = '0.5.1.0'
-msbuildpy_pip_install_target = 'git+https://github.com/Teriks/msbuildpy.git@'+msbuildpy_version
-
-
+import urllib.request
+import tempfile
 import zipfile
 import datetime
 import shutil
@@ -27,6 +24,33 @@ import importlib
 import time
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
+
+
+msbuildpy_repo = 'https://github.com/Teriks/msbuildpy'
+msbuildpy_version='0.5.1.1'
+msbuildpy_url = '{}/archive/{}.zip'.format(msbuildpy_repo, 
+					   msbuildpy_version)
+
+
+def install_msbuildpy():
+    print('Downloading msbuildpy to BuildScriptLibs...')
+
+    with urllib.request.urlopen(msbuildpy_url) as git_archive, \
+         tempfile.TemporaryFile(mode='wb+') as zip_file:
+        
+        shutil.copyfileobj(git_archive, zip_file)
+        zip_file = zipfile.ZipFile(zip_file, 'r')
+        zip_file.extractall(build_script_librarys_path)
+
+        git_archive_folder = 'msbuildpy-{}'.format(msbuildpy_version)
+
+        lib_folder = os.path.join(build_script_librarys_path, 
+                                  git_archive_folder, 'msbuildpy')
+	
+        shutil.move(lib_folder, build_script_librarys_path)
+        shutil.rmtree(os.path.join(build_script_librarys_path, git_archive_folder))
+
+    print('Download Finished.')
 
 
 def set_version(file, version):
@@ -256,29 +280,19 @@ if args.update_versions:
     exit()
 
 
-
-def install_deps():
-    try:
-        import pip
-    except ImportError:
-        print('Please install pip package manager for python3, see README.md for help')
-        exit()
-
-    pip.main(['install', '--target', build_script_librarys_path, '--upgrade', msbuildpy_pip_install_target])
-
 def re_run():
     time.sleep(1)
-    os.execv(sys.executable, ['python', os.path.realpath(__file__)]+sys.argv[1:])
+    os.execv(sys.executable, [sys.executable, os.path.realpath(__file__)]+sys.argv[1:])
     # os.execv never returns
 
 
 try:
     import msbuildpy
     if msbuildpy.__version__ != msbuildpy_version: 
-        install_deps()
+        install_msbuildpy()
         re_run()
 except ImportError:
-    install_deps()
+    install_msbuildpy()
     re_run()
 
 
