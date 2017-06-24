@@ -83,9 +83,7 @@ def set_version(file, version):
 
     
 def update_assembly_versions():
-    print("")
-    print("Updating assembly versions...")
-    print("")
+    print("\nUpdating assembly versions...\n")
 
     scriptDir = os.path.dirname(os.path.realpath(__file__));
 
@@ -114,12 +112,9 @@ def update_assembly_versions():
         was = set_version(versionFile, versionTemplate)
 
         if versionTemplate != was:
-            print(dir + " = " + versionTemplate + " was " + was)
+            print(dir + " = " + versionTemplate + " was " + was+"\n")
         else:
-            print(dir + " version already up to date.")
-
-
-    print("")
+            print(dir + " version already up to date.\n")
 
 
 def get_liblslcc_version():
@@ -501,12 +496,9 @@ if msbuildpy.sysinspect.is_windows():
     if args.build_installer:
         print('\n===========================================\n')
 
-        print('Copy x64 Installer:\n\t' + x64_installer + ' -> ' + x64_installerDest)
+        print('Copy x64 Installer:\n\t' + x64_installer + ' -> ' + x64_installerDest + '\n')
         shutil.copy2(x64_installer, x64_installerDest)
 
-        print('\n')
-
-        print('Copy x64 Installer:\n\t' + x86_installer + ' -> ' + x86_installerDest)
+        print('Copy x64 Installer:\n\t' + x86_installer + ' -> ' + x86_installerDest + '\n')
         shutil.copy2(x86_installer, x86_installerDest)
 
-        print('\n')
