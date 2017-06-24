@@ -414,8 +414,7 @@ if msbuildpy.sysinspect.is_windows() and not args.build_installer and args.build
 if not args.make_binary_release:
     exit(0)
 
-print('===========================================')
-print('\n')
+print('===========================================\n')
 
 installerBasicName = 'LSLCCEditorInstaller'
 
@@ -500,9 +499,7 @@ if msbuildpy.sysinspect.is_windows():
         script_path)
 
     if args.build_installer:
-        print('\n')
-        print('===========================================')
-        print('\n')
+        print('\n===========================================\n')
 
         print('Copy x64 Installer:\n\t' + x64_installer + ' -> ' + x64_installerDest)
         shutil.copy2(x64_installer, x64_installerDest)
