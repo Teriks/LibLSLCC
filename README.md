@@ -10,11 +10,10 @@ Each release contains an AnyCPU Release/Debug version of LibLSLCC,
 an AnyCPU binary copy of lslcc (The command line compiler), and an XML documentation 
 file generated for the library by Visual Studio/MSBuild.
 
-Releases also include platform specific installers for LSLCCEditor.
+Releases include platform specific installers for LSLCCEditor. However, the only 
+difference between each installer currently is the install directory that they default to.
 
-However, the only difference between each installer is the install directory that they default too.
 The installers for both x64 and x86 platforms use platform independent AnyCPU binaries.
-
 
 # About LibLSLCC 
 
@@ -48,8 +47,7 @@ its own rich syntax tree that has been completely abstracted from ANTLR.
 The syntax tree is tailored specifically for dealing with LSL, and there is an interface for every node 
 so that you can implement your own code DOM to feed to compilers/formatters if you want to.
 
-
-====
+## OpenSim Code Generation
 
 
 LibLSLCC includes a CSharp code generator that targets the OpenSim runtime.
@@ -60,16 +58,12 @@ with the intent of implementing Linden LSL with near perfect cross compatibility
 The project is basically a complete reverse engineering of the Linden compiler's
 grammar, non grammar level syntax rules, and generated code behavior.
 
-
-
 I have integrated LibLSLCC into OpenSim, see here:
 
 https://github.com/Teriks/OpenSim_With_LibLSLCC
 
 
-====
-
-A few notable code validator/OpenSim code generator features:
+### Notable Codegen Features:
 
  * Full front end Syntax Checking, including dead code detection.  
    Esoteric CSharp compiler errors and line mapping have been eliminated.
@@ -114,16 +108,16 @@ The project also includes an LSL Editor that was originally built to test the co
 It has since developed into a full featured multi-tabbed IDE that is built on top of LibLSLCC's parsing framework.
 
 Please take note that LSLCCEditor and its related projects are **Windows Only**, and you can 
-only build the __LibLSLCC-WithEditor*.sln__ solution's on Windows using a version of Visual Studio that
+only build the __LibLSLCC-WithEditor*.sln__ solution files on Windows using a version of Visual Studio that
 support's targeting the .NET 4.5 framework.
 
 
 
-VS2015+ is your best bet for building, however if your version of Visual Studio's
+VS2015+ is your best bet for building however, if your version of Visual Studio's
 support's .NET 4.5 you will probably be able to build the Editor project files with it.
 
 
-LSLCCEditor features:
+### Notable Editor features:
 
  * Tabbed multi script editing.
 
@@ -142,12 +136,10 @@ LSLCCEditor features:
  * Compilation to CSharp code for OpenSim as either
     client uploadable code or plain server side code. 
 
-===
 
-A few images of the editor small enough to squeeze into this readme...  
+Here A few images of the editor small enough to squeeze into this readme...  
 
 This dark color scheme can be found here: https://github.com/Teriks/LSLCCEditorThemes
-
 
 ![LSLCCEditor](http://imgur.com/qOoVhjK.png)
 
@@ -159,7 +151,7 @@ This dark color scheme can be found here: https://github.com/Teriks/LSLCCEditorT
 All binary dependencies are distributed with the build.
 You should not need to add any binaries yourself.
 
-===
+## ANTLR
 
 The LibLSLCC library itself depends on the **CSharp ANTLR 4 Runtime**.
 
@@ -171,17 +163,16 @@ For more information about **ANTLR** go here:
 http://www.antlr.org/index.html
 
 
-===
+## SQLite
 
 The **LibraryDataScrapingTool** project depends on **System.Data.SQLite**
-when compiled on Windows.  When its compiled on mono it uses **Mono.Data.Sqlite**.
+when compiled on Windows.  When compiled on mono it uses **Mono.Data.Sqlite**.
 
 see here: 
 
 https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki
 
-
-===
+## AvalonEdit
 
 The LSLCCEditor application depends on **AvalonEdit**, and a few pieces
 of code forked from **AvalonEdit**.  You can also find a license for **AvalonEdit**
@@ -191,9 +182,6 @@ in the **ThirdPartyLicenses** folder of the build directory.
 For more information about **AvalonEdit** go here:
 
 http://avalonedit.net/
-
-
-=== 
 
 
  
@@ -206,9 +194,6 @@ Important thing to note:
  * Building **LibLSLCC-WithEditor-NoInstaller.sln** should work with **VS2012 and up**.
 
  * Building **LibLSLCC-NoEditor.sln** should work with **VS2010 and up**.
-
-
-===
 
 
 LibLSLCC requires Java to be installed so that the ANTLR 4 parser generator tool 
