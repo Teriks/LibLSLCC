@@ -117,7 +117,7 @@ VS2015+ is your best bet for building however, if your version of Visual Studio'
 support's .NET 4.5 you will probably be able to build the Editor project files with it.
 
 
-### Notable Editor features:
+### Notable Editor Features:
 
  * Tabbed multi script editing.
 
