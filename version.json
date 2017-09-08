@@ -4,8 +4,8 @@
 		"comment" : 
 		"{commits_since_last_tag} is the number of commits since last_tag.",
 		
-		"last_tag" : "1.1.0.0",
-		"version_template" : "1.1.0.{commits_since_last_tag}"
+		"last_tag" : "1.1.0.13",
+		"version_template" : "1.1.1.{commits_since_last_tag}"
 	},
 	"LibraryDataScrapingTool" :
 	{

@@ -312,7 +312,7 @@ else:
     MSBuild = MSBuild[0]
 
 
-def call_msbuild(*args):
+def call_msbuild(*args):    
     subprocess.call([MSBuild.path]+list(args))
 
 
@@ -374,16 +374,6 @@ if args.build_demo_area:
     LibLSLCCBuildTargets += ";DemoArea"
 
 
-if not args.release_only:
-    call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Debug', '/p:Platform=Any CPU',
-                LibLSLCCTargetFramework)
-
-
-if not args.debug_only:
-    call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Release', '/p:Platform=Any CPU',
-                LibLSLCCTargetFramework)
-
-
 # build the installers on windows
 if msbuildpy.sysinspect.is_windows() and args.build_installer and args.build_editor:
     if not args.release_only:
@@ -404,6 +394,16 @@ if msbuildpy.sysinspect.is_windows() and not args.build_installer and args.build
     if not args.debug_only:
         call_msbuild(editor_solution, '/t:LSLCCEditor', '/p:Configuration=Release', '/p:Platform=Any CPU',
                     LSLCCEditorTargetFramework)
+
+
+if not args.release_only:
+    call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Debug', '/p:Platform=Any CPU',
+                LibLSLCCTargetFramework)
+
+
+if not args.debug_only:
+    call_msbuild(no_editor_solution, LibLSLCCBuildTargets, '/p:Configuration=Release', '/p:Platform=Any CPU',
+                LibLSLCCTargetFramework)
 
 
 if not args.make_binary_release:
