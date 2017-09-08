@@ -312,7 +312,7 @@ else:
     MSBuild = MSBuild[0]
 
 
-def call_msbuild(*args):    
+def call_msbuild(*args):
     subprocess.call([MSBuild.path]+list(args))
 
 
