@@ -4,8 +4,8 @@
 		"comment" : 
 		"{commits_since_last_tag} is the number of commits since last_tag.",
 		
-		"last_tag" : "1.2.0.0",
-		"version_template" : "1.2.0.{commits_since_last_tag}"
+		"last_tag" : "1.2.1.0",
+		"version_template" : "1.2.1.{commits_since_last_tag}"
 	},
 	"LibraryDataScrapingTool" :
 	{
@@ -14,13 +14,13 @@
 	},
 	"lslcc_cmd" :
 	{
-		"last_tag" : "1.2.0.0",
-		"version_template" : "1.2.0.{commits_since_last_tag}"
+		"last_tag" : "1.2.1.0",
+		"version_template" : "1.2.1.{commits_since_last_tag}"
 	},
 	"LSLCCEditor" :
 	{
-		"last_tag" : "1.2.0.0",
-		"version_template" : "1.4.0.{commits_since_last_tag}"
+		"last_tag" : "1.2.1.0",
+		"version_template" : "1.4.2.{commits_since_last_tag}"
 	},
 	"LSLCCEditor.CompletionUI" :
 	{

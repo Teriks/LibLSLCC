@@ -784,8 +784,9 @@ namespace LSLCCEditor.EditorTabUI
                     {
                         try
                         {
-                            while (!SaveTabToNewFile())
+                            if (!SaveTabToNewFile())
                             {
+                                canceled = true;
                             }
                         }
                         catch (Exception e)
@@ -810,8 +811,9 @@ namespace LSLCCEditor.EditorTabUI
                     {
                         try
                         {
-                            while (!SaveOpenFileTab())
+                            if (!SaveOpenFileTab())
                             {
+                                canceled = true;
                             }
                         }
                         catch (Exception e)

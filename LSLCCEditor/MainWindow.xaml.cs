@@ -287,6 +287,8 @@ namespace LSLCCEditor
 
             Closing += (sender, args) =>
             {
+                if (args.Cancel) return;
+
                 using (var pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.Out))
                 {
                     pipeClient.Connect();
@@ -313,7 +315,6 @@ namespace LSLCCEditor
             {
                 using (var conn = (NamedPipeServerStream) asyncResult.AsyncState)
                 {
-
                     conn.EndWaitForConnection(asyncResult);
 
                     var newServer = CreateOpenTabPipeServer(pipeName);
@@ -342,7 +343,7 @@ namespace LSLCCEditor
                             newServer.Close();
                             newServer.Dispose();
 
-                            Dispatcher.Invoke(Close);
+                            return;
                         }
                         if (file == ":EOF:") break;
 
@@ -494,15 +495,24 @@ namespace LSLCCEditor
 
         private void TabbedMainWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            for (var i = 0; i < EditorTabs.Count; i++)
+            var tabs = EditorTabs.ToList();
+
+            int i = -1;
+
+            foreach(EditorTab tab in tabs)
             {
-                var tab = EditorTabs[i];
+                i++;
 
                 if (!tab.ChangesPending) continue;
 
                 TabControl.SelectedIndex = i;
 
-                if (tab.Close()) continue;
+                if (tab.Close())
+                {
+                    // a tab will be removed when it closes
+                    i--;
+                    continue;
+                }
 
                 e.Cancel = true;
                 break;

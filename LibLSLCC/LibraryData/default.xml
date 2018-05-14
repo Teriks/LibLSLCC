@@ -13,10 +13,10 @@
     <Description>A set of functions for interacting with bullet physics constraints on OpenSim servers which have extended physics enabled.</Description>
   </SubsetDescription>
   <SubsetDescription Subset="os-mod-api" FriendlyName="OS Mod Invoke">
-    <Description>A set of functions from OpenSim's JsonStore region module for manipulating JSON objects stored in script memory.</Description>
+    <Description>A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers.</Description>
   </SubsetDescription>
   <SubsetDescription Subset="os-json-store" FriendlyName="OS Json Store">
-    <Description>A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers.</Description>
+    <Description>A set of functions from OpenSim's JsonStore region module for manipulating JSON objects stored in script memory.</Description>
   </SubsetDescription>
   <SubsetDescription Subset="os-lightshare" FriendlyName="OS Light Share">
     <Description>A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings.</Description>
