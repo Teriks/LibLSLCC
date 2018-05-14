@@ -1346,6 +1346,10 @@
     <Parameter Name="options" Type="List" />
     <DocumentationString>Navigate to destination.&#10;Directs an object to travel to a defined position in the region or adjacent regions.</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="llName2Key" ReturnType="Key" Subsets="lsl">
+    <Parameter Name="name" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="llOffsetTexture" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="u" Type="Float" />
     <Parameter Name="v" Type="Float" />
@@ -1633,6 +1637,10 @@
   <LibraryFunction Name="llRequestUsername" ReturnType="String" Subsets="os-lsl">
     <Parameter Name="id" Type="String" />
     <DocumentationString>Requests single-word user-name of an avatar.&#10;When data is available the dataserver event will be raised.&#10;Requests the user-name of the identified agent.&#10;When the user-name is available the dataserver event is raised.&#10;The agent identified does not need to be in the same region or online at the time of the request.&#10;Returns a key that is used to identify the dataserver event when it is raised.</DocumentationString>
+  </LibraryFunction>
+   <LibraryFunction Name="llRequestUserKey" ReturnType="Key" Subsets="lsl">
+    <Parameter Name="username" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="llResetAnimationOverride" ReturnType="Void" Subsets="lsl,os-lsl">
     <Parameter Name="anim_state" Type="String" />
@@ -2455,6 +2463,13 @@
     <Parameter Name="lslrot" Type="Rotation" />
     <DocumentationString />
   </LibraryFunction>
+  <LibraryFunction Name="osSetInertia" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="mass" Type="Float" />
+    <Parameter Name="centerOfMass" Type="Vector" />
+    <Parameter Name="principalInertiaScaled" Type="Vector" />
+    <Parameter Name="rot" Type="Rotation" />
+    <DocumentationString>Allows creators to set the major physics dynamic proprieties, replacing the values estimated from the linkset parts. Call osClearInertia to undo.</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="osTeleportObject" ReturnType="Void" Subsets="ossl">
     <Parameter Name="objectUUID" Type="String" />
     <Parameter Name="targetPos" Type="Vector" />
@@ -2680,6 +2695,15 @@
     <Parameter Name="face" Type="Integer" />
     <DocumentationString>Returns UUID of the generated texture.&#10;Intended to be used with subsequent calls to osSetDynamicTexture* functions in order to modify the texture</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="osSetDynamicTextureDataFace" ReturnType="String" Subsets="ossl">
+    <Parameter Name="dynamicID" Type="String" />
+    <Parameter Name="contentType" Type="String" />
+    <Parameter Name="data" Type="String" />
+    <Parameter Name="extraParams" Type="String" />
+    <Parameter Name="timer" Type="Integer" />
+    <Parameter Name="face" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="osGetTerrainHeight" ReturnType="Float" Subsets="ossl">
     <Parameter Name="x" Type="Integer" />
     <Parameter Name="y" Type="Integer" />
@@ -2808,6 +2832,9 @@
     <Parameter Name="attachmentPoints" Type="List" />
     <DocumentationString>Returns a strided list of the specified attachment points and the number of attachments on those points</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="osGetNPCList" ReturnType="List" Subsets="ossl">
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="osMessageAttachments" ReturnType="Void" Subsets="ossl">
     <Parameter Name="avatar" Type="String" />
     <Parameter Name="message" Type="String" />
@@ -2852,11 +2879,38 @@
     <Parameter Name="height" Type="Integer" />
     <DocumentationString>Draws a rectangle on a dynamic texture</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="osDrawResetTransform" ReturnType="String" Subsets="ossl">
+    <Parameter Name="drawList" Type="String" />
+    <DocumentationString>No description available yet</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osDrawRotationTransform" ReturnType="String" Subsets="ossl">
+    <Parameter Name="drawList" Type="String" />
+    <Parameter Name="x" Type="Float" />
+    <DocumentationString>No description available yet</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osDrawScaleTransform" ReturnType="String" Subsets="ossl">
+    <Parameter Name="drawList" Type="String" />
+    <Parameter Name="x" Type="Float" />
+    <Parameter Name="y" Type="Float" />
+    <DocumentationString>No description available yet</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osDrawTranslationTransform" ReturnType="String" Subsets="ossl">
+    <Parameter Name="drawList" Type="String" />
+    <Parameter Name="x" Type="Float" />
+    <Parameter Name="y" Type="Float" />
+    <DocumentationString>No description available yet</DocumentationString>
+  </LibraryFunction>
   <LibraryFunction Name="osDrawFilledRectangle" ReturnType="String" Subsets="ossl">
     <Parameter Name="drawList" Type="String" />
     <Parameter Name="width" Type="Integer" />
     <Parameter Name="height" Type="Integer" />
     <DocumentationString>Draws a rectangle on a dynamic texture, and fills it with the current pen color</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osDrawFilledEllipse" ReturnType="String" Subsets="ossl">
+    <Parameter Name="drawList" Type="String" />
+    <Parameter Name="width" Type="Integer" />
+    <Parameter Name="height" Type="Integer" />
+    <DocumentationString>Appends an FillEllipse drawing command to the string provided in drawList and returns the result. The filled ellipse is drawn with the current pen size and color, with the specified width and height (in pixels), centered on a point which is (width/2) pixels to the right of the pen's current X position, and (height/2) pixels below the pen's current Y position. After the filled ellipse is drawn, the width and height values are added to the pen's X and Y position, respectively.</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="osDrawPolygon" ReturnType="String" Subsets="ossl">
     <Parameter Name="drawList" Type="String" />
@@ -3248,6 +3302,9 @@
   </LibraryFunction>
   <LibraryFunction Name="osGetSimulatorMemory" ReturnType="Integer" Subsets="ossl">
     <DocumentationString>Returns the memory in use by the current region</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="osGetSimulatorMemoryKB" ReturnType="Integer" Subsets="ossl">
+    <DocumentationString>Returns the memory in use in KB by the current region</DocumentationString>
   </LibraryFunction>
   <LibraryFunction Name="physGetEngineType" ReturnType="String" Subsets="os-bullet-physics">
     <DocumentationString>Get physics engine type</DocumentationString>
@@ -3704,6 +3761,9 @@
   </LibraryConstant>
   <LibraryConstant Name="AGENT_LIST_REGION" Type="Integer" Value="4" Subsets="lsl,os-lsl">
     <DocumentationString>All agents in the region.</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="AGENT_LIST_EXCLUDENPC" Type="Integer" Value="67108864" Subsets="os-lsl">
+    <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="AGENT_MOUSELOOK" Type="Integer" Value="8" Subsets="lsl,os-lsl">
     <DocumentationString />
@@ -4615,6 +4675,12 @@
   </LibraryConstant>
   <LibraryConstant Name="PARCEL_DETAILS_SEE_AVATARS" Type="Integer" Value="6" Subsets="lsl,os-lsl">
     <DocumentationString>The parcel's avatar visibility setting. (1 char.).</DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="PARCEL_DETAILS_ANY_AVATAR_SOUNDS" Type="Integer" Value="7" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="PARCEL_DETAILS_GROUP_SOUNDS" Type="Integer" Value="8" Subsets="os-lsl">
+    <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="PARCEL_FLAG_ALLOW_ALL_OBJECT_ENTRY" Type="Integer" Value="134217728" Subsets="lsl,os-lsl">
     <DocumentationString />
@@ -6022,7 +6088,7 @@
   <LibraryConstant Name="OSTPOBJ_NONE" Type="Integer" Value="0" Subsets="os-lsl">
     <DocumentationString />
   </LibraryConstant>
-  <LibraryConstant Name="OSTPOBJ_STOPATTARRGET" Type="Integer" Value="1" Subsets="os-lsl">
+  <LibraryConstant Name="OSTPOBJ_STOPATTARGET" Type="Integer" Value="1" Subsets="os-lsl">
     <DocumentationString />
   </LibraryConstant>
   <LibraryConstant Name="OSTPOBJ_STOPONFAIL" Type="Integer" Value="2" Subsets="os-lsl">
