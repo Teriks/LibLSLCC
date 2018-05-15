@@ -218,7 +218,11 @@ namespace LSLCCEditor
                 }
                 else if (!handleCreated)
                 {
-                    if (args.Length <= 0) return;
+                    if (args.Length <= 0) {
+                        Close();
+                        return;
+                    }
+                        
 
                     SendOpenTabPipeMessages(args);
                     Close();
