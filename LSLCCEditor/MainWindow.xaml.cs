@@ -222,7 +222,6 @@ namespace LSLCCEditor
                         Close();
                         return;
                     }
-                        
 
                     SendOpenTabPipeMessages(args);
                     Close();
