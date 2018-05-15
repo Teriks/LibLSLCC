@@ -5,7 +5,7 @@
 		"{commits_since_last_tag} is the number of commits since last_tag.",
 		
 		"last_tag" : "1.2.1.0",
-		"version_template" : "1.2.1.{commits_since_last_tag}"
+		"version_template" : "1.2.1.1"
 	},
 	"LibraryDataScrapingTool" :
 	{
