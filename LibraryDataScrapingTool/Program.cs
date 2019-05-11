@@ -75,7 +75,6 @@ namespace LibraryDataScrapingTool
             new LSLLibrarySubsetDescription("os-json-store","OS Json Store","A set of functions for invoking add-on script methods defined in loaded region modules on OpenSim servers."),
             new LSLLibrarySubsetDescription("os-lightshare","OS Light Share","A set of functions from OpenSim's LightShare region module for manipulating a regions shared WindLight settings."),
             new LSLLibrarySubsetDescription("os-attach-temp","OS Attach Temp","An optional OpenSim module that adds llAttachToAvatarTemp to the OpenSim script library."),
-            new LSLLibrarySubsetDescription("os-country","OS Country","An optional OpenSim module that allows for detecting an avatars country of origin.")
         };
 
         private static void Run(TextWriter logFile)
@@ -135,7 +134,6 @@ namespace LibraryDataScrapingTool
 
 
             openSimData.IncludeScriptConstantContainerClass(openSimLibraryReflectedTypeData.ScriptBaseClass, new[] { "os-lsl" });
-            openSimData.IncludeFunctionContainingInterface("ICM_Api", new[] { "os-country" });
             openSimData.IncludeFunctionContainingInterface("ILS_Api", new[] { "os-lightshare" });
             openSimData.IncludeFunctionContainingInterface("ILSL_Api", new[] { "os-lsl" });
             openSimData.IncludeFunctionContainingInterface("IOSSL_Api", new[] { "ossl" });

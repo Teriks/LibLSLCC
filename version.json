@@ -4,13 +4,13 @@
 		"comment" : 
 		"{commits_since_last_tag} is the number of commits since last_tag.",
 		
-		"last_tag" : "1.2.1.0",
-		"version_template" : "1.2.1.1"
+		"last_tag" : "1.2.2.0",
+		"version_template" : "1.2.2.0"
 	},
 	"LibraryDataScrapingTool" :
 	{
-		"last_tag" : "1.0.3.4",
-		"version_template" : "0.1.2.{commits_since_last_tag}"
+		"last_tag" : "1.2.1.1",
+		"version_template" : "0.1.3.{commits_since_last_tag}"
 	},
 	"lslcc_cmd" :
 	{

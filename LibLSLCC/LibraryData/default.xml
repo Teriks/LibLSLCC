@@ -24,9 +24,6 @@
   <SubsetDescription Subset="os-attach-temp" FriendlyName="OS Attach Temp">
     <Description>An optional OpenSim module that adds llAttachToAvatarTemp to the OpenSim script library.</Description>
   </SubsetDescription>
-  <SubsetDescription Subset="os-country" FriendlyName="OS Country">
-    <Description>An optional OpenSim module that allows for detecting an avatars country of origin.</Description>
-  </SubsetDescription>
   <LibraryFunction Name="llAbs" ReturnType="Integer" Subsets="lsl,os-lsl">
     <Parameter Name="val" Type="Integer" />
     <DocumentationString>Returns the absolute (positive) version of Value.</DocumentationString>
@@ -525,6 +522,67 @@
   <LibraryFunction Name="llGetDisplayName" ReturnType="String" Subsets="os-lsl">
     <Parameter Name="id" Type="String" />
     <DocumentationString>Returns the display name of an avatar, if the avatar is connected to the current region, or if the name has been cached.&#10;Otherwise, returns an empty string.&#10;Use llRequestDisplayName if the avatar may be absent from the region.</DocumentationString>
+  </LibraryFunction>
+  <LibraryFunction Name="llGetDayLength" ReturnType="Integer" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetDayOffset" ReturnType="Integer" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetEnvironment" ReturnType="List" Subsets="lsl">
+    <Parameter Name="pos" Type="Vector" />
+    <Parameter Name="params" Type="List" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetMoonDirection" ReturnType="Vector" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetMoonRotation" ReturnType="Rotation" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetObjectAnimationNames" ReturnType="List" Subsets="lsl,os-lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetRegionDayLength" ReturnType="Integer" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetRegionDayOffset" ReturnType="Integer" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetRegionMoonDirection" ReturnType="Vector" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetRegionMoonRotation" ReturnType="Rotation" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetRegionSunDirection" ReturnType="Vector" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetRegionSunRotation" ReturnType="Rotation" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llGetSunRotation" ReturnType="Rotation" Subsets="lsl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llReplaceAgentEnvironment" ReturnType="Integer" Subsets="lsl">
+    <Parameter Name="agent_id" Type="Key" />
+    <Parameter Name="transition" Type="Float" />
+    <Parameter Name="environment" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llSetAgentEnvironment" ReturnType="Void" Subsets="lsl">
+    <Parameter Name="agent_id" Type="Key" />
+    <Parameter Name="transition" Type="Float" />
+    <Parameter Name="params" Type="List" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llStartObjectAnimation" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="anim" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="llStopObjectAnimation" ReturnType="Void" Subsets="lsl,os-lsl">
+    <Parameter Name="anim" Type="String" />
+    <DocumentationString />
   </LibraryFunction>
   <LibraryFunction Name="llGetEnergy" ReturnType="Float" Subsets="lsl,os-lsl">
     <DocumentationString>Returns how much energy is in the object as a percentage of maximum.</DocumentationString>
@@ -2973,11 +3031,6 @@
     <Parameter Name="events" Type="Integer" />
     <DocumentationString />
   </LibraryFunction>
-  <LibraryFunction Name="osList2Double" ReturnType="Float" Subsets="ossl">
-    <Parameter Name="src" Type="List" />
-    <Parameter Name="index" Type="Integer" />
-    <DocumentationString>This function converts a value in the specified index of the list src to the double data type.&#10;However, OSSL does not have a double data type.&#10;C# contains a double type, but the current LSL implementation does not.</DocumentationString>
-  </LibraryFunction>
   <LibraryFunction Name="osSetRegionWaterHeight" ReturnType="Void" Subsets="ossl">
     <Parameter Name="height" Type="Float" />
     <DocumentationString>Adjusts water height in current region</DocumentationString>
@@ -3306,6 +3359,225 @@
   <LibraryFunction Name="osGetSimulatorMemoryKB" ReturnType="Integer" Subsets="ossl">
     <DocumentationString>Returns the memory in use in KB by the current region</DocumentationString>
   </LibraryFunction>
+  <LibraryFunction Name="osRound" ReturnType="Float" Subsets="ossl">
+    <Parameter Name="value" Type="Float" />
+    <Parameter Name="digits" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osVecMagSquare" ReturnType="Float" Subsets="ossl">
+    <Parameter Name="a" Type="Vector" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osVecDistSquare" ReturnType="Float" Subsets="ossl">
+    <Parameter Name="a" Type="Vector" />
+    <Parameter Name="b" Type="Vector" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osAngleBetween" ReturnType="Float" Subsets="ossl">
+    <Parameter Name="a" Type="Vector" />
+    <Parameter Name="b" Type="Vector" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osAdjustSoundVolume" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osLoopSound" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <Parameter Name="volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osLoopSoundMaster" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <Parameter Name="volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osLoopSoundSlave" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <Parameter Name="volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osPlaySound" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <Parameter Name="volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osPlaySoundSlave" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <Parameter Name="volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osPreloadSound" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osSetSoundRadius" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="radius" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStopSound" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osTriggerSound" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <Parameter Name="volume" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osTriggerSoundLimited" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="linknum" Type="Integer" />
+    <Parameter Name="sound" Type="String" />
+    <Parameter Name="volume" Type="Float" />
+    <Parameter Name="top_north_east" Type="Vector" />
+    <Parameter Name="bottom_south_west" Type="Vector" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osDetectedCountry" ReturnType="String" Subsets="ossl">
+    <Parameter Name="number" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetAgentCountry" ReturnType="String" Subsets="ossl">
+    <Parameter Name="agentId" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringSubString" ReturnType="String" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="start" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringSubString" ReturnType="String" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="start" Type="Integer" />
+    <Parameter Name="length" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringStartsWith" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="value" Type="String" />
+    <Parameter Name="ignorecase" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringEndsWith" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="value" Type="String" />
+    <Parameter Name="ignorecase" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringIndexOf" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="value" Type="String" />
+    <Parameter Name="ignorecase" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringIndexOf" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="value" Type="String" />
+    <Parameter Name="start" Type="Integer" />
+    <Parameter Name="count" Type="Integer" />
+    <Parameter Name="ignorecase" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringLastIndexOf" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="value" Type="String" />
+    <Parameter Name="ignorecase" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringLastIndexOf" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="value" Type="String" />
+    <Parameter Name="start" Type="Integer" />
+    <Parameter Name="count" Type="Integer" />
+    <Parameter Name="ignorecase" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringRemove" ReturnType="String" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="start" Type="Integer" />
+    <Parameter Name="count" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osStringReplace" ReturnType="String" Subsets="ossl">
+    <Parameter Name="src" Type="String" />
+    <Parameter Name="oldvalue" Type="String" />
+    <Parameter Name="newvalue" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osApproxEquals" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="a" Type="Float" />
+    <Parameter Name="b" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osApproxEquals" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="a" Type="Float" />
+    <Parameter Name="b" Type="Float" />
+    <Parameter Name="margin" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osApproxEquals" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="va" Type="Vector" />
+    <Parameter Name="vb" Type="Vector" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osApproxEquals" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="va" Type="Vector" />
+    <Parameter Name="vb" Type="Vector" />
+    <Parameter Name="margin" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osApproxEquals" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="ra" Type="Rotation" />
+    <Parameter Name="rb" Type="Rotation" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osApproxEquals" ReturnType="Integer" Subsets="ossl">
+    <Parameter Name="ra" Type="Rotation" />
+    <Parameter Name="rb" Type="Rotation" />
+    <Parameter Name="margin" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetInventoryLastOwner" ReturnType="String" Subsets="ossl">
+    <Parameter Name="itemNameOrId" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetInventoryName" ReturnType="String" Subsets="ossl">
+    <Parameter Name="itemId" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetLastChangedEventKey" ReturnType="String" Subsets="ossl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osGetPSTWallclock" ReturnType="Float" Subsets="ossl">
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osNpcSayTo" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="npc" Type="String" />
+    <Parameter Name="target" Type="String" />
+    <Parameter Name="channel" Type="Integer" />
+    <Parameter Name="msg" Type="String" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osSetOwnerSpeed" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="SpeedModifier" Type="Float" />
+    <DocumentationString />
+  </LibraryFunction>
+  <LibraryFunction Name="osLocalTeleportAgent" ReturnType="Void" Subsets="ossl">
+    <Parameter Name="agent" Type="String" />
+    <Parameter Name="position" Type="Vector" />
+    <Parameter Name="velocity" Type="Vector" />
+    <Parameter Name="lookat" Type="Vector" />
+    <Parameter Name="flags" Type="Integer" />
+    <DocumentationString />
+  </LibraryFunction>
   <LibraryFunction Name="physGetEngineType" ReturnType="String" Subsets="os-bullet-physics">
     <DocumentationString>Get physics engine type</DocumentationString>
     <Property Name="ModInvoke" Value="true" />
@@ -3528,14 +3800,6 @@
   </LibraryFunction>
   <LibraryFunction Name="lsClearWindlightScene" ReturnType="Void" Subsets="os-lightshare">
     <DocumentationString>Remove Windlight settings from a region</DocumentationString>
-  </LibraryFunction>
-  <LibraryFunction Name="cmDetectedCountry" ReturnType="String" Subsets="os-country">
-    <Parameter Name="num" Type="Integer" />
-    <DocumentationString />
-  </LibraryFunction>
-  <LibraryFunction Name="cmGetAgentCountry" ReturnType="String" Subsets="os-country">
-    <Parameter Name="key" Type="String" />
-    <DocumentationString />
   </LibraryFunction>
   <EventHandler Name="attach" Subsets="lsl,os-lsl">
     <Parameter Name="id" Type="Key" />
@@ -6626,5 +6890,32 @@
   </LibraryConstant>
   <LibraryConstant Name="PASS_NEVER" Type="Integer" Value="2" Subsets="lsl">
     <DocumentationString></DocumentationString>
+  </LibraryConstant>
+  <LibraryConstant Name="OS_APIVERSION" Type="Integer" Value="4" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="RC_REJECT_HOST" Type="Integer" Value="536870912" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="RC_REJECT_HOSTGROUP" Type="Integer" Value="1073741824" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OS_LTPAG_NONE" Type="Integer" Value="0" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OS_LTPAG_USEVEL" Type="Integer" Value="1" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OS_LTPAG_USELOOKAT" Type="Integer" Value="2" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OS_LTPAG_ALGNLV" Type="Integer" Value="4" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OS_LTPAG_FORCEFLY" Type="Integer" Value="8" Subsets="os-lsl">
+    <DocumentationString />
+  </LibraryConstant>
+  <LibraryConstant Name="OS_LTPAG_FORCENOFLY" Type="Integer" Value="22" Subsets="os-lsl">
+    <DocumentationString />
   </LibraryConstant>
 </LSLLibraryData>
