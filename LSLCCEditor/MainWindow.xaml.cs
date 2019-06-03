@@ -54,6 +54,7 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -306,9 +307,11 @@ namespace LSLCCEditor
         private NamedPipeServerStream CreateOpenTabPipeServer(string pipeName)
         {
             var ps = new PipeSecurity();
-            ps.AddAccessRule(new PipeAccessRule("Users", PipeAccessRights.ReadWrite | PipeAccessRights.CreateNewInstance,
-                AccessControlType.Allow));
-            ps.AddAccessRule(new PipeAccessRule("SYSTEM", PipeAccessRights.FullControl, AccessControlType.Allow));
+
+            var cur_user = WindowsIdentity.GetCurrent().User.Translate(typeof(NTAccount));
+
+            ps.SetAccessRule(new PipeAccessRule(cur_user,
+                PipeAccessRights.ReadWrite | PipeAccessRights.CreateNewInstance, AccessControlType.Allow));
 
             var pipeClientConnection = new NamedPipeServerStream(pipeName, PipeDirection.In, 5,
                 PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024, ps);
