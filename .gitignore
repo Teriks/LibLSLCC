@@ -1,9 +1,10 @@
-/**/bin
-/**/obj
-/**/*.vs
-/**/*.user
-/**/*.suo
-/**/__pycache__
-/**/*.DotSettings
+**/bin
+**/obj
+**/*.vs
+**/*.user
+**/*.suo
+**/__pycache__
+**/*.DotSettings
 LibLSLCC/Documentation/doxygen
 BinaryRelease
+BuildScriptLibs
